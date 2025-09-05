@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-04-essentials-example-js-fragments-used-in-xml-views-faaff35-md",
+  "title": "Example: JS Fragments Used in XML Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/example-js-fragments-used-in-xml-views-faaff35.md",
+  "lastModified": "2025-09-01T18:17:10.515Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Example",
+    "Fragments",
+    "Used",
+    "XML",
+    "Views"
+  ],
+  "headers": [
+    "Example: JS Fragments Used in XML Views",
+    "webapp/MyFragment.js",
+    "webapp/View.view.xml",
+    "webapp/Controller.js",
+    "webapp/index.html"
+  ],
+  "content": "<!-- loiofaaff35246414793b061f0244fb67338 -->\n\n# Example: JS Fragments Used in XML Views\n\nExample of JS fragments used in an XML view\n\nThe example uses different combinations. Make sure that the `sap-ui-core.js` script location points to an existing SAPUI5 installation.\n\n\n\n<a name=\"loiofaaff35246414793b061f0244fb67338__section_gzk_nqs_mmb\"/>\n\n## webapp/MyFragment.js\n\nDefinition of a simple JS fragment containing two buttons:\n\n```js\n// The fragment is available under the resource name: my/own/MyFragment.js,\nsap.ui.define([\"sap/m/Button\"], function (Button) {\n    return {\n        createContent: function() {\n            // button text is bound to Model, \"press\" action is bound to Controller's event handler\n            return [\n                new Button({text:'my Fragment Button'}),\n                new Button(this.createId(\"btn2\"), {text:'my second Fragment Button'})\n            ]\n        }\n    }\n});\n```\n\n\n\n<a name=\"loiofaaff35246414793b061f0244fb67338__section_d3y_4qs_mmb\"/>\n\n## webapp/View.view.xml\n\nDefinition of a simple XML view:\n\n```xml\n<mvc:View xmlns:core=\"sap.ui.core\"\n    xmlns:layout=\"sap.ui.layout\"\n    xmlns:mvc=\"sap.ui.core.mvc\"\n    xmlns=\"sap.m\">\n    <layout:VerticalLayout id=\"vl\">\n        <Button text=\"Find controls by ID\" press=\"findControls\"></Button>\n        <Text text=\"Fragment referenced inline, no Fragment ID:\" />\n        <core:Fragment fragmentName='module:my/own/MyFragment' />\n        <Text text=\"Fragment referenced inline, with Fragment ID 'myFrag':\" />\n        <core:Fragment id=\"myFrag\" fragmentName='module:my/own/MyFragment' />\n    </layout:VerticalLayout>\n</mvc:View>\n```\n\n\n\n<a name=\"loiofaaff35246414793b061f0244fb67338__section_br1_pqs_mmb\"/>\n\n## webapp/Controller.js\n\nDefinition of a simple controller used with the XML view:\n\n```js\nsap.ui.define(['sap/ui/core/mvc/Controller', 'sap/ui/core/Fragment'], function (Controller, Fragment) {\n    \"use strict\";\n    return Controller.extend(\"my.own.Controller\", {\n        metadata: {\n            methods:{\n                findControls: {public: true }\n            }\n        },\n        findControls: function() {\n            // Fragment is instantiated within an XMLView => all GIVEN IDs are prefixed with the\n            // View ID and View.byId() needs to be used to find the controls\n            var b1 = null; // ID is generated: \"__button1\"\n            var b2 = this.byId(\"btn2\"); // Button ID is given, Fragment has no ID: \"myView--btn2\"\n            var b3 = null // Fragment has an ID, but Control ID is generated and hence not prefixed: \"__button2\"\n            var b4 = this.byId(Fragment.createId(\"myFrag\", \"btn2\")); // Button and Fragment ID are given, \n                //let the Fragment construct the prefixed ID and then let the View search the again prefixed ID\n            alert(\"Controls in Fragment:\\nButton 1: has no given ID, cannot be found\\nButton 2: \" + b2 + \n               \"\\nButton 3: has no given ID, cannot be found\\nButton 4: \" + b4);\n        }\n    });\n});\n\n```\n\n\n\n<a name=\"loiofaaff35246414793b061f0244fb67338__section_f3f_s4s_mmb\"/>\n\n## webapp/index.html\n\nInstance creation of controller and XML view:\n\n```html\n<!DOCTYPE html>\n<html>\n\t<head>\n\t<meta content=\"charset=utf-8\">\n\t\n\t<title>JSFragment used in XmlView</title>\n\t\n\t<!-- Load UI5 and select the \"sap.m\", \"sap.ui.layout\" control libraries -->\n\t<script id='sap-ui-bootstrap' type='text/javascript'\n\t\t\tsrc='/sapui5/resources/sap-ui-core.js'\n\t\t\tdata-sap-ui-libs='sap.m,sap.ui.layout'\n\t\t\tdata-sap-ui-resource-roots='{\"my.own\": \".\"}'\n\t</script>\n\n\t<script>\n\t\tsap.ui.require([\n\t\t\t'sap/ui/core/mvc/Controller',\n\t\t\t'sap/ui/core/mvc/XMLView'\n\t\t], function (Controller, XMLView) {\n\t\t\tController.create({\n\t\t\t\tname: \"module:my/own/Controller\"\n\t\t\t}).then(function (oController) {\n\t\t\t\t/*** THIS IS THE \"APPLICATION\" CODE ***/\n\n\t\t\t\t// instantiate the View\n\t\t\t\tXMLView.create({\n                        viewName:\"my.own.View\",\n                        controller: oController\n\t\t\t\t}).then(function (oView) {\n\t\t\t\t\t// put the View onto the screen\n\t\t\t\t\toView.placeAt('content');\n\t\t\t\t});\n\t\t\t});\n\t\t});\n\t</script>\n\t\n\t</head>\n\t<body class='sapUiBody'>\n\t\t<div id='content'></div>\n\t</body>\n</html>\n```\n\n",
+  "excerpt": "<!-- loiofaaff35246414793b061f0244fb67338 --> Example: JS Fragments Used in XML Views Example of JS fragments used in an XML view The example uses different combinations. Make sure that the sap-ui-cor...",
+  "wordCount": 419,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

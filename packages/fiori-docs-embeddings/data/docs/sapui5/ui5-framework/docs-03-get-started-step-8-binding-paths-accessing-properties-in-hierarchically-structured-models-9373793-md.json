@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-8-binding-paths-accessing-properties-in-hierarchically-structured-models-9373793-md",
+  "title": "Step 8: Binding Paths: Accessing Properties in Hierarchically Structured Models",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-8-binding-paths-accessing-properties-in-hierarchically-structured-models-9373793.md",
+  "lastModified": "2025-09-01T18:17:10.484Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Binding",
+    "Paths",
+    "Accessing",
+    "Properties",
+    "Hierarchically",
+    "Structured",
+    "Models"
+  ],
+  "headers": [
+    "Step 8: Binding Paths: Accessing Properties in Hierarchically Structured Models",
+    "Preview",
+    "Coding"
+  ],
+  "content": "<!-- loio9373793b290d429ba1bc6aea1ce5482f -->\n\n# Step 8: Binding Paths: Accessing Properties in Hierarchically Structured Models\n\nIn Step 6 , we stated that the fields in a resource model are arranged in a flat structure; in other words, there is no hierarchy of properties. However, this is only true for resource models. The properties within JSON and OData models are usually arranged in a hierarchical structure. So, let's explore how to reference fields in a hierarchically structured model object.\n\n\n\n## Preview\n\n  \n  \n**A second panel with address data is added**\n\n![The graphic has an explanatory text](images/Tutorial_Data_Binding_Step_8_12705f5.png \" A second panel with address data is added\")\n\n\n\n## Coding\n\nYou can view and download all files in the Demo Kit at [Data Binding - Step 8](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.databinding/sample/sap.ui.core.tutorial.databinding.08).\n\n1.  In the `data.json` file, add an additional sub-object named `address`. This object has four properties: `street`, `city`, `zip`, and `country`.\n\n    **webapp/model/data.json**\n\n    ```\n    {\n    \t\"firstName\": \"Harry\",\n    \t\"lastName\": \"Hawk\",\n    \t\"enabled\": true,\n    \t\"address\": {\n    \t\t\"street\": \"Dietmar-Hopp-Allee 16\",\n    \t\t\"city\": \"Walldorf\",\n    \t\t\"zip\": \"69190\",\n    \t\t\"country\": \"Germany\"\n    \t}\n    }\n    ```\n\n2.  Add a new panel to the `App.view.xml` with a new `Label` and `FormattedText` pair of elements.\n\n    The `text` property of the `Label` element is bound to the i18n resource bundle field `address`.\n\n    The `htmlText` property of the `FormattedText` element is bound to four JSON model properties: `/address/street`, `/address/zip`, `/address/city`, and `/address/country`. You can achieve the resulting address format by separating each one of these JSON model property references with a hard-coded newline character. Note that `zip` and `city` are separated by a space.\n\n    **webapp/view/App.view.xml**\n\n    ```xml\n    <mvc:View\n    \txmlns=\"sap.m\"\n    \txmlns:form=\"sap.ui.layout.form\"\n    \txmlns:l=\"sap.ui.layout\"\n    \txmlns:mvc=\"sap.ui.core.mvc\">\n    \t<Panel headerText=\"{i18n>panel1HeaderText}\" class=\"sapUiResponsiveMargin\" width=\"auto\">\n    \t\t<form:SimpleForm editable=\"true\" layout=\"ColumnLayout\">\n    \t\t\t<Label text=\"{i18n>firstName}\"/>\n    \t\t\t<Input value=\"{/firstName}\" valueLiveUpdate=\"true\" width=\"200px\" enabled=\"{/enabled}\"/>\n    \t\t\t<Label text=\"{i18n>lastName}\"/>\n    \t\t\t<Input value=\"{/lastName}\" valueLiveUpdate=\"true\" width=\"200px\" enabled=\"{/enabled}\"/>\n    \t\t\t<Label text=\"{i18n>enabled}\"/>\n    \t\t\t<CheckBox selected=\"{/enabled}\"/>\n    \t\t</form:SimpleForm>\n    \t</Panel>\n    \t<Panel headerText=\"{i18n>panel2HeaderText}\" class=\"sapUiResponsiveMargin\" width=\"auto\">\n    \t\t<content>\n    \t\t\t<l:VerticalLayout>\n    \t\t\t\t<Label labelFor=\"address\" text=\"{i18n>address}:\"/>\n    \t\t\t\t<FormattedText class=\"sapUiSmallMarginBottom\"\n    \t\t\t\t\thtmlText=\"{/address/street}&lt;br&gt;{/address/zip} {/address/city}&lt;br&gt;{/address/country}\"\n    \t\t\t\t\tid=\"address\" \n    \t\t\t\t\twidth=\"200px\"/>\n    \t\t\t</l:VerticalLayout>\n    \t\t</content>\n    \t</Panel>\n    </mvc:View>\n    ```\n\n3.  Update the `i18n.properties` and `i18n_de.properties` files as shown below.\n\n    **webapp/i18n/i18n.properties**\n\n    ```ini\n    # Field labels\n    firstName=First Name\n    lastName=Last Name\n    enabled=Enabled\n    address=Address\n    \n    # Screen titles\n    panel1HeaderText=Data Binding Basics \n    panel2HeaderText=Address Details\n    ```\n\n    **webapp/i18n/i18n\\_de.properties**\n\n    ```ini\n    # Field labels\n    firstName=Vorname\n    lastName=Nachname\n    enabled=Aktiviert\n    address=Adresse\n    \n    # Screen titles\n    panel1HeaderText=Data Binding Grundlagen\n    panel2HeaderText=Adressdetails\n    ```\n\n\n> ### Note:  \n> The resource bundle files now contain new properties for the address and a new panel header text. Both panel properties are numbered.\n> \n> In the XML view, inside the curly brackets for the binding path of the `htmlText` element, you'll notice that the first character is a forward slash. This is necessary for binding paths that make absolute references to properties in JSON and OData models, but you must not use it for resource models. After the first forward slash character, the binding path syntax uses the object name and the property names separated by forward slash characters \\(`{/address/street}`\\).\n> \n> Remember, all binding path names are case-sensitive.\n\n**Related Information**  \n\n\n[JSON Model](../04_Essentials/json-model-96804e3.md#loio96804e3315ff440aa0a50fd290805116 \"The JSON model can be used to bind controls to JavaScript object data, which is usually serialized in the JSON format.\")\n\n",
+  "excerpt": "<!-- loio9373793b290d429ba1bc6aea1ce5482f --> Step 8: Binding Paths: Accessing Properties in Hierarchically Structured Models In Step 6 , we stated that the fields in a resource model are arranged in ...",
+  "wordCount": 489,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

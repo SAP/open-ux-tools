@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-using-the-support-assistant-12572ab-md",
+  "title": "Using the Support Assistant",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/using-the-support-assistant-12572ab.md",
+  "lastModified": "2025-09-01T18:17:10.554Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Using",
+    "the",
+    "Support",
+    "Assistant"
+  ],
+  "headers": [
+    "Using the Support Assistant"
+  ],
+  "content": "<!-- loio12572abbd4ad49eba37f2cdb23692093 -->\n\n# Using the Support Assistant\n\nThe user interface of the Support Assistant allows you to view the available rules and load additional rulesets for an active application. You can also run an analysis and view the issues identified. The results are available in the form of a consolidated report, generated as an HTML document.\n\n\n\n![](images/Image_map_Using_the_Support_Assistant_342a2c0.png)\n\n\n\n",
+  "excerpt": "<!-- loio12572abbd4ad49eba37f2cdb23692093 --> Using the Support Assistant The user interface of the Support Assistant allows you to view the available rules and load additional rulesets for an active ...",
+  "wordCount": 59,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-05-developing-apps-developing-apps-23cfd95-md",
+  "title": "Developing Apps",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/developing-apps-23cfd95.md",
+  "lastModified": "2025-09-01T18:17:10.559Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Developing",
+    "Apps"
+  ],
+  "headers": [
+    "Developing Apps",
+    "Project Setup",
+    "Development",
+    "Packaging and Deployment"
+  ],
+  "content": "<!-- loio23cfd955f58142389fa7c9097e11559c -->\n\n# Developing Apps\n\nCreate apps with rich user interfaces for modern web business applications, responsive across browsers and devices, based on HTML5.\n\n\n\n![](images/DevelopingApps_Process_71f8bf5.png)\n\n\n\n<a name=\"loio23cfd955f58142389fa7c9097e11559c__section_ovf_25f_qbb\"/>\n\n## Project Setup\n\nBefore you start developing apps with SAPUI5, you start by setting up the development environment of your choice. You can find our recommendations under [Development Environment](development-environment-7bb04e0.md).\n\n\n\n<a name=\"loio23cfd955f58142389fa7c9097e11559c__section_znq_f5f_qbb\"/>\n\n## Development\n\nWhen faced with developing an app, you have several ways to get started ranging from app templates or a make-em-completely-from-scratch approach. But which approach is right for your situation? In most cases, it's your level of expertise or need for flexibility and freedom that will decide.\n\nAn easy start to app development are app templates offered by SAP Fiori Tools. Think of app templates as a kind of best practice for app development. They incorporate current recommendations and can be used as a starting point for developing apps according to the SAP Fiori design guidelines. They include generic application functionality and tests that can be easily extended with custom functionality if needed. The templates are introduced under [Developing Apps with SAP Fiori Tools](developing-apps-with-sap-fiori-tools-a460a73.md).\n\nIf you're skilled at coding and want the freedom and flexibility, you can build an app completely from scratch. In the chapters in this section, you will find some guidance on how to deal with crucial concepts such as accessibility, security, device adaptation.\n\nBe sure to check out information about things that you really should avoid doing while coding: [Coding Issues to Avoid](coding-issues-to-avoid-3877872.md).\n\nYou can also use SAP Fiori elements or the reuse components of Analysis Path Framework. For more information, see [Developing Apps with SAP Fiori Elements](../06_SAP_Fiori_Elements/developing-apps-with-sap-fiori-elements-03265b0.md) and [Developing Apps with Analysis Path Framework \\(APF\\)](../07_APF/developing-apps-with-analysis-path-framework-apf-1c457c5.md).\n\n\n\n<a name=\"loio23cfd955f58142389fa7c9097e11559c__section_vp3_n5f_qbb\"/>\n\n## Packaging and Deployment\n\nHow you deploy your app when you're finished depends on the tools you use and the platform where your app is going to run. See the related documentation for details.\n\nFor example, it's quite easy to deploy an app to SAP Business Technology Platform with SAP Business Application Studio. For more information about SAP Business Application Studio, see the documentation on the SAP Help Portal at [SAP Business Application Studio](https://help.sap.com/viewer/product/SAP%20Business%20Application%20Studio/Cloud/en-US).\n\n> ### Note:  \n> For more information about packaging apps, read the blog post [Optimizing OpenUI5/SAPUI5 Apps](https://blogs.sap.com/2015/02/18/optimizing-openui5-apps/).\n\n",
+  "excerpt": "<!-- loio23cfd955f58142389fa7c9097e11559c --> Developing Apps Create apps with rich user interfaces for modern web business applications, responsive across browsers and devices, based on HTML5. ! <a n...",
+  "wordCount": 374,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

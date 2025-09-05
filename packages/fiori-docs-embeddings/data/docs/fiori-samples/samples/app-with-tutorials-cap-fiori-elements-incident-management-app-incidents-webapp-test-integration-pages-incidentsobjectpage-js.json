@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-webapp-test-integration-pages-incidentsobjectpage-js",
+  "title": "IncidentsObjectPage",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/test/integration/pages/IncidentsObjectPage.js",
+  "lastModified": "2025-09-01T18:17:10.797Z",
+  "tags": [
+    "samples",
+    "js",
+    "IncidentsObjectPage"
+  ],
+  "headers": [],
+  "content": "# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.md\n\n```javascript\n# IncidentsObjectPage.js\n\n```javascript\nsap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {\n    'use strict';\n\n    var CustomPageDefinitions = {\n        actions: {},\n        assertions: {}\n    };\n\n    return new ObjectPage(\n        {\n            appId: 'sap.fe.demo.incidents',\n            componentId: 'IncidentsObjectPage',\n            entitySet: 'Incidents'\n        },\n        CustomPageDefinitions\n    );\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "IncidentsObjectPage.md javascript IncidentsObjectPage.md javascript IncidentsObjectPage.md javascript IncidentsObjectPage.md javascript IncidentsObjectPage.js",
+  "wordCount": 64,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

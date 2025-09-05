@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-instantiating-views-68d0e58-md",
+  "title": "Instantiating Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/instantiating-views-68d0e58.md",
+  "lastModified": "2025-09-01T18:17:10.520Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Instantiating",
+    "Views"
+  ],
+  "headers": [
+    "Instantiating Views",
+    "Loading Views",
+    "Synchronous Mode",
+    "Lazy Loading for XML Views"
+  ],
+  "content": "<!-- loio68d0e58857a647d49470d9f92dd859bd -->\n\n# Instantiating Views\n\nTo instantiate views asychronously, SAPUI5 provides the factory method `View.create` defined in module `sap/ui/core/mvc/View`.\n\nTo pass the required information for the instantiation, use an object with the following properties:\n\n-   `type`: The type can be `JSON`, `JS`, `HTML`, or`XML`. All possible types are declared in the enumeration `sap.ui.core.mvc.ViewType`.\n\n-   `viewName`: View name corresponding to the module concept\n\n-   `definition`: Only relevant for XML views, HTML views and JSON views. Defines the XML, HTML or JSON string representation of the view definition. If `viewName` and `definition` are given, the `viewName` property is used to load the view definition.\n\n-   `controller`: Any controller instance; the given controller instance overrides the controller defined in the view definition\n\n-   `viewData`: Only used for JS views; this property contains user-specific data that is available during the whole lifecycle of the view and the controller\n\n\nAll regular properties of a view \\(control\\) can be passed to the object as usual.\n\n\n\n## Loading Views\n\nThe default mode is the asynchronous loading of a view: The advantage of asynchronous loading compared to synchronous loading is that the UI does not freeze for the duration of the loading process and there is no blockage of functionalities during view initialization.\n\nWith the asynchronous loading of views, the instance is not fully available at the moment of creation, instead you may receive a `Promise` via the `View.prototype.loaded` method. The following code snippet shows how the view instance is available in the resolve function of the `promise`.\n\n> ### Note:  \n> If you access the view in the controller's `onInit` callback, the view instance is available in any case. The behavior does not change.\n\n```js\n// \"View\" required from \"sap/ui/core/mvc/View\"\n// \"coreLibrary\" required from \"sap/ui/core/library\"\n// \"oMainController\" was defined earlier\nView.create({\n    viewName: \"my.own.view\",\n    controller: oMainController,\n    type: coreLibrary.mvc.ViewType.XML\n}).then(function(oView) {\n    // the instance is available in the callback function\n    oView.placeAt(\"uiArea\");\n});\n```\n\n\n\n### Synchronous Mode\n\n> ### Note:  \n> We do **not** recommend to instantiate views synchronously. Use the asynchronous mode instead.\n\n\n\n<a name=\"loio68d0e58857a647d49470d9f92dd859bd__section_mcg_g5w_vfb\"/>\n\n## Lazy Loading for XML Views\n\nThe following code snippet shows how to do a lazy loading for XML views:\n\n```xml\n<!-- File: view/CustomView.view.xml -->\n<mvc:View xmlns=\"sap.m\" xmlns:mvc=\"sap.ui.core.mvc\">\n    <Text text=\"Custom View loaded ...\"/>\n</mvc:View>\n```\n\n```js\n// Runtime resource name: \"samples/controller/MainController.js\"\nsap.ui.require([\"sap/ui/core/mvc/XMLView\", \"sap/ui/core/mvc/Controller\"], function(XMLView, Controller) {\n\treturn Controller.extend(\"samples.controller.MainController\", {\n\t\t// ...\n\t\tonSomeEventTriggered: function() {\n\t\t\t// instantiate view using create-factory\n\t\t\tXMLView.create({\n\t\t\t\tviewName: \"samples.view.CustomView\"\n\t\t\t})\n\t\t\t.then(function(oCustomView) {\n\t\t\t\t// View loaded ...\n\t\t\t})\n\t\t}\n\n\t});\n });\n```\n\nFor an example, see the [`sap.ui.core.sample.View.async/preview`](https://ui5.sap.com/#/entity/sap.ui.core.mvc.View/sample/sap.ui.core.sample.View.async) sample in the Demo Kit.\n\n",
+  "excerpt": "<!-- loio68d0e58857a647d49470d9f92dd859bd --> Instantiating Views To instantiate views asychronously, SAPUI5 provides the factory method View.create defined in module sap/ui/core/mvc/View. To pass the...",
+  "wordCount": 423,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

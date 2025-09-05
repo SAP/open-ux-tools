@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-enabling-the-resize-action-2b6417c-md",
+  "title": "Enabling the *Resize* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/enabling-the-resize-action-2b6417c.md",
+  "lastModified": "2025-09-01T18:17:10.676Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Enabling",
+    "the",
+    "Resize",
+    "Action"
+  ],
+  "headers": [
+    "Enabling the *Resize* Action"
+  ],
+  "content": "<!-- loio2b6417caa2ab4b6da779bf942ad29822 -->\n\n# Enabling the *Resize* Action\n\nThis section shows an example how to enable enable a control for the *resize* action.\n\n",
+  "excerpt": "<!-- loio2b6417caa2ab4b6da779bf942ad29822 --> Enabling the Resize Action This section shows an example how to enable enable a control for the resize action.",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

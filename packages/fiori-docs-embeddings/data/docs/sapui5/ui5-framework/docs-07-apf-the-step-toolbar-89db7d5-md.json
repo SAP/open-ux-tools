@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-07-apf-the-step-toolbar-89db7d5-md",
+  "title": "The Step Toolbar",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-step-toolbar-89db7d5.md",
+  "lastModified": "2025-09-01T18:17:10.670Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Step",
+    "Toolbar"
+  ],
+  "headers": [
+    "The Step Toolbar"
+  ],
+  "content": "<!-- loio89db7d53b5c19456e10000000a423f68 -->\n\n# The Step Toolbar\n\nThe step toolbar is part of the analysis step container and provides the following actions that the user can perform for the active analysis step:\n\n-   Selection Count\n\n    Displays the number of selected items. The selection count is displayed only when a selection is made in the active representation.\n\n-   Filter Information\n\n    Displays a list of the filters that were set in previous analysis steps and that are also applied to the active analysis step. If filter mapping has been applied, you are informed about the mapped filter property. In addition, if a previous step has filters that do not affect the current analysis step, you are also informed about this.\n\n-   Toggle Legend\n\n    Shows or hides the chart legend. This option is displayed only when the user has chosen a chart representation.\n\n-   Zoom in and zoom out \\(if the chart type supports zooming\\)\n\n-   Toggle Fullscreen\n\n    Displays the chart in full screen mode or returns to the original size.\n\n-   Representation Type\n\n    Depicts the current representation type. If the analysis step has multiple representations, clicking the icon opens a dialog with the available representation types for this step.\n\n-   Table Representation\n\n    Allows the user to display the data in a table. The related icon is displayed only if an alternative table representation has been configured for the active chart representation.\n\n-   View Settings\n\n    Allows the user to sort the table. This option is displayed only when the user has chosen the table representation.\n\n-   Export to Excel\n\n    You can download the data that is available on the front end to a Microsoft Excel file. This feature is available in the following cases:\n\n    -   When the active analysis step is a table representation\n\n    -   When you have switched to the alternative list view of any chart\n\n\n    > ### Note:  \n    > If you use this feature on an iPad, you must first add the file extension `.xlsx` to the download file before you can open it in Microsoft Excel.\n\n-   Load All\n\n    Loads all data records to the front end so that you don't have to page down to the end of the table to ensure that all data records are loaded. This is useful, for example, when you want to print or export the entire table. A counter shows the number of data records that are already on the front end and the total number of data records.\n\n\n",
+  "excerpt": "<!-- loio89db7d53b5c19456e10000000a423f68 --> The Step Toolbar The step toolbar is part of the analysis step container and provides the following actions that the user can perform for the active analy...",
+  "wordCount": 407,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

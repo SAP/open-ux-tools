@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-smart-multi-input-5644169-md",
+  "title": "Smart Multi Input",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/smart-multi-input-5644169.md",
+  "lastModified": "2025-09-01T18:17:10.703Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Smart",
+    "Multi",
+    "Input"
+  ],
+  "headers": [
+    "Smart Multi Input",
+    "Overview",
+    "Details"
+  ],
+  "content": "<!-- loio5644169deb76438f800f269b0cb715fc -->\n\n# Smart Multi Input\n\nThe `SmartMultiInput` control can be used to create a multi-input field or a multi-input combobox.\n\n\n\n<a name=\"loio5644169deb76438f800f269b0cb715fc__section_mxc_sbd_5db\"/>\n\n## Overview\n\nThe `SmartMultiInput` control acts as a wrapper control for the `sap.ui.comp.smartfield.SmartField` control and supports the same settings and annotations. It interprets OData metadata to create a multi-input field or a multi-input combobox, similar to `sap.m.MultiInput` and `sap.m.MultiComboBox` but with added annotation capabilities. Thanks to the annotations support, smart multi input fields and comboboxes can be embedded into other smart controls, such as `sap.ui.comp.smartform.SmartForm`.\n\n![Smart Multi Input Fields in a Smart Form](../01_Whats-New/images/Suite_Smart_Multi_Input_ece2f96.png)\n\nFor more information, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.smartmultiinput.SmartMultiInput) and the [Sample](https://ui5.sap.com/#/entity/sap.ui.comp.smartmultiinput.SmartMultiInput).\n\n\n\n<a name=\"loio5644169deb76438f800f269b0cb715fc__section_xs2_lfm_l2b\"/>\n\n## Details\n\n**Implementation**\n\n-   You can create a `SmartMultiInput` control inside a [smart field](smart-field-4864403.md) or a [smart form](smart-form-99e33bd.md) control. For an example of smart multi input fields inside a smart form, see the [samples](https://ui5.sap.com/#/entity/sap.ui.comp.smartmultiinput.SmartMultiInput) in the Demo Kit.\n\n\n**Data Binding**\n\n-   Smart multi input fields and comboboxes support three modes of data binding: two-way binding, one-way binding, and one-time binding. To learn more about binding modes, see [Data Binding](../04_Essentials/data-binding-68b9644.md).\n\n-   The OData entity property that is displayed in the smart multi input field or combobox can be defined in the parent control's `value` property. When any of the data binding modes is used, the `value` property should be bound to a navigation property. When no data binding is used, the `value` property can be bound to an arbitrary property of the entity set specified in the parent control's `entitySet` property.\n\n\n",
+  "excerpt": "<!-- loio5644169deb76438f800f269b0cb715fc --> Smart Multi Input The SmartMultiInput control can be used to create a multi-input field or a multi-input combobox. <a name=\"loio5644169deb76438f800f269b0c...",
+  "wordCount": 250,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

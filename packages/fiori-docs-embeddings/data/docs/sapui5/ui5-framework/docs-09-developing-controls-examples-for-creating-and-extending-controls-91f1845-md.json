@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-examples-for-creating-and-extending-controls-91f1845-md",
+  "title": "Examples for Creating and Extending Controls",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/examples-for-creating-and-extending-controls-91f1845.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Examples",
+    "for",
+    "Creating",
+    "and",
+    "Extending",
+    "Controls"
+  ],
+  "headers": [
+    "Examples for Creating and Extending Controls"
+  ],
+  "content": "<!-- loio91f184586f4d1014b6dd926db0e91070 -->\n\n# Examples for Creating and Extending Controls\n\nExamples how to create and extend controls in SAPUI5.\n\nTo create a new control type, you extend the `sap.ui.core.Control` class, and define the control API and the implementation from scratch.\n\n",
+  "excerpt": "<!-- loio91f184586f4d1014b6dd926db0e91070 --> Examples for Creating and Extending Controls Examples how to create and extend controls in SAPUI5. To create a new control type, you extend the sap.ui.cor...",
+  "wordCount": 41,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

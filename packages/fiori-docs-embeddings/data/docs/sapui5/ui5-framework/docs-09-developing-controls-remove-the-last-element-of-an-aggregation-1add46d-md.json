@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-09-developing-controls-remove-the-last-element-of-an-aggregation-1add46d-md",
+  "title": "Remove the Last Element of an Aggregation",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/remove-the-last-element-of-an-aggregation-1add46d.md",
+  "lastModified": "2025-09-01T18:17:10.683Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Remove",
+    "the",
+    "Last",
+    "Element",
+    "Aggregation"
+  ],
+  "headers": [
+    "Remove the Last Element of an Aggregation"
+  ],
+  "content": "<!-- loio1add46d522fa4ed28b06b8f2bc27f2bb -->\n\n# Remove the Last Element of an Aggregation\n\nHow to remove the last element of an aggregation.\n\nBy default, the last element of an aggregation can't be removed.\n\nIf you want to allow the removal of the last element, you can provide the parameter `removeLastElement` in the design time of the control that contains the aggregation.\n\nHere's an example:\n\n> ### Sample Code:  \n> <control\\>.designtime.js\n> \n> ```\n> sap.ui.define([\"sap/ui/core/Lib\"], function(Lib) {\n>     \"use strict\";\n>     return {\n>         aggregations: {\n>             headerContent: {\n>                 childNames: {\n>                     singular: function(){\n>                         return Lib.getResourceBundleFor(\"sap.uxap\").getText(\"HEADER_CONTROL_NAME\");\n>                     }\n>                 },\n>                 actions: {\n>                     remove: {\n>                         removeLastElement: true\n>                     }\n>                 }\n> \n>             }\n>         }\n>     };\n> });\n> ```\n\n",
+  "excerpt": "<!-- loio1add46d522fa4ed28b06b8f2bc27f2bb --> Remove the Last Element of an Aggregation How to remove the last element of an aggregation. By default, the last element of an aggregation can't be remove...",
+  "wordCount": 125,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

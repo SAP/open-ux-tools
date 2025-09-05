@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-test-initflpsandbox-js",
+  "title": "initFlpSandbox",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/test/initFlpSandbox.js",
+  "lastModified": "2025-09-01T18:17:10.818Z",
+  "tags": [
+    "samples",
+    "js",
+    "initFlpSandbox"
+  ],
+  "headers": [],
+  "content": "# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.md\n\n```javascript\n# initFlpSandbox.js\n\n```javascript\nsap.ui.define([\n\t\"./flpSandbox\",\n\t\"sap/ui/fl/FakeLrepConnectorLocalStorage\",\n\t\"sap/m/MessageBox\"\n], function (flpSandbox, FakeLrepConnectorLocalStorage, MessageBox) {\n\t\"use strict\";\n\n\tflpSandbox.init().then(function () {\n\t\tFakeLrepConnectorLocalStorage.enableFakeConnector();\n\t}, function (oError) {\n\t\tMessageBox.error(oError.message);\n\t});\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "initFlpSandbox.md javascript initFlpSandbox.md javascript initFlpSandbox.md javascript initFlpSandbox.md javascript initFlpSandbox.js",
+  "wordCount": 59,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

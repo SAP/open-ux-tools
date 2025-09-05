@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-02-read-me-first-supported-library-combinations-363cd16-md",
+  "title": "Supported Library Combinations",
+  "category": "ui5-framework",
+  "path": "docs/02_Read-Me-First/supported-library-combinations-363cd16.md",
+  "lastModified": "2025-09-01T18:17:10.438Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Supported",
+    "Library",
+    "Combinations"
+  ],
+  "headers": [
+    "Supported Library Combinations"
+  ],
+  "content": "<!-- loio363cd16eba1f45babe3f661f321a7820 -->\n\n# Supported Library Combinations\n\nSAPUI5 provides a set of JavaScript and CSS libraries, which can be combined in an application using the combinations that are supported.\n\n\n\nIn general, most library combinations are supported. However, restrictions apply for the following libraries:\n\n-   `sap.ui.commons` \\(deprecated\\)\n\n-   `sap.ui.richtexteditor`\\*\n\n-   `sap.ui.suite` \\(deprecated\\)\n\n-   `sap.ui.ux3` \\(deprecated\\)\n\n\nThese libraries can **only** be used in combination with the following libraries:\n\n\n\n-   `sap.ui.core`\n\n-   `sap.ui.layout`\n\n-   `sap.ui.unified`\n\n-   `sap.ui.table`\n\n-   `sap.viz`\n\n\n\n\n\\*Combinations between `sap.m` and `sap.ui.richtexteditor` are allowed only for desktop apps. If your use case requires it and you have enabled the mobile theme, see the [sap.ui.richtexteditor.RichTextEditor](../10_More_About_Controls/sap-ui-richtexteditor-richtexteditor-d4f3f15.md) documentation.\n\n**Related Information**  \n\n\n[Deprecated Themes and Libraries](deprecated-themes-and-libraries-a87ca84.md \"As SAPUI5 evolves over time, some of the UI controls are replaced by others, or their concepts abandoned entirely. This chapter gives an overview of the most important deprecations at theme and library level. Individual control deprecations and more information about the controls replacing them can be found in the API reference within the Demo Kit.\")\n\n",
+  "excerpt": "<!-- loio363cd16eba1f45babe3f661f321a7820 --> Supported Library Combinations SAPUI5 provides a set of JavaScript and CSS libraries, which can be combined in an application using the combinations that ...",
+  "wordCount": 167,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

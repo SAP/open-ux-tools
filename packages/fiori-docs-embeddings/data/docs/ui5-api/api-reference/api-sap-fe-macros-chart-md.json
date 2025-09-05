@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-chart-md",
+  "title": "sap.fe.macros.chart",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.chart.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "chart"
+  ],
+  "headers": [
+    "sap.fe.macros.chart"
+  ],
+  "content": "# sap.fe.macros.chart\n\n**Type:** namespace\n\n",
+  "excerpt": "sap.fe.macros.chart Type: namespace",
+  "wordCount": 5,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

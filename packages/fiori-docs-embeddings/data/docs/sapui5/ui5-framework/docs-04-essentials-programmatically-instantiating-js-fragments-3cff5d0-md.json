@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-programmatically-instantiating-js-fragments-3cff5d0-md",
+  "title": "Programmatically Instantiating JS Fragments",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/programmatically-instantiating-js-fragments-3cff5d0.md",
+  "lastModified": "2025-09-01T18:17:10.536Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Programmatically",
+    "Instantiating",
+    "Fragments"
+  ],
+  "headers": [
+    "Programmatically Instantiating JS Fragments",
+    "Context"
+  ],
+  "content": "<!-- loio3cff5d0fa6754c0d9fdacd80653b81fb -->\n\n# Programmatically Instantiating JS Fragments\n\nFor each fragment type, SAPUI5 provides a method that can be used to programmatically instantiate a fragment.\n\n\n\n## Context\n\nTo give an example of a programmatic instantiation of a JS fragment, you first have to define one. The following code presents an example definition:\n\n```js\n// The fragment is available under the resource name \"my/useful/UiPartX.js\"\nsap.ui.define([\"sap/m/Button\"], function(Button) {\n\treturn {\n\t\tcreateContent: function(oController) {\n\t\t\tvar oButton  = new Button({\n\t\t\t\ttext: \"Hello World\" ,\n\t\t\t\tpress: oController.doSomething\n\t\t\t});\n\t\t\treturn oButton;\n\t\t}\n\t};\n});\n```\n\nThis fragment can be instantiated from a controller as follows:\n\n```js\n\nconst oMyButton = await this.loadFragment({\n\tname: \"module:my/useful/UiPartX\"\n});\n// oMyButton is now usable\n```\n\nThis button can now be used as if it had been created in a standard way.\n\n> ### Note:  \n> The `await` operator can only be used inside an `async` function. Please be aware that there are certain limitations in SAPUI5 when using `async` functions as event handlers. For more information, see [ECMAScript Support](../02_Read-Me-First/ecmascript-support-0cb44d7.md).\n\nFor fragments that are used several times, an ID for the fragment can be given optionally, see [Unique IDs](unique-ids-5da591c.md):\n\n```js\n\nconst oMyButton = await this.loadFragment({\n\tname: \"module:my/useful/UiPartX\",\n\tid: \"someId\"\n});\n// oMyButton is now usable\n```\n\nJS Fragments are capable of asynchronously creating their content. To do so, the `createContent()` function must return a Promise instead of just regular controls. This Promise then must resolve with the actual content controls.\n\n```js\n// fragment is located in a file named \"reuse/SampleFragment.js\"\nsap.ui.define([\"sap/ui/core/Fragment\", \"sap/m/Button\", \"heavy/work/SomeModule\"], function(Fragment, Button, SomeModule) {\n\treturn {\n\t\tasync createContent() {\n\t\t\treturn await SomeModule.doStuffAsync();\n\t\t}\n\t};\n});\n```\n\n",
+  "excerpt": "<!-- loio3cff5d0fa6754c0d9fdacd80653b81fb --> Programmatically Instantiating JS Fragments For each fragment type, SAPUI5 provides a method that can be used to programmatically instantiate a fragment. ...",
+  "wordCount": 268,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

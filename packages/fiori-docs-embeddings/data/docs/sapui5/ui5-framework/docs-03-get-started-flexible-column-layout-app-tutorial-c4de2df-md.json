@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-03-get-started-flexible-column-layout-app-tutorial-c4de2df-md",
+  "title": "Flexible Column Layout App Tutorial",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/flexible-column-layout-app-tutorial-c4de2df.md",
+  "lastModified": "2025-09-01T18:17:10.443Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Flexible",
+    "Column",
+    "Layout",
+    "App",
+    "Tutorial"
+  ],
+  "headers": [
+    "Flexible Column Layout App Tutorial",
+    "Preview"
+  ],
+  "content": "<!-- loioc4de2df385174e58a689d9847c7553bd -->\n\n# Flexible Column Layout App Tutorial\n\nIn this tutorial, we showcase how to structure your SAPUI5 app using the layout patterns that comply with the SAP Fiori design guidelines.\n\nThe app provides the following features:\n\n-   An up-to-three-column layout based on the `sap.f.FlexibleColumnLayout` control. This layout has predefined layout types and defined routing between them that enables smooth navigation between the list-detail and list-detail-detail patterns of the app.\n\n-   A list page based on the `sap.f.DynamicPage` control that lists the available products and has filtering and sorting options.\n\n-   A detail page based on the `sap.uxap.ObjectPageLayout` control containing detailed information about the selected object from the list page:\n\n    -   It implements the dynamic header of the `ObjectPageLayout` control.\n\n    -   The `sap.f.Avatar` control is used in the title area to display an image of the selected product.\n\n    -   The header title area can be collapsed \\(snapped to the title\\) by scrolling down the content of the page or by clicking/tapping the title area. The header area can also be pinned so that it remains visible when the user scrolls down the content of the page.\n\n    -   The title area has a set of actions on the right. The title area can display specific content when the header is snapped.\n\n    -   The floating footer is positioned at the bottom of the page, on top of the page content. It holds finalizing actions on the right.\n\n\n-   A detail-detail page based on `sap.f.DynamicPage` to display further details of the selected object from the detail page.\n\n-   A simple about page based on `sap.f.DynamicPage` to display further details of the selected object from the detail-detail page.\n\n\n\n\n<a name=\"loioc4de2df385174e58a689d9847c7553bd__section_d2n_dmw_mbb\"/>\n\n## Preview\n\n  \n  \n**list-detail-detail pattern with sap.f.FlexibleColumnLayout, sap.f.DynamicPage and sap.uxap.ObjectPageLayout**\n\n![](images/With_Semantic_Helper_Fiori_2_0_Tutorial_fd98e0d.gif \"list-detail-detail pattern with sap.f.FlexibleColumnLayout, sap.f.DynamicPage and\n\t\t\t\t\t\tsap.uxap.ObjectPageLayout\")\n\n\n\n> ### Tip:  \n> You don't have to do all tutorial steps sequentially, you can also jump directly to any step you want. Just download the code from the previous step, and start there.\n> \n> You can view and download the files for all steps in the Demo Kit at [Flexible Column Layout App](https://ui5.sap.com/#/entity/sap.f.tutorial.fcl). Copy the code to your workspace and make sure that the application runs by calling the `webapp/index.html` file. Depending on your development environment you might have to adjust resource paths and configuration entries.\n> \n> For more information check the [Downloading Code for a Tutorial Step](get-started-setup-tutorials-and-demo-apps-8b49fc1.md#loio8b49fc198bf04b2d9800fc37fecbb218__tutorials_download) section of the tutorials overview page [Get Started: Setup, Tutorials, and Demo Apps](get-started-setup-tutorials-and-demo-apps-8b49fc1.md).\n\n",
+  "excerpt": "<!-- loioc4de2df385174e58a689d9847c7553bd --> Flexible Column Layout App Tutorial In this tutorial, we showcase how to structure your SAPUI5 app using the layout patterns that comply with the SAP Fior...",
+  "wordCount": 409,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

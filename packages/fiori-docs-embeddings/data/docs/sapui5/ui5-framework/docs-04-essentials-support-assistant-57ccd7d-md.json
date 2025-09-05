@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-04-essentials-support-assistant-57ccd7d-md",
+  "title": "Support Assistant",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/support-assistant-57ccd7d.md",
+  "lastModified": "2025-09-01T18:17:10.546Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Support",
+    "Assistant"
+  ],
+  "headers": [
+    "Support Assistant",
+    "Goals",
+    "Getting Started",
+    "From a URL Parameter",
+    "From the Technical Information Dialog",
+    "Persisting Rules and Settings",
+    "Features"
+  ],
+  "content": "<!-- loio57ccd7d7103640e3a187ed55e1d2c163 -->\n\n# Support Assistant\n\nThe Support Assistant enables developers to check whether their apps are built according to the SAPUI5 best practices and guidelines.\n\n\n\n## Goals\n\nThe tool aims to reduce maintenance and consulting times and to streamline SAPUI5 app development. It uses a set of predefined rules to check all aspects of an application, for example, accessibility, performance, data binding, usability. With a simple click, you can check the current state of your app. After execution, you can analyze the results and apply corrective measures based on the outcome.\n\nCheck out the Support Assistant highlights video for an overview of its main functionalities:\n\n\n\n\n\n## Getting Started\n\nThe Support Assistant can be started using a URL or a Technical Information Dialog.\n\n\n\n### From a URL Parameter\n\nThe Support Assistant is enabled with the following URL parameter: `sap-ui-support=true`. The tool then appears as a toolbar in the footer of the app.\n\n> ### Tip:  \n> If you want to run the Support Assistant in a separate window, use the parameter `sap-ui-support=true,window` \n\n  \n  \n**Support Assistant Toolbar**\n\n![](images/Support_Assistant_Toolbar_c9ec61c.png \"Support Assistant Toolbar \")\n\n\n\n### From the Technical Information Dialog\n\nYou can also start the Support Assistant from the Technical Information Dialog.\n\n1.  Open the Technical Information Dialog by using the following [shortcut](../02_Read-Me-First/keyboard-shortcuts-for-sapui5-tools-154844c.md): [Ctrl\\] + [Shift\\] + [Left-Alt\\] /[Left-Option\\] + [P\\]  \n\n2.  Choose *Activate Support Assistant*.\n\n\nStarting the Support Assistant from here allows you to run it with a different SAPUI5 version. You can find more details on this topic in [Running the Support Assistant on an Older SAPUI5 Version](running-the-support-assistant-on-an-older-sapui5-version-473201b.md).\n\nSelecting *Rules* will show you the available rulesets. You can then select your rules and start the analysis of the app.\n\n\n\n<a name=\"loio57ccd7d7103640e3a187ed55e1d2c163__section_zxz_jh3_rz\"/>\n\n## Persisting Rules and Settings\n\nAll scopes and temporary rules can be stored in the local storage of your browser. This will allow you to continue with your work even after you have closed the browser window. To enable this feature, choose *Settings* \\(![](images/AS-Settings-Button_24b9cee.png)\\) on the banner and select the checkbox *I agree to use local storage persistency for*.\n\n> ### Tip:  \n> You can delete your already persisted data by choosing *Delete Persisted Data*.\n\n\n\n## Features\n\n-   To learn more about rules and rule management see: [Rules Management](rules-management-3fc864a.md)\n\n-   To learn more about result processing and reporting see: [Results and Analysis](results-and-analysis-f09fab1.md)\n\n-   To learn more about creating your own rules see: [Rule Development Guide](rule-development-guide-cd356da.md)\n\n\n**Related Information**  \n\n\n[Step 3: Support Assistant](../03_Get-Started/step-3-support-assistant-35f08e1.md \"In this tutorial step, we will have a closer look at Support Assistant. You can use this tool to check whether your app is built according to the best practices with predefined rules.\")\n\n",
+  "excerpt": "<!-- loio57ccd7d7103640e3a187ed55e1d2c163 --> Support Assistant The Support Assistant enables developers to check whether their apps are built according to the SAPUI5 best practices and guidelines. Go...",
+  "wordCount": 434,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

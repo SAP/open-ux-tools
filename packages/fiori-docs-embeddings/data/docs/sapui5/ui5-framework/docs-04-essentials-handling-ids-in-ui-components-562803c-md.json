@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-handling-ids-in-ui-components-562803c-md",
+  "title": "Handling IDs in UI Components",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/handling-ids-in-ui-components-562803c.md",
+  "lastModified": "2025-09-01T18:17:10.517Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Handling",
+    "IDs",
+    "Components"
+  ],
+  "headers": [
+    "Handling IDs in UI Components"
+  ],
+  "content": "<!-- loio562803c6f55c49608d01a453cc0590ab -->\n\n# Handling IDs in UI Components\n\nComponents are usually used with a root view and in this case, the component handles the prefixing of IDs of views, elements, or controls, with the component ID.\n\nThis works similar to the prefixing of control IDs in XML views, see [Support for Unique IDs](support-for-unique-ids-91f28be.md). However, if you implement your own `createContent` function, you need to handle this yourself. The following two options exist:\n\n-   Set the `sap.ui5/autoPrefixId` attribute in the `manifest.json` file to `true`. This is the easiest option.\n\n-   Use the `createId` function of the UI component to prefix the respective ID of a view, element, or control yourself.\n\n\nUse the `byId` function of the UI component to retrieve the views, controls, and elements that have been created in a UI component.\n\n",
+  "excerpt": "<!-- loio562803c6f55c49608d01a453cc0590ab --> Handling IDs in UI Components Components are usually used with a root view and in this case, the component handles the prefixing of IDs of views, elements...",
+  "wordCount": 134,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

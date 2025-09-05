@@ -1,0 +1,32 @@
+{
+  "id": "btp-fiori-tools-docs-generating-an-application-additional-configuration-adding-an-sap-fiori-application-to-an-mta-deployment-file-with-5a17ba6-md",
+  "title": "Adding an SAP Fiori Application to an MTA Deployment File with the SAP Fiori Application Generator",
+  "category": "fiori-tools",
+  "path": "docs/Generating-an-Application/Additional-Configuration/adding-an-sap-fiori-application-to-an-mta-deployment-file-with-5a17ba6.md",
+  "lastModified": "2025-09-01T18:17:10.148Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Adding",
+    "SAP",
+    "Fiori",
+    "Application",
+    "MTA",
+    "Deployment",
+    "File",
+    "with",
+    "the",
+    "Generator"
+  ],
+  "headers": [
+    "Adding an SAP Fiori Application to an MTA Deployment File with the SAP Fiori Application Generator",
+    "Adding Deployment Configuration to an Existing MTA Deployment File",
+    "Creating an MTA Deployment File during Application Generation"
+  ],
+  "content": "<!-- loio5a17ba6b62b2462aa0e25ffae7b8d728 -->\n\n# Adding an SAP Fiori Application to an MTA Deployment File with the SAP Fiori Application Generator\n\n<a name=\"loiod7525cef6f6c4aa4acf3ec09c5a8eacb\"/>\n\n<!-- loiod7525cef6f6c4aa4acf3ec09c5a8eacb -->\n\n## Adding Deployment Configuration to an Existing MTA Deployment File\n\nWhen the user selects a project folder path for an application and an MTA file already exists in the selected folder, the SAP Fiori application generator automatically switches to *Yes* for adding deployment configuration. During the generation of an application, the generator updates the MTA project file by default with the supplied deployment configuration.\n\n![](images/Project_Attributes_0a9056f.png)\n\n> ### Note:  \n> For successful deployment of the generated application, the MTA file must already have the required services defined, depending on whether the application has to be deployed by using the managed, Application Frontend service, or standalone application router. To ensure the required services are added to the MTA deployment file, use the MTA generator provided by SAP Fiori tools or the Application Router generator in SAP Business Application Studio. For more information, see [Generating an MTA Deployment File](generating-an-mta-deployment-file-9c41152.md).\n\n> ### Note:  \n> For local CAP projects, you can optionally chose to generate an instance based destination as part of CF deployment configuration, or use an existing instance based destination that is already defined in your MTA deployment file.\n\n<a name=\"loioe03f08cfec9e44e59da828542cbaf906\"/>\n\n<!-- loioe03f08cfec9e44e59da828542cbaf906 -->\n\n## Creating an MTA Deployment File during Application Generation\n\nIf the MTA deployment file is not available in the project folder location, you can create a new file. To do so, when adding deployment configuration, select *Cloud Foundry* as the target landscape. In this case, the relevant MTA file to be used with a managed application router will be added to the same folder as your generated SAP Fiori application.\n\n> ### Note:  \n> In this scenario, the generated MTA file is not applicable for use with multiple applications, as it is contained in the same folder as the SAP Fiori application. We recommend that you first create the MTA file and then generate the SAP Fiori application in a subfolder.\n\n",
+  "excerpt": "<!-- loio5a17ba6b62b2462aa0e25ffae7b8d728 --> Adding an SAP Fiori Application to an MTA Deployment File with the SAP Fiori Application Generator <a name=\"loiod7525cef6f6c4aa4acf3ec09c5a8eacb\"/> <!-- l...",
+  "wordCount": 338,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

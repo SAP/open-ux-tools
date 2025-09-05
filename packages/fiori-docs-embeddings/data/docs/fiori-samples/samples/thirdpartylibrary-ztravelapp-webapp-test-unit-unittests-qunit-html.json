@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-test-unit-unittests-qunit-html",
+  "title": "unitTests.qunit",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/test/unit/unitTests.qunit.html",
+  "lastModified": "2025-09-01T18:17:10.818Z",
+  "tags": [
+    "samples",
+    "html",
+    "unitTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.md\n\n```html\n# unitTests.qunit.html\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n\t<meta charset=\"utf-8\">\n\t<title>Unit tests for ztest.docapp1.ztravel</title>\n\t<script\n\t\tid=\"sap-ui-bootstrap\"\n\t\tsrc=\"../../resources/sap-ui-core.js\"\n\t\tdata-sap-ui-resourceroots='{\n\t\t\t\"ztestdocapp1/ztravel\": \"../../\",\n\t\t\t\"unit\": \".\"\n\t\t}'\n\t\tdata-sap-ui-async=\"true\"\n\t\tdata-sap-ui-oninit=\"module:unit/unitTests.qunit\">\n\t</script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../../resources/sap/ui/thirdparty/qunit-2.css\">\n\t<script src=\"../../resources/sap/ui/thirdparty/qunit-2.js\"></script>\n\t<script src=\"../../resources/sap/ui/qunit/qunit-junit.js\"></script>\n\t<script src=\"../../resources/sap/ui/qunit/qunit-coverage.js\"></script>\n\t<script src=\"../../resources/sap/ui/thirdparty/sinon.js\"></script>\n\t<script src=\"../../resources/sap/ui/thirdparty/sinon-qunit.js\"></script>\n</head>\n<body>\n\t<div id=\"qunit\"></div>\n\t<div id=\"qunit-fixture\"></div>\n</body>\n</html>\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "unitTests.qunit.md html unitTests.qunit.md html unitTests.qunit.md html unitTests.qunit.md html unitTests.qunit.html",
+  "wordCount": 80,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

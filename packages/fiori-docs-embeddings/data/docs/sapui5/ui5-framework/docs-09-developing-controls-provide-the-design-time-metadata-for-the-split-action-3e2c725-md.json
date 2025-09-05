@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-09-developing-controls-provide-the-design-time-metadata-for-the-split-action-3e2c725-md",
+  "title": "Provide the Design-Time Metadata for the *Split* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/provide-the-design-time-metadata-for-the-split-action-3e2c725.md",
+  "lastModified": "2025-09-01T18:17:10.682Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Provide",
+    "the",
+    "Design",
+    "Time",
+    "Metadata",
+    "for",
+    "Split",
+    "Action"
+  ],
+  "headers": [
+    "Provide the Design-Time Metadata for the *Split* Action"
+  ],
+  "content": "<!-- loio3e2c725947574016bf145406fa2876c4 -->\n\n# Provide the Design-Time Metadata for the *Split* Action\n\nProvide the design-time metadata for the *split* action.\n\nTo provide the design-time information needed for the *split* action, use the file `<control>.designtime.js` file, which is located next to the control implementation in the Git directory structure. Create the file if it's missing. Ensure that the `designTime` attribute in the metadata of the control is set. For more information, see [Enable a Control for Design-Time Usage](enable-a-control-for-design-time-usage-6888c17.md).\n\nThe following table shows a hierarchical overview of the properties:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 1\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 2\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 3\\)\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"6\">\n\n`actions: <object>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nDescribes the actions that can be applied to the element.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"5\">\n\n`\"split\": <object> | <function>`\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nProvides or calculates the design-time metadata specific to the *remove* action for an element as an object with the following properties.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`changeType: <string>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\nProvides the value of `changeType` from the previous step.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`changeOnRelevantContainer: <boolean>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\nHas to be set to `true`. This property is needed for setting of the selector to the relevant container.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`isEnabled: <function> |<boolean>` \\(optional\\)\n\n</td>\n<td valign=\"top\">\n\nDefault is `true`. The `isEnabled` value or function is used to decide whether the *Split* action is available in SAPUI5 flexibility. You get the selected SAPUI5 element as a function parameter.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`getControlsCount: <integer>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\nProvides the number of controls inside the selected container to be split.\n\n</td>\n</tr>\n</table>\n\nHere's an example:\n\n> ### Sample Code:  \n> `GroupElement.designtime.js` \n> \n> ```\n> sap.ui.define([], function() {\n>     \"use strict\";\n>     const fnGetControlsCount = function(oSelectedElement) {\n>         if (oSelectedElement.getFields && oSelectedElement.getFields()) {\n>             return oSelectedElement.getFields().length;\n>         }\n>         return 0;\n>     };\n> \n>     return {\n>         actions: {\n>             split: {\n>                 changeType: \"splitField\",\n>                 changeOnRelevantContainer: true,\n>                 getControlsCount: function(oGroupElement) {\n>                     return fnGetControlsCount(oGroupElement);\n>                 }\n>             }\n>         }\n>     };\n> });\n> ```\n\n",
+  "excerpt": "<!-- loio3e2c725947574016bf145406fa2876c4 --> Provide the Design-Time Metadata for the Split Action Provide the design-time metadata for the split action. To provide the design-time information needed...",
+  "wordCount": 374,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

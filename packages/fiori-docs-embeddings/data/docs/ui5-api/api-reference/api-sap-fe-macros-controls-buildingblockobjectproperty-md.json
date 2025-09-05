@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-controls-buildingblockobjectproperty-md",
+  "title": "sap.fe.macros.controls.BuildingBlockObjectProperty",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.controls.BuildingBlockObjectProperty.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "controls",
+    "BuildingBlockObjectProperty"
+  ],
+  "headers": [
+    "sap.fe.macros.controls.BuildingBlockObjectProperty"
+  ],
+  "content": "# sap.fe.macros.controls.BuildingBlockObjectProperty\n\n<p>Base class for building block complex object properties that can be serialized to XML.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/controls/BuildingBlockObjectProperty\n\n",
+  "excerpt": "sap.fe.macros.controls.BuildingBlockObjectProperty <p>Base class for building block complex object properties that can be serialized to XML.</p> Type: class Module: sap/fe/macros/controls/BuildingBloc...",
+  "wordCount": 21,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

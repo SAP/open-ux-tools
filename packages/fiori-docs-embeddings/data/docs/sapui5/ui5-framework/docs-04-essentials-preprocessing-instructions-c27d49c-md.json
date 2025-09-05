@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-04-essentials-preprocessing-instructions-c27d49c-md",
+  "title": "Preprocessing Instructions",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/preprocessing-instructions-c27d49c.md",
+  "lastModified": "2025-09-01T18:17:10.535Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Preprocessing",
+    "Instructions"
+  ],
+  "headers": [
+    "Preprocessing Instructions"
+  ],
+  "content": "<!-- loioc27d49caa48e424eb75391ae85da2134 -->\n\n# Preprocessing Instructions\n\nPreprocessing intructions are processed by the XML preprocessor when it traverses the view's `XML DOM`.\n\n> ### Note:  \n> A model name can be seen as a variable with a value that consists of two parts: a model instance and a binding context path.\n\nYou can base conditions on the available variables. XML attributes that represent an available binding are replaced automatically.\n\n",
+  "excerpt": "<!-- loioc27d49caa48e424eb75391ae85da2134 --> Preprocessing Instructions Preprocessing intructions are processed by the XML preprocessor when it traverses the view's XML DOM. > Note:   > A model name ...",
+  "wordCount": 69,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

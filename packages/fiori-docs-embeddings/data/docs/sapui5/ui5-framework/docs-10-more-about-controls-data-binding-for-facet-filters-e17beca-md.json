@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-data-binding-for-facet-filters-e17beca-md",
+  "title": "Data Binding for Facet Filters",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/data-binding-for-facet-filters-e17beca.md",
+  "lastModified": "2025-09-01T18:17:10.687Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Data",
+    "Binding",
+    "for",
+    "Facet",
+    "Filters"
+  ],
+  "headers": [
+    "Data Binding for Facet Filters"
+  ],
+  "content": "<!-- loioe17becae8bf446ac92f169b726373f0a -->\n\n# Data Binding for Facet Filters\n\n`FacetFilter` fully supports the SAPUI5 data binding concept.\n\nAs the information for the facet filter usually resides in the application backend, data binding is commonly used to populate the `FacetFilter` properties and aggregations.\n\nApplications using OData do not bind the `FacetFilterItem.selected` property since this is not available from the backend service. Fortunately, selections are maintained internally on the client by the `FacetFilterList` until the list is destroyed.\n\n**Related Information**  \n\n\n[Facet Filter Selection](facet-filter-selection-ef860fc.md \"The FacetFilterList.getSelectedItems() method returns a copy of each selected facet filter item. You use the method to get the selected filter items when filtering the target data set. Therefore, you should not attempt to modify any of the item's properties.\")\n\n",
+  "excerpt": "<!-- loioe17becae8bf446ac92f169b726373f0a --> Data Binding for Facet Filters FacetFilter fully supports the SAPUI5 data binding concept. As the information for the facet filter usually resides in the ...",
+  "wordCount": 122,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

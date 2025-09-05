@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-unit-testing-with-qunit-09d145c-md",
+  "title": "Unit Testing with QUnit",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/unit-testing-with-qunit-09d145c.md",
+  "lastModified": "2025-09-01T18:17:10.551Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Unit",
+    "Testing",
+    "with",
+    "QUnit"
+  ],
+  "headers": [
+    "Unit Testing with QUnit",
+    "Why Does SAPUI5 Use QUnit Tests?"
+  ],
+  "content": "<!-- loio09d145cd86ee4f8e9d08715f1b364c51 -->\n\n# Unit Testing with QUnit\n\nQUnit is a powerful, easy-to-use JavaScript unit testing framework. It is used by the jQuery, jQuery UI and jQuery Mobile projects and is capable of testing any generic JavaScript code. It supports asynchronous tests out-of-the-box.\n\n> ### Note:  \n> Before you begin setting up a QUnit test environment, read the background information and introduction to the QUnit test API itself, which is available on the external web site `http://api.qunitjs.com/`. This official QUnit documentation features a complete description of the QUnit test API and contains many examples.\n\n\n\n## Why Does SAPUI5 Use QUnit Tests?\n\nQUnit tests provide good support for asynchronous testing. These types of tests are often needed for UI functional tests, for example if you have to wait until rendering is done, animations are complete, or a backend call returns. In addition, a QUnit test page can be executed standalone in the browser without the need of an additional \"tool\". This makes the creation and execution of single QUnit tests much easier. Finally, QUnit is closely related to jQuery, which is also a fundamental part of SAPUI5.\n\n",
+  "excerpt": "<!-- loio09d145cd86ee4f8e9d08715f1b364c51 --> Unit Testing with QUnit QUnit is a powerful, easy-to-use JavaScript unit testing framework. It is used by the jQuery, jQuery UI and jQuery Mobile projects...",
+  "wordCount": 187,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

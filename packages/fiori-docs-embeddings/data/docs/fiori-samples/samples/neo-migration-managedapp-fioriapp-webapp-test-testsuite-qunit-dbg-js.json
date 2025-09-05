@@ -1,0 +1,21 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-testsuite-qunit-dbg-js",
+  "title": "testsuite.qunit dbg",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/testsuite.qunit-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "testsuite",
+    "qunit",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit dbg.md\n\n```javascript\n# testsuite.qunit-dbg.js\n\n```javascript\nwindow.suite = function() {\n\t\"use strict\";\n\n\tvar oSuite = new parent.jsUnitTestSuite(),\n\t\tsContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\"/\") + 1);\n\n\toSuite.addTestPage(sContextPath + \"unit/unitTests.qunit.html\");\n\toSuite.addTestPage(sContextPath + \"integration/opaTests.qunit.html\");\n\n\treturn oSuite;\n};\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "testsuite.qunit dbg.md javascript testsuite.qunit dbg.md javascript testsuite.qunit dbg.md javascript testsuite.qunit dbg.md javascript testsuite.qunit-dbg.js",
+  "wordCount": 70,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

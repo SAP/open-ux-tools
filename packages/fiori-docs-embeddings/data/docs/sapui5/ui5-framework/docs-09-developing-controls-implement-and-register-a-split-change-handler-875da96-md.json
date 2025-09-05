@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-implement-and-register-a-split-change-handler-875da96-md",
+  "title": "Implement and Register a *Split* Change Handler",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/implement-and-register-a-split-change-handler-875da96.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Implement",
+    "and",
+    "Register",
+    "Split",
+    "Change",
+    "Handler"
+  ],
+  "headers": [
+    "Implement and Register a *Split* Change Handler"
+  ],
+  "content": "<!-- loio875da96a6a034bdf9181ca8cc17bed25 -->\n\n# Implement and Register a *Split* Change Handler\n\nImplement and register a *split* change type with its change handler to the control.\n\nTo ensure that you can enable different controls with different behaviors for the *split* action, there's no default change handler for this action. You have to implement your own change handler for splitting controls \\(see [Writing a Custom Change Handler](writing-a-custom-change-handler-6a346a2.md)\\).\n\nThe change handler gets the following change-specific information from SAPUI5 flexibility:\n\n> ### Sample Code:  \n> Change-specific info for the *split* action\n> \n> ```\n> {\n>     newElementIds : <array of strings which are the unique ids for the new controls to be created>\n>     sourceControlId : <control ID, which should be splitted>\n>     parentId : <parent control ID>\n> }\n> ```\n\nFind a full example on GitHub at [https://github.com/SAP/openui5/blob/master/src/sap.m/src/sap/m/changeHandler/SplitMenuButton.js](https://github.com/SAP/openui5/blob/master/src/sap.m/src/sap/m/changeHandler/SplitMenuButton.js).\n\nYou can then register it in the `library.js` file of the control's library, where you map the change type to the corresponding change handler and the control type. For more information, see [Registering Change Handlers for UI Changes](registering-change-handlers-for-ui-changes-d5f4de8.md).\n\nHere's an example:\n\n> ### Sample Code:  \n> Snippet of `library.js`\n> \n> ```\n> sap.ui.define(['sap/ui/core/Lib'], function(Library) {\n>     Library.init({\n>         extensions: {\n>             flChangeHandlers: {\n>                 \"sap.ui.comp.smartform.SmartForm\": {\n>                     \"splitField\": \"sap/ui/comp/smartform/flexibility/changes/SplitField\",\n>                 }\n>             }\n>         }\n>   });\n> });\n> ```\n\n",
+  "excerpt": "<!-- loio875da96a6a034bdf9181ca8cc17bed25 --> Implement and Register a Split Change Handler Implement and register a split change type with its change handler to the control. To ensure that you can en...",
+  "wordCount": 220,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

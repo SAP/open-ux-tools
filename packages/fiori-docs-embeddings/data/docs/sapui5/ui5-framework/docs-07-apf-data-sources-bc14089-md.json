@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-07-apf-data-sources-bc14089-md",
+  "title": "Data Sources",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/data-sources-bc14089.md",
+  "lastModified": "2025-09-01T18:17:10.666Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Data",
+    "Sources"
+  ],
+  "headers": [
+    "Data Sources"
+  ],
+  "content": "<!-- loiobc1408934c7a44189feb8b6329a8e16f -->\n\n# Data Sources\n\nAPF consumes OData services. These OData services can be based on different data sources:\n\n-   Calculation views\n\n-   ABAP CDS views\n\n-   BW OData queries\n\n\nWhen you use **calculation views**, APF and the APF Configuration Modeler only support the consumption of OData Version 2.0 services provided on SAP HANA extended application services \\(SAP HANA XS\\).\n\nAll required OData services must exist and must fulfill the following requirements:\n\n-   The service definition must contain:\n\n    ```\n    annotations {\n        enable OData4SAP;\n    }\n    ```\n\n-   For each entity set you must specify the key words \"aggregates always\".\n\n    In addition, for each entity set that corresponds to an analytical query view, the statement \"keys generate local\" must be included.\n\n    Example:\n\n    ```\n    service  {\n        \"sap.hba.ecc/YearMonthQuery.calculationview\" as \"YearMonthQueryResults\"\n            keys generate local \"GenID\"       \n            aggregates always;\n    }\n    ```\n\n\nWhen you use **ABAP CDS views**, SAP HANA XS is not required. ABAP CDS views are exposed using the SADL framework and SAP NetWeaver Gateway.\n\nFor more information about CDS views, go to SAP Help Portal at [http://help.sap.com/](http://help.sap.com/) and search for \"ABAP CDS Entitiy\".\n\n**BW OData queries** are required when you use APF in SAP BW on SAP HANA. For more information about BW OData queries, search for \"Creating Easy Queries and Creating OData Queries: A Comparison\" in the documentation for your SAP NetWeaver version on the SAP Help Portal at [https://help.sap.com/viewer/p/SAP\\_NETWEAVER](https://help.sap.com/viewer/p/SAP_NETWEAVER).\n\n",
+  "excerpt": "<!-- loiobc1408934c7a44189feb8b6329a8e16f --> Data Sources APF consumes OData services. These OData services can be based on different data sources: -   Calculation views -   ABAP CDS views -   BW ODa...",
+  "wordCount": 228,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

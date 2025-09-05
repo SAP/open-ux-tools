@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-example-applying-custom-logic-when-a-table-is-loaded-or-refreshed-382a6c3-md",
+  "title": "Example: Applying Custom Logic When a Table is Loaded or Refreshed",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/example-applying-custom-logic-when-a-table-is-loaded-or-refreshed-382a6c3.md",
+  "lastModified": "2025-09-01T18:17:10.616Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Example",
+    "Applying",
+    "Custom",
+    "Logic",
+    "When",
+    "Table",
+    "Loaded",
+    "Refreshed"
+  ],
+  "headers": [
+    "Example: Applying Custom Logic When a Table is Loaded or Refreshed",
+    "Context",
+    "Procedure"
+  ],
+  "content": "<!-- loio382a6c39fd494c12a4ee23c8659909bd -->\n\n# Example: Applying Custom Logic When a Table is Loaded or Refreshed\n\nThis example explains how to use an extension point if you want to apply custom logic when your table is being loaded or refreshed.\n\n\n\n<a name=\"loio382a6c39fd494c12a4ee23c8659909bd__context_m5j_yd2_scb\"/>\n\n## Context\n\n> ### Note:  \n> This topic is only applicable to SAP Fiori elements for OData V2.\n\n> ### Caution:  \n> Use app extensions with caution and only if you cannot produce the required behavior by other means, such as manifest settings or annotations. To correctly integrate your app extension coding with SAP Fiori elements, use only the `extensionAPI` of SAP Fiori elements. For more information, see [Using the extensionAPI](using-the-extensionapi-bd2994b.md).\n> \n> After you've created an app extension, its display \\(for example, control placement and layout\\) and system behavior \\(for example, model and binding usage, busy handling\\) lies within the application's responsibility. SAP Fiori elements provides support only for the official `extensionAPI` functions. Don't access or manipulate controls, properties, models, or other internal objects created by the SAP Fiori elements framework.\n\n\n\n## Procedure\n\n1.  Register your extension point in the `manifest.json` file.\n\n    > ### Sample Code:  \n    > ```\n    > \"sap.ui5\": {\n    >       ...\n    >       \"extends\": {\n    >               \"extensions\": {\n    >               ... \n    >                     \"sap.ui.controllerExtensions\": { \n    >                           ...\n    >                           \"sap.suite.ui.generic.template.ObjectPage.view.Details\": { \n    >                   ... \n    >                     \"controllerName\": \"STTA_MP.ext.controller.DetailsExtension\",\n    >                         ...\n    >                           }\n    >             } \n    >       ...\n    > ```\n\n2.  Implement your controller extension.\n\n    You have to implement a `onBeforeRebindTableExtension` function within the object page controller extension. Here, it is`DetailsExtension.controller.js`. If the object page has multiple tables, use the `tableId` to identify the specific table, as shown in the following sample code:\n\n    > ### Sample Code:  \n    > ```\n    > \n    > sap.ui.define([], function() {\n    >     return {\n    >         onBeforeRebindTableExtension: function(oEvent) {\n    >             var oID = oEvent.getSource().getId();\n    >             var tableId = \"STTA_MP::sap.suite.ui.generic.template.ObjectPage.view.Details::STTA_C_MP_Product--to_ProductText::com.sap.vocabularies.UI.v1.LineItem::Table\";\n    >             // to select only one specific table\n    >             switch (oID) {\n    >                 case tableId:\n    >                 // implement your logic for table 1 here\n    >                 ...\n    >                 break;\n    >             default :\n    >                 // implement your default logic for all others here\n    >                 ...\n    >                 return;\n    >             }\n    >         }\n    >         ...\n    >     }\n    > })\n    > \n    > ```\n\n\n",
+  "excerpt": "<!-- loio382a6c39fd494c12a4ee23c8659909bd --> Example: Applying Custom Logic When a Table is Loaded or Refreshed This example explains how to use an extension point if you want to apply custom logic w...",
+  "wordCount": 356,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

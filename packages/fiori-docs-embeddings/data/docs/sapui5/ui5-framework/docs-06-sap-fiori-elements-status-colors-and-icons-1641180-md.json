@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-status-colors-and-icons-1641180-md",
+  "title": "Status Colors and Icons",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/status-colors-and-icons-1641180.md",
+  "lastModified": "2025-09-01T18:17:10.652Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Status",
+    "Colors",
+    "and",
+    "Icons"
+  ],
+  "headers": [
+    "Status Colors and Icons",
+    "Additional Features in SAP Fiori Elements for OData V4"
+  ],
+  "content": "<!-- loio16411809012845a993198bc94c8a99a5 -->\n\n# Status Colors and Icons\n\nYou can define status colors and icons.\n\n\n\nThe UI annotations in CDS for `LineItem`, `Identification` and `FieldGroup` have an attribute in the corresponding fields that indicates how critical the field is using colors and icons. This attribute has to refer to another property, which contains the value of the criticality.\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotation Term=\"UI.LineItem\">\n>    <Collection>\n>       <Record Type=\"UI.DataField\">\n>          <PropertyValue Property=\"Criticality\" Path=\"to_ProductStock/StockCriticality\"/>\n>          <PropertyValue Property=\"Value\" Path=\"to_ProductStock/StockEmergencyLevel\"/>\n>          <Annotation Term=\"UI.Importance\" EnumMember=\"UI.ImportanceType/High\"/>\n>       </Record>\n>    </Collection>\n> </Annotation>\n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> @UI.lineItem: [\n>   {\n>     criticality: '_ProductStock.StockCriticality',\n>     value: '_ProductStock.StockEmergencyLevel',\n>     importance: #HIGH\n>   }\n> ]\n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> UI.LineItem : [\n>     {\n>         $Type : 'UI.DataField',\n>         Criticality : to_ProductStock.StockCriticality,\n>         Value : to_ProductStock.StockEmergencyLevel,\n>         ![@UI.Importance] : #High\n>     }\n> ]]\n> ```\n\n\n\nThe property containing the criticality can have the following values \\(derived from the complex type `CriticalityType` of the vocabulary `com.sap.vocabularies.UI.v1`\\):\n\n-   0 - Neutral\n\n-   1 - Negative \\(red\\)\n\n-   2 - Critical \\(orange\\)\n\n-   3 - Positive \\(green\\)\n\n-   > ### Note:  \n    > -   By default, SAP Fiori elements assumes that the `DataField` is also marked with \"CriticalityRepresentationType/WithIcon\" and sets the icon of the `ObjectStatus` appropriately \\(for example, for fields marked with \"com.sap.vocabularies.UI.v1.CriticalityType/Negative\", SAP Fiori elements sets the 'sap-icon://status-negative'\\).\n    > \n    > -   If the field is marked with \"CriticalityRepresentationType/WithoutIcon\", then the `ObjectStatus` is rendered without the icon.\n\n\nThe texts are not static, so you can change them to suit your needs by defining them in the criticality path. The following image shows examples of using these values in stock availability of products both in the list report and the object page:\n\n![](images/LROP_Status_Colors_and_Icons_75aa307.png)\n\n\n\n<a name=\"loio16411809012845a993198bc94c8a99a5__section_ut3_p5b_jpb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V4\n\nSAP Fiori elements for OData V4 also supports an additional criticality type for items that need the user's: attention: 5 - Information \\(blue\\).\n\n",
+  "excerpt": "<!-- loio16411809012845a993198bc94c8a99a5 --> Status Colors and Icons You can define status colors and icons. The UI annotations in CDS for LineItem, Identification and FieldGroup have an attribute in...",
+  "wordCount": 345,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

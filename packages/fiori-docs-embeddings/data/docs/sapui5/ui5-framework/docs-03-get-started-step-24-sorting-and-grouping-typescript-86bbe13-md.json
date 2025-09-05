@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-03-get-started-step-24-sorting-and-grouping-typescript-86bbe13-md",
+  "title": "Step 24: Sorting and Grouping \\(TypeScript\\)",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-24-sorting-and-grouping-typescript-86bbe13.md",
+  "lastModified": "2025-09-01T18:17:10.463Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Sorting",
+    "and",
+    "Grouping",
+    "TypeScript"
+  ],
+  "headers": [
+    "Step 24: Sorting and Grouping \\(TypeScript\\)",
+    "Preview",
+    "Coding",
+    "webapp/view/InvoiceList.view.xml",
+    "webapp/view/InvoiceList.view.xml"
+  ],
+  "content": "<!-- loio86bbe132b9924c8496b70824af94a209 -->\n\n# Step 24: Sorting and Grouping \\(TypeScript\\)\n\nTo make our list of invoices even more user-friendly, we sort it alphabetically instead of just showing the order from the data model. Additionally, we introduce groups and add the company that ships the products so that the data is easier to consume.\n\n\n\n## Preview\n\n  \n  \n**The list is now sorted and grouped by the shipping company**\n\n![A list of invoices is displayed](images/UI5_Walkthrough_Step_24_33f71b4.png \"The list is now sorted and grouped by the shipping company\")\n\n\n\n<a name=\"loio86bbe132b9924c8496b70824af94a209__section_sxl_41l_syb\"/>\n\n## Coding\n\nYou can view all files at [OpenUI5 TypeScript Walkthrough - Step 24: Sorting and Grouping](https://github.com/sap-samples/ui5-typescript-walkthrough/tree/main/steps/24) and [download the solution as a zip file](https://sap-samples.github.io/ui5-typescript-walkthrough/ui5-typescript-walkthrough-step-24.zip).\n\n\n\n<a name=\"loio86bbe132b9924c8496b70824af94a209__section_txl_41l_syb\"/>\n\n## webapp/view/InvoiceList.view.xml\n\nWe add a declarative sorter to the binding syntax of the list control. We transform the simple binding syntax to the object notation, specify the path to the data, and now add an additional `sorter` property. In the path of the sorter, we specify that the invoice items should be sorted by product name, and SAPUI5 will take care of the rest.\n\n```xml\n<mvc:View\n   controllerName=\"ui5.walkthrough.controller.InvoiceList\"\n   xmlns=\"sap.m\"\n   xmlns:mvc=\"sap.ui.core.mvc\">\n   <List\n      id=\"invoiceList\"\n      class=\"sapUiResponsiveMargin\"\n      width=\"auto\"\n      items=\"{\n         path : 'invoice>/Invoices',\n         sorter : {\n            path : 'ProductName' \n         }\n      }\" >\n      ...\n   </List>\n</mvc:View>\n```\n\nBy default, the sorting is ascending, but you could also add a property `descending` with the value `true` inside the sorter property to change the sorting order.\n\nIf we run the app now we can see a list of invoices sorted by the name of the products.\n\n\n\n## webapp/view/InvoiceList.view.xml\n\nWe modify the view and and change the sorter so the path addresses the `ShipperName` data field instead of `ProductName`. This groups the invoice items by the shipping company. In addition, we set the sorter attribute `group` to `true`.\n\nAs with the sorter, no further action is required. The list and the data binding features of SAPUI5 will do the trick to display group headers automatically and categorize the items in the groups.\n\n```xml\n<mvc:View\n    controllerName=\"ui5.walkthrough.controller.InvoiceList\"\n    xmlns=\"sap.m\"\n    xmlns:mvc=\"sap.ui.core.mvc\">\n    <List\n        id=\"invoiceList\"\n        headerText=\"{i18n>invoiceListTitle}\"\n        class=\"sapUiResponsiveMargin\"\n        width=\"auto\"\n        items=\"{\n            path : 'invoice>/Invoices',\n            sorter : {\n                path : 'ShipperName',\n                group : true\n            }\n\n        }\">\n        ...\n    </List>\n</mvc:View>\n```\n\nWe could define a custom group header factory if we wanted by setting the `groupHeaderFactory` property, but the result looks already fine.\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.model.Sorter`](https://ui5.sap.com/#/api/sap.ui.model.Sorter)\n\n[Sample: List - Grouping](https://ui5.sap.com/#/entity/sap.m.List/sample/sap.m.sample.ListGrouping)\n\n",
+  "excerpt": "<!-- loio86bbe132b9924c8496b70824af94a209 --> Step 24: Sorting and Grouping \\(TypeScript\\) To make our list of invoices even more user-friendly, we sort it alphabetically instead of just showing the o...",
+  "wordCount": 385,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

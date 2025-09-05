@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-defining-line-items-f0e1e17-md",
+  "title": "Defining Line Items",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/defining-line-items-f0e1e17.md",
+  "lastModified": "2025-09-01T18:17:10.600Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Defining",
+    "Line",
+    "Items"
+  ],
+  "headers": [
+    "Defining Line Items",
+    "Determining Column Names",
+    "More Information"
+  ],
+  "content": "<!-- loiof0e1e1743bef4f519c34025ad4351f77 -->\n\n# Defining Line Items\n\nTo define the line items of a table, use `com.sap.vocabularies.UI.v1.LineItem` as shown in the code samples below. The rendering result is as follows:\n\n  \n  \n**List Report: LineItem of Root EntitySet**\n\n![](images/ListReport_LineItem_69a7c44.png \"List Report: LineItem of Root EntitySet\")\n\n\n\n<a name=\"loiof0e1e1743bef4f519c34025ad4351f77__section_vmv_cyw_l4b\"/>\n\n## Determining Column Names\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> ...\n> <Annotation Term=\"UI.LineItem\">\n>   <Collection>\n>     <Record Type=\"UI.DataField\">\n>       <PropertyValue Property=\"Value\" Path=\"Product\"/>\n>       <Annotation Term=\"UI.Importance\" EnumMember=\"UI.ImportanceType/High\"/>\n>     </Record>\n>     <Record Type=\"UI.DataField\">\n>       <PropertyValue Property=\"Value\" Path=\"ProductCategory\"/>\n>       <Annotation Term=\"UI.Importance\" EnumMember=\"UI.ImportanceType/High\"/>\n>     </Record>\n>     <Record Type=\"UI.DataField\">\n>       <PropertyValue Property=\"Value\" Path=\"Supplier\"/>\n>       <Annotation Term=\"UI.Importance\" EnumMember=\"UI.ImportanceType/High\"/>\n>     </Record>\n>   </Collection>\n> </Annotation>\n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.lineItem: [\n>   {\n>     importance: #HIGH,\n>     value: 'PRODUCT',\n>     type: #STANDARD,\n>     position: 1 \n>   }\n> ]\n> PRODUCT;\n> \n> @UI.lineItem: [\n>   {\n>     importance: #HIGH,\n>     value: 'PRODUCTCATEGORY',\n>     type: #STANDARD,\n>     position: 2 \n>   }\n> ]\n> PRODUCTCATEGORY;\n> \n> @UI.lineItem: [\n>   {\n>     importance: #HIGH,\n>     value: 'SUPPLIER',\n>     type: #STANDARD,\n>     position: 3 \n>   }\n> ]\n> SUPPLIER;\n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> UI.LineItem : [\n>     {\n>         $Type : 'UI.DataField',\n>         Value : Product,\n>         ![@UI.Importance] : #High\n>     },\n>     {\n>         $Type : 'UI.DataField',\n>         Value : ProductCategory,\n>         ![@UI.Importance] : #High\n>     },\n>     {\n>         $Type : 'UI.DataField',\n>         Value : Supplier,\n>         ![@UI.Importance] : #High\n>     }\n> ]\n> \n> ```\n\n\n\n## More Information\n\nFor information about adding actions for line items, see [Adding Actions to Tables](adding-actions-to-tables-b623e0b.md).\n\nFor information about responsiveness options in tables, see [Responsiveness Options: Example](responsiveness-options-example-69efbe7.md).\n\n",
+  "excerpt": "<!-- loiof0e1e1743bef4f519c34025ad4351f77 --> Defining Line Items To define the line items of a table, use com.sap.vocabularies.UI.v1.LineItem as shown in the code samples below. The rendering result ...",
+  "wordCount": 293,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

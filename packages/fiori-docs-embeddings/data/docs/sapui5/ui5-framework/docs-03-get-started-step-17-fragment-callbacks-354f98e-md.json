@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-03-get-started-step-17-fragment-callbacks-354f98e-md",
+  "title": "Step 17: Fragment Callbacks",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-17-fragment-callbacks-354f98e.md",
+  "lastModified": "2025-09-01T18:17:10.456Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Fragment",
+    "Callbacks"
+  ],
+  "headers": [
+    "Step 17: Fragment Callbacks",
+    "Preview",
+    "Coding",
+    "webapp/controller/HelloPanel.controller.js",
+    "webapp/view/HelloDialog.fragment.xml",
+    "webapp/i18n/i18n.properties"
+  ],
+  "content": "<!-- loio354f98ed2b514ba9960556333428d35e -->\n\n# Step 17: Fragment Callbacks\n\nNow that we have integrated the dialog, it's time to add some user interaction. The user will definitely want to close the dialog again at some point, so we add a button to close the dialog and assign an event handler.\n\n\n\n## Preview\n\n  \n  \n**The dialog now has an \"OK\" button**\n\n![The graphic has an explanatory text.](images/UI5_Walkthrough_Step_17_c351bbd.png \"The dialog now has an \"OK\" button\")\n\n\n\n<a name=\"loio354f98ed2b514ba9960556333428d35e__section_mt1_5fk_syb\"/>\n\n## Coding\n\nYou can view and download all files at [Walkthrough - Step 17](https://ui5.sap.com/#/entity/sap.m.tutorial.walkthrough/sample/sap.m.tutorial.walkthrough.17).\n\n\n\n<a name=\"loio354f98ed2b514ba9960556333428d35e__section_nt1_5fk_syb\"/>\n\n## webapp/controller/HelloPanel.controller.js\n\n```js\nsap.ui.define([\n\t\"sap/ui/core/mvc/Controller\",\n\t\"sap/m/MessageToast\"\n], (Controller, MessageToast) => {\n\t\"use strict\";\n\n\treturn Controller.extend(\"ui5.walkthrough.controller.HelloPanel\", {\n\t\tonShowHello() {\n\t\t\t// read msg from i18n model\n\t\t\tconst oBundle = this.getView().getModel(\"i18n\").getResourceBundle();\n\t\t\tconst sRecipient = this.getView().getModel().getProperty(\"/recipient/name\");\n\t\t\tconst sMsg = oBundle.getText(\"helloMsg\", [sRecipient]);\n\n\t\t\t// show message\n\t\t\tMessageToast.show(sMsg);\n\t\t},\n\n\t\tasync onOpenDialog() {\n\t\t\t// create dialog lazily\n\t\t\tthis.oDialog ??= await this.loadFragment({\n\t\t\t\tname: \"ui5.walkthrough.view.HelloDialog\"\n\t\t\t});\n\n\t\t\tthis.oDialog.open();\n\t\t},\n\n\t\tonCloseDialog() {\n\t\t\t// note: We don't need to chain to the pDialog promise, since this event handler\n\t\t\t// is only called from within the loaded dialog itself.\n\t\t\tthis.byId(\"helloDialog\").close();\n\t\t}\n\t});\n\n});\n```\n\nThe event handler function is put into the same controller file, and it closes the dialog by using the `byId` function to get the dialog instance and the `close` function to close the dialog.\n\n\n\n## webapp/view/HelloDialog.fragment.xml\n\n```xml\n<core:FragmentDefinition\n   xmlns=\"sap.m\"\n   xmlns:core=\"sap.ui.core\">\n   <Dialog\n      id=\"helloDialog\"\n      title =\"Hello {/recipient/name}\">\n      <beginButton>\n         <Button\n            text=\"{i18n>dialogCloseButtonText}\"\n            press=\".onCloseDialog\"/>\n      </beginButton>\n   </Dialog>\n</core:FragmentDefinition>\n```\n\nIn the fragment definition, we add a button to the `beginButton` aggregation of the dialog. The press handler refers to an event handler called `.onCloseDialog`. By using the `loadFragment` function to create the fragment content, the method will be invoked there when the button is pressed. The dialog has an aggregation named `beginButton` as well as `endButton`. Placing buttons in both of these aggregations makes sure that the `beginButton` is placed before the `endButton` on the UI. What `before` means, however, depends on the text direction of the current language. We therefore use the terms `begin` and `end` as a synonym to \"left\" and \"right\". In languages with left-to-right direction, the `beginButton` will be rendered left, the `endButton` on the right side of the dialog footer; in right-to-left mode for specific languages the order is switched.\n\n\n\n<a name=\"loio354f98ed2b514ba9960556333428d35e__section_d5m_ypr_r2b\"/>\n\n## webapp/i18n/i18n.properties\n\n```ini\n# App Descriptor\nappTitle=Hello World\nappDescription=A simple walkthrough app that explains the most important concepts of SAPUI5\n\n# Hello Panel\nshowHelloButtonText=Say Hello\nhelloMsg=Hello {0}\nhomePageTitle=Walkthrough\nhelloPanelTitle=Hello World\nopenDialogButtonText=Say Hello With Dialog\ndialogCloseButtonText=Ok\n```\n\nThe text bundle is extended by the new text for the dialog's close button.\n\n**Related Information**  \n\n\n[Reusing UI Parts: Fragments](../04_Essentials/reusing-ui-parts-fragments-36a5b13.md \"Fragments are light-weight UI parts (UI sub-trees) which can be reused, defined similar to views, but do not have any controller or other behavior code involved.\")\n\n[Instantiation of Fragments](../04_Essentials/instantiation-of-fragments-04129b2.md \"SAPUI5 provides two options to instantiate a fragment: If it is instantiated inside a controller extending sap.ui.core.mvc.Controller, the loadFragment() function is the way to go. However, if it is instantiated in a non-controller artefact, the generic function sap.ui.core.Fragment.load() can be used.\")\n\n",
+  "excerpt": "<!-- loio354f98ed2b514ba9960556333428d35e --> Step 17: Fragment Callbacks Now that we have integrated the dialog, it's time to add some user interaction. The user will definitely want to close the dia...",
+  "wordCount": 497,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

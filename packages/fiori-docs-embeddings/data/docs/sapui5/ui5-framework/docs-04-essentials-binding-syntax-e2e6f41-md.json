@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-04-essentials-binding-syntax-e2e6f41-md",
+  "title": "Binding Syntax",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/binding-syntax-e2e6f41.md",
+  "lastModified": "2025-09-01T18:17:10.493Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Binding",
+    "Syntax"
+  ],
+  "headers": [
+    "Binding Syntax",
+    "Simple Binding",
+    "Composite Binding",
+    "Expression Binding in XML Views",
+    "Property Metadata Binding for OData Services"
+  ],
+  "content": "<!-- loioe2e6f4127fe4450ab3cf1339c42ee832 -->\n\n# Binding Syntax\n\nYou bind UI elements to data of a data source by defining a binding path to the model that represents the data source in the app.\n\n\n\nWhen defining a binding path for a control, a binding context is created which connects this control to a data model. The UI control then gets the data through that context and displays it on the screen.\n\n![A binding path connects a control in the View to data in the data model.](images/Binding_Syntax_493c875.png)\n\n\n\n<a name=\"loioe2e6f4127fe4450ab3cf1339c42ee832__section_ezj_nhr_5cb\"/>\n\n## Simple Binding\n\nTo reference model data in a view , you can use the simple binding syntax \"<code>{<i>/path/to/data</i>}</code>\":\n\n```xml\n<Input value=\"{/firstName}\"/>\n```\n\nYou can add other properties, such as formatters, data types, or events:\n\n-   Data type:\n\n    ```xml\n    <mvc:View\n        xmlns:core=\"sap.ui.core\"\n        xmlns:mvc=\"sap.ui.core.mvc\"\n        xmlns=\"sap.m\"\n        core:require=\"{StringType: 'sap/ui/model/type/String'}\">\n        \n        <Input value=\"{path: '/firstName', type: 'StringType'}\"/>\n    ```\n\n-   Formatter:\n\n    ```xml\n    <mvc:View\n        xmlns:core=\"sap.ui.core\"\n        xmlns:mvc=\"sap.ui.core.mvc\"\n        xmlns=\"sap.m\"\n        core:require=\"{globalFormatter: 'my/globalFormatter'}\">\n        \n        <Input value=\"{path: '/firstName', formatter: 'globalFormatter'}\"/>\n    ```\n\n-   Event:\n\n    ```xml\n    <Input value=\"{path: '/firstName', events: {dataRequested: '.onMyDataRequested'}\"/>\n    ```\n\n\nFor more information, see [Binding Path](binding-path-2888af4.md).\n\nFor more information about data types and formatters, see [Formatting, Parsing, and Validating Data](formatting-parsing-and-validating-data-07e4b92.md).\n\n\n\n<a name=\"loioe2e6f4127fe4450ab3cf1339c42ee832__section_njl_ypr_5cb\"/>\n\n## Composite Binding\n\nIf a control requires data from multiple different model properties, you use a `parts` array of `path`s to define composite binding paths:\n\n```xml\n<mvc:View\n    xmlns:core=\"sap.ui.core\"\n    xmlns:mvc=\"sap.ui.core.mvc\"\n    xmlns=\"sap.m\"\n    core:require=\"{globalFormatter: 'my/globalFormatter'}\">\n\n    <TextField value=\"{\n        parts: [{path: 'birthday/day'}, {path: 'birthday/month'}, {path: 'birthday/year'}], \n        formatter: 'globalFormatter'\n    }\"/>\n```\n\nFor more information, see [Composite Binding](composite-binding-a2fe8e7.md) and [Examples for Data Binding in Different View Types](examples-for-data-binding-in-different-view-types-25ab54b.md).\n\n\n\n<a name=\"loioe2e6f4127fe4450ab3cf1339c42ee832__section_htn_jqr_5cb\"/>\n\n## Expression Binding in XML Views\n\nExpression binding is a simple way to calculate values directly in the view. For example, if you want to change the color of the price depending on whether it is above or below some threshold. With expression binding you don't have to declare a separate formatter:\n\n```xml\n<ObjectStatus state=\"{= ${products>UnitPrice} > ${/priceThreshold} ? 'Error': 'Success' }\"/>\n```\n\nFor more information, see [Expression Binding](expression-binding-daf6852.md).\n\n\n\n<a name=\"loioe2e6f4127fe4450ab3cf1339c42ee832__section_kft_lqr_5cb\"/>\n\n## Property Metadata Binding for OData Services\n\nWith metadata binding, you can bind properties of a control to the corresponding property that is defined in the metadata of an OData service:\n\n```xml\n<Input maxLength=\"{/#Company/ZipCode/@maxLength}\"/>\n```\n\nFor more information, see [Property Metadata Binding](property-metadata-binding-f5aa4bb.md).\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.base.ManagedObject.bindProperty`](https://ui5.sap.com/#/api/sap.ui.base.ManagedObject/methods/bindProperty)\n\n[API Reference: `sap.ui.base.ManagedObject.bindAggregation`](https://ui5.sap.com/#/api/sap.ui.base.ManagedObject/methods/bindAggregation)\n\n[API Reference: `sap.ui.base.ManagedObject.bindObject`](https://ui5.sap.com/#/api/sap.ui.base.ManagedObject/methods/bindObject)\n\n",
+  "excerpt": "<!-- loioe2e6f4127fe4450ab3cf1339c42ee832 --> Binding Syntax You bind UI elements to data of a data source by defining a binding path to the model that represents the data source in the app. When defi...",
+  "wordCount": 371,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

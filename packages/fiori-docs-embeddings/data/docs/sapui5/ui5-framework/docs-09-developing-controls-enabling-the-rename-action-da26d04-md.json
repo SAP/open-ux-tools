@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-enabling-the-rename-action-da26d04-md",
+  "title": "Enabling the *Rename* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/enabling-the-rename-action-da26d04.md",
+  "lastModified": "2025-09-01T18:17:10.676Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Enabling",
+    "the",
+    "Rename",
+    "Action"
+  ],
+  "headers": [
+    "Enabling the *Rename* Action"
+  ],
+  "content": "<!-- loioda26d04abc02400b8d0a5380129126dc -->\n\n# Enabling the *Rename* Action\n\nThis section shows an example how to enable enable a control for the *rename* action.\n\n",
+  "excerpt": "<!-- loioda26d04abc02400b8d0a5380129126dc --> Enabling the Rename Action This section shows an example how to enable enable a control for the rename action.",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

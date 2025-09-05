@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-worklistjourney-js",
+  "title": "WorklistJourney",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/WorklistJourney.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "WorklistJourney"
+  ],
+  "headers": [],
+  "content": "# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.md\n\n```javascript\n# WorklistJourney.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/opaQunit\",\"sap/ui/Device\",\"./pages/Worklist\",\"./pages/App\"],function(e,t){\"use strict\";QUnit.module(\"Worklist\");e(\"Should see the table with all entries\",function(e,t,i){e.iStartMyApp();i.onTheWorklistPage.theTableShouldHaveAllEntries().and.theTableShouldContainOnlyFormattedUnitNumbers().and.theTitleShouldDisplayTheTotalAmountOfItems()});e(\"Search for the First object should deliver results that contain the firstObject in the name\",function(e,t,i){t.onTheWorklistPage.iSearchForTheFirstObject();i.onTheWorklistPage.theTableShowsOnlyObjectsWithTheSearchStringInTheirTitle()});e(\"Entering something that cannot be found into search field and pressing search field's refresh should leave the list as it was\",function(e,t,i){t.onTheWorklistPage.iTypeSomethingInTheSearchThatCannotBeFoundAndTriggerRefresh();i.onTheWorklistPage.theTableHasEntries();i.iTeardownMyApp()})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "WorklistJourney.md javascript WorklistJourney.md javascript WorklistJourney.md javascript WorklistJourney.md javascript WorklistJourney.js",
+  "wordCount": 78,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

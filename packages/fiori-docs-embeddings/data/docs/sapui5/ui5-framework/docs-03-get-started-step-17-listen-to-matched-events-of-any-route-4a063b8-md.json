@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-03-get-started-step-17-listen-to-matched-events-of-any-route-4a063b8-md",
+  "title": "Step 17: Listen to Matched Events of Any Route",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-17-listen-to-matched-events-of-any-route-4a063b8.md",
+  "lastModified": "2025-09-01T18:17:10.457Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Listen",
+    "Matched",
+    "Events",
+    "Any",
+    "Route"
+  ],
+  "headers": [
+    "Step 17: Listen to Matched Events of Any Route",
+    "Preview",
+    "Coding",
+    "webapp/controller/App.controller.js"
+  ],
+  "content": "<!-- loio4a063b8250f24d0cbf7c689821df7199 -->\n\n# Step 17: Listen to Matched Events of Any Route\n\nIn the previous step, we have listened for bypassed events to detect possible technical issues with our app. In this step, we want to improve the analysis use case even more by listening to any matched event of the route. We could use this information to measure how the app is used and how frequently the pages are called. Many Web analytic tools track page hits this way. The collected information can be used, for example to improve our app and its usability.\n\n\n\n## Preview\n\n  \n  \n**Console output for routes matched by listening to routeMatched events**\n\n![](images/Tutorial_Navigation_and_Routing_Step_17_ea12aae.png \"Console output for routes matched by listening to\n\t\t\t\t\t\trouteMatched events\")\n\n\n\n## Coding\n\nYou can view and download all files in the *Samples* in the Demo Kit at [Routing and Navigation - Step 17](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.navigation/sample/sap.ui.core.tutorial.navigation.17).\n\n\n\n## webapp/controller/App.controller.js\n\n```js\nsap.ui.define([\n\t\"sap/ui/demo/nav/controller/BaseController\",\n\t\"sap/base/Log\"\n], function (BaseController, Log) {\n\t\"use strict\";\n\treturn BaseController.extend(\"sap.ui.demo.nav.controller.App\", {\n\t\tonInit: function () {\n\t\t\t// This is ONLY for being used within the tutorial.\n\t\t\t// The default log level of the current running environment may be higher than INFO,\n\t\t\t// in order to see the debug info in the console, the log level needs to be explicitly\n\t\t\t// set to INFO here.\n\t\t\t// But for application development, the log level doesn't need to be set again in the code.\n\t\t\tLog.setLevel(Log.Level.INFO);\n\n\t\t\tvar oRouter = this.getRouter();\n\t\t\toRouter.attachBypassed(function (oEvent) {\n\t\t\t\tvar sHash = oEvent.getParameter(\"hash\");\n\t\t\t\t// do something here, i.e. send logging data to the back end for analysis\n\t\t\t\t// telling what resource the user tried to access...\n\t\t\t\tLog.info(\"Sorry, but the hash '\" + sHash + \"' is invalid.\", \"The resource was not found.\");\n\t\t\t});\n\t\t\toRouter.attachRouteMatched(function (oEvent){\n\t\t\t\tvar sRouteName = oEvent.getParameter(\"name\");\n\t\t\t\t// do something, i.e. send usage statistics to back end\n\t\t\t\t// in order to improve our app and the user experience (Build-Measure-Learn cycle)\n\t\t\t\tLog.info(\"User accessed route \" + sRouteName + \", timestamp = \" + Date.now());\n\t\t\t});\n\t\t}\n\t});\n});\n```\n\nWe extend the `App` controller again and listen to the `routeMatched` event. The `routeMatched` event is thrown for any route that matches to our route configuration in the descriptor file. In the event handler, we determine the name of the matched route from the event parameters and log it together with a time stamp. In an actual app, the information could be sent to a back-end system or an analytics server to find out more about the usage of your app.\n\nNow you can access, for example, `webapp/index.html#/employees` while you have the console of the browser open. As you can see, there is a message logged for each navigation step that you do within the app.\n\n",
+  "excerpt": "<!-- loio4a063b8250f24d0cbf7c689821df7199 --> Step 17: Listen to Matched Events of Any Route In the previous step, we have listened for bypassed events to detect possible technical issues with our app...",
+  "wordCount": 443,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

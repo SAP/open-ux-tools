@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-07-apf-the-core-module-sap-apf-core-d2da7d5-md",
+  "title": "The Core Module \\(sap.apf.core\\)",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-core-module-sap-apf-core-d2da7d5.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Core",
+    "Module",
+    "sap",
+    "apf",
+    "core"
+  ],
+  "headers": [
+    "The Core Module \\(sap.apf.core\\)"
+  ],
+  "content": "<!-- loiod2da7d53b5c19456e10000000a423f68 -->\n\n# The Core Module \\(sap.apf.core\\)\n\nThe core module \\(`sap.apf.core`\\) has a public API that supports the following:\n\n-   Loading an analytical configuration and other static resources\n\n-   Creating an analysis step from the given configuration\n\n-   Creating OData requests\n\n-   Adding a step to an analysis path\n\n-   Manipulating, processing, and updating the analysis path and its steps\n\n-   Creating filters and setting a context\n\n-   Interaction between APF and an external Web application \\(UI\\), for example, by passing callback functions\n\n-   Error handling and sending error messages to a registered handler\n\n-   Saving and retrieving a named analysis path on the server\n\n-   Extending possible configurations by new representation entities\n\n\nThe core component contains the entire logic for path processing, but no UI logic. For more information, see [Analysis Path Processing](analysis-path-processing-f7da7d5.md).\n\n",
+  "excerpt": "<!-- loiod2da7d53b5c19456e10000000a423f68 --> The Core Module \\(sap.apf.core\\) The core module \\(sap.apf.core\\) has a public API that supports the following: -   Loading an analytical configuration an...",
+  "wordCount": 136,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

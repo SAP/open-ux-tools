@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-form-entry-object-page-533f7e7-md",
+  "title": "Form Entry Object Page",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/form-entry-object-page-533f7e7.md",
+  "lastModified": "2025-09-01T18:17:10.624Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Form",
+    "Entry",
+    "Object",
+    "Page"
+  ],
+  "headers": [
+    "Form Entry Object Page",
+    "Enabling the `singleDraftForCreate` Setting",
+    "Enabling the `singleDraftForCreate` Setting Using Extensions"
+  ],
+  "content": "<!-- loio533f7e7f59854cb08ce8074814ae83c5 -->\n\n# Form Entry Object Page\n\nThe form entry object page is a variation of the standard object page layout in which the header and navigation bar aren't displayed.\n\n> ### Note:  \n> This topic is only applicable to SAP Fiori elements for OData V4.\n\nYou can use the form entry object page as an alternative to a list report object page pattern when you only want to provide a page for data entry.\n\nThe form entry object page supports the same content and considers the same annotations as a standard object page template.\n\nFor a page to be considered a form entry object page, you must make the following target settings:\n\n> ### Sample Code:  \n> ```\n> \"FormRootObjectPage\": {                      \n>     \"type\": \"Component\",                     \n>     \"id\": \"FormRootObjectPage\",              \n>     \"name\": \"sap.fe.templates.ObjectPage\",   \n>     \"options\": {                             \n>         \"settings\": {                        \n>             \"contextPath\": \"/FormRoot\",         \n>             \"editableHeaderContent\": false,  \n>             \"content\": {                     \n>                 \"header\": {                  \n>                     \"visible\": false,        \n>                     \"anchorBarVisible\": false\n>                 }                            \n>             }                                \n>         }                                    \n>     }                                        \n> }  \n> ```\n\nIn addition, if you want your application to start automatically in creation mode you've to specify the following in your main application `Component.js`:\n\n> ### Sample Code:  \n> ```\n> getStartupParameters: function() {\n>     return Promise.resolve({      \n>         preferredMode: [\"create\"] \n>     });                           \n> }                                 \n>  \n> Such as \n>  \n> sap.ui.define([\"sap/fe/core/AppComponent\"], function(AppComponent) \n>     \"use strict\";                                                  \n>                                                         \n>     return AppComponent.extend(\"FormTemplate.Component\", {         \n>         metadata: {                                                \n>             manifest: \"json\"                                       \n>         },                                                         \n>         getStartupParameters: function() {                         \n>             return Promise.resolve({                               \n>                 preferredMode: [\"create\"]                          \n>             });                                                    \n>         }                                                          \n>     });                                                            \n> }); \n> ```\n\n\n\n<a name=\"loio533f7e7f59854cb08ce8074814ae83c5__section_nbq_l5d_2zb\"/>\n\n## Enabling the `singleDraftForCreate` Setting\n\nApplication developers can enable the `singleDraftForCreate` setting in the `manifest.json`.\n\n> ### Sample Code:  \n> ```\n> \"sap.fe\": {\n>     \"app\": {\n>         \"singleDraftForCreate\": true\n>     }\n> }\n> ```\n\nThis setting ensures that end users can create a new entity only after they've actively saved the changes they've made to the current entity. Whenever an end user attempts to create a new entity, the application checks for entities with the properties `IsActiveEntity=false` and `HasActiveEntity=false`. If an entity matches these properties, it's considered as a draft and the application displays the entity in edit mode.\n\nIf there are no unsaved entities, the end user can create a new entity.\n\n\n\n<a name=\"loio533f7e7f59854cb08ce8074814ae83c5__section_tcx_53c_lzb\"/>\n\n## Enabling the `singleDraftForCreate` Setting Using Extensions\n\nApplication developers can enable the `singleDraftForCreate` setting using the `EditFlow` controller extension. If the `editFlow.createDocument(ListBinding, {singleDraftForCreate: true})` setting is enabled, it allows end users to create a new entity. The application launches the newly created entity in edit mode only if no unsaved drafts exist. If any unsaved draft exists, the application opens the latest unsaved draft in edit mode instead.\n\n",
+  "excerpt": "<!-- loio533f7e7f59854cb08ce8074814ae83c5 --> Form Entry Object Page The form entry object page is a variation of the standard object page layout in which the header and navigation bar aren't displaye...",
+  "wordCount": 443,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

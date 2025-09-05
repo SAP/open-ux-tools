@@ -1,0 +1,21 @@
+{
+  "id": "sapui5-docs-07-apf-translation-4510c30-md",
+  "title": "Translation",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/translation-4510c30.md",
+  "lastModified": "2025-09-01T18:17:10.670Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Translation"
+  ],
+  "headers": [
+    "Translation"
+  ],
+  "content": "<!-- loio4510c30482da4d438a7e76f991781845 -->\n\n# Translation\n\nTexts in the development language are stored in a text table. If you need more languages than just the development language, you must export the text pool from the table into a text properties file. Based on this file, translation can take place, resulting in one text properties file for each language.\n\n> ### Note:  \n> We recommend performing a text pool cleanup before the texts are exported for translation. Otherwise, obsolete texts may end up in the translation process.\n\nTexts must be translated directly in the text properties file, that is, you must create one file for each language and maintain the translated texts manually. The following examples illustrate the naming convention for the files:\n\n-   Original: *<texts\\>*.properties\n-   German: *<texts\\>*\\_de.properties\n-   English: *<texts\\>*\\_en.properties\n\nNew texts are always added at the end of the file so that they can easily be identified after a new export.\n\nTranslated texts are always read from the text properties files and usually not reimported into the APF Configuration Modeler unless you want to change the development language.\n\n**Related Information**  \n\n\n[Export](export-7de4975.md \"\")\n\n[Text Pool Cleanup](text-pool-cleanup-80fa245.md \"\")\n\n",
+  "excerpt": "<!-- loio4510c30482da4d438a7e76f991781845 --> Translation Texts in the development language are stored in a text table. If you need more languages than just the development language, you must export t...",
+  "wordCount": 188,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

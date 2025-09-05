@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-creating-key-performance-indicators-8874399-md",
+  "title": "Creating Key Performance Indicators",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/creating-key-performance-indicators-8874399.md",
+  "lastModified": "2025-09-01T18:17:10.597Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Creating",
+    "Key",
+    "Performance",
+    "Indicators"
+  ],
+  "headers": [
+    "Creating Key Performance Indicators"
+  ],
+  "content": "<!-- loio88743992c11d4fb7bb5d39a667ff9f79 -->\n\n# Creating Key Performance Indicators\n\nYou can add key performance indicators \\(KPI\\) in SAP Fiori elements.\n\nThe key performance indicator \\(KPI\\) tag is an abbreviated and clickable title with a KPI value.\n\nIn SAP Fiori elements, you can create KPI tags using annotations in an analytical service. For more information, see [Creating Key Performance Indicator Tags](creating-key-performance-indicator-tags-d80a360.md).\n\nIn SAP Fiori elements for OData V4, you can also create KPI tags that do not require an analytical service using manifest-based configuration. To create the tags, add a `keyPerformanceIndicators` section to the `manifest.json` file, define the name of the KPI, and add the fragment with the KPI definition.\n\n> ### Sample Code:  \n> `manifest.json`\n> \n> ```\n> \"targets\": {\n>         \"mainPage\": {\n>                 \"type\": \"Component\",\n>                 \"id\": \"Default\",\n>                 \"name\": \"sap.fe.templates.ListReport\",\n>                         \"options\": {\n>                                 \"settings\": {\n>                                         \"contextPath\": \"/RootEntity\",\n>                                         \"variantManagement\": \"None\",\n>                                         \"initialLoad\": true,\n>                                         \"keyPerformanceIndicators\": {\n>                                                 \"myKPITag\": {\n>                                                     \"template\": \"sap.fe.core.fpmExplorer.customKPIContent.CustomKPITag\"\n>                                                 },\n>                                                 \"myKPIWithPress\": {\n>                                                     \"template\": \"sap.fe.core.fpmExplorer.customKPIContent.CustomKPITagWithPress\"\n>                                                 }\n>                                         }\n>                                 }\n>                         }\n>                 }\n>         }\n> }\n> \n> ```\n\nYou can use any fragment, but we recommend using the KPI building block to use the same design as KPI in an analytical service. For more information, see [class sap.fe.macros.KPITag](https://ui5.sap.com/#/api/sap.fe.macros.KPITag).\n\n> ### Sample Code:  \n> Building block\n> \n> ```\n> <core:FragmentDefinition xmlns=\"sap.m\" xmlns:core=\"sap.ui.core\" xmlns:macros=\"sap.fe.macros\">\n>         <macros:KPITag\n>                 number=\"0\"\n>                 unit=\"Days\"\n>                 status=\"Error\"\n>                 showIcon=\"true\"\n>                 press=\".extension.sap.fe.core.fpmExplorer.customKPIContent.LRExtend.onKPIPressed\"\n>         />\n> </core:FragmentDefinition>\n> ```\n\nCheck out our live example in the flexible programming model explorer at [Custom KPI Tags in List Report - Overview](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/customElements/CustomKPITags/customKPIContent).\n\n",
+  "excerpt": "<!-- loio88743992c11d4fb7bb5d39a667ff9f79 --> Creating Key Performance Indicators You can add key performance indicators \\(KPI\\) in SAP Fiori elements. The key performance indicator \\(KPI\\) tag is an ...",
+  "wordCount": 265,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

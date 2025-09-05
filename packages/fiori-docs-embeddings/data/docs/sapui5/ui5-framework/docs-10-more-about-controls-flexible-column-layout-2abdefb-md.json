@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-flexible-column-layout-2abdefb-md",
+  "title": "Flexible Column Layout",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/flexible-column-layout-2abdefb.md",
+  "lastModified": "2025-09-01T18:17:10.690Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Flexible",
+    "Column",
+    "Layout"
+  ],
+  "headers": [
+    "Flexible Column Layout"
+  ],
+  "content": "<!-- loio2abdefbe3c184d79b46cbeb0f22d764d -->\n\n# Flexible Column Layout\n\nThe `sap.f.FlexibleColumnLayout` control implements the list-detail-detail paradigm by displaying up to 3 pages in separate columns.\n\nThe control is suitable for apps that need to display several logical levels of related information side by side, for example, a list of items, item, sub-item. It is flexible in a sense that the app can focus the user's attention on one particular column by making it larger or even fullscreen.\n\n**Related Information**  \n\n\n[API Reference: `sap.f.FlexibleColumnLayout`](https://ui5.sap.com/#/api/sap.f.FlexibleColumnLayout)\n\n",
+  "excerpt": "<!-- loio2abdefbe3c184d79b46cbeb0f22d764d --> Flexible Column Layout The sap.f.FlexibleColumnLayout control implements the list-detail-detail paradigm by displaying up to 3 pages in separate columns. ...",
+  "wordCount": 81,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

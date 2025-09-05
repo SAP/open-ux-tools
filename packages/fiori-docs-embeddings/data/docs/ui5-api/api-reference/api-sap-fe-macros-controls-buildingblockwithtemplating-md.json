@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-controls-buildingblockwithtemplating-md",
+  "title": "sap.fe.macros.controls.BuildingBlockWithTemplating",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.controls.BuildingBlockWithTemplating.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "controls",
+    "BuildingBlockWithTemplating"
+  ],
+  "headers": [
+    "sap.fe.macros.controls.BuildingBlockWithTemplating"
+  ],
+  "content": "# sap.fe.macros.controls.BuildingBlockWithTemplating\n\n<p>Using this class you can define a building block that will manage and render a templating based building block.\nOn change of the main properties you will be able to recreate the content.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/controls/BuildingBlockWithTemplating\n\n",
+  "excerpt": "sap.fe.macros.controls.BuildingBlockWithTemplating <p>Using this class you can define a building block that will manage and render a templating based building block. On change of the main properties y...",
+  "wordCount": 40,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

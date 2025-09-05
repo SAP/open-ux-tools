@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-controller-detail-controller-js",
+  "title": "Detail.controller",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/controller/Detail.controller.js",
+  "lastModified": "2025-09-01T18:17:10.800Z",
+  "tags": [
+    "samples",
+    "js",
+    "Detail",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.js\n\n```javascript\nsap.ui.define([\"sap/ui/core/mvc/Controller\",\"sap/m/MessageBox\",\"sap/m/MessageToast\"],function(e,t,o){\"use strict\";return e.extend(\"sap.btp.sapui5.controller.Detail\",{onInit:function(){var e=sap.ui.core.UIComponent.getRouterFor(this);e.getRoute(\"detail\").attachMatched(this._onRouteMatched,this)},_onRouteMatched:function(e){var t,o;t=e.getParameter(\"arguments\");o=this.getView();o.bindElement({path:\"/Products(\"+t.productId+\")\",events:{dataRequested:function(){o.setBusy(true)},dataReceived:function(){o.setBusy(false)}}})},handleNavButtonPress:function(e){var t=sap.ui.core.UIComponent.getRouterFor(this);t.navTo(\"home\")},handleOrder:function(e){var n=this.getView().getModel(\"i18n\").getResourceBundle();t.confirm(n.getText(\"OrderDialogMsg\"),function(e){if(t.Action.OK===e){var a=n.getText(\"OrderDialogSuccessMsg\");o.show(a)}},n.getText(\"OrderDialogTitle\"))}})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Detail.controller.md javascript Detail.controller.md javascript Detail.controller.md javascript Detail.controller.md javascript Detail.controller.js",
+  "wordCount": 44,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}
