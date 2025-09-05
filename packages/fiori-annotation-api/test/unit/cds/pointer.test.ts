@@ -180,6 +180,19 @@ annotate service.Individual with {
                 '/targets/0/assignments/1/value'
             );
         });
+        test('new annotation syntax with text value', async () => {
+            await testPointerWithFixture(
+                `using IncidentService as service from '../../srv/incidentservice';
+annotate service.Individual with {
+    createdAt @(
+        Common.Text            : createdBy,
+        Common.Text.@UI.TextArrangement : abc,
+    )
+};`,
+                '/targets/0/terms/1/content/0/content/0/content/0/text',
+                '/targets/0/assignments/1/value'
+            );
+        });
         test('record property value', () => {
             testPointer(
                 '/targets/2/terms/0/content/0/content/0/content/3/content/0/content/0/content/0/content/0/text',

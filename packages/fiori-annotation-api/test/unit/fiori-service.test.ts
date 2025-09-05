@@ -4680,5 +4680,86 @@ describe('serializeTarget', () => {
 
             expect(text).toMatchSnapshot();
         });
+
+        test('update flattened annotation', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: test1
+            );
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        uri: project.files.annotations,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: LINE_ITEM
+                        },
+                        pointer: '/annotations/0/Path',
+                        content: {
+                            type: 'primitive',
+                            value: 'test2'
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('update flattened annotation with changing value type', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: test1
+            );
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        uri: project.files.annotations,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: LINE_ITEM
+                        },
+                        pointer: '/annotations/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'String',
+                                String: 'test2'
+                            }
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
     });
 });
