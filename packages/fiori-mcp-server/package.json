@@ -45,7 +45,7 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@types/json-schema": "7.0.5",
-        "@types/mem-fs": "1.1.2"
+        "@types/mem-fs": "1.1.5"
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "1.17.4",
