@@ -406,6 +406,8 @@
 
 
 8. Click on button `Show Local Annotation File`
+9. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_d+.xml` is visible in the dialog
+10. Check button `Show File in VSCode` is visible in the dialog
 
 ---
 

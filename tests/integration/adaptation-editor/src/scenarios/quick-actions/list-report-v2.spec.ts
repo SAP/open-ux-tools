@@ -470,9 +470,13 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.reloadCompleted();
             await editor.quickActions.showLocalAnnotationFile.click();
             await expect(
-                previewFrame.getByText(/adp\.fiori\.elements\.v2\/changes\/annotations\/annotation_\d+\.xml/)
+                previewFrame.getByText(/adp\.fiori\.elements\.v2\/changes\/annotations\/annotation_\d+\.xml/),
+                `Check filename \`adp.fiori.elements.v2/changes/annotations/annotation_\d+.xml\` is visible in the dialog`
             ).toBeVisible();
-            await expect(previewFrame.getByRole('button', { name: 'Show File in VSCode' })).toBeVisible();
+            await expect(
+                previewFrame.getByRole('button', { name: 'Show File in VSCode' }),
+                `Check button \`Show File in VSCode\` is visible in the dialog`
+            ).toBeVisible();
         }
     );
 });
