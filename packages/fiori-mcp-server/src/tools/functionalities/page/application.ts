@@ -8,7 +8,7 @@ import type {
 } from '../../../types';
 import { getService } from './serviceStore';
 import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
-import { MissingNavigationReason } from './types';
+import { MissingNavigationReason, PAGE_VIEW_NAME_PATTERN } from './types';
 import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
@@ -370,7 +370,8 @@ export class Application {
             id,
             entity: targetNavigation?.entitySet ?? entitySet ?? '',
             navigation: fpnNavigation,
-            contextPath
+            contextPath,
+            name: newPage.pageType === PageTypeV4.CustomPage ? viewName : undefined
         };
 
         const changes = await this.writeFPM(newPage.pageType, pageApi, viewName);
@@ -541,10 +542,9 @@ export class Application {
     /**
      * Retrieves creation options for a new page.
      *
-     * @param pageType - Optional page type to get specific creation options.
      * @returns A promise that resolves to GetFunctionalityDetailsOutput containing creation options.
      */
-    public async getCreationOptions(pageType?: string): Promise<GetFunctionalityDetailsOutput> {
+    public async getCreationOptions(): Promise<GetFunctionalityDetailsOutput> {
         ADD_PAGE_FUNCTIONALITY.parameters = [];
 
         const pages = this.getPages();
@@ -557,15 +557,6 @@ export class Application {
                 navigationsMap[page.pageId] = this.getAllowedNavigationsOutput(navigations);
                 // Pass with refresh only once
                 refreshNavigations = false;
-            }
-            if (pageType === PageTypeV4.CustomPage) {
-                ADD_PAGE_FUNCTIONALITY.parameters.push({
-                    id: 'pageViewName',
-                    type: 'string',
-                    description: `Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`,
-                    pattern: '/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i',
-                    required: true
-                });
             }
             ADD_PAGE_FUNCTIONALITY.parameters = [
                 {
@@ -590,8 +581,15 @@ export class Application {
                     id: 'pageType',
                     type: 'string',
                     description: `Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.`,
-                    options: Object.keys(PageTypeV4),
-                    examples: ['pageType: ' + Object.keys(PageTypeV4)[0]],
+                    options: [PageTypeV4.ListReport, PageTypeV4.ObjectPage, PageTypeV4.CustomPage],
+                    examples: ['pageType: ' + PageTypeV4.ObjectPage],
+                    required: true
+                },
+                {
+                    id: 'pageViewName',
+                    type: 'string',
+                    description: `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`,
+                    pattern: PAGE_VIEW_NAME_PATTERN.toString(),
                     required: true
                 }
             ];
