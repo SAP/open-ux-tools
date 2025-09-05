@@ -63,10 +63,18 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * When virtual endpoints are used, the search parameters are injected at runtime.
  *
  * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command.
+ * @param projectName
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(addSearchParams: boolean): string {
-    const previewAppAnchor = '#app-preview';
+function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: string): string {
+    // Use dynamic anchor if not using virtual endpoints
+    // Default to 'app-preview' if no name is provided
+    let appAnchor = '#app-preview';
+    if (addSearchParams && projectName) {
+        // Sanitize project name for URL fragment
+        const safeName = projectName.replace(/[^a-zA-Z0-9_-]/g, '');
+        appAnchor = `#${safeName}-tile`;
+    }
     let urlParam = '';
     if (addSearchParams) {
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
@@ -77,7 +85,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
     // eslint-disable-next-line no-useless-escape
-    return `fiori run --open \"/preview.html${urlParam}${previewAppAnchor}\"`;
+    return `fiori run --open \"/preview.html${urlParam}${appAnchor}\"`;
 }
 
 /**
@@ -128,9 +136,11 @@ export function getPackageScripts({
         scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "/test/integration/opaTests.qunit.html"';
     }
 
+    // Use flpAppId for smart variants anchor, matching start-local
+    const smartVariantsAnchor = flpAppId ? flpAppId.replace(/[^a-zA-Z0-9_-]/g, '') : undefined;
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(!supportVirtualEndpoints);
+        : getVariantPreviewAppScript(!supportVirtualEndpoints, smartVariantsAnchor);
 
     return scripts;
 }
