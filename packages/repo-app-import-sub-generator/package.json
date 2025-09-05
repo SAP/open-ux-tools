@@ -50,7 +50,7 @@
         "@sap-ux/guided-answers-helper": "workspace:*",
         "adm-zip": "0.5.10",
         "i18next": "25.3.0",
-        "inquirer": "8.2.6",
+        "inquirer": "8.2.7",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
