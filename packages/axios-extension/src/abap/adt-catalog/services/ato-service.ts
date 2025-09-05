@@ -1,5 +1,5 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory, AtoSettings } from 'abap/types';
+import type { AdtCategory, AtoSettings } from '../../../abap/types';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**

@@ -156,7 +156,7 @@ export default class extends Generator {
             this.answers.systemSelection,
             this.fs
         );
-        await generate(this.projectPath, config, this.fs);
+        await generate(this.projectPath, config, undefined, this.fs);
 
         // Generate deploy config
         const deployConfig: AbapDeployConfig = getAbapDeployConfig(qfaJson);

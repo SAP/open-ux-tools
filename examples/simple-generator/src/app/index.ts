@@ -4,12 +4,12 @@ import Generator from 'yeoman-generator';
 import type { Template, LROPSettings, OVPSettings, FPMSettings } from '@sap-ux/fiori-elements-writer';
 import { generate as generateFE, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Template as FreestyleTemplate } from '@sap-ux/fiori-freestyle-writer';
 import { generate as generateUI5, TemplateType as FreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
 import type { Ui5App } from '@sap-ux/ui5-application-writer';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ServiceInfo } from './service';
 import { getServiceInfo, getServiceInfoInBAS } from './service';
 import { getUI5Versions } from './ui5';
 
@@ -19,6 +19,7 @@ import { getUI5Versions } from './ui5';
 export default class extends Generator {
     private app!: Ui5App & { app: { flpAppId: string } };
     private service!: OdataService;
+    private provider!: AbapServiceProvider;
     private template: {
         type: TemplateType | typeof FreestyleTemplateType.Basic;
         settings?: LROPSettings | OVPSettings | {};
@@ -71,12 +72,8 @@ export default class extends Generator {
             }
         ]);
 
-        let service: ServiceInfo;
-        if (isAppStudio()) {
-            service = await getServiceInfoInBAS(this);
-        } else {
-            service = await getServiceInfo(this);
-        }
+        const [service, provider] = isAppStudio() ? await getServiceInfoInBAS(this) : await getServiceInfo(this);
+        this.provider = provider;
 
         const { entity } = await this.prompt({
             type: 'input',
@@ -177,6 +174,7 @@ export default class extends Generator {
                     template: this.template as Template,
                     appOptions
                 },
+                this.provider,
                 this.fs
             );
         }

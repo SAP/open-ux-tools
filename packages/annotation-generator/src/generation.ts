@@ -70,6 +70,10 @@ export type AnnotationServiceParameters = {
      * @experimental
      */
     writeSapAnnotations?: boolean;
+    /**
+     * Already initialized instance which can be reused between different calls.
+     */
+    instance?: FioriAnnotationService;
 };
 /**
  * Generate annotations options.
@@ -159,21 +163,25 @@ async function getContext(
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
     const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
-    const projectInstance = await adaptProject(project, fs);
-    const annotationService = await FioriAnnotationService.createService(
-        projectInstance,
-        serviceName,
-        appName ?? '',
-        fs,
-        {
-            commitOnSave: false,
-            clearFileResolutionCache: true,
-            writeSapAnnotations,
-            ignoreChangedFileInitialContent: writeSapAnnotations
-        }
-    );
+    let annotationService = annotationServiceParams.instance;
 
-    await annotationService.sync();
+    const projectInstance = await adaptProject(project, fs);
+    if (!annotationService) {
+        annotationService = await FioriAnnotationService.createService(
+            projectInstance,
+            serviceName,
+            appName ?? '',
+            fs,
+            {
+                commitOnSave: false,
+                clearFileResolutionCache: true,
+                writeSapAnnotations,
+                ignoreChangedFileInitialContent: writeSapAnnotations
+            }
+        );
+        await annotationService.sync();
+    }
+
     const convertedSchema = convert(annotationService.getSchema());
     const metadataService = annotationService.getMetadataService();
     const { entityType, entityTypeName } = findEntityType(convertedSchema, entitySetName);

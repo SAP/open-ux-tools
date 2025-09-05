@@ -118,6 +118,7 @@ import {
     REPLACE_TEXT,
     UPDATE_ELEMENT_NAME
 } from '../types/internal-change';
+import type { ValueListReferences } from '../types/adapter';
 
 type ChangeHandlerFunction<T extends AnnotationFileChange> = (writer: CDSWriter, document: Document, change: T) => void;
 type ChangeHandler = {
@@ -133,6 +134,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     private fileCache: Map<string, string>;
     private documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
+    private valueListReferences = new Map<string, ValueListReferences[]>();
     private missingReferences: { [uri: string]: Set<string> } = {};
     /**
      *
@@ -453,6 +455,15 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      */
     public serializeTarget(target: Target): string {
         return printTarget(target);
+    }
+
+    /**
+     * Returns empty map. ValueListReferences are not supported in CDS.
+     *
+     * @returns Empty map.
+     */
+    public getValueListReferences(): Map<string, ValueListReferences[]> {
+        return this.valueListReferences;
     }
 
     private _getCompiledService(): CompiledService {

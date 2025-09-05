@@ -1,7 +1,7 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory, ArchiveFileNode, ArchiveFileNodeType, ArchiveFileContentType } from '../../types';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
-import type { AdtFileNode } from 'abap/types/adt-internal-types';
+import type { AdtFileNode } from '../../../abap/types/adt-internal-types';
 
 /**
  * FileStoreService implements ADT requests to obtain the content

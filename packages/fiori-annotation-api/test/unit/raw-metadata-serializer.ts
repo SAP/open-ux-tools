@@ -75,6 +75,12 @@ function indentToStr(indent: number): string {
     return ' '.repeat(indent * 4);
 }
 
+function getRangeText(range: Range | undefined): string {
+    return range
+        ? `(${range.start.line},${range.start.character})..(${range.end.line},${range.end.character})`
+        : `(unknown location)`;
+}
+
 function getLocationsText(
     annotationObject:
         | AnnotationListWithOrigins
@@ -83,11 +89,6 @@ function getLocationsText(
         | CollectionExpressionWithOrigins,
     index?: number
 ): string {
-    const getRangeText = (range: Range | undefined) =>
-        range
-            ? `(${range.start.line},${range.start.character})..(${range.end.line},${range.end.character})`
-            : `(unknown location)`;
-
     if (typeof index === 'number') {
         const originsArray = getOrigins(annotationObject);
         return getRangeText(originsArray[index]);
@@ -292,4 +293,24 @@ function serializeActionImports(actionImports: RawActionImport[], indent: number
 
 function serializeActionImport(actionImport: RawActionImport, indent: number): string {
     return `${indentToStr(indent)}(Action import) ${actionImport.fullyQualifiedName}(${actionImport.actionName})`;
+}
+
+export function normalize<T extends object>(root: string, input: T): T {
+    const output = structuredClone(input);
+    const traverse = (current: any) => {
+        for (const key in current) {
+            const value = current[key] as unknown;
+            if (key === 'range') {
+                current[key] = getRangeText(value as Range);
+            } else if (typeof value === 'string') {
+                if (value.startsWith('file://')) {
+                    current[key] = adaptedUrl(value, root);
+                }
+            } else if (typeof value === 'object' && value !== null) {
+                traverse(value);
+            }
+        }
+    };
+    traverse(output);
+    return output;
 }

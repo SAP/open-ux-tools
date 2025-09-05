@@ -33,12 +33,14 @@ function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo)
  * @param basePath - The base directory path of the project.
  * @param feApp -  to generate the Fiori elements application
  * @param fs - The file system editor instance.
+ * @param annotationService - Optional pre-initialized annotation service instance.
  * @param log - The logger instance.
  */
 export async function writeAnnotations<T extends {}>(
     basePath: string,
     feApp: FioriElementsApp<T>,
     fs: Editor,
+    annotationService?: AnnotationServiceParameters['instance'],
     log?: Logger
 ): Promise<void> {
     if (TemplateTypeAttributes[feApp.template.type]?.annotationGenerationSupport?.[feApp.service.version]) {
@@ -69,7 +71,8 @@ export async function writeAnnotations<T extends {}>(
         const serviceParameters: AnnotationServiceParameters = {
             serviceName,
             appName: packageName,
-            project: projectPath
+            project: projectPath,
+            instance: annotationService
         };
         try {
             await generateAnnotations(fs, serviceParameters, options);

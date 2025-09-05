@@ -5,6 +5,7 @@ import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import {
     generate as addOdataService,
+    generateValueListReferences,
     OdataVersion,
     ServiceType,
     type OdataService
@@ -34,6 +35,7 @@ import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { writeAnnotations } from './writeAnnotations';
+import type { AbapServiceProvider } from '../../axios-extension/src';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -102,6 +104,7 @@ function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): bool
  *
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the Fiori elements application
+ * @param provider - The service provider to fetch metadata and annotations
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
@@ -109,6 +112,7 @@ function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): bool
 async function generate<T extends {}>(
     basePath: string,
     data: FioriElementsApp<T>,
+    provider: AbapServiceProvider | undefined,
     fs?: Editor,
     log?: Logger
 ): Promise<Editor> {
@@ -275,8 +279,12 @@ async function generate<T extends {}>(
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
+    const annotationService = provider
+        ? await generateValueListReferences(basePath, feApp.package.name ?? '', feApp.service, provider, fs)
+        : undefined;
+
     if (feApp.appOptions?.addAnnotations) {
-        await writeAnnotations(basePath, feApp, fs, log);
+        await writeAnnotations(basePath, feApp, fs, annotationService, log);
     }
     return fs;
 }

@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { AdtCategory, AdtCollection } from 'abap/types';
+import type { AdtCategory, AdtCollection } from '../../../abap/types';
 import { Axios } from 'axios';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
