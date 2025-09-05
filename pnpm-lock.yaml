@@ -2228,6 +2228,12 @@ importers:
       '@sap-ux/annotation-converter':
         specifier: 0.10.3
         version: 0.10.3
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -2237,12 +2243,18 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@sap/ux-specification':
         specifier: 1.136.4
         version: 1.136.4(typescript@5.9.2)
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
       zod:
         specifier: 4.1.5
         version: 4.1.5

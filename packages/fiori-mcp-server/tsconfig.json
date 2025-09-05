@@ -10,6 +10,12 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../fiori-annotation-api"
     },
     {
@@ -26,6 +32,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
     },
     {
       "path": "../text-document-utils"

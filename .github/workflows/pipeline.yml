@@ -46,10 +46,12 @@ jobs:
               run: pnpm run build
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY_DEV }}
             - name: Run unit tests
               run: pnpm run test --tuiAutoExit
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY_DEV }}
             - name: Check for changeset files
               id: check_changeset_files
               uses: andstor/file-existence-action@v3
@@ -175,6 +177,8 @@ jobs:
               run: pnpm install --frozen-lockfile
             - name: Run build
               run: pnpm run build
+              env:
+                INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY_DEV }}
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'

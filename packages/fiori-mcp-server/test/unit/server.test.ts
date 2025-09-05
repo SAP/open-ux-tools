@@ -17,6 +17,16 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
     };
 });
 
+jest.mock('../../src/telemetry', () => {
+    return {
+        TelemetryHelper: {
+            initTelemetrySettings: jest.fn(),
+            markToolStartTime: jest.fn(),
+            sendTelemetry: jest.fn()
+        }
+    };
+});
+
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
         jest.restoreAllMocks();
