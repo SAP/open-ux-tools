@@ -2,8 +2,7 @@
   "extends": "../../../tsconfig.json",
   "include": [
     "src/**/*.ts",
-    "src/**/*.json", 
-    "manual-test-case-reporter.ts"  
+    "src/**/*.json"  
   ],
   "compilerOptions": {
     "rootDir": "src",

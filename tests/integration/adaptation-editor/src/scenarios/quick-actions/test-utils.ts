@@ -39,6 +39,11 @@ export class ListReport {
         return dataRows.nth(index).locator('.sapMListTblNavCol').first();
     }
 
+    /**
+     * Clicks on the specified row in the List Report table.
+     *
+     * @param index - table row index
+     */
     async clickOnTableNthRow(index: number): Promise<void> {
         const tableTitle = await this.getTableTitleText();
         // Extract only the string part before parentheses (e.g., "Root Entities" from "Root Entities (2)")
@@ -149,6 +154,11 @@ export class TableSettings {
         });
     }
 
+    /**
+     * Checks given elements are visible.
+     *
+     * @param texts - list of texts to checked.
+     */
     async expectItemsToBeVisible(texts: string[]): Promise<void> {
         const textsList = texts.join(', ');
         await test.step(`Check \`${textsList}\` exist in the \`${this.dialogName}\` dialog`, async () => {
@@ -317,6 +327,11 @@ class Toolbar {
         return this.page.getByRole('button', { name: 'Navigation' });
     }
 
+    /**
+     * Checks if the "Save" button is disabled.
+     *
+     * @returns Promise that resolves when the "Save" button is verified to be disabled.
+     */
     async isDisabled(): Promise<void> {
         return await expect(this.saveButton, `Check \`Save\` button is disabled`).toBeDisabled();
     }
@@ -404,11 +419,22 @@ export class AdpDialog {
         }
     }
 
+    /**
+     * Gets the name (title) of the dialog.
+     *
+     * @returns Promise resolving to the dialog title as a string.
+     */
     async getName(): Promise<string> {
         const title = (await this.frame.getByRole('dialog').getByRole('heading').textContent()) ?? '';
         return title;
     }
 
+    /**
+     * Fill input field with the given value.
+     *
+     * @param fieldName - name of input field
+     * @param value - value to fill in.
+     */
     async fillField(fieldName: string, value: string): Promise<void> {
         const title = await this.getName();
         await test.step(`Fill \`${fieldName}\` field with \`${value}\` in dialog \`${title}\``, async () => {
@@ -424,6 +450,11 @@ export class AdpDialog {
         });
     }
 
+    /**
+     * Checks if the "Open in VS Code" button is visible.
+     *
+     * @returns Promise that resolves when the button is visible.
+     */
     async openInVSCodeVisible(): Promise<void> {
         return expect(
             this.frame.getByRole('button', { name: 'Open in VS Code' }),
@@ -530,8 +561,7 @@ export async function expectChanges(projectCopy: string, expected: Partial<Chang
  * @param obj Object to convert to expect matchers
  * @returns Converted object with expect matchers
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function convertToExpectMatchers(obj: any): any {
+function convertToExpectMatchers(obj: any): unknown {
     // Base case: null or undefined
     if (obj === null || obj === undefined) {
         return obj;
@@ -564,7 +594,6 @@ function convertToExpectMatchers(obj: any): any {
         return expect.objectContaining(result);
     }
 
-    // Return primitive values as is
     return obj;
 }
 

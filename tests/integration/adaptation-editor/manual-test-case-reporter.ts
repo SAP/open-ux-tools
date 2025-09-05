@@ -1,6 +1,6 @@
 import { writeFile, mkdir } from 'fs/promises';
 import { join, basename } from 'path';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import type {
     FullConfig,
     FullResult,
@@ -20,6 +20,9 @@ interface ManualTestCase {
     steps: ManualTestCaseStep[];
 }
 
+/**
+ * Playwright reporter for generating manual test case documentation.
+ */
 export default class ManualTestCaseReporter implements Reporter {
     private manualTestCases: Record<string, ManualTestCase> = {};
     private config: FullConfig;
@@ -27,6 +30,13 @@ export default class ManualTestCaseReporter implements Reporter {
     private fileCompletedTests: Record<string, number> = {};
     // only for latest ui5 reporter is enabled
     private isReporterDisabled = false;
+
+    /**
+     * Creates an empty manual test case object for the given test.
+     *
+     * @param test The test case for which to create the manual test case object.
+     * @returns An empty ManualTestCase object.
+     */
     private createEmptyManualTestCase(test: TestCase): ManualTestCase {
         return {
             name: test.title,
@@ -35,6 +45,12 @@ export default class ManualTestCaseReporter implements Reporter {
         };
     }
 
+    /**
+     * On begin handler.
+     *
+     * @param config - config
+     * @param suite - test suite
+     */
     onBegin(config: FullConfig, suite: Suite) {
         // Only run this reporter for the latest version
         const latestVersion = this.getLatestVersion();
@@ -59,8 +75,17 @@ export default class ManualTestCaseReporter implements Reporter {
         });
     }
 
+    /**
+     * On step begin handler.
+     *
+     * @param test - test case.
+     * @param result - test result.
+     * @param step - test step
+     */
     onStepBegin(test: TestCase, result: TestResult, step: TestStep): void {
-        if (this.isReporterDisabled) return;
+        if (this.isReporterDisabled) {
+            return;
+        }
         const skipPatterns = [
             /^Before Hooks$/,
             /^After Hooks$/,
@@ -97,8 +122,16 @@ export default class ManualTestCaseReporter implements Reporter {
             }
         }
     }
-    onTestBegin(test: TestCase, result: TestResult) {
-        if (this.isReporterDisabled) return;
+    /**
+     * On test begin handler.
+     *
+     * @param test - test case
+     * @param _result - test result
+     */
+    onTestBegin(test: TestCase, _result: TestResult) {
+        if (this.isReporterDisabled) {
+            return;
+        }
         const testCase = this.createEmptyManualTestCase(test);
         this.manualTestCases[test.title] = testCase;
     }
@@ -107,10 +140,12 @@ export default class ManualTestCaseReporter implements Reporter {
      * Called when a test ends.
      *
      * @param test - The test case that just ended
-     * @param result - Result of the test run
+     * @param _result - Result of the test run
      */
-    async onTestEnd(test: TestCase, result: TestResult) {
-        if (this.isReporterDisabled) return;
+    async onTestEnd(test: TestCase, _result: TestResult) {
+        if (this.isReporterDisabled) {
+            return;
+        }
         if (test.location.file) {
             const filename = basename(test.location.file);
             this.manualTestCases[test.title].filePath = filename;
@@ -123,10 +158,12 @@ export default class ManualTestCaseReporter implements Reporter {
     /**
      * Called when all tests have finished.
      *
-     * @param result - Result of the entire test run
+     * @param _result - Result of the entire test run
      */
-    async onEnd(result: FullResult) {
-        if (this.isReporterDisabled) return;
+    async onEnd(_result: FullResult) {
+        if (this.isReporterDisabled) {
+            return;
+        }
     }
 
     /**
@@ -204,7 +241,7 @@ export default class ManualTestCaseReporter implements Reporter {
     }
 
     /**
-     * Checks if all tests from a specific file have completed
+     * Checks if all tests from a specific file have completed.
      *
      * @param filename The filename to check (e.g., 'list-report-v2.spec.ts')
      * @returns True if all tests from the file have completed
@@ -224,7 +261,7 @@ export default class ManualTestCaseReporter implements Reporter {
     }
 
     /**
-     * Generate documentation immediately if a file is complete
+     * Generate documentation immediately if a file is complete.
      *
      * @param testFile The name of the test file
      */
@@ -235,6 +272,11 @@ export default class ManualTestCaseReporter implements Reporter {
         }
     }
 
+    /**
+     * Gets the latest UI5 version from environment or versions.json.
+     *
+     * @returns The latest version string, or null if not found.
+     */
     private getLatestVersion(): string | null {
         if (process.env.HIGHEST_UI5_VERSION) {
             return process.env.HIGHEST_UI5_VERSION;
@@ -243,9 +285,11 @@ export default class ManualTestCaseReporter implements Reporter {
         try {
             const versionsPath = join(process.cwd(), 'versions.json');
 
-            const versionsContent = existsSync(versionsPath) ? require('fs').readFileSync(versionsPath, 'utf8') : null;
+            const versionsContent = existsSync(versionsPath) ? readFileSync(versionsPath, 'utf8') : null;
 
-            if (!versionsContent) return null;
+            if (!versionsContent) {
+                return null;
+            }
 
             const versions = JSON.parse(versionsContent) as string[];
             return versions[0]; // First version is the latest
@@ -255,12 +299,18 @@ export default class ManualTestCaseReporter implements Reporter {
     }
 }
 
+/**
+ * Parses a Playwright step title into a human-readable action description.
+ *
+ * @param stepTitle The title of the step to parse.
+ * @returns A human-readable string describing the action.
+ */
 function parseActionStep(stepTitle: string): string {
     // Action mapping - common Playwright methods to human verbs with optional prefix and suffix
     const actionMap: Record<string, { prefix: string; suffix?: string }> = {
         'click': { prefix: 'Click on' },
         'hover': { prefix: 'Hover over' },
-        'isDisabled': { prefix: 'Check if', suffix: 'is disabled' },
+        'isDisabled': { prefix: 'Check if', suffix: 'is disabled' }
     };
 
     // Element type mapping - detect element types from selectors/roles
@@ -270,11 +320,9 @@ function parseActionStep(stepTitle: string): string {
 
     // Try to find action verb from the main step title
     let actionInfo: { prefix: string; suffix?: string } | null = null;
-    let actionType = '';
     for (const [actionKey, actionVerb] of Object.entries(actionMap)) {
         if (stepTitle.includes(`.${actionKey}`) || stepTitle.startsWith(actionKey)) {
             actionInfo = actionVerb;
-            actionType = actionKey;
             break;
         }
     }
