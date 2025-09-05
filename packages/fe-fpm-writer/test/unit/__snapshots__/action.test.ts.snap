@@ -220,6 +220,60 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
+exports[`CustomAction generateCustomAction Typescript actions Generate action with event handler 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomAction": Object {
+                      "enabled": true,
+                      "press": "my.test.App.ext.MyCustomAction.onPress",
+                      "text": "My custom action text",
+                      "visible": true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomAction Typescript actions Generate action with event handler 2`] = `
+"import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Context from 'sap/ui/model/odata/v4/Context';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param pageContext the context of the page on which the event was fired
+ */
+export function onPress(this: ExtensionAPI, pageContext: Context) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}"
+`;
+
 exports[`CustomAction generateCustomAction custom section as target 1`] = `
 Object {
   "sap.app": Object {

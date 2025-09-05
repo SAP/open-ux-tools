@@ -422,5 +422,26 @@ describe('CustomAction', () => {
                 expect(result).toEqual(expectedAfterSave);
             });
         });
+
+        describe('Typescript actions', () => {
+            test('Generate action with event handler', async () => {
+                await generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        folder: 'ext',
+                        target,
+                        eventHandler: true,
+                        typescript: true,
+                        settings: {
+                            ...settings
+                        }
+                    },
+                    fs
+                );
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.ts'))).toMatchSnapshot();
+            });
+        });
     });
 });
