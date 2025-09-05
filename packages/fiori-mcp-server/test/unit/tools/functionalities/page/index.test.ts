@@ -257,9 +257,9 @@ describe('add-page', () => {
                     'contextPath': '/Travels/Expenses',
                     'entity': 'Expenses',
                     'folder': join('ext', 'view'),
-                    'id': 'CustomViewPage',
+                    'id': 'DummyPage',
                     'minUI5Version': '1.136.0',
-                    'name': 'CustomView',
+                    'name': 'Dummy',
                     'navigation': {
                         'navEntity': 'Expenses',
                         'navKey': true,
@@ -288,7 +288,31 @@ describe('add-page', () => {
                         pageType: 'CustomPage'
                     }
                 })
-            ).rejects.toThrow('Missing or invalid parameter "viewName"');
+            ).rejects.toThrow('Missing value for parameter "pageViewName"');
+        });
+
+        test('case 8: validate incorrect "pageViewName"', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'CustomPage',
+                        pageViewName: '1Dummy'
+                    }
+                })
+            ).rejects.toThrow(
+                'Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "/^[A-Za-z][A-Za-z0-9_-]*$/"'
+            );
         });
     });
 });

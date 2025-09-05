@@ -1,4 +1,4 @@
-import type { GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput, Parameter } from '../types';
+import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput, Parameter } from '../types';
 import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath, TreeNodeProperty } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
@@ -130,7 +130,7 @@ async function getDetails(appPath: string, pageName?: string): Promise<TreeNode 
  * @returns An object containing the resolved page name (if applicable) and property path.
  * @throws Error if the functionalityId parameter has an invalid format.
  */
-export function resolveFunctionality(functionalityId: string | string[]): {
+export function resolveFunctionality(functionalityId: FunctionalityId): {
     pageName?: string;
     propertyPath: PropertyPath;
 } {
