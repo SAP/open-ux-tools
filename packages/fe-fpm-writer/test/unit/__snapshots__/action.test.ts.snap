@@ -267,9 +267,10 @@ import MessageToast from 'sap/m/MessageToast';
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param pageContext the context of the page on which the event was fired
+ * @param context the context of the page on which the event was fired. \`undefined\` for list report page.
+ * @param selectedContexts the selected contexts of the table rows.
  */
-export function onPress(this: ExtensionAPI, pageContext: Context) {
+export function onPress(this: ExtensionAPI, context: Context | undefined, selectedContexts: Context[]) {
     MessageToast.show(\\"Custom handler invoked.\\");
 }"
 `;
