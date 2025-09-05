@@ -27,6 +27,10 @@ export interface EventHandlerTypescriptParameter {
     name: string;
     description: string;
     importType: string;
+    /**
+     * Optional. If not defined, the parameter type will be taken from `importType`.
+     */
+    paramType?: string;
     importSource: string;
 }
 
@@ -44,9 +48,17 @@ export const defaultParameter: EventHandlerTypescriptParameter = {
  * Values for the input parameters of newly created event handlers that are added as manifest actions.
  */
 export const contextParameter: EventHandlerTypescriptParameter = {
-    name: 'pageContext',
-    description: 'the context of the page on which the event was fired',
+    name: 'context',
+    description: 'the context of the page on which the event was fired. `undefined` for list report page.',
     importType: 'Context',
+    paramType: 'Context | undefined',
+    importSource: 'sap/ui/model/odata/v4/Context'
+};
+export const selectedContextsParameter: EventHandlerTypescriptParameter = {
+    name: 'selectedContexts',
+    description: 'the selected contexts of the table rows.',
+    importType: 'Context',
+    paramType: 'Context[]',
     importSource: 'sap/ui/model/odata/v4/Context'
 };
 
