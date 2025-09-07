@@ -474,6 +474,7 @@ describe('FE V2 quick actions', () => {
                 expectActionAvailable: boolean;
                 isTableNotLoaded?: boolean;
                 isWithIconTabBar?: boolean;
+                variantManagementDisabled?: boolean;
             }[] = [
                 {
                     tableType: SMART_TABLE_TYPE,
@@ -506,6 +507,14 @@ describe('FE V2 quick actions', () => {
                     actionId: 'CTX_SETTINGS',
                     expectActionAvailable: true,
                     isTableNotLoaded: true
+                },
+                {
+                    tableType: M_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true,
+                    isTableNotLoaded: true,
+                    variantManagementDisabled: true
                 }
             ];
             const setSelectedKeyMock = jest.fn();
@@ -515,6 +524,14 @@ describe('FE V2 quick actions', () => {
                 const scrollIntoView = jest.fn();
                 let attachedEvent: (() => Promise<void>) | undefined = undefined;
                 const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
+                if (testCase.variantManagementDisabled) {
+                    jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                        return {
+                            isA: (type: string) => type === 'sap.suite.ui.generic.template.ObjectPage.Component',
+                            getAppComponent: jest.fn().mockReturnValue({})
+                        } as unknown as UIComponent;
+                    });
+                }
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == tableId) {
                         return {
@@ -542,7 +559,10 @@ describe('FE V2 quick actions', () => {
                             getBindingContext: () => !testCase.isTableNotLoaded,
                             attachEventOnce: (name: string, handler: () => Promise<void>) => {
                                 attachedEvent = handler;
-                            }
+                            },
+                            ...(testCase.variantManagementDisabled && {
+                                getVariantManagement: () => false
+                            })
                         };
                     }
                     if (id == 'NavContainer') {
@@ -615,7 +635,11 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    {
+                        ...mockChangeService,
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined)
+                    } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -662,7 +686,11 @@ describe('FE V2 quick actions', () => {
                                         {
                                             path: '0',
                                             children: [],
-                                            enabled: true,
+                                            enabled: testCase.variantManagementDisabled ? false : true,
+                                            ...(testCase.variantManagementDisabled && {
+                                                tooltip:
+                                                    'This action has been disabled because the variant management is disabled. Please enable and try again.'
+                                            }),
                                             label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
@@ -1307,11 +1335,13 @@ describe('FE V2 quick actions', () => {
                     isManifestPagesAsArray: true
                 }
             ];
-            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-                return {
-                    isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
-                    getAppComponent: jest.fn().mockReturnValue({} as any)
-                } as unknown as UIComponent;
+            beforeEach(() => {
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return {
+                        isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
+                        getAppComponent: jest.fn().mockReturnValue({})
+                    } as unknown as UIComponent;
+                });
             });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
@@ -1721,7 +1751,14 @@ describe('FE V2 quick actions', () => {
                         }
                     };
                 });
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return {
+                        isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
+                        getAppComponent: jest.fn().mockReturnValue({})
+                    } as unknown as UIComponent;
+                });
             });
+
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 fetchMock.mockResolvedValue({
                     json: jest.fn().mockReturnValue({

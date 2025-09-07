@@ -347,7 +347,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             label,
             enabled: true,
             children: []
-        };
+        }; 
         if (this.options.validatePageVariantManagement) {
             const variantEnabledV2 = isVariantManagementEnabledOPPage(this.context, table);
             if (variantEnabledV2 === false) {

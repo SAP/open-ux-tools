@@ -111,20 +111,21 @@ export async function areManifestChangesSupported(manifest: Manifest): Promise<b
     return isAboveOrEqualMinimalVersion || isSupportedPatchVersion;
 }
 
-export function isVariantManagementEnabledOPPage(context: QuickActionContext, control: UI5Element): boolean | undefined {
+export function isVariantManagementEnabledOPPage(
+    context: QuickActionContext,
+    control: UI5Element
+): boolean | undefined {
     const ownerComponent = Component.getOwnerComponentFor(control) as unknown as ListReportComponent;
     if (ownerComponent?.isA('sap.suite.ui.generic.template.ObjectPage.Component')) {
         const id = control.getId();
         if (typeof id !== 'string') {
             throw new Error('Could not retrieve configuration property because control id is not valid!');
         }
-        if (ownerComponent?.isA('sap.suite.ui.generic.template.ObjectPage.Component')) {
-            let value = context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
-            if (value === undefined) {
-                value = !!(control as SmartTableExtended).getVariantManagement();
-            }
-            return value as boolean;
+        let value  = context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
+        if (value === undefined) {
+            value = !!(control as SmartTableExtended).getVariantManagement();
         }
+        return value as boolean;
     }
     return undefined;
 }
