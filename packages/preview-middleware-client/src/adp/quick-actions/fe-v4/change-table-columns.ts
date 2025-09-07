@@ -32,17 +32,31 @@ export class ChangeTableColumnsQuickAction
             this.controlTypes
         )) {
             const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
+            const path = this.children.length.toString();
+            const tableHeader = (smartTable as Table).getHeader() || 'Unnamed';
+            const tableLabel = `'${tableHeader}' table`;
+
             if (!hasVariantManagement) {
+                this.children.push({
+                    path,
+                    label: tableLabel,
+                    enabled: false,
+                    tooltip: this.context.resourceBundle.getText('TABLE_CHANGE_COLUMN_ACTION_NOT_AVAILABLE'),
+                    children: []
+                });
+                this.tableMap[path] = {
+                    table: smartTable,
+                    tableUpdateEventAttachedOnce: false
+                };
                 continue;
             }
 
             const actions = await this.context.actionService.get(smartTable.getId());
             const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
             if (changeColumnAction) {
-                const path = this.children.length.toString();
                 this.children.push({
                     path,
-                    label: `'${(smartTable as Table).getHeader()}' table`,
+                    label: tableLabel,
                     enabled: true,
                     children: []
                 });

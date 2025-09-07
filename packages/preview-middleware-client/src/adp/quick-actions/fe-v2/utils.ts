@@ -9,6 +9,8 @@ import Component from 'sap/ui/core/Component';
 import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
+import SmartTableExtended from 'sap/ui/comp/smarttable';
 
 /**
  * Gets app component of a v2 project.
@@ -109,3 +111,20 @@ export async function areManifestChangesSupported(manifest: Manifest): Promise<b
     return isAboveOrEqualMinimalVersion || isSupportedPatchVersion;
 }
 
+export function isVariantManagementEnabledOPPage(context: QuickActionContext, control: UI5Element): boolean | undefined {
+    const ownerComponent = Component.getOwnerComponentFor(control) as unknown as ListReportComponent;
+    if (ownerComponent?.isA('sap.suite.ui.generic.template.ObjectPage.Component')) {
+        const id = control.getId();
+        if (typeof id !== 'string') {
+            throw new Error('Could not retrieve configuration property because control id is not valid!');
+        }
+        if (ownerComponent?.isA('sap.suite.ui.generic.template.ObjectPage.Component')) {
+            let value = context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
+            if (value === undefined) {
+                value = !!(control as SmartTableExtended).getVariantManagement();
+            }
+            return value as boolean;
+        }
+    }
+    return undefined;
+}

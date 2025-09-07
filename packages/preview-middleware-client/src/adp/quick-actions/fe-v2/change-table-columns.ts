@@ -25,7 +25,8 @@ export class ChangeTableColumnsQuickAction
             'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS',
             context,
             {
-                includeServiceAction: true
+                includeServiceAction: true,
+                validatePageVariantManagement: true
             },
             [DIALOG_ENABLEMENT_VALIDATOR]
         );

@@ -25,6 +25,7 @@ import {
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from './control-types';
+import { isVariantManagementEnabledOPPage } from './fe-v2/utils';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -57,6 +58,7 @@ async function getRearrangeToolbarContentActionId(): Promise<string> {
 export type TableQuickActionsOptions = {
     includeServiceAction?: boolean;
     areTableRowsRequired?: boolean;
+    validatePageVariantManagement?: boolean;
 };
 
 /**
@@ -346,6 +348,14 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             enabled: true,
             children: []
         };
+        if (this.options.validatePageVariantManagement) {
+            const variantEnabledV2 = isVariantManagementEnabledOPPage(this.context, table);
+            if (variantEnabledV2 === false) {
+                child.enabled = false;
+                child.tooltip = this.context.resourceBundle.getText('TABLE_CHANGE_COLUMN_ACTION_NOT_AVAILABLE');
+                return child;
+            }
+        }
         if (!this.options.areTableRowsRequired) {
             return child;
         }
