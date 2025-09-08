@@ -100,6 +100,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: stri
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
  * @param options.supportVirtualEndpoints whether to support virtual endpoints - search params will not be added as they are injected at runtime
+ * @param options.packageJson
  * @returns package.json scripts
  */
 export function getPackageScripts({
@@ -110,10 +111,18 @@ export function getPackageScripts({
     startFile,
     localStartFile,
     generateIndex = true,
-    supportVirtualEndpoints = false
-}: PackageScriptsOptions): PackageJsonScripts {
+    supportVirtualEndpoints = false,
+    packageJson
+}: PackageScriptsOptions & { packageJson?: { name?: string } }): PackageJsonScripts {
+    // Always use a dynamic anchor: flpAppId if set, otherwise sanitized packageJson.name
+    let smartVariantsAnchor = flpAppId ? flpAppId.replace(/[^a-zA-Z0-9_-]/g, '') : undefined;
+    if (!smartVariantsAnchor && packageJson?.name) {
+        smartVariantsAnchor = packageJson.name.replace(/[^a-zA-Z0-9_-]/g, '');
+    }
+
     const viewCacheSearchParams = new URLSearchParams([['sap-ui-xx-viewCache', 'false']]);
-    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, flpAppId);
+    // Use smartVariantsAnchor for all scripts
+    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, smartVariantsAnchor);
 
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, queryParams, startFile),
@@ -131,13 +140,10 @@ export function getPackageScripts({
             localStartFile ?? SCRIPT_FLP_SANDBOX
         }${queryParams}"`;
     }
-
     if (addTest) {
         scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "/test/integration/opaTests.qunit.html"';
     }
 
-    // Use flpAppId for smart variants anchor, matching start-local
-    const smartVariantsAnchor = flpAppId ? flpAppId.replace(/[^a-zA-Z0-9_-]/g, '') : undefined;
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : getVariantPreviewAppScript(!supportVirtualEndpoints, smartVariantsAnchor);
