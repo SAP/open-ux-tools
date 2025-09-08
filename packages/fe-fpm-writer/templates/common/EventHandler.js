@@ -9,7 +9,7 @@ sap.ui.define([
          * Generated event handler.
          *
 <% parameters.forEach(function(param) { -%>
-         * @param <%- param.name %> <%- param.description %>
+         * @param <%- param.jsName %> <%- param.description %>
 <% }) -%>
          */
 <% } -%>

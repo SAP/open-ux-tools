@@ -16,7 +16,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - cr
         /**
          * Generated event handler.
          *
-         * @param event the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider
          */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
@@ -42,7 +42,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - cr
         /**
          * Generated event handler.
          *
-         * @param event the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider
          */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
@@ -68,7 +68,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is empty "object
         /**
          * Generated event handler.
          *
-         * @param event the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider
          */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
@@ -334,7 +334,7 @@ exports[`CustomView with new handler 4`] = `
         /**
          * Generated event handler.
          *
-         * @param event the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider
          */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
@@ -387,7 +387,7 @@ exports[`CustomView with new handler and new table fragment (all properties) 4`]
         /**
          * Generated event handler.
          *
-         * @param event the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider
          */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
