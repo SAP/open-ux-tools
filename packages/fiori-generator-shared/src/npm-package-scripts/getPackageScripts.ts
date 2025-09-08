@@ -67,11 +67,8 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * @returns {string} A variant management script to run the application in preview mode.
  */
 function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: string): string {
-    // Use dynamic anchor if not using virtual endpoints
-    // Default to 'app-preview' if no name is provided
     let appAnchor = '#app-preview';
     if (addSearchParams && projectName) {
-        // Sanitize project name for URL fragment
         const safeName = projectName.replace(/[^a-zA-Z0-9_-]/g, '');
         appAnchor = `#${safeName}-tile`;
     }
@@ -145,7 +142,7 @@ export function getPackageScripts({
     }
 
     scripts['start-variants-management'] = localOnly
-        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
+        ? `echo \"${t('info.mockOnlyWarning')}\"`
         : getVariantPreviewAppScript(!supportVirtualEndpoints, smartVariantsAnchor);
 
     return scripts;

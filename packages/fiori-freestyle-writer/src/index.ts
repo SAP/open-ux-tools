@@ -162,7 +162,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
                 localStartFile: ffApp.app?.localStartFile,
                 generateIndex: ffApp.appOptions?.generateIndex,
                 addTest: addTests && ffApp.template.type === TemplateType.Basic,
-                supportVirtualEndpoints: ffApp.appOptions?.useVirtualPreviewEndpoints // no need for search params if virtual endpoints are used
+                supportVirtualEndpoints: ffApp.appOptions?.useVirtualPreviewEndpoints,
+                packageJson // fallback if flpAppId fails
             })
         };
         if (addTests) {
