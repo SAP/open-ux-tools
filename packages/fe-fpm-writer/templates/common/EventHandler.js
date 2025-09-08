@@ -4,7 +4,23 @@ sap.ui.define([
     'use strict';
 
     return {
+<% if (typeof parameters !== "undefined" && parameters.length) { -%>
+        /**
+         * Generated event handler.
+         *
+<% parameters.forEach(function(param) { -%>
+         * @param <%- param.name %> <%- param.description %>
+<% }) -%>
+         */
+        <%- eventHandlerFnName %>: function(<%=
+            (typeof parameters !== "undefined" ? parameters : [])
+                .map(function(param) {
+                    return param.jsName;
+                }).join(", ")
+        -%>) {
+<% } else { -%>
         <%- eventHandlerFnName %>: function(oEvent) {
+<% } -%>
             MessageToast.show("Custom handler invoked.");
         }
     };

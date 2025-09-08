@@ -128,7 +128,13 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param context the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param selectedContexts the selected contexts of the table rows.
+         */
+        DummyOnAction: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -143,7 +149,13 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param context the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param selectedContexts the selected contexts of the table rows.
+         */
+        DummyOnAction: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -176,7 +188,13 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param context the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param selectedContexts the selected contexts of the table rows.
+         */
+        onPress: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -438,7 +456,13 @@ exports[`CustomAction generateCustomAction specific target folder, event handler
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param context the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param selectedContexts the selected contexts of the table rows.
+         */
+        onPress: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

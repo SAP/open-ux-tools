@@ -13,6 +13,11 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param event the event object provided by the event provider
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -34,6 +39,11 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param event the event object provided by the event provider
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -55,6 +65,11 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param event the event object provided by the event provider
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -477,6 +492,11 @@ exports[`CustomAction generateCustomColumn version 1.86, with new handler, all p
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param event the event object provided by the event provider
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }

@@ -24,7 +24,10 @@ type EventHandlerTypescriptParameters = EventHandlerTypescriptParameter[];
  * Interface to describe the input parameters for the generated event handler function.
  */
 export interface EventHandlerTypescriptParameter {
+    /** Variable name in TypeScript style */
     name: string;
+    /** Variable name in JavaScript style (Hungarian notation) */
+    jsName: string;
     description: string;
     importType: string;
     /**
@@ -39,6 +42,7 @@ export interface EventHandlerTypescriptParameter {
  */
 export const defaultParameter: EventHandlerTypescriptParameter = {
     name: 'event',
+    jsName: 'oEvent',
     description: 'the event object provided by the event provider',
     importType: 'UI5Event',
     importSource: 'sap/ui/base/Event'
@@ -49,6 +53,7 @@ export const defaultParameter: EventHandlerTypescriptParameter = {
  */
 export const contextParameter: EventHandlerTypescriptParameter = {
     name: 'context',
+    jsName: 'oContext',
     description: 'the context of the page on which the event was fired. `undefined` for list report page.',
     importType: 'Context',
     paramType: 'Context | undefined',
@@ -56,6 +61,7 @@ export const contextParameter: EventHandlerTypescriptParameter = {
 };
 export const selectedContextsParameter: EventHandlerTypescriptParameter = {
     name: 'selectedContexts',
+    jsName: 'aSelectedContexts',
     description: 'the selected contexts of the table rows.',
     importType: 'Context',
     paramType: 'Context[]',
