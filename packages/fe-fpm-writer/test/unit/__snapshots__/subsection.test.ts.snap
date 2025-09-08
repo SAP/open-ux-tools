@@ -167,7 +167,7 @@ exports[`SubCustomSection generateCustomSubSection Versions 1.85 3`] = `
         /**
          * Generated event handler.
          *
-         * @param oEvent the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider.
          */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
@@ -216,7 +216,7 @@ exports[`SubCustomSection generateCustomSubSection Versions 1.86 3`] = `
         /**
          * Generated event handler.
          *
-         * @param oEvent the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider.
          */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
@@ -265,7 +265,7 @@ exports[`SubCustomSection generateCustomSubSection Versions 1.98 3`] = `
         /**
          * Generated event handler.
          *
-         * @param oEvent the event object provided by the event provider
+         * @param oEvent the event object provided by the event provider.
          */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");

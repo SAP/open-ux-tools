@@ -43,7 +43,7 @@ export interface EventHandlerTypescriptParameter {
 export const defaultParameter: EventHandlerTypescriptParameter = {
     name: 'event',
     jsName: 'oEvent',
-    description: 'the event object provided by the event provider',
+    description: 'the event object provided by the event provider.',
     importType: 'UI5Event',
     importSource: 'sap/ui/base/Event'
 };
