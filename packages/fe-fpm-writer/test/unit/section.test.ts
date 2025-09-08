@@ -340,7 +340,7 @@ describe('CustomSection', () => {
                 },
                 {
                     name: 'absolute position',
-                    position: 196,
+                    position: 190,
                     endOfLines: 8
                 }
             ];

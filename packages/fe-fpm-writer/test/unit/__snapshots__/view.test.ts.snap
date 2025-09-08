@@ -91,7 +91,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is object. Appen
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -115,7 +115,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is object. Appen
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {

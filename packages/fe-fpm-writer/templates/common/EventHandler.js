@@ -12,15 +12,13 @@ sap.ui.define([
          * @param <%- param.name %> <%- param.description %>
 <% }) -%>
          */
+<% } -%>
         <%- eventHandlerFnName %>: function(<%=
             (typeof parameters !== "undefined" ? parameters : [])
                 .map(function(param) {
                     return param.jsName;
                 }).join(", ")
         -%>) {
-<% } else { -%>
-        <%- eventHandlerFnName %>: function(oEvent) {
-<% } -%>
             MessageToast.show("Custom handler invoked.");
         }
     };

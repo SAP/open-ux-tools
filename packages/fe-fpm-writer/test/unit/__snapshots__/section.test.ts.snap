@@ -158,7 +158,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -184,7 +184,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {

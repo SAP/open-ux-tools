@@ -170,7 +170,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -209,7 +209,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -227,7 +227,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
