@@ -1,7 +1,7 @@
 import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import { getDataSourceAnnotationFileMap, ODataVersion } from '../../adp/api-handler';
-import { ODataDownStatus, ODataHealthStatus, ODataUpStatus } from './odata-health-status';
+import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status';
 
 /**
  * Use this class to do a health check for an OData service, supports both v2 and v4
@@ -38,7 +38,7 @@ export class ODataHealthChecker {
      * @param {ODataVersion} oDataVersion - The OData version.
      * @returns {Promise<any>} Rsolved with valid metadata.
      */
-    private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<any> {
+    private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
         switch (oDataVersion) {
             case 'v2':
                 return this.getServiceV2Metadata(serviceUrl);
@@ -49,7 +49,7 @@ export class ODataHealthChecker {
         }
     }
 
-    private getServiceV2Metadata(serviceUrl: string): Promise<any> {
+    private getServiceV2Metadata(serviceUrl: string): Promise<ODataMetadata> {
         const oModel = new ODataModelV2({
             serviceUrl,
             json: true,
@@ -63,7 +63,7 @@ export class ODataHealthChecker {
         );
     }
 
-    private getServiceV4Metadata(serviceUrl: string): Promise<any> {
+    private getServiceV4Metadata(serviceUrl: string): Promise<ODataMetadata> {
         const oModel = new ODataModelV4({
             serviceUrl,
             // Only metadata loaded. We only want the model to load $metadata,
