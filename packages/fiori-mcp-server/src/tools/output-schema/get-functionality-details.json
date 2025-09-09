@@ -4,13 +4,13 @@
     "functionalityId": {
       "anyOf": [
         {
+          "type": "string"
+        },
+        {
           "type": "array",
           "items": {
             "type": ["string", "number"]
           }
-        },
-        {
-          "type": "string"
         }
       ],
       "description": "Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`"
@@ -61,11 +61,23 @@
                 },
                 {
                   "not": {}
+                },
+                {
+                    "type": "null"
                 }
               ]
             }
           },
           "currentValue": {},
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pattern": {
+            "type": "string"
+          },
           "parameters": {
             "type": "array",
             "items": {
@@ -103,11 +115,23 @@
                       },
                       {
                         "not": {}
+                      },
+                      {
+                          "type": "null"
                       }
                     ]
                   }
                 },
-                "currentValue": {}
+                "currentValue": {},
+                "examples": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "pattern": {
+                  "type": "string"
+                }
               },
               "required": ["id", "type"],
               "additionalProperties": false
@@ -137,6 +161,6 @@
       "type": "string"
     }
   },
-  "required": ["id", "name", "description", "parameters"],
+  "required": ["functionalityId", "name", "description", "parameters"],
   "additionalProperties": false
 }
