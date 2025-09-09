@@ -5,15 +5,16 @@ import type { TelemetryData } from '../../src/telemetry';
 import { mcpServerName } from '../../src/telemetry';
 
 describe('TelemetryHelper', () => {
+    const opts = {
+        consumerModule: { name: 'test', version: '1.0.0' },
+        internalFeature: true,
+        resourceId: 'resource-id',
+        watchTelemetrySettingStore: false
+    };
+
     describe('initTelemetrySettings', () => {
         it('should call initTelemetrySettings with the provided options', async () => {
             const initTelemetrySettingsSpy = jest.spyOn(sapUxTelemetry, 'initTelemetrySettings').mockResolvedValue();
-            const opts = {
-                consumerModule: { name: 'test', version: '1.0.0' },
-                internalFeature: true,
-                resourceId: 'resource-id',
-                watchTelemetrySettingStore: false
-            };
             await TelemetryHelper.initTelemetrySettings(opts);
             expect(initTelemetrySettingsSpy).toHaveBeenCalledWith(opts);
         });
@@ -51,12 +52,29 @@ describe('TelemetryHelper', () => {
             reportEvent: reportEventSpy
         } as any);
 
-        const opts = {
-            consumerModule: { name: 'test', version: '1.0.0' },
-            internalFeature: true,
-            resourceId: 'resource-id',
-            watchTelemetrySettingStore: false
-        };
+        await TelemetryHelper.initTelemetrySettings(opts);
+        const telemetryData = TelemetryHelper.createTelemetryData({ test: 'test' }) as TelemetryData;
+        await TelemetryHelper.sendTelemetry('event', telemetryData);
+        expect(reportEventSpy).toHaveBeenCalledWith(
+            {
+                eventName: 'event',
+                measurements: {},
+                properties: {
+                    test: 'test',
+                    Platform: 'VSCode',
+                    OperatingSystem: expect.any(String)
+                }
+            },
+            2,
+            undefined
+        );
+    });
+    test('sendTelemetry - error case', async () => {
+        const reportEventSpy = jest.fn();
+        jest.spyOn(ClientFactory, 'getTelemetryClient').mockReturnValue({
+            reportEvent: reportEventSpy
+        } as any);
+
         await TelemetryHelper.initTelemetrySettings(opts);
         const telemetryData = TelemetryHelper.createTelemetryData({ test: 'test' }) as TelemetryData;
         await TelemetryHelper.sendTelemetry('event', telemetryData);
