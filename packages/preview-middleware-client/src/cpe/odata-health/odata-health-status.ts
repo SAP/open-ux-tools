@@ -5,11 +5,11 @@ export class ODataUpStatus {
 }
 
 export class ODataDownStatus {
-    get errorMessage(): string {
-        return this.formatReason(this.reason);
-    }
+    readonly errorMessage: string;
 
-    constructor(public readonly serviceUrl: string, public readonly reason: unknown) {}
+    constructor(public readonly serviceUrl: string, public readonly reason: unknown) {
+        this.errorMessage = this.formatReason(reason);
+    }
 
     private formatReason(reason: unknown): string {
         if (reason instanceof Error) {
@@ -18,7 +18,11 @@ export class ODataDownStatus {
         if (typeof reason === 'string') {
             return reason;
         }
-        return JSON.stringify(reason);
+        try {
+            return JSON.stringify(reason);
+        } catch {
+            return String(reason);
+        }
     }
 }
 
