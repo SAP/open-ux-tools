@@ -42,13 +42,6 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
-            - name: Replace placeholder with instrumentation key
-              uses: jacobtomlinson/gha-find-replace@v3
-              with:
-                  include: packages/fiori-mcp-server/src/telemetry/index.ts
-                  find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
-                  replace: ${{ secrets.INSTRUMENTATION_KEY }}
-                  regex: false
             - name: Run build
               run: pnpm run build
               env:
