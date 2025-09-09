@@ -13,6 +13,7 @@ import osName from 'os-name';
 import i18next from 'i18next';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
+export const unknownTool = 'unknown-tool';
 
 export interface TelemetryData {
     [key: string]: string;
@@ -108,14 +109,14 @@ export abstract class TelemetryHelper {
     private static prepareTelemetryEvent(telemetryEventName: string, telemetryData: TelemetryData): TelemetryEvent {
         // Make sure performance measurement end is called
         this.markToolsEndTime();
-        const generationTime = telemetryData.markName
+        const requestTime = telemetryData.markName
             ? Performance.getMeasurementDuration(telemetryData.markName)
             : undefined;
 
         return {
             eventName: telemetryEventName,
             properties: telemetryData,
-            measurements: generationTime ? { GenerationTime: generationTime } : {}
+            measurements: requestTime ? { RequestTime: requestTime } : {}
         };
     }
 

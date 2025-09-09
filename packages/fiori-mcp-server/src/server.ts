@@ -5,7 +5,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
 import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
-import { TelemetryHelper, type TelemetryData } from './telemetry';
+import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
 import type {
     ExecuteFunctionalitiesInput,
     GetFunctionalityDetailsInput,
@@ -83,6 +83,10 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
+                const telemetryProperties: TelemetryData = {
+                    tool: name,
+                    functionalityId: (args as any)?.functionalityId
+                };
 
                 switch (name) {
                     case 'list-fiori-apps':
@@ -98,17 +102,12 @@ export class FioriFunctionalityServer {
                         result = await executeFunctionality(args as ExecuteFunctionalitiesInput);
                         break;
                     default:
+                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
                         );
                 }
-                const telemetryProperties: TelemetryData = {
-                    tool: name,
-                    functionalityId: (args as any)?.functionalityId
-                };
-
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
-
                 return this.convertResultToCallToolResult(result);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
