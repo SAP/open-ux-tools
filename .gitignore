@@ -179,6 +179,3 @@ generators
 # nx 
 .nx
 nx-cloud.env
-
-
-esbuild-stats.json
