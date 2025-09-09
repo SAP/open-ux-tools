@@ -1,5 +1,7 @@
+export type ODataMetadata = Record<string, unknown>;
+
 export class ODataUpStatus {
-    constructor(public readonly serviceUrl: string, public readonly metadata: any) {}
+    constructor(public readonly serviceUrl: string, public readonly metadata: ODataMetadata) {}
 }
 
 export class ODataDownStatus {
@@ -7,9 +9,9 @@ export class ODataDownStatus {
         return this.formatReason(this.reason);
     }
 
-    constructor(public readonly serviceUrl: string, public readonly reason: any) {}
+    constructor(public readonly serviceUrl: string, public readonly reason: unknown) {}
 
-    private formatReason(reason: any): string {
+    private formatReason(reason: unknown): string {
         if (reason instanceof Error) {
             return reason.message;
         }
