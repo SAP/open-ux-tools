@@ -67,10 +67,9 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * @returns {string} A variant management script to run the application in preview mode.
  */
 function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: string): string {
-    let appAnchor = '#app-preview';
+    let previewAppAnchor = '#app-preview';
     if (addSearchParams && projectName) {
-        const safeName = projectName.replace(/[^a-zA-Z0-9_-]/g, '');
-        appAnchor = `#${safeName}`;
+        previewAppAnchor = `#${projectName}`;
     }
     let urlParam = '';
     if (addSearchParams) {
@@ -82,7 +81,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: stri
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
     // eslint-disable-next-line no-useless-escape
-    return `fiori run --open \"/preview.html${urlParam}${appAnchor}\"`;
+    return `fiori run --open \"/preview.html${urlParam}${previewAppAnchor}\"`;
 }
 
 /**
@@ -109,9 +108,8 @@ export function getPackageScripts({
     generateIndex = true,
     supportVirtualEndpoints = false
 }: PackageScriptsOptions): PackageJsonScripts {
-    const sanitisedFlpAppId = flpAppId ? flpAppId.replace(/[^a-zA-Z0-9_-]/g, '') : '';
     const viewCacheSearchParams = new URLSearchParams([['sap-ui-xx-viewCache', 'false']]);
-    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, sanitisedFlpAppId);
+    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, flpAppId);
 
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, queryParams, startFile),
@@ -135,7 +133,7 @@ export function getPackageScripts({
 
     scripts['start-variants-management'] = localOnly
         ? `echo \"${t('info.mockOnlyWarning')}\"`
-        : getVariantPreviewAppScript(!supportVirtualEndpoints, sanitisedFlpAppId);
+        : getVariantPreviewAppScript(!supportVirtualEndpoints, flpAppId);
 
     return scripts;
 }
