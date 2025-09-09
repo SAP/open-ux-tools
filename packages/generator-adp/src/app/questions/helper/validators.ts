@@ -3,7 +3,6 @@ import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input
 
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
-import { resolveNodeModuleGenerator } from '../../extension-project';
 
 interface JsonInputParams {
     projectName: string;
@@ -19,17 +18,17 @@ interface JsonInputParams {
  * @param {boolean} value - A confirm flag indicating whether user wants to continue creating an extension project.
  * @param {boolean} isApplicationSupported - Whether the selected application is supported.
  * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
+ * @param {boolean} isExtensibilityGenInstalled - Whether the extensibility sub-generator is installed.
  * @returns {boolean | string} Returns true if app is supported and contains sync views, or an error message if not.
  */
 export function validateExtensibilityGenerator(
     value: boolean,
     isApplicationSupported: boolean,
-    hasSyncViews: boolean
+    hasSyncViews: boolean,
+    isExtensibilityGenInstalled: boolean
 ): boolean | string {
     if (value) {
-        const generator = resolveNodeModuleGenerator();
-
-        if (!generator) {
+        if (!isExtensibilityGenInstalled) {
             return t('error.extensibilityGenNotFound');
         }
 
