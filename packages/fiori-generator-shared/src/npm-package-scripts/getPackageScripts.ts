@@ -70,7 +70,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: stri
     let appAnchor = '#app-preview';
     if (addSearchParams && projectName) {
         const safeName = projectName.replace(/[^a-zA-Z0-9_-]/g, '');
-        appAnchor = `#${safeName}-tile`;
+        appAnchor = `#${safeName}`;
     }
     let urlParam = '';
     if (addSearchParams) {
@@ -97,7 +97,6 @@ function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: stri
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
  * @param options.supportVirtualEndpoints whether to support virtual endpoints - search params will not be added as they are injected at runtime
- * @param options.packageJson
  * @returns package.json scripts
  */
 export function getPackageScripts({
@@ -108,18 +107,11 @@ export function getPackageScripts({
     startFile,
     localStartFile,
     generateIndex = true,
-    supportVirtualEndpoints = false,
-    packageJson
-}: PackageScriptsOptions & { packageJson?: { name?: string } }): PackageJsonScripts {
-    // Always use a dynamic anchor: flpAppId if set, otherwise sanitized packageJson.name
-    let smartVariantsAnchor = flpAppId ? flpAppId.replace(/[^a-zA-Z0-9_-]/g, '') : undefined;
-    if (!smartVariantsAnchor && packageJson?.name) {
-        smartVariantsAnchor = packageJson.name.replace(/[^a-zA-Z0-9_-]/g, '');
-    }
-
+    supportVirtualEndpoints = false
+}: PackageScriptsOptions): PackageJsonScripts {
+    const sanitisedFlpAppId = flpAppId ? flpAppId.replace(/[^a-zA-Z0-9_-]/g, '') : '';
     const viewCacheSearchParams = new URLSearchParams([['sap-ui-xx-viewCache', 'false']]);
-    // Use smartVariantsAnchor for all scripts
-    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, smartVariantsAnchor);
+    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, sanitisedFlpAppId);
 
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, queryParams, startFile),
@@ -143,7 +135,7 @@ export function getPackageScripts({
 
     scripts['start-variants-management'] = localOnly
         ? `echo \"${t('info.mockOnlyWarning')}\"`
-        : getVariantPreviewAppScript(!supportVirtualEndpoints, smartVariantsAnchor);
+        : getVariantPreviewAppScript(!supportVirtualEndpoints, sanitisedFlpAppId);
 
     return scripts;
 }
