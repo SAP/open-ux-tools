@@ -5,17 +5,16 @@ import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
+import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response } from 'express';
 
-import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName } from '@sap-ux/project-access';
-import { type CodeExtChange } from '../types';
-import { ManifestService } from '../base/abap/manifest-service';
-import type { DataSources } from '../base/abap/manifest-service';
-import { getVariant, isTypescriptSupported } from '../base/helper';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { DirName } from '@sap-ux/project-access';
+import type { DataSources } from '../base/abap/manifest-service';
+import { ManifestService } from '../base/abap/manifest-service';
+import { getVariant, isTypescriptSupported } from '../base/helper';
+import { HttpStatusCodes, TemplateFileName, type CodeExtChange } from '../types';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -29,11 +28,14 @@ interface AnnotationFileDetails {
     annotationExistsInWS: boolean;
 }
 
+type ODataVersion = 'v2' | 'v4' | undefined;
+
 interface AnnotationDataSourceMap {
     [key: string]: {
         serviceUrl: string;
         annotationDetails: AnnotationFileDetails;
         metadataReadErrorMsg: string | undefined;
+        oDataVersion: ODataVersion;
     };
 }
 export interface AnnotationDataSourceResponse {
@@ -47,6 +49,9 @@ type ControllerInfo = { controllerName: string };
  * @description Handles API Routes
  */
 export default class RoutesHandler {
+    readonly ODATA_V2_EDMX = 'schemas.microsoft.com/ado/2007/06/edmx';
+    readonly ODATA_V4_EDMX = 'docs.oasis-open.org/odata/ns/edmx';
+
     /**
      * Constructor taking project as input.
      *
@@ -297,13 +302,17 @@ export default class RoutesHandler {
 
             for (const dataSourceId in dataSources) {
                 if (dataSources[dataSourceId].type === 'OData') {
-                    const metadataReadErrorMsg = await this.getMetaDataReadErrorMsg(manifestService, dataSourceId);
+                    const { metadataReadErrorMsg, oDataVersion } = await this.readMetadataAndDetectVersion(
+                        manifestService,
+                        dataSourceId
+                    );
                     apiResponse.annotationDataSourceMap[dataSourceId] = {
                         annotationDetails: {
                             annotationExistsInWS: false
                         },
                         serviceUrl: dataSources[dataSourceId].uri,
-                        metadataReadErrorMsg
+                        metadataReadErrorMsg,
+                        oDataVersion
                     };
                 }
                 this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse.annotationDataSourceMap);
@@ -315,22 +324,41 @@ export default class RoutesHandler {
     };
 
     /**
+     * Use this method to get the OData service version.
      *
-     * @param manifestService
-     * @param dataSrouceID
-     * @returns error message with reason
+     * @param {ManifestService} manifestService - Instance to the manifest service.
+     * @param {string} dataSourceId - The OData service id.
+     * @returns {Promise<{ metadataReadErrorMsg?: string; oDataVersion?: ODataVersion }>}
+     * The version of the OData service. If there is an exception during the $metadata fetch
+     * then the error message is returned instead.
      */
-    private async getMetaDataReadErrorMsg(
+    private async readMetadataAndDetectVersion(
         manifestService: ManifestService,
-        dataSrouceID: string
-    ): Promise<string | undefined> {
-        let errorMessage;
+        dataSourceId: string
+    ): Promise<{ metadataReadErrorMsg?: string; oDataVersion?: ODataVersion }> {
         try {
-            await manifestService.getDataSourceMetadata(dataSrouceID);
+            const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
+            return { oDataVersion: this.getODataVersion(metadata) };
         } catch (error) {
-            errorMessage = `Metadata: ${error.message as string}`;
+            return { metadataReadErrorMsg: `Metadata: ${error.message}` };
         }
-        return errorMessage;
+    }
+
+    /**
+     * Use this method to get the OData service version from the $metadata string.
+     *
+     * @param {string} metadata - The metadata as a string.
+     * @returns {ODataVersion} - The OData version or undefined if the metadata is
+     * malformed.
+     */
+    private getODataVersion(metadata: string): ODataVersion {
+        if (metadata.includes(this.ODATA_V2_EDMX)) {
+            return 'v2';
+        }
+        if (metadata.includes(this.ODATA_V4_EDMX)) {
+            return 'v4';
+        }
+        return undefined;
     }
 
     /**
