@@ -2,7 +2,6 @@
 
 exports[`Tools schemas execute-functionality: Input schema for "execute-functionality" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
@@ -50,7 +49,6 @@ Object {
 
 exports[`Tools schemas execute-functionality: Output schema for "execute-functionality" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
@@ -108,7 +106,6 @@ Object {
 
 exports[`Tools schemas get-functionality-details: Input schema for "get-functionality-details" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
@@ -147,7 +144,6 @@ Object {
 
 exports[`Tools schemas get-functionality-details: Output schema for "get-functionality-details" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "description": Object {
@@ -471,7 +467,6 @@ Object {
 
 exports[`Tools schemas list-fiori-apps: Input schema for "list-fiori-apps" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "searchPath": Object {
@@ -491,7 +486,6 @@ Object {
 
 exports[`Tools schemas list-fiori-apps: Output schema for "list-fiori-apps" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "applications": Object {
@@ -545,7 +539,6 @@ Object {
 
 exports[`Tools schemas list-functionality: Input schema for "list-functionality" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
@@ -562,7 +555,6 @@ Object {
 
 exports[`Tools schemas list-functionality: Output schema for "list-functionality" 1`] = `
 Object {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": Object {
     "applicationPath": Object {
