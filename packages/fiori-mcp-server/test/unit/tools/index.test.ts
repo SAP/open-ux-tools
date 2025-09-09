@@ -1,6 +1,4 @@
 import { tools } from '../../../src/tools/index';
-import * as zod from 'zod';
-import { GetFunctionalityDetailsOutputSchema } from '../../../src/types/output';
 
 const listFioriApps = tools.find((tool) => tool.name === 'list-fiori-apps');
 const listFunctionality = tools.find((tool) => tool.name === 'list-functionality');

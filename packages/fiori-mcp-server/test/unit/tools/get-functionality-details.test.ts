@@ -67,7 +67,7 @@ describe('getFunctionalityDetails', () => {
                     description: 'Enables key user adaptation for an application.',
                     id: 'flexEnabled',
                     name: 'Flex Enabled',
-                    options: [undefined, true, false],
+                    options: [null, true, false],
                     type: 'boolean'
                 }
             ]
@@ -185,7 +185,7 @@ describe('getFunctionalityDetails', () => {
                                 'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
                             id: 'limitFCLToTwoColumns',
                             name: 'Limit FCL To Two Columns',
-                            options: [undefined, true, false],
+                            options: [null, true, false],
                             type: 'boolean'
                         },
                         {

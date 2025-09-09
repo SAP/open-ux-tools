@@ -31,6 +31,8 @@ export const FioriAppSchema = zod.object({
  */
 export const FunctionalityIdSchema = zod.union([zod.string(), zod.array(zod.union([zod.string(), zod.number()]))]);
 
+export type Test = zod.infer<typeof FunctionalityIdSchema>;
+
 /**
  * Schema representing a functionality
  */

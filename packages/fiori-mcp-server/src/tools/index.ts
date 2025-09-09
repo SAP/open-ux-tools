@@ -13,19 +13,6 @@ import {
     ExecuteFunctionalityOutputSchema
 } from '../types/output';
 
-import {
-    listFioriAppsOutputSchema,
-    listFunctionalityOutputSchema,
-    getFunctionalityDetailsOutputSchema,
-    executeFunctionalityOutputSchema
-} from './output-schema';
-import {
-    listFioriAppsInputSchema,
-    listFunctionalityInputSchema,
-    getFunctionalityDetailsInputSchema,
-    executeFunctionalityInputSchema
-} from './input-schema';
-
 export { listFioriApps } from './list-fiori-apps';
 export { listFunctionalities } from './list-functionalities';
 export { getFunctionalityDetails } from './get-functionality-details';
@@ -38,10 +25,8 @@ export const tools = [
                     This is an optional, preliminary tool.
                     **Use this first ONLY if the target application's name or path is not already known.**
                     The output can be used to ask the user for clarification before starting the main 3-step workflow.`,
-        inputSchema: listFioriAppsInputSchema,
-        outputSchema: listFioriAppsOutputSchema
-        // inputSchema: zod.toJSONSchema(ListFioriAppsInputSchema),
-        // outputSchema: zod.toJSONSchema(ListFioriAppsOutputSchema)
+        inputSchema: zod.toJSONSchema(ListFioriAppsInputSchema),
+        outputSchema: zod.toJSONSchema(ListFioriAppsOutputSchema)
     },
     {
         name: 'list-functionality',
@@ -52,10 +37,8 @@ export const tools = [
                     You MUST not use a functionalityId as name of a tool.
                     Do not guess, assume, or use any functionality not present in this list, as it is invalid and will cause the operation to fail.
                     **Note: If the target application is not known, use the list-fiori-apps tool first to identify it.**`,
-        inputSchema: listFunctionalityInputSchema,
-        outputSchema: listFunctionalityOutputSchema
-        // inputSchema: zod.toJSONSchema(ListFunctionalitiesInputSchema),
-        // outputSchema: zod.toJSONSchema(ListFunctionalitiesOutputSchema)
+        inputSchema: zod.toJSONSchema(ListFunctionalitiesInputSchema),
+        outputSchema: zod.toJSONSchema(ListFunctionalitiesOutputSchema)
     },
     {
         name: 'get-functionality-details',
@@ -63,10 +46,8 @@ export const tools = [
                     Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
                     You MUST provide a functionalityId obtained from 'list-functionality' (Step 1).
                     The output of this tool is required for the final step 'execute-functionality' (Step 3).`,
-        inputSchema: getFunctionalityDetailsInputSchema,
-        outputSchema: getFunctionalityDetailsOutputSchema
-        // inputSchema: zod.toJSONSchema(GetFunctionalityDetailsInputSchema),
-        // outputSchema: zod.toJSONSchema(GetFunctionalityDetailsOutputSchema)
+        inputSchema: zod.toJSONSchema(GetFunctionalityDetailsInputSchema),
+        outputSchema: zod.toJSONSchema(GetFunctionalityDetailsOutputSchema)
     },
     {
         name: 'execute-functionality',
@@ -74,9 +55,7 @@ export const tools = [
                     Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
                     This is the **final step** of the workflow and performs the actual creation or modification.
                     You MUST provide the exact parameter information obtained from get-functionality-details (Step 2).`,
-        inputSchema: executeFunctionalityInputSchema,
-        outputSchema: executeFunctionalityOutputSchema
-        // inputSchema: zod.toJSONSchema(ExecuteFunctionalityInputSchema),
-        // outputSchema: zod.toJSONSchema(ExecuteFunctionalityOutputSchema)
+        inputSchema: zod.toJSONSchema(ExecuteFunctionalityInputSchema),
+        outputSchema: zod.toJSONSchema(ExecuteFunctionalityOutputSchema)
     }
 ] as Tool[];

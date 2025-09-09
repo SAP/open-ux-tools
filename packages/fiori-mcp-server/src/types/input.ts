@@ -40,9 +40,9 @@ export const GetFunctionalityDetailsInputSchema = zod.object({
  */
 export const ExecuteFunctionalityInputSchema = zod.object({
     /** ID or array of IDs of the functionality(ies) to execute */
-    functionalityId: FunctionalityIdSchema.describe('ID or array of IDs of the functionality(ies) to execute'),
+    functionalityId: FunctionalityIdSchema.describe('The ID of the functionality to execute'),
     /** Parameters for the functionality execution */
     parameters: zod.record(zod.string(), zod.unknown()).describe('Parameters for the functionality execution'),
     /** Path to the Fiori application */
-    appPath: zod.string().describe('Path to the Fiori application')
+    appPath: zod.string().describe('Path to the Fiori application. Path should be an absolute path.')
 });
