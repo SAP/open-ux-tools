@@ -169,7 +169,7 @@ export default class extends Generator {
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
         this.systemLookup = new SystemLookup(this.logger);
-        this.isExtensibilityGenInstalled = isExtensionInstalled(this.vscode, '@bas-dev/extensibility-sub');
+        this.isExtensibilityGenInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
 
         if (!this.jsonInput) {
             this.prompts.splice(0, 0, getWizardPages());
