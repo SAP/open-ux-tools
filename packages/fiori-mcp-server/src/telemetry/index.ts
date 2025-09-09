@@ -11,9 +11,12 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import osName from 'os-name';
 import i18next from 'i18next';
+import { version } from '../../package.json';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';
+
+const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 
 export interface TelemetryData {
     [key: string]: string;
@@ -44,11 +47,11 @@ export abstract class TelemetryHelper {
         const telemetryOptions: ToolsSuiteTelemetryInitSettings = {
             consumerModule: {
                 name: mcpServerName,
-                version: '0.1.0'
+                version
             },
             watchTelemetrySettingStore: false,
             internalFeature: isInternalFeaturesSettingEnabled(),
-            resourceId: 'resource-id',
+            resourceId,
             ...options
         };
         await initTelemetrySettings(telemetryOptions);
