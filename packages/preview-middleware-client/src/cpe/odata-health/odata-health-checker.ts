@@ -1,23 +1,56 @@
-import ODataModel from 'sap/ui/model/odata/v2/ODataModel';
-import { getDataSourceAnnotationFileMap } from '../../adp/api-handler';
+import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
+import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
+import { getDataSourceAnnotationFileMap, ODataVersion } from '../../adp/api-handler';
 import { ODataDownStatus, ODataHealthStatus, ODataUpStatus } from './odata-health-status';
 
+/**
+ * Use this class to do a health check for an OData service, supports both v2 and v4
+ * format. This health checker ensures not only that $metadata is valid, but also that UI5
+ * itself can consume the service via its models.
+ */
 export class ODataHealthChecker {
+    /**
+     * Does e health check to all available OData services.
+     *
+     * @returns {Promise<ODataHealthStatus[]>} Resolves with array containing the health
+     * status for each OData service.
+     */
     async getHealthStatus(): Promise<ODataHealthStatus[]> {
-        const serviceUrls = await this.getOdataServiceUrls();
+        const services = await this.getServices();
         const metadataPromises = await Promise.allSettled(
-            serviceUrls.map((serviceUrl) => this.getServiceMetadata(serviceUrl))
+            services.map(({ serviceUrl, oDataVersion }) => this.getServiceMetadata(serviceUrl, oDataVersion))
         );
 
         return metadataPromises.map((metadataPromise, idx) =>
             metadataPromise.status === 'fulfilled'
-                ? new ODataUpStatus(serviceUrls[idx], metadataPromise.value)
-                : new ODataDownStatus(serviceUrls[idx], metadataPromise.reason)
+                ? new ODataUpStatus(services[idx].serviceUrl, metadataPromise.value)
+                : new ODataDownStatus(services[idx].serviceUrl, metadataPromise.reason)
         );
     }
 
-    private getServiceMetadata(serviceUrl: string): Promise<any> {
-        const oModel = new ODataModel({
+    /**
+     * This method does strong health check (with ODataModel). This ensures not only
+     * that $metadata is valid, but also that UI5 itself can consume the service via its models.
+     * Some services may have valid $metadata but still fail in UI5’s ODataModel
+     * (e.g., weird annotations, CORS issues, etc.).
+     *
+     * @param {string} serviceUrl - The OData service url.
+     * @param {ODataVersion} oDataVersion - The OData version.
+     * @returns {Promise<any>} Rsolved with valid metadata.
+     */
+    private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<any> {
+        switch (oDataVersion) {
+            case 'v2':
+                return this.getServiceV2Metadata(serviceUrl);
+            case 'v4':
+                return this.getServiceV4Metadata(serviceUrl);
+            default:
+                throw new Error('Unable to read OData version from the metadata xml.');
+        }
+    }
+
+    private getServiceV2Metadata(serviceUrl: string): Promise<any> {
+        const oModel = new ODataModelV2({
             serviceUrl,
             json: true,
             // We do not want the annotatations concatenated to the final result.
@@ -30,8 +63,28 @@ export class ODataHealthChecker {
         );
     }
 
-    private async getOdataServiceUrls(): Promise<string[]> {
+    private getServiceV4Metadata(serviceUrl: string): Promise<any> {
+        const oModel = new ODataModelV4({
+            serviceUrl,
+            // Only metadata loaded. We only want the model to load $metadata,
+            // not fetch entity data or bind to any UI controls.
+            synchronizationMode: 'None'
+        });
+        // This method actually returns promise which is resolved with the metadata.
+        return oModel
+            .getMetaModel()
+            .requestObject('/')
+            .finally(
+                // Do cleant up in case the helath check is done multiplpe times.
+                () => oModel.destroy()
+            );
+    }
+
+    private async getServices(): Promise<{ serviceUrl: string; oDataVersion: ODataVersion }[]> {
         const { annotationDataSourceMap } = await getDataSourceAnnotationFileMap();
-        return Object.values(annotationDataSourceMap).map(({ serviceUrl }) => serviceUrl);
+        return Object.values(annotationDataSourceMap).map(({ serviceUrl, oDataVersion }) => ({
+            serviceUrl,
+            oDataVersion
+        }));
     }
 }

@@ -65,21 +65,30 @@ export default function init(
 
     // Do health check to all available oData service instances.
     const oDataHealthChecker = new ODataHealthChecker();
-    oDataHealthChecker.getHealthStatus().then((healthStatus) =>
-        healthStatus.forEach((status) => {
-            const isServiceHealthy = isODataServiceHealthy(status);
+    oDataHealthChecker
+        .getHealthStatus()
+        .then((healthStatus) =>
+            healthStatus.forEach((status) => {
+                const isServiceHealthy = isODataServiceHealthy(status);
+                sendInfoCenterMessage({
+                    title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                    description: isServiceHealthy
+                        ? { key: 'ADP_ODATA_SERVICE_UP_DESCRIPTION', params: [status.serviceUrl] }
+                        : {
+                              key: 'ADP_ODATA_SERVICE_DOWN_DESCRIPTION',
+                              params: [status.serviceUrl, status.errorMessage]
+                          },
+                    type: isServiceHealthy ? MessageBarType.info : MessageBarType.error
+                });
+            })
+        )
+        .catch((error) =>
             sendInfoCenterMessage({
                 title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
-                description: isServiceHealthy
-                    ? { key: 'ADP_ODATA_SERVICE_UP_DESCRIPTION', params: [status.serviceUrl] }
-                    : {
-                          key: 'ADP_ODATA_SERVICE_DOWN_DESCRIPTION',
-                          params: [status.serviceUrl, status.errorMessage]
-                      },
-                type: isServiceHealthy ? MessageBarType.info : MessageBarType.error
-            });
-        })
-    );
+                description: getError(error).message,
+                type: MessageBarType.error
+            })
+        );
 
     try {
         loadDefaultLibraries();
