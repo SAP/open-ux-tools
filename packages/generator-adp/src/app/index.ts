@@ -138,7 +138,7 @@ export default class extends Generator {
 
         if (!this.jsonInput) {
             this.env.lookup({
-                packagePatterns: ['@sap/generator-fiori']
+                packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
             });
             setHeaderTitle(opts, this.logger, generatorTitle);
 

@@ -10,7 +10,9 @@ import {
 import { t } from '../../utils/i18n';
 import type { ExtensionProjectData } from '../types';
 
-export const EXTENSIBILITY_GENERATOR_NS = '@bas-dev/generator-extensibility-sub/generators/app';
+declare const __webpack_require__: any;
+
+export const EXTENSIBILITY_GENERATOR_NS = '@bas-dev/extensibility-sub/generators/app';
 
 /**
  * Prepares data required for generating an extension project.
@@ -65,6 +67,13 @@ export async function getExtensionProjectData(
  * @returns {string | undefined} The resolved path to the generator module if found, or undefined if not found.
  */
 export function resolveNodeModuleGenerator(): string | undefined {
+    // Check if we're in a webpack bundled environment
+    const isWebpack = typeof __webpack_require__ !== 'undefined';
+    if (isWebpack) {
+        // In webpack bundled environment, return the package name directly
+        return '@bas-dev/extensibility-sub';
+    }
+
     const nodePath = process.env['NODE_PATH'];
     const nodePaths = nodePath?.split(':') ?? [];
 
