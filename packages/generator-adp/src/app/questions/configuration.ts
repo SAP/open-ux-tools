@@ -51,7 +51,7 @@ import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
 import { getExtProjectMessage } from './helper/message';
 import { getApplicationChoices } from './helper/choices';
-import { validateExtensibilityGenerator } from './helper/validators';
+import { validateExtensibilityExtension } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
 import {
     showApplicationQuestion,
@@ -470,12 +470,12 @@ export class ConfigPrompter {
                     this.containsSyncViews
                 ),
             validate: (value: boolean) =>
-                validateExtensibilityGenerator(
+                validateExtensibilityExtension({
                     value,
-                    this.isApplicationSupported,
-                    this.containsSyncViews,
-                    !!options?.isExtensibilityGenInstalled
-                )
+                    isApplicationSupported: this.isApplicationSupported,
+                    hasSyncViews: this.containsSyncViews,
+                    isExtensibilityExtInstalled: !!options?.isExtensibilityExtInstalled
+                })
         };
     }
 

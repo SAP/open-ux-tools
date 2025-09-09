@@ -186,11 +186,11 @@ export default class extends Generator {
             return;
         }
 
-        const isExtensibilityGenInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
+        const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
         const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !this.isCli },
             systemValidationCli: { hide: !this.isCli },
-            shouldCreateExtProject: { isExtensibilityGenInstalled }
+            shouldCreateExtProject: { isExtensibilityExtInstalled }
         });
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
         this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;

@@ -3,7 +3,7 @@ import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input
 
 import { t } from '../../../../src/utils/i18n';
 import { validateJsonInput } from '../../../../src/app/questions/helper/validators';
-import { validateExtensibilityGenerator } from '../../../../src/app/questions/helper/validators';
+import { validateExtensibilityExtension } from '../../../../src/app/questions/helper/validators';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateProjectName: jest.fn(),
@@ -29,36 +29,66 @@ describe('validateExtensibilityGenerator', () => {
     });
 
     it('should return true when user accepts and generator is found', () => {
-        const result = validateExtensibilityGenerator(true, true, true, true);
+        const result = validateExtensibilityExtension({
+            value: true,
+            isApplicationSupported: true,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(true);
     });
 
     it('should return error message when user accepts but generator is not found', () => {
-        const result = validateExtensibilityGenerator(true, true, true, false);
+        const result = validateExtensibilityExtension({
+            value: true,
+            isApplicationSupported: true,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: false
+        });
 
-        expect(result).toBe(t('error.extensibilityGenNotFound'));
+        expect(result).toBe(t('error.extensibilityExtensionNotFound'));
     });
 
     it('should return true when user declines and app is supported and has sync views', () => {
-        const result = validateExtensibilityGenerator(false, true, true, true);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: true,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: true
+        });
         expect(result).toBe(true);
     });
 
     it('should return prompt label when user declines and app is unsupported', () => {
-        const result = validateExtensibilityGenerator(false, false, true, true);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: false,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(t('prompts.createExtProjectContinueLabel'));
     });
 
     it('should return prompt label when user declines and no sync views exist', () => {
-        const result = validateExtensibilityGenerator(false, true, false, true);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: true,
+            hasSyncViews: false,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(t('prompts.createExtProjectContinueLabel'));
     });
 
     it('should return prompt label when user declines and both app unsupported and no sync views', () => {
-        const result = validateExtensibilityGenerator(false, false, false, true);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: false,
+            hasSyncViews: false,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(t('prompts.createExtProjectContinueLabel'));
     });
