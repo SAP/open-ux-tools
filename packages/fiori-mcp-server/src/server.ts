@@ -75,34 +75,6 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 switch (name) {
-                    case 'test':
-                    case 'test2':
-                        //                  const convertedResult: CallToolResult = {
-                        //     content: [
-                        //         {
-                        //             type: 'text',
-                        //             text: JSON.stringify(result)
-                        //         }
-                        //     ]
-                        // };
-
-                        // if (!Array.isArray(result)) {
-                        //     convertedResult.structuredContent = result as Record<string, unknown>;
-                        // }
-
-                        // return convertedResult;
-                        const test = {
-                            dummy: 11111
-                        };
-                        return {
-                            content: [
-                                {
-                                    type: 'text',
-                                    text: JSON.stringify(test)
-                                }
-                            ],
-                            structuredContent: test
-                        };
                     case 'list-fiori-apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         return this.convertResultToCallToolResult(result);
