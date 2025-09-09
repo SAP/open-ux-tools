@@ -122,10 +122,6 @@ export default class extends Generator {
      * Base application inbounds, if the base application is an FLP app.
      */
     private baseAppInbounds?: ManifestNamespace.Inbound;
-    /**
-     * Indicates if the extensibility generator is installed.
-     */
-    private isExtensibilityGenInstalled: boolean;
 
     /**
      * Creates an instance of the generator.
@@ -169,7 +165,6 @@ export default class extends Generator {
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
         this.systemLookup = new SystemLookup(this.logger);
-        this.isExtensibilityGenInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
 
         if (!this.jsonInput) {
             this.prompts.splice(0, 0, getWizardPages());
@@ -191,10 +186,11 @@ export default class extends Generator {
             return;
         }
 
+        const isExtensibilityGenInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
         const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !this.isCli },
             systemValidationCli: { hide: !this.isCli },
-            shouldCreateExtProject: { isExtensibilityGenInstalled: this.isExtensibilityGenInstalled }
+            shouldCreateExtProject: { isExtensibilityGenInstalled }
         });
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
         this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
