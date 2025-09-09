@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "applicationPath": {
+      "type": "string"
+    },
+    "functionalities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "functionalityId": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": ["string", "number"]
+                }
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["functionalityId", "description"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["applicationPath", "functionalities"],
+  "additionalProperties": false
+}

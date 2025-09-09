@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "searchPath": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Path to search for Fiori applications (defaults to current directory). If VSCode - list of VS Code workspace folder paths(`workspace.workspaceFolders`)"
+    }
+  }
+}

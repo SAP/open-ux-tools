@@ -1,5 +1,86 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.69
+
+### Patch Changes
+
+-   Updated dependencies [4d1d774]
+    -   @sap-ux/fiori-elements-writer@2.7.0
+
+## 1.1.68
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/system-access@0.6.16
+
+## 1.1.67
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.15
+-   @sap-ux/fiori-elements-writer@2.6.5
+-   @sap-ux/fiori-freestyle-writer@2.4.40
+
+## 1.1.66
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.6.4
+
+## 1.1.65
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/fiori-elements-writer@2.6.3
+    -   @sap-ux/fiori-freestyle-writer@2.4.39
+
+## 1.1.64
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.13
+-   @sap-ux/fiori-elements-writer@2.6.2
+-   @sap-ux/fiori-freestyle-writer@2.4.38
+
+## 1.1.63
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.6.1
+-   @sap-ux/fiori-freestyle-writer@2.4.37
+
+## 1.1.62
+
+### Patch Changes
+
+-   Updated dependencies [43f94eb]
+    -   @sap-ux/fiori-elements-writer@2.6.0
+
+## 1.1.61
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.30
+-   @sap-ux/fiori-freestyle-writer@2.4.36
+
+## 1.1.60
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.29
+
+## 1.1.59
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.28
+
 ## 1.1.58
 
 ### Patch Changes

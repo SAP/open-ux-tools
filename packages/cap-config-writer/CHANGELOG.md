@@ -1,5 +1,30 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.12
+
+## 0.12.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.11
+-   @sap-ux/project-access@1.30.13
+
+## 0.12.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.10
+
+## 0.12.0
+
+### Minor Changes
+
+-   8178b2b: Remove CAP Java specific config in pom.xml and application.yaml.
+
 ## 0.11.0
 
 ### Minor Changes

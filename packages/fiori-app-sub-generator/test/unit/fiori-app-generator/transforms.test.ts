@@ -134,6 +134,48 @@ describe('Test transform state', () => {
         expect(feApp.service.previewSettings).toMatchObject({ apiHub: true });
     });
 
+    test('should correctly map entity related config and page building block title for FPM floorplan', async () => {
+        const state: State = {
+            ...baseState,
+            project: {
+                ...baseState.project
+            },
+            service: {
+                ...baseState.service,
+                connectedSystem: {
+                    backendSystem: {
+                        authenticationType: AuthenticationType.ReentranceTicket,
+                        name: 'some-backend-system',
+                        url: 'https://abap.cloud.system'
+                    },
+                    serviceProvider: {} as ServiceProvider
+                }
+            },
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SEPMRA_C_PD_Product',
+                    entitySetType: 'SEPMRA_C_PD_ProductType'
+                },
+                addPageBuildingBlock: true,
+                pageBuildingBlockTitle: 'Product Details',
+                navigationEntity: {} as EntityRelatedAnswers['navigationEntity'], // test None selection,
+                presentationQualifier: '',
+                tableType: 'ResponsiveTable',
+                tableSelectionMode: 'None'
+            },
+            floorplan: FloorplanFE.FE_FPM
+        };
+
+        const feApp = await transformState<FioriElementsApp<unknown>>(state);
+        expect(feApp.template.settings).toEqual({
+            entityConfig: {
+                mainEntityName: 'SEPMRA_C_PD_Product'
+            },
+            pageBuildingBlockTitle: 'Product Details',
+            pageName: 'Main'
+        });
+    });
+
     test('should transform entity related config correctly', async () => {
         const state: State = {
             ...baseState,

@@ -1,28 +1,29 @@
-sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'testnamepsace/lropv4noui5version/test/integration/FirstJourney',
-		'testnamepsace/lropv4noui5version/test/integration/pages/TravelList',
-		'testnamepsace/lropv4noui5version/test/integration/pages/TravelObjectPage',
-		'testnamepsace/lropv4noui5version/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('testnamepsace/lropv4noui5version') + '/index.html'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+sap.ui.loader.config({
+    shim: {
+        "sap/ui/qunit/qunit-junit": {
+            deps: ["sap/ui/thirdparty/qunit-2"]
+        },
+        "sap/ui/qunit/qunit-coverage": {
+            deps: ["sap/ui/thirdparty/qunit-2"]
+        },
+        "sap/ui/thirdparty/sinon-qunit": {
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon"]
+        },
+        "sap/ui/qunit/sinon-qunit-bridge": {
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon-4"]
+        }
     }
-);
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    "sap/ui/thirdparty/qunit-2",
+    "sap/ui/qunit/qunit-junit",
+    "sap/ui/qunit/qunit-coverage",
+    'testnamepsace/lropv4noui5version/test/integration/FirstJourney'
+  ], function (QUnit) {
+    "use strict";
+    QUnit.start();
+});

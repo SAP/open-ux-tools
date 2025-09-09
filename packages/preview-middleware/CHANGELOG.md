@@ -1,5 +1,78 @@
 # @sap-ux/preview-middleware
 
+## 0.23.6
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/adp-tooling@0.15.25
+
+## 0.23.5
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/adp-tooling@0.15.24
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.23
+-   @sap-ux/system-access@0.6.15
+
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/adp-tooling@0.15.22
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.23.2
+
+### Patch Changes
+
+-   Updated dependencies [384bb40]
+    -   @sap-ux/adp-tooling@0.15.21
+
+## 0.23.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.20
+-   @sap-ux/system-access@0.6.13
+
+## 0.23.0
+
+### Minor Changes
+
+-   372e9ce: fix: [ADP][Info center] Remove all messages from the info center which overlap with messages added with the ui5 Log library.
+
+## 0.22.1
+
+### Patch Changes
+
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
+## 0.22.0
+
+### Minor Changes
+
+-   a39e0d9: fix: [ADP] For ui5 components which do not provide api.json we do not display Documentation error in the info center.
+
+## 0.21.7
+
+### Patch Changes
+
+-   Updated dependencies [9f84298]
+    -   @sap-ux/adp-tooling@0.15.18
+
 ## 0.21.6
 
 ### Patch Changes

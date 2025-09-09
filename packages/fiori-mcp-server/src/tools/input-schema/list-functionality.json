@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "appPath": {
+      "type": "string",
+      "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside). Path should be an absolute path."
+    }
+  },
+  "required": ["appPath"]
+}

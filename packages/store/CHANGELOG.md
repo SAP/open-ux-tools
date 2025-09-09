@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 1.1.4
+
+### Patch Changes
+
+-   77c1459: fix for returning systems after recovery
+
+## 1.1.3
+
+### Patch Changes
+
+-   c6a0062: improve backend system recovery when file read fails
+
 ## 1.1.2
 
 ### Patch Changes

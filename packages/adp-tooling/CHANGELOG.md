@@ -1,5 +1,73 @@
 # @sap-ux/adp-tooling
 
+## 0.15.25
+
+### Patch Changes
+
+-   f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
+
+## 0.15.24
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/inquirer-common@0.7.39
+-   @sap-ux/system-access@0.6.16
+
+## 0.15.23
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/system-access@0.6.15
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/inquirer-common@0.7.38
+
+## 0.15.22
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/ui5-info@0.12.2
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/odata-service-writer@0.27.18
+    -   @sap-ux/project-access@1.30.13
+    -   @sap-ux/nodejs-utils@0.2.3
+    -   @sap-ux/project-input-validator@0.6.18
+
+## 0.15.21
+
+### Patch Changes
+
+-   384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
+
+## 0.15.20
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/system-access@0.6.13
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/inquirer-common@0.7.36
+
+## 0.15.19
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+
+## 0.15.18
+
+### Patch Changes
+
+-   9f84298: fix: corrected path parameter to use project path instead of web app path
+
 ## 0.15.17
 
 ### Patch Changes

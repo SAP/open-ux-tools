@@ -10,7 +10,7 @@ import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import * as EntityHelper from '../../../../src/prompts/edmx/entity-helper';
 import { getEntitySelectionQuestions } from '../../../../src/prompts/edmx/questions';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import type { EntitySelectionAnswers } from '../../../../src/types';
+import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types';
 import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
@@ -546,5 +546,60 @@ describe('Test entity prompts', () => {
                 } as EntityAnswer
             })
         ).toBe(true);
+    });
+
+    test('pageBuildingBlockTitle question is displayed when addPageBuildingBlock is true', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.message).toBe(t('prompts.pageBuildingBlock.message'));
+        expect(addPageBuildingBlockQuestion.default).toBe(false);
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages({
+                addPageBuildingBlock: true
+            } as PageBuildingBlockAnswers);
+            expect(message).toEqual({
+                message: t('prompts.pageBuildingBlock.warning'),
+                severity: Severity.warning
+            });
+        }
+
+        const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
+        expect(typeof pageBlockTitleQuestion?.when).toBe('function');
+        if (typeof pageBlockTitleQuestion?.when === 'function') {
+            expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: true } as PageBuildingBlockAnswers)).toBe(true);
+        }
+        // check that page title is mandatory
+        if (typeof pageBlockTitleQuestion?.validate === 'function') {
+            expect(pageBlockTitleQuestion.validate('')).toBe(false);
+            expect(pageBlockTitleQuestion.validate('My Title')).toBe(true);
+        }
+    });
+
+    test('pageBuildingBlockTitle question is not displayed when addPageBuildingBlock is false', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages();
+            expect(message).toEqual(undefined);
+        }
+
+        const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
+        // Should not display when addPageBuildingBlock is false
+        if (typeof pageBlockTitleQuestion?.when === 'function') {
+            expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: false } as PageBuildingBlockAnswers)).toBe(
+                false
+            );
+        }
     });
 });
