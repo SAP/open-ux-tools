@@ -1,4 +1,18 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import * as zod from 'zod';
+import {
+    ListFioriAppsInputSchema,
+    ListFunctionalitiesInputSchema,
+    GetFunctionalityDetailsInputSchema,
+    ExecuteFunctionalityInputSchema
+} from '../types/input';
+import {
+    ListFioriAppsOutputSchema,
+    ListFunctionalitiesOutputSchema,
+    GetFunctionalityDetailsOutputSchema,
+    ExecuteFunctionalityOutputSchema
+} from '../types/output';
+
 import {
     listFioriAppsOutputSchema,
     listFunctionalityOutputSchema,
@@ -26,6 +40,8 @@ export const tools = [
                     The output can be used to ask the user for clarification before starting the main 3-step workflow.`,
         inputSchema: listFioriAppsInputSchema,
         outputSchema: listFioriAppsOutputSchema
+        // inputSchema: zod.toJSONSchema(ListFioriAppsInputSchema),
+        // outputSchema: zod.toJSONSchema(ListFioriAppsOutputSchema)
     },
     {
         name: 'list-functionality',
@@ -38,6 +54,8 @@ export const tools = [
                     **Note: If the target application is not known, use the list-fiori-apps tool first to identify it.**`,
         inputSchema: listFunctionalityInputSchema,
         outputSchema: listFunctionalityOutputSchema
+        // inputSchema: zod.toJSONSchema(ListFunctionalitiesInputSchema),
+        // outputSchema: zod.toJSONSchema(ListFunctionalitiesOutputSchema)
     },
     {
         name: 'get-functionality-details',
@@ -47,6 +65,8 @@ export const tools = [
                     The output of this tool is required for the final step 'execute-functionality' (Step 3).`,
         inputSchema: getFunctionalityDetailsInputSchema,
         outputSchema: getFunctionalityDetailsOutputSchema
+        // inputSchema: zod.toJSONSchema(GetFunctionalityDetailsInputSchema),
+        // outputSchema: zod.toJSONSchema(GetFunctionalityDetailsOutputSchema)
     },
     {
         name: 'execute-functionality',
@@ -56,5 +76,7 @@ export const tools = [
                     You MUST provide the exact parameter information obtained from get-functionality-details (Step 2).`,
         inputSchema: executeFunctionalityInputSchema,
         outputSchema: executeFunctionalityOutputSchema
+        // inputSchema: zod.toJSONSchema(ExecuteFunctionalityInputSchema),
+        // outputSchema: zod.toJSONSchema(ExecuteFunctionalityOutputSchema)
     }
 ] as Tool[];

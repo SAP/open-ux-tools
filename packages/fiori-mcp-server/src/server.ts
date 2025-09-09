@@ -6,7 +6,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } fr
 import packageJson from '../package.json';
 import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
@@ -16,7 +16,7 @@ type ToolArgs =
     | ListFioriAppsInput
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
-    | ExecuteFunctionalitiesInput
+    | ExecuteFunctionalityInput
     | Record<string, unknown>;
 
 /**
@@ -75,6 +75,34 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 switch (name) {
+                    case 'test':
+                    case 'test2':
+                        //                  const convertedResult: CallToolResult = {
+                        //     content: [
+                        //         {
+                        //             type: 'text',
+                        //             text: JSON.stringify(result)
+                        //         }
+                        //     ]
+                        // };
+
+                        // if (!Array.isArray(result)) {
+                        //     convertedResult.structuredContent = result as Record<string, unknown>;
+                        // }
+
+                        // return convertedResult;
+                        const test = {
+                            dummy: 11111
+                        };
+                        return {
+                            content: [
+                                {
+                                    type: 'text',
+                                    text: JSON.stringify(test)
+                                }
+                            ],
+                            structuredContent: test
+                        };
                     case 'list-fiori-apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         return this.convertResultToCallToolResult(result);
@@ -85,7 +113,7 @@ export class FioriFunctionalityServer {
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
                         return this.convertResultToCallToolResult(result);
                     case 'execute-functionality':
-                        result = await executeFunctionality(args as ExecuteFunctionalitiesInput);
+                        result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         return this.convertResultToCallToolResult(result);
                     default:
                         throw new Error(

@@ -1,0 +1,455 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Tools schemas execute-functionality: Input schema for "execute-functionality" 1`] = `
+Object {
+  "properties": Object {
+    "appPath": Object {
+      "description": "Path to the Fiori application. Path should be an absolute path.",
+      "type": "string",
+    },
+    "functionalityId": Object {
+      "anyOf": Array [
+        Object {
+          "items": Object {
+            "type": Array [
+              "string",
+              "number",
+            ],
+          },
+          "type": "array",
+        },
+        Object {
+          "type": "string",
+        },
+      ],
+      "description": "The ID of the functionality to execute",
+    },
+    "parameters": Object {
+      "description": "Parameters for the functionality execution",
+      "type": "object",
+    },
+  },
+  "required": Array [
+    "functionalityId",
+    "appPath",
+    "parameters",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas execute-functionality: Output schema for "execute-functionality" 1`] = `
+Object {
+  "additionalProperties": false,
+  "properties": Object {
+    "appPath": Object {
+      "type": "string",
+    },
+    "changes": Object {
+      "items": Object {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "functionalityId": Object {
+      "anyOf": Array [
+        Object {
+          "items": Object {
+            "type": Array [
+              "string",
+              "number",
+            ],
+          },
+          "type": "array",
+        },
+        Object {
+          "type": "string",
+        },
+      ],
+    },
+    "message": Object {
+      "type": "string",
+    },
+    "parameters": Object {},
+    "status": Object {
+      "type": "string",
+    },
+    "timestamp": Object {
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "functionalityId",
+    "status",
+    "message",
+    "parameters",
+    "appPath",
+    "changes",
+    "timestamp",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas get-functionality-details: Input schema for "get-functionality-details" 1`] = `
+Object {
+  "properties": Object {
+    "appPath": Object {
+      "description": "Path to the Fiori application. Path should be an absolute path.",
+      "type": "string",
+    },
+    "functionalityId": Object {
+      "anyOf": Array [
+        Object {
+          "items": Object {
+            "type": Array [
+              "string",
+              "number",
+            ],
+          },
+          "type": "array",
+        },
+        Object {
+          "type": "string",
+        },
+      ],
+      "description": "The ID of the functionality to get details for",
+    },
+  },
+  "required": Array [
+    "appPath",
+    "functionalityId",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas get-functionality-details: Output schema for "get-functionality-details" 1`] = `
+Object {
+  "additionalProperties": false,
+  "properties": Object {
+    "description": Object {
+      "type": "string",
+    },
+    "examples": Object {
+      "items": Object {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "functionalityId": Object {
+      "anyOf": Array [
+        Object {
+          "type": "string",
+        },
+        Object {
+          "items": Object {
+            "type": Array [
+              "string",
+              "number",
+            ],
+          },
+          "type": "array",
+        },
+      ],
+      "description": "Identifier to pass as the \`functionalityId\` parameter when calling \`get-functionality-details\` or \`execute-functionality\`",
+    },
+    "impact": Object {
+      "type": "string",
+    },
+    "name": Object {
+      "type": "string",
+    },
+    "pageName": Object {
+      "type": "string",
+    },
+    "parameters": Object {
+      "items": Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "currentValue": Object {},
+          "defaultValue": Object {},
+          "description": Object {
+            "type": "string",
+          },
+          "examples": Object {
+            "items": Object {
+              "type": "string",
+            },
+            "type": "array",
+          },
+          "id": Object {
+            "type": "string",
+          },
+          "name": Object {
+            "type": "string",
+          },
+          "options": Object {
+            "items": Object {
+              "anyOf": Array [
+                Object {
+                  "type": "string",
+                },
+                Object {
+                  "type": "number",
+                },
+                Object {
+                  "type": "boolean",
+                },
+                Object {
+                  "not": Object {},
+                },
+                Object {
+                  "type": "null",
+                },
+              ],
+            },
+            "type": "array",
+          },
+          "parameters": Object {
+            "items": Object {
+              "additionalProperties": false,
+              "properties": Object {
+                "currentValue": Object {},
+                "defaultValue": Object {},
+                "description": Object {
+                  "type": "string",
+                },
+                "examples": Object {
+                  "items": Object {
+                    "type": "string",
+                  },
+                  "type": "array",
+                },
+                "id": Object {
+                  "type": "string",
+                },
+                "name": Object {
+                  "type": "string",
+                },
+                "options": Object {
+                  "items": Object {
+                    "anyOf": Array [
+                      Object {
+                        "type": "string",
+                      },
+                      Object {
+                        "type": "number",
+                      },
+                      Object {
+                        "type": "boolean",
+                      },
+                      Object {
+                        "not": Object {},
+                      },
+                      Object {
+                        "type": "null",
+                      },
+                    ],
+                  },
+                  "type": "array",
+                },
+                "pattern": Object {
+                  "type": "string",
+                },
+                "required": Object {
+                  "type": "boolean",
+                },
+                "type": Object {
+                  "enum": Array [
+                    "string",
+                    "number",
+                    "boolean",
+                    "array",
+                    "object",
+                  ],
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "id",
+                "type",
+              ],
+              "type": "object",
+            },
+            "type": "array",
+          },
+          "pattern": Object {
+            "type": "string",
+          },
+          "required": Object {
+            "type": "boolean",
+          },
+          "type": Object {
+            "enum": Array [
+              "string",
+              "number",
+              "boolean",
+              "array",
+              "object",
+            ],
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "id",
+          "type",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+    "prerequisites": Object {
+      "items": Object {
+        "type": "string",
+      },
+      "type": "array",
+    },
+    "technicalDescription": Object {
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "functionalityId",
+    "name",
+    "description",
+    "parameters",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas list-fiori-apps: Input schema for "list-fiori-apps" 1`] = `
+Object {
+  "properties": Object {
+    "searchPath": Object {
+      "description": "Path to search for Fiori applications (defaults to current directory). If VSCode - list of VS Code workspace folder paths(\`workspace.workspaceFolders\`)",
+      "items": Object {
+        "type": "string",
+      },
+      "type": "array",
+    },
+  },
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas list-fiori-apps: Output schema for "list-fiori-apps" 1`] = `
+Object {
+  "properties": Object {
+    "additionalProperties": false,
+    "properties": Object {
+      "applications": Object {
+        "items": Object {
+          "additionalProperties": false,
+          "properties": Object {
+            "appPath": Object {
+              "description": "Absolute path to the Fiori application's root directory.",
+              "type": "string",
+            },
+            "name": Object {
+              "description": "Name of the Fiori application. Usually derived from the \`sap.app/id\` field in the application's manifest.json.",
+              "type": "string",
+            },
+            "odataVersion": Object {
+              "description": "OData protocol version used by the application's main service.",
+              "type": "string",
+            },
+            "projectPath": Object {
+              "description": "Absolute path to the root directory of the project containing this Fiori application. For EDMXBackend (standalone) projects, this is the same as \`appPath\`. For CAP projects, this points to the CAP project root, which may contain multiple Fiori applications.",
+              "type": "string",
+            },
+            "projectType": Object {
+              "description": "Type of project the application belongs to.",
+              "enum": Array [
+                "EDMXBackend",
+                "CAPJava",
+                "CAPNodejs",
+              ],
+              "type": "string",
+            },
+          },
+          "required": Array [
+            "name",
+            "appPath",
+            "projectPath",
+            "projectType",
+            "odataVersion",
+          ],
+          "type": "object",
+        },
+        "type": "array",
+      },
+    },
+    "required": Array [
+      "applications",
+    ],
+    "type": "object",
+  },
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas list-functionality: Input schema for "list-functionality" 1`] = `
+Object {
+  "properties": Object {
+    "appPath": Object {
+      "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside). Path should be an absolute path.",
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "appPath",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`Tools schemas list-functionality: Output schema for "list-functionality" 1`] = `
+Object {
+  "additionalProperties": false,
+  "properties": Object {
+    "applicationPath": Object {
+      "type": "string",
+    },
+    "functionalities": Object {
+      "items": Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "description": Object {
+            "type": "string",
+          },
+          "functionalityId": Object {
+            "anyOf": Array [
+              Object {
+                "items": Object {
+                  "type": Array [
+                    "string",
+                    "number",
+                  ],
+                },
+                "type": "array",
+              },
+              Object {
+                "type": "string",
+              },
+            ],
+            "description": "Identifier to pass as the \`functionalityId\` parameter when calling \`get-functionality-details\` or \`execute-functionality\`",
+          },
+        },
+        "required": Array [
+          "functionalityId",
+          "description",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": Array [
+    "applicationPath",
+    "functionalities",
+  ],
+  "type": "object",
+}
+`;

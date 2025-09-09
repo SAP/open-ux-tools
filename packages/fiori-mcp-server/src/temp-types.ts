@@ -74,7 +74,7 @@ export interface GetFunctionalityDetailsOutput {
 /**
  * Input interface for the 'execute-functionality' functionality
  */
-export interface ExecuteFunctionalitiesInput {
+export interface ExecuteFunctionalityInput {
     /** ID or array of IDs of the functionality(ies) to execute */
     functionalityId: FunctionalityId;
     /** Parameters for the functionality execution */
@@ -169,7 +169,7 @@ export interface FunctionalityHandlers {
     /** Handler for getting functionality details */
     getFunctionalityDetails: (params: GetFunctionalityDetailsInput) => Promise<GetFunctionalityDetailsOutput>;
     /** Handler for executing functionality */
-    executeFunctionality: (params: ExecuteFunctionalitiesInput) => Promise<ExecuteFunctionalityOutput>;
+    executeFunctionality: (params: ExecuteFunctionalityInput) => Promise<ExecuteFunctionalityOutput>;
 }
 
 /**
