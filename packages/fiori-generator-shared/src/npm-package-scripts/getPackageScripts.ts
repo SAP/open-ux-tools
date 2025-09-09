@@ -127,12 +127,13 @@ export function getPackageScripts({
             localStartFile ?? SCRIPT_FLP_SANDBOX
         }${queryParams}"`;
     }
+
     if (addTest) {
         scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "/test/integration/opaTests.qunit.html"';
     }
 
     scripts['start-variants-management'] = localOnly
-        ? `echo \"${t('info.mockOnlyWarning')}\"`
+        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : getVariantPreviewAppScript(!supportVirtualEndpoints, flpAppId);
 
     return scripts;
