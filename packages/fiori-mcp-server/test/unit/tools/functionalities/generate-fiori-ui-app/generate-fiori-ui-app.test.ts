@@ -1,4 +1,6 @@
 import { join } from 'path';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types';
+
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
     {
         path: 'node_modules/@sap/generator-fiori',
@@ -20,7 +22,6 @@ import {
     generateFioriUIAppHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
 import { existsSync, promises as fsPromises } from 'fs';
-import { ExecuteFunctionalityInput } from '../../../../../src/types';
 
 // Mock child_process.exec
 const mockExec = jest.fn();
