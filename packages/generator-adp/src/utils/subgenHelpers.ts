@@ -6,7 +6,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
+import { getExtensionProjectData } from '../app/extension-project';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -156,9 +156,8 @@ export async function addExtProjectGen(
 ): Promise<void> {
     try {
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
-        const generator = resolveNodeModuleGenerator();
 
-        composeWith(generator!, {
+        composeWith('@bas-dev/extensibility-sub', {
             arguments: [JSON.stringify(data)],
             appWizard
         });
