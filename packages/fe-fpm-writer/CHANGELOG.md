@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.3
+
+### Patch Changes
+
+-   080480a: Update EJS templates for JavaScript and TypeScript event handlers: parameters are updated based on documentation/examples and JSDoc comments are generated accordingly.
+
 ## 0.38.2
 
 ### Patch Changes
