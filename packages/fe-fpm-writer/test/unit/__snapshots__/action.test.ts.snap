@@ -128,7 +128,13 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param oContext the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param aSelectedContexts the selected contexts of the table rows.
+         */
+        DummyOnAction: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -143,7 +149,13 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param oContext the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param aSelectedContexts the selected contexts of the table rows.
+         */
+        DummyOnAction: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -158,7 +170,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -176,7 +188,13 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param oContext the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param aSelectedContexts the selected contexts of the table rows.
+         */
+        onPress: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -191,7 +209,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -209,7 +227,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -218,6 +236,61 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     };
 });
 "
+`;
+
+exports[`CustomAction generateCustomAction Typescript actions Generate action with event handler 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomAction": Object {
+                      "enabled": true,
+                      "press": "my.test.App.ext.MyCustomAction.onPress",
+                      "text": "My custom action text",
+                      "visible": true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomAction Typescript actions Generate action with event handler 2`] = `
+"import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Context from 'sap/ui/model/odata/v4/Context';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param context the context of the page on which the event was fired. \`undefined\` for list report page.
+ * @param selectedContexts the selected contexts of the table rows.
+ */
+export function onPress(this: ExtensionAPI, context: Context | undefined, selectedContexts: Context[]) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}"
 `;
 
 exports[`CustomAction generateCustomAction custom section as target 1`] = `
@@ -383,7 +456,13 @@ exports[`CustomAction generateCustomAction specific target folder, event handler
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        /**
+         * Generated event handler.
+         *
+         * @param oContext the context of the page on which the event was fired. \`undefined\` for list report page.
+         * @param aSelectedContexts the selected contexts of the table rows.
+         */
+        onPress: function(oContext, aSelectedContexts) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
