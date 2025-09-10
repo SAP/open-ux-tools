@@ -14558,7 +14558,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile',
+        launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html#fewrk2-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,

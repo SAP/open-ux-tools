@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`<UIMessageText /> UIMessageText component Multiple matches 1 1`] = `"<span>dummy <b>testValue</b></span><span> test <b>testKey</b></span>"`;
 

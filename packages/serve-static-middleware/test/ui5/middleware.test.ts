@@ -27,6 +27,7 @@ async function getTestServer(configuration: ServeStaticConfig): Promise<any> {
 
 describe('Start server with serve-static-middleware', () => {
     const CORE = '/resources/sap-ui-core.js';
+    const CACHEBUSTER_CORE = '/resources/~6D08668CD2688B304F0130340DE601EA~5/sap-ui-core.js';
     const SANDBOX = '/test-resources/sandbox.js';
     const USERAPI = '/services/userapi/currentUser';
 
@@ -36,13 +37,14 @@ describe('Start server with serve-static-middleware', () => {
             { path: '/test-resources', src: join(localUI5Path, 'test-resources') },
             { path: USERAPI, src: 'webapp/mock/user.json', index: false, fallthrough: false, redirect: false }
         ]
-    };
+    } satisfies ServeStaticConfig;
 
     test('serve local UI5', async () => {
         const server = await getTestServer(config as any);
         expect(await server.get(CORE)).toMatchObject({ status: 200 });
         expect(await server.get(SANDBOX)).toMatchObject({ status: 200 });
         expect(await server.get(USERAPI)).toMatchObject({ status: 200 });
+        expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 200 });
     });
 
     test('fallthrough: false', async () => {
@@ -80,5 +82,19 @@ describe('Start server with serve-static-middleware', () => {
         await expect(getTestServer(undefined as any)).rejects.toThrow(
             'No configuration found for the serve-static-middleware'
         );
+    });
+
+    test('keepCacheBusterInUrl (cache buster URL)', async () => {
+        const server = await getTestServer({
+            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false, keepCacheBusterInUrl: true }]
+        });
+        expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 404 });
+    });
+
+    test('keepCacheBusterInUrl (normal URL)', async () => {
+        const server = await getTestServer({
+            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false, keepCacheBusterInUrl: true }]
+        });
+        expect(await server.get(CORE)).toMatchObject({ status: 200 });
     });
 });

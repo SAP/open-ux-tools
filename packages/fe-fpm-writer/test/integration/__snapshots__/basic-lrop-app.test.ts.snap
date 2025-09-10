@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`use FPM with existing apps extend UI5 application with FPM generateCustomHeaderSection in ObjectPage 1`] = `
 Object {
