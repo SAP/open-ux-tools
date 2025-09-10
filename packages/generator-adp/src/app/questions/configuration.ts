@@ -51,7 +51,7 @@ import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
 import { getExtProjectMessage } from './helper/message';
 import { getApplicationChoices } from './helper/choices';
-import { validateExtensibilityGenerator } from './helper/validators';
+import { validateExtensibilityExtension } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
 import {
     showApplicationQuestion,
@@ -442,10 +442,12 @@ export class ConfigPrompter {
      * Generates a confirmation prompt to decide whether to create an extension project based on the application's
      * sync capabilities and support status.
      *
-     * @param {ShouldCreateExtProjectPromptOptions} _ - Optional configuration for the confirm extension project prompt.
+     * @param {ShouldCreateExtProjectPromptOptions} options - Optional configuration for the confirm extension project prompt.
      * @returns The confirm extension project prompt as a {@link ConfigQuestion}.
      */
-    private getShouldCreateExtProjectPrompt(_?: ShouldCreateExtProjectPromptOptions): ConfirmQuestion<ConfigAnswers> {
+    private getShouldCreateExtProjectPrompt(
+        options?: ShouldCreateExtProjectPromptOptions
+    ): ConfirmQuestion<ConfigAnswers> {
         return {
             type: 'confirm',
             name: configPromptNames.shouldCreateExtProject,
@@ -468,7 +470,12 @@ export class ConfigPrompter {
                     this.containsSyncViews
                 ),
             validate: (value: boolean) =>
-                validateExtensibilityGenerator(value, this.isApplicationSupported, this.containsSyncViews)
+                validateExtensibilityExtension({
+                    value,
+                    isApplicationSupported: this.isApplicationSupported,
+                    hasSyncViews: this.containsSyncViews,
+                    isExtensibilityExtInstalled: !!options?.isExtensibilityExtInstalled
+                })
         };
     }
 
