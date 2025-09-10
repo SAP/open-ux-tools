@@ -63,13 +63,13 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * When virtual endpoints are used, the search parameters are injected at runtime.
  *
  * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command.
- * @param projectName
+ * @param {string} [flpAppId] - The FLP application ID to use as the anchor in the preview URL.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(addSearchParams: boolean, projectName?: string): string {
+function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId?: string): string {
     let previewAppAnchor = '#app-preview';
-    if (addSearchParams && projectName) {
-        previewAppAnchor = `#${projectName}`;
+    if (addSearchParams && flpAppId) {
+        previewAppAnchor = `#${flpAppId}`;
     }
     let urlParam = '';
     if (addSearchParams) {
