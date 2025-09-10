@@ -1,16 +1,7 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import {
-    listFioriAppsOutputSchema,
-    listFunctionalityOutputSchema,
-    getFunctionalityDetailsOutputSchema,
-    executeFunctionalityOutputSchema
-} from './output-schema';
-import {
-    listFioriAppsInputSchema,
-    listFunctionalityInputSchema,
-    getFunctionalityDetailsInputSchema,
-    executeFunctionalityInputSchema
-} from './input-schema';
+import * as Input from '../types/input';
+import * as Output from '../types/output';
+import { convertToSchema } from './utils';
 
 export { docSearch } from './hybrid-search';
 export { listFioriApps } from './list-fiori-apps';
@@ -46,8 +37,8 @@ export const tools = [
                     This is an optional, preliminary tool.
                     **Use this first ONLY if the target application's name or path is not already known.**
                     The output can be used to ask the user for clarification before starting the main 3-step workflow.`,
-        inputSchema: listFioriAppsInputSchema,
-        outputSchema: listFioriAppsOutputSchema
+        inputSchema: convertToSchema(Input.ListFioriAppsInputSchema),
+        outputSchema: convertToSchema(Output.ListFioriAppsOutputSchema)
     },
     {
         name: 'list-functionality',
@@ -59,8 +50,8 @@ export const tools = [
                     Do not guess, assume, or use any functionality not present in this list, as it is invalid and will cause the operation to fail.
                     **Note: If the target application is not known, use the list-fiori-apps tool first to identify it.**
                     if the functionality list does not include a functionality to support the current goal, then try using the doc-search tool as a fallback.`,
-        inputSchema: listFunctionalityInputSchema,
-        outputSchema: listFunctionalityOutputSchema
+        inputSchema: convertToSchema(Input.ListFunctionalitiesInputSchema),
+        outputSchema: convertToSchema(Output.ListFunctionalitiesOutputSchema)
     },
     {
         name: 'get-functionality-details',
@@ -68,8 +59,8 @@ export const tools = [
                     Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
                     You MUST provide a functionalityId obtained from 'list-functionality' (Step 1).
                     The output of this tool is required for the final step 'execute-functionality' (Step 3).`,
-        inputSchema: getFunctionalityDetailsInputSchema,
-        outputSchema: getFunctionalityDetailsOutputSchema
+        inputSchema: convertToSchema(Input.GetFunctionalityDetailsInputSchema),
+        outputSchema: convertToSchema(Output.GetFunctionalityDetailsOutputSchema)
     },
     {
         name: 'execute-functionality',
@@ -77,7 +68,7 @@ export const tools = [
                     Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
                     This is the **final step** of the workflow and performs the actual creation or modification.
                     You MUST provide the exact parameter information obtained from get-functionality-details (Step 2).`,
-        inputSchema: executeFunctionalityInputSchema,
-        outputSchema: executeFunctionalityOutputSchema
+        inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
+        outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
     }
 ] as Tool[];

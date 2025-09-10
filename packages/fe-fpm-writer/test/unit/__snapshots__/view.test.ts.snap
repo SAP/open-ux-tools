@@ -13,6 +13,11 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - cr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -34,6 +39,11 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - cr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -55,6 +65,11 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is empty "object
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -76,7 +91,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is object. Appen
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -100,7 +115,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is object. Appen
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -316,6 +331,11 @@ exports[`CustomView with new handler 4`] = `
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -364,6 +384,11 @@ exports[`CustomView with new handler and new table fragment (all properties) 4`]
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
