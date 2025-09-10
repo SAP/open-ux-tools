@@ -46,3 +46,10 @@ export const ExecuteFunctionalityInputSchema = zod.object({
     /** Path to the Fiori application */
     appPath: zod.string().describe('Path to the Fiori application. Path should be an absolute path.')
 });
+
+export const DocSearchInputSchema = zod.object({
+    query: zod
+        .string()
+        .min(2)
+        .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
+});
