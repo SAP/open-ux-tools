@@ -1,5 +1,5 @@
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityId,
     GetFunctionalityDetailsOutput,
@@ -18,7 +18,7 @@ import { resolveApplication } from './utils';
  * @returns A promise that resolves to the execution output
  * @throws Error if required parameters are missing
  */
-export async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+export async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { functionalityId, parameters, appPath } = params;
     if (!functionalityId) {
         throw new Error('functionalityId parameter is required');
