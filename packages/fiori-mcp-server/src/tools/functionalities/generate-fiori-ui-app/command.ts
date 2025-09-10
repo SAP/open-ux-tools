@@ -9,44 +9,42 @@ import * as z from 'zod';
 
 const GeneratorConfigSchemaCAP = z.object({
     projectPath: z.optional(z.string()),
-    appGenConfig: z.object({
-        version: z.string(),
-        floorplan: z.literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE']),
-        project: z.object({
-            name: z.string(),
-            targetFolder: z.string(),
-            namespace: z.optional(z.string()),
-            title: z.optional(z.string()),
-            description: z.string(),
-            ui5Theme: z.optional(z.string()),
-            ui5Version: z.string(),
-            localUI5Version: z.optional(z.string()),
-            sapux: z.boolean(),
-            skipAnnotations: z.optional(z.boolean()),
-            enableCodeAssist: z.optional(z.boolean()),
-            enableEslint: z.optional(z.boolean()),
-            enableTypeScript: z.optional(z.boolean())
-        }),
-        service: z.object({
-            servicePath: z.string(),
-            capService: z.object({
-                projectPath: z.string(),
-                serviceName: z.string(),
-                serviceCdsPath: z.string(),
-                capType: z.optional(z.literal(['Node.js', 'Java']))
-            })
-        }),
-        entityConfig: z.object({
-            mainEntity: z.object({
-                entityName: z.string()
-            }),
-            generateFormAnnotations: z.boolean(),
-            generateLROPAnnotations: z.boolean()
-        }),
-        telemetryData: z.object({
-            generationSourceName: z.string(),
-            generationSourceVersion: z.string()
+    version: z.string(),
+    floorplan: z.literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE']),
+    project: z.object({
+        name: z.string(),
+        targetFolder: z.string(),
+        namespace: z.optional(z.string()),
+        title: z.optional(z.string()),
+        description: z.string(),
+        ui5Theme: z.optional(z.string()),
+        ui5Version: z.string(),
+        localUI5Version: z.optional(z.string()),
+        sapux: z.boolean(),
+        skipAnnotations: z.optional(z.boolean()),
+        enableCodeAssist: z.optional(z.boolean()),
+        enableEslint: z.optional(z.boolean()),
+        enableTypeScript: z.optional(z.boolean())
+    }),
+    service: z.object({
+        servicePath: z.string(),
+        capService: z.object({
+            projectPath: z.string(),
+            serviceName: z.string(),
+            serviceCdsPath: z.string(),
+            capType: z.optional(z.literal(['Node.js', 'Java']))
         })
+    }),
+    entityConfig: z.object({
+        mainEntity: z.object({
+            entityName: z.string()
+        }),
+        generateFormAnnotations: z.boolean(),
+        generateLROPAnnotations: z.boolean()
+    }),
+    telemetryData: z.object({
+        generationSourceName: z.string(),
+        generationSourceVersion: z.string()
     })
 });
 
@@ -64,10 +62,10 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         generatorConfigCAP = GeneratorConfigSchemaCAP.parse(params.parameters);
     } catch (error) {
         if (error instanceof z.ZodError) {
-            throw new Error(`Missing required fields in generatorConfig. ${JSON.stringify(error.issues, null, 4)}`);
+            throw new Error(`Missing required fields in parameters. ${JSON.stringify(error.issues, null, 4)}`);
         }
     }
-    const generatorConfig = generatorConfigCAP?.appGenConfig;
+    const generatorConfig = generatorConfigCAP;
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');
