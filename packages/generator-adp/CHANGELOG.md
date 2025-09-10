@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.3.76
+
+### Patch Changes
+
+-   66cc543: fix: Extensibility generator cannot be resolved in the bundled ADP generator
+
 ## 0.3.75
 
 ### Patch Changes
