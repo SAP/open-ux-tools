@@ -9,7 +9,6 @@ import Component from 'sap/ui/core/Component';
 import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
-import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 import SmartTableExtended from 'sap/ui/comp/smarttable';
 
 /**
