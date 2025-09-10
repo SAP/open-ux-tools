@@ -508,7 +508,9 @@ describe('ConfigPrompter Integration Tests', () => {
 
     describe('Confirm Extension Project Prompt', () => {
         it('confirm extension prompt validate should return true', () => {
-            const prompts = configPrompter.getPrompts();
+            const prompts = configPrompter.getPrompts({
+                shouldCreateExtProject: { isExtensibilityExtInstalled: true }
+            });
             const confirmPrompt = prompts.find((p) => p.name === configPromptNames.shouldCreateExtProject);
             expect(confirmPrompt).toBeDefined();
 
