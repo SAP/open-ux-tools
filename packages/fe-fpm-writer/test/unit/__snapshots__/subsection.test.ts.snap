@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`SubCustomSection generateCustomSubSection Insert custom sub section into existing section with subsection 1`] = `
 Object {
@@ -164,6 +164,11 @@ exports[`SubCustomSection generateCustomSubSection Versions 1.85 3`] = `
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -208,6 +213,11 @@ exports[`SubCustomSection generateCustomSubSection Versions 1.86 3`] = `
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -252,6 +262,11 @@ exports[`SubCustomSection generateCustomSubSection Versions 1.98 3`] = `
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }

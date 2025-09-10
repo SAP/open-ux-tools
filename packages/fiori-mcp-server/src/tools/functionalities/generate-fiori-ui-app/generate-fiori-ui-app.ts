@@ -117,13 +117,13 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                             id: 'servicePath',
                             type: 'string',
                             examples: [
-                                'odata/v4/<servicename>/',
-                                'odata/v4/MyRiskService/',
-                                'odata/v2/MyOdataV2Service/',
-                                'odata/v4/MyOdataV4Service/',
-                                "odata/v4/<relative '@path' annotation from service cds file>/",
+                                '/odata/v4/<servicename>/',
+                                '/odata/v4/MyRiskService/',
+                                '/odata/v2/MyOdataV2Service/',
+                                '/odata/v4/MyOdataV4Service/',
+                                "/odata/v4/<relative '@path' annotation from service cds file>/",
                                 "<absolute '@path' annotation from service cds file>/",
-                                'myAbsolutePathFromServiceCdsFile/'
+                                '/myAbsolutePathFromServiceCdsFile/'
                             ],
                             description:
                                 'The odata endpoint as provided by the cds mcp or as fallback in case that tool is not available from the service cds file.',

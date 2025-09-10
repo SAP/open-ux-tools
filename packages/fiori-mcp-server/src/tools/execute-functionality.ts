@@ -1,6 +1,7 @@
 import type {
     ExecuteFunctionalitiesInput,
     ExecuteFunctionalityOutput,
+    FunctionalityId,
     GetFunctionalityDetailsOutput,
     Parameter
 } from '../types';
@@ -88,7 +89,7 @@ export async function executeFunctionality(params: ExecuteFunctionalitiesInput):
  */
 async function generateChanges(
     functionality: GetFunctionalityDetailsOutput,
-    functionalityId: string | string[],
+    functionalityId: FunctionalityId,
     parametersValue: { [key: string]: unknown },
     appPath: string,
     pageName?: string

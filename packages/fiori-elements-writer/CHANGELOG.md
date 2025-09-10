@@ -1,5 +1,18 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.7.1
+
+### Patch Changes
+
+-   Updated dependencies [080480a]
+    -   @sap-ux/fe-fpm-writer@0.38.3
+
+## 2.7.0
+
+### Minor Changes
+
+-   4d1d774: Use flpSandbox.html for OPA tests
+
 ## 2.6.5
 
 ### Patch Changes
