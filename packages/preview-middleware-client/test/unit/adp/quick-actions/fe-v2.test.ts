@@ -496,6 +496,14 @@ describe('FE V2 quick actions', () => {
                     isWithIconTabBar: true
                 },
                 {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_COMP_VARIANT_CONTENT',
+                    expectActionAvailable: true,
+                    isWithIconTabBar: true,
+                    variantManagementDisabled: true
+                },
+                {
                     tableType: M_TABLE_TYPE,
                     versionInfo: '1.127.0',
                     actionId: 'CTX_SETTINGS',
@@ -507,14 +515,6 @@ describe('FE V2 quick actions', () => {
                     actionId: 'CTX_SETTINGS',
                     expectActionAvailable: true,
                     isTableNotLoaded: true
-                },
-                {
-                    tableType: M_TABLE_TYPE,
-                    versionInfo: '1.127.0',
-                    actionId: 'CTX_SETTINGS',
-                    expectActionAvailable: true,
-                    isTableNotLoaded: true,
-                    variantManagementDisabled: true
                 }
             ];
             const setSelectedKeyMock = jest.fn();

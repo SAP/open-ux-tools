@@ -115,15 +115,15 @@ export function isVariantManagementEnabledOPPage(
     context: QuickActionContext,
     control: UI5Element
 ): boolean | undefined {
-    const ownerComponent = Component.getOwnerComponentFor(control) as unknown as ListReportComponent;
+    const ownerComponent = Component.getOwnerComponentFor(control);
     if (ownerComponent?.isA('sap.suite.ui.generic.template.ObjectPage.Component')) {
         const id = control.getId();
         if (typeof id !== 'string') {
             throw new Error('Could not retrieve configuration property because control id is not valid!');
         }
         let value  = context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
-        if (value === undefined) {
-            value = !!(control as SmartTableExtended).getVariantManagement();
+        if (value === undefined && control.isA<SmartTableExtended>('sap.ui.comp.smarttable.SmartTable')) {
+            value = !!control.getVariantManagement();
         }
         return value as boolean;
     }
