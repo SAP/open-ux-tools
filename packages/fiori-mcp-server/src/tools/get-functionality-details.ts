@@ -59,7 +59,7 @@ function getParameters(properties: TreeNodeProperty[]): Parameter[] {
             currentValue: property.value
         };
         if (property.options) {
-            parameter.options = property.options.map((option) => option.key);
+            parameter.options = property.options.map((option) => option.key ?? null);
         }
         if (property.properties) {
             parameter.parameters = getParameters(property.properties);

@@ -7,7 +7,7 @@ import packageJson from '../package.json';
 import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
@@ -17,7 +17,7 @@ type ToolArgs =
     | ListFioriAppsInput
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
-    | ExecuteFunctionalitiesInput
+    | ExecuteFunctionalityInput
     | Record<string, unknown>;
 
 /**
@@ -99,7 +99,7 @@ export class FioriFunctionalityServer {
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
                         break;
                     case 'execute-functionality':
-                        result = await executeFunctionality(args as ExecuteFunctionalitiesInput);
+                        result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
                         await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);

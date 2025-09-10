@@ -1,7 +1,7 @@
 import { command } from './command';
 import { GENERATE_FIORI_UI_APP_ID, LATEST_UI5_VERSION } from '../../../constant';
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsOutput
@@ -238,7 +238,7 @@ async function getFunctionalityDetails(): Promise<GetFunctionalityDetailsOutput>
  * @param params - The input parameters for executing the functionality.
  * @returns A promise that resolves to the execution output.
  */
-async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     return command(params);
 }
 
