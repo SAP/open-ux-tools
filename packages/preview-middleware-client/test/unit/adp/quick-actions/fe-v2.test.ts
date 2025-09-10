@@ -689,7 +689,7 @@ describe('FE V2 quick actions', () => {
                                             enabled: testCase.variantManagementDisabled ? false : true,
                                             ...(testCase.variantManagementDisabled && {
                                                 tooltip:
-                                                    'This action has been disabled because the variant management is disabled. Please enable and try again.'
+                                                    'This action has been disabled because variant management is disabled. Enable variant management and try again.'
                                             }),
                                             label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }

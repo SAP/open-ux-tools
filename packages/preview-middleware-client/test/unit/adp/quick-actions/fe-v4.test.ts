@@ -799,7 +799,7 @@ describe('FE V4 quick actions', () => {
                                             label: `'MyTable' table`,
                                             ...(!testCase.variantManagement && {
                                                 tooltip:
-                                                    'This action has been disabled because the variant management is disabled. Please enable and try again.'
+                                                    'This action has been disabled because variant management is disabled. Enable variant management and try again.'
                                             })
                                         }
                                     ]
