@@ -10,7 +10,7 @@ import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from
  */
 export class ODataHealthChecker {
     /**
-     * Does e health check to all available OData services.
+     * Does a health check to all available OData services.
      *
      * @returns {Promise<ODataHealthStatus[]>} Resolves with array containing the health
      * status for each OData service.
