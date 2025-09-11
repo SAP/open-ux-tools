@@ -1,5 +1,18 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.0.7
+
+### Patch Changes
+
+-   e82605e: Move "npm install" outside MCP create app call.
+    Add try catch on telemetry init
+
+## 0.0.6
+
+### Patch Changes
+
+-   ac9a2d0: feat: collect telemetry
+
 ## 0.0.5
 
 ### Patch Changes

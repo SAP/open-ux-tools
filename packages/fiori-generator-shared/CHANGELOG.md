@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.13
+
+### Patch Changes
+
+-   3c094af: updated variant preview to use dynamic anchor if not using virtual endpoints
+
 ## 0.13.12
 
 ### Patch Changes
