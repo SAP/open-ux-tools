@@ -3,7 +3,7 @@ import { promises } from 'fs';
 import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
-import type { ExecuteFunctionalitiesInput, ExecuteFunctionalityOutput } from '../../../types';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 import { GENERATE_FIORI_UI_ODATA_APP_ID } from '../../../constant';
 const exec = promisify(execAsync);
 
@@ -13,7 +13,7 @@ const exec = promisify(execAsync);
  * @param params Input parameters for application generation.
  * @returns Application generation execution output.
  */
-export async function command(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { appGenConfig = {} } = params.parameters;
     let { projectPath = '' } = params.parameters;
     if (!projectPath) {
