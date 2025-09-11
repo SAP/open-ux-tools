@@ -95,7 +95,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
 
         await FSpromises.mkdir(dirname(outputPath), { recursive: true });
         await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
-        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force`.trim();
+        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force  --skipInstall`.trim();
 
         const { stdout, stderr } = await exec(command, { cwd: targetDir });
         console.log(stdout);
@@ -123,7 +123,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     return {
         functionalityId: GENERATE_FIORI_UI_APP_ID,
         status: 'Success',
-        message: 'Generation completed successfully: ' + appPath,
+        message: `Generation completed successfully: ${appPath}. You must run \`npm install\` in ${targetDir} before trying to run the application.`,
         parameters: params.parameters,
         appPath,
         changes: [],

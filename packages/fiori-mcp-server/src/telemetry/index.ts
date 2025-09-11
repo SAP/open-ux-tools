@@ -54,7 +54,11 @@ export abstract class TelemetryHelper {
             resourceId,
             ...options
         };
-        await initTelemetrySettings(telemetryOptions);
+        try {
+            await initTelemetrySettings(telemetryOptions);
+        } catch (error) {
+            console.error('Error initializing telemetry settings:', error);
+        }
     }
 
     /**
