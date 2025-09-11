@@ -1,54 +1,13 @@
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
+
 import { promises as FSpromises, existsSync } from 'fs';
 import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
+import { GeneratorConfigSchemaCAP } from '../../../types';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
 import * as z from 'zod';
-
-const GeneratorConfigSchemaCAP = z.object({
-    projectPath: z.optional(z.string()),
-    appGenConfig: z.object({
-        version: z.string(),
-        floorplan: z.literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE']),
-        project: z.object({
-            name: z.string(),
-            targetFolder: z.string(),
-            namespace: z.optional(z.string()),
-            title: z.optional(z.string()),
-            description: z.string(),
-            ui5Theme: z.optional(z.string()),
-            ui5Version: z.string(),
-            localUI5Version: z.optional(z.string()),
-            sapux: z.boolean(),
-            skipAnnotations: z.optional(z.boolean()),
-            enableCodeAssist: z.optional(z.boolean()),
-            enableEslint: z.optional(z.boolean()),
-            enableTypeScript: z.optional(z.boolean())
-        }),
-        service: z.object({
-            servicePath: z.string(),
-            capService: z.object({
-                projectPath: z.string(),
-                serviceName: z.string(),
-                serviceCdsPath: z.string(),
-                capType: z.optional(z.literal(['Node.js', 'Java']))
-            })
-        }),
-        entityConfig: z.object({
-            mainEntity: z.object({
-                entityName: z.string()
-            }),
-            generateFormAnnotations: z.boolean(),
-            generateLROPAnnotations: z.boolean()
-        }),
-        telemetryData: z.object({
-            generationSourceName: z.string(),
-            generationSourceVersion: z.string()
-        })
-    })
-});
 
 const exec = promisify(execAsync);
 

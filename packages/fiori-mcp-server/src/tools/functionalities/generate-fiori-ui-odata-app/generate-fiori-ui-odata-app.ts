@@ -88,7 +88,7 @@ export const GENERATE_FIORI_UI_ODATA_APP: GetFunctionalityDetailsOutput = {
                         {
                             id: 'localUI5Version',
                             type: 'string',
-                            options: ['1.82.2'],
+                            options: [LATEST_UI5_VERSION],
                             required: true
                         },
                         {
