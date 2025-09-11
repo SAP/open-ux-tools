@@ -12,6 +12,7 @@
         "indexExists": "The `webapp/index.html` file already exists and will not be overwritten.",
         "initFailed": "Initializing failed. Unable to process the project configuration: {{- error}}",
         "initTelemetry": "Initializing telemetry in ABAP deployment configuration generator...",
-        "appRootPath": "Application loaded from: {{- appRootPath}}."
+        "appRootPath": "Application loaded from: {{- appRootPath}}.",
+        "lrepNamespaceNotFound": "Failed to get the lrep namespace: {{- error}}"
     }
 }

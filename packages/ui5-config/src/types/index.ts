@@ -13,6 +13,10 @@ export interface Adp {
     package: string;
     description?: string;
     transport?: string;
+    /**
+     * The lrep namespace to be used for the deployment configuration for ADP projects
+     */
+    lrep?: string;
 }
 
 export interface UrlAbapTarget {
