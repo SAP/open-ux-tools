@@ -86,7 +86,7 @@ export class FioriFunctionalityServer {
                 switch (name) {
                     case 'doc-search':
                         result = await docSearch(args as DocSearchInput);
-                        return (result as any).results;
+                        return this.convertResultToCallToolResult(result.results);
                     case 'list-fiori-apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         return this.convertResultToCallToolResult(result);

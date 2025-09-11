@@ -69,40 +69,29 @@ describe('hybrid-search', () => {
 
                 expect(indexerInstance.docSearch).toHaveBeenCalledWith('test query', 5);
                 expect(result).toEqual({
-                    content: [
+                    query: 'test query',
+                    searchType: 'hybrid',
+                    results: [
                         {
-                            type: 'text',
-                            text: JSON.stringify(
-                                {
-                                    query: 'test query',
-                                    searchType: 'hybrid',
-                                    results: [
-                                        {
-                                            title: 'Test Document 1',
-                                            category: 'guides',
-                                            path: 'docs/test1.md',
-                                            score: 0.95,
-                                            matches: ['keyword1', 'keyword2'],
-                                            excerpt: 'Test excerpt 1',
-                                            uri: 'sap-fiori://docs/guides/doc1'
-                                        },
-                                        {
-                                            title: 'Test Document 2',
-                                            category: 'tutorials',
-                                            path: 'docs/test2.md',
-                                            score: 0.85,
-                                            matches: ['keyword1'],
-                                            excerpt: 'Test excerpt 2',
-                                            uri: 'sap-fiori://docs/tutorials/doc2'
-                                        }
-                                    ],
-                                    total: 2
-                                },
-                                null,
-                                2
-                            )
+                            title: 'Test Document 1',
+                            category: 'guides',
+                            path: 'docs/test1.md',
+                            score: 0.95,
+                            matches: ['keyword1', 'keyword2'],
+                            excerpt: 'Test excerpt 1',
+                            uri: 'sap-fiori://docs/guides/doc1'
+                        },
+                        {
+                            title: 'Test Document 2',
+                            category: 'tutorials',
+                            path: 'docs/test2.md',
+                            score: 0.85,
+                            matches: ['keyword1'],
+                            excerpt: 'Test excerpt 2',
+                            uri: 'sap-fiori://docs/tutorials/doc2'
                         }
-                    ]
+                    ],
+                    total: 2
                 });
             });
 
@@ -120,8 +109,8 @@ describe('hybrid-search', () => {
 
                 const result = await docSearchService.performDocSearch('test query');
 
-                expect(result.content[0].text).toContain('"results": []');
-                expect(result.content[0].text).toContain('"total": 0');
+                expect(result.results).toEqual([]);
+                expect(result.total).toBe(0);
             });
 
             it('should validate search parameters with zod', async () => {
@@ -180,7 +169,9 @@ describe('hybrid-search', () => {
 
             const result = await docSearch(params);
 
-            expect(result.results).toBeDefined();
+            expect(result).toBeDefined();
+            expect(result.query).toBe('test search');
+            expect(result.searchType).toBe('hybrid');
         });
 
         it('should handle search errors with fallback', async () => {
@@ -196,10 +187,11 @@ describe('hybrid-search', () => {
 
             const result = await docSearch(params);
 
-            expect(result.results.content).toHaveLength(1);
-            expect(result.results.content[0].text).toContain('limited_fallback');
-            expect(result.results.content[0].text).toContain('Embeddings data not available');
-            expect(result.results.content[0].text).toContain('npm install -g @sap-ux/fiori-docs-embeddings');
+            expect(result.searchType).toBe('limited_fallback');
+            expect(result.error).toContain('Embeddings data not available');
+            expect(result.suggestion).toContain('npm install -g @sap-ux/fiori-docs-embeddings');
+            expect(result.results).toEqual([]);
+            expect(result.total).toBe(0);
             expect(console.warn).toHaveBeenCalledWith(
                 'Embeddings data not available, providing limited search capability:',
                 expect.any(Error)
@@ -222,9 +214,10 @@ describe('hybrid-search', () => {
 
             const result = await docSearch(params);
 
-            expect(result.results.content).toHaveLength(1);
-            expect(result.results.content[0].text).toContain('limited_fallback');
-            expect(result.results.content[0].text).toContain('test search');
+            expect(result.searchType).toBe('limited_fallback');
+            expect(result.query).toBe('test search');
+            expect(result.results).toEqual([]);
+            expect(result.total).toBe(0);
         });
 
         it('should use default maxResults when not provided', async () => {
