@@ -297,6 +297,15 @@ describe('executeFunctionality', () => {
         `);
     });
 
+    test('executeFunctionality called without parameters (unexpected in real use case)', async () => {
+        mockExec.mockImplementation((cmd, opts, callback) => {
+            throw new Error('Dummy');
+        });
+        await expect(
+            generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput)
+        ).rejects.toThrowErrorMatchingInlineSnapshot('"Unknown error. Recheck input parameters."');
+    });
+
     test('executeFunctionality - servicePath normalization without leading slash', async () => {
         let generatedConfigContent: string;
         mockExec.mockImplementation((_cmd, _opts, callback) => {

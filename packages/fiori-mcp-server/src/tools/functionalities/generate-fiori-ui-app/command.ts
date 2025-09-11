@@ -71,7 +71,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         if (error instanceof z.ZodError) {
             throw new Error(`Missing required fields in parameters. ${JSON.stringify(error.issues, null, 4)}`);
         }
-        throw error;
+        throw new Error('Unknown error. Recheck input parameters.');
     }
     const generatorConfig: GeneratorConfigCAPWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
