@@ -1,5 +1,6 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { FioriFunctionalityServer } from '../../src/server';
+import { TelemetryHelper, unknownTool } from '../../src/telemetry';
 import * as tools from '../../src/tools';
 
 const setRequestHandlerMock = jest.fn();
@@ -16,6 +17,14 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
         })
     };
 });
+
+jest.mock('../../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        markToolStartTime: jest.fn(),
+        sendTelemetry: jest.fn()
+    }
+}));
 
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
@@ -48,6 +57,8 @@ describe('FioriFunctionalityServer', () => {
     });
 
     describe('FioriFunctionalityServer', () => {
+        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
         test('list-fiori-apps', async () => {
             const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
                 applications: [
@@ -104,6 +115,12 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list-fiori-apps',
+                { tool: 'list-fiori-apps', functionalityId: undefined },
+                undefined
+            );
         });
 
         test('list-functionality', async () => {
@@ -152,6 +169,11 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list-functionality',
+                { tool: 'list-functionality', functionalityId: undefined },
+                'app1'
+            );
         });
 
         test('get-functionality-details', async () => {
@@ -187,6 +209,11 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'get-functionality-details',
+                { tool: 'get-functionality-details', functionalityId: 'add-page' },
+                'app1'
+            );
         });
 
         test('execute-functionality', async () => {
@@ -231,6 +258,11 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute-functionality',
+                { tool: 'execute-functionality', functionalityId: 'add-page' },
+                'app1'
+            );
         });
 
         test('Unknown tool', async () => {
@@ -251,6 +283,14 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                unknownTool,
+                {
+                    tool: 'unknown-tool-id',
+                    funtionalityId: undefined
+                },
+                undefined
+            );
         });
     });
 
