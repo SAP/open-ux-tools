@@ -184,25 +184,6 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                 }
             ],
             required: true
-        },
-        {
-            id: 'telemetryData',
-            type: 'object',
-            parameters: [
-                {
-                    id: 'generationSourceName',
-                    type: 'string',
-                    options: ['AI Headless MCP'],
-                    required: true
-                },
-                {
-                    id: 'generationSourceVersion',
-                    type: 'string',
-                    options: ['1.0.0'],
-                    required: true
-                }
-            ],
-            required: true
         }
     ]
 };

@@ -41,12 +41,19 @@ const GeneratorConfigSchemaCAP = z.object({
         }),
         generateFormAnnotations: z.boolean(),
         generateLROPAnnotations: z.boolean()
-    }),
-    telemetryData: z.object({
-        generationSourceName: z.string(),
-        generationSourceVersion: z.string()
     })
 });
+
+// Input type for generator config
+export type GeneratorConfigCAP = z.infer<typeof GeneratorConfigSchemaCAP>;
+// Extended type generators API use
+const PREDEFINED_GENERATOR_VALUES = {
+    telemetryData: {
+        'generationSourceName': 'AI Headless MCP',
+        'generationSourceVersion': '1.0.0'
+    }
+};
+type GeneratorConfigCAPWithAPI = GeneratorConfigCAP & typeof PREDEFINED_GENERATOR_VALUES;
 
 const exec = promisify(execAsync);
 
@@ -57,15 +64,19 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    let generatorConfigCAP;
+    let generatorConfigCAP: GeneratorConfigCAP | undefined;
     try {
         generatorConfigCAP = GeneratorConfigSchemaCAP.parse(params.parameters);
     } catch (error) {
         if (error instanceof z.ZodError) {
             throw new Error(`Missing required fields in parameters. ${JSON.stringify(error.issues, null, 4)}`);
         }
+        throw error;
     }
-    const generatorConfig = generatorConfigCAP;
+    const generatorConfig: GeneratorConfigCAPWithAPI = {
+        ...PREDEFINED_GENERATOR_VALUES,
+        ...generatorConfigCAP
+    };
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');

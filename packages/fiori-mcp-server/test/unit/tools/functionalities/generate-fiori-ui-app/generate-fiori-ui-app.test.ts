@@ -1,5 +1,6 @@
 import { join } from 'path';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
+import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/command';
 
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
     {
@@ -40,7 +41,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual(GENERATE_FIORI_UI_APP);
     });
 });
-const paramTest = {
+const paramTest: GeneratorConfigCAP = {
     version: '1.0.0',
     floorplan: 'FE_LROP',
     project: {
@@ -73,10 +74,6 @@ const paramTest = {
         },
         generateFormAnnotations: true,
         generateLROPAnnotations: true
-    },
-    telemetryData: {
-        generationSourceName: 'test',
-        generationSourceVersion: '1.0.0'
     }
 };
 
@@ -144,10 +141,6 @@ describe('executeFunctionality', () => {
                         },
                         generateFormAnnotations: true,
                         generateLROPAnnotations: true
-                    },
-                    telemetryData: {
-                        generationSourceName: 'test',
-                        generationSourceVersion: '1.0.0'
                     }
                 },
                 status: 'Success'
@@ -189,7 +182,7 @@ describe('executeFunctionality', () => {
                 'servicePath': '/app1'
             },
             'telemetryData': {
-                'generationSourceName': 'test',
+                'generationSourceName': 'AI Headless MCP',
                 'generationSourceVersion': '1.0.0'
             },
             'version': '1.0.0'
@@ -275,14 +268,6 @@ describe('executeFunctionality', () => {
                     \\"code\\": \\"invalid_type\\",
                     \\"path\\": [
                         \\"entityConfig\\"
-                    ],
-                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
-                },
-                {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"telemetryData\\"
                     ],
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 }
