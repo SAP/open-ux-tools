@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import { SimpleDocumentIndexer } from './services/indexer-simple';
 import type { SearchResult } from './services/types/index';
 

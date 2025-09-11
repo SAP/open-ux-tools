@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.0.6
+
+### Patch Changes
+
+-   ac9a2d0: feat: collect telemetry
+
 ## 0.0.5
 
 ### Patch Changes

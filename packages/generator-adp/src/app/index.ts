@@ -21,7 +21,13 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { TelemetryHelper, getDefaultTargetFolder, isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import {
+    TelemetryHelper,
+    getDefaultTargetFolder,
+    isCli,
+    isExtensionInstalled,
+    sendTelemetry
+} from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
@@ -138,7 +144,7 @@ export default class extends Generator {
 
         if (!this.jsonInput) {
             this.env.lookup({
-                packagePatterns: ['@sap/generator-fiori']
+                packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
             });
             setHeaderTitle(opts, this.logger, generatorTitle);
 
@@ -180,9 +186,11 @@ export default class extends Generator {
             return;
         }
 
+        const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
         const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !this.isCli },
-            systemValidationCli: { hide: !this.isCli }
+            systemValidationCli: { hide: !this.isCli },
+            shouldCreateExtProject: { isExtensibilityExtInstalled }
         });
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
         this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;

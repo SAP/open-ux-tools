@@ -2269,6 +2269,12 @@ importers:
       '@sap-ux/annotation-converter':
         specifier: 0.10.3
         version: 0.10.3
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -2287,6 +2293,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@sap-ux/text-document-utils':
         specifier: workspace:*
         version: link:../text-document-utils
@@ -2308,6 +2317,9 @@ importers:
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
       zod:
         specifier: 4.1.5
         version: 4.1.5
