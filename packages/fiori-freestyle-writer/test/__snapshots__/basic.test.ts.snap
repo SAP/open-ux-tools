@@ -1433,7 +1433,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -2190,7 +2190,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\",
     \\"unit-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/unit/unitTests.qunit.html\\\\\\"\\"
   }
 }
@@ -3077,7 +3077,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\",
     \\"unit-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/unit/unitTests.qunit.html\\\\\\"\\"
   }
 }
@@ -3952,7 +3952,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -4596,7 +4596,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -5216,7 +5216,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -5780,7 +5780,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -6599,7 +6599,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -8245,7 +8245,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
@@ -9550,7 +9550,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-display\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#nods1-display\\\\\\"\\"
   }
 }
 ",
