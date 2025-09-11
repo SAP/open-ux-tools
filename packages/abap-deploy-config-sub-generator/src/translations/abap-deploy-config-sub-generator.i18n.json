@@ -13,6 +13,6 @@
         "initFailed": "Initializing failed. Unable to process the project configuration: {{- error}}",
         "initTelemetry": "Initializing telemetry in ABAP deployment configuration generator...",
         "appRootPath": "Application loaded from: {{- appRootPath}}.",
-        "lrepNamespaceNotFound": "Failed to get the lrep namespace: {{- error}}"
+        "lrepNamespaceNotFound": "Failed to get the `lrep` namespace: {{- error}}"
     }
 }
