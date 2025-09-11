@@ -16,7 +16,7 @@ export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
         const generateQRCode = async (text: string): Promise<void> => {
             try {
                 const qrString = await QRCode.toString(text, { type: 'terminal', small: true });
-                logger.info(qrString);
+                logger.info(qrString.replace(/\n/g, '\r\n'));
             } catch (err) {
                 logger.error(err);
             }

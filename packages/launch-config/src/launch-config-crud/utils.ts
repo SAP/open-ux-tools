@@ -32,6 +32,11 @@ function getArgs(options: FioriOptions): string[] | undefined {
         }
     }
 
+    if (options.remoteAccess) {
+        const config = Arguments.Config;
+        args.push(config, '--accept-remote-connections');
+    }
+
     return args.length > 0 ? args : undefined;
 }
 
@@ -147,6 +152,7 @@ export function getFioriOptions(
     let ui5LocalVersion;
     let backendConfigs;
     let urlParameters;
+    let remoteAccess;
     // Do not display configurations which have different type than node
     let visible = launchConfig.type === 'node';
     if (launchConfig.env) {
@@ -162,6 +168,9 @@ export function getFioriOptions(
         const parsedArguments = parseArguments(launchConfig.args);
         if (parsedArguments.open) {
             startFile = parsedArguments.open;
+        }
+        if (parsedArguments.remoteAccess) {
+            remoteAccess = parsedArguments.open;
         }
         if (parsedArguments.config === FileName.Ui5MockYaml) {
             isMockDataEnabled = true;
@@ -189,7 +198,8 @@ export function getFioriOptions(
         startFile,
         backendConfigs,
         urlParameters,
-        visible
+        visible,
+        remoteAccess
     };
 }
 
@@ -237,9 +247,11 @@ export function parseArguments(args: string[]): yargsParser.Arguments {
     return yargsParser(args, {
         alias: {
             open: ['o'],
-            config: ['c']
+            config: ['c'],
+            remoteAccess: ['accept-remote-connections']
         },
-        string: ['config', 'open', 'framework-version'],
+        string: ['config', 'open', 'remote', 'framework-version'],
+        boolean: ['accept-remote-connections'],
         configuration: {
             'strip-aliased': true,
             'camel-case-expansion': false,

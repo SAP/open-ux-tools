@@ -21,6 +21,7 @@ export interface FioriOptions {
     urlParameters?: string;
     visible?: boolean;
     debugOptions?: DebugOptions;
+    remoteAccess?: boolean;
     /**
      * Controls whether VS Code should reload when updating workspace folders.
      *
