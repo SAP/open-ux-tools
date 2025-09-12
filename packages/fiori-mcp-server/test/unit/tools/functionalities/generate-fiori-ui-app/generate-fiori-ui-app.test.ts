@@ -1,6 +1,7 @@
 import { join } from 'path';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
 import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/command';
+import packageJson from '../../../../../package.json';
 
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
     {
@@ -184,8 +185,8 @@ describe('executeFunctionality', () => {
                 'servicePath': '/app1'
             },
             'telemetryData': {
-                'generationSourceName': 'AI Headless MCP',
-                'generationSourceVersion': '1.0.0'
+                'generationSourceName': '@sap-ux/fiori-mcp-server',
+                'generationSourceVersion': packageJson.version
             },
             'version': '0.2'
         });

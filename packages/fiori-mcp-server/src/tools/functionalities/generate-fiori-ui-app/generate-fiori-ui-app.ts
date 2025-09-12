@@ -20,7 +20,7 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
         {
             id: 'floorplan',
             type: 'string',
-            options: ['FE_LROP', 'FE_FEOP', 'FE_FPM'],
+            options: ['FE_LROP', 'FE_FEOP', 'FE_FPM', 'FE_OVP', 'FE_ALP', 'FE_WORKLIST', 'FF_SIMPLE'],
             description: 'SAP Fiori Elements floor plan type.',
             required: true
         },
