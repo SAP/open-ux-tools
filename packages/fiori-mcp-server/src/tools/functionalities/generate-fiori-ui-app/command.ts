@@ -46,7 +46,7 @@ const GeneratorConfigSchemaCAP = z.object({
 export type GeneratorConfigCAP = z.infer<typeof GeneratorConfigSchemaCAP>;
 // Extended type generators API use
 const PREDEFINED_GENERATOR_VALUES = {
-    // Config schema version.
+    // Config schema version
     version: '0.2',
     telemetryData: {
         'generationSourceName': 'AI Headless MCP',
