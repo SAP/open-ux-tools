@@ -25,13 +25,6 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
             required: true
         },
         {
-            id: 'projectType',
-            type: 'string',
-            options: ['LIST_REPORT_OBJECT_PAGE', 'FORM_ENTRY_OBJECT_PAGE', 'FLEXIBLE_PROGRAMMING_MODEL'],
-            description: 'Corresponds to the SAP Fiori Elements floor plan.',
-            required: true
-        },
-        {
             id: 'project',
             type: 'object',
             parameters: [
