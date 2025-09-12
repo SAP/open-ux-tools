@@ -14,7 +14,7 @@ const eolRegEx = new RegExp(os.EOL, 'g');
 describe('fixtures', () => {
     const fixtures = getAllFixtures(FIXTURE_ROOT);
     for (const fixture of fixtures) {
-        test(`fixture ${fixture}`, async () => {
+        test.only(`fixture ${fixture}`, async () => {
             const sourcePath = join(FIXTURE_ROOT, fixture);
             const text = (await readFile(sourcePath, 'utf8')).replace(eolRegEx, '\n');
             const jsonContent = (await readFile(sourcePath.replace('.xml', '.json'), 'utf8')).replace(eolRegEx, '\n');

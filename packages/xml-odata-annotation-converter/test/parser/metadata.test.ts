@@ -110,6 +110,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 10,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -137,6 +141,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 4,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -164,6 +172,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 40,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -191,6 +203,9 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.Int32",
+                        "facets": Object {
+                          "isNullable": false,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -218,6 +233,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 4,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -265,6 +284,7 @@ describe('parse', () => {
                         },
                         "name": "DEPARTMENT_2_TEAMS",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/DEPARTMENT_2_TEAMS",
+                        "referentialConstraints": Array [],
                         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.TEAM",
                         "targetKinds": Array [
                           "NavigationProperty",
@@ -325,6 +345,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 10,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -352,6 +376,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 4,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -548,7 +576,69 @@ describe('parse', () => {
                   },
                   "name": "to_Currency",
                   "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Z4SEPMRA_C_PD_PRODUCTSALESDATAType/to_Currency",
+                  "referentialConstraints": Array [],
                   "structuredType": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType",
+                  "targetKinds": Array [
+                    "NavigationProperty",
+                  ],
+                }
+            `);
+        });
+
+        test('navigation property with constraint', () => {
+            const result = parseWithMarkup(
+                `<EntityType Name="BookingsType">
+                <Key>
+                    <PropertyRef Name="UUID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="ParentUUID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="_Travels" Type="Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType" Nullable="false" Partner="_Bookings">
+                    <ReferentialConstraint Property="ParentUUID" ReferencedProperty="UUID"/>
+                </NavigationProperty>
+            </EntityType>`
+            );
+            expect(
+                result
+                    .find((element) => element.name === 'Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType')
+                    ?.content.find((element) => element.name === '_Travels')
+            ).toMatchInlineSnapshot(`
+                Object {
+                  "content": Array [],
+                  "edmPrimitiveType": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
+                  "facets": Object {
+                    "isNullable": false,
+                  },
+                  "isAnnotatable": true,
+                  "isCollectionValued": false,
+                  "isComplexType": false,
+                  "isEntityType": true,
+                  "kind": "NavigationProperty",
+                  "location": Object {
+                    "range": Object {
+                      "end": Object {
+                        "character": 37,
+                        "line": 13,
+                      },
+                      "start": Object {
+                        "character": 16,
+                        "line": 11,
+                      },
+                    },
+                    "uri": "file://annotations.xml",
+                  },
+                  "name": "_Travels",
+                  "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType/_Travels",
+                  "referentialConstraints": Array [
+                    Object {
+                      "sourceProperty": "ParentUUID",
+                      "sourceTypeName": "Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType",
+                      "targetProperty": "UUID",
+                      "targetTypeName": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
+                    },
+                  ],
+                  "structuredType": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
                   "targetKinds": Array [
                     "NavigationProperty",
                   ],
