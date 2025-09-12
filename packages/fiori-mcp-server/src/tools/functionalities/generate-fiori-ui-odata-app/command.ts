@@ -1,13 +1,13 @@
+/* eslint-disable no-console */
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 
-import { promises as FSpromises, existsSync } from 'fs';
+import { promises, existsSync } from 'fs';
 import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
-import { GeneratorConfigSchemaCAP } from '../../../types';
-import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
-import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
 import * as z from 'zod';
+import { GENERATE_FIORI_UI_ODATA_APP_ID } from '../../../constant';
+import { GeneratorConfigSchemaNonCAP } from '../../../types';
 
 const exec = promisify(execAsync);
 
@@ -18,43 +18,38 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    let generatorConfigCAP;
+    console.log('Starting Fiori UI generation...');
+
+    let generatorConfigNonCap;
     try {
-        generatorConfigCAP = GeneratorConfigSchemaCAP.parse(params.parameters);
+        generatorConfigNonCap = GeneratorConfigSchemaNonCAP.parse(params.parameters);
     } catch (error) {
         if (error instanceof z.ZodError) {
             throw new Error(`Missing required fields in generatorConfig. ${JSON.stringify(error.issues, null, 4)}`);
         }
     }
-    const generatorConfig = generatorConfigCAP?.appGenConfig;
+
+    const generatorConfig = generatorConfigNonCap?.appGenConfig;
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
+
+    console.log('Project path is:' + projectPath);
+
     if (!projectPath || typeof projectPath !== 'string') {
-        throw new Error('Please provide a valid path to the CAP project folder.');
+        throw new Error('Please provide a valid path to the non-CAP project folder.');
     }
-    if (generatorConfig?.service.servicePath) {
-        generatorConfig.service.servicePath = generatorConfig?.service.servicePath?.startsWith('/')
-            ? generatorConfig?.service.servicePath
-            : `/${generatorConfig?.service.servicePath}`;
-    }
+
     const appName = (generatorConfig?.project.name as string) ?? 'default';
     const appPath = join(projectPath, 'app', appName);
     const targetDir = projectPath;
-    const configPath = `${appName}-generator-config.json`;
+    const configPath = `.fiori-ai/${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);
-    const generatorName = '@sap/generator-fiori';
-    const generatorVersion = '1.18.5';
-    const packages: PackageInfo[] = await findInstalledPackages(generatorName, { minVersion: generatorVersion });
-    if (packages?.length < 1) {
-        throw new Error(
-            `Fiori generator not found. Please install the Fiori generator >=${generatorVersion} with 'npm install -g ${generatorName}' and retry this call`
-        );
-    }
+
     try {
         const content = JSON.stringify(generatorConfig, null, 4);
 
-        await FSpromises.mkdir(dirname(outputPath), { recursive: true });
-        await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
-        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force  --skipInstall`.trim();
+        await promises.mkdir(dirname(outputPath), { recursive: true });
+        await promises.writeFile(outputPath, content, { encoding: 'utf8' });
+        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
 
         const { stdout, stderr } = await exec(command, { cwd: targetDir });
         console.log(stdout);
@@ -64,7 +59,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     } catch (error) {
         console.error('Error generating application:', error);
         return {
-            functionalityId: GENERATE_FIORI_UI_APP_ID,
+            functionalityId: GENERATE_FIORI_UI_ODATA_APP_ID,
             status: 'Error',
             message: 'Error generating application: ' + error.message,
             parameters: params.parameters,
@@ -75,14 +70,14 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     } finally {
         //clean up temp config file used for the headless generator
         if (existsSync(outputPath)) {
-            await FSpromises.unlink(outputPath);
+            await promises.unlink(outputPath);
         }
     }
 
     return {
-        functionalityId: GENERATE_FIORI_UI_APP_ID,
+        functionalityId: GENERATE_FIORI_UI_ODATA_APP_ID,
         status: 'Success',
-        message: `Generation completed successfully: ${appPath}. You must run \`npm install\` in ${targetDir} before trying to run the application.`,
+        message: 'Generation completed successfully: ' + appPath,
         parameters: params.parameters,
         appPath,
         changes: [],
