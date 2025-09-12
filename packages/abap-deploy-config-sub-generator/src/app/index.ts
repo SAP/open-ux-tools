@@ -40,6 +40,7 @@ import type {
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
+import { getVariantNamespace } from '../utils/project';
 
 /**
  * ABAP deploy config generator.
@@ -288,6 +289,7 @@ export default class extends DeploymentGenerator {
         if (this.abort || this.answers.overwrite === false) {
             return;
         }
+        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isS4HC);
         await generateAbapDeployConfig(
             this.destinationPath(),
             {
@@ -304,7 +306,8 @@ export default class extends DeploymentGenerator {
                     package: this.answers.package,
                     transport: this.answers.transport
                 },
-                index: this.answers.index
+                index: this.answers.index,
+                lrep: namespace
             } as AbapDeployConfig,
             {
                 baseFile: this.options.base,
