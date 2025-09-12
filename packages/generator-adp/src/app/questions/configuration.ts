@@ -1,32 +1,3 @@
-import {
-    FlexLayer,
-    getConfiguredProvider,
-    getEndpointNames,
-    getFlexUISupportedSystem,
-    getSystemUI5Version,
-    isFeatureSupportedVersion,
-    loadApps,
-    SourceManifest,
-    isAppSupported,
-    isSyncLoadedView,
-    isV4Application,
-    getRelevantVersions,
-    fetchPublicVersions,
-    checkSystemVersionPattern,
-    getAch,
-    getFioriId
-} from '@sap-ux/adp-tooling';
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
-import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import type {
-    ConfirmQuestion,
-    InputQuestion,
-    ListQuestion,
-    PasswordQuestion,
-    YUIQuestion
-} from '@sap-ux/inquirer-common';
 import type {
     ConfigAnswers,
     FlexUISupportedSystem,
@@ -34,8 +5,40 @@ import type {
     SystemLookup,
     UI5Version
 } from '@sap-ux/adp-tooling';
+import {
+    checkSystemVersionPattern,
+    fetchPublicVersions,
+    FlexLayer,
+    getAch,
+    getBaseAppInbounds,
+    getConfiguredProvider,
+    getEndpointNames,
+    getFioriId,
+    getFlexUISupportedSystem,
+    getRelevantVersions,
+    getSystemUI5Version,
+    isAppSupported,
+    isFeatureSupportedVersion,
+    isSyncLoadedView,
+    isV4Application,
+    loadApps,
+    SourceManifest
+} from '@sap-ux/adp-tooling';
+import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type {
+    ConfirmQuestion,
+    InputQuestion,
+    ListQuestion,
+    PasswordQuestion,
+    YUIQuestion
+} from '@sap-ux/inquirer-common';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
+import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { t } from '../../utils/i18n';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -47,18 +50,17 @@ import type {
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
-import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
-import { getExtProjectMessage } from './helper/message';
-import { getApplicationChoices } from './helper/choices';
-import { validateExtensibilityExtension } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
+import { getApplicationChoices } from './helper/choices';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions
 } from './helper/conditions';
+import { getExtProjectMessage } from './helper/message';
+import { validateExtensibilityExtension } from './helper/validators';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -133,6 +135,10 @@ export class ConfigPrompter {
      * System UI5 version.
      */
     private systemVersion: string | undefined;
+    /**
+     * Base application inbounds, if the base application is an FLP app.
+     */
+    private baseApplicationInbounds?: ManifestNamespace.Inbound;
 
     /**
      * Returns the needed ui5 properties from calling the CDN.
@@ -190,6 +196,15 @@ export class ConfigPrompter {
      */
     public get isAppSupported(): boolean {
         return this.isApplicationSupported;
+    }
+
+    /**
+     * Base application inbounds, if the base application is an FLP app.
+     *
+     * @returns {ManifestNamespace.Inbound|undefined} Returns the base application inbounds.
+     */
+    public get baseAppInbounds(): ManifestNamespace.Inbound | undefined {
+        return this.baseApplicationInbounds;
     }
 
     /**
@@ -492,24 +507,29 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        const validationResult = await this.validateAppData(app);
-
-        if (!isAppStudio()) {
-            return validationResult;
-        }
+        let validationAppDataResult = await this.validateAppData(app);
 
         const isKnownUnsupported =
-            validationResult === t('error.appDoesNotSupportManifest') ||
-            validationResult === t('error.appDoesNotSupportFlexibility');
+            validationAppDataResult === t('error.appDoesNotSupportManifest') ||
+            validationAppDataResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isKnownUnsupported) {
-            this.logger.error(validationResult);
-            this.appValidationErrorMessage = validationResult;
+        if (isAppStudio() && isKnownUnsupported) {
+            this.logger.error(validationAppDataResult as string);
+            this.appValidationErrorMessage = validationAppDataResult as string;
             this.isApplicationSupported = false;
-            return true;
+            validationAppDataResult = true;
         }
 
-        return validationResult;
+        if (validationAppDataResult === true && this.isCloud) {
+            try {
+                this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider);
+                return true;
+            } catch (error) {
+                return error.message;
+            }
+        }
+
+        return validationAppDataResult;
     }
 
     /**
