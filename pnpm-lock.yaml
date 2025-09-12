@@ -8,7 +8,7 @@ overrides:
   router>path-to-regexp: 0.1.12
   router@2.0.0>path-to-regexp: 8.2.0
   '@storybook/manager-api>store2': 2.14.4
-  '@sap/bas-sdk>axios': 1.11.0
+  '@sap/bas-sdk>axios': 1.12.0
   '@sap/service-provider-apis>axios': 1.11.0
   mta-local: 1.0.4
 
@@ -9103,7 +9103,7 @@ packages:
   /@sap/bas-sdk@3.11.6:
     resolution: {integrity: sha512-2IMsL0/cXxN2GFTkmq2m9TbY3lKtnKGjOONalw3WTJRH+yWCog2q5f5V2Xf+P+oem67UQcubkMPlbdqmvVIYDA==}
     dependencies:
-      axios: 1.11.0
+      axios: 1.12.0
       cross-spawn: 7.0.5
       fs-extra: 11.2.0
       jwt-decode: 4.0.0
@@ -12408,6 +12408,15 @@ packages:
 
   /axios@1.11.0:
     resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.4
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  /axios@1.12.0:
+    resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.4
@@ -23959,7 +23968,7 @@ packages:
       chalk: 4.1.2
       enhanced-resolve: 5.17.1
       micromatch: 4.0.8
-      semver: 7.7.1
+      semver: 7.5.4
       typescript: 5.9.2
       webpack: 5.99.2(esbuild@0.19.2)
     dev: true
