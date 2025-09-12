@@ -79,12 +79,6 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                     type: 'string',
                     options: [LATEST_UI5_VERSION],
                     required: false
-                },
-                {
-                    id: 'sapux',
-                    type: 'boolean',
-                    defaultValue: true,
-                    required: true
                 }
             ],
             required: true

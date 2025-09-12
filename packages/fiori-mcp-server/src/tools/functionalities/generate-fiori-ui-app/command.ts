@@ -18,7 +18,6 @@ const GeneratorConfigSchemaCAP = z.object({
         ui5Theme: z.optional(z.string()),
         ui5Version: z.string(),
         localUI5Version: z.optional(z.string()),
-        sapux: z.boolean(),
         skipAnnotations: z.optional(z.boolean()),
         enableCodeAssist: z.optional(z.boolean()),
         enableEslint: z.optional(z.boolean()),
@@ -51,6 +50,9 @@ const PREDEFINED_GENERATOR_VALUES = {
     telemetryData: {
         'generationSourceName': 'AI Headless MCP',
         'generationSourceVersion': '1.0.0'
+    },
+    project: {
+        sapux: true
     }
 };
 type GeneratorConfigCAPWithAPI = GeneratorConfigCAP & typeof PREDEFINED_GENERATOR_VALUES;
@@ -75,7 +77,11 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     }
     const generatorConfig: GeneratorConfigCAPWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
-        ...generatorConfigCAP
+        ...generatorConfigCAP,
+        project: {
+            ...PREDEFINED_GENERATOR_VALUES.project,
+            ...generatorConfigCAP.project
+        }
     };
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
