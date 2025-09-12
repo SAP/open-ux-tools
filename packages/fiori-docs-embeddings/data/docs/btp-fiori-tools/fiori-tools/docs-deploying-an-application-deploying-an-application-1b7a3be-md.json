@@ -1,0 +1,28 @@
+{
+  "id": "btp-fiori-tools-docs-deploying-an-application-deploying-an-application-1b7a3be-md",
+  "title": "Deploying an Application",
+  "category": "fiori-tools",
+  "path": "docs/Deploying-an-Application/deploying-an-application-1b7a3be.md",
+  "lastModified": "2025-09-01T18:17:10.127Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Deploying",
+    "Application"
+  ],
+  "headers": [
+    "Deploying an Application",
+    "Deployment Overview",
+    "Deploying to ABAP",
+    "Deploying to SAP Business Technology Platform Cloud Foundry",
+    "Deployment Process",
+    "Troubleshooting Tips",
+    "SAP Fiori Tools CLI help"
+  ],
+  "content": "<!-- loio1b7a3be8d99c45aead90528ef472af37 -->\n\n# Deploying an Application\n\n\n\n<a name=\"loio1b7a3be8d99c45aead90528ef472af37__section_azt_3pj_34b\"/>\n\n## Deployment Overview\n\nSAP Fiori tools support deployment to ABAP as well as deployment to Cloud Foundry \\(CF\\) on SAP Business Technology Platform. In contrast to the SAP Web IDE approach, the deployment target is not required during the application generation which allows a simplified user experience when the project is first created. This approach means that the decision can be deferred until the developer is ready to deploy the application.\n\n\n\n<a name=\"loio1b7a3be8d99c45aead90528ef472af37__section_lvz_4nw_3nb\"/>\n\n## Deploying to ABAP\n\n**Prerequisite**. Ensure all prerequisites are met when using an [OData service to load data to the SAPUI5 ABAP](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8) repository.\n\nFor deployment to ABAP, the SAPUI5 Repository service exposed by the ABAP system is used to upload a deployment artifact. The ABAP backend provides all functionality to run the application, such as hosting, routing, and authentication. As a result, the deployment artifact is just an SAP Fiori application. In other words, it's a zipped `dist` folder of the SAP Fiori tools project.\n\nFor more information see, [Deployment to ABAP](deployment-of-application-607014e.md#loio607014e278d941fda4440f92f4a324a6__abap)\n\n\n\n<a name=\"loio1b7a3be8d99c45aead90528ef472af37__section_qy3_2qj_34b\"/>\n\n## Deploying to SAP Business Technology Platform Cloud Foundry\n\nSimilar to the SAPUI5 Repository service in ABAP, SAP Business Technology Platform offers an HTML5 Repository to upload and host application. To access the HTML5 Repository, it is required to create an instance of an HTML Repository service. All other functionality required for running the application in an ABAP system comes out of the box and needs to be made accessible by creating instances of the corresponding services.\n\n\n\n### Deployment Process\n\nThe process to deploy the application involves the following steps:\n\n-   Generate deployment configurations\n    -   [Generate Deployment Configuration ABAP](generate-deployment-configuration-abap-c06b9cb.md)\n    -   [Generate Deployment Configuration Cloud Foundry](generate-deployment-configuration-cloud-foundry-41e63bd.md)\n    -   [SAP Fiori Launchpad Configuration](sap-fiori-launchpad-configuration-bc3cb89.md)\n\n-   [Deployment of Application](deployment-of-application-607014e.md)\n\n\n\n<a name=\"loio1b7a3be8d99c45aead90528ef472af37__section_qxm_mtm_ylb\"/>\n\n## Troubleshooting Tips\n\nThe back-end system contains the `SAP_UI` component version 7.53 or newer, but the SAPUI5 repository service cannot be reached.\n\n-   Check if the service is activated. For more information, see [Using an OData Service to Load Data to the SAPUI5 ABAP Repository](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8).\n\nThe SAPUI5 repository service is active and reachable but whenever I deploy an application, I see the following error: ***Request failed with status code 400***.\n\n-   There are multiple reasons for this error. check the console for more information, or open the transaction `/IWFND/ERROR_LOG` and check the server logs. A common issue is that during the setup, configuring a virus scan profile is forgotten. This can be corrected in the transaction `/IWFND/VIRUS_SCAN`.\n\n> ### Note:  \n> You can retrieve more detailed logging information when deploying to ABAP by executing the following commands during deployment.\n> \n> -   For detailed log messages from the backend services during deployment:\n> \n>     **macOS/Linux:** `DEBUG=ux-odata-client npm run deploy`\n> \n>     **Windows:** `set DEBUG=ux-odata-client & npm run deploy`\n> \n> -   For detailed log messages from archiving and deploying the artefacts:\n> \n>     **macOS/Linux:** `DEBUG=ux-odata-client npm run deploy`\n> \n>     **Windows:** `set DEBUG=ux-odata-client & npm run deploy`\n\n> ### Note:  \n> For any issues, create an incident in **SAP Support Portal** for the component **CA-UX-IDE**.\n\n\n\n<a name=\"loio1b7a3be8d99c45aead90528ef472af37__section_bzw_kmr_brb\"/>\n\n## SAP Fiori Tools CLI help\n\nSAP Fiori tools CLI offers additional help options to find more information about the various commands and their options for deployment plus other commands.\n\n-   Execute the following command to list all the available commands: `npx fiori help`.\n-   Execute the following command to get the details about a specific command. For example: `npx fiori deploy help`.\n\n",
+  "excerpt": "<!-- loio1b7a3be8d99c45aead90528ef472af37 --> Deploying an Application <a name=\"loio1b7a3be8d99c45aead90528ef472af37__section_azt_3pj_34b\"/> Deployment Overview SAP Fiori tools support deployment to A...",
+  "wordCount": 573,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

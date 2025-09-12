@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-09-developing-controls-keyboard-handling-for-basic-navigation-b59f13d-md",
+  "title": "Keyboard Handling for Basic Navigation",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/keyboard-handling-for-basic-navigation-b59f13d.md",
+  "lastModified": "2025-09-01T18:17:10.679Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Keyboard",
+    "Handling",
+    "for",
+    "Basic",
+    "Navigation"
+  ],
+  "headers": [
+    "Keyboard Handling for Basic Navigation",
+    "Standard Navigation",
+    "Group Navigation"
+  ],
+  "content": "<!-- loiob59f13d3586c4196b28e92683e9dff19 -->\n\n# Keyboard Handling for Basic Navigation\n\nThe following keys and key combinations are used for navigation between controls within an application.\n\n\n\n## Standard Navigation\n\nNavigation between controls is done using the [Tab\\] key. [Tab\\] moves the focus from one control to the next one inside the application. The tab order is defined by the placement of the control within the DOM tree, therefore apps have a large influence on it.\n\n> ### Note:  \n> Controls are in the tab order, if they are interactive, enabled and visible. This includes read-only controls. Disabled or hidden controls are taken out of the tab order. Non-interactive controls \\(for example, layout container\\) can never be reached with [Tab\\].\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nKey combination\n\n</th>\n<th valign=\"top\">\n\nBehavior\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Tab\\]\n\n</td>\n<td valign=\"top\">\n\nForward Navigation:\n\nOn enter, move focus to the control.\n\nOn leave, move focus to the next control in the application.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Shift\\] + [Tab\\] \n\n</td>\n<td valign=\"top\">\n\nBackward Navigation:\n\nOn enter, move focus to the control.\n\nOn leave, move focus to the previous control in the tab order.\n\n</td>\n</tr>\n</table>\n\n\n\n## Group Navigation\n\nControls which are adjacent within the application can be grouped. Within a group, [F6\\] or [Ctrl\\] + [Alt/Option\\] + [Down\\]  skip all controls of the group and move the focus to the first control in the application within the **next** group. [Shift\\] + [F6\\]  or [Ctrl\\] + [Alt/Option\\] + [Up\\] move the focus to the first control of the **previous** group.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nKey combination\n\n</th>\n<th valign=\"top\">\n\nBehavior\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[F6\\] \n\nor\n\n[Ctrl\\] + [Alt/Option\\] + [Down\\] \n\n</td>\n<td valign=\"top\">\n\nFast Navigation \\(forward\\):\n\nMove focus to the next control in the tab order after the group\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Shift\\] + [F6\\]  \n\nor\n\n[Ctrl\\] + [Alt/Option\\] + [Up\\] \n\n</td>\n<td valign=\"top\">\n\nFast Navigation \\(back\\):\n\nMove focus to the previous control in the tab order before the group\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loiob59f13d3586c4196b28e92683e9dff19 --> Keyboard Handling for Basic Navigation The following keys and key combinations are used for navigation between controls within an application. Standard Na...",
+  "wordCount": 333,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

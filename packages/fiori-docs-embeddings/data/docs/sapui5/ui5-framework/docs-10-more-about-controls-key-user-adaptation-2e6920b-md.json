@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-key-user-adaptation-2e6920b-md",
+  "title": "Key User Adaptation",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/key-user-adaptation-2e6920b.md",
+  "lastModified": "2025-09-01T18:17:10.693Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Key",
+    "User",
+    "Adaptation"
+  ],
+  "headers": [
+    "Key User Adaptation"
+  ],
+  "content": "<!-- loio2e6920b4666e45518de574178b378c60 -->\n\n# Key User Adaptation\n\nThe `SmartVariantManagement` control is enabled for key user adaptation.\n\n`SmartVariantManagement` can be used for key user changes. All changes are then stored in the CUSTOMER layer of the layered repository of SAPUI5 flexibility.\n\n> ### Note:  \n> On the user interfaces for key and end users, the more user-oriented term \"view\" is used for variants.\n\nThe following list shows the changes that a key user can make in the UI adaptation mode:\n\n-   Create, save, delete, and rename views\n\n-   Define default views\n\n-   Define favorites\n\n-   Apply views automatically\n\n-   Define the visibility of views \\(visible for all users or only for users with a specific role\\)\n\n-   Standard views:\n\n    -   Define default standard views\n\n    -   Apply standard views automatically\n\n\n    > ### Note:  \n    > The key user cannot rename or delete standard views; define favorites, define visibility, or change the content of the related controls for these views.\n\n\nA `SmartVariantManagement` control that is enabled for key user adaptation can be used together with the following controls:\n\n-   `SmartFilterBar`\n\n-   `SmartTable`\n\n-   `SmartChart`\n\n\nThese controls need to be enabled for key user adaptation. For more information, see **Key User Adaptation** in [Smart Variant Management](smart-variant-management-06a4c3a.md#loio06a4c3ac1cf545a7b51864e7f3aa02da__SVM_KUA).\n\n**Related Information**  \n\n\n[SAPUI5 Flexibility: Adapting UIs Made Easy](../04_Essentials/sapui5-flexibility-adapting-uis-made-easy-a8e55aa.md \"Modification-free, cost-saving, easy to use, and performant: Discover the new flexibility when adapting SAP Fiori UIs using SAPUI5 flexibility.\")\n\n[SAPUI5 Flexibility: Enable Your App for UI Adaptation](../05_Developing_Apps/sapui5-flexibility-enable-your-app-for-ui-adaptation-f1430c0.md \"Here's what you have to consider when developing apps that support UI adaptation.\")\n\n",
+  "excerpt": "<!-- loio2e6920b4666e45518de574178b378c60 --> Key User Adaptation The SmartVariantManagement control is enabled for key user adaptation. SmartVariantManagement can be used for key user changes. All ch...",
+  "wordCount": 250,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

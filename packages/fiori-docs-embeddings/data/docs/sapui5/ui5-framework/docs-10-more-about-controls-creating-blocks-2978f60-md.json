@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-creating-blocks-2978f60-md",
+  "title": "Creating Blocks",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/creating-blocks-2978f60.md",
+  "lastModified": "2025-09-01T18:17:10.687Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Creating",
+    "Blocks"
+  ],
+  "headers": [
+    "Creating Blocks",
+    "Decide which kind of block to use:",
+    "Single View Block Creation",
+    "Multiple View Block Creation",
+    "Free Form Block Creation"
+  ],
+  "content": "<!-- loio2978f6064742456ebed31c5ccf4d051d -->\n\n# Creating Blocks\n\nImportant points when creating blocks for the `sap.uxap.ObjectPageLayout`\n\n\n\n<a name=\"loio2978f6064742456ebed31c5ccf4d051d__section_ns2_rcx_kbb\"/>\n\n## Decide which kind of block to use:\n\n-   Single view block if `Collapsed`, `Expanded`, and `Compact` modes are similar and easy to develop with a single view.\n\n-   Multiple view blocks if it's easier to provide different views for the different modes.\n\n-   Free form if none of the above suit your needs.\n\n\n\n\n<a name=\"loio2978f6064742456ebed31c5ccf4d051d__section_ayv_scx_kbb\"/>\n\n## Single View Block Creation\n\n-   Create the block folder in the sources of the app.\n\n-   Add a `BlockName.js` file, which extends `sap.uxap.BlockBase`.\n\n    > ### Note:  \n    > Naming guideline: The block name should end with the word *Block*.\n\n-   Add a `BlockName.view.xml` XML view.\n\n-   If needed, add the associated controller: `BlockNameController.controller.js`.\n\n\n> ### Note:  \n> It's not mandatory to put the `BlockName.js` file and the related XML view in the same folder since you are able to provide the view file path by using the `sap.uxap.BlockBase's` API. However, if no path is provided, the `sap.uxap.BlockBase` will look for an XML view file with a matching name in the same folder where the `BlockName.js` is located.\n> \n> For example, `sap.uxap.BlockBase` would match `AddressesBlock.js` with `AddressesBlock.view.xml`.\n\n\n\n<a name=\"loio2978f6064742456ebed31c5ccf4d051d__section_ql5_tcx_kbb\"/>\n\n## Multiple View Block Creation\n\n-   Create the block folder in the sources of the app.\n\n-   Add a `BlockName.js` file, which extends `sap.uxap.BlockBase`.\n\n-   Declare the views to be used for the different modes in the `views` section of the metadata.\n\n-   Add the `Expanded` and `Collapsed` XML views.\n\n    > ### Note:  \n    > Naming guideline: Name these files as `BlockNameCollapsed.view.xml` and `BlockNameExpanded.view.xml`\n\n-   If needed, add the associated controllers. Whether you use the same controller for all views or one controller per view is your decision.\n\n\n\n\n<a name=\"loio2978f6064742456ebed31c5ccf4d051d__section_gz5_5cx_kbb\"/>\n\n## Free Form Block Creation\n\n-   Create the block folder in the sources of the app.\n\n-   Add a `BlockName.js` file, which extends `sap.uxap.BlockBase`.\n\n-   Override the `setMode` method. From here on, all changes are up to you.\n\n\n**Related Information**  \n\n\n[API Reference: `sap.uxap.BlockBase`](https://ui5.sap.com/#/api/sap.uxap.BlockBase)\n\n",
+  "excerpt": "<!-- loio2978f6064742456ebed31c5ccf4d051d --> Creating Blocks Important points when creating blocks for the sap.uxap.ObjectPageLayout <a name=\"loio2978f6064742456ebed31c5ccf4d051d__section_ns2_rcx_kbb...",
+  "wordCount": 334,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

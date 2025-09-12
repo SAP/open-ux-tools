@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-progress-column-0039256-md",
+  "title": "Progress Column",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/progress-column-0039256.md",
+  "lastModified": "2025-09-01T18:17:10.145Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Progress",
+    "Column"
+  ],
+  "headers": [
+    "Progress Column",
+    "Adding a Progress Column",
+    "Moving Progress Column",
+    "Deleting Progress Column"
+  ],
+  "content": "<!-- loio0039256581704bf3a8a586d406875c90 -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Progress Column\n\nA progress indicator column can be added to a list report table or an object page section.\n\n\n\n<a name=\"loio0039256581704bf3a8a586d406875c90__section_f3l_fxy_35b\"/>\n\n## Adding a Progress Column\n\nTo add a progress column to a table to a section, perform the following steps:\n\n1.  Click *Add Progress Column* after clicking the :heavy_plus_sign: \\(*Add*\\) icon in the *Columns* node in the *Page Editor* .\n2.  Select *Columns* using the tree control.\n3.  Click *Add* and a new `UI.DataPoint` annotation is created with the following values:\n\n    -   `Value` property is set to the property chosen by the user.\n    -   `TargetValue`property is set to 100 by default.\n    -   `Visualization` property is set to enum value **Progress**.\n    -   `UI.LineItem` is updated with a new`UI.DataFieldForAnnotation` containing the reference to this `UI.DataPoint` and a `Label` property generated based on the selected value.\n\n    > ### Note:  \n    > Add progress column option is disabled if the table entity and associated entities do not have any numeric properties or all of them are already used in the table.\n\n\nThe progress column has the following additional properties:\n\n-   [Label](appendix-457f2e9.md#loiod44832d99bdf4f73ba14cdbb16dc9301)\n-   [Importance](appendix-457f2e9.md#loio7fe32a215209419da6d6c19da0f69ccb)\n-   [Hidden](appendix-457f2e9.md#loiof7ad71792a0044d6b6172f078827bdc0)\n-   [Target Type](appendix-457f2e9.md#loio678bf9265c664134a075b59fd193c64e)\n-   [Target](appendix-457f2e9.md#loio7fba03aba4214ceab2130f16186f4ff2)\n-   [Criticality for Micro Charts and Progress Indicators](appendix-457f2e9.md#loio19d82b5d8bc940738afcb49b51a48bed__section_xdw_kkj_kfc)\n-   [Tooltip Source](appendix-457f2e9.md#loiof0bc466aae5b42e697c89506026050af)\n\n\n\n<a name=\"loio0039256581704bf3a8a586d406875c90__section_tts_fsy_35b\"/>\n\n## Moving Progress Column\n\nTo move a column within a table, use one of the following options:\n\n-   **Drag and Drop**\n\n    Hover over the table column outline, press and hold the mouse button while moving the mouse pointer to the different position within the table. Release the mouse button at the desired position. Eligible positions are highlighted in green.\n\n    With drag and drop, you can move multiple columns at once by pressing [CTRL\\] + [\\+\\]  .\n\n-   **Arrow Icons**\n\n    Click the <span class=\"SAP-icons-V5\"></span>\\(*Move Up*\\) or <span class=\"SAP-icons-V5\"></span> \\(*Move Down*\\) icon next to the column name. This option only moves one column at a time.\n\n\n\n\n<a name=\"loio0039256581704bf3a8a586d406875c90__section_ld3_ysy_35b\"/>\n\n## Deleting Progress Column\n\nTo delete a column, perform the following steps:\n\n1.  Navigate to a column.\n2.  Click the :wastebasket: \\(*Delete*\\) icon to open the *Delete Confirmation* popup window.\n3.  Click *Delete* to confirm the action.\n\n",
+  "excerpt": "<!-- loio0039256581704bf3a8a586d406875c90 --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Progress Column A progress indicator column can be added to a list report table or an...",
+  "wordCount": 351,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

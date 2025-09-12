@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-adapting-logic-before-save-operation-6a0a050-md",
+  "title": "Adapting Logic Before Save Operation",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/adapting-logic-before-save-operation-6a0a050.md",
+  "lastModified": "2025-09-01T18:17:10.570Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Adapting",
+    "Logic",
+    "Before",
+    "Save",
+    "Operation"
+  ],
+  "headers": [
+    "Adapting Logic Before Save Operation",
+    "Additional Features in SAP Fiori Elements for OData V2",
+    "Additional Features in SAP Fiori Elements for OData V4"
+  ],
+  "content": "<!-- loio6a0a050e91474d4780dd5e3604642928 -->\n\n# Adapting Logic Before Save Operation\n\nYou can use an extension API to execute any logic before the save operation.\n\nThe extension API is triggered just before starting the save operations.\n\nWhen this extension API returns a promise, it can be resolved or rejected.\n\n\n\n<a name=\"loio6a0a050e91474d4780dd5e3604642928__section_ulw_k5g_fsb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\n> ### Note:  \n> In draft applications, the extension API is called only once while saving the root object page. For non-draft applications, the extension API is called for save operations from any object page.\n\nIf the extension does not return a result, the save operation starts without waiting for the extension to be completed.\n\n> ### Sample Code:  \n> ```\n> \n> beforeSaveExtension: function () {\n> \t\t\tvar fnResolve, fnReject;\n> \t\t\tvar oPromise = new Promise(function (resolve, reject){\n> \t\t\t\tfnResolve = resolve;\n> \t\t\t\tfnReject = reject;\n> \t\t\t});\n> \t\t\tthis.oDialog = new sap.m.Dialog({\n> \t\t\t\ttitle: \"BeforeSaveExtension\",\n> \t\t\t\tcontent: new sap.m.Text({\n> \t\t\t\t\ttext: \"This is an exmpale to check the beforeSaveExtension\"\n> \t\t\t\t}),\n> \t\t\t\tbeginButton: new sap.m.Button({\n> \t\t\t\t\ttext: \"Continue to Save\",\n> \t\t\t\t\tpress: function () {\n> \t\t\t\t\t\tfnResolve();\n> \t\t\t\t\t\tthis.oDialog.close();\n> \t\t\t\t\t}.bind(this)\n> \t\t\t\t}),\n> \t\t\t\tendButton: new sap.m.Button({\n> \t\t\t\t\ttext: \"Cancel Save\",\n> \t\t\t\t\tpress: function () {\n> \t\t\t\t\t\tfnReject();\n> \t\t\t\t\t\tthis.oDialog.close();\n> \t\t\t\t\t}.bind(this)\n> \t\t\t\t})\n> \t\t\t});\n> \t\t\tthis.getView().addDependent(this.oDialog);\n> \t\t\tthis.oDialog.open();\n> \t\t\treturn oPromise;\n> \t\t}\n> \n> \n> ```\n\nFor more information, see [beforeSaveExtension](https://ui5.sap.com/#/api/sap.suite.ui.generic.template.ObjectPage.controllerFrameworkExtensions/methods/sap.suite.ui.generic.template.ObjectPage.controllerFrameworkExtensions.beforeSaveExtension) in the Demo Kit.\n\n\n\n<a name=\"loio6a0a050e91474d4780dd5e3604642928__section_zt2_fvg_fsb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V4\n\nFor more information, see [Using Custom Code Before Standard Operations](using-custom-code-before-standard-operations-877e5ff.md).\n\n",
+  "excerpt": "<!-- loio6a0a050e91474d4780dd5e3604642928 --> Adapting Logic Before Save Operation You can use an extension API to execute any logic before the save operation. The extension API is triggered just befo...",
+  "wordCount": 262,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

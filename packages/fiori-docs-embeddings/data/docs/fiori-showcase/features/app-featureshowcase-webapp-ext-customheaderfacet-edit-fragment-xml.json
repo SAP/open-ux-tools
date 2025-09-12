@@ -1,0 +1,21 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-customheaderfacet-edit-fragment-xml",
+  "title": "CustomHeaderFacet Edit.fragment",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/CustomHeaderFacet-Edit.fragment.xml",
+  "lastModified": "2025-09-01T18:17:10.727Z",
+  "tags": [
+    "features",
+    "xml",
+    "CustomHeaderFacet",
+    "Edit",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet Edit.fragment.md\n\n```xml\n# CustomHeaderFacet-Edit.fragment.xml\n\n```xml\n<core:FragmentDefinition xmlns=\"sap.m\" xmlns:core=\"sap.ui.core\" xmlns:f=\"sap.ui.layout.form\" xmlns:macro=\"sap.fe.macros\">\n        <f:FormElement label=\"{i18n>fieldWithPerCent}\">\n            <f:fields>\n                <macro:Field id=\"fieldWithPerCent\" metaPath=\"fieldWithPerCent\" />\n            </f:fields>\n        </f:FormElement>\n        <f:FormElement label=\"{i18n>criticality}\">\n            <f:fields>\n                <macro:Field id=\"criticalityValue_code\" metaPath=\"criticalityValue_code\" />\n            </f:fields>\n        </f:FormElement>\n</core:FragmentDefinition>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "CustomHeaderFacet Edit.fragment.md xml CustomHeaderFacet Edit.fragment.md xml CustomHeaderFacet Edit.fragment.md xml CustomHeaderFacet Edit.fragment.md xml CustomHeaderFacet-Edit.fragment.xml",
+  "wordCount": 68,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

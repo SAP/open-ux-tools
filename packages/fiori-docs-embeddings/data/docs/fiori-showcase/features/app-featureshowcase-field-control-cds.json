@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-field-control-cds",
+  "title": "field control",
+  "category": "features",
+  "path": "app/featureShowcase/field-control.cds",
+  "lastModified": "2025-09-01T18:17:10.726Z",
+  "tags": [
+    "features",
+    "cds",
+    "field",
+    "control"
+  ],
+  "headers": [],
+  "content": "# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field control.md\n\n```cds\n# field-control.cds\n\n```cds\nusing service1 from '../../srv/service';\n\n//\n// annotations that control the behavior of fields and actions\n//\n\nannotate service1.RootEntities {\n    ID              @UI.Hidden @readonly        @mandatory @UI.ExcludeFromNavigationContext;\n    stringProperty             @Core.Immutable  @mandatory @UI.ExcludeFromNavigationContext; //Search-Term: #CreationDialog\n    uom             @UI.Hidden;\n\n    association2one @(\n        //Search-Term: #Navigation\n        //Semantic Object annotation in order to show the links to the semantic object apps in the quick view facet\n        Common.SemanticObject : 'FeatureShowcaseChildEntity2',\n        Common.SemanticObjectMapping : [\n            {\n                // Semantic object mapping is done, to set filter values when navigation to the semantic object map\n                // No logical sensen behind the connection - just to demonstrate\n                $Type : 'Common.SemanticObjectMappingType',\n                LocalProperty : integerValue,\n                SemanticObjectProperty : 'field3',\n            },\n        ], \n    );\n    \n    fieldWithURLtext                    @UI.HiddenFilter @HTML5.LinkTarget : '_blank'; //Search-Term: #HideFilter, #Link\n\n    /** Search-Term: #FilterDefault\n        For a default filter value in the list report. Does not support complex values */ \n    //stringProperty @Common.FilterDefaultValue : 'Root entity 4'; \n    \n    region                              @UI.HiddenFilter; //Filter not available in the list report\n    deletePossible                      @UI.Hidden;\n    updateHidden                        @UI.Hidden;\n    fieldWithURL                        @UI.Hidden;\n\n    email @mandatory;\n};\n\nannotate service1.RootEntities actions {\n    //Search-Terms: #SideEffect, #ParameterDefaultValue\n    changeProgress  @(\n        //Update the UI after action\n        Common.SideEffects              : {\n            TargetProperties : ['in/integerValue']\n        },\n        Core.OperationAvailable: {$edmJson: {$If: [{$Ge: [{$Path: 'in/integerValue'}, 0]}, true, false]}}\n    )\n}\n\n\nannotate service1.ChildEntities1 {\n    ID      @UI.Hidden @readonly @mandatory;\n    parent  @UI.Hidden;\n    field @Core.Immutable @mandatory;\n};\n\nannotate service1.criticalAction with @(\n    Common.IsActionCritical : true //Search-Term: #CriticalAction\n);\n\nannotate service1.GrandChildEntities {\n    ID      @UI.Hidden @readonly @mandatory;\n    parent  @UI.Hidden;\n};\n\nannotate service1.ChildEntities2 {\n    ID      @UI.Hidden @readonly @mandatory;\n};\n\nannotate service1.ChartDataEntities {\n    ID      @UI.Hidden @readonly @mandatory;\n    parent  @UI.Hidden @Core.Immutable;\n\n    areaChartDeviationLowerBoundValue   @UI.HiddenFilter;\n    areaChartDeviationUpperBoundValue   @UI.HiddenFilter;\n    areaChartToleranceLowerBoundValue   @UI.HiddenFilter;\n    areaChartToleranceUpperBoundValue   @UI.HiddenFilter;\n}\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "field control.md cds field control.md cds field control.md cds field control.md cds field-control.cds",
+  "wordCount": 288,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

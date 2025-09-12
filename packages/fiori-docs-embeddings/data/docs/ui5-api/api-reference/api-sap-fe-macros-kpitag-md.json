@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-kpitag-md",
+  "title": "sap.fe.macros.KPITag",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.KPITag.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "KPITag"
+  ],
+  "headers": [
+    "sap.fe.macros.KPITag"
+  ],
+  "content": "# sap.fe.macros.KPITag\n\n<p>Building block used to create a KPI tag.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/KPITag\n\n",
+  "excerpt": "sap.fe.macros.KPITag <p>Building block used to create a KPI tag.</p> Type: class Module: sap/fe/macros/KPITag",
+  "wordCount": 15,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-07-apf-the-ui-module-fcda7d5-md",
+  "title": "The UI Module",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-ui-module-fcda7d5.md",
+  "lastModified": "2025-09-01T18:17:10.670Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Module"
+  ],
+  "headers": [
+    "The UI Module"
+  ],
+  "content": "<!-- loiofcda7d53b5c19456e10000000a423f68 -->\n\n# The UI Module\n\nThe UI module provides reusable UI components to support the interaction paradigm of an APF-based Web application.\n\n",
+  "excerpt": "<!-- loiofcda7d53b5c19456e10000000a423f68 --> The UI Module The UI module provides reusable UI components to support the interaction paradigm of an APF-based Web application.",
+  "wordCount": 25,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

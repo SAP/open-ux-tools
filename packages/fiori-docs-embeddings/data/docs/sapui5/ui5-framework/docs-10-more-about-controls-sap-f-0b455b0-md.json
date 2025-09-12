@@ -1,0 +1,21 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-sap-f-0b455b0-md",
+  "title": "sap.f",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/sap-f-0b455b0.md",
+  "lastModified": "2025-09-01T18:17:10.698Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "sap"
+  ],
+  "headers": [
+    "sap.f"
+  ],
+  "content": "<!-- loio0b455b056fcb4b2aa37085731046c1fc -->\n\n# sap.f\n\nThis library contains controls specifically designed for SAP Fiori apps.\n\n> ### Note:  \n> The following sections only provide additional information for some of the controls. For a complete list of all controls and their documentation, see the [API Reference](https://ui5.sap.com/#/api) and the [Samples](https://ui5.sap.com/#/controls). \n\n**Related Information**  \n\n\n[Supported Library Combinations](../02_Read-Me-First/supported-library-combinations-363cd16.md \"SAPUI5 provides a set of JavaScript and CSS libraries, which can be combined in an application using the combinations that are supported.\")\n\n[API Reference: `sap.f`](https://ui5.sap.com/#/api/sap.f)\n\n",
+  "excerpt": "<!-- loio0b455b056fcb4b2aa37085731046c1fc --> sap.f This library contains controls specifically designed for SAP Fiori apps. > Note:   > The following sections only provide additional information for ...",
+  "wordCount": 79,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-instantiating-fragments-in-declarative-views-234320f-md",
+  "title": "Instantiating Fragments in Declarative Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/instantiating-fragments-in-declarative-views-234320f.md",
+  "lastModified": "2025-09-01T18:17:10.520Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Instantiating",
+    "Fragments",
+    "Declarative",
+    "Views"
+  ],
+  "headers": [
+    "Instantiating Fragments in Declarative Views",
+    "Context"
+  ],
+  "content": "<!-- loio234320f8d8ee45b39c60893116d60351 -->\n\n# Instantiating Fragments in Declarative Views\n\nExample how both types of fragments can be instantiated in an XML view.\n\n\n\n## Context\n\nIn XML views, fragments are used like regular controls, or more precisely, like views.\n\nThe following code example shows an XML view that includes both types of fragments, that is an XML fragment and a JS fragment. Each type is instantiated once without a given ID and once with a given ID. These fragment references basically work like import statements including the fragment content controls.\n\n```xml\n<mvc:View xmlns:mvc=\"sap.ui.core.mvc\" xmlns:core=\"sap.ui.core\" controllerName=\"testdata.fragments.XMLViewController\" >\n    <!-- Runtime resource name of the fragment: my/useful/SimpleUiPart.fragment.xml -->\n    <core:Fragment               fragmentName=\"my.useful.SimpleUiPart\" type=\"XML\" />\n    <core:Fragment id=\"xmlInXml\" fragmentName=\"my.useful.SimpleUiPart\" type=\"XML\" />\n\n    <!-- Runtime resource name of the fragment: my/useful/UiPartX.js -->\n    <core:Fragment              fragmentName=\"module:my/useful/UiPartX\" />\n    <core:Fragment id=\"jsInXml\" fragmentName=\"module:my/useful/UiPartX\" />\n\n</mvc:View>\n```\n\n**Related Information**  \n\n\n[Unique IDs](unique-ids-5da591c.md \"You can use a unique ID for a fragment that will be used as a prefix for all controls in a fragment instance.\")\n\n[Using Other Objects Instead of Controllers](using-other-objects-instead-of-controllers-c24ea6d.md \"For the instantiation of fragments, the oController object must not necessarily be a controller. It can also be another object.\")\n\n",
+  "excerpt": "<!-- loio234320f8d8ee45b39c60893116d60351 --> Instantiating Fragments in Declarative Views Example how both types of fragments can be instantiated in an XML view. Context In XML views, fragments are u...",
+  "wordCount": 185,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

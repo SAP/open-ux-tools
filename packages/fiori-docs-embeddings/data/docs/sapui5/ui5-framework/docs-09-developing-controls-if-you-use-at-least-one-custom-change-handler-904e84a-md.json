@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-09-developing-controls-if-you-use-at-least-one-custom-change-handler-904e84a-md",
+  "title": "If You Use at Least One Custom Change Handler",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/if-you-use-at-least-one-custom-change-handler-904e84a.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "You",
+    "Use",
+    "Least",
+    "One",
+    "Custom",
+    "Change",
+    "Handler"
+  ],
+  "headers": [
+    "If You Use at Least One Custom Change Handler"
+  ],
+  "content": "<!-- loio904e84ae5a6042c2bd26e36743a1c3c2 -->\n\n# If You Use at Least One Custom Change Handler\n\nHere's how to proceed if you want to use one or more custom custom change handlers that you've written.\n\nIf you use at least one custom change handler, create the `<control>.flexibility.js` file to register and implement the change handlers for a control.\n\nWe recommend that you create the following structure:\n\n-   `/flexibility` - Folder for the flexibility files where to include the implementations of custom change handlers and their registration.\n\n    -   `<control>.flexibility.js`\n\n\n\nIn the `<control>.flexibility.js` file, for each change type, you can enter `\"default\"` to use the default change handler provided by `sap.ui.fl`, or you can add your own change handler if needed. For example, there is no default change handler for the *rename* action. If a change handler implementation is used for several controls, you can also require it and use it, like in the following example:\n\n> ### Sample Code:  \n> Panel.flexibility.js\n> \n> ```\n> sap.ui.define([\n>     \"sap/ui/fl/changeHandler/BaseRename\",\n>     \"sap/ui/<..>/<ReusedChangeHandler>\"\n> ], function (BaseRename, ReusedChangeHandler) {\n>     \"use strict\";\n> \n>     // Reuse functionality for several change handlers can be placed here\n>     function commonStuffNeededInAFewChangeHandlers(){\n>         //...\n>     }\n>     return {\n>         \"renamePanel\": BaseRename.createRenameChangeHandler({\n>             propertyName: \"headerText\",\n>             changePropertyName: \"panelHeaderText\",\n>             translationTextType: \"XHED\"\n>         }),\n>         \"hideControl\": \"default\",\n>         \"unhideControl\": \"default\",\n>         \"<changeType>: ReusedChangeHandler,\n>         \"<changeType>\": {\n>             \"applyChange\": function(oChange, oPanel, mPropertyBag) {\n>                 //...\n>             },\n>             \"revertChange\": function(oChange, oPanel, mPropertyBag) {\n>                 //...\n>             },\n>             \"completeChangeContent\": function(oChange, oSpecificChangeInfo, mPropertyBag) {\n>                 //...\n>             }\n>         }\n>         // + other change types relevant to the control (addFields, combineFields, etc...)\n>     };\n> });\n> ```\n\nAdditionally, you must register the flexibility file in the `library.js` file under `extensions > flChangeHandlers`.\n\n> ### Sample Code:  \n> library.js\n> \n> ```\n> ...\n> extensions: {\n> >     flChangeHandlers: {\n> >         \"sap.m.Panel\": \"sap/m/flexibility/Panel\"\n> > }\n> ...\n> ```\n\n",
+  "excerpt": "<!-- loio904e84ae5a6042c2bd26e36743a1c3c2 --> If You Use at Least One Custom Change Handler Here's how to proceed if you want to use one or more custom custom change handlers that you've written. If y...",
+  "wordCount": 320,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

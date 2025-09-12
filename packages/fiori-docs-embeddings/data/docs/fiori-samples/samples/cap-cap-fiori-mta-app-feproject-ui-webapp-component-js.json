@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-app-feproject-ui-webapp-component-js",
+  "title": "Component",
+  "category": "samples",
+  "path": "cap/cap-fiori-mta/app/feproject-ui/webapp/Component.js",
+  "lastModified": "2025-09-01T18:17:10.803Z",
+  "tags": [
+    "samples",
+    "js",
+    "Component"
+  ],
+  "headers": [],
+  "content": "# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.js\n\n```javascript\nsap.ui.define([\"sap/fe/core/AppComponent\"], function(AppComponent) {\n    'use strict';\n\n    return AppComponent.extend(\"cap.tutorial.feprojectui.Component\", {\n        metadata: {\n            manifest: \"json\"\n        }\n    });\n});\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Component.md javascript Component.md javascript Component.md javascript Component.md javascript Component.js",
+  "wordCount": 51,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

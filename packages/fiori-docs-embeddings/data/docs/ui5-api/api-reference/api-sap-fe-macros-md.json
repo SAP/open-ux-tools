@@ -1,0 +1,22 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-md",
+  "title": "sap.fe.macros",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros"
+  ],
+  "headers": [
+    "sap.fe.macros"
+  ],
+  "content": "# sap.fe.macros\n\n<p><p>Library containing the building blocks for SAP Fiori elements.</p></p>\n\n**Type:** namespace\n\n**Module:** sap/fe/macros/library\n\n",
+  "excerpt": "sap.fe.macros <p><p>Library containing the building blocks for SAP Fiori elements.</p></p> Type: namespace Module: sap/fe/macros/library",
+  "wordCount": 16,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

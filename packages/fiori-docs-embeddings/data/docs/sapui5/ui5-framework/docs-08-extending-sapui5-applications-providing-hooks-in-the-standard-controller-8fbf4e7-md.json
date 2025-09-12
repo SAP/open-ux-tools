@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-08-extending-sapui5-applications-providing-hooks-in-the-standard-controller-8fbf4e7-md",
+  "title": "Providing Hooks in the Standard Controller",
+  "category": "ui5-framework",
+  "path": "docs/08_Extending_SAPUI5_Applications/providing-hooks-in-the-standard-controller-8fbf4e7.md",
+  "lastModified": "2025-09-01T18:17:10.672Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Providing",
+    "Hooks",
+    "the",
+    "Standard",
+    "Controller"
+  ],
+  "headers": [
+    "Providing Hooks in the Standard Controller",
+    "Example"
+  ],
+  "content": "<!-- loio8fbf4e728bd146fcb2053aeb6ca741f9 -->\n\n# Providing Hooks in the Standard Controller\n\nHooks are extension points in the controller code that are used to make controller extensions more stable.\n\nThe controller extension concept enables you to override any method. This is a powerful but also fragile feature. Extension points, so-called hooks, can be provided in the controller code. These hooks can be documented and kept stable, thus providing more robust hooks across application updates for controller extensions.\n\nThe process for this is as follows:\n\n1.  In the application, identify a strategic location within the controller code where customers may want to plug in and execute their customized code.\n2.  In the application, define a new function name which is reserved for the extension, document the function and any arguments the function may receive or return.\n3.  Add code lines in the application \\(see code snippet below\\) to check whether the function has been implemented, and, if so, to call the function. We also recommend to implement sanity checks for return values.\n4.  The customer can then configure a controller extension, implementing exactly this one function.\n5.  SAPUI5 runtime merges the new controller extension into the standard controller. If customizing is enabled, the new function can be executed.\n\n\n\n## Example\n\nBy receiving the data object `oSomeData` from the server, the application enables you to access and modify the data object. The extension function name is `onDataReceived` and gets a reference to the data object as argument.\n\nCode of the standard controller:\n\n```js\n\n// ...data object oSomeData has been received, possibly from an Ajax response...\n   if (this.onDataReceived) {         // check whether any extension has implemented the hook...\n      this.onDataReceived(oSomeData); // ...and call it\n   }\n   // ...continue working with the (now possibly modified) data...\n```\n\nCode of the custom controller:\n\n```js\nsap.ui.define(\"customer.xy.Sub2ControllerExtension\", [], function () {\n   \"use strict\";\n   return {\n      onDataReceived: function(oData){ // oSomeData will be passed in\n         if (oData && oData.status === \"important\") {\n            oData.message = oData.message + \"!!!\"; // modify some part of the data object, adding exclamation marks to a message text\n         }\n      } // no need to return anything as in this example the original object is modified\n   };\n});\n```\n\n> ### Note:  \n> This only works for one extension layer as the most specific or last extension overrides any other hook implementations. To allow multi-layer extensions, we recommend that middle-layer extensions provide and document their own hook functions.\n> \n> This also requires flat, non-inherited controllers defined as a module used as extension controller, and not with typed controllers.\n\n",
+  "excerpt": "<!-- loio8fbf4e728bd146fcb2053aeb6ca741f9 --> Providing Hooks in the Standard Controller Hooks are extension points in the controller code that are used to make controller extensions more stable. The ...",
+  "wordCount": 420,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

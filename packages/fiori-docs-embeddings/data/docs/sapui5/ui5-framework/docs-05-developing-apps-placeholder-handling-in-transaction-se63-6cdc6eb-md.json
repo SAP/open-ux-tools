@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-05-developing-apps-placeholder-handling-in-transaction-se63-6cdc6eb-md",
+  "title": "Placeholder Handling in Transaction SE63",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/placeholder-handling-in-transaction-se63-6cdc6eb.md",
+  "lastModified": "2025-09-01T18:17:10.564Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Placeholder",
+    "Handling",
+    "Transaction",
+    "SE63"
+  ],
+  "headers": [
+    "Placeholder Handling in Transaction SE63"
+  ],
+  "content": "<!-- loio6cdc6ebf746e4d9f961a1358d4a3a74c -->\n\n# Placeholder Handling in Transaction SE63\n\nSource texts with placeholders are transformed when displayed in transaction `SE63`.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nType\n\n</th>\n<th valign=\"top\">\n\nWhat is it?\n\n</th>\n<th valign=\"top\">\n\nHow is it Displayed in Transaction SE63?\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nPlaceholder\n\n</td>\n<td valign=\"top\">\n\nNumber in braces\n\nExample: `{0}`\n\n</td>\n<td valign=\"top\">\n\nNumber in curly brackets\n\nExample: `{0}`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nEscaped placeholder\n\n</td>\n<td valign=\"top\">\n\nPlaceholder enclosed in apostrophes\n\nExample: `'{0}'`\n\n</td>\n<td valign=\"top\">\n\nPlaceholder enclosed in apostrophes\n\nExample: `'{0}'`\n\n</td>\n</tr>\n</table>\n\nTo make the translator aware of an escaped placeholder in your string, make use of the comment option in the i18n.properties file. If a text contains a placeholder, you need to double any apostrophe \\('\\) in the text. Otherwise the apostrophe doesn't appear on the user interface during runtime.\n\n> ### Note:  \n> Translators don't need to take care of this, as transaction `SE63` automatically doubles apostrophes \\('\\) when writing the text to the database. Double apostrophes \\(''\\) in the source text, however, are displayed only as one apostrophe \\('\\) in transaction `SE63`. Examples:\n> \n> \n> <table>\n> <tr>\n> <th valign=\"top\">\n> \n> Source Text\n> \n> </th>\n> <th valign=\"top\">\n> \n> How is it Displayed in Transaction SE63?\n> \n> </th>\n> </tr>\n> <tr>\n> <td valign=\"top\">\n> \n> Mark''s placeholder is used \\{0\\} times.\n> \n> </td>\n> <td valign=\"top\">\n> \n> Mark's placeholder is used \\{0\\} times.\n> \n> </td>\n> </tr>\n> <tr>\n> <td valign=\"top\">\n> \n> Note that '\\{0\\}' is an escaped placeholder.\n> \n> </td>\n> <td valign=\"top\">\n> \n> Note that '\\{0\\}' is an escaped placeholder.\n> \n> </td>\n> </tr>\n> </table>\n\nAs a developer, you must ensure that the source text is formally correct, for example by using the notation `{0}` for placeholders and enclosing placeholders in double apostrophes.\n\n",
+  "excerpt": "<!-- loio6cdc6ebf746e4d9f961a1358d4a3a74c --> Placeholder Handling in Transaction SE63 Source texts with placeholders are transformed when displayed in transaction SE63. <table> <tr> <th valign=\"top\">...",
+  "wordCount": 316,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

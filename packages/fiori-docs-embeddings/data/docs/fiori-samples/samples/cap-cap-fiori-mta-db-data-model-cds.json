@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-db-data-model-cds",
+  "title": "data model",
+  "category": "samples",
+  "path": "cap/cap-fiori-mta/db/data-model.cds",
+  "lastModified": "2025-09-01T18:17:10.803Z",
+  "tags": [
+    "samples",
+    "cds",
+    "data",
+    "model"
+  ],
+  "headers": [],
+  "content": "# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data model.md\n\n```cds\n# data-model.cds\n\n```cds\nnamespace my.bookshop;\n\nentity Books {\n  key ID : Integer;\n  title  : String;\n  stock  : Integer;\n}\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "data model.md cds data model.md cds data model.md cds data model.md cds data-model.cds",
+  "wordCount": 60,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

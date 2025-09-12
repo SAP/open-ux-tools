@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-04-essentials-writing-data-to-the-html-dom-as-data-attribute-1ef9fef-md",
+  "title": "Writing Data to the HTML DOM as DATA-\\* Attribute",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/writing-data-to-the-html-dom-as-data-attribute-1ef9fef.md",
+  "lastModified": "2025-09-01T18:17:10.555Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Writing",
+    "Data",
+    "the",
+    "HTML",
+    "DOM",
+    "DATA",
+    "Attribute"
+  ],
+  "headers": [
+    "Writing Data to the HTML DOM as DATA-\\* Attribute"
+  ],
+  "content": "<!-- loio1ef9fefa2a574735957dcf52502ab8d0 -->\n\n# Writing Data to the HTML DOM as DATA-\\* Attribute\n\nSAPUI5 supports writing custom data to the HTML DOM.\n\nThese are two use cases, where this feature can be useful:\n\n-   To generate markers in the HTML from data binding which then can then be used for data-dependent styling.\n\n-   To create stable anchors in the HTML which can be used for automated tests.\n\n\nA \"data-\" prefix is added to the key and the result is then written as an attribute into the root HTML element of the control. The `CustomData` value is written as an attribute value.\n\nFor this, the key has to be a valid HTML ID and the value has to be a string; otherwise an error is logged.\n\n> ### Note:  \n> HTML attribute names are case-insensitive and browsers may convert the key to lowercase.\n> \n> Do not write too much data into the DOM.\n\nIn JavaScript, you can set the flag as shown in the following code snippet:\n\n```js\n\nmyButton.data(\"mydata\", \"Hello\", true); // attach some data to the Button and mark it as\n          \"write to HTML\"\n```\n\nTo set the `writeToDom` flag in XML views, the aggregation has to be written in expanded notation:\n\n```xml\n\n<Button ... >\n  <customData>\n  <core:CustomData key=\"mydata\" value=\"Hello\" writeToDom=\"true\" />\n  </customData>\n</Button>\n```\n\nThis results in the following HTML:\n\n```\n<button ...  data-myData=\"Hello\"  ... >\n```\n\nThe CSS can now use attribute selectors to check the presence or the value of the custom data attribute:\n\n```\n\nbutton[data-mydata=\"Hello\"] { border: 3px solid red !important; }\n```\n\n",
+  "excerpt": "<!-- loio1ef9fefa2a574735957dcf52502ab8d0 --> Writing Data to the HTML DOM as DATA-\\* Attribute SAPUI5 supports writing custom data to the HTML DOM. These are two use cases, where this feature can be ...",
+  "wordCount": 259,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

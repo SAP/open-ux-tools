@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-the-form-building-block-391aad2-md",
+  "title": "The `Form` Building Block",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/the-form-building-block-391aad2.md",
+  "lastModified": "2025-09-01T18:17:10.656Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "`Form`",
+    "Building",
+    "Block"
+  ],
+  "headers": [
+    "The `Form` Building Block",
+    "API"
+  ],
+  "content": "<!-- loio391aad28bfc64616abe2500a631391c1 -->\n\n# The `Form` Building Block\n\nThe `Form` building block provides an easy way to instantiate a form based on a `FieldGroup` annotation.\n\n\n\nYou can point directly to a `FieldGroup` annotation or to a `CollectionFacet` containing multiple `FieldGroups`.\n\nYou can also define additional inline form elements that will be added to your form.\n\n> ### Sample Code:  \n> `Form` Building Block\n> \n> ```\n> <macros:Form\n>      id=\"myForm\"\n>      metaPath=\"@com.sap.vocabularies.UI.v1.FieldGroup#General\"\n>      title=\"My Title\"\n> ></macros:Form>\n> ```\n\n```\n<macros:Form\n     id=\"myForm\"\n     metaPath=\"@com.sap.vocabularies.UI.v1.FieldGroup#General\"\n     title=\"My Title\"\n>\n     <macros:FormElement\n          metaPath=\"ID\"\n          id=\"formElementMacroID\"\n          label=\"ID Property After Number\"\n          placement=\"After\"\n          anchor=\"DataField::NumberProperty\"\n     />\n</macros:Form>\n```\n\n\n\n<a name=\"loio391aad28bfc64616abe2500a631391c1__section_r1c_sms_j5b\"/>\n\n## API\n\nFor information about the `Form` API, see the [API Reference](https://ui5.sap.com/#/api/sap.fe.macros.Form).\n\n",
+  "excerpt": "<!-- loio391aad28bfc64616abe2500a631391c1 --> The Form Building Block The Form building block provides an easy way to instantiate a form based on a FieldGroup annotation. You can point directly to a F...",
+  "wordCount": 113,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-table-columnexportsettings-md",
+  "title": "sap.fe.macros.table.ColumnExportSettings",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.table.ColumnExportSettings.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "table",
+    "ColumnExportSettings"
+  ],
+  "headers": [
+    "sap.fe.macros.table.ColumnExportSettings"
+  ],
+  "content": "# sap.fe.macros.table.ColumnExportSettings\n\n<p>Definition of the export settings applied to a column within the table.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/table/ColumnExportSettings\n\n",
+  "excerpt": "sap.fe.macros.table.ColumnExportSettings <p>Definition of the export settings applied to a column within the table.</p> Type: class Module: sap/fe/macros/table/ColumnExportSettings",
+  "wordCount": 19,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

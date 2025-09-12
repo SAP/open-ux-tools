@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-configuring-list-report-features-3af1d03-md",
+  "title": "Configuring List Report Features",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/configuring-list-report-features-3af1d03.md",
+  "lastModified": "2025-09-01T18:17:10.589Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Configuring",
+    "List",
+    "Report",
+    "Features"
+  ],
+  "headers": [
+    "Configuring List Report Features"
+  ],
+  "content": "<!-- loio3af1d0381ffe4a97b8e86bf484eb94e3 -->\n\n# Configuring List Report Features\n\nYou can use annotations and configurations to set up various elements in the list report view, such as the table type and filter bar.\n\n",
+  "excerpt": "<!-- loio3af1d0381ffe4a97b8e86bf484eb94e3 --> Configuring List Report Features You can use annotations and configurations to set up various elements in the list report view, such as the table type and...",
+  "wordCount": 33,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

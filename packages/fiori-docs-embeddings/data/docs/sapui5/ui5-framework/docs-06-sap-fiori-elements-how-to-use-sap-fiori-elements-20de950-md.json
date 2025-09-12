@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-how-to-use-sap-fiori-elements-20de950-md",
+  "title": "How To Use SAP Fiori Elements",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/how-to-use-sap-fiori-elements-20de950.md",
+  "lastModified": "2025-09-01T18:17:10.629Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "How",
+    "Use",
+    "SAP",
+    "Fiori",
+    "Elements"
+  ],
+  "headers": [
+    "How To Use SAP Fiori Elements"
+  ],
+  "content": "<!-- loio20de9506339949c7bd16b789e8352f26 -->\n\n# How To Use SAP Fiori Elements\n\nCreating an app with SAP Fiori elements generally consists of the following steps:\n\n-   Prerequisites for using SAP Fiori elements\n\n    You access the required back-end system information in your app using OData services.\n\n    For more information, see [Prerequisites for Using SAP Fiori Elements](prerequisites-for-using-sap-fiori-elements-f2344b5.md).\n\n-   Prepare UI annotations\n\n    You use annotations to enable or modify certain default features and functionality.\n\n    For more information, see [Working With UI Annotations](working-with-ui-annotations-83c89cc.md).\n\n-   Build UI applications\n\n    You can build your apps using [SAP Fiori tools](https://help.sap.com/viewer/product/SAP_FIORI_tools/Latest/en-US), which is a set of extensions for SAP Business Application Studio and Visual Studio Code. For more information about SAP Business Application Studio, see the documentation on the SAP Help Portal at [SAP Business Application Studio](https://help.sap.com/viewer/product/SAP%20Business%20Application%20Studio/Cloud/en-US).\n\n-   Extend SAP Fiori elements-based apps\n\n    As an optional step, you can extend your app if needed, that is, in cases in which the manifest settings or annotations do not allow you to achieve the desired app behavior.\n\n    For more information, see [Extending SAP Fiori Elements-Based Apps](extending-sap-fiori-elements-based-apps-358cf25.md).\n\n\n",
+  "excerpt": "<!-- loio20de9506339949c7bd16b789e8352f26 --> How To Use SAP Fiori Elements Creating an app with SAP Fiori elements generally consists of the following steps: -   Prerequisites for using SAP Fiori ele...",
+  "wordCount": 174,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

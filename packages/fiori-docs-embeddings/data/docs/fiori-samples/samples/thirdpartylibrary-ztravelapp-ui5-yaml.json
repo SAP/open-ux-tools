@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-ui5-yaml",
+  "title": "ui5",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/ui5.yaml",
+  "lastModified": "2025-09-01T18:17:10.817Z",
+  "tags": [
+    "samples",
+    "yaml",
+    "ui5"
+  ],
+  "headers": [],
+  "content": "# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.md\n\n```yaml\n# ui5.yaml\n\n```yaml\n# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json\n\nspecVersion: \"3.1\"\nmetadata:\n  name: ztest.docapp1.ztravel\ntype: application\nserver:\n  customMiddleware:\n    - name: fiori-tools-proxy\n      afterMiddleware: compression\n      configuration:\n        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted\n        ui5:\n          path:\n            - /resources\n            - /test-resources\n          url: https://ui5.sap.com\n        backend:\n          - path: /V2/Northwind/Northwind.svc\n            url: https://services.odata.org\n            destination: northwind\n    - name: fiori-tools-appreload\n      afterMiddleware: compression\n      configuration:\n        port: 35729\n        path: webapp\n        delay: 300\n    - name: fiori-tools-preview\n      afterMiddleware: fiori-tools-appreload\n      configuration:\n        component: ztest.docapp1.ztravel\n        ui5Theme: sap_horizon\n    - name: ui5-tooling-modules-middleware\n      afterMiddleware: compression\n      configuration:\n        addToNamespace: true\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "ui5.md yaml ui5.md yaml ui5.md yaml ui5.md yaml ui5.yaml",
+  "wordCount": 118,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-field-fieldformatoptions-md",
+  "title": "sap.fe.macros.field.FieldFormatOptions",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.field.FieldFormatOptions.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "field",
+    "FieldFormatOptions"
+  ],
+  "headers": [
+    "sap.fe.macros.field.FieldFormatOptions"
+  ],
+  "content": "# sap.fe.macros.field.FieldFormatOptions\n\n<p>Additional format options for the field.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/field/FieldFormatOptions\n\n",
+  "excerpt": "sap.fe.macros.field.FieldFormatOptions <p>Additional format options for the field.</p> Type: class Module: sap/fe/macros/field/FieldFormatOptions",
+  "wordCount": 13,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

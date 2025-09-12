@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-docs-adding-local-annotation-files-392a056-md",
+  "title": "Adding Local Annotation Files",
+  "category": "fiori-tools",
+  "path": "docs/adding-local-annotation-files-392a056.md",
+  "lastModified": "2025-09-01T18:17:10.122Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Adding",
+    "Local",
+    "Annotation",
+    "Files"
+  ],
+  "headers": [
+    "Adding Local Annotation Files",
+    "Prerequisites",
+    "Procedure"
+  ],
+  "content": "<!-- loio392a0560ddef495c905b078edaafd318 -->\n\n# Adding Local Annotation Files\n\nLearn how to add local annotation files.\n\n\n\n<a name=\"loio392a0560ddef495c905b078edaafd318__prereq_aw4_j1x_l4b\"/>\n\n## Prerequisites\n\nFor adaptation projects for an On-Premise System: ensure you have ABAP Platform 2020 SP00 installed.\n\n\n\n## Procedure\n\n1.  Right-click on the project main folder, the `webapp` folder, or the `manifest.appdescr_variant` file and click *Add Local Annotation File*.\n\n2.  From the *Target OData Service* dropdown, choose which service from the manifest of the base application you want to add a annotation file for.\n\n3.  Choose if you want to create an empty annotation file that you can edit later or select already existing annotation file from a workspace.\n\n4.  Click *Finish* to save your changes.\n\n\n",
+  "excerpt": "<!-- loio392a0560ddef495c905b078edaafd318 --> Adding Local Annotation Files Learn how to add local annotation files. <a name=\"loio392a0560ddef495c905b078edaafd318__prereq_aw4_j1x_l4b\"/> Prerequisites ...",
+  "wordCount": 114,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

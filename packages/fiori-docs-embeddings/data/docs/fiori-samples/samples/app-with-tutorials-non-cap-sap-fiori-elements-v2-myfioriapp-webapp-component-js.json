@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-component-js",
+  "title": "Component",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/Component.js",
+  "lastModified": "2025-09-01T18:17:10.797Z",
+  "tags": [
+    "samples",
+    "js",
+    "Component"
+  ],
+  "headers": [],
+  "content": "# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.js\n\n```javascript\nsap.ui.define(\n    [\"sap/suite/ui/generic/template/lib/AppComponent\"],\n    function (Component) {\n        \"use strict\";\n\n        return Component.extend(\"Namespace1.myfioriapp.Component\", {\n            metadata: {\n                manifest: \"json\"\n            }\n        });\n    }\n);\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Component.md javascript Component.md javascript Component.md javascript Component.md javascript Component.js",
+  "wordCount": 54,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

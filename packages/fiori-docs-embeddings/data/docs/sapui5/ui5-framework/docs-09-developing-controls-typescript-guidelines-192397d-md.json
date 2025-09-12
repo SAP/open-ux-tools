@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-typescript-guidelines-192397d-md",
+  "title": "TypeScript Guidelines",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/typescript-guidelines-192397d.md",
+  "lastModified": "2025-09-01T18:17:10.685Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "TypeScript",
+    "Guidelines"
+  ],
+  "headers": [
+    "TypeScript Guidelines",
+    "Developing Custom Controls in TypeScript",
+    "Further information"
+  ],
+  "content": "<!-- loio192397d3cb954d4e986bcdc525c5205c -->\n\n# TypeScript Guidelines\n\nProvides an overview how to develop SAPUI5 control libraries in TypeScript.\n\nFor general information on TypeScript, see [TypeScript Support](../02_Read-Me-First/typescript-support-a7ee961.md).\n\n\n\n<a name=\"loio192397d3cb954d4e986bcdc525c5205c__section_mdl_gyq_3xb\"/>\n\n## Developing Custom Controls in TypeScript\n\nCheck the [documentation](https://github.com/SAP-samples/ui5-typescript-helloworld/blob/custom-controls/README.md) and the sample code in the [custom-controls branch of the Hello World application](https://github.com/SAP-samples/ui5-typescript-helloworld/tree/custom-controls), which explains how you can implement custom controls in TypeScript within SAPUI5 applications. It makes use of a [tool for generating TypeScript interfaces for the control API](https://github.com/SAP/ui5-typescript/tree/main/packages/ts-interface-generator), which has been [released via npm](https://www.npmjs.com/package/@ui5/ts-interface-generator) in beta state. There is also a sample project that demonstrates how fully-fledged [control libraries can be developed in TypeScript](https://github.com/SAP-samples/ui5-typescript-control-library).\n\n\n\n### Further information\n\n-   [TypeScript interface generator for control development on npm](https://www.npmjs.com/package/@ui5/ts-interface-generator) to support SAPUI5 control development in TypeScript\n\n",
+  "excerpt": "<!-- loio192397d3cb954d4e986bcdc525c5205c --> TypeScript Guidelines Provides an overview how to develop SAPUI5 control libraries in TypeScript. For general information on TypeScript, see TypeScript Su...",
+  "wordCount": 122,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

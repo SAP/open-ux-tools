@@ -1,0 +1,21 @@
+{
+  "id": "sapui5-docs-04-essentials-js-fragments-9c06982-md",
+  "title": "JS Fragments",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/js-fragments-9c06982.md",
+  "lastModified": "2025-09-01T18:17:10.521Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Fragments"
+  ],
+  "headers": [
+    "JS Fragments"
+  ],
+  "content": "<!-- loio9c069828d0064136ac6a499aa2cdace3 -->\n\n# JS Fragments\n\nThe structure of JS fragments is similar to the structure of the respective views: They have a name and an object with a `createContent()` function.\n\nYou define a simple JS fragment named `my.useful.UiPartX` as shown in the following code snippet:\n\n```js\n// The fragment is available under the resource name \"my/useful/UiPartX.js\"\nsap.ui.define([\"sap/m/Button\"], function(Button) {\n\treturn {\n\t\tcreateContent: function(oController) {\n\t\t\tvar oButton  = new Button({\n\t\t\t\ttext: \"Hello World\" ,\n\t\t\t\tpress:oController.doSomething\n\t\t\t});\n\t\t\treturn oButton;\n\t\t}\n\t}; \n});\n```\n\nThe `createContent()` function is responsible for the UI definition and has to return a control. The definition can be created either inline or in a separate file, for instance in `…/my/useful/UiPartX.js`. The `oController` is either already defined or it is `null`. In the first case, its methods can be used for the event handlers of controls.\n\nDespite the many similarities to views, there are also differences: First of all, there is no `getControllerName()` or `getControllerModuleName()` method. Fragments cannot specify whether they have a controller. Whether `oController` is defined or not is not a decision of the fragment itself. Instead, it is decided by the code instantiating the fragment. If that code is part of a controller, it can pass a reference to itself to the fragment. This means there can be a dependency between controllers and fragments: Fragments may expect a controller to exist and to have certain methods. And controllers may expect certain controls to be in the fragment. This is in line with the purpose of fragments - to be very lightweight reuse entities that provide little encapsulation. For more encapsulation, views or even components are better suited.\n\n**Related Information**  \n\n\n[Components](components-958ead5.md \"Components are independent and reusable parts used in SAPUI5 applications.\")\n\n[Views](views-91f27e3.md \"The view in the Model-View-Controller (MVC) concept is responsible for defining and rendering the UI. SAPUI5 supports predefined view types.\")\n\n",
+  "excerpt": "<!-- loio9c069828d0064136ac6a499aa2cdace3 --> JS Fragments The structure of JS fragments is similar to the structure of the respective views: They have a name and an object with a createContent() func...",
+  "wordCount": 307,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

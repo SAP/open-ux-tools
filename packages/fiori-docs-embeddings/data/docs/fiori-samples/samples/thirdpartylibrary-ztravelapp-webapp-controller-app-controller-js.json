@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-controller-app-controller-js",
+  "title": "App.controller",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/controller/App.controller.js",
+  "lastModified": "2025-09-01T18:17:10.817Z",
+  "tags": [
+    "samples",
+    "js",
+    "App",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.md\n\n```javascript\n# App.controller.js\n\n```javascript\nsap.ui.define(\n    [\n        \"sap/ui/core/mvc/Controller\"\n    ],\n    function(BaseController) {\n      \"use strict\";\n  \n      return BaseController.extend(\"ztest.docapp1.ztravel.controller.App\", {\n        onInit: function() {\n        }\n      });\n    }\n  );\n  \n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "App.controller.md javascript App.controller.md javascript App.controller.md javascript App.controller.md javascript App.controller.js",
+  "wordCount": 54,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

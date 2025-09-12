@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-03-get-started-step-10-line-micro-chart-819beea-md",
+  "title": "Step 10: Line Micro Chart",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-10-line-micro-chart-819beea.md",
+  "lastModified": "2025-09-01T18:17:10.450Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Line",
+    "Micro",
+    "Chart"
+  ],
+  "headers": [
+    "Step 10: Line Micro Chart",
+    "Preview",
+    "LineMicroChart",
+    "ProcessFlow.view.xml"
+  ],
+  "content": "<!-- loio819beea79ed34d4bb66d8a421820cbc3 -->\n\n# Step 10: Line Micro Chart\n\nIn this step, we will create the `LineMicroChart` on the **Production Process** page.\n\n\n\n<a name=\"loio819beea79ed34d4bb66d8a421820cbc3__section_z2r_dyl_l1b\"/>\n\n## Preview\n\n![](images/Step9_1_ea29a78.png)\n\n\n\n<a name=\"loio819beea79ed34d4bb66d8a421820cbc3__section_pyt_3yl_l1b\"/>\n\n## LineMicroChart\n\nWith the `LineMicroChart`, we want to visualize how the fill level is going to change during the course of the production process and we want to determine the threshold values that fall below a specified level.\n\n\n\n\n\n### ProcessFlow.view.xml\n\nYou can view and download this step in the Demo Kit at [Ice Cream Machine - Step 10 - Line Micro Chart](https://ui5.sap.com/#/entity/sap.suite.ui.commons.tutorial.icecream/sample/sap.suite.ui.commons.tutorial.icecream.10).\n\n```xml\nmvc:View\n    ...\n        <m:headerContainer>\n            <m:HeaderContainer\n                scrollStep=\"200\"\n                scrollTime=\"500\"\n                showDividers=\"true\"\n                class=\"sapUiSmallMargin\">\n                ...\n                <m:FlexBox\n                    width=\"12rem\"\n                    height=\"10rem\"\n                    alignItems=\"Center\"\n                    justifyContent=\"Center\"\n                    direction=\"Column\">\n                    <m:Title\n                        text=\"{\n                            parts: [\n                                'i18n>processFlowChartsFillLevel',\n                                'business>/fillLevel/measure'\n                            ],\n                            formatter: '.formatMessage'\n                        }\"\n                        class=\"sapUiSmallMargin\" />\n                    <m:FlexBox width=\"12rem\" height=\"6rem\" renderType=\"Bare\">\n                        <mc:LineMicroChart\n                            size=\"Responsive\"\n                            threshold=\"{business>/fillLevel/threshold}\"\n                            leftTopLabel=\"{business>/fillLevel/valueBegin}\"\n                            leftBottomLabel=\"{business>/fillLevel/timeBegin}\"\n                            rightTopLabel=\"{business>/fillLevel/valueEnd}\"\n                            rightBottomLabel=\"{business>/fillLevel/timeEnd}\"\n                            color=\"{business>/fillLevel/color}\"\n                            showPoints=\"true\"\n                            points=\"{\n                                path: 'business>/fillLevel/timeSeries',\n                                templateShareable: true\n                            }\">\n                            <mc:LineMicroChartPoint\n                                x=\"{business>time}\"\n                                y=\"{business>level}\" />\n                        </mc:LineMicroChart>\n                    </m:FlexBox>\n                </m:FlexBox>\n            </m:HeaderContainer>\n        </m:headerContainer>\n    ...\n</mvc:View>\n```\n\nYou can find the information about the fill levels in the *points* aggregation of the `LineMicroChart` control. Property **x** of the `LineMicroChartPoint` contains the dimension of the chart and the time. Property **y** contains the fill level during the production process. The **threshold** property separates the records by their fill level into an upper and a lower layer. With the *color* property, we can apply a different color to each layer, depending on the specified threshold.\n\n",
+  "excerpt": "<!-- loio819beea79ed34d4bb66d8a421820cbc3 --> Step 10: Line Micro Chart In this step, we will create the LineMicroChart on the Production Process page. <a name=\"loio819beea79ed34d4bb66d8a421820cbc3__s...",
+  "wordCount": 227,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

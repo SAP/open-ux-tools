@@ -1,0 +1,25 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-component-dbg-js",
+  "title": "Component dbg",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/Component-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.810Z",
+  "tags": [
+    "samples",
+    "js",
+    "Component",
+    "dbg"
+  ],
+  "headers": [
+    "UIComponent",
+    "UIComponent",
+    "should",
+    "should"
+  ],
+  "content": "# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component dbg.md\n\n```javascript\n# Component-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/core/UIComponent\",\n\t\"sap/ui/Device\",\n\t\"./model/models\",\n\t\"./controller/ErrorHandler\"\n], function (UIComponent, Device, models, ErrorHandler) {\n\t\"use strict\";\n\n\treturn UIComponent.extend(\"ns.manageproductsneo.Component\", {\n\n\t\tmetadata : {\n\t\t\tmanifest: \"json\"\n\t\t},\n\n\t\t/**\n\t\t * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.\n\t\t * In this function, the device models are set and the router is initialized.\n\t\t * @public\n\t\t * @override\n\t\t */\n\t\tinit : function () {\n\t\t\t// call the base component's init function\n\t\t\tUIComponent.prototype.init.apply(this, arguments);\n\n\t\t\t// initialize the error handler with the component\n\t\t\tthis._oErrorHandler = new ErrorHandler(this);\n\n\t\t\t// set the device model\n\t\t\tthis.setModel(models.createDeviceModel(), \"device\");\n\n\t\t\t// set the product feedback model\n\t\t\tthis.setModel(models.createCommentsModel(), \"productFeedback\");\n\n\t\t\t// create the views based on the url/hash\n\t\t\tthis.getRouter().initialize();\n\t\t},\n\n\t\t/**\n\t\t * The component is destroyed by UI5 automatically.\n\t\t * In this method, the ErrorHandler is destroyed.\n\t\t * @public\n\t\t * @override\n\t\t */\n\t\tdestroy : function () {\n\t\t\tthis._oErrorHandler.destroy();\n\t\t\t// call the base component's destroy function\n\t\t\tUIComponent.prototype.destroy.apply(this, arguments);\n\t\t},\n\n\t\t/**\n\t\t * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy\n\t\t * design mode class should be set, which influences the size appearance of some controls.\n\t\t * @public\n\t\t * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set\n\t\t */\n\t\tgetContentDensityClass : function() {\n\t\t\tif (this._sContentDensityClass === undefined) {\n\t\t\t\t// check whether FLP has already set the content density class; do nothing in this case\n\t\t\t\tif (document.body.classList.contains(\"sapUiSizeCozy\") || document.body.classList.contains(\"sapUiSizeCompact\")) {\n\t\t\t\t\tthis._sContentDensityClass = \"\";\n\t\t\t\t} else if (!Device.support.touch) { // apply \"compact\" mode if touch is not supported\n\t\t\t\t\tthis._sContentDensityClass = \"sapUiSizeCompact\";\n\t\t\t\t} else {\n\t\t\t\t\t// \"cozy\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table\n\t\t\t\t\tthis._sContentDensityClass = \"sapUiSizeCozy\";\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn this._sContentDensityClass;\n\t\t}\n\n\t});\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Component dbg.md javascript Component dbg.md javascript Component dbg.md javascript Component dbg.md javascript Component-dbg.js",
+  "wordCount": 331,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

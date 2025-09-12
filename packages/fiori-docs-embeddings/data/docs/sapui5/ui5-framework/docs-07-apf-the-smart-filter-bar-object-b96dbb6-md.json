@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-07-apf-the-smart-filter-bar-object-b96dbb6-md",
+  "title": "The Smart Filter Bar Object",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-smart-filter-bar-object-b96dbb6.md",
+  "lastModified": "2025-09-01T18:17:10.670Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Smart",
+    "Filter",
+    "Bar",
+    "Object"
+  ],
+  "headers": [
+    "The Smart Filter Bar Object"
+  ],
+  "content": "<!-- loiob96dbb603b004b399a5b787794d2fe60 -->\n\n# The Smart Filter Bar Object\n\nThe analytical configuration can optionally contain a smart filter bar object, which defines the configuration of the smart filter bar used in an APF-based application. The smart filter bar can be used as an alternative for facet filters and provides global filters that are applied to all analysis steps of an analysis path. A configuration can have either facet filters or a smart filter bar, not both.\n\nThe annotation file of the service root defines which properties and parameters are displayed in the smart filter bar. Therefore, the manifest.json file of the component must contain the data source definition of the service root as well as the data source definition of the corresponding annotation file.\n\nThe smart filter bar object has the following format:\n\n```\n{\n    \"type\" : \"smartFilterBar\",\n    \"id\" : \"SmartFilterBar ID\",\n    \"service\" : \"<service root>\",\n    \"entitySet\" : \"<entity set name>\",\n}\n\n```\n\nThe properties used in the step object denote the following:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`id` \n\n</td>\n<td valign=\"top\">\n\nUnique ID of type string\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`service` \n\n</td>\n<td valign=\"top\">\n\nPath to OData service root\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`entitySet` \n\n</td>\n<td valign=\"top\">\n\nEntity set that corresponds to the data source, for example, the SAP HANA view. The entity set provides the properties and parameters that can be displayed in the smart filter bar.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loiob96dbb603b004b399a5b787794d2fe60 --> The Smart Filter Bar Object The analytical configuration can optionally contain a smart filter bar object, which defines the configuration of the smart fi...",
+  "wordCount": 244,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

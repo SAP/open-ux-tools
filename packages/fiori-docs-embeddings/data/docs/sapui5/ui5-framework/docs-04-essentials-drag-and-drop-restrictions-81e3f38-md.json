@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-drag-and-drop-restrictions-81e3f38-md",
+  "title": "Drag-and-Drop Restrictions",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/drag-and-drop-restrictions-81e3f38.md",
+  "lastModified": "2025-09-01T18:17:10.513Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Drag",
+    "and",
+    "Drop",
+    "Restrictions"
+  ],
+  "headers": [
+    "Drag-and-Drop Restrictions"
+  ],
+  "content": "<!-- loio81e3f38f5e3e4194bb32675c86b49ba2 -->\n\n# Drag-and-Drop Restrictions\n\nThere are some known restrictions when using drag and drop.\n\nWhen you use drag and drop, some restrictions apply, for example:\n\n-   The transparency of the dragging ghost element and the cursor during drag-and-drop operations is not configurable.\n\n-   Defining constraints for the drag position is not possible.\n\n-   Texts in draggable controls cannot be selected. The text of input fields in draggable controls can be selected, but not dragged.\n\n\nNote that drag and drop is not accessible. Applications must provide an alternative for users with special needs for drag-and-drop operations.\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.core.dnd.DragDropBase`](https://ui5.sap.com/#/api/sap.ui.core.dnd.DragDropBase)\n\n",
+  "excerpt": "<!-- loio81e3f38f5e3e4194bb32675c86b49ba2 --> Drag-and-Drop Restrictions There are some known restrictions when using drag and drop. When you use drag and drop, some restrictions apply, for example: -...",
+  "wordCount": 103,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

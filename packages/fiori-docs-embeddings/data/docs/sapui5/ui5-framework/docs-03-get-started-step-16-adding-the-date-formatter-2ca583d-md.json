@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-16-adding-the-date-formatter-2ca583d-md",
+  "title": "Step 16: Adding the Date Formatter",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-16-adding-the-date-formatter-2ca583d.md",
+  "lastModified": "2025-09-01T18:17:10.456Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Adding",
+    "the",
+    "Date",
+    "Formatter"
+  ],
+  "headers": [
+    "Step 16: Adding the Date Formatter",
+    "Preview",
+    "Coding",
+    "webapp/view/Post.view.xml",
+    "webapp/model/formatter.js",
+    "Summary"
+  ],
+  "content": "<!-- loio2ca583d6b9c24e4d8f189eada7c4b668 -->\n\n# Step 16: Adding the Date Formatter\n\nOur formatter does its job, but it is not yet used. In this step we will use it.\n\n\n\n## Preview\n\n  \n  \n**Date formatter in action**\n\n![](images/Tutorial_Testing_Step_16_9aa15b0.jpg \"Date formatter in action\")\n\n\n\n## Coding\n\nYou can view and download all files in the *Samples* in the Demo Kit at [Testing - Step 16](https://ui5.sap.com/#/entity/sap.m.tutorial.testing/sample/sap.m.tutorial.testing.16).\n\n\n\n## webapp/view/Post.view.xml\n\n```xml\n…\n<IconTabBar id=\"iconTabBar\"\n\t\t\texpanded=\"{device>/isNoPhone}\"\n\t\t\tclass=\"sapUiResponsiveContentPadding\">\n\t<items>\n\t\t<IconTabFilter icon=\"sap-icon://hint\" key=\"info\">\n\t\t\t<form:SimpleForm>\n\t\t\t\t<form:content>\n\t\t\t\t\t<Label text=\"{i18n>postDateLabel}\"/>\n\t\t\t\t\t<Text text=\"{\n\t\t\t\t\t\tpath: 'Timestamp',\n\t\t\t\t\t\tformatter: '.formatter.date'\n\t\t\t\t\t}\"/>\n\t\t\t\t\t<Label text=\"{i18n>postDescriptionLabel}\"/>\n\t\t\t\t\t<Text text=\"{Description}\"/>\n\t\t\t\t</form:content>\n\t\t\t</form:SimpleForm>\n\t\t</IconTabFilter>\n\t\t…\n\t</items>\n</IconTabBar>\n…\n```\n\nOn the *Info* tab we bind the date field to a format method `.formatter.date` of the controller of the view. The leading `.` indicates that the function is defined on the controller instance.\n\n\n\n## webapp/model/formatter.js\n\n```js\nsap.ui.define([ \"sap/ui/demo/bulletinboard/model/DateFormatter\" ], function (DateFormatter) {\n\t// ...\n\treturn {\n\t\t// ...\n\t\tnumberUnit: function(sValue) {\n\t\t\t// ...\n\t\t},\n\t\tdate: function(date) {\n\t\t\treturn new DateFormatter({now: Date.now}).format(date);\n\t\t}\n\n\t};\n});\n```\n\nIn the `formatter.js` file, create an instance of the previously implemented `DateFormatter` and provide the necessary dependencies.\n\nNow run the app again to see that the formatter is applied on the post date of the detail page.\n\n> ### Note:  \n> The files that create objects with dependencies should be kept simple. They do not have multiple code paths caused by if-else statements or loops. To test these components, just a few simple integration tests, or merely smoke tests, are sufficient. We already know that the `DateFormatter` does the job right for all the different cases.\n\n\n\n<a name=\"loio2ca583d6b9c24e4d8f189eada7c4b668__section_ovt_b2t_qbb\"/>\n\n## Summary\n\nYou should now be familiar with the major development paradigms and concepts of SAPUI5 and have created a very simple first app. You are now ready to build a proper app based on what you've learned.\n\n",
+  "excerpt": "<!-- loio2ca583d6b9c24e4d8f189eada7c4b668 --> Step 16: Adding the Date Formatter Our formatter does its job, but it is not yet used. In this step we will use it. Preview       Date formatter in action...",
+  "wordCount": 297,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

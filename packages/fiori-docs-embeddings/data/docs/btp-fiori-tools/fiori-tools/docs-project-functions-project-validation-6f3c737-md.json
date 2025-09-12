@@ -1,0 +1,22 @@
+{
+  "id": "btp-fiori-tools-docs-project-functions-project-validation-6f3c737-md",
+  "title": "Project Validation",
+  "category": "fiori-tools",
+  "path": "docs/Project-Functions/project-validation-6f3c737.md",
+  "lastModified": "2025-09-01T18:17:10.164Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Project",
+    "Validation"
+  ],
+  "headers": [
+    "Project Validation"
+  ],
+  "content": "<!-- loio6f3c737aa18c4181b1f0a343755f335e -->\n\n# Project Validation\n\nWhen the project is generated, you can validate it by opening the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and executing the `Fiori: Validate Project` command. Use a quick pick selection to select a project for validation from the multiple projects in the workspace.\n\nThe validation comprises of the following steps:\n\n-   **project**\n\n    The project step checks that files such as `package.json`, `manifest.json`, and `ui5.yaml` exist and their mandatory fields are filled.\n\n-   **annotation**\n\n    The annotation step validates the project annotation files using the same modules as the XML annotation language server extension.\n\n-   **specification**\n\n    The specification step validates `manifest.json` and files in the changes folder. The `@sap/ux-specification` module is used to import the project and provide invalid configuration error messages.\n\n-   **`eslint`**\n\n    The `eslint` step checks if `eslint` is installed as a dependency. If it is, the project validation runs the `eslint` check based on the project's configuration and the rules defined in the <code><a href=\"https://www.npmjs.com/package/eslint-plugin-fiori-custom\">eslint-plugin-fiori-custom</a></code>. You can enable `eslint` support for a new project by selecting the appropriate options in the *Advanced Options* of the SAP Fiori application generator, as described in the [Additional Configuration](../Generating-an-Application/Additional-Configuration/additional-configuration-9bea64e.md) section.\n\n\nAfter all validation steps are executed, a report is generated and displayed as a Markdown \\(`.md`\\) file and in the *Problems* tab of Visual Studio Code \\(VS Code\\) or SAP Business Application Studio.\n\n",
+  "excerpt": "<!-- loio6f3c737aa18c4181b1f0a343755f335e --> Project Validation When the project is generated, you can validate it by opening the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and executing the ...",
+  "wordCount": 229,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-sap-ui-codeeditor-2832a13-md",
+  "title": "sap.ui.codeeditor",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/sap-ui-codeeditor-2832a13.md",
+  "lastModified": "2025-09-01T18:17:10.699Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "sap",
+    "codeeditor"
+  ],
+  "headers": [
+    "sap.ui.codeeditor"
+  ],
+  "content": "<!-- loio2832a13753f24c9b89a6d5cf6de32d91 -->\n\n# sap.ui.codeeditor\n\nThis library contains the `CodeEditor` control.\n\n> ### Note:  \n> The following sections only provide additional information for some of the controls. For a complete list of all controls and their documentation, see the [API Reference](https://ui5.sap.com/#/api) and the [Samples](https://ui5.sap.com/#/controls). \n\n",
+  "excerpt": "<!-- loio2832a13753f24c9b89a6d5cf6de32d91 --> sap.ui.codeeditor This library contains the CodeEditor control. > Note:   > The following sections only provide additional information for some of the con...",
+  "wordCount": 45,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

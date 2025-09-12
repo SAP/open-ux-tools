@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-03-get-started-step-5-one-way-data-binding-88756c0-md",
+  "title": "Step 5: One-Way Data Binding",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-5-one-way-data-binding-88756c0.md",
+  "lastModified": "2025-09-01T18:17:10.477Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "One",
+    "Way",
+    "Data",
+    "Binding"
+  ],
+  "headers": [
+    "Step 5: One-Way Data Binding",
+    "Preview",
+    "Coding",
+    "webapp/Component.js"
+  ],
+  "content": "<!-- loio88756c08fe144ba08ff1762ad92fc07c -->\n\n# Step 5: One-Way Data Binding\n\nUnlike the two-way binding behavior we've seen, one-way data binding is also possible. In this case, data travels in one direction only: from the model, through the binding instance, to the consumer \\(usually the property of a control\\), but never in the other direction. Let's modify the previous example to use one-way data binding. This shows how you can switch off the flow of data from the user interface back to the model if needed.\n\n\n\n## Preview\n\n  \n  \n**Two input fields and a checkbox**\n\n![The graphic has an explanatory text](images/Tutorial_Data_Binding_Step_4_61d68f1.png \"Two input fields and a checkbox\")\n\n\n\n## Coding\n\nYou can view and download all files in the Demo Kit at [Data Binding - Step 5](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.databinding/sample/sap.ui.core.tutorial.databinding.05).\n\n\n\n## webapp/Component.js\n\nInsert the highlighted code into the `Component.js` file. The `init` function calls the init function of its parent, retrieves the default model instance bound to the component, and sets the default binding mode to one-way data binding.\n\n```js\nsap.ui.define([\n\t\"sap/ui/core/UIComponent\",\n\t\"sap/ui/model/BindingMode\"\n], (UIComponent, BindingMode) => {\n\t\"use strict\";\n\n\treturn UIComponent.extend(\"ui5.databinding.Component\", {\n\t\tmetadata : {\n\t\t\tinterfaces: [\"sap.ui.core.IAsyncContentCreation\"],\n\t\t\tmanifest: \"json\"\n\t\t},\n\n\t\tinit() {\n\t\t\t// call the init function of the parent\n\t\t\tUIComponent.prototype.init.apply(this, arguments);\n\n\t\t\tthis.getModel().setDefaultBindingMode(BindingMode.OneWay);\n\t\t}\n\t});\n});\n```\n\nNow, regardless of the state the checkbox is in, the input fields remain open for input, because one-way data binding ensures that data flows only from the model to the UI, but never in the other direction.\n\nThe binding mode \\(one-way or two-way\\) is set on the model itself. Therefore, unless you specifically alter it, a binding instance will always be created using the model's default binding mode.\n\nIf you wish to alter the binding mode, you've got two options:\n\n-   Alter the model's default binding mode. This is the approach we used above.\n\n-   Specify the data binding mode for a specific binding instance by using the `oBindingInfo.mode` parameter. This change only applies to this data binding instance. Any other binding instances will continue to use the model's default binding mode.For more information, see [API Reference: `sap.ui.base.ManagedObject.bindProperty`](https://ui5.sap.com/#/api/sap.ui.base.ManagedObject/methods/bindProperty). \n\n\n> ### Note:  \n> There are two important points to understand about alterations to a model object's data binding mode:\n> \n> -   If you alter the default binding mode of a model \\(as in the example above\\), **all** binding instances created after that point in time will use the altered binding mode, unless you explicitly say otherwise.\n> \n> -   Altering a model's default binding mode doesn't affect already existing binding instances.\n\n",
+  "excerpt": "<!-- loio88756c08fe144ba08ff1762ad92fc07c --> Step 5: One-Way Data Binding Unlike the two-way binding behavior we've seen, one-way data binding is also possible. In this case, data travels in one dire...",
+  "wordCount": 413,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

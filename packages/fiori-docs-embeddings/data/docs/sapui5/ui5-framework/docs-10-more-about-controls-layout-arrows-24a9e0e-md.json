@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-layout-arrows-24a9e0e-md",
+  "title": "Layout Arrows",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/layout-arrows-24a9e0e.md",
+  "lastModified": "2025-09-01T18:17:10.693Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Layout",
+    "Arrows"
+  ],
+  "headers": [
+    "Layout Arrows"
+  ],
+  "content": "<!-- loio24a9e0e2424245e4873c0f29f00144f4 -->\n\n# Layout Arrows\n\nLayout arrows are used to alter the current layout of the `FlexibleColumnLayout`.\n\nThe `FlexibleColumnLayout` provides layout arrows on screen sizes where more than one column may be displayed at one time \\(desktop and tablet\\). They allow the user to alter the current layout.\n\nLayout arrows are the only way for the layout to change on control level, without the app changing it explicitly. Layout changes due to interaction with the layout arrows are only from one type of two-column layout to another type of two-column layout, or from one type of three-column layout to another type of three-column layout. Changing the number of active columns \\(for example, from a two-column layout to a three-column layout\\) can only happen on app level by directly manipulating the `layout` property from your controller.\n\nExamples for layout changes due to layout arrows interaction:\n\n-   In a `TwoColumsBeginExpanded` layout there is one arrow that changes it to `TwoColumnsMidExpanded`.\n\n-   In a `TwoColumnsMidExpanded` layout there is one arrow that changes it to `TwoColumnsBeginExpanded`.\n\n-   In a `ThreeColumnsMidExpanded` layout there are two arrows that allow changing the layout either to a `ThreeColumnsEndExpanded` or to `ThreeColumnsMidExpandedEndHidden` layout.\n\n\n",
+  "excerpt": "<!-- loio24a9e0e2424245e4873c0f29f00144f4 --> Layout Arrows Layout arrows are used to alter the current layout of the FlexibleColumnLayout. The FlexibleColumnLayout provides layout arrows on screen si...",
+  "wordCount": 196,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

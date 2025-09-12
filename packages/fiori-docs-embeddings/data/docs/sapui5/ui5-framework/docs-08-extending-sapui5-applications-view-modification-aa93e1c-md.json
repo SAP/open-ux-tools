@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-08-extending-sapui5-applications-view-modification-aa93e1c-md",
+  "title": "View Modification",
+  "category": "ui5-framework",
+  "path": "docs/08_Extending_SAPUI5_Applications/view-modification-aa93e1c.md",
+  "lastModified": "2025-09-01T18:17:10.672Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "View",
+    "Modification"
+  ],
+  "headers": [
+    "View Modification"
+  ],
+  "content": "<!-- loioaa93e1c6953a41b48cd912a7331eadee -->\n\n# View Modification\n\nFor modifying views, control properties of standard views can be changed.\n\nThe view modification is currently restricted to the `visible` property of controls, meaning that controls can be hidden in the custom application. The controls must have the `visible` property and the control's ID must be defined in the view. The view name together with the control ID uniquely determines the control in the standard application.\n\nView modification is available for XML views, JS views and HTML views. Below is an example that explains how a view modification works. The first code snippet describes the `Sub3.view.xml` view in the delivered standard application.\n\n```js\n<mvc:View xmlns=\"sap.\" xmlns:mvc=\"sap.ui.core.mvc\">\n    <TextView text=\"SAP View 'Sub3' - the text after this one is hidden by customizing: \"></TextView>\n    <TextView id=\"someCustomizableTextControl\" text=\"This text is made invisible by customization\"></TextView>  \n</mvc:View>\n```\n\nThe following code snippet describes the extensions for the control `someCustomizableTextControl` with the `visible` property set to `false`.\n\n```js\nextensions: {  \n    \"sap.ui.viewModifications\": {\n        \"samples.components.ext.sap.Sub3\": {\n            \"someCustomizableTextControl\": {\n                \"visible\": false\n            }\n        }\n    }\n}\n```\n\n",
+  "excerpt": "<!-- loioaa93e1c6953a41b48cd912a7331eadee --> View Modification For modifying views, control properties of standard views can be changed. The view modification is currently restricted to the visible p...",
+  "wordCount": 173,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

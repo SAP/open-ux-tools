@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-smart-link-f638884-md",
+  "title": "Smart Link",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/smart-link-f638884.md",
+  "lastModified": "2025-09-01T18:17:10.703Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Smart",
+    "Link"
+  ],
+  "headers": [
+    "Smart Link",
+    "Overview",
+    "Details",
+    "Semantic Object Controller"
+  ],
+  "content": "<!-- loiof638884d0d624ad8a243f4005f8e9972 -->\n\n# Smart Link\n\nThe `sap.ui.comp.navpopover.SmartLink` control provides a popover with navigation links to related applications, for example, more detailed information about customer data.\n\nFor more information about this control, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.navpopover.SmartLink) and the [samples](https://ui5.sap.com/#/entity/sap.ui.comp.navpopover.SmartLink).\n\nFor more information about annotations for this control, see the [API Reference](https://ui5.sap.com/#/api/sap.ui.comp.navpopover.SmartLink/annotations/Summary). \n\n\n\n## Overview\n\nThe `SmartLink` control provides further navigation information for a certain entity and offers the following options for navigation:\n\n-   Main navigation target\n\n-   Additional content, which can be customized\n\n-   Links to related apps, for example\n\n\nNavigation links can be personalized by selecting *Define Links* on the popover where users can select from a list which cross-application links they want to see. They can also restore the links they selected to the previous state.\n\n\n\n## Details\n\nWithin a `SmartTable` or `SmartForm` control, the `SmartLink` control is created automatically if the `SemanticObject` annotation has been defined in the metadata of the OData service used. Navigation targets are determined by the `SmartLink` control and its classes using the `CrossApplicationNavigation` service of the unified shell. For more information about this service, see [CrossApplicationNavigation](https://ui5.sap.com/#/api/sap.ushell.services.CrossApplicationNavigation.html) in the Demo Kit.\n\nThe events of the `SmartLink` control allow the consuming application to do the following in the popover:\n\n-   Add, edit, or remove\n\n    -   Texts\n\n    -   Parameters\n\n    -   Navigation targets\n\n\n-   Add an additional customized area\n\nThe `SmartLink` control can be created in an XML view or in the coding. However, it is recommended to use the `SemanticObject` definition of the OData metadata via the related annotation. This ensures that the `SmartLink` control is instantiated in a correct manner.\n\n\n\n### Semantic Object Controller\n\nWithin a `SmartTable` or `SmartForm` control, the `SemanticObjectController` class is used as a central instance that is exposing the automatically generated events of the `SmartLink` control.\n\nAll events of the `SmartLink` control and the features of the navigation popover connected to it are registered with the `SemanticObjectController` class and are thus available for use by the consuming application from one single source.\n\nIn addition, the `SemanticObjectController` class enables further features that influence the behavior of the registered `SmartLink` controls within the `SmartTable` or `SmartForm` controls.\n\nThe `SemanticObjectController` class can be set up in the XML view as well as in the coding of the `SmartTable` and the `SmartForm` controls. All `SmartLink` controls in a `SmartTable` or `SmartForm` control will automatically get registered with the `SemanticObjectController` class provided.\n\n",
+  "excerpt": "<!-- loiof638884d0d624ad8a243f4005f8e9972 --> Smart Link The sap.ui.comp.navpopover.SmartLink control provides a popover with navigation links to related applications, for example, more detailed infor...",
+  "wordCount": 397,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
