@@ -43,7 +43,8 @@ import {
     GRID_TABLE_TYPE,
     SMART_TABLE_TYPE,
     MDC_TABLE_TYPE,
-    TREE_TABLE_TYPE
+    TREE_TABLE_TYPE,
+    M_TABLE_TYPE
 } from '../../../../src/adp/quick-actions/control-types';
 import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
@@ -1833,6 +1834,12 @@ describe('FE V4 quick actions', () => {
             describe('create table custom column', () => {
                 const testCases = [
                     {
+                        tableType: M_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => M_TABLE_TYPE,
+                        enable: true
+                    },
+                    {
                         tableType: MDC_TABLE_TYPE,
                         dialog: DialogNames.ADD_FRAGMENT,
                         toString: () => MDC_TABLE_TYPE,
@@ -1940,7 +1947,7 @@ describe('FE V4 quick actions', () => {
                                     return [
                                         {
                                             isA: (type: string) => type === testCase.tableType,
-                                            getAggregation: () => 'items'
+                                            getAggregation: () => []
                                         }
                                     ];
                                 },
@@ -2027,7 +2034,7 @@ describe('FE V4 quick actions', () => {
                                         'enabled': testCase.enable,
                                         tooltip: testCase.enable
                                             ? undefined
-                                            : 'This action has been disabled because the table rows are not available. Please load the table data and try again',
+                                            : 'This action has been disabled because the table rows are not available. Please load the table data and try again.',
                                         'id': 'objectPage0-create-table-custom-column',
                                         'kind': 'nested',
                                         'title': 'Add Custom Table Column'

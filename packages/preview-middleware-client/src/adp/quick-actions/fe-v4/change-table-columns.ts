@@ -41,7 +41,9 @@ export class ChangeTableColumnsQuickAction
                     path,
                     label: tableLabel,
                     enabled: false,
-                    tooltip: this.context.resourceBundle.getText('TABLE_CHANGE_COLUMN_ACTION_NOT_AVAILABLE'),
+                    tooltip: this.context.resourceBundle.getText(
+                        'TABLE_ACTION_DISABLED_VARIANT_MANAGEMENT_NOT_AVAILABLE'
+                    ),
                     children: []
                 });
                 this.tableMap[path] = {

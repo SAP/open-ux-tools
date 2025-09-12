@@ -347,12 +347,14 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             label,
             enabled: true,
             children: []
-        }; 
+        };
         if (this.options.validatePageVariantManagement) {
             const variantEnabledV2 = isVariantManagementEnabledOPPage(this.context, table);
             if (variantEnabledV2 === false) {
                 child.enabled = false;
-                child.tooltip = this.context.resourceBundle.getText('TABLE_CHANGE_COLUMN_ACTION_NOT_AVAILABLE');
+                child.tooltip = this.context.resourceBundle.getText(
+                    'TABLE_ACTION_DISABLED_VARIANT_MANAGEMENT_NOT_AVAILABLE'
+                );
                 return child;
             }
         }
@@ -360,10 +362,10 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             return child;
         }
         const innerTable = this.getInternalTable(table);
-        const tableRows = (innerTable?.getAggregation('items') as ManagedObject[]) || [];
-        if (isA(M_TABLE_TYPE, innerTable) && !tableRows.length) {
+        const tableRows = innerTable?.getAggregation('items') ?? [];
+        if (isA(M_TABLE_TYPE, innerTable) && Array.isArray(tableRows) && tableRows.length === 0) {
             child.enabled = false;
-            child.tooltip = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
+            child.tooltip = this.context.resourceBundle.getText('TABLE_ACTION_DISABLED_ROWS_NOT_AVAILABLE');
         }
         return child;
     }

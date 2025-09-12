@@ -468,7 +468,7 @@ describe('FE V2 quick actions', () => {
 
         describe('change table columns', () => {
             const testCases: {
-                tableType: typeof SMART_TABLE_TYPE | typeof M_TABLE_TYPE;
+                tableType: typeof SMART_TABLE_TYPE;
                 versionInfo: string;
                 actionId: 'CTX_COMP_VARIANT_CONTENT' | 'CTX_SETTINGS';
                 expectActionAvailable: boolean;
@@ -502,19 +502,6 @@ describe('FE V2 quick actions', () => {
                     expectActionAvailable: true,
                     isWithIconTabBar: true,
                     variantManagementDisabled: true
-                },
-                {
-                    tableType: M_TABLE_TYPE,
-                    versionInfo: '1.127.0',
-                    actionId: 'CTX_SETTINGS',
-                    expectActionAvailable: true
-                },
-                {
-                    tableType: M_TABLE_TYPE,
-                    versionInfo: '1.127.0',
-                    actionId: 'CTX_SETTINGS',
-                    expectActionAvailable: true,
-                    isTableNotLoaded: true
                 }
             ];
             const setSelectedKeyMock = jest.fn();
@@ -1119,15 +1106,27 @@ describe('FE V2 quick actions', () => {
                 {
                     tableType: M_TABLE_TYPE,
                     dialog: DialogNames.ADD_TABLE_COLUMN_FRAGMENTS,
-                    toString: () => M_TABLE_TYPE
+                    toString: () => M_TABLE_TYPE,
+                    enabled: false
                 },
-                { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
+                {
+                    tableType: TREE_TABLE_TYPE,
+                    dialog: DialogNames.ADD_FRAGMENT,
+                    toString: () => TREE_TABLE_TYPE,
+                    enabled: true
+                },
                 {
                     tableType: ANALYTICAL_TABLE_TYPE,
                     dialog: DialogNames.ADD_FRAGMENT,
-                    toString: () => ANALYTICAL_TABLE_TYPE
+                    toString: () => ANALYTICAL_TABLE_TYPE,
+                    enabled: true
                 },
-                { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
+                {
+                    tableType: GRID_TABLE_TYPE,
+                    dialog: DialogNames.ADD_FRAGMENT,
+                    toString: () => GRID_TABLE_TYPE,
+                    enabled: true
+                }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 mockTelemetryEventIdentifier();
@@ -1150,7 +1149,7 @@ describe('FE V2 quick actions', () => {
                                 return [
                                     {
                                         isA: (type: string) => type === testCase.tableType,
-                                        getAggregation: () => 'columns'
+                                        getAggregation: () => []
                                     }
                                 ];
                             },
@@ -1227,6 +1226,7 @@ describe('FE V2 quick actions', () => {
                                             path: '0',
                                             'children': [],
                                             enabled: true,
+
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1240,7 +1240,10 @@ describe('FE V2 quick actions', () => {
                                         {
                                             path: '0',
                                             'children': [],
-                                            enabled: true,
+                                            'enabled': testCase.enabled,
+                                            tooltip: testCase.enabled
+                                                ? undefined
+                                                : 'This action has been disabled because the table rows are not available. Please load the table data and try again.',
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1257,22 +1260,23 @@ describe('FE V2 quick actions', () => {
                         }
                     ])
                 );
+                if (testCase.enabled) {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
+                    );
 
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
-                );
-
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-                    mockOverlay,
-                    rtaMock,
-                    testCase.dialog,
-                    undefined,
-                    {
-                        aggregation: 'columns',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    },
-                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
-                );
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        testCase.dialog,
+                        undefined,
+                        {
+                            aggregation: 'columns',
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                        },
+                        { actionName: 'create-table-custom-column', telemetryEventIdentifier }
+                    );
+                }
             });
         });
 

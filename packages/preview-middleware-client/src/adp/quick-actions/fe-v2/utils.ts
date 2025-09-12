@@ -120,8 +120,12 @@ export function isVariantManagementEnabledOPPage(
         if (typeof id !== 'string') {
             throw new Error('Could not retrieve configuration property because control id is not valid!');
         }
-        let value  = context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
-        if (value === undefined && control.isA<SmartTableExtended>('sap.ui.comp.smarttable.SmartTable')) {
+        if (!control.isA<SmartTableExtended>('sap.ui.comp.smarttable.SmartTable')) {
+            // variant management is only supported by SmartTable
+            return false;
+        }
+        let value = context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
+        if (value === undefined) {
             value = !!control.getVariantManagement();
         }
         return value as boolean;

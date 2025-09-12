@@ -7,12 +7,10 @@ import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/qu
 import { getControlById, isA } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { M_TABLE_TYPE, SMART_TABLE_TYPE } from '../control-types';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
-const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-const M_TABLE_TYPE = 'sap.m.Table';
-// maintain order if action id
-const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
+const CONTROL_TYPES = [SMART_TABLE_TYPE];
 
 export class ChangeTableColumnsQuickAction
     extends TableQuickActionDefinitionBase
