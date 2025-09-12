@@ -79,14 +79,11 @@ export class FioriFunctionalityServer {
 
         this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const { name, arguments: args } = request.params as { name: string; arguments: ToolArgs };
+            const telemetryData: TelemetryData = { tool: name, functionalityId: (args as any)?.functionalityId };
 
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
-                const telemetryProperties: TelemetryData = {
-                    tool: name,
-                    functionalityId: (args as any)?.functionalityId
-                };
 
                 switch (name) {
                     case 'list-fiori-apps':
@@ -102,14 +99,15 @@ export class FioriFunctionalityServer {
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
-                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
+                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryData, (args as any)?.appPath);
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
                         );
                 }
-                await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
+                await TelemetryHelper.sendTelemetry(name, telemetryData, (args as any)?.appPath);
                 return this.convertResultToCallToolResult(result);
             } catch (error) {
+                await TelemetryHelper.sendTelemetry(name, { ...telemetryData }, (args as any)?.appPath, error);
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {
                     content: [

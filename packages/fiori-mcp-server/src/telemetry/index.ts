@@ -12,6 +12,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import osName from 'os-name';
 import i18next from 'i18next';
 import { version } from '../../package.json';
+import z from 'zod';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';
@@ -155,19 +156,46 @@ export abstract class TelemetryHelper {
      * @param telemetryEventName - the event name to be reported
      * @param telemetryData - the telemetry data
      * @param appPath - the path of the application
+     * @param error - an optional error to be included in the telemetry data
+     *
      * @returns - a promise that resolves when the event is sent
      */
     public static async sendTelemetry(
         telemetryEventName: string,
         telemetryData: TelemetryData,
-        appPath?: string
+        appPath?: string,
+        error?: Error
     ): Promise<void> {
-        const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryData);
-        await ClientFactory.getTelemetryClient().reportEvent(
-            telemetryEvent,
-            SampleRate.NoSampling,
-            appPath ? { appPath } : undefined
-        );
+        try {
+            const client = ClientFactory.getTelemetryClient();
+            if (!client) {
+                console.error('Telemetry client is not initialized.');
+                return;
+            }
+            if (error) {
+                this.addTelemetryError(telemetryData, error);
+            }
+            const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryData);
+            await client.reportEvent(telemetryEvent, SampleRate.NoSampling, appPath ? { appPath } : undefined);
+        } catch (err) {
+            console.error('Error sending telemetry event:', err);
+        }
+    }
+
+    /**
+     * Adds error information to the telemetry data.
+     *
+     * @param telemetryData - the telemetry data
+     * @param error - the error to be added
+     */
+    public static async addTelemetryError(telemetryData: TelemetryData, error: Error): Promise<void> {
+        if (error instanceof z.ZodError) {
+            telemetryData.error = 'zod';
+        } else if (error instanceof Error) {
+            telemetryData.error = 'error';
+        } else {
+            telemetryData.error = 'unknown';
+        }
     }
 
     /**
