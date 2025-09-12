@@ -9,7 +9,7 @@ overrides:
   router@2.0.0>path-to-regexp: 8.2.0
   '@storybook/manager-api>store2': 2.14.4
   '@sap/bas-sdk>axios': 1.11.0
-  '@sap/service-provider-apis>axios': 1.11.0
+  '@sap/service-provider-apis>axios': 1.12.0
   mta-local: 1.0.4
 
 importers:
@@ -9144,7 +9144,7 @@ packages:
   /@sap/service-provider-apis@2.1.9:
     resolution: {integrity: sha512-Rb4RdbeaG980+XuHuGgPbjEt6BTJRv2La4NFqa2yO3L3+GbI1knz27GROArJrAgKHeS9riYMGBoZ6//55LpRvA==}
     dependencies:
-      axios: 1.11.0
+      axios: 1.12.0
       lodash: 4.17.21
       xml2js: 0.6.2
     transitivePeerDependencies:
@@ -12408,6 +12408,15 @@ packages:
 
   /axios@1.11.0:
     resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.4
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  /axios@1.12.0:
+    resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.4
