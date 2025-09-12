@@ -5,6 +5,7 @@ import { getWebappPath, FileName } from '@sap-ux/project-access';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 
 import { getVariantNamespace } from '../../../src/utils/project';
+import { initI18n, t } from '../../../src/utils/i18n';
 
 jest.mock('fs', () => ({
     existsSync: jest.fn(),
@@ -26,10 +27,6 @@ jest.mock('@sap-ux/deploy-config-generator-shared', () => ({
     }
 }));
 
-jest.mock('../../../src/utils/i18n', () => ({
-    t: jest.fn((key: string) => key)
-}));
-
 const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
 const mockGetWebappPath = getWebappPath as jest.MockedFunction<typeof getWebappPath>;
@@ -38,6 +35,10 @@ describe('getVariantNamespace', () => {
     const mockPath = '/test/project';
     const mockWebappPath = '/test/project/webapp';
     const mockManifestPath = join(mockWebappPath, FileName.ManifestAppDescrVar);
+
+    beforeAll(async () => {
+        await initI18n();
+    });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -90,7 +91,9 @@ describe('getVariantNamespace', () => {
         expect(mockExistsSync).toHaveBeenCalledWith(mockManifestPath);
         expect(mockReadFileSync).toHaveBeenCalledWith(mockManifestPath, 'utf-8');
         expect(DeploymentGenerator.logger.debug).toHaveBeenCalledWith(
-            expect.stringContaining('debug.lrepNamespaceNotFound')
+            t('debug.lrepNamespaceNotFound', {
+                error: 'Unexpected token \'i\', "invalid json content" is not valid JSON'
+            })
         );
     });
 });
