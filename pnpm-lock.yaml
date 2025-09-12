@@ -208,8 +208,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
 
   examples/ui-prompting-examples:
     dependencies:
@@ -393,8 +393,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -801,8 +801,8 @@ importers:
         specifier: 7.5.8
         version: 7.5.8
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -822,8 +822,8 @@ importers:
         specifier: 0.8.10
         version: 0.8.10
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
@@ -941,8 +941,8 @@ importers:
         specifier: 3.2.2
         version: 3.2.2
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1623,8 +1623,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1675,8 +1675,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       glob-gitignore:
         specifier: 1.0.14
         version: 1.0.14
@@ -2585,8 +2585,8 @@ importers:
         specifier: 3.2.2
         version: 3.2.2
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -2899,8 +2899,8 @@ importers:
         specifier: 3.2.2
         version: 3.2.2
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       axios-logger:
         specifier: 2.8.0
         version: 2.8.0
@@ -3016,8 +3016,8 @@ importers:
         version: link:../odata-annotation-core-types
     devDependencies:
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -3284,8 +3284,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       express:
         specifier: 4.21.2
         version: 4.21.2
@@ -3547,8 +3547,8 @@ importers:
         specifier: 2.9.2
         version: 2.9.2
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       performance-now:
         specifier: 2.1.0
         version: 2.1.0
@@ -4097,8 +4097,8 @@ importers:
         specifier: 8.17.1
         version: 8.17.1
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -4128,8 +4128,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.12.0
+        version: 1.12.0
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -12415,6 +12415,15 @@ packages:
     transitivePeerDependencies:
       - debug
 
+  /axios@1.12.0:
+    resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.4
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   /axios@1.8.2:
     resolution: {integrity: sha512-ls4GYBm5aig9vWx8AWDSGLpnpDQRtWAfrjU+EuytuODrFBkqesN2RkOQCBzrA1RQNHw1SmRMSDDDSwzNAYQ6Rg==}
     dependencies:
@@ -19436,7 +19445,7 @@ packages:
     resolution: {integrity: sha512-Be/+H9p58qVJRou8lthyWT4VSyifBdh/SnbVuZ7NNQQDvmOk/cKLnFeaPIel1Vk2FdojNLlTsCAlO+BElXcWDg==}
     requiresBuild: true
     dependencies:
-      axios: 1.11.0
+      axios: 1.12.0
       tar: 6.2.1
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -20020,7 +20029,7 @@ packages:
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.2
       '@zkochan/js-yaml': 0.0.7
-      axios: 1.11.0
+      axios: 1.12.0
       chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
@@ -24806,7 +24815,7 @@ packages:
     resolution: {integrity: sha512-wCQcHkRazgjG5XoAq9jbTMLpNIjoSlZslrJ2+N9MxDsGEv1HnFoVjOCexL0ESva7Y9cu350j+DWADdk54s4AFQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      axios: 1.11.0
+      axios: 1.12.0
       joi: 17.11.0
       lodash: 4.17.21
       minimist: 1.2.8
@@ -24819,7 +24828,7 @@ packages:
     resolution: {integrity: sha512-8f9LugAGo4PSc0aLbpKVCVtzayd36sSCp4WLpVngkYq6PK87H79zt77/tlCU6eKCLqR46iFvcl0PU5f+DmtkwA==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      axios: 1.11.0
+      axios: 1.12.0
       joi: 17.13.3
       lodash: 4.17.21
       minimist: 1.2.8

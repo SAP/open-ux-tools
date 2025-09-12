@@ -34,7 +34,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "applicationinsights": "2.9.2",
-        "axios": "1.11.0",
+        "axios": "1.12.0",
         "performance-now": "2.1.0",
         "yaml": "2.3.3"
     },
