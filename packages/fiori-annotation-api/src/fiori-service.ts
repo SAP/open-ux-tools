@@ -1,3 +1,4 @@
+import { join as posixJoin } from 'path/posix';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { create as createStore } from 'mem-fs';
@@ -10,6 +11,7 @@ import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type {
     AliasInformation,
     CompilerMessage,
+    Location,
     Namespace,
     Reference,
     WorkspaceEdit
@@ -52,6 +54,16 @@ export interface FioriAnnotationServiceConstructor<T> {
         serviceName: string,
         appName: string
     ): T;
+}
+
+export interface ValueListReferences {
+    target: string;
+    items: ValueListReferenceEntry[];
+}
+
+export interface ValueListReferenceEntry {
+    values: string[];
+    location: Location;
 }
 
 export interface FioriAnnotationServiceOptions {
@@ -344,6 +356,29 @@ export class FioriAnnotationService {
         this.fileMergeMaps = {};
 
         return { files: fileUris.length };
+    }
+
+    /**
+     * Get all value list references.
+     *
+     * @param serviceBasePath - Base path of the service.
+     * @returns Array of value list references.
+     */
+    public getValueListReferences(serviceBasePath: string): ValueListReferences[] {
+        const references: ValueListReferences[] = [];
+        for (const [target, value] of this.adapter.getValueListReferences().entries()) {
+            const items = value.map((entry): ValueListReferenceEntry => {
+                return {
+                    values: entry.uris.map((uri) => posixJoin(serviceBasePath, uri).replace('/$metadata', '')),
+                    location: entry.location
+                };
+            });
+            references.push({
+                target,
+                items
+            });
+        }
+        return references;
     }
 
     /**
