@@ -8,8 +8,6 @@ import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
 import * as z from 'zod';
 
 const GeneratorConfigSchemaCAP = z.object({
-    projectPath: z.optional(z.string()),
-    version: z.string(),
     floorplan: z.literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE']),
     project: z.object({
         name: z.string(),
@@ -48,6 +46,8 @@ const GeneratorConfigSchemaCAP = z.object({
 export type GeneratorConfigCAP = z.infer<typeof GeneratorConfigSchemaCAP>;
 // Extended type generators API use
 const PREDEFINED_GENERATOR_VALUES = {
+    // Config schema version.
+    version: '0.2',
     telemetryData: {
         'generationSourceName': 'AI Headless MCP',
         'generationSourceVersion': '1.0.0'

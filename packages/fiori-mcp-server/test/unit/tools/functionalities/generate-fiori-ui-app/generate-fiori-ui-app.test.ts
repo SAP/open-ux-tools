@@ -42,7 +42,6 @@ describe('getFunctionalityDetails', () => {
     });
 });
 const paramTest: GeneratorConfigCAP = {
-    version: '1.0.0',
     floorplan: 'FE_LROP',
     project: {
         name: 'app1',
@@ -115,7 +114,6 @@ describe('executeFunctionality', () => {
                     'app1'
                 )} before trying to run the application.`,
                 parameters: {
-                    version: '1.0.0',
                     floorplan: 'FE_LROP',
                     project: {
                         description: 'Description for App 1',
@@ -191,7 +189,7 @@ describe('executeFunctionality', () => {
                 'generationSourceName': 'AI Headless MCP',
                 'generationSourceVersion': '1.0.0'
             },
-            'version': '1.0.0'
+            'version': '0.2'
         });
     });
 
@@ -229,14 +227,6 @@ describe('executeFunctionality', () => {
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
             "Missing required fields in parameters. [
-                {
-                    \\"expected\\": \\"string\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"version\\"
-                    ],
-                    \\"message\\": \\"Invalid input: expected string, received undefined\\"
-                },
                 {
                     \\"code\\": \\"invalid_value\\",
                     \\"values\\": [

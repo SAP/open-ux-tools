@@ -18,13 +18,6 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                 The configuration **MUST** be based on the project files in the projectPath.`,
     parameters: [
         {
-            id: 'version',
-            type: 'string',
-            options: ['0.2'],
-            description: 'Config schema version.',
-            required: true
-        },
-        {
             id: 'floorplan',
             type: 'string',
             options: ['FE_LROP', 'FE_FEOP', 'FE_FPM'],
