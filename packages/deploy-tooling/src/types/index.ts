@@ -68,7 +68,7 @@ export type AbapTarget = BaseAbapTarget & { service?: string };
 
 export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
-    app: Partial<BspConfig> & Partial<{ lrep: string }>;
+    app: Partial<BspConfig>;
     credentials?: AxiosRequestConfig['auth'];
     exclude?: string[];
 }

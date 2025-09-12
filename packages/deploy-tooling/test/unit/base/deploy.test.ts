@@ -422,9 +422,10 @@ describe('base/deploy', () => {
 
                 const lrep = 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/';
                 const config = {
-                    app: { package: '~package', transport: '~transport', lrep },
+                    app: { package: '~package', transport: '~transport' },
                     target,
-                    createTransport: true
+                    createTransport: true,
+                    lrep
                 };
 
                 await undeploy(config, nullLogger);

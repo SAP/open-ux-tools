@@ -304,10 +304,10 @@ export default class extends DeploymentGenerator {
                     name: this.answers.ui5AbapRepo,
                     description: this.answers.description,
                     package: this.answers.package,
-                    transport: this.answers.transport,
-                    lrep: namespace
+                    transport: this.answers.transport
                 },
-                index: this.answers.index
+                index: this.answers.index,
+                lrep: namespace
             } as AbapDeployConfig,
             {
                 baseFile: this.options.base,

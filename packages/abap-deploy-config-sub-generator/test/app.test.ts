@@ -513,10 +513,10 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(deployTask).toStrictEqual({
             app: {
-                lrep: 'apps/workcenter/appVariants/customer.app.variant',
                 package: '$TMP',
                 transport: ''
             },
+            lrep: 'apps/workcenter/appVariants/customer.app.variant',
             target: {},
             exclude: ['/test/']
         });
@@ -617,10 +617,10 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(deployTask).toStrictEqual({
             app: {
-                lrep: 'apps/workcenter/appVariants/customer.app.variant',
                 package: 'Z123456_UPDATED',
                 transport: 'ZTESTK900001'
             },
+            lrep: 'apps/workcenter/appVariants/customer.app.variant',
             target: {
                 url: 'https://mock.system.sap:24300'
             },

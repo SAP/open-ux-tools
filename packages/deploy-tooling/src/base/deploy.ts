@@ -358,10 +358,10 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
             config.app.transport = await createTransportRequest(config, logger, provider);
             config.createTransport = false;
         }
-        if (config.lrep || config.app.lrep) {
+        if (config.lrep) {
             const service = getDeployService(provider.getLayeredRepository.bind(provider), config, logger);
             await service.undeploy({
-                namespace: config.lrep ?? config.app.lrep ?? '',
+                namespace: config.lrep,
                 transport: config.app.transport
             });
         } else if (isBspConfig(config.app)) {
