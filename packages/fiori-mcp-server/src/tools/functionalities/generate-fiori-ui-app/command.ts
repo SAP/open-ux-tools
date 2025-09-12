@@ -84,6 +84,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
             ...generatorConfigCAP.project
         }
     };
+    generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');

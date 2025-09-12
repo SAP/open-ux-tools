@@ -192,6 +192,27 @@ describe('executeFunctionality', () => {
         });
     });
 
+    test('executeFunctionality - success with floorplan="FF_SIMPLE"', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+        // Mock fs.writeFile to capture the generated config
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
+        });
+        await generateFioriUIAppHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            parameters: {
+                ...paramTest,
+                floorplan: 'FF_SIMPLE'
+            }
+        });
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.project.sapux).toEqual(false);
+    });
+
     test('executeFunctionality - unsuccess', async () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
