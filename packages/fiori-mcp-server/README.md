@@ -72,6 +72,8 @@ The following rules help guide the LLM to use the server correctly:
 - When previewing the SAP Fiori elements application use the most specific script for the app in the `package.json`.
 ```
 
+Add these rules to your existing global or project-specific [`AGENTS.md`](https://agents.md/) (specifics may vary based on respective MCP client).
+
 ## [Available Tools](#available-tools)
 
 #### `list-fiori-apps`
