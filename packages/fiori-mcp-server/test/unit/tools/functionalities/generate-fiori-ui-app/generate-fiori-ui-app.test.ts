@@ -96,7 +96,13 @@ describe('executeFunctionality', () => {
                 appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
-                message: `Generation completed successfully: ${join(testOutputDir, 'app1/app/app1')}`,
+                message: `Generation completed successfully: ${join(
+                    testOutputDir,
+                    'app1/app/app1'
+                )}. You must run \`npm install\` in ${join(
+                    testOutputDir,
+                    'app1'
+                )} before trying to run the application.`,
                 parameters: {
                     appGenConfig: {
                         version: '1.0.0',
