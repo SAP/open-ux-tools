@@ -104,10 +104,10 @@ export class FioriFunctionalityServer {
                             `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
                         );
                 }
-                await TelemetryHelper.sendTelemetry(name, telemetryData, (args as any)?.appPath);
+                TelemetryHelper.sendTelemetry(name, telemetryData, (args as any)?.appPath);
                 return this.convertResultToCallToolResult(result);
             } catch (error) {
-                await TelemetryHelper.sendTelemetry(name, { ...telemetryData }, (args as any)?.appPath, error);
+                TelemetryHelper.sendTelemetry(name, { ...telemetryData }, (args as any)?.appPath, error);
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {
                     content: [

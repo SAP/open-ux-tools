@@ -157,7 +157,6 @@ export abstract class TelemetryHelper {
      * @param telemetryData - the telemetry data
      * @param appPath - the path of the application
      * @param error - an optional error to be included in the telemetry data
-     *
      * @returns - a promise that resolves when the event is sent
      */
     public static async sendTelemetry(
