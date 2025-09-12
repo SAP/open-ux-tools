@@ -4176,6 +4176,28 @@ exports[`serializeTarget cds cap-start 1`] = `
 "
 `;
 
+exports[`serializeTarget cds update flattened annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: test2
+            );
+            "
+`;
+
+exports[`serializeTarget cds update flattened annotation with changing value type 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: 'test2'
+            );
+            "
+`;
+
 exports[`serializeTarget xml move section case 1 1`] = `
 "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">

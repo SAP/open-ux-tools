@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.0.8
+
+### Patch Changes
+
+-   Updated dependencies [a6ff2aa]
+    -   @sap-ux/fiori-annotation-api@0.6.18
+
 ## 0.0.7
 
 ### Patch Changes
