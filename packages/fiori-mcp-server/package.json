@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.0.4",
+    "version": "0.0.8",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -41,20 +41,24 @@
     },
     "devDependencies": {
         "@sap-ux/i18n": "workspace:*",
-        "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
+        "@sap-ux/text-document-utils": "workspace:*",
         "@types/json-schema": "7.0.5",
         "@types/mem-fs": "1.1.2"
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "1.17.4",
-        "@sap/ux-specification": "1.136.4",
-        "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "@sap/ux-specification": "1.136.4",
         "i18next": "25.3.0",
+        "os-name": "4.0.1",
         "zod": "4.1.5"
     },
     "engines": {

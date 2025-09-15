@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.6.18
+
+### Patch Changes
+
+-   a6ff2aa: fix: [CDS] update change for primitive annotation values using annotation shortcut syntax.
+
 ## 0.6.17
 
 ### Patch Changes

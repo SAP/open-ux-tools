@@ -1,5 +1,6 @@
 import { findProjectRoot, createApplicationAccess, getProject, DirName } from '@sap-ux/project-access';
 import { join } from 'path';
+import * as zod from 'zod';
 import type { Appdetails } from '../types';
 
 /**
@@ -67,4 +68,18 @@ export const getDefaultExtensionFolder = (directory: string): string | undefined
         }
     }
     return subFolder;
+};
+
+/**
+ * Converts a Zod schema into a JSON Schema object.
+ * Additionally function removes the `$schema` property (if present),
+ * since it is unnecessary for mcp server.
+ *
+ * @param schema - A Zod schema instance to be converted.
+ * @returns A JSON Schema object representing the given Zod schema.
+ */
+export const convertToSchema = (schema: zod.ZodType): zod.core.JSONSchema.JSONSchema => {
+    const jsonSchema = zod.toJSONSchema(schema);
+    delete jsonSchema.$schema;
+    return jsonSchema;
 };
