@@ -1,6 +1,7 @@
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { TestCaseName } from '../setup';
 import { getAst, getDiagnostics, getPaths, getTerm } from '../setup';
+import { deserialize } from '../deserialize-ast';
 import { Position, Range } from '@sap-ux/text-document-utils';
 import { initI18n } from '../../src/i18n';
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
@@ -21,7 +22,7 @@ const testConversion = (testCase: TestCaseName): void => {
         const expectedPaths = await getPaths(testCase);
         const { terms, diagnostics, pathSet } = toTerms(ast as Assignment, { vocabularyService });
         expect(terms).toStrictEqual(expectedTerm);
-        expect(diagnostics).toStrictEqual(expectedDiagnostics);
+        expect(deserialize(JSON.stringify(diagnostics))).toStrictEqual(expectedDiagnostics);
         // Assuming pathSet is a Set<string> or undefined
         const actualPaths = pathSet ? [...pathSet.values()] : [];
         expect(actualPaths).toStrictEqual(expectedPaths);
@@ -602,7 +603,7 @@ describe('ast to generic format', () => {
             });
             test('annotations with value', () => {
                 const ast = parse(`UI.RecommendationState : { $value: 1, ![@Core.Description] : '' }`);
-                const { terms } = toTerms(ast as Assignment, { vocabularyService });
+                const { terms, diagnostics } = toTerms(ast as Assignment, { vocabularyService });
                 const valueNode = terms[0].content[0] as Element;
                 expect(valueNode.name).toStrictEqual('Int');
                 const textNode = valueNode.content[0] as TextNode;
@@ -610,6 +611,7 @@ describe('ast to generic format', () => {
                 const annotationNode = terms[0].content[1] as Element;
                 expect(annotationNode.name).toStrictEqual('Annotation');
                 expect(annotationNode.attributes.Term.value).toStrictEqual('Core.Description');
+                expect(diagnostics).toMatchSnapshot();
             });
             test('annotation with empty value', () => {
                 const ast = parse(`UI.RecommendationState : { ![] : , $value: 1}`);
@@ -756,7 +758,7 @@ UI.LineItem : { $value: []}`);
         });
     });
 
-    describe.only('annotation-container', () => {
+    describe('annotation-container', () => {
         testConversion('annotation-container');
         describe('pointer', () => {
             test('empty-value in collection', async () => {
@@ -1026,27 +1028,4 @@ UI.LineItem : { $value: []}`);
     describe('expression', () => {
         testConversion('expression');
     });
-
-//     describe.only('flattened annotations', () => {
-//         test.only('abc', () => {
-//             const ast = parse(`
-// UI: { Identification. }`);
-//             const { terms, pointer } = toTerms(ast as Assignment, {
-//                 vocabularyService,
-//                 position: Position.create(1, 21)
-//             });
-//             console.log(terms);
-//             expect(pointer).toStrictEqual('/0/content/0/content/0/attributes/Property/value');
-//         });
-//         test('pointer in an empty last segment after annotation', () => {
-//             const ast = parse(`
-// UI: { Identification.@UI.Criticality. }`);
-//             const { terms, pointer } = toTerms(ast as Assignment, {
-//                 vocabularyService,
-//                 position: Position.create(1, 34)
-//             });
-//             console.log(terms);
-//             expect(pointer).toStrictEqual('/0/content/0/content/0/attributes/Property/value');
-//         });
-//     });
 });

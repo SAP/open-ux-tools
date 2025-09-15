@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ast to generic format value containers conversion annotations with value 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "additionalAnnotationRanges": Array [
+        Object {
+          "end": Object {
+            "character": 63,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 38,
+            "line": 0,
+          },
+        },
+      ],
+      "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations",
+      "parentRange": Object {
+        "end": Object {
+          "character": 65,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "prefix": "UI.RecommendationState",
+      "valueReplacement": Array [
+        Object {
+          "newText": "",
+          "range": Object {
+            "end": Object {
+              "character": 33,
+              "line": 0,
+            },
+            "start": Object {
+              "character": 22,
+              "line": 0,
+            },
+          },
+        },
+        Object {
+          "newText": "",
+          "range": Object {
+            "end": Object {
+              "character": 65,
+              "line": 0,
+            },
+            "start": Object {
+              "character": 36,
+              "line": 0,
+            },
+          },
+        },
+      ],
+    },
+    "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
+    "range": Object {
+      "end": Object {
+        "character": 33,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 27,
+        "line": 0,
+      },
+    },
+    "rule": "deprecated-$value-syntax",
+    "severity": 2,
+  },
+]
+`;
