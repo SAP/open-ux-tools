@@ -409,7 +409,7 @@ describe('ConfigPrompter Integration Tests', () => {
         });
 
         it('cloud application prompt validate should return error message if base app inbounds api call fails', async () => {
-            const baseAppInboundsError = new Error('Fail to load app inbounds');
+            const baseAppInboundsError = new Error('Failed to load app inbounds.');
             configPrompter['isCloudProject'] = true;
             const provider = {} as unknown as AbapServiceProvider;
             configPrompter['abapProvider'] = provider;
@@ -420,7 +420,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const app = dummyApps[0];
             const result = await appPrompt?.validate?.(app, dummyAnswers);
 
-            expect(result).toEqual(baseAppInboundsError.message);
+            expect(result).toEqual(t('error.fetchBaseInboundsFailed', { error: baseAppInboundsError.message }));
             expect(configPrompter.isCloud).toBe(true);
             expect(configPrompter.baseAppInbounds).toBeUndefined();
 

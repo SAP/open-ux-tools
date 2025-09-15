@@ -506,29 +506,33 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        let validationAppDataResult = await this.validateAppData(app);
+        const validationResult = await this.validateAppData(app);
 
         const isKnownUnsupported =
-            validationAppDataResult === t('error.appDoesNotSupportManifest') ||
-            validationAppDataResult === t('error.appDoesNotSupportFlexibility');
+            validationResult === t('error.appDoesNotSupportManifest') ||
+            validationResult === t('error.appDoesNotSupportFlexibility');
 
         if (isAppStudio() && isKnownUnsupported) {
-            this.logger.error(validationAppDataResult as string);
-            this.appValidationErrorMessage = validationAppDataResult as string;
+            this.logger.error(validationResult);
+            this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
-            validationAppDataResult = true;
+            // Continue to the next prompt for extension project.
+            return true;
         }
 
-        if (validationAppDataResult === true && this.isCloud) {
+        if (typeof validationResult === 'string') {
+            return validationResult;
+        }
+
+        if (this.isCloud) {
             try {
                 this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider);
-                return true;
             } catch (error) {
-                return error.message;
+                return t('error.fetchBaseInboundsFailed', { error: error.message });
             }
         }
 
-        return validationAppDataResult;
+        return true;
     }
 
     /**
