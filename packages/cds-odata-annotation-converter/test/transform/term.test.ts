@@ -756,7 +756,7 @@ UI.LineItem : { $value: []}`);
         });
     });
 
-    describe('annotation-container', () => {
+    describe.only('annotation-container', () => {
         testConversion('annotation-container');
         describe('pointer', () => {
             test('empty-value in collection', async () => {
@@ -1026,4 +1026,27 @@ UI.LineItem : { $value: []}`);
     describe('expression', () => {
         testConversion('expression');
     });
+
+//     describe.only('flattened annotations', () => {
+//         test.only('abc', () => {
+//             const ast = parse(`
+// UI: { Identification. }`);
+//             const { terms, pointer } = toTerms(ast as Assignment, {
+//                 vocabularyService,
+//                 position: Position.create(1, 21)
+//             });
+//             console.log(terms);
+//             expect(pointer).toStrictEqual('/0/content/0/content/0/attributes/Property/value');
+//         });
+//         test('pointer in an empty last segment after annotation', () => {
+//             const ast = parse(`
+// UI: { Identification.@UI.Criticality. }`);
+//             const { terms, pointer } = toTerms(ast as Assignment, {
+//                 vocabularyService,
+//                 position: Position.create(1, 34)
+//             });
+//             console.log(terms);
+//             expect(pointer).toStrictEqual('/0/content/0/content/0/attributes/Property/value');
+//         });
+//     });
 });

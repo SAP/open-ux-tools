@@ -9,6 +9,7 @@ import type {
 } from '.';
 import type { Facets, Constraints } from './types';
 import type { MultilineType } from './annotation-file';
+import type { TextEdit } from './language-server';
 
 /**
  * hold all type information required for checking a value
@@ -189,7 +190,16 @@ export type IncompletePathWithCompatibleTypes = DiagnosticBase<
 export type ODataPathSeparatorDiagnostic = DiagnosticBase<typeof ODATA_PATH_SEPARATOR_RULE, ReplacementData>;
 
 export type CommonCaseIssue = DiagnosticBase<typeof COMMON_CASE_ISSUE, CaseCheckBase>;
-export type Deprecated$ValueSyntax = DiagnosticBase<typeof DEPRECATED_$VALUE_SYNTAX, { descriptionLink: string }>;
+export type Deprecated$ValueSyntax = DiagnosticBase<
+    typeof DEPRECATED_$VALUE_SYNTAX,
+    {
+        descriptionLink: string;
+        valueReplacement: TextEdit[];
+        additionalAnnotationRanges: Range[];
+        prefix: string;
+        parentRange: Range;
+    }
+>;
 
 export type DiagnosticWithRule =
     | NoUndefinedNamespaceDiagnostic

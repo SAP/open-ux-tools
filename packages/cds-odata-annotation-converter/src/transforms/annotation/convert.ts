@@ -43,7 +43,7 @@ export function convertAnnotation(assignment: Assignment, options: ToTermsOption
 
     for (const item of nodes) {
         const context = { ...state.context };
-        const element = visitor.visit(state, item);
+        const element = visitor.visit(state, item, assignment);
         state.pushContext(context);
         if (element) {
             terms.push(element);

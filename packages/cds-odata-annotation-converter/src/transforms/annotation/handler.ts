@@ -6,7 +6,7 @@ export type ConvertResult = Element | Subtree | undefined;
 export interface NodeHandler<N extends AnnotationNode> {
     type: N['type'];
     getChildren?: (state: VisitorState, node: N) => AnnotationNode[];
-    convert: (state: VisitorState, node: N) => ConvertResult;
+    convert: (state: VisitorState, node: N, parent: AnnotationNode) => ConvertResult;
     updateContext?: (state: VisitorState, node: N, element: Element) => Context;
 }
 

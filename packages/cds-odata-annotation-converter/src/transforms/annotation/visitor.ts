@@ -15,15 +15,16 @@ export class Visitor {
      *
      * @param state - The visitor state.
      * @param node - The annotation node to be visited.
+     * @param parent - The parent annotation node.
      * @returns The converted element or undefined if no conversion is performed.
      */
-    visit(state: VisitorState, node: AnnotationNode): Element | undefined {
+    visit(state: VisitorState, node: AnnotationNode, parent: AnnotationNode): Element | undefined {
         const handler = nodeHandlerConfig[node.type] as unknown as NodeHandler<AnnotationNode>;
         if (!handler) {
             return undefined;
         }
         const contextDepth = state.contextDepth;
-        const conversionResult = handler.convert(state, node);
+        const conversionResult = handler.convert(state, node, parent);
         const children = handler.getChildren ? handler.getChildren(state, node) : [];
 
         if (!conversionResult && children.length === 0 && state.elementStack.length === 0) {
@@ -40,7 +41,7 @@ export class Visitor {
         }
 
         for (const child of children) {
-            const childElement = this.visit(state, child);
+            const childElement = this.visit(state, child, node);
             if (childElement) {
                 leaf.content.push(childElement);
             }
