@@ -55,6 +55,16 @@ describe('utils', () => {
             });
             expect(launchConfig.args).toStrictEqual(['--open', 'index.html']);
         });
+
+        it('should generate Launch config with remote access', () => {
+            const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
+                name: 'TEST_NAME',
+                projectRoot: TestPaths.v2,
+                oDataVersion: '2.0',
+                remoteAccess: true
+            });
+            expect(launchConfig.args).toStrictEqual(['--accept-remote-connections']);
+        });
     });
 
     describe('getFioriOptions', () => {
@@ -175,6 +185,15 @@ describe('utils', () => {
                 oDataVersion
             );
             expect(result.visible).toBeFalsy();
+        });
+
+        it('should resolve remoteAccess', () => {
+            const fioriOptions = getFioriOptions(
+                { ...defaultLaunchConfig, args: ['--accept-remote-connections'] } as LaunchConfig,
+                projectRoot,
+                oDataVersion
+            );
+            expect(fioriOptions).toEqual(expect.objectContaining({ remoteAccess: true }));
         });
     });
 });

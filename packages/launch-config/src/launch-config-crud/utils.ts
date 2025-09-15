@@ -33,8 +33,7 @@ function getArgs(options: FioriOptions): string[] | undefined {
     }
 
     if (options.remoteAccess) {
-        const config = Arguments.Config;
-        args.push(config, '--accept-remote-connections');
+        args.push('--accept-remote-connections');
     }
 
     return args.length > 0 ? args : undefined;
@@ -170,7 +169,7 @@ export function getFioriOptions(
             startFile = parsedArguments.open;
         }
         if (parsedArguments.remoteAccess) {
-            remoteAccess = parsedArguments.open;
+            remoteAccess = parsedArguments.remoteAccess;
         }
         if (parsedArguments.config === FileName.Ui5MockYaml) {
             isMockDataEnabled = true;
