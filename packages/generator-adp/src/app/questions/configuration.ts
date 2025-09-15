@@ -34,10 +34,9 @@ import type {
     YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
-import type { ManifestNamespace } from '@sap-ux/project-access';
 import { t } from '../../utils/i18n';
 import type {
     AchPromptOptions,
