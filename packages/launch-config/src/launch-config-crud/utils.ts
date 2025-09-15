@@ -165,12 +165,10 @@ export function getFioriOptions(
     }
     if (launchConfig.args && launchConfig.args.length > 0) {
         const parsedArguments = parseArguments(launchConfig.args);
-        if (parsedArguments.open) {
-            startFile = parsedArguments.open;
-        }
-        if (parsedArguments.remoteAccess) {
-            remoteAccess = parsedArguments.remoteAccess;
-        }
+
+        startFile = parsedArguments.open ?? undefined;
+        remoteAccess = parsedArguments.remoteAccess ?? false;
+
         if (parsedArguments.config === FileName.Ui5MockYaml) {
             isMockDataEnabled = true;
         }
