@@ -1,7 +1,7 @@
 import http from 'http';
 import type { SetupRedirectOptions } from '../../../src/auth/reentrance-ticket/redirect';
 import { setupRedirectHandling } from '../../../src/auth/reentrance-ticket/redirect';
-import { ABAPSystem } from '../../../src/auth/reentrance-ticket/abap-system';
+import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { ConnectionError, TimeoutError } from '../../../src/auth';
 import request from 'supertest';
@@ -22,7 +22,7 @@ describe('setupRedirectHandling()', () => {
             resolve: jest.fn(),
             reject: jest.fn(),
             timeout: 1,
-            backend: new ABAPSystem('http://backend'),
+            backend: new ABAPVirtualHostProvider('http://backend'),
             logger: new ToolsLogger({
                 transports: [new NullTransport()]
             }),
@@ -78,7 +78,7 @@ describe('setupRedirectHandling()', () => {
         const { server, redirectUrl } = setup({
             resolve: resolveCallback,
             reject: rejectCallback,
-            backend: new ABAPSystem(backedUrl)
+            backend: new ABAPVirtualHostProvider(backedUrl)
         });
         await request(server).get(`${redirectPath(redirectUrl)}?reentrance-ticket=${REENTRANCE_TICKET}`);
 
@@ -95,7 +95,7 @@ describe('setupRedirectHandling()', () => {
         const { server, redirectUrl } = setup({
             resolve: resolveCallback,
             reject: rejectCallback,
-            backend: new ABAPSystem(backedUrl)
+            backend: new ABAPVirtualHostProvider(backedUrl)
         });
         await request(server).get(redirectPath(redirectUrl));
 

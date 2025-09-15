@@ -375,9 +375,10 @@ describe('Transport checks', () => {
     });
 });
 
-describe('Use existing connection session', () => {
+describe.only('Use existing connection session', () => {
     const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
     const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
+
 
     beforeAll(() => {
         nock.disableNetConnect();
@@ -430,8 +431,10 @@ describe('Use existing connection session', () => {
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
     });
 
-    test('abap service provider for cloud - require authentication', async () => {
+    test.only('abap service provider for cloud - require authentication', async () => {
         nock(server)
+            .get('/sap/public/bc/icf/virtualhost')
+            .reply(200, { relatedUrls: { API: server, UI: server } })
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)

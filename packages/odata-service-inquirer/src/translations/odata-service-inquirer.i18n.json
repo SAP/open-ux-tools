@@ -252,8 +252,6 @@
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "For more information, view the logs.",
         "forUserName": "(for user [{{username}}])",
-        "systemTypeBTP": "BTP",
-        "systemTypeS4HC": "S4HC",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None"

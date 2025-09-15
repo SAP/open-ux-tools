@@ -26,8 +26,8 @@ function systemAuthTypeToAuthenticationType(
     systemAuthType: SystemAuthType | undefined
 ): AuthenticationType | undefined {
     switch (systemAuthType) {
-        case 'serviceKey':
-            return AuthenticationType.OAuth2RefreshToken;
+        case 'serviceKey' /** @deprecated All cloud auth is reentrance ticket based, legacy stored entries are still supported */:
+            return AuthenticationType.ReentranceTicket;
         case 'reentranceTicket':
             return AuthenticationType.ReentranceTicket;
         case 'basic':
@@ -162,13 +162,13 @@ export function getUserSystemNameQuestion(
                         client: connectValidator.validatedClient,
                         username: connectValidator.axiosConfig?.auth?.username,
                         password: connectValidator.axiosConfig?.auth?.password,
-                        serviceKeys: connectValidator.serviceInfo,
+                        serviceKeys: connectValidator.serviceInfo, // This will not be persisted and is only used to determine cached connection equality for CF provided uaa keys
                         userDisplayName: connectValidator.connectedUserName,
                         systemType: getBackendSystemType({
                             serviceKeys: connectValidator.serviceInfo,
                             authenticationType: connectValidator.systemAuthType
-                        } as BackendSystem),
-                        refreshToken: connectValidator.refreshToken
+                        } as BackendSystem)
+                        // refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                     PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;

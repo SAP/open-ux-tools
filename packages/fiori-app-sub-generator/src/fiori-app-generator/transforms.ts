@@ -245,13 +245,14 @@ export async function transformState<T>(
         ) {
             appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
         } else if (
+            // todo: remove
             service.connectedSystem?.backendSystem?.serviceKeys ||
             // If 'cloud' write `scp` property to yamls to enable preview on VSCode (using oAuth)
             (getHostEnvironment() === hostEnvironment.bas &&
                 service.connectedSystem?.destination &&
                 isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
         ) {
-            appConfig.service.previewSettings = { scp: true };
+            appConfig.service.previewSettings = { scp: true }; // This can be removed now
         } else if (service.apiHubConfig) {
             appConfig.service.previewSettings = { apiHub: true };
         }

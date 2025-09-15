@@ -383,7 +383,8 @@ export class ConnectionValidator {
             ignoreCertErrors: ignoreCertError,
             cookies: '',
             baseURL: url.origin,
-            url: url.pathname
+            url: url.pathname,
+            logger: LoggerHelper.logger
         };
 
         if (username && password) {
@@ -610,7 +611,7 @@ export class ConnectionValidator {
     }
 
     /**
-     * Get the service provider for the Abap on Cloud environment.
+     * Get the service provider for the Abap Cloud environment.
      *
      * @param url the system url
      * @param serviceInfo the service info
@@ -625,7 +626,8 @@ export class ConnectionValidator {
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
-                url: new URL(url.pathname, url.origin).toString()
+                url: new URL(url.pathname, url.origin).toString(),
+                logger: LoggerHelper.logger
             });
         }
 
@@ -634,7 +636,8 @@ export class ConnectionValidator {
                 environment: AbapCloudEnvironment.Standalone,
                 service: serviceInfo,
                 refreshToken,
-                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this)
+                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this),
+                logger: LoggerHelper.logger
             });
         }
 

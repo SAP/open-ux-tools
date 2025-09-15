@@ -60,14 +60,13 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  *
  * @param promptOptions The prompt options which control the service selection and system name]
  * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
- * @param serviceKeyToggle Feature toggle to enable/disable the BTP service key option - enabled by default
  * @returns The list of questions for the ABAP on BTP system
  */
 export function getAbapOnBTPSystemQuestions(
     promptOptions?: OdataServicePromptOptions,
-    cachedConnectedSystem?: ConnectedSystem,
-    serviceKeyToggle = isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
+    cachedConnectedSystem?: ConnectedSystem
 ): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
+    const disableServiceKeyOption = isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE);
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
@@ -77,7 +76,7 @@ export function getAbapOnBTPSystemQuestions(
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
             // Feature toggle the service key option - enabled by default, can be disabled via VS Code settings or ENV
-            ...(!serviceKeyToggle
+            ...(!disableServiceKeyOption
                 ? [
                       {
                           name: t('prompts.abapOnBTPType.choiceServiceKey'),
@@ -117,7 +116,7 @@ export function getAbapOnBTPSystemQuestions(
     );
 
     // Service Key file prompt - enabled by default
-    if (!serviceKeyToggle) {
+    if (!disableServiceKeyOption) {
         questions.push(
             withCondition(
                 [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
@@ -203,7 +202,7 @@ async function validateCFServiceInfo(
         if (
             cachedConnectedSystem &&
             cachedConnectedSystem.backendSystem?.url === (uaaCreds.credentials as ServiceInfo).url &&
-            JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo).uaa) ===
+            JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo)?.uaa) ===
                 JSON.stringify((uaaCreds.credentials as ServiceInfo).uaa)
         ) {
             connectionValidator.setConnectedSystem(cachedConnectedSystem);
@@ -345,7 +344,7 @@ function getServiceKeyPrompt(
             if (
                 cachedConnectedSystem &&
                 cachedConnectedSystem.backendSystem?.url === serviceKeyValResult.url &&
-                JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo).uaa) ===
+                JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo)?.uaa) ===
                     JSON.stringify(serviceKeyValResult.uaa)
             ) {
                 connectionValidator.setConnectedSystem(cachedConnectedSystem);

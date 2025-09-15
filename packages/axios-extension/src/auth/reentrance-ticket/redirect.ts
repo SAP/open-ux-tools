@@ -3,7 +3,7 @@ import http from 'http';
 import { ConnectionError, TimeoutError } from '../error';
 import { prettyPrintTimeInMs } from '../../abap/message';
 import { redirectErrorHtml, redirectSuccessHtml } from '../static';
-import type { ABAPSystem } from './abap-system';
+import type { ABAPVirtualHostProvider } from './abap-virtual-host-provider';
 
 interface Redirect {
     server: http.Server;
@@ -20,7 +20,7 @@ export interface SetupRedirectOptions {
     resolve;
     reject;
     timeout: number;
-    backend: ABAPSystem;
+    backend: ABAPVirtualHostProvider;
     logger: Logger;
 }
 
@@ -58,7 +58,8 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
                 res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.end(Buffer.from(redirectSuccessHtml(backend.logoffUrl())));
                 server.close();
-                resolve({ reentranceTicket, apiUrl: backend.apiHostname() });
+                // return the backend for convienience
+                resolve({ reentranceTicket, backend });
             } else {
                 logger.error('Error getting reentrance ticket');
                 logger.debug(req);
