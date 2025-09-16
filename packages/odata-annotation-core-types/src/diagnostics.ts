@@ -66,6 +66,7 @@ export const IGNORE_TARGET_VALIDATION = 'ignore-target-validation';
 export const UNKNOWN_TERM = 'unknown-term';
 export const UN_SUPPORTED_VOCABULARY = 'un-supported-vocabulary';
 export const ATTRIBUTE_NOT_ALLOWED_HERE = 'attribute-not-allowed-here';
+export const MISSING_REQUIRED_PROPERTY = 'missing-required-property';
 export const MISSING_REQUIRED_ATTRIBUTE = 'missing-required-attribute';
 export const MISSING_REQUIRED_VALUE_FOR_ATTRIBUTE = 'missing-required-value-for-attribute';
 export const TERM_NOT_APPLICABLE = 'term-not-applicable';
@@ -142,6 +143,7 @@ export type IgnoreTargetValidation = DiagnosticBase<typeof IGNORE_TARGET_VALIDAT
 export type UnknowTerm = DiagnosticBase<typeof UNKNOWN_TERM, { name: string }>;
 export type UnsupportedVocabulary = DiagnosticBase<typeof UN_SUPPORTED_VOCABULARY, { name: string }>;
 export type AttributeNotAllowedHere = DiagnosticBase<typeof ATTRIBUTE_NOT_ALLOWED_HERE, { name: string }>;
+export type MissingRequiredProperty = DiagnosticBase<typeof MISSING_REQUIRED_PROPERTY>;
 export type MissingRequiredAttribute = DiagnosticBase<typeof MISSING_REQUIRED_ATTRIBUTE>;
 export type MissingRequiredValueForAttribute = DiagnosticBase<typeof MISSING_REQUIRED_VALUE_FOR_ATTRIBUTE>;
 export type TermNotApplicable = DiagnosticBase<
@@ -214,6 +216,7 @@ export type DiagnosticWithRule =
     | UnknowTerm
     | UnsupportedVocabulary
     | AttributeNotAllowedHere
+    | MissingRequiredProperty
     | MissingRequiredAttribute
     | MissingRequiredValueForAttribute
     | TermNotApplicable
