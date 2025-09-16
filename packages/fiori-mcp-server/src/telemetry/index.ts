@@ -187,7 +187,7 @@ export abstract class TelemetryHelper {
      * @param telemetryData - the telemetry data
      * @param error - the error to be added
      */
-    public static async addTelemetryError(telemetryData: TelemetryData, error: Error): Promise<void> {
+    public static addTelemetryError(telemetryData: TelemetryData, error: Error): void {
         if (error instanceof z.ZodError) {
             telemetryData.error = 'zod';
         } else if (error instanceof Error) {
