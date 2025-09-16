@@ -410,6 +410,31 @@ describe('base/deploy', () => {
             expect(config.createTransport).toBe(false);
             expect(mockedAdtService.createTransportRequest).toHaveBeenCalledTimes(1);
         });
+
+        describe('adaptation projects', () => {
+            const adpArchive = new AdmZip();
+            adpArchive.addLocalFolder(join(__dirname, '../../fixtures/adp/webapp'));
+
+            test('should undeploy successfully from LREP', async () => {
+                mockedStoreService.read.mockResolvedValueOnce(credentials);
+                mockedLrepService.undeploy.mockResolvedValue(undefined);
+                mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+
+                const lrep = 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/';
+                const config = {
+                    app: { package: '~package', transport: '~transport' },
+                    target,
+                    createTransport: true,
+                    lrep
+                };
+
+                await undeploy(config, nullLogger);
+                expect(mockedLrepService.undeploy).toHaveBeenCalledWith({
+                    namespace: lrep,
+                    transport: '~transport123'
+                });
+            });
+        });
     });
 
     describe('createTransportRequest', () => {
