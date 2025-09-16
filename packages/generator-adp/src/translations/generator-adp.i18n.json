@@ -77,6 +77,7 @@
         "systemNotFound": "System could not be found or is not supported: {{system}}. Please check the system exists.",
         "applicationNotFound": "The application could not be found or is not supported: {{appName}}. Please check the application exists.",
         "backendCommunicationError": "An error occurred when communicating with the back end. Please try again later.",
-        "pleaseProvideAllRequiredData": "Please provide the required data and try again."
+        "pleaseProvideAllRequiredData": "Please provide the required data and try again.",
+        "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}."
     }
 }
