@@ -1,5 +1,17 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.48
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/project-input-validator@0.6.19
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.41
+
 ## 0.16.47
 
 ### Patch Changes
