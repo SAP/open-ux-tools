@@ -72,9 +72,9 @@ export class VisitorState {
     get pathSet(): Set<string> {
         return this._pathSet;
     }
-    private _contextStack: Context[] = [];
-    private _diagnostics: AnyDiagnostic[] = [];
-    private _pathSet = new Set<string>();
+    private readonly _contextStack: Context[] = [];
+    private readonly _diagnostics: AnyDiagnostic[] = [];
+    private readonly _pathSet = new Set<string>();
 
     /**
      *
@@ -88,11 +88,11 @@ export class VisitorState {
      *
      * @param context context.
      */
-    pushContext(context: Context) {
+    pushContext(context: Context): void {
         this._contextStack.push(Object.seal({ ...context }));
     }
 
-    popContext() {
+    popContext(): void {
         this._contextStack.splice(-1);
     }
 
@@ -101,7 +101,7 @@ export class VisitorState {
      *
      * @param diagnostic - The diagnostic to be added.
      */
-    addDiagnostic(diagnostic: AnyDiagnostic) {
+    addDiagnostic(diagnostic: AnyDiagnostic): void {
         this._diagnostics.push(diagnostic);
     }
 
@@ -109,7 +109,7 @@ export class VisitorState {
      *
      * @param path - The path to be added.
      */
-    addPath(path: string) {
+    addPath(path: string): void {
         this._pathSet.add(path);
     }
 }
