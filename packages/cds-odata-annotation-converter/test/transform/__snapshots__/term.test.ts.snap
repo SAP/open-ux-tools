@@ -109,6 +109,7 @@ Array [
         "line": 2,
       },
     },
+    "rule": "missing-required-property",
     "severity": 1,
   },
   Object {

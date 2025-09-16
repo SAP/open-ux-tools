@@ -1,7 +1,5 @@
-import type { ExtendedDiagnostic, Diagnostic, Element, Position } from '@sap-ux/odata-annotation-core-types';
+import type { Element, ExtendedDiagnostic, Position } from '@sap-ux/odata-annotation-core-types';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
-
-type AnyDiagnostic = Diagnostic | ExtendedDiagnostic;
 
 export interface Context {
     /**
@@ -58,7 +56,7 @@ export class VisitorState {
     /**
      * @returns array of diagnostics array.
      */
-    get diagnostics(): AnyDiagnostic[] {
+    get diagnostics(): ExtendedDiagnostic[] {
         return this._diagnostics;
     }
 
@@ -73,7 +71,7 @@ export class VisitorState {
         return this._pathSet;
     }
     private readonly _contextStack: Context[] = [];
-    private readonly _diagnostics: AnyDiagnostic[] = [];
+    private readonly _diagnostics: ExtendedDiagnostic[] = [];
     private readonly _pathSet = new Set<string>();
 
     /**
@@ -101,7 +99,7 @@ export class VisitorState {
      *
      * @param diagnostic - The diagnostic to be added.
      */
-    addDiagnostic(diagnostic: AnyDiagnostic): void {
+    addDiagnostic(diagnostic: ExtendedDiagnostic): void {
         this._diagnostics.push(diagnostic);
     }
 

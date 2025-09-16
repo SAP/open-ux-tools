@@ -1,5 +1,5 @@
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
-import type { Diagnostic, Element, PositionPointer, Range } from '@sap-ux/odata-annotation-core-types';
+import type { ExtendedDiagnostic, Element, PositionPointer, Range } from '@sap-ux/odata-annotation-core-types';
 
 import { VisitorState } from './visitor-state';
 import { visitor } from './visitor';
@@ -17,7 +17,7 @@ export interface AnnotationConversionResult {
      * set of relative (to target base) metadata paths (CDS syntax) occurring in annotation values
      */
     pathSet?: Set<string>;
-    diagnostics: Diagnostic[];
+    diagnostics: ExtendedDiagnostic[];
 }
 
 /**

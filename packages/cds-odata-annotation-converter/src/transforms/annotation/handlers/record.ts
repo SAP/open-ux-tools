@@ -7,11 +7,11 @@ import {
     DEPRECATED_$VALUE_SYNTAX,
     Range,
     TextEdit,
-    Diagnostic,
     createElementNode,
     createAttributeNode,
     Edm,
-    DiagnosticSeverity
+    DiagnosticSeverity,
+    MISSING_REQUIRED_PROPERTY
 } from '@sap-ux/odata-annotation-core-types';
 
 import { i18n } from '../../../i18n';
@@ -220,7 +220,12 @@ function handleValueProperty(
             const message = i18n.t('Mandatory_property_not_provided_0', {
                 property: ReservedProperties.Value
             });
-            state.addDiagnostic(Diagnostic.create(node.range, message, DiagnosticSeverity.Error));
+            state.addDiagnostic({
+                rule: MISSING_REQUIRED_PROPERTY,
+                range: node.range,
+                message,
+                severity: DiagnosticSeverity.Error
+            });
         }
 
         validateReservedPropertyName(state, ReservedProperties.Value, valueProperty);

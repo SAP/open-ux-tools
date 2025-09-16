@@ -52,6 +52,7 @@
         }
     },
     {
+        "rule": "missing-required-property",
         "range": "[(10,19)..(13,9)]",
         "message": "The mandatory `$value` property was not provided.",
         "severity": 1
@@ -62,6 +63,7 @@
         "severity": 2
     },
     {
+        "rule": "missing-required-property",
         "range": "[(15,15)..(15,25)]",
         "message": "The mandatory `$value` property was not provided.",
         "severity": 1
