@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.4.0
+
+### Minor Changes
+
+-   e36b965: fix(adp-generator): In case the base app inbounds api call fails for the selected application we display the error next to the application prompt.
+
 ## 0.3.78
 
 ### Patch Changes
