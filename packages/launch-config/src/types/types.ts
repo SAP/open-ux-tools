@@ -53,7 +53,7 @@ export interface LaunchConfig {
         runtimeExecutable: string;
         args?: string[];
     };
-    console: 'internalConsole';
+    console: 'internalConsole' | 'integratedTerminal';
     internalConsoleOptions: 'openOnSessionStart';
     outputCapture: 'std';
     env: LaunchConfigEnv;

@@ -11,6 +11,7 @@ describe('utils', () => {
                 ui5Version: 'DUMMY_UI5_VERSION',
                 ui5VersionUri: 'DUMMY_UI5_URI'
             });
+            expect(launchConfig.console).toStrictEqual('internalConsole');
             expect(launchConfig.env.FIORI_TOOLS_UI5_VERSION).toEqual('DUMMY_UI5_VERSION');
             expect(launchConfig.env.FIORI_TOOLS_UI5_URI).toEqual('DUMMY_UI5_URI');
             expect(launchConfig.env.FIORI_TOOLS_BACKEND_CONFIG).toBeUndefined();
@@ -63,6 +64,7 @@ describe('utils', () => {
                 oDataVersion: '2.0',
                 remoteAccess: true
             });
+            expect(launchConfig.console).toStrictEqual('integratedTerminal');
             expect(launchConfig.args).toStrictEqual(['--accept-remote-connections']);
         });
     });
