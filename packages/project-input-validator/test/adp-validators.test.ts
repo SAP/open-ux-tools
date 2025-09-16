@@ -103,7 +103,7 @@ describe('project input validators', () => {
             expect(result).toBe(t('adp.projectNameValidationErrorInt'));
         });
 
-        it('delegates to internal validation if not customer base and CF environment', () => {
+        it('returns error if project name is duplicated and CF environment', () => {
             existsSyncMock.mockReturnValue(true);
             const result = validateProjectName('validname', path, false, true);
             expect(result).toBe(t(t('adp.duplicatedProjectName')));
@@ -111,6 +111,12 @@ describe('project input validators', () => {
 
         it('delegates to external validation if customer base', () => {
             const result = validateProjectName('validname', path, true, false);
+            expect(result).toBe(true);
+        });
+
+        it('returns true if project name is not duplicated and CF environment', () => {
+            existsSyncMock.mockReturnValue(false);
+            const result = validateProjectName('validname', path, true, true);
             expect(result).toBe(true);
         });
     });
