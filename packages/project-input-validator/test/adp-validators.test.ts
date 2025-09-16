@@ -91,20 +91,26 @@ describe('project input validators', () => {
         });
 
         it('returns error if value is empty', () => {
-            expect(validateProjectName('', path, true)).toBe(t('general.inputCannotBeEmpty'));
+            expect(validateProjectName('', path, true, false)).toBe(t('general.inputCannotBeEmpty'));
         });
 
         it('returns error if name contains uppercase letters', () => {
-            expect(validateProjectName('ProjectName', path, true)).toBe(t('adp.projectNameUppercaseError'));
+            expect(validateProjectName('ProjectName', path, true, false)).toBe(t('adp.projectNameUppercaseError'));
         });
 
         it('delegates to internal validation if not customer base', () => {
-            const result = validateProjectName('validname', path, false);
+            const result = validateProjectName('validname', path, false, false);
             expect(result).toBe(t('adp.projectNameValidationErrorInt'));
         });
 
+        it('delegates to internal validation if not customer base and CF environment', () => {
+            existsSyncMock.mockReturnValue(true);
+            const result = validateProjectName('validname', path, false, true);
+            expect(result).toBe(t(t('adp.duplicatedProjectName')));
+        });
+
         it('delegates to external validation if customer base', () => {
-            const result = validateProjectName('validname', path, true);
+            const result = validateProjectName('validname', path, true, false);
             expect(result).toBe(true);
         });
     });
