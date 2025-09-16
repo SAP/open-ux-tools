@@ -28,16 +28,6 @@ const entityConfig = z.object({
     generateLROPAnnotations: z.boolean()
 });
 
-const serviceCAP = z.object({
-    servicePath: z.string(),
-    capService: z.object({
-        projectPath: z.string(),
-        serviceName: z.string(),
-        serviceCdsPath: z.string(),
-        capType: z.optional(z.literal(['Node.js', 'Java']))
-    })
-});
-
 const serviceNonCAP = z.object({
     servicePath: z.string(),
     host: z.url(),
@@ -50,23 +40,6 @@ const serviceNonCAP = z.object({
 const telemetryData = z.object({
     generationSourceName: z.string(),
     generationSourceVersion: z.string()
-});
-
-//
-//
-//
-// EXPORTS
-//
-export const GeneratorConfigSchemaCAP = z.object({
-    projectPath,
-    appGenConfig: z.object({
-        version,
-        floorplan,
-        project,
-        service: serviceCAP,
-        entityConfig,
-        telemetryData
-    })
 });
 
 export const GeneratorConfigSchemaNonCAP = z.object({

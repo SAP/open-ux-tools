@@ -52,5 +52,3 @@ export interface Appdetails {
     /** Access details for the application */
     applicationAccess?: ApplicationAccess;
 }
-
-export * from './generator-schema';

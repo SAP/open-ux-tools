@@ -7,7 +7,7 @@ import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
 import * as z from 'zod';
 import { GENERATE_FIORI_UI_ODATA_APP_ID } from '../../../constant';
-import { GeneratorConfigSchemaNonCAP } from '../../../types';
+import { GeneratorConfigSchemaNonCAP } from './generator-schema';
 
 const exec = promisify(execAsync);
 
