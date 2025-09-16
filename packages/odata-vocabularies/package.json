@@ -33,7 +33,7 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*"
     },
     "devDependencies": {
-        "axios": "1.11.0",
+        "axios": "1.12.2",
         "npm-run-all2": "6.2.0",
         "prettier": "2.5.1",
         "ts-node": "10.9.2"
