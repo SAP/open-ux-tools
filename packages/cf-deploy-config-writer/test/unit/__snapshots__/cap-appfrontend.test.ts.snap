@@ -58,24 +58,24 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 ap
 
 exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 3`] = `
 "{
-    \\"dependencies\\": {
-        \\"@sap/cds\\": \\"^8\\",
-        \\"express\\": \\"^4\\",
-        \\"@sap/xssec\\": \\"^4\\"
-    },
-    \\"devDependencies\\": {
-        \\"@cap-js/cds-types\\": \\"^0.9.0\\",
-        \\"@cap-js/sqlite\\": \\"^1\\",
-        \\"@sap/cds-dk\\": \\"^8\\",
-        \\"rimraf\\": \\"^5.0.5\\",
-        \\"mbt\\": \\"^1.2.29\\"
-    },
-    \\"cds\\": {},
-    \\"scripts\\": {
-        \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\",
-        \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
-        \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
-    }
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.9.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"cds\\": {},
+  \\"scripts\\": {
+    \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  }
 }
 "
 `;

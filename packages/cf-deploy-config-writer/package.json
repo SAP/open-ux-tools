@@ -43,7 +43,8 @@
     "i18next": "25.3.0",
     "mem-fs": "2.1.0",
     "mem-fs-editor": "9.4.0",
-    "hasbin": "1.2.3"
+    "hasbin": "1.2.3",
+    "lodash": "4.17.21"
   },
   "devDependencies": {
     "@types/ejs": "3.1.2",
@@ -53,6 +54,7 @@
     "@types/fs-extra": "9.0.13",
     "@types/js-yaml": "4.0.9",
     "@types/semver": "7.5.2",
+    "@types/lodash": "4.14.202",
     "memfs": "3.4.13",
     "js-yaml": "3.14.0",
     "fs-extra": "10.0.0",

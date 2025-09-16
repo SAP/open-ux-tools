@@ -313,8 +313,10 @@ resources:
   - name: captestproject-uaa
     type: org.cloudfoundry.managed-service
     parameters:
-      service-plan: application
       service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      service-name: captestproject-xsuaa-service
       config:
         xsappname: 'captestproject-\${space-guid}'
         tenant-mode: dedicated

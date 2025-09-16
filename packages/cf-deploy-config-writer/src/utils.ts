@@ -1,4 +1,5 @@
 import { join, normalize, posix } from 'path';
+import { promises as fs, readFileSync } from 'fs';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -33,6 +34,7 @@ import {
     CDSPackage
 } from './constants';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
+import merge from 'lodash/merge';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -221,21 +223,22 @@ export function setMtaDefaults(config: CFBaseConfig): void {
  * @param {object} Options Input params
  * @param {string} Options.mtaId - MTA ID to be written to package.json
  * @param {string} Options.rootPath - MTA project path
- * @param fs - optional reference to a mem-fs editor
+ * @param memFs - optional reference to a mem-fs editor
  */
 export async function updateRootPackage(
     { mtaId, rootPath }: { mtaId: string; rootPath: string },
-    fs: Editor
+    memFs: Editor
 ): Promise<void> {
-    const packageExists = fileExists(fs, join(rootPath, FileName.Package));
+    const packageFilePath = join(rootPath, FileName.Package);
+    const packageExists = await fileExists(packageFilePath, memFs);
     // Append package.json only if mta.yaml is at a different level to the HTML5 app
     if (packageExists) {
         // Align CDS versions if missing otherwise mta.yaml before-all scripts will fail
-        await alignCdsVersions(rootPath, fs);
-        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
-        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
+        await alignCdsVersions(rootPath, memFs);
+        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, memFs);
+        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, memFs);
         let deployArgs: string[] = [];
-        if (fs?.exists(join(rootPath, FileName.MtaExtYaml))) {
+        if (memFs?.exists(join(rootPath, FileName.MtaExtYaml))) {
             deployArgs = ['-e', FileName.MtaExtYaml];
         }
         for (const script of [
@@ -243,7 +246,14 @@ export async function updateRootPackage(
             { name: 'build', run: `${MTABuildScript} --mtar archive` },
             { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
         ]) {
-            await updatePackageScript(rootPath, script.name, script.run, fs);
+            await updatePackageScript(rootPath, script.name, script.run, memFs);
+        }
+        // Need to handle external changes to package.json i.e. cds and devDependencies.
+        // Note: disk package.json might not exist, for example, when creating a new project from scratch.
+        if (await fileExists(packageFilePath)) {
+            const memoryJson = (memFs?.readJSON(packageFilePath, {}) || {}) as Package;
+            const diskJson = JSON.parse(readFileSync(packageFilePath, 'utf8')) as Package;
+            memFs.writeJSON(packageFilePath, merge({}, memoryJson, diskJson));
         }
     }
 }
@@ -309,10 +319,19 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
 /**
  * Check if a file exists in the file system.
  *
- * @param fs reference to a mem-fs editor
  * @param filePath Path to the file
+ * @param memFs reference to a mem-fs editor
  * @returns true if the file exists, false otherwise
  */
-export function fileExists(fs: Editor, filePath: string): boolean {
-    return fs.exists(filePath);
+export async function fileExists(filePath: string, memFs?: Editor): Promise<boolean> {
+    try {
+        if (memFs) {
+            return memFs.exists(filePath);
+        } else {
+            await fs.access(filePath);
+            return true;
+        }
+    } catch {
+        return false;
+    }
 }
