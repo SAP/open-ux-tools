@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [
-      "ES2022",
+      "ES2023",
       "dom",
       "dom.iterable"
     ],
@@ -18,7 +18,7 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": true,
-    "target": "ES2022",
+    "target": "ES2023",
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": false

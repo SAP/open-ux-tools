@@ -59,7 +59,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             parameters: [
                 {
@@ -67,7 +67,7 @@ describe('getFunctionalityDetails', () => {
                     description: 'Enables key user adaptation for an application.',
                     id: 'flexEnabled',
                     name: 'Flex Enabled',
-                    options: [undefined, true, false],
+                    options: [null, true, false],
                     type: 'boolean'
                 }
             ]
@@ -90,7 +90,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             pageName: 'TravelObjectPage',
             parameters: [
@@ -114,7 +114,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             pageName: 'TravelObjectPage',
             parameters: [
@@ -168,7 +168,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             parameters: [
                 {
@@ -185,7 +185,7 @@ describe('getFunctionalityDetails', () => {
                                 'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
                             id: 'limitFCLToTwoColumns',
                             name: 'Limit FCL To Two Columns',
-                            options: [undefined, true, false],
+                            options: [null, true, false],
                             type: 'boolean'
                         },
                         {

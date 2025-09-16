@@ -817,7 +817,12 @@ describe('UI5Config', () => {
                 { url, client },
                 {
                     package: '$TMP'
-                }
+                },
+                true,
+                ['/test/'],
+                undefined,
+                'apps/workcenter/appVariants/customer.app.variant',
+                []
             );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
@@ -829,6 +834,7 @@ describe('UI5Config', () => {
                 false,
                 ['/test/'],
                 true,
+                undefined,
                 [
                     {
                         path: 'configuration.target.authenticationType',

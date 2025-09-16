@@ -1,5 +1,6 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { FioriFunctionalityServer } from '../../src/server';
+import { TelemetryHelper, unknownTool } from '../../src/telemetry';
 import * as tools from '../../src/tools';
 
 const setRequestHandlerMock = jest.fn();
@@ -17,16 +18,28 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
     };
 });
 
+jest.mock('../../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        markToolStartTime: jest.fn(),
+        sendTelemetry: jest.fn()
+    }
+}));
+
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
         jest.restoreAllMocks();
         setRequestHandlerMock.mockReset();
     });
 
+    // version cannot be hard coded as it will update on each new patch update
     test('Constructor', () => {
         new FioriFunctionalityServer();
         // Check initialization
-        expect(Server).toHaveBeenCalledWith({ name: 'fiori-mcp', version: '0.0.0' }, { capabilities: { tools: {} } });
+        expect(Server).toHaveBeenCalledWith(
+            { name: 'fiori-mcp', version: expect.any(String) },
+            { capabilities: { tools: {} } }
+        );
         expect(setRequestHandlerMock).toHaveBeenCalledTimes(2);
     });
 
@@ -44,20 +57,24 @@ describe('FioriFunctionalityServer', () => {
     });
 
     describe('FioriFunctionalityServer', () => {
+        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
         test('list-fiori-apps', async () => {
             const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
                 applications: [
                     {
                         name: 'app1',
-                        path: 'appPath1',
-                        type: 'list-report',
-                        version: '4.0'
+                        appPath: 'appPath1',
+                        projectType: 'EDMXBackend',
+                        projectPath: 'appPath1',
+                        odataVersion: '4.0'
                     },
                     {
                         name: 'app2',
-                        path: 'appPath2',
-                        type: 'list-report',
-                        version: '4.0'
+                        appPath: 'appPath2',
+                        projectType: 'EDMXBackend',
+                        projectPath: 'appPath2',
+                        odataVersion: '4.0'
                     }
                 ]
             });
@@ -78,15 +95,17 @@ describe('FioriFunctionalityServer', () => {
                 applications: [
                     {
                         name: 'app1',
-                        path: 'appPath1',
-                        type: 'list-report',
-                        version: '4.0'
+                        appPath: 'appPath1',
+                        projectType: 'EDMXBackend',
+                        projectPath: 'appPath1',
+                        odataVersion: '4.0'
                     },
                     {
                         name: 'app2',
-                        path: 'appPath2',
-                        type: 'list-report',
-                        version: '4.0'
+                        appPath: 'appPath2',
+                        projectType: 'EDMXBackend',
+                        projectPath: 'appPath2',
+                        odataVersion: '4.0'
                     }
                 ]
             });
@@ -96,6 +115,12 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list-fiori-apps',
+                { tool: 'list-fiori-apps', functionalityId: undefined },
+                undefined
+            );
         });
 
         test('list-functionality', async () => {
@@ -103,11 +128,11 @@ describe('FioriFunctionalityServer', () => {
                 applicationPath: 'app1',
                 functionalities: [
                     {
-                        id: 'add-page',
+                        functionalityId: 'add-page',
                         description: 'Add page...'
                     },
                     {
-                        id: 'delete-page',
+                        functionalityId: 'delete-page',
                         description: 'Delete page...'
                     }
                 ]
@@ -130,11 +155,11 @@ describe('FioriFunctionalityServer', () => {
                 functionalities: [
                     {
                         description: 'Add page...',
-                        id: 'add-page'
+                        functionalityId: 'add-page'
                     },
                     {
                         description: 'Delete page...',
-                        id: 'delete-page'
+                        functionalityId: 'delete-page'
                     }
                 ]
             });
@@ -144,11 +169,16 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list-functionality',
+                { tool: 'list-functionality', functionalityId: undefined },
+                'app1'
+            );
         });
 
         test('get-functionality-details', async () => {
             const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                id: 'add-page',
+                functionalityId: 'add-page',
                 description: 'Add page...',
                 name: 'add-page',
                 parameters: []
@@ -169,7 +199,7 @@ describe('FioriFunctionalityServer', () => {
             const structuredContent = result.structuredContent;
             expect(structuredContent).toEqual({
                 description: 'Add page...',
-                id: 'add-page',
+                functionalityId: 'add-page',
                 name: 'add-page',
                 parameters: []
             });
@@ -179,6 +209,11 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'get-functionality-details',
+                { tool: 'get-functionality-details', functionalityId: 'add-page' },
+                'app1'
+            );
         });
 
         test('execute-functionality', async () => {
@@ -223,6 +258,11 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute-functionality',
+                { tool: 'execute-functionality', functionalityId: 'add-page' },
+                'app1'
+            );
         });
 
         test('Unknown tool', async () => {
@@ -243,6 +283,14 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                unknownTool,
+                {
+                    tool: 'unknown-tool-id',
+                    funtionalityId: undefined
+                },
+                undefined
+            );
         });
     });
 

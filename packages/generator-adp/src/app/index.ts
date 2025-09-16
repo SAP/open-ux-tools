@@ -22,7 +22,8 @@ import {
     getCfConfig,
     isCfInstalled,
     isLoggedInCf,
-    loadCfConfig
+    loadCfConfig,
+    getYamlContent
 } from '@sap-ux/adp-tooling';
 import { type CfConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -33,11 +34,9 @@ import {
     TelemetryHelper,
     getDefaultTargetFolder,
     isCli,
-    // isExtensionInstalled,
+    isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { getYamlContent } from '@sap-ux/adp-tooling';
 
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
@@ -66,6 +65,7 @@ import {
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
 import { getTemplatesOverwritePath } from '../utils/templates';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -211,7 +211,7 @@ export default class extends Generator {
 
         if (!this.jsonInput) {
             this.env.lookup({
-                packagePatterns: ['@sap/generator-fiori']
+                packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
             });
             setHeaderTitle(opts, this.logger, generatorTitle);
 
@@ -264,9 +264,11 @@ export default class extends Generator {
         await this._determineTargetEnv();
 
         if (!this.isCfEnv) {
+            const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
             const configQuestions = this.prompter.getPrompts({
                 appValidationCli: { hide: !this.isCli },
-                systemValidationCli: { hide: !this.isCli }
+                systemValidationCli: { hide: !this.isCli },
+                shouldCreateExtProject: { isExtensibilityExtInstalled }
             });
             this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
             this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;

@@ -15,6 +15,7 @@ interface Changes {
  */
 export class ListReport {
     private readonly frame: FrameLocator;
+    private readonly ui5Version: string;
     /**
      * @returns Locator for the "Go" button.
      */
@@ -34,7 +35,7 @@ export class ListReport {
      * @returns Locator for the "Table Row".
      */
     locatorForListReportTableRow(index: number): Locator {
-        const dataRows = this.frame.locator('[role="row"]:not(.sapMListTblHeader)');
+        const dataRows = this.frame.locator('tbody > tr');
         return dataRows.nth(index).locator('.sapMListTblNavCol').first();
     }
     /**
@@ -138,6 +139,13 @@ class QuickActionPanel {
     }
 
     /**
+     * @returns Locator for the button to show the local annotation file.
+     */
+    get showLocalAnnotationFile(): Locator {
+        return this.page.getByRole('button', { name: 'Show Local Annotation File' });
+    }
+
+    /**
      * @returns Locator for the button to enable the "Clear" button in the filter bar.
      */
     get enableClearButton(): Locator {
@@ -199,11 +207,36 @@ class QuickActionPanel {
         return this.page.getByRole('button', { name: 'Enable Variant Management in Tables and Charts' });
     }
     /**
+     * @returns Locator for the button to enable variant management in tables.
+     */
+    get enableOPVariantManagementInTable(): Locator {
+        return this.page.getByRole('button', { name: 'Enable Variant Management in Tables' });
+    }
+    /**
      * @returns Locator for the button to enable empty row mode for tables.
      */
     get enableEmptyRowMode(): Locator {
         return this.page.getByRole('button', { name: 'Enable Empty Row Mode for Tables' });
     }
+    /**
+     * @returns Locator for the button to Add Header Field.
+     */
+    get addHeaderField(): Locator {
+        return this.page.getByRole('button', { name: 'Add Header Field' });
+    }
+    /**
+     * @returns Locator for the button to Add Custom Section.
+     */
+    get addCustomSection(): Locator {
+        return this.page.getByRole('button', { name: 'Add Custom Section' });
+    }
+    /**
+     * @returns Locator for the button to Add Local Annotation File.
+     */
+    get addLocalAnnotationFile(): Locator {
+        return this.page.getByRole('button', { name: 'Add Local Annotation File' });
+    }
+
     /**
      *
      * @param page

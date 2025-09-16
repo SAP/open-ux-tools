@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`annotation generation (CDS) generate default facets and line items 1`] = `
 "using from '../../srv/service';

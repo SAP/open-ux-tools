@@ -10,10 +10,19 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../fiori-annotation-api"
     },
     {
       "path": "../i18n"
+    },
+    {
+      "path": "../nodejs-utils"
     },
     {
       "path": "../odata-annotation-core-types"
@@ -23,6 +32,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
     },
     {
       "path": "../text-document-utils"

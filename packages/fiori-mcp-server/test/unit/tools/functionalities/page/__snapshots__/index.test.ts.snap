@@ -3,7 +3,7 @@
 exports[`add-page getFunctionalityDetails case 2: empty page 1`] = `
 Object {
   "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
-  "id": "add-page",
+  "functionalityId": "add-page",
   "name": "Add new page to application by updating manifest.json",
   "parameters": Array [
     Object {
@@ -44,7 +44,7 @@ Object {
 exports[`add-page getFunctionalityDetails case 3: one or more pages 1`] = `
 Object {
   "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
-  "id": "add-page",
+  "functionalityId": "add-page",
   "name": "Add new page to application by updating manifest.json",
   "parameters": Array [
     Object {
@@ -80,12 +80,17 @@ Object {
       ],
       "id": "pageType",
       "options": Array [
-        "ObjectPage",
         "ListReport",
+        "ObjectPage",
         "CustomPage",
-        "FPMCustomPage",
-        "AnalyticalListPage",
       ],
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "Required if pageType is \\"CustomPage\\". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name",
+      "id": "pageViewName",
+      "pattern": "/^[A-Za-z][A-Za-z0-9_-]*$/",
       "required": true,
       "type": "string",
     },
@@ -96,7 +101,7 @@ Object {
 exports[`delete-page getFunctionalityDetails case 2: zero or more pages 1`] = `
 Object {
   "description": "Remove existing fiori elements page from the application",
-  "id": "delete-page",
+  "functionalityId": "delete-page",
   "name": "Delete page from application by updating manifest.json",
   "parameters": Array [
     Object {

@@ -7,7 +7,6 @@ import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '
 
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
-import { resolveNodeModuleGenerator } from '../../extension-project';
 
 interface JsonInputParams {
     projectName: string;
@@ -16,25 +15,33 @@ interface JsonInputParams {
     system: string;
 }
 
+interface ValidateExtensibilityExtParams {
+    value: boolean;
+    isApplicationSupported: boolean;
+    hasSyncViews: boolean;
+    isExtensibilityExtInstalled: boolean;
+}
+
 /**
- * Validates whether the extensibility sub-generator is available and sets it up if necessary.
- * If the generator is not found, an error message is returned advising on the necessary action.
+ * Validates whether the extensibility extension is available. If the extension is not found,
+ * an error message is returned advising on the necessary action.
  *
- * @param {boolean} value - A confirm flag indicating whether user wants to continue creating an extension project.
- * @param {boolean} isApplicationSupported - Whether the selected application is supported.
- * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
+ * @param {ValidateExtensibilityExtParams} params - The validation parameters.
+ * @param {boolean} params.value - A confirm flag indicating whether user wants to continue creating an extension project.
+ * @param {boolean} params.isApplicationSupported - Whether the selected application is supported.
+ * @param {boolean} params.hasSyncViews - Whether synchronized views exist for the app.
+ * @param {boolean} params.isExtensibilityExtInstalled - Whether the extensibility extension is installed.
  * @returns {boolean | string} Returns true if app is supported and contains sync views, or an error message if not.
  */
-export function validateExtensibilityGenerator(
-    value: boolean,
-    isApplicationSupported: boolean,
-    hasSyncViews: boolean
-): boolean | string {
+export function validateExtensibilityExtension({
+    value,
+    isApplicationSupported,
+    hasSyncViews,
+    isExtensibilityExtInstalled
+}: ValidateExtensibilityExtParams): boolean | string {
     if (value) {
-        const generator = resolveNodeModuleGenerator();
-
-        if (!generator) {
-            return t('error.extensibilityGenNotFound');
+        if (!isExtensibilityExtInstalled) {
+            return t('error.extensibilityExtensionNotFound');
         }
 
         return true;

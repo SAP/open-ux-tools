@@ -1,5 +1,5 @@
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
@@ -10,6 +10,7 @@ import { resolveApplication } from '../../utils';
 import { ADD_PAGE } from '../../../constant';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { PAGE_VIEW_NAME_PATTERN } from './types';
 
 /**
  * Retrieves the details of the Add Page functionality.
@@ -22,7 +23,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
-            id: ADD_PAGE,
+            functionalityId: ADD_PAGE,
             name: 'Invalid Project Root or Application Path',
             description: `To add a new page, provide a valid project root or application path. "${appPath}" is not valid`,
             parameters: []
@@ -42,15 +43,24 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
  * @param params - The input parameters for executing the functionality.
  * @returns A promise that resolves to the execution output.
  */
-async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
     const pageType = isValidPageTypeV4(parameters.pageType) ? parameters.pageType : undefined;
     const parentPage = typeof parameters.parentPage === 'string' ? parameters.parentPage : undefined;
     const entitySet = typeof parameters.entitySet === 'string' ? parameters.entitySet : undefined;
     const pageNavigation = typeof parameters.pageNavigation === 'string' ? parameters.pageNavigation : undefined;
-    const viewName = typeof parameters.pageViewName === 'string' ? parameters.pageViewName : 'CustomView';
+    const viewName = typeof parameters.pageViewName === 'string' ? parameters.pageViewName : '';
     if (!pageType) {
         throw new Error('Missing or invalid parameter "pageType"');
+    }
+    if (pageType === PageTypeV4.CustomPage) {
+        if (!viewName) {
+            throw new Error('Missing value for parameter "pageViewName"');
+        } else if (!PAGE_VIEW_NAME_PATTERN.exec(viewName)) {
+            throw new Error(
+                `Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "${PAGE_VIEW_NAME_PATTERN.toString()}"`
+            );
+        }
     }
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {

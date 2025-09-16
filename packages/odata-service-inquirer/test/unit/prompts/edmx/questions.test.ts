@@ -552,6 +552,23 @@ describe('Test entity prompts', () => {
         const promptOptions = { displayPageBuildingBlockPrompt: true };
         const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
 
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.message).toBe(t('prompts.pageBuildingBlock.message'));
+        expect(addPageBuildingBlockQuestion.default).toBe(false);
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages({
+                addPageBuildingBlock: true
+            } as PageBuildingBlockAnswers);
+            expect(message).toEqual({
+                message: t('prompts.pageBuildingBlock.warning'),
+                severity: Severity.warning
+            });
+        }
+
         const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
         expect(typeof pageBlockTitleQuestion?.when).toBe('function');
         if (typeof pageBlockTitleQuestion?.when === 'function') {
@@ -567,6 +584,15 @@ describe('Test entity prompts', () => {
     test('pageBuildingBlockTitle question is not displayed when addPageBuildingBlock is false', () => {
         const promptOptions = { displayPageBuildingBlockPrompt: true };
         const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages();
+            expect(message).toEqual(undefined);
+        }
 
         const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
         // Should not display when addPageBuildingBlock is false

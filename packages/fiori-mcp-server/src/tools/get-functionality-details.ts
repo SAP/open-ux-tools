@@ -1,4 +1,4 @@
-import type { GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput, Parameter } from '../types';
+import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput, Parameter } from '../types';
 import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath, TreeNodeProperty } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
@@ -59,7 +59,7 @@ function getParameters(properties: TreeNodeProperty[]): Parameter[] {
             currentValue: property.value
         };
         if (property.options) {
-            parameter.options = property.options.map((option) => option.key);
+            parameter.options = property.options.map((option) => option.key ?? null);
         }
         if (property.properties) {
             parameter.parameters = getParameters(property.properties);
@@ -83,7 +83,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
         // Property was found by path
         const parameters = getParameters([property]);
         details = {
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
@@ -97,7 +97,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
             parameters = parameters.concat(getParameters([property]));
         }
         details = {
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
@@ -130,7 +130,7 @@ async function getDetails(appPath: string, pageName?: string): Promise<TreeNode 
  * @returns An object containing the resolved page name (if applicable) and property path.
  * @throws Error if the functionalityId parameter has an invalid format.
  */
-export function resolveFunctionality(functionalityId: string | string[]): {
+export function resolveFunctionality(functionalityId: FunctionalityId): {
     pageName?: string;
     propertyPath: PropertyPath;
 } {
@@ -138,6 +138,7 @@ export function resolveFunctionality(functionalityId: string | string[]): {
     try {
         propertyPath = typeof functionalityId === 'string' ? JSON.parse(functionalityId) : [...functionalityId];
     } catch (e) {
+        // The functionalityId is expected to be either a string array (e.g. "['Id1', 'Id2']") or an array of strings (e.g. ['Id1', 'Id2']).
         throw new Error(`Invalid format of functionalityId parameter, error: ${e}`);
     }
     let pageName: string | undefined;

@@ -85,7 +85,7 @@
         "manifestCouldNotBeValidated": "The `manifest.json` file of the selected application cannot be validated. Please select a different application.",
         "appDoesNotSupportFlexibility": "The selected application does not support flexibility because it has (`flexEnabled=false`). SAPUI5 Adaptation Project only supports applications that support flexibility. Please select a different application.",
         "appDoesNotSupportManifest": "The selected application is not supported by SAPUI5 Adaptation Project because it does not have a `manifest.json` file. Please select a different application.",
-        "extensibilityGenNotFound": "The Extensibility Project generator plugin was not found in your dev space and it is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.",
+        "extensibilityExtensionNotFound": "The Extensibility Project generator plugin was not found in your dev space and it is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.",
         "creatingExtensionProjectError": "Creating the extension project failed. To see the error, view the logs.",
         "appParameterMissing": "Could not create an extension project because the application parameters are missing. Please select a different application.",
         "destinationInfoMissing": "Could not create an extension project because the destination info is missing. Please select a different system.",

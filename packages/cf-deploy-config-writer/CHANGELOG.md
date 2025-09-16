@@ -1,5 +1,24 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+
+## 0.3.22
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/project-access@1.30.13
+    -   @sap-ux/nodejs-utils@0.2.3
+
 ## 0.3.21
 
 ### Patch Changes

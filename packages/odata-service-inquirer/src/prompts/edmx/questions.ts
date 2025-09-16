@@ -212,7 +212,16 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
         message: t('prompts.pageBuildingBlock.message'),
         default: false,
         guiOptions: {
-            breadcrumb: true
+            breadcrumb: true,
+            hint: t('prompts.pageBuildingBlock.tooltip')
+        },
+        additionalMessages: (addPageBuildingBlock: boolean) => {
+            if (addPageBuildingBlock) {
+                return {
+                    message: t('prompts.pageBuildingBlock.warning'),
+                    severity: Severity.warning
+                };
+            }
         }
     } as ConfirmQuestion<PageBuildingBlockAnswers>);
 

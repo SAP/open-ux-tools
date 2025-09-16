@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.18.25",
+    "version": "0.18.29",
     "description": "SAP Fiori environment check",
     "repository": {
         "type": "git",
@@ -34,7 +34,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap/bas-sdk": "3.11.6",
         "archiver": "7.0.1",
-        "axios": "1.8.2",
+        "axios": "1.11.0",
         "glob-gitignore": "1.0.14",
         "i18next": "25.3.0",
         "ignore": "5.2.4",

@@ -1,5 +1,82 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.63
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.17
+    -   @sap-ux/abap-deploy-config-writer@0.2.12
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/fiori-generator-shared@0.13.14
+    -   @sap-ux/deploy-config-generator-shared@0.1.33
+
+## 0.1.62
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.16
+    -   @sap-ux/deploy-config-generator-shared@0.1.32
+
+## 0.1.61
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.15
+
+## 0.1.60
+
+### Patch Changes
+
+-   Updated dependencies [2aecea7]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.14
+
+## 0.1.59
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.13
+    -   @sap-ux/deploy-config-generator-shared@0.1.31
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/abap-deploy-config-writer@0.2.11
+
+## 0.1.58
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.12
+-   @sap-ux/deploy-config-generator-shared@0.1.31
+-   @sap-ux/ui5-config@0.29.3
+-   @sap-ux/abap-deploy-config-writer@0.2.10
+-   @sap-ux/fiori-generator-shared@0.13.12
+
+## 0.1.57
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.11
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/deploy-config-generator-shared@0.1.30
+    -   @sap-ux/fiori-generator-shared@0.13.11
+    -   @sap-ux/abap-deploy-config-writer@0.2.9
+    -   @sap-ux/project-access@1.30.13
+
+## 0.1.56
+
+### Patch Changes
+
+-   Updated dependencies [384bb40]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.10
+
 ## 0.1.55
 
 ### Patch Changes

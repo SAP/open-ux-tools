@@ -30,6 +30,10 @@ let importProjectMock = jest.fn();
 const memFsDumpMock = jest.fn();
 const commitMock = jest.fn();
 const exportConfigMock = jest.fn();
+const generateCustomExtensionMock = jest.fn().mockResolvedValue({
+    commit: commitMock,
+    dump: memFsDumpMock
+});
 beforeEach(() => {
     memFsDumpMock.mockReturnValue({
         'manifest.json': {}
@@ -47,10 +51,7 @@ beforeEach(() => {
         const mockSpecification = {
             importProject: importProjectMock,
             exportConfig: exportConfigMock.mockReturnValue({ manifest }),
-            generateCustomExtension: jest.fn().mockResolvedValue({
-                commit: commitMock,
-                dump: memFsDumpMock
-            })
+            generateCustomExtension: generateCustomExtensionMock
         };
 
         jest.spyOn(realApplicationAccess, 'getSpecification').mockResolvedValue(mockSpecification);
@@ -70,7 +71,7 @@ describe('add-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result.name).toBe('Invalid Project Root or Application Path');
             expect(result.description).toContain(
@@ -93,7 +94,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result).toMatchSnapshot();
         });
@@ -107,7 +108,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result).toMatchSnapshot();
         });
@@ -117,7 +118,7 @@ describe('add-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageType: 'ListReport'
                 }
@@ -143,7 +144,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     entitySet: 'Travels',
                     pageType: 'ListReport'
@@ -173,7 +174,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     parentPage: 'TravelsObjectPage',
                     pageNavigation: 'Expenses',
@@ -199,7 +200,7 @@ describe('add-page', () => {
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {}
                 })
             ).rejects.toThrow('Missing or invalid parameter "pageType"');
@@ -210,12 +211,108 @@ describe('add-page', () => {
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {
                         pageType: 'Dummy'
                     }
                 })
             ).rejects.toThrow('Missing or invalid parameter "pageType"');
+        });
+
+        test('case 6: add custom page', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            const result = await addPageHandlers.executeFunctionality({
+                appPath,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                parameters: {
+                    parentPage: 'TravelsObjectPage',
+                    pageNavigation: 'Expenses',
+                    pageType: 'CustomPage',
+                    pageViewName: 'Dummy'
+                }
+            });
+            expect(result.appPath).toBe(appPath);
+            expect(result.message).toEqual(
+                `Page with id 'DummyPage' of type 'CustomPage' was created successfully in application '${join(
+                    'app',
+                    'managetravels'
+                )}'`
+            );
+            expect(result.status).toBe('success');
+            expect(result.changes).toHaveLength(1);
+            expect(result.changes[0]).toContain('manifest.json');
+            expect(commitMock).toHaveBeenCalledTimes(1);
+            expect(memFsDumpMock).toHaveBeenCalledTimes(1);
+            expect(generateCustomExtensionMock).toHaveBeenCalledTimes(1);
+            expect(generateCustomExtensionMock).toHaveBeenCalledWith({
+                basePath: appPath,
+                'customExtension': 'CustomPage',
+                'data': {
+                    'contextPath': '/Travels/Expenses',
+                    'entity': 'Expenses',
+                    'folder': join('ext', 'view'),
+                    'id': 'DummyPage',
+                    'minUI5Version': '1.136.0',
+                    'name': 'Dummy',
+                    'navigation': {
+                        'navEntity': 'Expenses',
+                        'navKey': true,
+                        'sourceEntity': 'Travels',
+                        'sourcePage': 'TravelsObjectPage'
+                    }
+                }
+            });
+        });
+
+        test('case 7: add custom page without "pageViewName"', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'CustomPage'
+                    }
+                })
+            ).rejects.toThrow('Missing value for parameter "pageViewName"');
+        });
+
+        test('case 8: validate incorrect "pageViewName"', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'CustomPage',
+                        pageViewName: '1Dummy'
+                    }
+                })
+            ).rejects.toThrow(
+                'Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "/^[A-Za-z][A-Za-z0-9_-]*$/"'
+            );
         });
     });
 });
@@ -226,7 +323,7 @@ describe('delete-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await deletePageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result.name).toBe('Invalid Project Root or Application Path');
             expect(result.description).toContain(
@@ -245,7 +342,7 @@ describe('delete-page', () => {
             ]);
             const result = await deletePageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result).toMatchSnapshot();
         });
@@ -255,7 +352,7 @@ describe('delete-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'dummy'
                 }
@@ -281,7 +378,7 @@ describe('delete-page', () => {
             ]);
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'nothing'
                 }
@@ -303,7 +400,7 @@ describe('delete-page', () => {
             ]);
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'TravelsList'
                 }
@@ -320,7 +417,7 @@ describe('delete-page', () => {
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {}
                 })
             ).rejects.toThrow('Missing or invalid parameter "pageId"');
@@ -330,7 +427,7 @@ describe('delete-page', () => {
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {
                         pageId: {}
                     }
