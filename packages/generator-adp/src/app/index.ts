@@ -5,31 +5,25 @@ import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '
 
 import {
     FlexLayer,
+    SourceManifest,
     SystemLookup,
     fetchPublicVersions,
     generate,
-    getConfig,
-    getConfiguredProvider,
-    loadApps,
-    type AttributesAnswers,
-    type ConfigAnswers,
-    type UI5Version,
-    SourceManifest,
-    isCFEnvironment,
-    getBaseAppInbounds,
-    isMtaProject,
     generateCf,
     getCfConfig,
+    getConfig,
+    getConfiguredProvider,
+    getYamlContent,
+    isCFEnvironment,
     isCfInstalled,
     isLoggedInCf,
+    isMtaProject,
+    loadApps,
     loadCfConfig,
-    getYamlContent
+    type AttributesAnswers,
+    type ConfigAnswers,
+    type UI5Version
 } from '@sap-ux/adp-tooling';
-import { type CfConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
-import { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
     TelemetryHelper,
     getDefaultTargetFolder,
@@ -37,35 +31,44 @@ import {
     isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
+import { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { CfConfig, CfServicesAnswers } from '@sap-ux/adp-tooling';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
-import { getFlexLayer } from './layer';
-import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
-import { setHeaderTitle } from '../utils/opts';
+import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
+import { getPackageInfo, installDependencies } from '../utils/deps';
+import { initI18n, t } from '../utils/i18n';
 import AdpGeneratorLogger from '../utils/logger';
+import { setHeaderTitle } from '../utils/opts';
+import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import {
+    getDeployPage,
+    getWizardPages,
+    updateCfWizardSteps,
+    updateFlpWizardSteps,
+    updateWizardSteps
+} from '../utils/steps';
+import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
+import { getTemplatesOverwritePath } from '../utils/templates';
+import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace';
+import { getFlexLayer } from './layer';
 import { getPrompts } from './questions/attributes';
 import { CFServicesPrompter } from './questions/cf-services';
 import { ConfigPrompter } from './questions/configuration';
-import { validateJsonInput } from './questions/helper/validators';
-import { getPackageInfo, installDependencies } from '../utils/deps';
-import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
-import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
-import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import type { TargetEnvAnswers } from './types';
-import { TargetEnv } from './types';
-import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
+import { validateJsonInput } from './questions/helper/validators';
 import {
-    getWizardPages,
-    updateFlpWizardSteps,
-    updateWizardSteps,
-    getDeployPage,
-    updateCfWizardSteps
-} from '../utils/steps';
-import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
-import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
-import { getTemplatesOverwritePath } from '../utils/templates';
+    TargetEnv,
+    type TargetEnvAnswers,
+    type AdpGeneratorOptions,
+    type AttributePromptOptions,
+    type JsonInput
+} from './types';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -142,10 +145,6 @@ export default class extends Generator {
      * Indicates if the current layer is based on a customer base.
      */
     private isCustomerBase: boolean;
-    /**
-     * Base application inbounds, if the base application is an FLP app.
-     */
-    private baseAppInbounds?: ManifestNamespace.Inbound;
     /**
      * Target environment.
      */
@@ -285,21 +284,17 @@ export default class extends Generator {
                 prompts: this.prompts
             };
             const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
-            if (this.prompter.isCloud) {
-                this.baseAppInbounds = await getBaseAppInbounds(
-                    this.configAnswers.application.id,
-                    this.prompter.provider
-                );
-            }
             const options: AttributePromptOptions = {
                 targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
                 ui5ValidationCli: { hide: !this.isCli },
                 enableTypeScript: { hide: this.shouldCreateExtProject },
-                addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
+                addFlpConfig: {
+                    hasBaseAppInbounds: !!this.prompter.baseAppInbounds,
+                    hide: this.shouldCreateExtProject
+                },
                 addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
-
             this.attributeAnswers = await this.prompt(attributesQuestions);
 
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
@@ -326,7 +321,7 @@ export default class extends Generator {
                     {
                         vscode: this.vscode,
                         projectRootPath: this._getProjectPath(),
-                        inbounds: this.baseAppInbounds,
+                        inbounds: this.prompter.baseAppInbounds,
                         layer: this.layer
                     },
                     this.composeWith.bind(this),
@@ -685,7 +680,7 @@ export default class extends Generator {
 
         if (!flpPagesExist) {
             updateFlpWizardSteps(
-                !!this.baseAppInbounds,
+                !!this.prompter.baseAppInbounds,
                 this.prompts,
                 this.attributeAnswers.projectName,
                 !!this.attributeAnswers.addFlpConfig

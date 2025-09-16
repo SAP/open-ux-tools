@@ -102,6 +102,7 @@
         "cfLoginCannotBeDetected": "CF Login cannot be detected as extension in current installation of VSCode, please refer to documentation (link not yet available) in order to install it.",
         "projectDoesNotExist": "The project does not exist. Please select a suitable MTA project.",
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
-        "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA."
+        "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
+        "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}."
     }
 }
