@@ -29,7 +29,8 @@ jest.mock('qrcode', () => {
 });
 jest.mock('@sap/bas-sdk', () => ({
     devspace: {
-        getDevspaceInfo: jest.fn()
+        getDevspaceInfo: jest.fn(),
+        getAppExternalUri: jest.fn()
     }
 }));
 
@@ -154,6 +155,8 @@ describe('remote-url', () => {
     });
 
     describe('getRemoteUrl', () => {
+        (devspace.getAppExternalUri as jest.Mock).mockReturnValue('https://bas-workspace.example.com:8080');
+
         it('should generate IDE remote URL when network interface is available', async () => {
             mockIsAppStudio.mockReturnValue(false);
             mockNetworkInterfaces.mockReturnValue(MOCK_EXTERNAL_NETWORK_INTERFACES);
@@ -182,7 +185,6 @@ describe('remote-url', () => {
             mockIsAppStudio.mockReturnValue(true);
 
             // Mock BAS SDK
-            // use URL with ending slash to test trimming logic
             (devspace.getDevspaceInfo as jest.Mock).mockResolvedValue({
                 url: 'https://bas-workspace.example.com/'
             });
