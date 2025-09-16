@@ -182,8 +182,9 @@ describe('remote-url', () => {
             mockIsAppStudio.mockReturnValue(true);
 
             // Mock BAS SDK
+            // use URL with ending slash to test trimming logic
             (devspace.getDevspaceInfo as jest.Mock).mockResolvedValue({
-                url: 'https://bas-workspace.example.com'
+                url: 'https://bas-workspace.example.com/'
             });
 
             const result = await getRemoteUrl(mockToolsLogger);

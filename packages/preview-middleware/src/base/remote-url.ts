@@ -62,7 +62,8 @@ async function getBASRemoteUrl(logger: ToolsLogger): Promise<string | undefined>
         const devspaceInfo = await devspace.getDevspaceInfo();
         if (devspaceInfo?.url) {
             const port = getPortFromArgs() ?? 8080;
-            const baseUrl = `${devspaceInfo.url}:${port}`;
+            const devspaceUrl = devspaceInfo.url.endsWith('/') ? devspaceInfo.url.slice(0, -1) : devspaceInfo.url;
+            const baseUrl = `${devspaceUrl}:${port}`;
             const remoteUrl = appendOpenPath(baseUrl, getOpenPathFromArgs());
             logger.debug(`BAS remote URL generated: ${remoteUrl}`);
             return remoteUrl;
