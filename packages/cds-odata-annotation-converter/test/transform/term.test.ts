@@ -623,6 +623,18 @@ describe('ast to generic format', () => {
                 const { terms } = toTerms(ast as Assignment, { vocabularyService });
                 expect(terms[0].content.length).toStrictEqual(2);
             });
+            test('annotations with multi line value', () => {
+                const ast = parse(`
+                UI.RecommendationState : {
+                    $value: {
+                       Test: 1
+                    },
+                    ![@Core.Description] : ''
+                }`);
+                const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
+
+                expect(diagnostics).toMatchSnapshot();
+            });
         });
         describe('pointer', () => {
             test('inside value', () => {

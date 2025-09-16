@@ -272,6 +272,12 @@ function addDeprecatedDiagnostics(
     closing.start.line = valueProperty.range.end.line;
     closing.start.character = valueProperty.range.end.character;
     edits.push(TextEdit.del(opening));
+    if (valueProperty.value?.range && valueProperty.value.range.start.line !== valueProperty.value.range.end.line) {
+        const indentSize = 4;
+        for (let i = valueProperty.value.range.start.line + 1; i <= valueProperty.value.range.end.line; i++) {
+            edits.push(TextEdit.del(Range.create(i, 0, i, indentSize)));
+        }
+    }
     edits.push(TextEdit.del(closing));
 
     const additionalAnnotationRanges: Range[] = [];

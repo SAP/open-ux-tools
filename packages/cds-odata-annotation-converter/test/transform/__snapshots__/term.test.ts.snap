@@ -1,5 +1,133 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`ast to generic format value containers conversion annotations with multi line value 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "additionalAnnotationRanges": Array [
+        Object {
+          "end": Object {
+            "character": 45,
+            "line": 5,
+          },
+          "start": Object {
+            "character": 20,
+            "line": 5,
+          },
+        },
+      ],
+      "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations",
+      "parentRange": Object {
+        "end": Object {
+          "character": 17,
+          "line": 6,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 1,
+        },
+      },
+      "prefix": "UI.RecommendationState",
+      "valueReplacement": Array [
+        Object {
+          "newText": "",
+          "range": Object {
+            "end": Object {
+              "character": 26,
+              "line": 2,
+            },
+            "start": Object {
+              "character": 38,
+              "line": 1,
+            },
+          },
+        },
+        Object {
+          "newText": "",
+          "range": Object {
+            "end": Object {
+              "character": 4,
+              "line": 3,
+            },
+            "start": Object {
+              "character": 0,
+              "line": 3,
+            },
+          },
+        },
+        Object {
+          "newText": "",
+          "range": Object {
+            "end": Object {
+              "character": 4,
+              "line": 4,
+            },
+            "start": Object {
+              "character": 0,
+              "line": 4,
+            },
+          },
+        },
+        Object {
+          "newText": "",
+          "range": Object {
+            "end": Object {
+              "character": 17,
+              "line": 6,
+            },
+            "start": Object {
+              "character": 21,
+              "line": 4,
+            },
+          },
+        },
+      ],
+    },
+    "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
+    "range": Object {
+      "end": Object {
+        "character": 26,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 20,
+        "line": 2,
+      },
+    },
+    "rule": "deprecated-$value-syntax",
+    "severity": 2,
+  },
+  Object {
+    "message": "The mandatory \`$value\` property was not provided.",
+    "range": Object {
+      "end": Object {
+        "character": 21,
+        "line": 4,
+      },
+      "start": Object {
+        "character": 28,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+  },
+  Object {
+    "message": "The \`Test\` property is not allowed here.",
+    "range": Object {
+      "end": Object {
+        "character": 27,
+        "line": 3,
+      },
+      "start": Object {
+        "character": 23,
+        "line": 3,
+      },
+    },
+    "severity": 2,
+  },
+]
+`;
+
 exports[`ast to generic format value containers conversion annotations with value 1`] = `
 Array [
   Object {
