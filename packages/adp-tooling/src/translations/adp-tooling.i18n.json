@@ -88,7 +88,7 @@
         "failedToGetServiceInstance": "Failed to retrieve the service instance with params: {{uriParameters}}. Error: {{error}}",
         "failedToGetOrCreateServiceKeys": "Failed to retrieve or create service keys for the instance: {{serviceInstanceName}}. Error: {{error}}",
         "mtaProjectPathMissing": "The MTA project path is missing. Provide the path to a valid MTA project.",
-        "noBusinessServicesFound": "No business services found, please specify the business services in resource section of mta.yaml: - name: <arbitrary name of resource, e.g. my_service> type: org.cloudfoundry.<managed|existing>-service parameters: service: <business service name, e.g. my-service-name> service-name: <business service instance name, e.g. my_service_instance_name> service-plan: <plan name, e.g. standard>",
+        "noBusinessServicesFound": "No business services found. Specify the business services in the resource section of the mta.yaml file: - name: <arbitrary name of resource such as my_service> type: org.cloudfoundry.<managed|existing>-service parameters: service: <business service name, e.g. my-service-name> service-name: <business service instance name, e.g. my_service_instance_name> service-plan: <plan name, e.g. standard>",
         "failedToParseZipContent": "Failed to parse the zip content from the HTML5 repository. Error: {{error}}",
         "noZipContentParsed": "No zip content was parsed from the HTML5 repository. For more information, check the logs.",
         "failedToFindManifestJsonInHtml5Repo": "Failed to find the `manifest.json` file in the application content from HTML5 repository. Ensure the `manifest.json` file exists and try again.",
@@ -101,7 +101,7 @@
         "failedToGetCredentialsFromHtml5Repo": "Failed to retrieve the credentials from the HTML5 repository for space: {{spaceGuid}}. Error: {{error}}",
         "failedToParseCFAPIResponse": "Failed to parse the CF API response: {{error}}",
         "failedToRequestCFAPI": "Request to the CF API failed. Error: {{error}}",
-        "xsSecurityJsonCouldNotBeParsed": "The `xs-security.json` file could not be parsed. Ensure the `xs-security.json` file exists and try again.",
+        "xsSecurityJsonCouldNotBeParsed": "The xs-security.json file could not be parsed. Ensure the xs-security.json file exists and try again.",
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'"
