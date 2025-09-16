@@ -178,7 +178,7 @@ When the middleware is used in an adaptation project together with a middleware 
 ```
 
 ### [Mobile Device Preview](#mobile-device-preview)
-The preview middleware supports previewing applications on physical mobile devices, enabling developers to test their applications on real mobile devices directly from VSCode or SAP Business Application Studio.
+The preview middleware supports previewing applications on physical mobile devices, enabling developers to test their applications on real mobile devices directly from Visual Studio Code or SAP Business Application Studio.
 
 Using the `--accept-remote-connections` argument, a remote URL that can be accessed from mobile devices on the same network will be logged in the console, and a QR code will be displayed for easy access.
 
