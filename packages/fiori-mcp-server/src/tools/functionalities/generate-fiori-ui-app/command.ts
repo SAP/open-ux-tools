@@ -1,8 +1,8 @@
 import { promises as FSpromises, existsSync } from 'fs';
 import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 import { dirname, join } from 'path';
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
 import * as z from 'zod';
