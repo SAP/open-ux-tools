@@ -20,12 +20,15 @@ import { EdmJsonVisitor } from './edm-json';
 export const recordHandler: NodeHandler<Record> = {
     type: RECORD_TYPE,
     getChildren,
-    convert(state: VisitorState, node: Record, parent: AnnotationNode): ConvertResult {
+    convert(state: VisitorState, node: Record, parent?: AnnotationNode): ConvertResult {
         const element: Element = createElementNode({
             name: Edm.Record,
             range: nodeRange(node, true),
             contentRange: nodeRange(node, false)
         });
+        if (!parent) {
+            return element;
+        }
         const { typeProperty, valueProperty, edmJsonProperty } = findReservedProperties(node.properties);
 
         const explicitType = getExplicitType(typeProperty, state.context);
