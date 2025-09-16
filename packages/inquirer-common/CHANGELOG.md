@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.7.41
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.20
+-   @sap-ux/fiori-generator-shared@0.13.14
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+
 ## 0.7.39
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.63
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.17
+    -   @sap-ux/abap-deploy-config-writer@0.2.12
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/fiori-generator-shared@0.13.14
+    -   @sap-ux/deploy-config-generator-shared@0.1.33
+
+## 0.1.62
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.16
+    -   @sap-ux/deploy-config-generator-shared@0.1.32
+
 ## 0.1.61
 
 ### Patch Changes
