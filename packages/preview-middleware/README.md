@@ -187,7 +187,7 @@ Using the `--accept-remote-connections` argument, a remote URL that can be acces
 ```
  
 ### [Programmatic Usage](#programmatic-usage)
-Alternatively you can use the underlying middleware function programmatically, e.g. for the case when you want to incorporate the `preview-middleware` functionality in your own middleware.
+Alternatively you can use the underlying middleware function programmatically. This is useful when you want to incorporate the `preview-middleware` functionality in your own middleware.
 
 ```typescript
 import { FlpSandbox } from '@sap-ux/preview-middleware';
