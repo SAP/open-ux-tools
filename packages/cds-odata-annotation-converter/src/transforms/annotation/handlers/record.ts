@@ -2,8 +2,11 @@ import { RECORD_TYPE, STRING_LITERAL_TYPE, nodeRange, ReservedProperties } from 
 import type { Record, RecordProperty, AnnotationNode, Annotation } from '@sap-ux/cds-annotation-parser';
 
 import type { CommonCaseIssue, Element, Position } from '@sap-ux/odata-annotation-core-types';
-import { COMMON_CASE_ISSUE, DEPRECATED_$VALUE_SYNTAX, Range, TextEdit } from '@sap-ux/odata-annotation-core-types';
 import {
+    COMMON_CASE_ISSUE,
+    DEPRECATED_$VALUE_SYNTAX,
+    Range,
+    TextEdit,
     Diagnostic,
     createElementNode,
     createAttributeNode,
