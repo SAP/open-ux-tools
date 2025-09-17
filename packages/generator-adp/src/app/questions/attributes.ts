@@ -24,7 +24,7 @@ import { t } from '../../utils/i18n';
 import { attributePromptNames } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
-import { updateWizardSteps, getDeployPage, updateFlpWizardSteps } from '../../utils/steps';
+import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, adpPackageName } from '../../utils/steps';
 import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 
 interface Config {
@@ -277,7 +277,12 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
             breadcrumb: true
         },
         validate: (value: boolean) => {
-            updateWizardSteps(prompts, getDeployPage(), 'projectAttributes', value);
+            updateWizardSteps(
+                prompts,
+                getDeployPage(),
+                { localId: 'projectAttributes', packageName: adpPackageName },
+                value
+            );
             return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;

@@ -35,7 +35,7 @@ import { initI18n, t } from '../utils/i18n';
 import AdpGeneratorLogger from '../utils/logger';
 import { setHeaderTitle } from '../utils/opts';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
-import { getDeployPage, getWizardPages, updateFlpWizardSteps, updateWizardSteps } from '../utils/steps';
+import { getDeployPage, getWizardPages, updateFlpWizardSteps, updateWizardSteps, adpPackageName } from '../utils/steps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getTemplatesOverwritePath } from '../utils/templates';
 import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace';
@@ -463,7 +463,7 @@ export default class extends Generator {
             updateWizardSteps(
                 this.prompts,
                 getDeployPage(),
-                'projectAttributes',
+                { localId: 'projectAttributes', packageName: adpPackageName },
                 this.attributeAnswers.addDeployConfig
             );
         }

@@ -1,5 +1,5 @@
 import { WizardPageFactory } from '@sap-ux/adp-tooling';
 
-type PageLocalId = 'flpCredentials' | 'flpConfig' | 'tileSettings';
+type FlpPageLocalId = 'flpCredentials' | 'flpConfig' | 'tileSettings';
 
-export const wizardPageFactory = new WizardPageFactory<PageLocalId>('@sap-ux/adp-flp-config-sub-generator');
+export const flpPageFactory = new WizardPageFactory<FlpPageLocalId>('@sap-ux/adp-flp-config-sub-generator');

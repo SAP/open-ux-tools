@@ -43,7 +43,7 @@ export class WizardPageFactory<PageLocalId extends string> {
      */
     create({ localId, name, description }: PageModel<PageLocalId>): IPage {
         return {
-            id: this.getPageId(localId),
+            id: WizardPageFactory.getPageId(this.packageName, localId),
             name,
             description
         };
@@ -64,10 +64,11 @@ export class WizardPageFactory<PageLocalId extends string> {
      * An example id is '@sap-ux/generator-adp:configuration' for the configuration page
      * inside the adp generator package.
      *
+     * @param {str} packageName - The name of the package.
      * @param {string} localId - The page local id.
      * @returns {string} The unique page id.
      */
-    getPageId(localId: string): string {
-        return `${this.packageName}:${localId}`;
+    static getPageId(packageName: string, localId: string): string {
+        return `${packageName}:${localId}`;
     }
 }

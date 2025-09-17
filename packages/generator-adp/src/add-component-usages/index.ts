@@ -6,7 +6,7 @@ import { GeneratorTypes } from '../types';
 import { initI18n, t } from '../utils/i18n';
 import type { GeneratorOpts } from '../utils/opts';
 import SubGeneratorBase from '../base/sub-gen-base';
-import { wizardPageFactory } from '../utils/steps';
+import { adpPageFactory } from '../utils/steps';
 
 /**
  * Generator for adding component usages to a project.
@@ -44,7 +44,7 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
         try {
             this._registerPrompts(
                 new Prompts([
-                    wizardPageFactory.create({
+                    adpPageFactory.create({
                         localId: 'addComponentUsages',
                         name: t('yuiNavSteps.addComponentUsagesName'),
                         description: t('yuiNavSteps.addComponentUsagesDescr')

@@ -10,8 +10,8 @@ describe('WizardPageFactory', () => {
 
     describe('getPageId', () => {
         it('should return the correct page id', () => {
-            expect(factory.getPageId('page1')).toBe('test-package:page1');
-            expect(factory.getPageId('page2')).toBe('test-package:page2');
+            expect(WizardPageFactory.getPageId(packageName, 'page1')).toBe('test-package:page1');
+            expect(WizardPageFactory.getPageId(packageName, 'page2')).toBe('test-package:page2');
         });
     });
 

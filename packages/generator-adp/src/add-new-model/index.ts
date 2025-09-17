@@ -6,7 +6,7 @@ import { GeneratorTypes } from '../types';
 import { initI18n, t } from '../utils/i18n';
 import type { GeneratorOpts } from '../utils/opts';
 import SubGeneratorBase from '../base/sub-gen-base';
-import { wizardPageFactory } from '../utils/steps';
+import { adpPageFactory } from '../utils/steps';
 
 /**
  * Generator for adding a new model to an OData service.
@@ -44,7 +44,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
         try {
             this._registerPrompts(
                 new Prompts([
-                    wizardPageFactory.create({
+                    adpPageFactory.create({
                         localId: 'addNewModel',
                         name: t('yuiNavSteps.addNewModelName'),
                         description: t('yuiNavSteps.addNewModelDescr')

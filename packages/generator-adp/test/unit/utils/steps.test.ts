@@ -10,10 +10,11 @@ import {
     updateFlpWizardSteps,
     getSubGenErrorPage,
     getSubGenAuthPages,
-    wizardPageFactory
+    adpPackageName,
+    flpPackageName
 } from '../../../src/utils/steps';
 import { initI18n, t } from '../../../src/utils/i18n';
-import type { IPage } from '@sap-ux/adp-tooling';
+import { WizardPageFactory, type IPage } from '@sap-ux/adp-tooling';
 
 describe('Wizard Steps Utility', () => {
     let prompts: Prompts;
@@ -28,7 +29,7 @@ describe('Wizard Steps Utility', () => {
 
     it('should add a new step when it does not exist', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
-        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
+        updateWizardSteps(prompts, flpStep, { localId: 'projectAttributes', packageName: adpPackageName }, true);
 
         const steps = prompts['items'] as IPage[];
         expect(steps.map((s) => s.id)).toContain(flpStep.id);
@@ -36,8 +37,8 @@ describe('Wizard Steps Utility', () => {
 
     it('should not add the step twice if it already exists', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
-        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
-        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
+        updateWizardSteps(prompts, flpStep, { localId: 'projectAttributes', packageName: adpPackageName }, true);
+        updateWizardSteps(prompts, flpStep, { localId: 'projectAttributes', packageName: adpPackageName }, true);
 
         const steps = prompts['items'] as IPage[];
         const count = steps.filter((s) => s.id === flpStep.id).length;
@@ -46,8 +47,8 @@ describe('Wizard Steps Utility', () => {
 
     it('should remove an existing step', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
-        updateWizardSteps(prompts, flpStep, '', true); // Add
-        updateWizardSteps(prompts, flpStep, '', false); // Remove
+        updateWizardSteps(prompts, flpStep); // Add
+        updateWizardSteps(prompts, flpStep, undefined, false); // Remove
 
         const steps = prompts['items'] as IPage[];
         expect(steps.find((s) => s.id === flpStep.id)).toBeUndefined();
@@ -55,8 +56,8 @@ describe('Wizard Steps Utility', () => {
 
     it('should move an existing step to a new position', () => {
         const deployStep = getDeployPage();
-        updateWizardSteps(prompts, deployStep, 'configuration', true); // Insert after Configuration
-        updateWizardSteps(prompts, deployStep, 'projectAttributes', true); // Move after Attributes
+        updateWizardSteps(prompts, deployStep, { localId: 'configuration', packageName: adpPackageName }, true); // Insert after Configuration
+        updateWizardSteps(prompts, deployStep, { localId: 'projectAttributes', packageName: adpPackageName }, true); // Move after Attributes
 
         const steps = prompts['items'] as IPage[];
         const names = steps.map((s) => s.name);
@@ -68,13 +69,13 @@ describe('Wizard Steps Utility', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
 
         // Add FLP first → step order: Configuration, Project Attributes, FLP
-        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
+        updateWizardSteps(prompts, flpStep, { localId: 'projectAttributes', packageName: adpPackageName }, true);
 
         // Add Deploy after FLP → now it's at the end
-        updateWizardSteps(prompts, deployStep, 'flpConfig', true);
+        updateWizardSteps(prompts, deployStep, { localId: 'flpConfig', packageName: flpPackageName }, true);
 
         // Now move Deploy to after Configuration
-        updateWizardSteps(prompts, deployStep, 'configuration', true);
+        updateWizardSteps(prompts, deployStep, { localId: 'configuration', packageName: adpPackageName }, true);
 
         const steps = prompts['items'] as IPage[];
         const names = steps.map((s) => s.name);
@@ -125,7 +126,12 @@ describe('updateFlpWizardSteps', () => {
         });
 
         it('should insert tile settings page after deploy config name', () => {
-            updateWizardSteps(prompts, getDeployPage(), 'configuration', true);
+            updateWizardSteps(
+                prompts,
+                getDeployPage(),
+                { localId: 'configuration', packageName: adpPackageName },
+                true
+            );
             updateFlpWizardSteps(true, prompts, 'TestProject', true);
 
             const steps = prompts['items'] as IPrompt[];
@@ -196,7 +202,12 @@ describe('updateFlpWizardSteps', () => {
         });
 
         it('should insert FLP config page after deploy config name', () => {
-            updateWizardSteps(prompts, getDeployPage(), 'configuration', true);
+            updateWizardSteps(
+                prompts,
+                getDeployPage(),
+                { localId: 'configuration', packageName: adpPackageName },
+                true
+            );
             updateFlpWizardSteps(false, prompts, 'TestProject', true);
 
             const steps = prompts['items'] as IPrompt[];
@@ -281,7 +292,7 @@ describe('updateFlpWizardSteps', () => {
 
 describe('getSubGenErrorPage', () => {
     beforeEach(() => {
-        jest.spyOn(wizardPageFactory, 'getPageId').mockImplementation((localId) => localId);
+        jest.spyOn(WizardPageFactory, 'getPageId').mockImplementation((_: string, localId: string) => localId);
     });
 
     it('should return error page for ADD_ANNOTATIONS_TO_DATA', () => {
@@ -313,7 +324,7 @@ describe('getSubGenAuthPages', () => {
     const system = 'SYS_010';
 
     beforeEach(() => {
-        jest.spyOn(wizardPageFactory, 'getPageId').mockImplementation((localId) => localId);
+        jest.spyOn(WizardPageFactory, 'getPageId').mockImplementation((_: string, localId: string) => localId);
     });
 
     it('should return auth pages for ADD_ANNOTATIONS_TO_DATA', () => {

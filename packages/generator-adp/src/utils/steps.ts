@@ -4,18 +4,24 @@ import { type IPage, WizardPageFactory } from '@sap-ux/adp-tooling';
 import { GeneratorTypes } from '../types';
 import { t } from './i18n';
 
-type PageLocalId =
+type FlpPageLocalId = 'flpConfig' | 'tileSettings';
+
+type AdpPageLocalId =
     | 'addComponentUsages'
     | 'addNewModel'
     | 'configuration'
     | 'projectAttributes'
-    | 'flpConfig'
-    | 'tileSettings'
-    | 'desployConfig'
+    | 'deployConfig'
     | 'addLocalAnnotationFile'
     | 'replaceODataService';
 
-export const wizardPageFactory = new WizardPageFactory<PageLocalId>('@sap-ux/generator-adp');
+type PageLocalId = FlpPageLocalId | AdpPageLocalId;
+
+export const flpPackageName = '@sap-ux/adp-flp-config-sub-generator';
+export const adpPackageName = '@sap-ux/generator-adp';
+
+export const adpPageFactory = new WizardPageFactory<AdpPageLocalId>(adpPackageName);
+const flpPageFactory = new WizardPageFactory<FlpPageLocalId>(flpPackageName);
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
@@ -23,7 +29,7 @@ export const wizardPageFactory = new WizardPageFactory<PageLocalId>('@sap-ux/gen
  * @returns {IPrompt[]} The list of static wizard steps to show initially.
  */
 export function getWizardPages(): IPrompt[] {
-    return wizardPageFactory.createMany([
+    return adpPageFactory.createMany([
         {
             localId: 'configuration',
             name: t('yuiNavSteps.configurationName'),
@@ -42,14 +48,14 @@ export function getWizardPages(): IPrompt[] {
  *
  * @param {boolean} showTileSettingsPage - Flag to determine if the tile settings page should be shown.
  * @param {string} projectName - The name of the project.
- * @returns {IPrompt} The FLP configuration wizard page.
+ * @returns {IPage} The FLP configuration wizard page.
  */
 export function getFlpPages(showTileSettingsPage: boolean, projectName: string): IPage[] {
-    return wizardPageFactory.createMany([
+    return flpPageFactory.createMany([
         ...(showTileSettingsPage
             ? [
                   {
-                      localId: 'tileSettings' as PageLocalId,
+                      localId: 'tileSettings' as FlpPageLocalId,
                       name: t('yuiNavSteps.tileSettingsName', { projectName }),
                       description: ''
                   }
@@ -79,25 +85,33 @@ export function updateFlpWizardSteps(
 ): void {
     const pages = getFlpPages(hasBaseAppInbound, projectName);
     if (pages.length === 2) {
-        updateWizardSteps(prompts, pages[0], 'desployConfig', shouldAdd);
-        updateWizardSteps(prompts, pages[1], 'tileSettings', shouldAdd);
+        updateWizardSteps(prompts, pages[0], { localId: 'deployConfig', packageName: adpPackageName }, shouldAdd);
+        updateWizardSteps(prompts, pages[1], { localId: 'tileSettings', packageName: flpPackageName }, shouldAdd);
         return;
     }
 
-    updateWizardSteps(prompts, pages[0], 'desployConfig', shouldAdd);
+    updateWizardSteps(prompts, pages[0], { localId: 'deployConfig', packageName: adpPackageName }, shouldAdd);
 }
 
 /**
  * Returns the deploy configuration page step.
  *
- * @returns {IPrompt} The deployment configuration wizard page.
+ * @returns {IPage} The deployment configuration wizard page.
  */
 export function getDeployPage(): IPage {
-    return wizardPageFactory.create({
-        localId: 'desployConfig',
+    return adpPageFactory.create({
+        localId: 'deployConfig',
         name: t('yuiNavSteps.deployConfigName'),
         description: t('yuiNavSteps.deployConfigDescr')
     });
+}
+
+/**
+ * Interface representing page id counterparts.
+ */
+interface PageId {
+    localId: PageLocalId;
+    packageName: string;
 }
 
 /**
@@ -112,13 +126,13 @@ export function getDeployPage(): IPage {
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
  * @param {IPage} page - The page to add or remove.
- * @param {string} [insertAfter] - Optional name of the step after which to insert.
+ * @param {PageId} [insertAfter] - Optional page id counterparts of the step after which to insert.
  * @param {boolean} [shouldAdd] - Whether to add (`true`) or remove (`false`) the step.
  */
 export function updateWizardSteps(
     prompts: YeomanUiSteps,
     page: IPage,
-    insertAfter: PageLocalId | '' = '',
+    insertAfter: PageId | undefined = undefined,
     shouldAdd: boolean = true
 ): void {
     const pages: IPage[] = prompts['items'];
@@ -126,7 +140,7 @@ export function updateWizardSteps(
     const existingIdx = pages.findIndex((p) => p.id === page.id);
 
     if (shouldAdd) {
-        const afterId = wizardPageFactory.getPageId(insertAfter);
+        const afterId = insertAfter ? WizardPageFactory.getPageId(insertAfter.packageName, insertAfter.localId) : '';
         // Decide the desired index
         const afterIdx = pages.findIndex((p) => p.id === afterId);
         const targetIdx = afterIdx === -1 ? pages.length : afterIdx + 1;
@@ -157,7 +171,7 @@ export function updateWizardSteps(
 export function getSubGenErrorPage(subGenType: GeneratorTypes): IPrompt[] {
     switch (subGenType) {
         case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-            return wizardPageFactory.createMany([
+            return adpPageFactory.createMany([
                 {
                     localId: 'addLocalAnnotationFile',
                     name: t('yuiNavSteps.addLocalAnnotationFileName'),
@@ -165,7 +179,7 @@ export function getSubGenErrorPage(subGenType: GeneratorTypes): IPrompt[] {
                 }
             ]);
         case GeneratorTypes.CHANGE_DATA_SOURCE:
-            return wizardPageFactory.createMany([
+            return adpPageFactory.createMany([
                 { localId: 'replaceODataService', name: t('yuiNavSteps.replaceODataServiceName'), description: '' }
             ]);
         default:
@@ -191,7 +205,7 @@ export function getSubGenAuthPages(type: GeneratorTypes, destination: string): I
 
     switch (type) {
         case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-            return wizardPageFactory.createMany([
+            return adpPageFactory.createMany([
                 {
                     localId: 'addLocalAnnotationFile',
                     ...getCredentialsPageProps(t('yuiNavSteps.addLocalAnnotationFileName'))
@@ -203,7 +217,7 @@ export function getSubGenAuthPages(type: GeneratorTypes, destination: string): I
                 }
             ]);
         case GeneratorTypes.CHANGE_DATA_SOURCE:
-            return wizardPageFactory.createMany([
+            return adpPageFactory.createMany([
                 {
                     localId: 'replaceODataService',
                     ...getCredentialsPageProps(t('yuiNavSteps.replaceODataServiceName'))
