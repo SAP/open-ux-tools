@@ -177,13 +177,12 @@ export function updateWizardSteps(
 function updateExistingPageContentIfNeeded(prompts: YeomanUiSteps, page: IPage): void {
     const pages: IPage[] = prompts['items'];
 
-    const existingIdx = pages.findIndex((p) => p.id === page.id);
+    const existingPage = pages.find((p) => p.id === page.id);
 
-    if (existingIdx === -1) {
+    if (!existingPage) {
         return;
     }
 
-    const existingPage = pages[existingIdx];
     if (existingPage.name === page.name && existingPage.description === page.description) {
         return;
     }
