@@ -58,17 +58,18 @@ export class EdmJsonVisitor {
      * Visits the given AnnotationNode and invokes the corresponding visitor function based on the node type.
      *
      * @param node - The AnnotationNode to be visited.
+     * @param parent - The parent AnnotationNode.
      * @returns Returns an Element or undefined based on the visitor function for the given node type.
      */
-    visit(node: AnnotationNode): Element | undefined {
+    visit(node: AnnotationNode, parent: AnnotationNode): Element | undefined {
         const visitor = this[node.type as VisitorTypes];
         if (visitor) {
-            return visitor(node as VisitNodeTypes);
+            return visitor(node as VisitNodeTypes, parent);
         } else {
             return undefined;
         }
     }
-    [RECORD_TYPE] = (record: Record): Element | undefined => {
+    [RECORD_TYPE] = (record: Record, parent: AnnotationNode): Element | undefined => {
         const element: Element = createElementNode({
             name: '',
             range: nodeRange(record, true),
@@ -79,7 +80,7 @@ export class EdmJsonVisitor {
             const property = record.properties[i];
             if (property.name.value.startsWith('$')) {
                 if (i === 0) {
-                    this.convertElementName(property, element);
+                    this.convertElementName(property, element, parent);
                 } else if (STRING_LITERAL_TYPE === property.value?.type || EMPTY_VALUE_TYPE === property.value?.type) {
                     this.convertAttribute(property, element);
                 } else if (property.value?.range) {
@@ -127,8 +128,9 @@ export class EdmJsonVisitor {
      *
      * @param property - The RecordProperty containing the element name.
      * @param element - The Element to be converted.
+     * @param parent - The parent AnnotationNode.
      */
-    convertElementName(property: RecordProperty, element: Element): void {
+    convertElementName(property: RecordProperty, element: Element, parent: AnnotationNode): void {
         element.name = property.name.value.substring(1);
         element.nameRange = property.name.range;
         if (property.value?.type === STRING_LITERAL_TYPE) {
@@ -139,9 +141,9 @@ export class EdmJsonVisitor {
             }
         } else if (property.value?.type === COLLECTION_TYPE) {
             // Record is used as a container for a single element here
-            this.convertCollection(property.value.items, element);
+            this.convertCollection(property.value.items, element, parent);
         } else if (property.value) {
-            const child = this.visit(property.value);
+            const child = this.visit(property.value, parent);
             if (child) {
                 element.content.push(child);
             }
@@ -153,10 +155,11 @@ export class EdmJsonVisitor {
      *
      * @param items - The collection of AnnotationValue items to be converted.
      * @param element - The Element to which the converted items will be added.
+     * @param parent - The parent AnnotationNode.
      */
-    convertCollection(items: AnnotationValue[], element: Element): void {
+    convertCollection(items: AnnotationValue[], element: Element, parent: AnnotationNode): void {
         for (const item of items) {
-            const child = this.visit(item);
+            const child = this.visit(item, parent);
             if (child) {
                 element.content.push(child);
             }
@@ -194,8 +197,8 @@ export class EdmJsonVisitor {
         return element;
     };
 
-    [NUMBER_LITERAL_TYPE] = (node: NumberLiteral): Element | undefined => {
-        const result = numberHandler.convert(this.state, node);
+    [NUMBER_LITERAL_TYPE] = (node: NumberLiteral, parent: AnnotationNode): Element | undefined => {
+        const result = numberHandler.convert(this.state, node, parent);
         if (result === undefined || isSubtree(result)) {
             return undefined;
         }
