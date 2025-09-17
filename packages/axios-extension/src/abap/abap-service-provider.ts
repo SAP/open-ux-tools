@@ -37,6 +37,16 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Get user information.
+     *
+     * @returns user name or undefined
+     */
+    public async getUserInfo(): Promise<string | undefined> {
+        const userInfoResp = await this.get('/userinfo');
+        return userInfoResp.data;
+    }
+
+    /**
      * Set the ATO settings for the provider so that it does not try to fetch them with the first request.
      *
      * @param atoSettings ABAP Transport Organizer settings

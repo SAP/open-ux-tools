@@ -240,6 +240,9 @@ export async function createSystemChoices(
         }
     } else {
         const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
+        // Cache the backend systems
+        PromptState.backendSystemsCache = backendSystems;
+
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),

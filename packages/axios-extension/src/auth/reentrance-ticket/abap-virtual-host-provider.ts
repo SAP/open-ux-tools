@@ -67,7 +67,7 @@ export class ABAPVirtualHostProvider {
 
     /**
      * Get the logoff URL.
-     * 
+     *
      * @returns logoff URL
      */
     logoffUrl(): string {

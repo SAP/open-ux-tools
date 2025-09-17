@@ -175,7 +175,7 @@ export interface AbapEmbeddedSteampunkOptions extends ReentranceTicketOptions {
 }
 
 /** Discriminated union of supported environments - {@link AbapCloudStandaloneOptions} and {@link AbapEmbeddedSteampunkOptions} */
-type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOptions;
+export type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOptions;
 
 /**
  * Create an instance of an ABAP service provider for a Cloud ABAP system.

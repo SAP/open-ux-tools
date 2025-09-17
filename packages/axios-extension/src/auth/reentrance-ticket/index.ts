@@ -26,6 +26,7 @@ export async function getReentranceTicket({
 }): Promise<{ reentranceTicket: string; backend?: ABAPVirtualHostProvider }> {
     return new Promise(async (resolve, reject) => {
         const backend = new ABAPVirtualHostProvider(backendUrl, logger);
+        const uiHostname = await backend.uiHostname();
         // Start local server to listen to redirect call, with timeout
         const { server, redirectUrl } = setupRedirectHandling({ resolve, reject, timeout, backend, logger });
         server.listen();
@@ -34,7 +35,7 @@ export async function getReentranceTicket({
 
         // Open browser to handle SAML flow and return the reentrance ticket
         const endpoint = process.env.FIORI_TOOLS_REENTRANCE_ENDPOINT ?? ADT_REENTRANCE_ENDPOINT;
-        const url = `${await backend.uiHostname()}${endpoint}?redirect-url=${redirectUrl(redirectPort)}`;
+        const url = `${uiHostname}${endpoint}?redirect-url=${redirectUrl(redirectPort)}`;
 
         const result = open(url)?.catch((error) => logger.error(error));
         return result;

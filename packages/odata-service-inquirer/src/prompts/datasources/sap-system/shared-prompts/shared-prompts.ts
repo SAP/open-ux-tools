@@ -8,7 +8,12 @@ import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
+import {
+    PromptState,
+    convertODataVersionType,
+    isBackendSystemKeyExisting,
+    removeCircularFromServiceProvider
+} from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
 import { suggestSystemName } from '../prompt-helpers';
@@ -43,6 +48,7 @@ function systemAuthTypeToAuthenticationType(
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  * @param requiredOdataVersion The required OData version for the system connection, only catalogs supporting the specifc odata version will be used.
  * @param cachedConnectedSystem
+ * @param systemAuthType
  * @returns the system url prompt
  */
 export function getSystemUrlQuestion<T extends Answers>(
@@ -64,13 +70,16 @@ export function getSystemUrlQuestion<T extends Answers>(
         validate: async (url) => {
             PromptState.resetConnectedSystem();
             // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
-            // Only in the case or re-entrance tickets will we reuse an existing connection.
+            // Only in the case of re-entrance tickets will we reuse an existing connection.
             if (
                 cachedConnectedSystem &&
                 cachedConnectedSystem.backendSystem?.url === url &&
                 cachedConnectedSystem.backendSystem?.authenticationType === 'reentranceTicket'
             ) {
                 connectValidator.setConnectedSystem(cachedConnectedSystem);
+            } else if (isBackendSystemKeyExisting(PromptState.backendSystemsCache, url)) {
+                // Not a cached connection so re-validate as new backend system entry
+                return t('prompts.validationMessages.backendSystemExistsWarning');
             }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,

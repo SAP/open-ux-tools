@@ -673,7 +673,7 @@ export class ConnectionValidator {
             this.systemAuthType = 'serviceKey';
             await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
             // Cache the user info
-            this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
+            this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).getUserInfo();
             this._serviceInfo = serviceInfo;
             this._validatedUrl = serviceInfo.url;
             return this.getValidationResultFromStatusCode(200);
@@ -822,6 +822,9 @@ export class ConnectionValidator {
             this.validity.urlFormat = false;
             return false;
         }
+        if (systemAuthType) {
+            this.systemAuthType = systemAuthType;
+        }
         let url: URL;
         try {
             // Check if the url is valid
@@ -829,13 +832,16 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
+            // Dont allow non origin URLs in for re-entrance tickets as the error handling would become complex to analyize.
+            // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
+            // The new system name would also include the additional paths which would not make sense either.
+            if (this.systemAuthType === 'reentranceTicket' && !(url.pathname.length === 0 || url.pathname === '/')) {
+                return t('prompts.validationMessages.reentranceTicketSystemHostOnly');
+            }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });
         }
 
-        if (systemAuthType) {
-            this.systemAuthType = systemAuthType;
-        }
         try {
             if (!forceReValidation && this.isUrlValidated(serviceUrl)) {
                 return this.validity.reachable ?? false;
