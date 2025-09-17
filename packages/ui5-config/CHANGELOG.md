@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.4
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+
 ## 0.29.3
 
 ### Patch Changes
