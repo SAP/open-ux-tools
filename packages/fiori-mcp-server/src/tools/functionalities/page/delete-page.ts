@@ -1,5 +1,5 @@
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
@@ -41,7 +41,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
  * @param params - The input parameters for executing the functionality.
  * @returns A promise resolving to the execution output.
  */
-async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
     const { pageId } = parameters;
     if (!pageId || typeof pageId !== 'string') {

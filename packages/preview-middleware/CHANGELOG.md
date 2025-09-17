@@ -1,5 +1,32 @@
 # @sap-ux/preview-middleware
 
+## 0.23.9
+
+### Patch Changes
+
+-   4fa9dd9: fix: for disabling change table column quick action when variant management is disabled
+
+## 0.23.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.27
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/system-access@0.6.16
+
+## 0.23.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.26
+
+## 0.23.6
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/adp-tooling@0.15.25
+
 ## 0.23.5
 
 ### Patch Changes

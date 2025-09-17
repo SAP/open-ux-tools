@@ -47,3 +47,5 @@ export enum MissingNavigationReason {
     NoEntityProvided = 3,
     NotFoundEntity = 4
 }
+
+export const PAGE_VIEW_NAME_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;

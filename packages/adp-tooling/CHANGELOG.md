@@ -1,5 +1,30 @@
 # @sap-ux/adp-tooling
 
+## 0.15.27
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/odata-service-writer@0.27.19
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/project-input-validator@0.6.19
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.41
+
+## 0.15.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.40
+
+## 0.15.25
+
+### Patch Changes
+
+-   f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
+
 ## 0.15.24
 
 ### Patch Changes
