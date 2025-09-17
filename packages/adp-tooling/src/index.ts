@@ -8,6 +8,7 @@ export * from './base/cf';
 export * from './base/helper';
 export * from './base/constants';
 export * from './base/project-builder';
+export * from './base/wizard-page-factory';
 export * from './base/abap/manifest-service';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
 export * from './preview/adp-preview';

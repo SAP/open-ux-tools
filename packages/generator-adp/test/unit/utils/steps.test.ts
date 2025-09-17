@@ -9,9 +9,11 @@ import {
     updateWizardSteps,
     updateFlpWizardSteps,
     getSubGenErrorPage,
-    getSubGenAuthPages
+    getSubGenAuthPages,
+    wizardPageFactory
 } from '../../../src/utils/steps';
 import { initI18n, t } from '../../../src/utils/i18n';
+import type { IPage } from '@sap-ux/adp-tooling';
 
 describe('Wizard Steps Utility', () => {
     let prompts: Prompts;
@@ -26,19 +28,19 @@ describe('Wizard Steps Utility', () => {
 
     it('should add a new step when it does not exist', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
-        updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
+        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
 
-        const steps = prompts['items'] as IPrompt[];
-        expect(steps.map((s) => s.name)).toContain(flpStep.name);
+        const steps = prompts['items'] as IPage[];
+        expect(steps.map((s) => s.id)).toContain(flpStep.id);
     });
 
     it('should not add the step twice if it already exists', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
-        updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
-        updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
+        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
+        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
 
-        const steps = prompts['items'] as IPrompt[];
-        const count = steps.filter((s) => s.name === flpStep.name).length;
+        const steps = prompts['items'] as IPage[];
+        const count = steps.filter((s) => s.id === flpStep.id).length;
         expect(count).toBe(1);
     });
 
@@ -47,16 +49,16 @@ describe('Wizard Steps Utility', () => {
         updateWizardSteps(prompts, flpStep, '', true); // Add
         updateWizardSteps(prompts, flpStep, '', false); // Remove
 
-        const steps = prompts['items'] as IPrompt[];
-        expect(steps.find((s) => s.name === flpStep.name)).toBeUndefined();
+        const steps = prompts['items'] as IPage[];
+        expect(steps.find((s) => s.id === flpStep.id)).toBeUndefined();
     });
 
     it('should move an existing step to a new position', () => {
         const deployStep = getDeployPage();
-        updateWizardSteps(prompts, deployStep, t('yuiNavSteps.configurationName'), true); // Insert after Configuration
-        updateWizardSteps(prompts, deployStep, t('yuiNavSteps.projectAttributesName'), true); // Move after Attributes
+        updateWizardSteps(prompts, deployStep, 'configuration', true); // Insert after Configuration
+        updateWizardSteps(prompts, deployStep, 'projectAttributes', true); // Move after Attributes
 
-        const steps = prompts['items'] as IPrompt[];
+        const steps = prompts['items'] as IPage[];
         const names = steps.map((s) => s.name);
         expect(names.indexOf(deployStep.name)).toBeGreaterThan(names.indexOf(t('yuiNavSteps.projectAttributesName')));
     });
@@ -66,15 +68,15 @@ describe('Wizard Steps Utility', () => {
         const flpStep = getFlpPages(false, 'TestProject')[0];
 
         // Add FLP first → step order: Configuration, Project Attributes, FLP
-        updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
+        updateWizardSteps(prompts, flpStep, 'projectAttributes', true);
 
         // Add Deploy after FLP → now it's at the end
-        updateWizardSteps(prompts, deployStep, flpStep.name, true);
+        updateWizardSteps(prompts, deployStep, 'flpConfig', true);
 
         // Now move Deploy to after Configuration
-        updateWizardSteps(prompts, deployStep, t('yuiNavSteps.configurationName'), true);
+        updateWizardSteps(prompts, deployStep, 'configuration', true);
 
-        const steps = prompts['items'] as IPrompt[];
+        const steps = prompts['items'] as IPage[];
         const names = steps.map((s) => s.name);
 
         const configIdx = names.indexOf(t('yuiNavSteps.configurationName'));
@@ -123,7 +125,7 @@ describe('updateFlpWizardSteps', () => {
         });
 
         it('should insert tile settings page after deploy config name', () => {
-            updateWizardSteps(prompts, getDeployPage(), t('yuiNavSteps.configurationName'), true);
+            updateWizardSteps(prompts, getDeployPage(), 'configuration', true);
             updateFlpWizardSteps(true, prompts, 'TestProject', true);
 
             const steps = prompts['items'] as IPrompt[];
@@ -194,7 +196,7 @@ describe('updateFlpWizardSteps', () => {
         });
 
         it('should insert FLP config page after deploy config name', () => {
-            updateWizardSteps(prompts, getDeployPage(), t('yuiNavSteps.configurationName'), true);
+            updateWizardSteps(prompts, getDeployPage(), 'configuration', true);
             updateFlpWizardSteps(false, prompts, 'TestProject', true);
 
             const steps = prompts['items'] as IPrompt[];
@@ -278,16 +280,20 @@ describe('updateFlpWizardSteps', () => {
 });
 
 describe('getSubGenErrorPage', () => {
+    beforeEach(() => {
+        jest.spyOn(wizardPageFactory, 'getPageId').mockImplementation((localId) => localId);
+    });
+
     it('should return error page for ADD_ANNOTATIONS_TO_DATA', () => {
         const result = getSubGenErrorPage(GeneratorTypes.ADD_ANNOTATIONS_TO_DATA);
 
-        expect(result).toEqual([{ name: 'Add Local Annotation File', description: '' }]);
+        expect(result).toEqual([{ id: 'addLocalAnnotationFile', name: 'Add Local Annotation File', description: '' }]);
     });
 
     it('should return error page for CHANGE_DATA_SOURCE', () => {
         const result = getSubGenErrorPage(GeneratorTypes.CHANGE_DATA_SOURCE);
 
-        expect(result).toEqual([{ name: 'Replace OData Service', description: '' }]);
+        expect(result).toEqual([{ id: 'replaceODataService', name: 'Replace OData Service', description: '' }]);
     });
 
     it('should return empty array for ADD_COMPONENT_USAGES', () => {
@@ -306,15 +312,21 @@ describe('getSubGenErrorPage', () => {
 describe('getSubGenAuthPages', () => {
     const system = 'SYS_010';
 
+    beforeEach(() => {
+        jest.spyOn(wizardPageFactory, 'getPageId').mockImplementation((localId) => localId);
+    });
+
     it('should return auth pages for ADD_ANNOTATIONS_TO_DATA', () => {
         const result = getSubGenAuthPages(GeneratorTypes.ADD_ANNOTATIONS_TO_DATA, system);
 
         expect(result).toEqual([
             {
+                id: 'addLocalAnnotationFile',
                 name: 'Add Local Annotation File - Credentials',
                 description: `Enter credentials for your adaptation project's system (${system})`
             },
             {
+                id: 'addLocalAnnotationFile',
                 name: 'Add Local Annotation File',
                 description: t('yuiNavSteps.addLocalAnnotationFileDescr')
             }
@@ -326,10 +338,12 @@ describe('getSubGenAuthPages', () => {
 
         expect(result).toEqual([
             {
+                id: 'replaceODataService',
                 name: 'Replace OData Service - Credentials',
                 description: `Enter credentials for your adaptation project's system (${system})`
             },
             {
+                id: 'replaceODataService',
                 name: 'Replace OData Service',
                 description: t('yuiNavSteps.replaceODataServiceDescr')
             }

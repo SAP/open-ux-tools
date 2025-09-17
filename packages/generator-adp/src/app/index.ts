@@ -463,7 +463,7 @@ export default class extends Generator {
             updateWizardSteps(
                 this.prompts,
                 getDeployPage(),
-                t('yuiNavSteps.projectAttributesName'),
+                'projectAttributes',
                 this.attributeAnswers.addDeployConfig
             );
         }

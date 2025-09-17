@@ -277,7 +277,7 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
             breadcrumb: true
         },
         validate: (value: boolean) => {
-            updateWizardSteps(prompts, getDeployPage(), t('yuiNavSteps.projectAttributesName'), value);
+            updateWizardSteps(prompts, getDeployPage(), 'projectAttributes', value);
             return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;

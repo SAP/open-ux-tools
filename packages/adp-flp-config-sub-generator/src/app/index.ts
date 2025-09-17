@@ -47,6 +47,8 @@ import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
+import { wizardPageFactory } from './steps';
+
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
@@ -219,10 +221,11 @@ export default class AdpFlpConfigGenerator extends Generator {
         }
 
         this.prompts.splice(0, 0, [
-            {
+            wizardPageFactory.create({
+                localId: 'flpCredentials',
                 name: t('yuiNavSteps.flpCredentialsName'),
                 description: t('yuiNavSteps.flpCredentialsDesc', { system: systemName })
-            }
+            })
         ]);
         await this.prompt(prompts);
     }
@@ -259,10 +262,11 @@ export default class AdpFlpConfigGenerator extends Generator {
         // if launched as a sub-generator, the navigation steps will be set by the parent generator
         if (!this.launchAsSubGen) {
             this.prompts.splice(0, 0, [
-                {
+                wizardPageFactory.create({
+                    localId: 'flpConfig',
                     name: t('yuiNavSteps.flpConfigName', { projectName: path.basename(this.projectRootPath) }),
                     description: ''
-                }
+                })
             ]);
         }
     }
@@ -385,12 +389,13 @@ export default class AdpFlpConfigGenerator extends Generator {
         }
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
-            {
+            wizardPageFactory.create({
+                localId: 'tileSettings',
                 name: t('yuiNavSteps.tileSettingsName', {
                     projectName: path.basename(this.projectRootPath)
                 }),
                 description: ''
-            }
+            })
         ]);
     }
 

@@ -1,7 +1,21 @@
-import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-types';
+import type { IPrompt, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-import { t } from './i18n';
+import { type IPage, WizardPageFactory } from '@sap-ux/adp-tooling';
 import { GeneratorTypes } from '../types';
+import { t } from './i18n';
+
+type PageLocalId =
+    | 'addComponentUsages'
+    | 'addNewModel'
+    | 'configuration'
+    | 'projectAttributes'
+    | 'flpConfig'
+    | 'tileSettings'
+    | 'desployConfig'
+    | 'addLocalAnnotationFile'
+    | 'replaceODataService';
+
+export const wizardPageFactory = new WizardPageFactory<PageLocalId>('@sap-ux/generator-adp');
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
@@ -9,16 +23,18 @@ import { GeneratorTypes } from '../types';
  * @returns {IPrompt[]} The list of static wizard steps to show initially.
  */
 export function getWizardPages(): IPrompt[] {
-    return [
+    return wizardPageFactory.createMany([
         {
+            localId: 'configuration',
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')
         },
         {
+            localId: 'projectAttributes',
             name: t('yuiNavSteps.projectAttributesName'),
             description: t('yuiNavSteps.projectAttributesDescr')
         }
-    ];
+    ]);
 }
 
 /**
@@ -28,21 +44,23 @@ export function getWizardPages(): IPrompt[] {
  * @param {string} projectName - The name of the project.
  * @returns {IPrompt} The FLP configuration wizard page.
  */
-export function getFlpPages(showTileSettingsPage: boolean, projectName: string): IPrompt[] {
-    const pages = [
+export function getFlpPages(showTileSettingsPage: boolean, projectName: string): IPage[] {
+    return wizardPageFactory.createMany([
+        ...(showTileSettingsPage
+            ? [
+                  {
+                      localId: 'tileSettings' as PageLocalId,
+                      name: t('yuiNavSteps.tileSettingsName', { projectName }),
+                      description: ''
+                  }
+              ]
+            : []),
         {
+            localId: 'flpConfig',
             name: t('yuiNavSteps.flpConfigName'),
             description: ''
         }
-    ];
-    if (showTileSettingsPage) {
-        pages.unshift({
-            name: t('yuiNavSteps.tileSettingsName', { projectName }),
-            description: ''
-        });
-    }
-
-    return pages;
+    ]);
 }
 
 /**
@@ -61,12 +79,12 @@ export function updateFlpWizardSteps(
 ): void {
     const pages = getFlpPages(hasBaseAppInbound, projectName);
     if (pages.length === 2) {
-        updateWizardSteps(prompts, pages[0], t('yuiNavSteps.deployConfigName'), shouldAdd);
-        updateWizardSteps(prompts, pages[1], t('yuiNavSteps.tileSettingsName'), shouldAdd);
+        updateWizardSteps(prompts, pages[0], 'desployConfig', shouldAdd);
+        updateWizardSteps(prompts, pages[1], 'tileSettings', shouldAdd);
         return;
     }
 
-    updateWizardSteps(prompts, pages[0], t('yuiNavSteps.deployConfigName'), shouldAdd);
+    updateWizardSteps(prompts, pages[0], 'desployConfig', shouldAdd);
 }
 
 /**
@@ -74,8 +92,12 @@ export function updateFlpWizardSteps(
  *
  * @returns {IPrompt} The deployment configuration wizard page.
  */
-export function getDeployPage(): IPrompt {
-    return { name: t('yuiNavSteps.deployConfigName'), description: t('yuiNavSteps.deployConfigDescr') };
+export function getDeployPage(): IPage {
+    return wizardPageFactory.create({
+        localId: 'desployConfig',
+        name: t('yuiNavSteps.deployConfigName'),
+        description: t('yuiNavSteps.deployConfigDescr')
+    });
 }
 
 /**
@@ -89,23 +111,24 @@ export function getDeployPage(): IPrompt {
  * it is repositioned accordingly.
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
- * @param {IPrompt} step - The step to add or remove.
+ * @param {IPage} page - The page to add or remove.
  * @param {string} [insertAfter] - Optional name of the step after which to insert.
  * @param {boolean} [shouldAdd] - Whether to add (`true`) or remove (`false`) the step.
  */
 export function updateWizardSteps(
     prompts: YeomanUiSteps,
-    step: IPrompt,
-    insertAfter: string = '',
+    page: IPage,
+    insertAfter: PageLocalId | '' = '',
     shouldAdd: boolean = true
 ): void {
-    const pages: IPrompt[] = prompts['items'];
+    const pages: IPage[] = prompts['items'];
 
-    const existingIdx = pages.findIndex((p) => p.name === step.name);
+    const existingIdx = pages.findIndex((p) => p.id === page.id);
 
     if (shouldAdd) {
+        const afterId = wizardPageFactory.getPageId(insertAfter);
         // Decide the desired index
-        const afterIdx = pages.findIndex((p) => p.name === insertAfter);
+        const afterIdx = pages.findIndex((p) => p.id === afterId);
         const targetIdx = afterIdx === -1 ? pages.length : afterIdx + 1;
 
         // Page already there → move it
@@ -119,7 +142,7 @@ export function updateWizardSteps(
         }
 
         // Page not there → insert it
-        prompts.splice(targetIdx, 0, [step]);
+        prompts.splice(targetIdx, 0, [page]);
     } else if (existingIdx !== -1) {
         prompts.splice(existingIdx, 1, []);
     }
@@ -134,9 +157,17 @@ export function updateWizardSteps(
 export function getSubGenErrorPage(subGenType: GeneratorTypes): IPrompt[] {
     switch (subGenType) {
         case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-            return [{ name: t('yuiNavSteps.addLocalAnnotationFileName'), description: '' }];
+            return wizardPageFactory.createMany([
+                {
+                    localId: 'addLocalAnnotationFile',
+                    name: t('yuiNavSteps.addLocalAnnotationFileName'),
+                    description: ''
+                }
+            ]);
         case GeneratorTypes.CHANGE_DATA_SOURCE:
-            return [{ name: t('yuiNavSteps.replaceODataServiceName'), description: '' }];
+            return wizardPageFactory.createMany([
+                { localId: 'replaceODataService', name: t('yuiNavSteps.replaceODataServiceName'), description: '' }
+            ]);
         default:
             return [];
     }
@@ -160,21 +191,29 @@ export function getSubGenAuthPages(type: GeneratorTypes, destination: string): I
 
     switch (type) {
         case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-            return [
-                getCredentialsPageProps(t('yuiNavSteps.addLocalAnnotationFileName')),
+            return wizardPageFactory.createMany([
                 {
+                    localId: 'addLocalAnnotationFile',
+                    ...getCredentialsPageProps(t('yuiNavSteps.addLocalAnnotationFileName'))
+                },
+                {
+                    localId: 'addLocalAnnotationFile',
                     name: t('yuiNavSteps.addLocalAnnotationFileName'),
                     description: t('yuiNavSteps.addLocalAnnotationFileDescr')
                 }
-            ];
+            ]);
         case GeneratorTypes.CHANGE_DATA_SOURCE:
-            return [
-                getCredentialsPageProps(t('yuiNavSteps.replaceODataServiceName')),
+            return wizardPageFactory.createMany([
                 {
+                    localId: 'replaceODataService',
+                    ...getCredentialsPageProps(t('yuiNavSteps.replaceODataServiceName'))
+                },
+                {
+                    localId: 'replaceODataService',
                     name: t('yuiNavSteps.replaceODataServiceName'),
                     description: t('yuiNavSteps.replaceODataServiceDescr')
                 }
-            ];
+            ]);
         default:
             return [];
     }
