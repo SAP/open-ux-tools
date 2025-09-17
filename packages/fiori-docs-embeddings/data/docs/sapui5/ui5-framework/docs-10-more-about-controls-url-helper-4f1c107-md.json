@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-url-helper-4f1c107-md",
+  "title": "URL Helper",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/url-helper-4f1c107.md",
+  "lastModified": "2025-09-01T18:17:10.707Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "URL",
+    "Helper"
+  ],
+  "headers": [
+    "URL Helper"
+  ],
+  "content": "<!-- loio4f1c1075d88c41a5904389fa12b28f6b -->\n\n# URL Helper\n\nWith `sap.m.URLHelper` you can easily trigger native mobile phone applications such as e-mail, telephone, and text messages.\n\nYou can set predefined values for the application so that a user does not need to enter this information themselves. When personal information is displayed, for example phone numbers and e-mail addresses, you can initiate a phone call or e-mail with just one tap.\n\nThe URLHelper API contains the following triggers for telephone, texts, and e-mail applications:\n\n-   Trigger telephone application\n\n    ```js\n    \n    sap.m.URLHelper.triggerTel( [Telephone Number] ); //Telephone number is optional\n    ```\n\n-   Trigger text messaging application\n\n    ```js\n    \n    sap.m.URLHelper.triggerSms( [Telephone Number] ); //Telephone number is optional\n    ```\n\n-   Trigger e-mail application\n\n    ```js\n    \n    sap.m.URLHelper.triggerEmail( [Destination Email], [Subject], [Default Message Text], [CC], [BCC] ); \n    // All parameters are optional\n    ```\n\n-   Redirect To custom URL\n\n    ```js\n    \n    sap.m.URLHelper.redirect( URL ); \n    //URL is required and can be used for custom protocols (e.g http, ftp, ...)\n    ```\n\n\n> ### Note:  \n> -   iOS does **not** trigger a phone call if the phone number contains \"\\*\" or \"\\#\".\n> \n> -   You can add multiple recipients for a text message in Android phones by separating recipient numbers with \";\".\n> \n> -   According to RFC 2368 you can set multiple subscribers for the e-mail application by separating each with \",\"; however, this still depends on the application. Outlook, for example, uses \";\" as separator.\n> \n> -   You can use the `sap.m.URLHelper.redirect` method to use custom URL schemes:\n> \n>     -   For iOS: [ http://developer.apple.com/library/safari/\\#featuredarticles/iPhoneURLScheme\\_Reference/Introduction/Introduction.html](http://developer.apple.com/library/safari/#featuredarticles/iPhoneURLScheme_Reference/Introduction/Introduction.html)\n> \n>     -   For Android: [ http://developer.android.com/guide/appendix/g-app-intents.html](http://developer.android.com/guide/appendix/g-app-intents.html) \n> \n>     -   URI schemes: [ http://en.wikipedia.org/wiki/URI\\_scheme](http://en.wikipedia.org/wiki/URI_scheme)\n> \n> \n> -   If you just want to get a URI back without a redirect, you can use normalize methods which have the same parameter as trigger methods, for example:\n> \n>     ```js\n>     \n>     /*\n>      * These methods do not redirect but return URI scheme back as string.\n>      * All parameters are optional\n>      */\n>     sap.m.URLHelper.normalizeTel( [Telephone Number] );\n>     sap.m.URLHelper.normalizeSms( [Telephone Number] );\n>     sap.m.URLHelper.normalizeEmail( [Destination Email], [Subject], [Default Message Text], [CC], [BCC] );  \n>     ```\n\n**Related Information**  \n\n\n[API Reference: `sap.m.URLHelper`](https://ui5.sap.com/#/api/sap.m.URLHelper)\n\n",
+  "excerpt": "<!-- loio4f1c1075d88c41a5904389fa12b28f6b --> URL Helper With sap.m.URLHelper you can easily trigger native mobile phone applications such as e-mail, telephone, and text messages. You can set predefin...",
+  "wordCount": 353,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

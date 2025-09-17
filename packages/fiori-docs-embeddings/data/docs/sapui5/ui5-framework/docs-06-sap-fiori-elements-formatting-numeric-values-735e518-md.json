@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-formatting-numeric-values-735e518-md",
+  "title": "Formatting Numeric Values",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/formatting-numeric-values-735e518.md",
+  "lastModified": "2025-09-01T18:17:10.624Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Formatting",
+    "Numeric",
+    "Values"
+  ],
+  "headers": [
+    "Formatting Numeric Values"
+  ],
+  "content": "<!-- loio735e518fcadb44c2b434f5f7b49bfcde -->\n\n# Formatting Numeric Values\n\nNumeric values in overview pages appear in their short format, using the SAPUI5 `sap.ui.core.format.NumberFormat` utility. You can configure the number of decimal points to display by using information provided in the OData metadata file, or by using annotations.\n\n\n\nIn the following example, the `scale` attribute in the OData metadata is set to 3, indicating that the properties `Price`, `Width`, `Depth`, and `Height` will be displayed with three decimal points.\n\n> ### Sample Code:  \n> ```\n> <EntityType Name=\"Product\" sap:content-version=\"1\">\n>     ...\n>     <Property Name=\"Price\" Type=\"Edm.Decimal\" Precision=\"16\" Scale=\"3\" sap:unit=\"CurrencyCode\" sap:label=\"Unit Price\"/>\n>     <Property Name=\"Width\" Type=\"Edm.Decimal\" Precision=\"13\" Scale=\"3\" sap:unit=\"DimUnit\" sap:label=\"Dimensions\"/>\n>     <Property Name=\"Depth\" Type=\"Edm.Decimal\" Precision=\"13\" Scale=\"3\" sap:unit=\"DimUnit\" sap:label=\"Dimensions\"/>\n>     <Property Name=\"Height\" Type=\"Edm.Decimal\" Precision=\"13\" Scale=\"3\" sap:unit=\"DimUnit\" sap:label=\"Dimensions\"/>\n>     ...\n> </EntityType>\n> ```\n\nYou can also provide number formatting information in the annotation document in the `com.sap.vocabularies.UI.v1.DataPoint` term, by using the `ValueFormat` property. The `NumberOfFractionalDigits` property can be used to determine the number of decimal points.\n\nIn the following example, using the `com.sap.vocabularies.UI.v1.DataPoint ValueFormat` property, the number of decimal points displayed for the `Price` property is 1, as defined in the `NumberOfFractionalDigits` property.\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotation Term=\"com.sap.vocabularies.UI.v1.DataPoint\" Qualifier=\"Price\">\n>     <Record Type=\"com.sap.vocabularies.UI.v1.DataPointType\">\n>         <PropertyValue Property=\"Title\" String=\"Unit Price\"/>\n>         <PropertyValue Property=\"Description\" Path=\"Name\"/>\n>         <PropertyValue Property=\"Value\" Path=\"Price\"/>\n>         <PropertyValue Property=\"ValueFormat\">\n>             <Record Type=\"com.sap.vocabularies.UI.v1.NumberFormat\">\n>                 <PropertyValue Property=\"ScaleFactor\" Decimal=\"1000\"/>\n>                 <PropertyValue Property=\"NumberOfFractionalDigits\" Iint=\"1\"/>\n>             </Record>\n>         </PropertyValue>\n>     </Record>\n> </Annotation>\n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.dataPoint: {\n>   title: 'Unit Price',\n>   description: 'Name',\n>   valueFormat: {\n>     scaleFactor: 1000,\n> \tnumberOfFractionalDigits: 1\n>   }\n> }\n> Price;\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> UI.DataPoint #Price : {\n>     $Type : 'UI.DataPointType',\n>     Title : 'Unit Price',\n>     Description : Name,\n>     Value : Price,\n>     ValueFormat : {\n>         $Type : 'UI.NumberFormat',\n>         ScaleFactor : 1000,\n>         NumberOfFractionalDigits : 1\n>     }\n> }\n> \n> ```\n\n",
+  "excerpt": "<!-- loio735e518fcadb44c2b434f5f7b49bfcde --> Formatting Numeric Values Numeric values in overview pages appear in their short format, using the SAPUI5 sap.ui.core.format.NumberFormat utility. You can...",
+  "wordCount": 339,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

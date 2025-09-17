@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-controller-view1-controller-js",
+  "title": "View1.controller",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/controller/View1.controller.js",
+  "lastModified": "2025-09-01T18:17:10.809Z",
+  "tags": [
+    "samples",
+    "js",
+    "View1",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.md\n\n```javascript\n# View1.controller.js\n\n```javascript\nsap.ui.define([\"sap/ui/core/mvc/Controller\"],function(n){\"use strict\";return n.extend(\"ns.manageproductsneo.controller.View1\",{onInit:function(){}})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "View1.controller.md javascript View1.controller.md javascript View1.controller.md javascript View1.controller.md javascript View1.controller.js",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

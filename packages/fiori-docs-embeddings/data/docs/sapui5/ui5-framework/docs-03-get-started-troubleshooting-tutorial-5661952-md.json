@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-03-get-started-troubleshooting-tutorial-5661952-md",
+  "title": "Troubleshooting Tutorial",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/troubleshooting-tutorial-5661952.md",
+  "lastModified": "2025-09-01T18:17:10.488Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Troubleshooting",
+    "Tutorial"
+  ],
+  "headers": [
+    "Troubleshooting Tutorial",
+    "Get Help"
+  ],
+  "content": "<!-- loio5661952e72df471b932eddc10350c081 -->\n\n# Troubleshooting Tutorial\n\nIn this tutorial, we will show you some tools that will help you if you run into problems with your SAPUI5 app.\n\nWe will introduce you to the browser developer tools and show you the various tools that SAPUI5 offers.\n\n![](images/Troubleshooting_Tutorial_58e6ffb.png)\n\nFor example, the SAPUI5 tools can help you with the following tasks:\n\n-   Inspect and debug apps\n\n-   Examine bugs and analyze errors\n\n-   Simulate UI changes\n\n-   Find out how to improve performance\n\n\nTo help you practice using the tools, we created an app with errors that we will use throughout the tutorial. You can view and download the app in the Demo Kitat [Troubleshooting](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.troubleshooting/sample/sap.ui.core.tutorial.troubleshooting.01).\n\n\n\n<a name=\"loio5661952e72df471b932eddc10350c081__section_Troubleshooting_Get_Help\"/>\n\n## Get Help\n\nIf you're stuck and need help with a development task, you can also post a question in the SAPUI5-related forums, for example in the [SAP Community](https://community.sap.com/t5/c-khhcw49343/SAPUI5/pd-p/500983881501772639608291559920477) or on [Stack Overflow](https://stackoverflow.com/tags/sapui5/info).\n\n",
+  "excerpt": "<!-- loio5661952e72df471b932eddc10350c081 --> Troubleshooting Tutorial In this tutorial, we will show you some tools that will help you if you run into problems with your SAPUI5 app. We will introduce...",
+  "wordCount": 149,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

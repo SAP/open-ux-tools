@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-richtexteditorwithmetadata-md",
+  "title": "sap.fe.macros.RichTextEditorWithMetadata",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.RichTextEditorWithMetadata.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "RichTextEditorWithMetadata"
+  ],
+  "headers": [
+    "sap.fe.macros.RichTextEditorWithMetadata"
+  ],
+  "content": "# sap.fe.macros.RichTextEditorWithMetadata\n\n<p>Metadata-driven building block that exposes the RichTextEditor UI5 control.<br/>It's used to enter formatted text and uses the third-party component called TinyMCE.\n</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/RichTextEditorWithMetadata\n\n",
+  "excerpt": "sap.fe.macros.RichTextEditorWithMetadata <p>Metadata-driven building block that exposes the RichTextEditor UI5 control.<br/>It's used to enter formatted text and uses the third-party component called ...",
+  "wordCount": 29,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

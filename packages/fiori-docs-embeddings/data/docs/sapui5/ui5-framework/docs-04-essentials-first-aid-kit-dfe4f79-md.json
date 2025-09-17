@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-first-aid-kit-dfe4f79-md",
+  "title": "First-Aid Kit",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/first-aid-kit-dfe4f79.md",
+  "lastModified": "2025-09-01T18:17:10.516Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "First",
+    "Aid",
+    "Kit"
+  ],
+  "headers": [
+    "First-Aid Kit"
+  ],
+  "content": "<!-- loiodfe4f79843c44c40b3fb95ebffb65646 -->\n\n# First-Aid Kit\n\nThis section contains the most common issues that you might face when developing SAPUI5 apps and how to solve them.\n\n![](../03_Get-Started/images/First-Aid_Kit_3e7f72e.png)\n\n",
+  "excerpt": "<!-- loiodfe4f79843c44c40b3fb95ebffb65646 --> First-Aid Kit This section contains the most common issues that you might face when developing SAPUI5 apps and how to solve them. !",
+  "wordCount": 28,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

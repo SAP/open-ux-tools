@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-extension-point-for-list-report-header-1ab83e6-md",
+  "title": "Extension Point for List Report Header",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/extension-point-for-list-report-header-1ab83e6.md",
+  "lastModified": "2025-09-01T18:17:10.619Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Extension",
+    "Point",
+    "for",
+    "List",
+    "Report",
+    "Header"
+  ],
+  "headers": [
+    "Extension Point for List Report Header"
+  ],
+  "content": "<!-- loio1ab83e62a8804f1eb270f7bc353f3669 -->\n\n# Extension Point for List Report Header\n\nYou can use an extension point to add custom content to the header of the list report. Extensions are added above the filter bar.\n\nYou can specify separate fragments in the `manifest.json` file for the expanded header and the collapsed header as shown in the following sample code:\n\n> ### Sample Code:  \n> `manifest.json`\n> \n> ```\n> \"targets\": {\n>     \"sample\": {\n>         \"type\": \"Component\",\n>         \"id\": \"Default\",\n>         \"name\": \"sap.fe.templates.ListReport\",\n>         \"options\": {\n>             \"settings\": {\n>                 \"contextPath\": \"/RootEntity\",\n>                 \"variantManagement\": \"Page\",\n>                 \"initialLoad\": true,\n>                 \"liveMode\": true,\n>                 \"content\": {\n>                     \"header\": {\n>                         \"customHeader\": {\n>                             \"expandedHeaderFragment\": \"sap.fe.core.fpmExplorer.customListReportHeaderContent.CustomExpandedHeader\",\n>                             \"collapsedHeaderFragment\": \"sap.fe.core.fpmExplorer.customListReportHeaderContent.CustomCollapsedHeader\"\n>                         }\n>                     }\n>                 }\n>             }\n>         }\n>     }\n> }\n> ```\n\n  \n  \n**Custom Content in the List Report Header in Expanded Mode**\n\n![](images/Custom_Content_in_List_Report_Header_in_Expand_Mode_51fe3b2.png \"Custom Content in the List Report Header in Expanded Mode\")\n\n  \n  \n**Custom Content in the List Report Header in Collapsed Mode**\n\n![](images/Custom_Content_in_List_Report_Header_in_Collapsed_Mode_bd1a51e.png \"Custom Content in the List Report Header in Collapsed Mode\")\n\nYou can explore and work with the coding yourself. Check out our live example in the flexible programming model explorer at [Custom List Report Header](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/customElements/customListReportHeaderContent).\n\n",
+  "excerpt": "<!-- loio1ab83e62a8804f1eb270f7bc353f3669 --> Extension Point for List Report Header You can use an extension point to add custom content to the header of the list report. Extensions are added above t...",
+  "wordCount": 199,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-facet-filter-simple-type-1586c19-md",
+  "title": "Facet Filter: Simple Type",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/facet-filter-simple-type-1586c19.md",
+  "lastModified": "2025-09-01T18:17:10.689Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Facet",
+    "Filter",
+    "Simple",
+    "Type"
+  ],
+  "headers": [
+    "Facet Filter: Simple Type"
+  ],
+  "content": "<!-- loio1586c19a9d854f6e82613fd75290c34f -->\n\n# Facet Filter: Simple Type\n\nThe simple type of the `FacetFilter` control is only available for desktop and tablets.\n\nThe active facets are displayed as individually selectable buttons on the toolbar as shown in the following figure.\n\n![](images/SAPUI5_Facet_Filter_Simple_Toolbar_0c7cf9f.png)\n\nIf the user selects a facet in the toolbar, a popover list of the available filters for the selected facet is displayed.\n\n![](images/SAPUI5_Facet_Filter_Simple_Flow_5dd4728.png)\n\nThe simple type provides the following functions:\n\n-   With the `showPopoverOkButton` property of the `FacetFilter` control you can display an *OK* button in the popover. The *OK* button enables the user to close the popover in addition to the standard behavior of `sap.m.Popover`.\n\n-   With the `showPersonalization` property you enable the user to add facets to the toolbar by selecting the *Add Facet* icon. Personalization is disabled by default.\n\n-   With the `showSummaryBar` property you can display the active facets as a non-selectable summary bar. You use this property if you preset facet filters and the user is not allowed to change them.\n\n    ![](images/SAPUI5_Facet_Filter_Summary_Bar_53a401c.png)\n\n\n",
+  "excerpt": "<!-- loio1586c19a9d854f6e82613fd75290c34f --> Facet Filter: Simple Type The simple type of the FacetFilter control is only available for desktop and tablets. The active facets are displayed as individ...",
+  "wordCount": 169,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

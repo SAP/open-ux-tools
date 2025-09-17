@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-07-apf-data-protection-and-privacy-36f3943-md",
+  "title": "Data Protection and Privacy",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/data-protection-and-privacy-36f3943.md",
+  "lastModified": "2025-09-01T18:17:10.666Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Data",
+    "Protection",
+    "and",
+    "Privacy"
+  ],
+  "headers": [
+    "Data Protection and Privacy"
+  ],
+  "content": "<!-- loio36f394375489450a977429e8523ae27f -->\n\n# Data Protection and Privacy\n\nTo ensure data protection and privacy, it is required to be able to delete personal data from the system.\n\nThe following sections give information about how to delete personal data depending on the platform you use.\n\n",
+  "excerpt": "<!-- loio36f394375489450a977429e8523ae27f --> Data Protection and Privacy To ensure data protection and privacy, it is required to be able to delete personal data from the system. The following sectio...",
+  "wordCount": 45,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

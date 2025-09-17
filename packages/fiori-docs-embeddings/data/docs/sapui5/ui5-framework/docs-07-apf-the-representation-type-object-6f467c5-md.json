@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-07-apf-the-representation-type-object-6f467c5-md",
+  "title": "The Representation Type Object",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-representation-type-object-6f467c5.md",
+  "lastModified": "2025-09-01T18:17:10.670Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Representation",
+    "Type",
+    "Object"
+  ],
+  "headers": [
+    "The Representation Type Object"
+  ],
+  "content": "<!-- loio6f467c53595a6655e10000000a423f68 -->\n\n# The Representation Type Object\n\n> ### Note:  \n> This step is required only if you want to define your own representation types in addition to the predefined ones shipped with APF. For more information, see [Predefined Representation Types](predefined-representation-types-74db7d5.md).\n\nThe `representation type` object defines how data is depicted on the UI. It has the following format:\n\n```\n\n{\n  \"type\" : \"representationType\",    // optional\n  \"id\" : \"<id>\",\n  \"constructor\" : <constructor>,\n  \"picture\" : \"<path/file>\",    // relative to Web application root\n  \"label\" : <label>\n}\n```\n\nThe properties used in the `representation type` object denote the following:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperties\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`id` \n\n</td>\n<td valign=\"top\">\n\nUnique ID of type string.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`constructor` \n\n</td>\n<td valign=\"top\">\n\nDefines the implementing function object of the representation.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`picture` \n\n</td>\n<td valign=\"top\">\n\nIcon indicating the representation type.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`label` \n\n</td>\n<td valign=\"top\">\n\nDefines the label text.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio6f467c53595a6655e10000000a423f68 --> The Representation Type Object > Note:   > This step is required only if you want to define your own representation types in addition to the predefined on...",
+  "wordCount": 168,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

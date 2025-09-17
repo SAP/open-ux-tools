@@ -18,7 +18,7 @@ import type {
     Attribute,
     Range
 } from '@sap-ux/odata-annotation-core-types';
-import { ELEMENT_TYPE, Edm } from '@sap-ux/odata-annotation-core-types';
+import { ELEMENT_TYPE, Edm, TEXT_TYPE } from '@sap-ux/odata-annotation-core-types';
 import { ApiError } from '../error';
 
 import { PRIMITIVE_TYPE_NAMES } from '../utils';
@@ -446,6 +446,17 @@ class Visitor {
             return {
                 pointer: ['value']
             };
+        }
+        const [segment, indexSegment] = pointer;
+        const index = parseInt(indexSegment, 10);
+        if (!Number.isNaN(index) && segment === 'content') {
+            // value could also be a text node for primitive values
+            const next = node.content[index];
+            if (next?.type === TEXT_TYPE) {
+                return {
+                    pointer: ['value']
+                };
+            }
         }
         // flattened structures after annotation are not supported
         return undefined;

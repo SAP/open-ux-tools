@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-layouts-grandchildentities-cds",
+  "title": "layouts GrandChildEntities",
+  "category": "features",
+  "path": "app/featureShowcase/layouts_GrandChildEntities.cds",
+  "lastModified": "2025-09-01T18:17:10.726Z",
+  "tags": [
+    "features",
+    "cds",
+    "layouts",
+    "GrandChildEntities"
+  ],
+  "headers": [],
+  "content": "# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts GrandChildEntities.md\n\n```cds\n# layouts_GrandChildEntities.cds\n\n```cds\nusing service1 as service from '../../srv/service';\n\n/**\n    UI.LineItem\n */\nannotate service1.GrandChildEntities with @(\n    UI.LineItem : [\n        {\n            $Type : 'UI.DataField',\n            Value : field,\n        },\n    ],\n);\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "layouts GrandChildEntities.md cds layouts GrandChildEntities.md cds layouts GrandChildEntities.md cds layouts GrandChildEntities.md cds layouts_GrandChildEntities.cds",
+  "wordCount": 70,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

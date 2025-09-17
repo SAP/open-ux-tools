@@ -2,7 +2,7 @@ import { CustomExtensionType, DirName } from '@sap/ux-specification/dist/types/s
 import type { ControllerExtensionPageType } from '@sap/ux-specification/dist/types/src';
 import { SapuxFtfsFileIO } from '../../../page-editor-api';
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
@@ -86,7 +86,7 @@ async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Pro
  * @param input - The input parameters for executing the functionality.
  * @returns A promise that resolves to the execution output.
  */
-async function executeFunctionality(input: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+async function executeFunctionality(input: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { parameters, appPath } = input;
     const { pageId, controllerName, pageType } = parameters;
     const project = await resolveApplication(appPath);

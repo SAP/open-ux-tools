@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-docs-create-the-adaptation-project-d6ab261-md",
+  "title": "Create the Adaptation Project",
+  "category": "fiori-tools",
+  "path": "docs/create-the-adaptation-project-d6ab261.md",
+  "lastModified": "2025-09-01T18:17:10.126Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Create",
+    "the",
+    "Adaptation",
+    "Project"
+  ],
+  "headers": [
+    "Create the Adaptation Project",
+    "Procedure"
+  ],
+  "content": "<!-- loiod6ab2614df5c4c5597055e4dd988ad16 -->\n\n# Create the Adaptation Project\n\nCreate an adaptation project from existing SAP Fiori elements or freestyle SAPUI5 applications in SAP S/4HANA Cloud Public Edition.\n\n\n\n<a name=\"loiod6ab2614df5c4c5597055e4dd988ad16__steps_b11_dpw_5pb\"/>\n\n## Procedure\n\n1.  Open Visual Studio Code \\(VS Code\\) and start and open the dev space that you want to use. The dev space must have *SAPUI5 Adaptation Project* as a predefined extension or it has been chosen manually as an extension for the dev space during creation.\n\n2.  Choose *File* \\> *Open Folder...*. Select the *projects* folder and click *OK*.\n\n3.  To start the Yeoman generator, choose *View* \\> *Command Palette*. In the Command Palette, enter `Open Template Wizard` and select the wizard from the list. After the generator loads, click the *Adaptation Project* tile and select *Start*.\n\n4.  Use the wizard to configure the project information.\n\n    1.  In the *Select Environment* step, select ABAP for your *Target Environment*.\n\n    2.  Enter a name for the project and a title for the application. The project name has to be unique in the system.\n\n    3.  The *Namespace* field always starts with `customer.`. Enter the name of your project after `customer.`. Click *Next*.\n\n    4.  Select a system.\n\n    5.  \\(Optional\\) If required, enter your username and password for the system and select *Login* from inside the password field. Basic authentication is supported.\n\n    6.  The system type will be automatically detected, being *CloudReady*.\n\n    7.  Choose the application that you want to work with. Only applications extensible in adaptation projects will be shown in the list.\n\n    8.  Choose *Finish* and wait until your project gets generated. You will be notified when the project is generated.\n\n\n5.  A notification message appears that the project has been generated and will be saved for future use.\n\n6.  You can now preview the adaptation project. For more information, see [Previewing an Adaptation Project](previewing-an-adaptation-project-64cc15b.md). You can also continue developing. For more information, see [Making Adaptations](making-adaptations-6d2cfea.md).\n\n\n",
+  "excerpt": "<!-- loiod6ab2614df5c4c5597055e4dd988ad16 --> Create the Adaptation Project Create an adaptation project from existing SAP Fiori elements or freestyle SAPUI5 applications in SAP S/4HANA Cloud Public E...",
+  "wordCount": 315,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}
