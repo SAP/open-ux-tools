@@ -124,6 +124,9 @@ interface PageId {
  * If the step exists and needs to be moved (based on desired insertion point),
  * it is repositioned accordingly.
  *
+ * If we attempt to add already existing page but which changes in content(name or
+ * description) the content gets updated only.
+ *
  * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
  * @param {IPage} page - The page to add or remove.
  * @param {PageId} [insertAfter] - Optional page id counterparts of the step after which to insert.
@@ -138,6 +141,9 @@ export function updateWizardSteps(
     const pages: IPage[] = prompts['items'];
 
     const existingIdx = pages.findIndex((p) => p.id === page.id);
+
+    // If page exists update its name and description only.
+    updateExistingPageContentIfNeeded(prompts, page);
 
     if (shouldAdd) {
         const afterId = insertAfter ? WizardPageFactory.getPageId(insertAfter.packageName, insertAfter.localId) : '';
@@ -160,6 +166,30 @@ export function updateWizardSteps(
     } else if (existingIdx !== -1) {
         prompts.splice(existingIdx, 1, []);
     }
+}
+
+/**
+ * Updates the content of an existing {@link IPage} if there is a change in the content.
+ *
+ * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
+ * @param {IPage} page - The page to be updated eventually.
+ */
+function updateExistingPageContentIfNeeded(prompts: YeomanUiSteps, page: IPage): void {
+    const pages: IPage[] = prompts['items'];
+
+    const existingIdx = pages.findIndex((p) => p.id === page.id);
+
+    if (existingIdx === -1) {
+        return;
+    }
+
+    const existingPage = pages[existingIdx];
+    if (existingPage.name === page.name && existingPage.description === page.description) {
+        return;
+    }
+
+    existingPage.name = page.name;
+    existingPage.description = page.description;
 }
 
 /**

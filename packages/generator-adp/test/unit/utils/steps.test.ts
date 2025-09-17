@@ -160,20 +160,25 @@ describe('updateFlpWizardSteps', () => {
         });
 
         it('should handle multiple calls correctly', () => {
-            updateFlpWizardSteps(true, prompts, 'TestProject', true);
-            updateFlpWizardSteps(true, prompts, 'TestProject', true);
+            updateFlpWizardSteps(true, prompts, 'TestProject1', true);
+            updateFlpWizardSteps(true, prompts, 'TestProject2', true);
 
             const steps = prompts['items'] as IPrompt[];
             const stepNames = steps.map((s) => s.name);
 
             // Should only have one instance of each page
-            const tileSettingsCount = stepNames.filter(
-                (name) => name === t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' })
-            ).length;
+            const tileSettingsNames = stepNames.filter(
+                (name) =>
+                    name === t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject2' }) ||
+                    name === t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject1' })
+            );
+            const tileSettingsCount = tileSettingsNames.length;
             const flpConfigCount = stepNames.filter((name) => name === t('yuiNavSteps.flpConfigName')).length;
 
             expect(tileSettingsCount).toBe(1);
             expect(flpConfigCount).toBe(1);
+            // The second call to updateFlpWizardSteps updates the tileSettings page title only.
+            expect(tileSettingsNames[0]).toEqual(t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject2' }));
         });
     });
 
