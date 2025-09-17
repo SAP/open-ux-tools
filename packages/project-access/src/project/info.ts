@@ -12,7 +12,7 @@ import type {
     Project,
     ProjectType
 } from '../types';
-import { getCapProjectType } from './cap';
+import { getCapCustomPaths, getCapProjectType } from './cap';
 import { getI18nPropertiesPaths } from './i18n/i18n';
 import { findAllApps, findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
@@ -32,13 +32,15 @@ export async function getProject(root: string, memFs?: Editor): Promise<Project>
         throw new Error(`The project root folder '${root}' is not a Fiori project. No 'package.json' found.`);
     }
     const capProjectType = await getCapProjectType(root);
+    const capCustomPaths = await getCapCustomPaths(root);
     const projectType = capProjectType ?? 'EDMXBackend';
     const appFolders = await getAppFolders(root, memFs);
     const apps = await getApps(root, appFolders, memFs);
     return {
         root: normalizePath(root),
         projectType,
-        apps
+        apps,
+        capCustomPaths
     };
 }
 
