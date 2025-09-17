@@ -90,12 +90,7 @@ export function getLaunchConfig(
     args: string[] | undefined,
     env: LaunchConfigEnv
 ): LaunchConfig {
-    let outPutChannel: 'internalConsole' | 'integratedTerminal' = 'internalConsole';
-    // Enable output channel to be integratedTerminal if --accept-remote-connections is present in args to render QR code
-    if (args?.includes('--accept-remote-connections')) {
-        outPutChannel = 'integratedTerminal';
-    }
-    return {
+    const launchConfig: LaunchConfig = {
         name,
         type: 'node',
         request: 'launch',
@@ -106,11 +101,18 @@ export function getLaunchConfig(
         },
         runtimeArgs,
         args, // default arguments
-        console: outPutChannel,
+        console: 'internalConsole',
         internalConsoleOptions: 'openOnSessionStart',
         outputCapture: 'std',
         env
     };
+    // Enable output channel to be integratedTerminal if --accept-remote-connections is present in args to render QR code
+    // Disable internalConsoleOptions when console is integratedTerminal to not open the debug view
+    if (args?.includes('--accept-remote-connections')) {
+        launchConfig.console = 'integratedTerminal';
+        launchConfig.internalConsoleOptions = undefined;
+    }
+    return launchConfig;
 }
 
 /**

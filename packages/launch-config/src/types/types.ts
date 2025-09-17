@@ -54,7 +54,7 @@ export interface LaunchConfig {
         args?: string[];
     };
     console: 'internalConsole' | 'integratedTerminal';
-    internalConsoleOptions: 'openOnSessionStart';
+    internalConsoleOptions?: 'openOnSessionStart';
     outputCapture: 'std';
     env: LaunchConfigEnv;
 }
