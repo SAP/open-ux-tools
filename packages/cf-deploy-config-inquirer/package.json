@@ -41,6 +41,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
+        "@sap/cf-tools": "3.2.2",
         "inquirer": "8.2.6"
     },
     "engines": {

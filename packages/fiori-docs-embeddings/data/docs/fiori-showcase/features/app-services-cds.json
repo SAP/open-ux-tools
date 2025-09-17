@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-services-cds",
+  "title": "services",
+  "category": "features",
+  "path": "app/services.cds",
+  "lastModified": "2025-09-01T18:17:10.727Z",
+  "tags": [
+    "features",
+    "cds",
+    "services"
+  ],
+  "headers": [],
+  "content": "# services.md\n\n```cds\n# services.md\n\n```cds\n# services.md\n\n```cds\n# services.md\n\n```cds\n# services.md\n\n```cds\n# services.md\n\n```cds\n# services.md\n\n```cds\n# services.md\n\n```cds\n# services.cds\n\n```cds\n\nusing from './featureShowcase/capabilities';\nusing from './featureShowcase/field-control';\nusing from './featureShowcase/labels';\nusing from './featureShowcase/layouts_RootEntities';\nusing from './featureShowcase/layouts_contacts';\nusing from './featureShowcase/layouts_RootEntityVariants';\nusing from './featureShowcase/layouts_GrandChildEntities';\nusing from './featureShowcase/layouts_ChildEntities3';\nusing from './featureShowcase/layouts_ChildEntities1';\nusing from './featureShowcase/layouts_ChildEntities2';\nusing from './featureShowcase/layouts_ChartDataEntities';\nusing from './featureShowcase/value-helps';\nusing from './featureShowcaseNavigationTarget/annotations';\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "services.md cds services.md cds services.md cds services.md cds services.cds",
+  "wordCount": 75,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

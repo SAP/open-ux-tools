@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-09-developing-controls-implement-and-register-an-addviadelegate-change-handler-without-baseaddviadelegate-utilit-e7796ab-md",
+  "title": "Implement and Register an *AddViaDelegate* Change Handler WITHOUT *BaseAddViaDelegate* Utility",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/implement-and-register-an-addviadelegate-change-handler-without-baseaddviadelegate-utilit-e7796ab.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Implement",
+    "and",
+    "Register",
+    "AddViaDelegate",
+    "Change",
+    "Handler",
+    "WITHOUT",
+    "BaseAddViaDelegate",
+    "Utility"
+  ],
+  "headers": [
+    "Implement and Register an *AddViaDelegate* Change Handler WITHOUT *BaseAddViaDelegate* Utility"
+  ],
+  "content": "<!-- loioe7796ab7ae2846e78b78e49f56c4e837 -->\n\n# Implement and Register an *AddViaDelegate* Change Handler WITHOUT *BaseAddViaDelegate* Utility\n\nImplement and register an *addViaDelegate* change type with its change handler to a control without the *BaseAddViaDelegate* utility.\n\nAs for *addViaDelegate* no default change handler exists, a custom change handler has to be created. For more information, see [Writing a Custom Change Handler](writing-a-custom-change-handler-6a346a2.md).\n\nThe change handler gets the following information from SAPUI5 flexibility as change-specific information:\n\n> ### Sample Code:  \n> Change-specific info for the *addViaDelegate* action\n> \n> ```\n> {\n>     newControlId: <ID for the newly created control>,\n>     index : <index where to add the OData property>,\n>     bindingString : <binding path>, // The name \"bindingPath\" conflicts with getBindingPath() method from ManagedObject\n>     parentId : <ID of the parent for the newly created control>,\n>     oDataServiceVersion : <version of the OData Service> // For example \"2.0\"\n> }\n> ```\n\nYou can then register it in the `library.js` file of the control's library, where you map the change type to the corresponding change handler and the control type. Register the change type for this action in the `<control>.flexibility.js` file. For more information, see [Registering Change Handlers for UI Changes](registering-change-handlers-for-ui-changes-d5f4de8.md).\n\n",
+  "excerpt": "<!-- loioe7796ab7ae2846e78b78e49f56c4e837 --> Implement and Register an AddViaDelegate Change Handler WITHOUT BaseAddViaDelegate Utility Implement and register an addViaDelegate change type with its c...",
+  "wordCount": 197,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
