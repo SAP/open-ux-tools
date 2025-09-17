@@ -103,6 +103,11 @@ describe('Test getProject()', () => {
 
         expect(project.root).toBe(projectRoot);
         expect(project.projectType).toBe('CAPNodejs');
+        expect(project.capCustomPaths).toStrictEqual({
+            'app': 'app/',
+            'db': 'db/',
+            'srv': 'srv/'
+        });
         expect(Object.keys(project.apps).length).toBe(3);
 
         const appOne = project.apps[join('apps/one')];
@@ -214,11 +219,7 @@ describe('Test getProject()', () => {
             'root': projectRoot,
             'projectType': 'EDMXBackend',
             'apps': {},
-            'capCustomPaths': {
-                'app': 'app/',
-                'db': 'db/',
-                'srv': 'srv/'
-            }
+            'capCustomPaths': undefined
         });
     });
 });

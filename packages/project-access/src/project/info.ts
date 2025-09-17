@@ -32,8 +32,8 @@ export async function getProject(root: string, memFs?: Editor): Promise<Project>
         throw new Error(`The project root folder '${root}' is not a Fiori project. No 'package.json' found.`);
     }
     const capProjectType = await getCapProjectType(root);
-    const capCustomPaths = await getCapCustomPaths(root);
     const projectType = capProjectType ?? 'EDMXBackend';
+    const capCustomPaths = projectType === 'EDMXBackend' ? undefined : await getCapCustomPaths(root);
     const appFolders = await getAppFolders(root, memFs);
     const apps = await getApps(root, appFolders, memFs);
     return {
