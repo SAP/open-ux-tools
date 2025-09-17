@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.10.22
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
 ## 0.10.21
 
 ### Patch Changes

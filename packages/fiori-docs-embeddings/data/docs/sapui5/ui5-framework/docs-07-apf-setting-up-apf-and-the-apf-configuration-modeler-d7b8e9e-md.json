@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-07-apf-setting-up-apf-and-the-apf-configuration-modeler-d7b8e9e-md",
+  "title": "Setting Up APF and the APF Configuration Modeler",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/setting-up-apf-and-the-apf-configuration-modeler-d7b8e9e.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Setting",
+    "APF",
+    "and",
+    "the",
+    "Configuration",
+    "Modeler"
+  ],
+  "headers": [
+    "Setting Up APF and the APF Configuration Modeler"
+  ],
+  "content": "<!-- loiod7b8e9e2308142d3bb99a687be55ae65 -->\n\n# Setting Up APF and the APF Configuration Modeler\n\nThe following sections give information about the different data sources you can use and how APF is implemented depending on the platform you use:\n\n-   SAP Business Suite powered by SAP HANA\n\n-   SAP Business Warehouse powered by SAP HANA\n\n-   SAP S/4HANA\n\n\n",
+  "excerpt": "<!-- loiod7b8e9e2308142d3bb99a687be55ae65 --> Setting Up APF and the APF Configuration Modeler The following sections give information about the different data sources you can use and how APF is imple...",
+  "wordCount": 56,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

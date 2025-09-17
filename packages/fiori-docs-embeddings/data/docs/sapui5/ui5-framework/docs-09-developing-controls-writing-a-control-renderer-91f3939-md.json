@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-writing-a-control-renderer-91f3939-md",
+  "title": "Writing a Control Renderer",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/writing-a-control-renderer-91f3939.md",
+  "lastModified": "2025-09-01T18:17:10.685Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Writing",
+    "Control",
+    "Renderer"
+  ],
+  "headers": [
+    "Writing a Control Renderer",
+    "Control Class \\(`sap.ui.core.Control`\\)",
+    "RenderManager Class \\(`sap.ui.core.RenderManager`\\)",
+    "Renderer Class \\(`sap.ui.core.Renderer`\\)"
+  ],
+  "content": "<!-- loio91f393916f4d1014b6dd926db0e91070 -->\n\n# Writing a Control Renderer\n\nSAPUI5 provides three classes for control rendering: `sap.ui.core.Control`, `sap.ui.core.RenderManager`, and `sap.ui.core.Renderer`.\n\n\n\n<a name=\"loio91f393916f4d1014b6dd926db0e91070__section_B946B1C4760F4A619D34055C49017F77\"/>\n\n## Control Class \\(`sap.ui.core.Control`\\)\n\nThe control class contains the control for rendering. A control consists of properties, events, aggregations, associations, and methods. They define the behavior of the control. The appearance and data of the control is determined by properties, associations, and aggregations. The `get...` methods of the control are used to access this information during the execution of the `render()` method:\n\n-   Accessing properties:\n\n    ```js\n    \n    // var oValue = oControl.get<Property>();\n    // for example for the 'text'-property\n    var oValue = oControl.getText();\n    ```\n\n-   Accessing 1..1 aggregations\n\n    ```js\n    \n    // var oAggregation = oControl.get<Aggregation>();\n    // for example for content-aggregation\n    var oAggregation = oControl.getContent();\n    ```\n\n-   Accessing 1..n aggregrations:\n\n    ```js\n    \n    // var aAggregations = oControl.get<Aggregation>s();\n    // for example for rows-aggregation\n    var aAggregations = oControl.getRows();\n    ```\n\n-   Accessing associations:\n\n    ```js\n    \n    // var sAssociatedControlId = oControl.get<Association>();\n    // for example labelFor-association\n    var sAssociatedControlId = oControl.getLabelFor();\n    ```\n\n\n\n\n<a name=\"loio91f393916f4d1014b6dd926db0e91070__section_EE2A2957C19D4C6DA8E0AE811D87623A\"/>\n\n## RenderManager Class \\(`sap.ui.core.RenderManager`\\)\n\nThe render manager class collects pieces of HTML and injects the generated markup into the DOM. The `RenderManager` determines and loads the corresponding renderer and delegates the control rendering to the renderer. The `RenderManager` also provides, amongst others, the following helper functions for rendering:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nMethod\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`write()`\n\n</td>\n<td valign=\"top\">\n\nWrites string information to the HTML\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`writeControlData()` \n\n</td>\n<td valign=\"top\">\n\nWrites the ID and the recognition data of the control to the HTML\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`renderControl()` \n\n</td>\n<td valign=\"top\">\n\nConverts the specified control into HTML representation and adds it to the HTML; used for rendering child controls\n\n</td>\n</tr>\n</table>\n\nFor more information, see [sap.ui.core.RenderManager](https://ui5.sap.com/#/api/sap.ui.core.RenderManager).\n\n\n\n<a name=\"loio91f393916f4d1014b6dd926db0e91070__section_A9C3AEFF8AC94677BAE58BFF59FAE84A\"/>\n\n## Renderer Class \\(`sap.ui.core.Renderer`\\)\n\nThe renderer class is the base class for control renderers. The `Renderer` implements the static `render` method that is called when a control is added to the DOM. To render a control, the `RenderManager` executes the `render` method on the corresponding `Renderer` of the respective control and passes the reference to itself and to the control.\n\nFor notepad controls, the renderer class is normally not directly used, the \"renderer\" method is directly part of the control implementation and will be added to a renderer class behind the scenes.\n\n**Related Information**  \n\n\n[Prevention of Cross-site Scripting](prevention-of-cross-site-scripting-4de64e2.md \"Cross-site scripting (XSS) can be prevented by ensuring that it is not possible to inject script code into an application page that runs in a browser.\")\n\n",
+  "excerpt": "<!-- loio91f393916f4d1014b6dd926db0e91070 --> Writing a Control Renderer SAPUI5 provides three classes for control rendering: sap.ui.core.Control, sap.ui.core.RenderManager, and sap.ui.core.Renderer. ...",
+  "wordCount": 419,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

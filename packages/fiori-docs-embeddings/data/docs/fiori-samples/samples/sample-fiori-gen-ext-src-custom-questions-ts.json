@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-sample-fiori-gen-ext-src-custom-questions-ts",
+  "title": "questions",
+  "category": "samples",
+  "path": "sample-fiori-gen-ext/src/custom/questions.ts",
+  "lastModified": "2025-09-01T18:17:10.817Z",
+  "tags": [
+    "samples",
+    "ts",
+    "questions"
+  ],
+  "headers": [],
+  "content": "# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.md\n\n```typescript\n# questions.ts\n\n```typescript\nimport { FioriGeneratorPromptExtension } from \"@sap/generator-fiori\";\nimport { promptNames } from \"@sap-ux/ui5-application-inquirer/dist/types\";\n\nexport default {\n    \"@sap/generator-fiori\": {\n        [promptNames.name]: {\n            validate: (input: string): boolean | string => {\n                if (input.length < 3) {\n                    return \"Name length > 3\";\n                }\n                return true;\n            },\n            default: \"superapp1\",\n        },\n        [promptNames.namespace]: {\n            validate: (input: string, previousAnswers?): boolean | string => {\n                if (input.indexOf(\"random\") > -1) {\n                    return `Input value: ${input} is not allowed`;\n                }\n                if (previousAnswers.name === input) {\n                    return \"Namespace should not match name\";\n                }\n                return true;\n            },\n            default: (previousAnswers) =>\n                previousAnswers.title === \"App Title\"\n                    ? \"super.com\"\n                    : \"great.com\",\n        },\n    } as FioriGeneratorPromptExtension,\n};\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "questions.md typescript questions.md typescript questions.md typescript questions.md typescript questions.ts",
+  "wordCount": 135,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

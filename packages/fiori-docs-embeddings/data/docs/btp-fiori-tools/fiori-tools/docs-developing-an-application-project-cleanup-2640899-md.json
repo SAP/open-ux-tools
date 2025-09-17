@@ -1,0 +1,22 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-project-cleanup-2640899-md",
+  "title": "Project Cleanup",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/project-cleanup-2640899.md",
+  "lastModified": "2025-09-01T18:17:10.145Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Project",
+    "Cleanup"
+  ],
+  "headers": [
+    "Project Cleanup"
+  ],
+  "content": "<!-- loio2640899ad445407abfefe24bdf74272c -->\n\n# Project Cleanup\n\nThe project cleanup procedure is defined with the ![](images/Project_Cleanup_9853741.png) \\(*Cleanup*\\) icon and removes the following elements:\n\n-   All orphaned `UI.FieldGroup` and `UI.LineItem` with annotations, which are not referenced as the `UI.ReferenceFacet` targets.\n-   Annotations with the terms `UI.MultiLineText`, `Common.ValueListWithFixedValues`, `Common.Text`, `Common.ValueList`, and `Common.FieldControl` are applied to entity properties that are not mentioned in any referenced annotations.\n\n",
+  "excerpt": "<!-- loio2640899ad445407abfefe24bdf74272c --> Project Cleanup The project cleanup procedure is defined with the ! \\(Cleanup\\) icon and removes the following elements: -   All orphaned UI.FieldGroup an...",
+  "wordCount": 63,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

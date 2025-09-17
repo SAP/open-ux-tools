@@ -1,0 +1,21 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-integration-opatests-qunit-dbg-js",
+  "title": "opaTests.qunit dbg",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/test/integration/opaTests.qunit-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.810Z",
+  "tags": [
+    "samples",
+    "js",
+    "opaTests",
+    "qunit",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit dbg.md\n\n```javascript\n# opaTests.qunit-dbg.js\n\n```javascript\n/* global QUnit */\n\nQUnit.config.autostart = false;\n\nsap.ui.getCore().attachInit(function() {\n\t\"use strict\";\n\n\tsap.ui.require([\n\t\t\"mycompany/myapp/MyWorklistApp/test/integration/AllJourneys\"\n\t], function() {\n\t\tQUnit.start();\n\t});\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "opaTests.qunit dbg.md javascript opaTests.qunit dbg.md javascript opaTests.qunit dbg.md javascript opaTests.qunit dbg.md javascript opaTests.qunit-dbg.js",
+  "wordCount": 63,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

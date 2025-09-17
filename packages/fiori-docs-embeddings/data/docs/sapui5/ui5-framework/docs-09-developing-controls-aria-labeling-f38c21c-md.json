@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-09-developing-controls-aria-labeling-f38c21c-md",
+  "title": "ARIA Labeling",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/aria-labeling-f38c21c.md",
+  "lastModified": "2025-09-01T18:17:10.673Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "ARIA",
+    "Labeling"
+  ],
+  "headers": [
+    "ARIA Labeling",
+    "Labeling"
+  ],
+  "content": "<!-- loiof38c21c2f71e455e8d4a959522035a1f -->\n\n# ARIA Labeling\n\nProper labeling of all UI elements is needed in order to ensure the screen reader announces everything correctly. Here we describe the available options and how and when they should be used.\n\n\n\n## Labeling\n\nThere are several options for labeling:\n\n1.  `Label` element with `labelFor` attribute\n\n    -   Single ID reference to the labeled control\n\n    -   Reference is maintained on the label, not on the labeled control\n\n    -   Multiple references are not possible\n\n\n    > ### Example:  \n    > <code>&lt;Label text=\"Product price\" required=\"true\" <b>labelFor=\"productPriceInput\"</b>/&gt;</code>\n\n2.  The `aria-label` attribute\n\n    -   Text is directly provided in the attribute, no extra HTML control needed\n\n    -   Attribute is maintained on the labeled control\n\n    -   Only indirect support for multiple texts\n\n\n3.  The `aria-labelledBy` attribute\n\n    -   Whitespace separated list of ID references to controls\n\n    -   Attribute is maintained on the labeled control\n\n    -   Explicitly designed for multiple references\n\n\n\n> ### Caution:  \n> The different options cannot be used in conjunction. There is a precedence rule, which determines how the labeling attributes are prioritized and read by the screen reader. As an application developer, you need to be aware of the order in which the labeling is read by your screen reader.\n\n**Related Information**  \n\n\n[Best Practices for ARIA Labeling](best-practices-for-aria-labeling-3169195.md \"Sometimes the UI and the control usage may not allow standard ARIA labeling. Here we introduce some best practices on handling the labels in these cases.\")\n\n",
+  "excerpt": "<!-- loiof38c21c2f71e455e8d4a959522035a1f --> ARIA Labeling Proper labeling of all UI elements is needed in order to ensure the screen reader announces everything correctly. Here we describe the avail...",
+  "wordCount": 233,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
