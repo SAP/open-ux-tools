@@ -218,8 +218,6 @@ export function setMtaDefaults(config: CFBaseConfig): void {
 /**
  * Update the root package.json with scripts to deploy the MTA.
  *
- * Note: The fs editor is not passed to `addPackageDevDependency` since the package.json could be updated by other third party tools.
- *
  * @param {object} Options Input params
  * @param {string} Options.mtaId - MTA ID to be written to package.json
  * @param {string} Options.rootPath - MTA project path
@@ -230,9 +228,8 @@ export async function updateRootPackage(
     memFs: Editor
 ): Promise<void> {
     const packageFilePath = join(rootPath, FileName.Package);
-    const packageExists = await fileExists(packageFilePath, memFs);
-    // Append package.json only if mta.yaml is at a different level to the HTML5 app
-    if (packageExists) {
+    // In case of newly created projects, package.json will only exist in memory
+    if (await fileExists(packageFilePath, memFs)) {
         // Align CDS versions if missing otherwise mta.yaml before-all scripts will fail
         await alignCdsVersions(rootPath, memFs);
         await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, memFs);
@@ -248,11 +245,19 @@ export async function updateRootPackage(
         ]) {
             await updatePackageScript(rootPath, script.name, script.run, memFs);
         }
-        // Need to handle external changes to package.json i.e. cds and devDependencies.
-        // Note: disk package.json might not exist, for example, when creating a new project from scratch.
+        // Handle external changes to package.json, introduced by cds
         if (await fileExists(packageFilePath)) {
-            const memoryJson = (memFs?.readJSON(packageFilePath, {}) || {}) as Package;
-            const diskJson = JSON.parse(readFileSync(packageFilePath, 'utf8')) as Package;
+            // package.json might not exist on disk, for example, when creating a new project from scratch.
+            let diskJson: Package = {} as Package;
+            try {
+                const fileContent = readFileSync(packageFilePath, 'utf8');
+                diskJson = (fileContent ? JSON.parse(fileContent) : {}) as Package;
+            } catch {
+                // Not much we can do here!
+            }
+            // Get latest changes
+            const memoryJson = (memFs?.readJSON(packageFilePath, {}) ?? {}) as Package;
+            // Merge disk changes into memory and write back to memFs, memory changes take precedence
             memFs.writeJSON(packageFilePath, merge({}, memoryJson, diskJson));
         }
     }
