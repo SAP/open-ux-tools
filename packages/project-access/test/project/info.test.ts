@@ -213,7 +213,12 @@ describe('Test getProject()', () => {
         expect(project).toEqual({
             'root': projectRoot,
             'projectType': 'EDMXBackend',
-            'apps': {}
+            'apps': {},
+            'capCustomPaths': {
+                'app': 'app/',
+                'db': 'db/',
+                'srv': 'srv/'
+            }
         });
     });
 });
