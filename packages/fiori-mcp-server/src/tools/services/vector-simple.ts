@@ -89,7 +89,7 @@ export class SimpleVectorService {
                 }
 
                 logger.log(`✓ Loaded ${this.tables.length} split tables`);
-            } catch (error) {
+            } catch {
                 // Fallback to single table for backward compatibility
                 logger.log('No table index found, trying single table...');
                 try {
