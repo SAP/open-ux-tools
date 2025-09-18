@@ -58,7 +58,7 @@
         "prepare": "husky install",
         "cset": "changeset",
         "ci:version": "changeset version && pnpm install --lockfile-only",
-        "ci:publish": "changeset publish",
+        "ci:publish": " node --max_old_space_size=20336 node_modules/@changesets/cli/bin.js publish",
         "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
         "run:pretty": "prettier --write .",
         "graph-deps": "nx graph",
