@@ -41,13 +41,11 @@ describe('SimpleVectorService', () => {
         category: 'guides',
         path: 'guides/test.md',
         chunk_index: 0,
-        metadata: {
-            tags: ['test', 'guide'],
-            headers: ['Introduction'],
-            lastModified: '2023-01-01T00:00:00.000Z',
-            wordCount: 100,
-            excerpt: 'A test document'
-        },
+        tags_json: '["test", "guide"]',
+        headers_json: '["Introduction"]',
+        lastModified: '2023-01-01T00:00:00.000Z',
+        wordCount: 100,
+        excerpt: 'A test document',
         _distance: 0.1
     };
 
@@ -72,6 +70,30 @@ describe('SimpleVectorService', () => {
 
         vectorService = new SimpleVectorService();
     });
+
+    // Helper function to setup standard initialization mocks
+    const setupInitializationMocks = () => {
+        mockResolveEmbeddingsPath.mockResolvedValue({
+            dataPath: '/test/data',
+            embeddingsPath: '/test/embeddings',
+            searchPath: '/test/search',
+            docsPath: '/test/docs',
+            isExternalPackage: false,
+            isAvailable: true
+        });
+
+        // Mock table index file
+        const mockTableIndex = {
+            tables: ['documents_000'],
+            totalTables: 1,
+            maxVectorsPerTable: 5000,
+            totalVectors: 5000
+        };
+
+        mockFs.readFile
+            .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
+            .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
+    };
 
     afterAll(async () => {
         // Ensure all connections are closed to prevent Jest open handles
@@ -107,14 +129,26 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            // Mock table index file
+            const mockTableIndex = {
+                tables: ['documents_000', 'documents_001'],
+                totalTables: 2,
+                maxVectorsPerTable: 5000,
+                totalVectors: 10000
+            };
+
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
+                .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
 
             await vectorService.initialize();
 
             expect(mockResolveEmbeddingsPath).toHaveBeenCalled();
             expect(mockFs.readFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'metadata.json'), 'utf-8');
+            expect(mockFs.readFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'table_index.json'), 'utf-8');
             expect(mockConnect).toHaveBeenCalledWith(embeddingsPath);
-            expect(mockConnection.openTable).toHaveBeenCalledWith('documents');
+            expect(mockConnection.openTable).toHaveBeenCalledWith('documents_000');
+            expect(mockConnection.openTable).toHaveBeenCalledWith('documents_001');
             expect(mockLogger.log).toHaveBeenCalledWith('Loading vector database from pre-built embeddings...');
             expect(mockLogger.log).toHaveBeenCalledWith(`Using embeddings path: ${embeddingsPath} (external: true)`);
             expect(mockLogger.log).toHaveBeenCalledWith('✓ Vector database loaded and ready');
@@ -185,11 +219,14 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json succeeds
+                .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
+
             mockConnection.openTable.mockRejectedValue(new Error('Table not found'));
 
             await expect(vectorService.initialize()).rejects.toThrow(
-                'Failed to load vector database: Error: Table not found'
+                'Failed to load vector database: Error: No tables found: Error: Table not found'
             );
             expect(vectorService.isInitialized()).toBe(false);
         });
@@ -197,15 +234,7 @@ describe('SimpleVectorService', () => {
 
     describe('semanticSearch', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -226,7 +255,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.semanticSearch(queryVector, 5);
 
             expect(mockTable.vectorSearch).toHaveBeenCalledWith(queryVector);
-            expect(mockTable.limit).toHaveBeenCalledWith(5);
+            expect(mockTable.limit).toHaveBeenCalledWith(10); // 5 * 2 for multiple tables
             expect(results).toHaveLength(1);
             expect(results[0]).toEqual({
                 document: {
@@ -265,7 +294,7 @@ describe('SimpleVectorService', () => {
 
             await vectorService.semanticSearch(queryVector);
 
-            expect(mockTable.limit).toHaveBeenCalledWith(10);
+            expect(mockTable.limit).toHaveBeenCalledWith(20); // 10 * 2 for multiple tables
         });
 
         it('should handle search errors', async () => {
@@ -295,15 +324,7 @@ describe('SimpleVectorService', () => {
 
     describe('findSimilarToText', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -319,15 +340,7 @@ describe('SimpleVectorService', () => {
 
     describe('findSimilarToDocument', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -407,15 +420,7 @@ describe('SimpleVectorService', () => {
 
     describe('getDocumentsByCategory', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -446,7 +451,7 @@ describe('SimpleVectorService', () => {
 
             await vectorService.getDocumentsByCategory('guides', 10);
 
-            expect(mockTable.limit).toHaveBeenCalledWith(10);
+            expect(mockTable.limit).toHaveBeenCalledWith(20); // Math.ceil(10/1) + 10 = 20
         });
 
         it('should not apply limit when not provided', async () => {
@@ -475,15 +480,7 @@ describe('SimpleVectorService', () => {
         });
 
         it('should return metadata when initialized', async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
 
             const result = vectorService.getMetadata();
@@ -496,9 +493,9 @@ describe('SimpleVectorService', () => {
             expect(vectorService.isInitialized()).toBe(false);
         });
 
-        it('should return false when only table is set', async () => {
+        it('should return false when only tables is set', async () => {
             // Simulate partial initialization
-            vectorService['table'] = mockTable;
+            vectorService['tables'] = [mockTable];
             expect(vectorService.isInitialized()).toBe(false);
         });
 
@@ -509,15 +506,7 @@ describe('SimpleVectorService', () => {
         });
 
         it('should return true when fully initialized', async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
 
             expect(vectorService.isInitialized()).toBe(true);
@@ -526,15 +515,7 @@ describe('SimpleVectorService', () => {
 
     describe('close', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -554,6 +535,7 @@ describe('SimpleVectorService', () => {
         it('should allow reinitialization after close', async () => {
             await vectorService.close();
 
+            // Setup fresh mocks for reinitialization
             mockResolveEmbeddingsPath.mockResolvedValue({
                 dataPath: '/test/data',
                 embeddingsPath: '/test/embeddings',
@@ -562,7 +544,17 @@ describe('SimpleVectorService', () => {
                 isExternalPackage: false,
                 isAvailable: true
             });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+
+            const mockTableIndex = {
+                tables: ['documents_000'],
+                totalTables: 1,
+                maxVectorsPerTable: 5000,
+                totalVectors: 5000
+            };
+
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
+                .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
 
             await vectorService.initialize();
 

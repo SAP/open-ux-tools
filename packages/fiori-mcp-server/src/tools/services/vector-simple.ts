@@ -20,9 +20,20 @@ export interface EmbeddingMetadata {
 /**
  *
  */
+interface TableIndex {
+    tables: string[];
+    totalTables: number;
+    maxVectorsPerTable: number;
+    totalVectors: number;
+}
+
+/**
+ *
+ */
 export class SimpleVectorService {
     private connection: Connection | null = null;
-    private table: Table | null = null;
+    private tables: Table[] = [];
+    private tableIndex: TableIndex | null = null;
     private metadata: EmbeddingMetadata | null = null;
     private dataPath: string;
 
@@ -63,7 +74,37 @@ export class SimpleVectorService {
 
             // Connect to LanceDB
             this.connection = await connect(this.dataPath);
-            this.table = await this.connection.openTable('documents');
+
+            // Load table index to get list of split tables
+            const tableIndexPath = path.join(this.dataPath, 'table_index.json');
+            try {
+                const tableIndexContent = await fs.readFile(tableIndexPath, 'utf-8');
+                this.tableIndex = JSON.parse(tableIndexContent);
+
+                // Load all tables
+                this.tables = [];
+                for (const tableName of this.tableIndex?.tables || []) {
+                    const table = await this.connection.openTable(tableName);
+                    this.tables.push(table);
+                }
+
+                logger.log(`✓ Loaded ${this.tables.length} split tables`);
+            } catch (error) {
+                // Fallback to single table for backward compatibility
+                logger.log('No table index found, trying single table...');
+                try {
+                    const table = await this.connection.openTable('documents');
+                    this.tables = [table];
+                    this.tableIndex = {
+                        tables: ['documents'],
+                        totalTables: 1,
+                        maxVectorsPerTable: -1,
+                        totalVectors: this.metadata?.totalVectors || 0
+                    };
+                } catch (fallbackError) {
+                    throw new Error(`No tables found: ${fallbackError}`);
+                }
+            }
 
             logger.log('✓ Vector database loaded and ready');
         } catch (error) {
@@ -80,20 +121,30 @@ export class SimpleVectorService {
      * @returns Promise resolving to search results
      */
     async semanticSearch(queryVector: number[], limit: number = 10, category?: string): Promise<VectorSearchResult[]> {
-        if (!this.table) {
+        if (this.tables.length === 0) {
             throw new Error('Vector database not initialized');
         }
 
         try {
-            let query = this.table.vectorSearch(queryVector).limit(limit);
+            // Search across all tables and collect results
+            const allResults: any[] = [];
 
-            if (category) {
-                query = query.where(`category = "${category}"`);
+            for (const table of this.tables) {
+                let query = table.vectorSearch(queryVector).limit(limit * 2); // Get more from each table
+
+                if (category) {
+                    query = query.where(`category = "${category}"`);
+                }
+
+                const tableResults = await query.toArray();
+                allResults.push(...tableResults);
             }
 
-            const results = await query.toArray();
+            // Sort all results by distance and take top results
+            allResults.sort((a, b) => (a._distance || 0) - (b._distance || 0));
+            const topResults = allResults.slice(0, limit);
 
-            return results.map((result: any) => ({
+            return topResults.map((result: any) => ({
                 document: {
                     id: result.document_id, // Use document_id instead of chunk id
                     vector: result.vector,
@@ -103,11 +154,11 @@ export class SimpleVectorService {
                     path: result.path,
                     chunk_index: result.chunk_index,
                     metadata: {
-                        tags: result.metadata.tags,
-                        headers: result.metadata.headers,
-                        lastModified: new Date(result.metadata.lastModified),
-                        wordCount: result.metadata.wordCount,
-                        excerpt: result.metadata.excerpt
+                        tags: this.parseJsonField(result.tags_json) || [],
+                        headers: this.parseJsonField(result.headers_json) || [],
+                        lastModified: new Date(result.lastModified),
+                        wordCount: result.wordCount,
+                        excerpt: result.excerpt
                     }
                 },
                 score: 1 - (result._distance || 0),
@@ -142,35 +193,48 @@ export class SimpleVectorService {
      * @returns Promise resolving to similar documents
      */
     async findSimilarToDocument(documentId: string, limit: number = 5): Promise<VectorSearchResult[]> {
-        if (!this.table) {
+        if (this.tables.length === 0) {
             throw new Error('Vector database not initialized');
         }
 
         try {
-            // Find the first chunk of the document to use as reference
-            const referenceResults = await this.table
-                .search('')
-                .where(`document_id = "${documentId}" AND chunk_index = 0`)
-                .limit(1)
-                .toArray();
+            // Find the first chunk of the document to use as reference across all tables
+            let referenceVector: number[] | null = null;
 
-            if (referenceResults.length === 0) {
+            for (const table of this.tables) {
+                const referenceResults = await table
+                    .search('')
+                    .where(`document_id = "${documentId}" AND chunk_index = 0`)
+                    .limit(1)
+                    .toArray();
+
+                if (referenceResults.length > 0) {
+                    referenceVector = referenceResults[0].vector;
+                    break;
+                }
+            }
+
+            if (!referenceVector) {
                 return [];
             }
 
-            const referenceVector = referenceResults[0].vector;
+            // Search for similar documents across all tables, excluding the original
+            const allResults: any[] = [];
 
-            // Search for similar documents, excluding the original
-            const results = await this.table
-                .vectorSearch(referenceVector)
-                .where(`document_id != "${documentId}"`)
-                .limit(limit * 2) // Get more to account for multiple chunks
-                .toArray();
+            for (const table of this.tables) {
+                const results = await table
+                    .vectorSearch(referenceVector)
+                    .where(`document_id != "${documentId}"`)
+                    .limit(limit * 2) // Get more to account for multiple chunks
+                    .toArray();
+
+                allResults.push(...results);
+            }
 
             // Deduplicate by document_id and take best score for each document
             const documentScores = new Map<string, any>();
 
-            for (const result of results) {
+            for (const result of allResults) {
                 const docId = result.document_id;
                 const score = 1 - (result._distance || 0);
 
@@ -197,11 +261,11 @@ export class SimpleVectorService {
                         path: result.path,
                         chunk_index: result.chunk_index,
                         metadata: {
-                            tags: result.metadata.tags,
-                            headers: result.metadata.headers,
-                            lastModified: new Date(result.metadata.lastModified),
-                            wordCount: result.metadata.wordCount,
-                            excerpt: result.metadata.excerpt
+                            tags: this.parseJsonField(result.tags_json) || [],
+                            headers: this.parseJsonField(result.headers_json) || [],
+                            lastModified: new Date(result.lastModified),
+                            wordCount: result.wordCount,
+                            excerpt: result.excerpt
                         }
                     },
                     score: result.score,
@@ -223,18 +287,26 @@ export class SimpleVectorService {
      * @returns Promise resolving to documents in the category
      */
     async getDocumentsByCategory(category: string, limit?: number): Promise<VectorSearchResult[]> {
-        if (!this.table) {
+        if (this.tables.length === 0) {
             throw new Error('Vector database not initialized');
         }
 
         try {
-            let query = this.table.search('').where(`category = "${category}" AND chunk_index = 0`); // Only first chunk of each doc
+            const allResults: any[] = [];
 
-            if (limit) {
-                query = query.limit(limit);
+            for (const table of this.tables) {
+                let query = table.search('').where(`category = "${category}" AND chunk_index = 0`); // Only first chunk of each doc
+
+                if (limit) {
+                    query = query.limit(Math.ceil(limit / this.tables.length) + 10); // Distribute limit across tables
+                }
+
+                const tableResults = await query.toArray();
+                allResults.push(...tableResults);
             }
 
-            const results = await query.toArray();
+            // Take only the requested limit
+            const results = limit ? allResults.slice(0, limit) : allResults;
 
             return results.map((result: any) => ({
                 document: {
@@ -246,11 +318,11 @@ export class SimpleVectorService {
                     path: result.path,
                     chunk_index: result.chunk_index,
                     metadata: {
-                        tags: result.metadata.tags,
-                        headers: result.metadata.headers,
-                        lastModified: new Date(result.metadata.lastModified),
-                        wordCount: result.metadata.wordCount,
-                        excerpt: result.metadata.excerpt
+                        tags: this.parseJsonField(result.tags_json) || [],
+                        headers: this.parseJsonField(result.headers_json) || [],
+                        lastModified: new Date(result.lastModified),
+                        wordCount: result.wordCount,
+                        excerpt: result.excerpt
                     }
                 },
                 score: 1.0, // No distance for category queries
@@ -272,18 +344,32 @@ export class SimpleVectorService {
     }
 
     /**
+     * Helper method to parse JSON fields safely.
+     *
+     * @param jsonString The JSON string to parse
+     * @returns Parsed array or null if parsing fails
+     */
+    private parseJsonField(jsonString: string): string[] | null {
+        try {
+            return jsonString ? JSON.parse(jsonString) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    /**
      * Checks if the vector store is initialized.
      *
      * @returns True if initialized, false otherwise
      */
     isInitialized(): boolean {
-        return this.table !== null && this.metadata !== null;
+        return this.tables.length > 0 && this.metadata !== null;
     }
 
     async close(): Promise<void> {
         if (this.connection) {
             this.connection = null;
-            this.table = null;
+            this.tables = [];
             logger.log('Vector database connection closed');
         }
     }
