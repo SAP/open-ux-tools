@@ -646,7 +646,7 @@ describe('parse', () => {
             `);
         });
 
-        test.only('property with constraints', () => {
+        test('property with constraints', () => {
             const result = parseWithMarkup(
                 `<EntityType Name="BookingsType">
                 <Property Name="Measure" Type="Edm.Double" Nullable="false" Precision="2" Scale="3"/>
