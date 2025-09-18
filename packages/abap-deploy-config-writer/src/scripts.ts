@@ -42,13 +42,7 @@ export async function updateScriptsForAdp(
     lrep: string | undefined,
     fs: Editor
 ): Promise<void> {
-    let shouldAddBuildScript = true;
-    if (lrep) {
-        shouldAddBuildScript = false;
-    }
-    if (isTsProject(fs, basePath)) {
-        shouldAddBuildScript = true;
-    }
+    const shouldAddBuildScript = !lrep || isTsProject(fs, basePath);
     if (shouldAddBuildScript) {
         await updateScripts(basePath, deployConfigFile, fs);
     } else {
