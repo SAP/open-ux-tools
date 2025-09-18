@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.31.0
+
+### Minor Changes
+
+-   c385a76: Enhanced the Project type with the capCustomPaths property to store information about custom paths in CAP projects. These custom paths should be considered during performance optimization checks.
+
 ## 1.30.14
 
 ### Patch Changes
