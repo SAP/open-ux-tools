@@ -646,6 +646,29 @@ describe('parse', () => {
             `);
         });
 
+        test.only('property with constraints', () => {
+            const result = parseWithMarkup(
+                `<EntityType Name="BookingsType">
+                <Property Name="Measure" Type="Edm.Double" Nullable="false" Precision="2" Scale="3"/>
+                <Property Name="MeasureFloating" Type="Edm.Double" Scale="floating"/>
+                <Property Name="MeasureVariable" Type="Edm.Double" Scale="variable"/>
+                <Property Name="MeasureWrong" Type="Edm.Double" Scale="wrong"/>
+                <Property Name="MeasureDefault" Type="Edm.Int32" DefaultValue="5"/>
+                <Property Name="Location" Type="Edm.Int64" SRID="4326"/>
+                <Property Name="LocationVariable" Type="Edm.Int64" SRID="variable"/>
+                <Property Name="LocationFloating" Type="Edm.Int64" SRID="floating"/>
+                <Property Name="Text" Type="Edm.String" Unicode="false"/>
+                <Property Name="TextWithUnicode" Type="Edm.String" Unicode="true"/>
+            </EntityType>`
+            );
+            expect(
+                result
+                    .find((element) => element.name === 'Z2SEPMRA_C_PD_PRODUCT_CDS.BookingsType')
+                    ?.content.filter((element) => element.kind === 'Property')
+                    .map(({ facets, name }) => ({ name, facets }))
+            ).toMatchSnapshot();
+        });
+
         test(`Action`, () => {
             const result = parseV4(`
               <Action Name="CancelRequest" />

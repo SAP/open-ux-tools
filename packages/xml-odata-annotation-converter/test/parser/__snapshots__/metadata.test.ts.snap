@@ -1090,6 +1090,69 @@ Array [
 ]
 `;
 
+exports[`parse metadata property with constraints 1`] = `
+Array [
+  Object {
+    "facets": Object {
+      "isNullable": false,
+      "precision": 2,
+      "scale": 3,
+    },
+    "name": "Measure",
+  },
+  Object {
+    "facets": Object {
+      "scale": "floating",
+    },
+    "name": "MeasureFloating",
+  },
+  Object {
+    "facets": Object {
+      "scale": "variable",
+    },
+    "name": "MeasureVariable",
+  },
+  Object {
+    "facets": undefined,
+    "name": "MeasureWrong",
+  },
+  Object {
+    "facets": Object {
+      "defaultValue": "5",
+    },
+    "name": "MeasureDefault",
+  },
+  Object {
+    "facets": Object {
+      "srid": 4326,
+    },
+    "name": "Location",
+  },
+  Object {
+    "facets": Object {
+      "srid": "variable",
+    },
+    "name": "LocationVariable",
+  },
+  Object {
+    "facets": undefined,
+    "name": "LocationFloating",
+  },
+  Object {
+    "facets": Object {
+      "supportsUnicode": false,
+    },
+    "name": "Text",
+  },
+  Object {
+    "facets": Object {
+      "supportsUnicode": true,
+    },
+    "name": "TextWithUnicode",
+  },
+]
+`;
+
 exports[`parse metadata type definition and enum type 1`] = `
 Array [
   Object {
