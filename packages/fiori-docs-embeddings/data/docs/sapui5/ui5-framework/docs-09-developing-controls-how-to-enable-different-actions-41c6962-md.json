@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-how-to-enable-different-actions-41c6962-md",
+  "title": "How to Enable Different Actions",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/how-to-enable-different-actions-41c6962.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "How",
+    "Enable",
+    "Different",
+    "Actions"
+  ],
+  "headers": [
+    "How to Enable Different Actions"
+  ],
+  "content": "<!-- loio41c69621fb554fec8476429056fbe7a3 -->\n\n# How to Enable Different Actions\n\nThis section provides examples how to enable different actions.\n\n",
+  "excerpt": "<!-- loio41c69621fb554fec8476429056fbe7a3 --> How to Enable Different Actions This section provides examples how to enable different actions.",
+  "wordCount": 19,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

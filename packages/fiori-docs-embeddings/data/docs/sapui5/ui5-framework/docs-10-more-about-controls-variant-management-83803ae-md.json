@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-variant-management-83803ae-md",
+  "title": "Variant Management",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/variant-management-83803ae.md",
+  "lastModified": "2025-09-01T18:17:10.707Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Variant",
+    "Management"
+  ],
+  "headers": [
+    "Variant Management"
+  ],
+  "content": "<!-- loio83803aee4b4f4bd69fb84e060a92bfa8 -->\n\n# Variant Management\n\nThe `VariantManagement` control can be used to manage variants, such as filter bar variants or table variants.\n\n",
+  "excerpt": "<!-- loio83803aee4b4f4bd69fb84e060a92bfa8 --> Variant Management The VariantManagement control can be used to manage variants, such as filter bar variants or table variants.",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

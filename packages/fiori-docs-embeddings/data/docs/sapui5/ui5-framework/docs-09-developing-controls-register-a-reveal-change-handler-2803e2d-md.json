@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-register-a-reveal-change-handler-2803e2d-md",
+  "title": "Register a *Reveal* Change Handler",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/register-a-reveal-change-handler-2803e2d.md",
+  "lastModified": "2025-09-01T18:17:10.683Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Register",
+    "Reveal",
+    "Change",
+    "Handler"
+  ],
+  "headers": [
+    "Register a *Reveal* Change Handler",
+    "The Default SAPUI5 Flexibility Change Handler",
+    "Custom Change Handler Implementation"
+  ],
+  "content": "<!-- loio2803e2d911404ed890ed36adf7d22431 -->\n\n# Register a *Reveal* Change Handler\n\nRegister a *Reveal* change type with its change handler to a control.\n\nRegister a change type in the `library.js` file of the underlying control library for the *reveal* action, and map it to the corresponding change handler.\n\nIn the following example of `sap.ui.comp.smartform.GroupElement`, the default change type `unhideControl` under the default change handler `sap.ui.fl.changeHandler.UnhideControl` is used.\n\n> ### Sample Code:  \n> Library.js\n> \n> ```\n> sap.ui.define([\"sap/ui/core/Lib\"], function(Library) {\n>   Library.init({\n>      extensions: {\n>         flChangeHandlers: {\n>             \"sap.ui.comp.smartform.GroupElement\": {\n>                 \"unhideControl\": \"default\",\n>             },\n>         }\n>      }\n>   });\n> });\n> ```\n\n\n\n<a name=\"loio2803e2d911404ed890ed36adf7d22431__section_ikq_hxr_gyb\"/>\n\n## The Default SAPUI5 Flexibility Change Handler\n\nWhenever the *reveal* action on a control can be performed by simply setting its `visible` attribute to `true`, we recommend reusing the default change handler `UnhideControl` for the implementation.\n\n\n\n<a name=\"loio2803e2d911404ed890ed36adf7d22431__section_tkj_rxr_gyb\"/>\n\n## Custom Change Handler Implementation\n\nIf the default `UnhideControl` change handler isn't sufficient, you have to implement a change handler for revealing a control \\(see [Writing a Custom Change Handler](writing-a-custom-change-handler-6a346a2.md)\\).\n\nThe change-specific information is usually empty, as the selector control is to be revealed, but for some composite controls where you tweaked the design-time metadata you can deviate from this. You can then get the following information from SAPUI5 flexibility as change-specific information:\n\n> ### Sample Code:  \n> Change-specific info for the reveal action\n> \n> ```\n> {\n>     revealedElementId : <ID of the element being revealed>\n>     directParent:       <parent control>\n> };\n> ```\n\n",
+  "excerpt": "<!-- loio2803e2d911404ed890ed36adf7d22431 --> Register a Reveal Change Handler Register a Reveal change type with its change handler to a control. Register a change type in the library.js file of the ...",
+  "wordCount": 251,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ui5-api-api-sap-fe-md",
+  "title": "sap.fe",
+  "category": "api-reference",
+  "path": "api/sap.fe.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap"
+  ],
+  "headers": [
+    "sap.fe"
+  ],
+  "content": "# sap.fe\n\n**Type:** namespace\n\n",
+  "excerpt": "sap.fe Type: namespace",
+  "wordCount": 5,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

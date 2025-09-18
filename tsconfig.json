@@ -109,6 +109,9 @@
       "path": "packages/fiori-app-sub-generator"
     },
     {
+      "path": "packages/fiori-docs-embeddings"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {

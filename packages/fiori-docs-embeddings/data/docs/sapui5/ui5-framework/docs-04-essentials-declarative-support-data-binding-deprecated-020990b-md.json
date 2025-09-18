@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-declarative-support-data-binding-deprecated-020990b-md",
+  "title": "Declarative Support: Data Binding \\(deprecated\\)",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/declarative-support-data-binding-deprecated-020990b.md",
+  "lastModified": "2025-09-01T18:17:10.508Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Declarative",
+    "Support",
+    "Data",
+    "Binding",
+    "deprecated"
+  ],
+  "headers": [
+    "Declarative Support: Data Binding \\(deprecated\\)"
+  ],
+  "content": "<!-- loio020990b1210e47c89a58a4f4e790c476 -->\n\n# Declarative Support: Data Binding \\(deprecated\\)\n\nDeclarative support in SAPUI5 also enables data binding.\n\n> ### Caution:  \n> Deprecated as of UI5 version 1.120, replaced by [XML View](xml-view-91f2928.md).\n\nJust add the model path in curly brackets and bind the model to the control \\(or parent control\\):\n\n```html\n\n<div data-sap-ui-type=\"sap.m.Button\" data-text=\"{/stringValue}\" data-enabled=\"{model2>/booleanValue}\"></div>\n```\n\n0..n aggregations can define templates to use for the list binding:\n\n```html\n\n<div data-sap-ui-type=\"sap.m.Carousel\" data-content=\"{/buttons}\">\n    <div data-sap-ui-type=\"sap.m.Button\" data-text=\"{title}\"></div>\n</div>\n```\n\nIn the example above, the button template is used for the carousel content data binding.\n\n**Related Information**  \n\n\n[Data Binding](data-binding-68b9644.md \"You use data binding to bind UI elements to data sources to keep the data in sync and allow data editing on the UI.\")\n\n",
+  "excerpt": "<!-- loio020990b1210e47c89a58a4f4e790c476 --> Declarative Support: Data Binding \\(deprecated\\) Declarative support in SAPUI5 also enables data binding. > Caution:   > Deprecated as of UI5 version 1.12...",
+  "wordCount": 119,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

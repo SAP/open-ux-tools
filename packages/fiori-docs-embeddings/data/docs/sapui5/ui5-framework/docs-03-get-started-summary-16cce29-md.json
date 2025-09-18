@@ -1,0 +1,21 @@
+{
+  "id": "sapui5-docs-03-get-started-summary-16cce29-md",
+  "title": "Summary",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/summary-16cce29.md",
+  "lastModified": "2025-09-01T18:17:10.488Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Summary"
+  ],
+  "headers": [
+    "Summary"
+  ],
+  "content": "<!-- loio16cce291369d43b280a04117ca614442 -->\n\n# Summary\n\nWe have now embedded a `TextRule` control in our application. We created a control that uses text input and bound it to data.\n\nWe also added a *Settings* button. You can click the *Settings* button to change settings for the text rule.\n\n",
+  "excerpt": "<!-- loio16cce291369d43b280a04117ca614442 --> Summary We have now embedded a TextRule control in our application. We created a control that uses text input and bound it to data. We also added a Settin...",
+  "wordCount": 48,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

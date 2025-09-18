@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.4.6
+
+### Patch Changes
+
+-   1f18878: feat: extend `deprecated-$value-syntax` diagnostic with data required to create a quick fix.
+
 ## 0.4.5
 
 ### Patch Changes

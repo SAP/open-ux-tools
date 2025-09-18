@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-xs-security-json",
+  "title": "xs security",
+  "category": "samples",
+  "path": "cap/cap-fiori-mta-standalone/xs-security.json",
+  "lastModified": "2025-09-01T18:17:10.805Z",
+  "tags": [
+    "samples",
+    "json",
+    "security"
+  ],
+  "headers": [],
+  "content": "# xs-security.json\n\n```json\n{\n  \"xsappname\": \"standalonecapproject\",\n  \"tenant-mode\": \"dedicated\",\n  \"description\": \"Security profile of called application\",\n  \"scopes\": [],\n  \"role-templates\": [],\n  \"oauth2-configuration\": {\n    \"redirect-uris\": [\n      \"https://**.hana.ondemand.com/**\",\n      \"https://**.applicationstudio.cloud.sap/**\",\n      \"http://localhost:*/**\"\n    ]\n  }\n}\n```",
+  "excerpt": "xs-security.json",
+  "wordCount": 29,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

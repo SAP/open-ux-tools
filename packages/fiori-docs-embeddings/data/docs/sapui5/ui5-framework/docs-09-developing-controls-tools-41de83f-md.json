@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-09-developing-controls-tools-41de83f-md",
+  "title": "Tools",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/tools-41de83f.md",
+  "lastModified": "2025-09-01T18:17:10.685Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Tools"
+  ],
+  "headers": [
+    "Tools",
+    "ESLint"
+  ],
+  "content": "<!-- loio41de83f642224556b8716dec2b41ce86 -->\n\n# Tools\n\nFor the tools used for SAPUI5 content development, guidelines and recommendations have been introduced.\n\nThe following guidelines and recommendations apply:\n\n-   To make issues with mixed tabs/spaces and windows-style linebreaks visible immediately, we recommend to configure your JavaScript editor to display whitespace and linebreak characters.\n\n-   We also recommend to configure the code formatter of your code editor accordingly.\n\n-   Do **not** use the auto formatter to format entire files. The auto formatter handles many lines and makes it more difficult to find out who actually wrote the code.\n\n\n\n\n## ESLint\n\nSAPUI5 uses ESLint to check JavaScript sources. A recommended set of rules and settings can be found in our [**OpenUI5 project**](https://github.com/SAP/openui5/blob/-/docs/eslint.md).\n\n",
+  "excerpt": "<!-- loio41de83f642224556b8716dec2b41ce86 --> Tools For the tools used for SAPUI5 content development, guidelines and recommendations have been introduced. The following guidelines and recommendations...",
+  "wordCount": 118,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

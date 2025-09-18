@@ -1,5 +1,14 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.8
+
+### Patch Changes
+
+-   1f18878: feat: extend `deprecated-$value-syntax` diagnostic with data required to create a quick fix.
+    -   @sap-ux/odata-annotation-core@0.2.7
+    -   @sap-ux/odata-vocabularies@0.4.13
+    -   @sap-ux/cds-annotation-parser@0.2.16
+
 ## 0.6.7
 
 ### Patch Changes

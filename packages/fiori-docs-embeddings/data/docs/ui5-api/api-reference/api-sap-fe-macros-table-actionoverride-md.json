@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-table-actionoverride-md",
+  "title": "sap.fe.macros.table.ActionOverride",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.table.ActionOverride.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "table",
+    "ActionOverride"
+  ],
+  "headers": [
+    "sap.fe.macros.table.ActionOverride"
+  ],
+  "content": "# sap.fe.macros.table.ActionOverride\n\n<p>Definition of an override for the action to be used inside the Table building block.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/table/ActionOverride\n\n",
+  "excerpt": "sap.fe.macros.table.ActionOverride <p>Definition of an override for the action to be used inside the Table building block.</p> Type: class Module: sap/fe/macros/table/ActionOverride",
+  "wordCount": 22,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

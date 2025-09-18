@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-db-undeploy-json",
+  "title": "undeploy",
+  "category": "samples",
+  "path": "cap/cap-fiori-mta/db/undeploy.json",
+  "lastModified": "2025-09-01T18:17:10.803Z",
+  "tags": [
+    "samples",
+    "json",
+    "undeploy"
+  ],
+  "headers": [],
+  "content": "# undeploy.json\n\n```json\n[\n  \"src/gen/**/*.hdbview\",\n  \"src/gen/**/*.hdbindex\",\n  \"src/gen/**/*.hdbconstraint\"\n]\n```",
+  "excerpt": "undeploy.json",
+  "wordCount": 9,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

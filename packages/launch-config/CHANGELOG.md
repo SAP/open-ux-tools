@@ -1,5 +1,18 @@
 # @sap-ux/launch-config
 
+## 0.10.23
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+
+## 0.10.22
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
 ## 0.10.21
 
 ### Patch Changes

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-neo-config-json",
+  "title": "config",
+  "category": "samples",
+  "path": "neo-migration/neo/config.json",
+  "lastModified": "2025-09-01T18:17:10.812Z",
+  "tags": [
+    "samples",
+    "json",
+    "config"
+  ],
+  "headers": [],
+  "content": "# config.json\n\n```json\n{\n  \"init_data\": {\n    \"subaccount\": {\n      \"existing_destinations_policy\": \"update\",\n      \"destinations\": [\n        {\n          \"Name\": \"northwind\",\n          \"WebIDEEnabled\": \"true\",\n          \"WebIDEUsage\": \"odata_gen\",\n          \"HTML5.DynamicDestination\": \"true\",\n          \"Authentication\": \"NoAuthentication\",\n          \"Description\": \"Destination to internet facing host\",\n          \"ProxyType\": \"Internet\",\n          \"Type\": \"HTTP\",\n          \"URL\": \"https://services.odata.org\"\n        }\n      ]\n    }\n  }\n}\n```",
+  "excerpt": "config.json",
+  "wordCount": 41,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-09-developing-controls-mobile-events-9860cd2-md",
+  "title": "Mobile Events",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/mobile-events-9860cd2.md",
+  "lastModified": "2025-09-01T18:17:10.680Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Mobile",
+    "Events"
+  ],
+  "headers": [
+    "Mobile Events",
+    "Additional Mobile Browser Events",
+    "Additional Mobile Pseudo Events",
+    "Devices Supporting both Mouse and Touch Input"
+  ],
+  "content": "<!-- loio9860cd2b183540f48ee054bcef44a8b5 -->\n\n# Mobile Events\n\nIn addition to the general browser and control events you can access specific events for touch-enabled devices.\n\nWhen implementing SAPUI5 controls, some browser events can be handled very easily by implementing a method named `on<eventName>`, so all the bind/unbind effort is avoided. This is equally possible on mobile.\n\nOn touch-enabled platforms additional browser and pseudo events are available:\n\n\n\n<a name=\"loio9860cd2b183540f48ee054bcef44a8b5__section_N1001C_N10011_N10001\"/>\n\n## Additional Mobile Browser Events\n\nOn touch-enabled platforms the following events are also provided within UI5 controls to be handled in `on<eventName>` methods:\n\n-   `touchstart` \n-   `touchend` \n-   `touchmove` \n-   `touchcancel` \n\n\n\n<a name=\"loio9860cd2b183540f48ee054bcef44a8b5__section_N1004E_N10011_N10001\"/>\n\n## Additional Mobile Pseudo Events\n\njQuery mobile event handling is used in SAPUI5 when running on touch-enabled devices. From the basic browser events it creates semantically richer events. Some of them are also provided automatically in SAPUI5 controls:\n\n-   `swipe` \n-   `tap` \n-   `swipeleft` \n-   `swiperight` \n-   `scrollstart` \n-   `scrollstop` \n\nFor more information, see [jQuery mobile](http://api.jquerymobile.com/).\n\n\n\n## Devices Supporting both Mouse and Touch Input\n\nA number of devices allow user interaction by both mouse and touch input. To be able to react to both kind of events, some additional functionality has been introduced.\n\nFor more information, see [Devices Supporting both Mouse and Touch Input](devices-supporting-both-mouse-and-touch-input-1f9de72.md)\n\n**Related Information**  \n\n\n[Event Handler Methods](event-handler-methods-bdf3e98.md \"Event handler methods are invoked when an event occurs. Method names starting with on are reserved for event handler methods.\")\n\n[Browser Events](browser-events-91f1b38.md \"To react to browser events, a control needs to register for the event either explicitly, or by implementing the event handler.\")\n\n",
+  "excerpt": "<!-- loio9860cd2b183540f48ee054bcef44a8b5 --> Mobile Events In addition to the general browser and control events you can access specific events for touch-enabled devices. When implementing SAPUI5 con...",
+  "wordCount": 252,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

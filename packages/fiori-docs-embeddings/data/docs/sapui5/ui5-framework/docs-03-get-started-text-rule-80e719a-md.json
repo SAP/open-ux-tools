@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-03-get-started-text-rule-80e719a-md",
+  "title": "Text Rule",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/text-rule-80e719a.md",
+  "lastModified": "2025-09-01T18:17:10.488Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Text",
+    "Rule"
+  ],
+  "headers": [
+    "Text Rule"
+  ],
+  "content": "<!-- loio80e719a791c2436abbc2d0b8e52e1902 -->\n\n# Text Rule\n\nCreate a business logic by defining conditions \\(`if`, `else if`\\) in the form of text that has the result parts \\(`then`, `else`\\), which is associated with the rule expression language.\n\n",
+  "excerpt": "<!-- loio80e719a791c2436abbc2d0b8e52e1902 --> Text Rule Create a business logic by defining conditions \\(if, else if\\) in the form of text that has the result parts \\(then, else\\), which is associated...",
+  "wordCount": 37,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

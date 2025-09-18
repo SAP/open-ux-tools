@@ -19,6 +19,9 @@
       "path": "../fiori-annotation-api"
     },
     {
+      "path": "../fiori-docs-embeddings"
+    },
+    {
       "path": "../i18n"
     },
     {

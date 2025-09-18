@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-04-essentials-visualization-b3799f0-md",
+  "title": "Visualization",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/visualization-b3799f0.md",
+  "lastModified": "2025-09-01T18:17:10.555Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Visualization"
+  ],
+  "headers": [
+    "Visualization",
+    "Minimum Contrast",
+    "Consistency of Icons",
+    "Focus Visualization Design",
+    "Layout Adaptation for Different Devices",
+    "Support for Text Resizing up to 200%"
+  ],
+  "content": "<!-- loiob3799f08e8da4af48232fe10af22feff -->\n\n# Visualization\n\nSAPUI5 offers visualization features out of the box.\n\n\n\n\n\n### Minimum Contrast\n\nSAP Fiori default theme \\(Horizon\\) fulfills the requirements for minimum color contrast of Web Content Accessibility Guidelines WCAG 2.2. UI5 provided themes: Morning Horizon, Evening Horizon, High Contrast White, High Contrast Black.\n\n\n\n### Consistency of Icons\n\nIcon library ensures consistent icon usage within a product and also across products.​ See, [Icon Explorer](https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).\n\n\n\n### Focus Visualization Design\n\nFocus visualization is very important for user efficiency.​\n\n![](images/Focus_Visualization_f04ef12.png)\n\n\n\n### Layout Adaptation for Different Devices\n\nThe user interface needs to be adapted to the user's device.\n\n\n\n### Support for Text Resizing up to 200%\n\nUsers can adjust the font size themselves using the browser zoom. The responsive layout adapts to these manual adjustments automatically.\n\n",
+  "excerpt": "<!-- loiob3799f08e8da4af48232fe10af22feff --> Visualization SAPUI5 offers visualization features out of the box. Minimum Contrast SAP Fiori default theme \\(Horizon\\) fulfills the requirements for mini...",
+  "wordCount": 127,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

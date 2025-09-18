@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-09-developing-controls-keyboard-handling-for-value-help-and-auto-complete-182879f-md",
+  "title": "Keyboard Handling for Value Help and Auto-Complete",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/keyboard-handling-for-value-help-and-auto-complete-182879f.md",
+  "lastModified": "2025-09-01T18:17:10.679Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Keyboard",
+    "Handling",
+    "for",
+    "Value",
+    "Help",
+    "and",
+    "Auto",
+    "Complete"
+  ],
+  "headers": [
+    "Keyboard Handling for Value Help and Auto-Complete",
+    "Auto-complete",
+    "Value Help"
+  ],
+  "content": "<!-- loio182879fc8cd84672a11826f63450f258 -->\n\n# Keyboard Handling for Value Help and Auto-Complete\n\nThe following keys and key combinations are used for triggering and using the value help and auto-complete features.\n\n\n\n## Auto-complete\n\nAuto-complete is available for one dimensional editing only.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nKey combination\n\n</th>\n<th valign=\"top\">\n\nBehavior\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nAny printable character\n\n</td>\n<td valign=\"top\">\n\nAdds the corresponding character. If text is selected, it gets overwritten.\n\nTriggers autocomplete, if available.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Right arrow\\] or [Down arrow\\]\n\n</td>\n<td valign=\"top\">\n\nMove caret on position to the right.\n\nIf text is selected, move caret to the end of the selection and remove selection.\n\nIf caret is at the rightmost position, do nothing.\n\nIf autocomplete is currently available, take over changes. Move caret to the right of the changed text.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Enter\\]\n\n</td>\n<td valign=\"top\">\n\nIf autocomplete is currently available, take over changes. Move caret to the right of the changed text.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Tab\\]\n\n</td>\n<td valign=\"top\">\n\nMove focus to next element. Take over autocomplete, if available.\n\n</td>\n</tr>\n</table>\n\n\n\n## Value Help\n\nUse the following keys and key combinations to trigger value help:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nKey combination\n\n</th>\n<th valign=\"top\">\n\nBehavior\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Alt\\] + [Down arrow\\]  or [Alt\\] + [Up arrow\\]  or [F4\\] \n\n</td>\n<td valign=\"top\">\n\nOpen the value help dialog.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio182879fc8cd84672a11826f63450f258 --> Keyboard Handling for Value Help and Auto-Complete The following keys and key combinations are used for triggering and using the value help and auto-compl...",
+  "wordCount": 236,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

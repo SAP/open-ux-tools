@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-propagating-the-relevant-container-888661c-md",
+  "title": "Propagating the Relevant Container",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/propagating-the-relevant-container-888661c.md",
+  "lastModified": "2025-09-01T18:17:10.680Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Propagating",
+    "the",
+    "Relevant",
+    "Container"
+  ],
+  "headers": [
+    "Propagating the Relevant Container"
+  ],
+  "content": "<!-- loio888661cf00364c5c8067b7fd813a2bff -->\n\n# Propagating the Relevant Container\n\nThe relevant container is the parent control that defines the context in which a control operates. By default, this is the direct parent. If you have a control that defines the context for controls several levels deep in the control tree, you need to propagate the relevant container information.\n\nFor example, in forms, the form defines the context for all the groups and fields inside the groups. So, the form propagates the relevant container information to all groups, fields, and so on.\n\nThe relevant container is used, for example, to define the boundaries of a *move* action. It also defines where change handlers for some actions need to be registered..\n\nThe following table shows a hierarchical overview of the properties:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 1\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 2\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 3\\)\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"3\">\n\n`aggregations : <object>`\n\n</td>\n<td valign=\"top\">\n\n\\-\n\n</td>\n<td valign=\"top\">\n\n\\-\n\n</td>\n<td valign=\"top\">\n\n\\-\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"2\">\n\n`<aggregationName> : <object>`\n\n</td>\n<td valign=\"top\">\n\n\\-\n\n</td>\n<td valign=\"top\">\n\n\\-\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`propagateRelevantContainer : <function | boolean>` \\(optional\\)\n\n</td>\n<td valign=\"top\">\n\nDefines that this control is the relevant container for all successor elements.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio888661cf00364c5c8067b7fd813a2bff --> Propagating the Relevant Container The relevant container is the parent control that defines the context in which a control operates. By default, this is ...",
+  "wordCount": 219,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

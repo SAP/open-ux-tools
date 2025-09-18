@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-webapp-test-integration-opatests-qunit-html",
+  "title": "opaTests.qunit",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/test/integration/opaTests.qunit.html",
+  "lastModified": "2025-09-01T18:17:10.797Z",
+  "tags": [
+    "samples",
+    "html",
+    "opaTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.md\n\n```html\n# opaTests.qunit.html\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Integration tests</title>\n    <meta charset=\"utf-8\">\n\n    <script id=\"sap-ui-bootstrap\"\n            src=\"/resources/sap-ui-core.js\"\n            data-sap-ui-theme='sap_fiori_3'\n            data-sap-ui-resourceroots='{\n                \"sap.fe.demo.incidents\": \"../../\"\n            }'\n            data-sap-ui-animation=\"false\"\n            data-sap-ui-compatVersion=\"edge\"\n            data-sap-ui-async=\"true\">\n    </script>\n\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"/resources/sap/ui/thirdparty/qunit-2.css\">\n\n    <script src=\"/resources/sap/ui/thirdparty/qunit-2.js\"></script>\n    <script src=\"/resources/sap/ui/qunit/qunit-junit.js\"></script>\n\n    <script src=\"opaTests.qunit.js\"></script>\n\n</head>\n<body>\n    <div id=\"qunit\"></div>\n    <div id=\"qunit-fixture\"></div>\n</body>\n</html>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "opaTests.qunit.md html opaTests.qunit.md html opaTests.qunit.md html opaTests.qunit.md html opaTests.qunit.html",
+  "wordCount": 74,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}
