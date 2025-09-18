@@ -545,11 +545,13 @@ describe('SimpleVectorService', () => {
 
         it('should parse valid JSON strings correctly', async () => {
             // Create a mock result with valid JSON
-            const mockResults = [{
-                ...mockVectorDocument,
-                tags_json: '["tag1", "tag2"]',
-                headers_json: '["header1", "header2"]'
-            }];
+            const mockResults = [
+                {
+                    ...mockVectorDocument,
+                    tags_json: '["tag1", "tag2"]',
+                    headers_json: '["header1", "header2"]'
+                }
+            ];
             mockTable.toArray.mockResolvedValue(mockResults);
 
             const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
@@ -560,11 +562,13 @@ describe('SimpleVectorService', () => {
 
         it('should handle invalid JSON gracefully', async () => {
             // Create a mock result with invalid JSON
-            const mockResults = [{
-                ...mockVectorDocument,
-                tags_json: 'invalid json {',
-                headers_json: 'also invalid ['
-            }];
+            const mockResults = [
+                {
+                    ...mockVectorDocument,
+                    tags_json: 'invalid json {',
+                    headers_json: 'also invalid ['
+                }
+            ];
             mockTable.toArray.mockResolvedValue(mockResults);
 
             const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
@@ -576,11 +580,13 @@ describe('SimpleVectorService', () => {
 
         it('should handle empty strings correctly', async () => {
             // Create a mock result with empty JSON strings
-            const mockResults = [{
-                ...mockVectorDocument,
-                tags_json: '',
-                headers_json: null
-            }];
+            const mockResults = [
+                {
+                    ...mockVectorDocument,
+                    tags_json: '',
+                    headers_json: null
+                }
+            ];
             mockTable.toArray.mockResolvedValue(mockResults);
 
             const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
@@ -792,9 +798,9 @@ describe('SimpleVectorService', () => {
                 search: jest.fn().mockReturnThis(),
                 where: jest.fn().mockReturnThis(),
                 limit: jest.fn().mockReturnThis(),
-                toArray: jest.fn().mockResolvedValue([
-                    { ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }
-                ]), // Reference doc found in table2
+                toArray: jest
+                    .fn()
+                    .mockResolvedValue([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }]), // Reference doc found in table2
                 vectorSearch: jest.fn().mockReturnThis()
             } as any;
 
@@ -803,11 +809,9 @@ describe('SimpleVectorService', () => {
 
             // Mock the vector search results for both tables
             table1.toArray.mockResolvedValueOnce([]).mockResolvedValueOnce([]); // No ref doc, no similar docs
-            table2.toArray.mockResolvedValueOnce([
-                { ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }
-            ]).mockResolvedValueOnce([
-                { ...mockVectorDocument, document_id: 'similar-doc', _distance: 0.2 }
-            ]); // Ref doc found, similar docs found
+            table2.toArray
+                .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }])
+                .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'similar-doc', _distance: 0.2 }]); // Ref doc found, similar docs found
 
             const results = await vectorService.findSimilarToDocument('ref-doc', 5);
 
