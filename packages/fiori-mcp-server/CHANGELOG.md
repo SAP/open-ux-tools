@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.1
+
+### Patch Changes
+
+-   306561e: Fix publishing of embeddings package
+
 ## 0.1.0
 
 ### Minor Changes
