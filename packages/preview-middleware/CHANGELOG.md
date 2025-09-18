@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.10
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
 ## 0.23.9
 
 ### Patch Changes

@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-unsupported-superclass-methods-and-events-1232241-md",
+  "title": "Unsupported Superclass Methods and Events",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/unsupported-superclass-methods-and-events-1232241.md",
+  "lastModified": "2025-09-01T18:17:10.551Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Unsupported",
+    "Superclass",
+    "Methods",
+    "and",
+    "Events"
+  ],
+  "headers": [
+    "Unsupported Superclass Methods and Events"
+  ],
+  "content": "<!-- loio1232241b99d7437ba3614698d53dfa4b -->\n\n# Unsupported Superclass Methods and Events\n\nCertain methods derived from SAPUI5 model and binding superclasses are not supported in OData V4 model classes or have limited support.\n\nThe following methods and events are affected by this. For more information, see the corresponding API documentation for each method and event in the Demo Kit.\n\n**Unsupported Methods**\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nClass\n\n</th>\n<th valign=\"top\">\n\nMethod\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataMetaModel`\n\n\\(See [sap.ui.model.odata.v4.ODataMetaModel](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataMetaModel) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`bindTree`\n\n`getOriginalProperty`\n\n`isList`\n\n`refresh`\n\n`setLegacySyntax`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataModel`\n\n\\(See [sap.ui.model.odata.v4.ODataModel](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataModel) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`bindTree`\n\n`destroyBindingContext`\n\n`getObject`\n\n`getOriginalProperty`\n\n`getProperty`\n\n`isList`\n\n`setLegacySyntax`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataContextBinding`\n\n\\(See [sap.ui.model.odata.v4.ODataContextBinding](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataContextBinding) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`isInitial`\n\n`refresh` \\(limited support only\\)\n\n`resume` \\(limited support only\\)\n\n`suspend` \\(limited support only\\)\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataListBinding`\n\n\\(See [sap.ui.model.odata.v4.ODataListBinding](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataListBinding) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`getDistinctValues`\n\n`isInitial`\n\n`refresh` \\(limited support only\\)\n\n`resume` \\(limited support only\\)\n\n`suspend` \\(limited support only\\)\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataPropertyBinding`\n\n\\(See [sap.ui.model.odata.v4.ODataPropertyBinding](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataPropertyBinding) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`isInitial`\n\n`refresh` \\(limited support only\\)\n\n`resume`\n\n`setValue` \\(limited support only\\)\n\n`suspend`\n\n</td>\n</tr>\n</table>\n\n**Unsupported Events**\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nClass\n\n</th>\n<th valign=\"top\">\n\nEvent\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataMetaModel`\n\n\\(See [sap.ui.model.odata.v4.ODataMetaModel](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataMetaModel) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`parseError`\n\n`propertyChange`\n\n`requestCompleted`\n\n`requestFailed`\n\n`requestSent`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.ui.model.odata.v4.ODataModel`\n\n\\(See [sap.ui.model.odata.v4.ODataModel](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataModel) in the Demo Kit\\)\n\n</td>\n<td valign=\"top\">\n\n`parseError`\n\n`requestCompleted`\n\n`requestFailed`\n\n`requestSent`\n\n</td>\n</tr>\n</table>\n\n**Related Information**  \n\n\n[sap.ui.model.odata.v4.ODataMetaModel](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataMetaModel)\n\n[sap.ui.model.odata.v4.ODataModel](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataModel)\n\n[sap.ui.model.odata.v4.ODataContextBinding](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataContextBinding)\n\n[sap.ui.model.odata.v4.ODataListBinding](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataListBinding)\n\n[sap.ui.model.odata.v4.ODataPropertyBinding](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataPropertyBinding)\n\n",
+  "excerpt": "<!-- loio1232241b99d7437ba3614698d53dfa4b --> Unsupported Superclass Methods and Events Certain methods derived from SAPUI5 model and binding superclasses are not supported in OData V4 model classes o...",
+  "wordCount": 256,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

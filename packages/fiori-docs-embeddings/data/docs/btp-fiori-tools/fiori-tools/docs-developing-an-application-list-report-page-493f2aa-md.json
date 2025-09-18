@@ -1,0 +1,23 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-list-report-page-493f2aa-md",
+  "title": "List Report Page",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/list-report-page-493f2aa.md",
+  "lastModified": "2025-09-01T18:17:10.142Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "List",
+    "Report",
+    "Page"
+  ],
+  "headers": [
+    "List Report Page"
+  ],
+  "content": "<!-- loio493f2aadca284469bd22cdbc3dea382b -->\n\n# List Report Page\n\nThe following link provides general information about the *List Report* page: [Fiori Design Guidelines](https://experience.sap.com/fiori-design-web/list-report-floorplan-sap-fiori-element/).\n\nThe supported elements of the *List Report* page are:\n\n-   [Filter Fields](filter-fields-0b84286.md)\n-   [Report Table](table-aaff7b1.md)\n-   [Multiple Views](multiple-views-c62b82e.md)\n-   [Analytical Chart](analytical-chart-9c086ec.md)\n\n",
+  "excerpt": "<!-- loio493f2aadca284469bd22cdbc3dea382b --> List Report Page The following link provides general information about the List Report page: Fiori Design Guidelines. The supported elements of the List R...",
+  "wordCount": 43,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

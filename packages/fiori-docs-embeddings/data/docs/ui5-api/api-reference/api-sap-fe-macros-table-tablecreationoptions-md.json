@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-table-tablecreationoptions-md",
+  "title": "sap.fe.macros.table.TableCreationOptions",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.table.TableCreationOptions.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "table",
+    "TableCreationOptions"
+  ],
+  "headers": [
+    "sap.fe.macros.table.TableCreationOptions"
+  ],
+  "content": "# sap.fe.macros.table.TableCreationOptions\n\n<p>Create options for the table.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/table/TableCreationOptions\n\n",
+  "excerpt": "sap.fe.macros.table.TableCreationOptions <p>Create options for the table.</p> Type: class Module: sap/fe/macros/table/TableCreationOptions",
+  "wordCount": 12,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

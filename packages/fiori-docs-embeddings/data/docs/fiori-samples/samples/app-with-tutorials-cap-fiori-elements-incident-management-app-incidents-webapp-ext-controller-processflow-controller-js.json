@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-webapp-ext-controller-processflow-controller-js",
+  "title": "ProcessFlow.controller",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/ext/controller/ProcessFlow.controller.js",
+  "lastModified": "2025-09-01T18:17:10.796Z",
+  "tags": [
+    "samples",
+    "js",
+    "ProcessFlow",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.md\n\n```javascript\n# ProcessFlow.controller.js\n\n```javascript\n//the UI5_184 view controller pair has to be used for UI5 version >= 1.84\nsap.ui.define([\n\t'sap/ui/core/mvc/Controller',\n\t'sap/fe/core/controllerextensions/RoutingListener',\n\t'sap/ui/model/json/JSONModel',\n\t'sap/m/MessageToast'\n],\nfunction (Controller, RoutingListener, JSONModel, MessageToast) {\n\t\"use strict\";\n\n\treturn Controller.extend(\"myController\", {\n\t\t\t\troutingListener: RoutingListener,\n\n\t\tconstructor: function () {\n\t\t\tController.apply(this, arguments);\n\t\t\t// No need to instantiate the extension, it's done automatically\n\t\t},\n\n\t\tonInit: function () {\n\t\t\tvar oView = this.getView();\n\t\t\tthis.oProcessFlow1 = oView.byId(\"processflow1\");\n\n\t\t\tvar sDataPath = jQuery.sap.getModulePath(\"sap.fe.demo.incidents.ext.controller\", \"/ProcessFlowLanesAndNodes.json\");\n\t\t\tvar oModelPf1 = new JSONModel(sDataPath);\n\t\t\toView.setModel(oModelPf1, \"ProcessFlowModel\");\n\t\t\toModelPf1.attachRequestCompleted(this.oProcessFlow1.updateModel.bind(this.oProcessFlow1));\n\t\t},\n\n\t\tonNodePress: function (event) {\n\t\t\tMessageToast.show(\"Node \" + event.getParameters().getNodeId() + \" has been clicked.\");\n\t\t}\n\t});\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "ProcessFlow.controller.md javascript ProcessFlow.controller.md javascript ProcessFlow.controller.md javascript ProcessFlow.controller.md javascript ProcessFlow.controller.js",
+  "wordCount": 127,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

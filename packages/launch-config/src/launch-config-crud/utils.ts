@@ -32,6 +32,10 @@ function getArgs(options: FioriOptions): string[] | undefined {
         }
     }
 
+    if (options.remoteAccess) {
+        args.push('--accept-remote-connections');
+    }
+
     return args.length > 0 ? args : undefined;
 }
 
@@ -86,7 +90,7 @@ export function getLaunchConfig(
     args: string[] | undefined,
     env: LaunchConfigEnv
 ): LaunchConfig {
-    return {
+    const launchConfig: LaunchConfig = {
         name,
         type: 'node',
         request: 'launch',
@@ -102,6 +106,13 @@ export function getLaunchConfig(
         outputCapture: 'std',
         env
     };
+    // Enable output channel to be integratedTerminal if --accept-remote-connections is present in args to render QR code
+    // Disable internalConsoleOptions when console is integratedTerminal to not open the debug view
+    if (args?.includes('--accept-remote-connections')) {
+        launchConfig.console = 'integratedTerminal';
+        launchConfig.internalConsoleOptions = undefined;
+    }
+    return launchConfig;
 }
 
 /**
@@ -147,6 +158,7 @@ export function getFioriOptions(
     let ui5LocalVersion;
     let backendConfigs;
     let urlParameters;
+    let remoteAccess;
     // Do not display configurations which have different type than node
     let visible = launchConfig.type === 'node';
     if (launchConfig.env) {
@@ -160,9 +172,10 @@ export function getFioriOptions(
     }
     if (launchConfig.args && launchConfig.args.length > 0) {
         const parsedArguments = parseArguments(launchConfig.args);
-        if (parsedArguments.open) {
-            startFile = parsedArguments.open;
-        }
+
+        startFile = parsedArguments.open ?? undefined;
+        remoteAccess = parsedArguments.remoteAccess ?? false;
+
         if (parsedArguments.config === FileName.Ui5MockYaml) {
             isMockDataEnabled = true;
         }
@@ -189,7 +202,8 @@ export function getFioriOptions(
         startFile,
         backendConfigs,
         urlParameters,
-        visible
+        visible,
+        remoteAccess
     };
 }
 
@@ -237,9 +251,11 @@ export function parseArguments(args: string[]): yargsParser.Arguments {
     return yargsParser(args, {
         alias: {
             open: ['o'],
-            config: ['c']
+            config: ['c'],
+            remoteAccess: ['accept-remote-connections']
         },
-        string: ['config', 'open', 'framework-version'],
+        string: ['config', 'open', 'remote', 'framework-version'],
+        boolean: ['accept-remote-connections'],
         configuration: {
             'strip-aliased': true,
             'camel-case-expansion': false,

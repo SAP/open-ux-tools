@@ -1,0 +1,27 @@
+{
+  "id": "btp-fiori-tools-docs-create-control-variants-views-b4026b7-md",
+  "title": "Create Control Variants \\(Views\\)",
+  "category": "fiori-tools",
+  "path": "docs/create-control-variants-views-b4026b7.md",
+  "lastModified": "2025-09-01T18:17:10.125Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Create",
+    "Control",
+    "Variants",
+    "Views"
+  ],
+  "headers": [
+    "Create Control Variants \\(Views\\)",
+    "Prerequisites",
+    "Context",
+    "Procedure"
+  ],
+  "content": "<!-- loiob4026b747f7841a782a44148c73ecb82 -->\n\n# Create Control Variants \\(Views\\)\n\nAs a developer, you can create control variants within the Adaptation Editor.\n\n\n\n<a name=\"loiob4026b747f7841a782a44148c73ecb82__prereq_lg3_hty_hkb\"/>\n\n## Prerequisites\n\n-   Make sure that you have enabled your application for UI adaptation and have the `sap.ui.fl.variants.VariantManagement` control as part of the page \\(XML view\\) you want to adapt. For more information, see [SAPUI5 Flexibility: Enable Your App for UI Adaptation](https://sapui5.hana.ondemand.com/#/topic/f1430c0337534d469da3a56307ff76af) and the `sap.ui.fl.variants.VariantManagement` [API Reference](https://sapui5.hana.ondemand.com/#/api/sap.ui.fl.variants.VariantManagement).\n\n-   For more information on the use of `sap.ui.comp.smartvariants.SmartVariantManagement`, see `sap.ui.comp.smartvariants.SmartVariantManagement` [API Reference](https://sapui5.hana.ondemand.com/#/api/sap.ui.comp.smartvariants.SmartVariantManagement).\n\n\n\n\n<a name=\"loiob4026b747f7841a782a44148c73ecb82__context_ox1_lc2_3kb\"/>\n\n## Context\n\nThe Adaptation Editor allows you to create, load, change, and save control variants. You can create variants of a control to give different options for the end user for better usability in special use cases when they do or do not need a specific part of control.\n\n> ### Note:  \n> You can define variants for specific controls on the user interface. Have in mind that variants are also called \"views\" in a more non-technical context, for example, on the user interface.\n\n\n\n<a name=\"loiob4026b747f7841a782a44148c73ecb82__steps-unordered_igc_4rp_qqb\"/>\n\n## Procedure\n\nCreating and adapting control variants \\(views\\) is done the same way, as in the key user scenario. You can follow the procedure described in [Creating and Adapting Views](https://help.sap.com/viewer/4fc8d03390c342da8a60f8ee387bca1a/latest/en-US/91ae3492323b42a79ca66fbfaf5af3f9.html). The only difference from the key user scenario is that you do not have to publish your changes. They are saved as an ordinary change in your adaptation project in the same manner as all other changes.\n\n",
+  "excerpt": "<!-- loiob4026b747f7841a782a44148c73ecb82 --> Create Control Variants \\(Views\\) As a developer, you can create control variants within the Adaptation Editor. <a name=\"loiob4026b747f7841a782a44148c73ec...",
+  "wordCount": 238,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

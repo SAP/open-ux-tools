@@ -1,0 +1,31 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-field-field-md",
+  "title": "sap.fe.macros.field.Field",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.field.Field.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "field",
+    "Field"
+  ],
+  "headers": [
+    "sap.fe.macros.field.Field",
+    "Methods",
+    "addMessage",
+    "getEnabled",
+    "getValue",
+    "removeMessage",
+    "setEnabled",
+    "setValue"
+  ],
+  "content": "# sap.fe.macros.field.Field\n\n<p>Building block for creating a field based on the metadata provided by OData V4.\n<br>\nUsually, a DataField or DataPoint annotation is expected, but the field can also be used to display a property from the entity type.\nWhen creating a Field building block, you must provide an ID to ensure everything works correctly.<br/>Usage example:\n<pre>\nsap.ui.require([\"sap/fe/macros/field/Field\"], function(Field) {\n\t ...\n\t new Field(\"MyField\", {metaPath:\"MyProperty\"})\n})\n</pre><br/>This is currently an experimental API because the structure of the generated content will change to come closer to the Field that you get out of templates.\nThe public method and property will not change but the internal structure will so be careful on your usage.\n</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/field/Field\n\n## Methods\n\n### addMessage\n<p>Adds a message to the field.</p>\n\n### getEnabled\n<p>Gets the current enablement state of the field.</p>\n\n### getValue\n<p>Retrieves the current value of the field.</p>\n\n### removeMessage\n<p>Removes a message from the field.</p>\n\n### setEnabled\n<p>Sets the current enablement state of the field.</p>\n\n### setValue\n<p>Sets the current value of the field.</p>\n\n",
+  "excerpt": "sap.fe.macros.field.Field <p>Building block for creating a field based on the metadata provided by OData V4. <br> Usually, a DataField or DataPoint annotation is expected, but the field can also be us...",
+  "wordCount": 174,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

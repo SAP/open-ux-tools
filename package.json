@@ -41,7 +41,8 @@
         "yargs-parser": "21.1.1"
     },
     "scripts": {
-        "postinstall": "update-ts-references",
+        "update-ts-references": "update-ts-references",
+        "postinstall": "npm-run-all -l -p update-ts-references && pnpm rebuild sharp -r",
         "clean": "npm-run-all clean:nx:reset clean:nx:all",
         "clean:nx:all": "nx run-many --target=clean --all",
         "clean:nx:reset": "nx reset --only-cache",
@@ -57,7 +58,7 @@
         "prepare": "husky install",
         "cset": "changeset",
         "ci:version": "changeset version && pnpm install --lockfile-only",
-        "ci:publish": "changeset publish",
+        "ci:publish": " node --max_old_space_size=20336 node_modules/@changesets/cli/bin.js publish",
         "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
         "run:pretty": "prettier --write .",
         "graph-deps": "nx graph",

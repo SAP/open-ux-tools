@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-app-mystandalonecapproject-webapp-index-html",
+  "title": "index",
+  "category": "samples",
+  "path": "cap/cap-fiori-mta-standalone/app/mystandalonecapproject/webapp/index.html",
+  "lastModified": "2025-09-01T18:17:10.804Z",
+  "tags": [
+    "samples",
+    "html",
+    "index"
+  ],
+  "headers": [],
+  "content": "# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.html\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <title>App Title</title>\n    <style>\n        html, body, body > div, #container, #container-uiarea {\n            height: 100%;\n        }\n    </style>\n    <script\n        id=\"sap-ui-bootstrap\"\n        src=\"https://sapui5.hana.ondemand.com/1.102.1/resources/sap-ui-core.js\"\n        data-sap-ui-theme=\"sap_horizon\"\n        data-sap-ui-resourceroots='{\n            \"mystandalonecapproject\": \"./\"\n        }'\n        data-sap-ui-oninit=\"module:sap/ui/core/ComponentSupport\"\n        data-sap-ui-compatVersion=\"edge\"\n        data-sap-ui-async=\"true\"\n        data-sap-ui-frameOptions=\"trusted\"\n    ></script>\n</head>\n<body class=\"sapUiBody sapUiSizeCompact\" id=\"content\">\n    <div\n        data-sap-ui-component\n        data-name=\"mystandalonecapproject\"\n        data-id=\"container\"\n        data-settings='{\"id\" : \"mystandalonecapproject\"}'\n        data-handle-validation=\"true\"\n    ></div>\n</body>\n</html>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "index.md html index.md html index.md html index.md html index.html",
+  "wordCount": 93,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}
