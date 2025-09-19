@@ -1,0 +1,509 @@
+#!/usr/bin/env node
+
+import { pipeline } from '@xenova/transformers';
+import { connect } from '@lancedb/lancedb';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+
+interface EmbeddingConfig {
+    docsPath: string;
+    embeddingsPath: string;
+    model: string;
+    chunkSize: number;
+    chunkOverlap: number;
+    batchSize: number;
+    maxVectorsPerTable: number;
+}
+
+interface Document {
+    id: string;
+    title: string;
+    content: string;
+    category: string;
+    path: string;
+    tags: string[];
+    headers: string[];
+    lastModified: string;
+    wordCount: number;
+    excerpt: string;
+}
+
+interface DocumentIndex {
+    totalDocuments: number;
+    documents: Record<string, string>;
+}
+
+interface Chunk {
+    id: string;
+    documentId: string;
+    chunkIndex: number;
+    content: string;
+    title: string;
+    category: string;
+    path: string;
+    metadata: {
+        tags: string[];
+        headers: string[];
+        lastModified: string;
+        wordCount: number;
+        excerpt: string;
+        totalChunks: number;
+    };
+    vector?: number[];
+}
+
+interface VectorData {
+    id: string;
+    vector: number[];
+    content: string;
+    title: string;
+    category: string;
+    path: string;
+    chunk_index: number;
+    document_id: string;
+    // Flattened metadata fields
+    tags_json: string;
+    headers_json: string;
+    lastModified: string;
+    wordCount: number;
+    excerpt: string;
+    totalChunks: number;
+    [key: string]: unknown;
+}
+
+interface EmbeddingMetadata {
+    version: string;
+    createdAt: string;
+    model: string;
+    dimensions: number;
+    totalVectors: number;
+    totalDocuments: number;
+    chunkSize: number;
+    chunkOverlap: number;
+}
+
+/**
+ *
+ */
+class EmbeddingBuilder {
+    private readonly config: EmbeddingConfig;
+    private pipeline: any;
+    private readonly documents: Document[];
+    private readonly chunks: Chunk[];
+
+    constructor() {
+        this.config = {
+            docsPath: './data/docs',
+            embeddingsPath: './data/embeddings',
+            model: 'Xenova/all-MiniLM-L6-v2',
+            chunkSize: 2000, // Much larger chunks to reduce count
+            chunkOverlap: 100, // Minimal overlap
+            batchSize: 20, // Increased batch size for faster processing
+            maxVectorsPerTable: 5000 // Limit vectors per table to control file size
+        };
+        this.pipeline = null;
+        this.documents = [];
+        this.chunks = [];
+    }
+
+    async initialize(): Promise<void> {
+        console.log('🤖 Loading embedding model...');
+        console.log(`Model: ${this.config.model}`);
+
+        try {
+            this.pipeline = await pipeline('feature-extraction', this.config.model, {
+                quantized: false, // Try without quantization first
+                progress_callback: (progress: any) => {
+                    if (progress.status === 'downloading') {
+                        console.log(`Downloading: ${Math.round(progress.progress || 0)}%`);
+                    }
+                }
+            });
+        } catch (error) {
+            console.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
+            // Fallback to a simpler model if the main one fails
+            this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+                quantized: false,
+                progress_callback: (progress: any) => {
+                    if (progress.status === 'downloading') {
+                        console.log(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
+                    }
+                }
+            });
+        }
+
+        console.log('✓ Embedding model loaded');
+    }
+
+    async loadDocuments(): Promise<void> {
+        console.log('\n📚 Loading documents from filestore...');
+
+        const indexPath = path.join(this.config.docsPath, 'index.json');
+        const index: DocumentIndex = JSON.parse(await fs.readFile(indexPath, 'utf-8'));
+
+        console.log(`Found ${index.totalDocuments} documents in index`);
+
+        for (const [docId, docPath] of Object.entries(index.documents)) {
+            try {
+                const fullPath = path.join(this.config.docsPath, docPath);
+                const docContent = await fs.readFile(fullPath, 'utf-8');
+                const doc: Document = JSON.parse(docContent);
+                this.documents.push(doc);
+            } catch (error: any) {
+                console.warn(`Failed to load document ${docId}:`, error.message);
+            }
+        }
+
+        console.log(`✓ Loaded ${this.documents.length} documents`);
+    }
+
+    /**
+     * Chunk a document into smaller pieces for embedding.
+     *
+     * @param doc - Document to chunk
+     * @returns Array of document chunks
+     */
+    chunkDocument(doc: Document): Chunk[] {
+        // For small documents, don't chunk at all
+        if (!doc.content || doc.content.length <= this.config.chunkSize) {
+            return [
+                {
+                    id: `${doc.id}-chunk-0`,
+                    documentId: doc.id,
+                    chunkIndex: 0,
+                    content: doc.content || '',
+                    title: doc.title,
+                    category: doc.category,
+                    path: doc.path,
+                    metadata: {
+                        tags: doc.tags,
+                        headers: doc.headers,
+                        lastModified: doc.lastModified,
+                        wordCount: doc.wordCount,
+                        excerpt: doc.excerpt,
+                        totalChunks: 1
+                    }
+                }
+            ];
+        }
+
+        const chunks: Chunk[] = [];
+        const text = doc.content;
+        let currentOffset = 0;
+        let chunkIndex = 0;
+
+        while (currentOffset < text.length) {
+            const endOffset = Math.min(currentOffset + this.config.chunkSize, text.length);
+            let chunkText = text.substring(currentOffset, endOffset);
+
+            // Try to break at sentence boundaries
+            if (endOffset < text.length) {
+                const sentenceBreak = this.findSentenceBreak(chunkText);
+                if (sentenceBreak > this.config.chunkSize * 0.7) {
+                    chunkText = chunkText.substring(0, sentenceBreak);
+                }
+            }
+
+            chunks.push({
+                id: `${doc.id}-chunk-${chunkIndex}`,
+                documentId: doc.id,
+                chunkIndex,
+                content: chunkText.trim(),
+                title: doc.title,
+                category: doc.category,
+                path: doc.path,
+                metadata: {
+                    tags: doc.tags,
+                    headers: doc.headers,
+                    lastModified: doc.lastModified,
+                    wordCount: chunkText.trim().split(/\s+/).length,
+                    excerpt: chunkText.trim().substring(0, 200) + (chunkText.trim().length > 200 ? '...' : ''),
+                    totalChunks: 0 // Will be set after all chunks are created
+                }
+            });
+
+            currentOffset += Math.max(chunkText.length - this.config.chunkOverlap, 1);
+            chunkIndex++;
+        }
+
+        // Update total chunks count
+        chunks.forEach((chunk) => {
+            chunk.metadata.totalChunks = chunks.length;
+        });
+
+        return chunks;
+    }
+
+    /**
+     * Find the best sentence break point in text.
+     *
+     * @param text - Text to find break point in
+     * @returns Index of the best break point
+     */
+    findSentenceBreak(text: string): number {
+        const sentenceEnders = ['. ', '! ', '? ', '.\n', '!\n', '?\n'];
+        let bestBreak = -1;
+
+        for (const ender of sentenceEnders) {
+            const index = text.lastIndexOf(ender);
+            if (index > bestBreak) {
+                bestBreak = index + ender.length;
+            }
+        }
+
+        if (bestBreak === -1) {
+            const paragraphBreak = text.lastIndexOf('\n\n');
+            if (paragraphBreak > 0) {
+                bestBreak = paragraphBreak + 2;
+            }
+        }
+
+        if (bestBreak === -1) {
+            const lineBreak = text.lastIndexOf('\n');
+            if (lineBreak > text.length * 0.5) {
+                bestBreak = lineBreak + 1;
+            }
+        }
+
+        return bestBreak > 0 ? bestBreak : text.length;
+    }
+
+    async chunkAllDocuments(): Promise<void> {
+        console.log('\n✂️  Chunking documents...');
+
+        for (const doc of this.documents) {
+            const docChunks = this.chunkDocument(doc);
+            this.chunks.push(...docChunks);
+        }
+
+        console.log(`✓ Created ${this.chunks.length} chunks from ${this.documents.length} documents`);
+
+        const stats = {
+            totalChunks: this.chunks.length,
+            averageChunkSize: Math.round(
+                this.chunks.reduce((sum, chunk) => sum + chunk.content.length, 0) / this.chunks.length
+            ),
+            singleChunkDocs: this.chunks.filter((chunk) => chunk.metadata.totalChunks === 1).length,
+            multiChunkDocs: new Set(
+                this.chunks.filter((chunk) => chunk.metadata.totalChunks > 1).map((chunk) => chunk.documentId)
+            ).size
+        };
+
+        console.log(`📊 Chunk statistics:`);
+        console.log(`   Total chunks: ${stats.totalChunks}`);
+        console.log(`   Average size: ${stats.averageChunkSize} characters`);
+        console.log(`   Single-chunk docs: ${stats.singleChunkDocs}`);
+        console.log(`   Multi-chunk docs: ${stats.multiChunkDocs}`);
+    }
+
+    /**
+     * Generate embedding for text using the transformer pipeline.
+     *
+     * @param text - Text to generate embedding for
+     * @returns Promise resolving to embedding vector
+     */
+    async generateEmbedding(text: string): Promise<number[]> {
+        const cleanText = text.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 8192);
+
+        const result = await this.pipeline(cleanText, { pooling: 'mean', normalize: true });
+        return Array.from(result.data);
+    }
+
+    async generateAllEmbeddings(): Promise<void> {
+        console.log('\n🧠 Generating embeddings...');
+        console.log(`Processing ${this.chunks.length} chunks in batches of ${this.config.batchSize}`);
+
+        const batches: Chunk[][] = [];
+        for (let i = 0; i < this.chunks.length; i += this.config.batchSize) {
+            batches.push(this.chunks.slice(i, i + this.config.batchSize));
+        }
+
+        let processedCount = 0;
+        for (let i = 0; i < batches.length; i++) {
+            const batch = batches[i];
+
+            // Only show batch progress every 50 batches or for the first few
+            if (i < 5 || i % 50 === 0 || i === batches.length - 1) {
+                console.log(`Processing batch ${i + 1}/${batches.length} (${batch.length} chunks)`);
+            }
+
+            for (const chunk of batch) {
+                try {
+                    chunk.vector = await this.generateEmbedding(chunk.content);
+                    processedCount++;
+
+                    if (processedCount % 200 === 0 || processedCount === this.chunks.length) {
+                        const percent = Math.round((processedCount / this.chunks.length) * 100);
+                        console.log(`  ✓ Processed ${processedCount}/${this.chunks.length} chunks (${percent}%)`);
+                    }
+                } catch (error: any) {
+                    console.warn(`Failed to generate embedding for ${chunk.id}:`, error.message);
+                }
+            }
+        }
+
+        console.log(`✓ Generated ${processedCount} embeddings`);
+    }
+
+    /**
+     * Create vector database with embeddings.
+     *
+     * @returns Promise resolving to embedding metadata
+     */
+    async createVectorDatabase(): Promise<EmbeddingMetadata> {
+        console.log('\n💾 Creating vector database...');
+
+        // Ensure embeddings directory exists
+        await fs.mkdir(this.config.embeddingsPath, { recursive: true });
+
+        // Connect to LanceDB
+        const dbPath = path.resolve(this.config.embeddingsPath);
+        const db = await connect(dbPath);
+
+        // Prepare data for LanceDB with flattened structure
+        const vectorData: VectorData[] = this.chunks
+            .filter((chunk) => chunk.vector)
+            .map((chunk) => ({
+                id: chunk.id,
+                vector: chunk.vector!,
+                content: chunk.content,
+                title: chunk.title,
+                category: chunk.category,
+                path: chunk.path,
+                chunk_index: chunk.chunkIndex,
+                document_id: chunk.documentId,
+                // Flatten metadata to avoid schema inference issues
+                tags_json: JSON.stringify(chunk.metadata.tags || []),
+                headers_json: JSON.stringify(chunk.metadata.headers || []),
+                lastModified: chunk.metadata.lastModified || '',
+                wordCount: chunk.metadata.wordCount || 0,
+                excerpt: chunk.metadata.excerpt || '',
+                totalChunks: chunk.metadata.totalChunks || 1
+            }));
+
+        console.log(`Storing ${vectorData.length} vectors in LanceDB`);
+
+        // Split data into smaller chunks to avoid large files
+        const maxVectorsPerTable = this.config.maxVectorsPerTable;
+        const tableChunks: VectorData[][] = [];
+
+        for (let i = 0; i < vectorData.length; i += maxVectorsPerTable) {
+            tableChunks.push(vectorData.slice(i, i + maxVectorsPerTable));
+        }
+
+        console.log(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
+
+        // Drop existing tables
+        for (let i = 0; i < tableChunks.length; i++) {
+            const tableName = `documents_${i.toString().padStart(3, '0')}`;
+            try {
+                await db.dropTable(tableName);
+                console.log(`🗑️  Dropped existing table: ${tableName}`);
+            } catch {
+                // Table doesn't exist, which is fine
+            }
+        }
+
+        // Create new tables with explicit schema
+        for (let i = 0; i < tableChunks.length; i++) {
+            const tableName = `documents_${i.toString().padStart(3, '0')}`;
+            const chunk = tableChunks[i];
+
+            // Flatten metadata to avoid schema inference issues with nested arrays
+            const normalizedChunk = chunk.map((item) => {
+                // Safely access metadata with proper typing
+                const metadata = item.metadata || ({} as any);
+
+                return {
+                    id: item.id || '',
+                    vector: Array.isArray(item.vector) ? item.vector : [],
+                    content: item.content || '',
+                    title: item.title || '',
+                    category: item.category || '',
+                    path: item.path || '',
+                    chunk_index: typeof item.chunk_index === 'number' ? item.chunk_index : 0,
+                    document_id: item.document_id || '',
+                    // Flatten metadata fields to avoid nested array issues
+                    tags_json: JSON.stringify(Array.isArray(metadata.tags) ? metadata.tags : []),
+                    headers_json: JSON.stringify(Array.isArray(metadata.headers) ? metadata.headers : []),
+                    lastModified: typeof metadata.lastModified === 'string' ? metadata.lastModified : '',
+                    wordCount: typeof metadata.wordCount === 'number' ? metadata.wordCount : 0,
+                    excerpt: typeof metadata.excerpt === 'string' ? metadata.excerpt : '',
+                    totalChunks: typeof metadata.totalChunks === 'number' ? metadata.totalChunks : 1
+                };
+            });
+
+            console.log(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
+            await db.createTable(tableName, normalizedChunk);
+            console.log(`✓ Created table ${tableName}`);
+        }
+
+        // Create a table index file for easy querying
+        const tableIndex = {
+            tables: tableChunks.map((_, i) => `documents_${i.toString().padStart(3, '0')}`),
+            totalTables: tableChunks.length,
+            maxVectorsPerTable,
+            totalVectors: vectorData.length
+        };
+
+        const tableIndexPath = path.join(this.config.embeddingsPath, 'table_index.json');
+        await fs.writeFile(tableIndexPath, JSON.stringify(tableIndex, null, 2));
+
+        console.log('✓ Vector database created with multiple tables');
+
+        // Create metadata file
+        const metadata: EmbeddingMetadata = {
+            version: '1.0.0',
+            createdAt: new Date().toISOString(),
+            model: this.config.model,
+            dimensions: vectorData.length > 0 ? vectorData[0].vector.length : 384,
+            totalVectors: vectorData.length,
+            totalDocuments: this.documents.length,
+            chunkSize: this.config.chunkSize,
+            chunkOverlap: this.config.chunkOverlap
+        };
+
+        const metadataPath = path.join(this.config.embeddingsPath, 'metadata.json');
+        await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
+
+        console.log(`✓ Created metadata file: ${metadataPath}`);
+
+        return metadata;
+    }
+
+    async buildEmbeddings(): Promise<void> {
+        console.log('🚀 Starting embedding generation...');
+
+        try {
+            await this.initialize();
+            await this.loadDocuments();
+            await this.chunkAllDocuments();
+            await this.generateAllEmbeddings();
+            const metadata = await this.createVectorDatabase();
+
+            console.log('\n🎉 Embedding generation completed!');
+            console.log(`📊 Summary:`);
+            console.log(`   Model: ${metadata.model}`);
+            console.log(`   Dimensions: ${metadata.dimensions}`);
+            console.log(`   Total vectors: ${metadata.totalVectors}`);
+            console.log(`   Total documents: ${metadata.totalDocuments}`);
+            console.log(`   Database: ${this.config.embeddingsPath}`);
+        } catch (error: any) {
+            console.error('❌ Embedding generation failed:', error.message);
+            console.error(error.stack);
+            process.exit(1);
+        }
+    }
+}
+
+// Export the class
+export { EmbeddingBuilder };
+
+// Run the builder
+if (require.main === module) {
+    const builder = new EmbeddingBuilder();
+    builder.buildEmbeddings().catch((error) => {
+        console.error('Build failed:', error);
+        process.exit(1);
+    });
+}

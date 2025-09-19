@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-messagebutton-md",
+  "title": "sap.fe.macros.MessageButton",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.MessageButton.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "MessageButton"
+  ],
+  "headers": [
+    "sap.fe.macros.MessageButton"
+  ],
+  "content": "# sap.fe.macros.MessageButton\n\n<p>Building block used to show bound messages.<br/>The Message Button Building Block gets the bound messages from the MessageModel.<br/>Usage example:<br/><pre>\n&lt;macros:MessageButton visibilityChange=\".handler.onMessageButtonVisibilityChange\" /&gt;\n</pre>\n</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/MessageButton\n\n",
+  "excerpt": "sap.fe.macros.MessageButton <p>Building block used to show bound messages.<br/>The Message Button Building Block gets the bound messages from the MessageModel.<br/>Usage example:<br/><pre> &lt;macros:...",
+  "wordCount": 31,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

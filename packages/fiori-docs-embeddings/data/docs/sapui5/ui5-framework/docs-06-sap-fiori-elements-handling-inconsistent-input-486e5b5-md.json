@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-handling-inconsistent-input-486e5b5-md",
+  "title": "Handling Inconsistent Input",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/handling-inconsistent-input-486e5b5.md",
+  "lastModified": "2025-09-01T18:17:10.627Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Handling",
+    "Inconsistent",
+    "Input"
+  ],
+  "headers": [
+    "Handling Inconsistent Input",
+    "Additional Features in SAP Fiori Elements for OData V2"
+  ],
+  "content": "<!-- loio486e5b58499d414295dc068b446c71a3 -->\n\n# Handling Inconsistent Input\n\nUsers might enter data that is so inconsistent that the system cannot store it.\n\nFor example, you've entered characters in a number field. Or you've entered more characters than the field length allows. The system behaves as described below.\n\n**System behavior in draft-enabled apps**\n\nIn a case like this, the contents of the UI differ from the contents of the draft. Before the user can save the draft, the system displays a message prompting the users to solve these errors. After all errors have been solved, the draft can be activated.\n\nThe system also behaves like this when using the *Apply* button in the subobject page. When you choose *Apply*, the system has to make sure that the content on the UI and the stored content of the draft are identical. If the errors described above occur, the system displays the same message prompting the user to solve them.\n\n> ### Note:  \n> This message lists only errors related to technical inconsistencies, not to logical inconsistencies. For example, if a user enters a business partner that does not exist, this error is not displayed. These types of errors are displayed in a state message when you save the object.\n\n\n\n## Additional Features in SAP Fiori Elements for OData V2\n\n**System behavior in non-draft apps**\n\nBefore users can save the data, the system displays a message prompting the users to solve these errors. After all errors have been solved, the object can be saved.\n\n",
+  "excerpt": "<!-- loio486e5b58499d414295dc068b446c71a3 --> Handling Inconsistent Input Users might enter data that is so inconsistent that the system cannot store it. For example, you've entered characters in a nu...",
+  "wordCount": 251,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

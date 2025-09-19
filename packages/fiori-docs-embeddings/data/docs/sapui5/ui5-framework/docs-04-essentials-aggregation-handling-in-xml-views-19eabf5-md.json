@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-aggregation-handling-in-xml-views-19eabf5-md",
+  "title": "Aggregation Handling in XML Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/aggregation-handling-in-xml-views-19eabf5.md",
+  "lastModified": "2025-09-01T18:17:10.490Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Aggregation",
+    "Handling",
+    "XML",
+    "Views"
+  ],
+  "headers": [
+    "Aggregation Handling in XML Views"
+  ],
+  "content": "<!-- loio19eabf5b13214f27b929b9473df3195b -->\n\n# Aggregation Handling in XML Views\n\nIn XML views, aggregated child controls can be added as child tags.\n\n\n\nAggregations of the XML view itself and of the controls inside the view are handled in the same way. If a container control has marked one of its aggregations as the default aggregation, you can add children directly into that control. For example, `XMLView`'s `content` aggregation is marked as the default, so you can define content for the aggregation directly in the XML view, without adding a `content` tag. However, when a container control doesn't have a default aggregation, or when adding a child control into another one of its aggregations, you need to use an aggregation tag, for example, the `dependents` tag.\n\n> ### Note:  \n> Before SAPUI5 1.102, it wasn't possible to add child controls into an XML view's aggregations other than the `content` aggregation. This has since been extended, so that the aggregations of the XML view itself and those of the controls inside the view are now handled in the same way.\n\n> ### Note:  \n> Some containers may not have default content, for example, the splitter container has two equally important content areas.\n> \n> The framework supports you by issuing error message in case of errors in the aggregation handling in XML views.\n\nYou fill aggregations as shown in the following example. The namespace of the parent control tag and the aggregation tag must be the same.\n\n```xml\n\n<mvc:View controllerName=\"module:sap/hcm/Address\" xmlns=\"sap.m\" xmlns:mvc=\"sap.ui.core.mvc\">\n   <Panel>\n      <content>  <!-- this is the general way of adding children: use the aggregation name -->\n         <Image src=\"http://www.sap.com/global/ui/images/global/sap-logo.png\"/>\n         <Button text=\"Press Me\"/>\n      </content>\n   </Panel>\n</mvc:View>\n```\n\nIf an aggregation of **cardinality `0..1`** has an alternative type and if you want to specify a value of that alternative type, you have to do this as an attributes, not as a nested element.\n\n> ### Example:  \n> For the `noData` aggregation of the `sap.ui.comp.smarttable.SmartTable` control, you can either define a string or a nested text control.\n> \n> \n> <table>\n> <tr>\n> <th valign=\"top\">\n> \n> String\n> \n> </th>\n> <th valign=\"top\">\n> \n> Nested text control\n> \n> </th>\n> </tr>\n> <tr>\n> <td valign=\"top\">\n> \n> ```\n> <SmartTable noData=\"No data available\">\n> \t...\n> </SmartTable>\n> \n> ```\n> \n> \n> \n> </td>\n> <td valign=\"top\">\n> \n> ```\n> <SmartTable ....>\n> \t<noData>\n> \t\t<Text text=\"No data available\" icon=\"sap-icon://...\" />\n> \t</noData>\n> \t...\n> </SmartTable>\n> \n> ```\n> \n> \n> \n> </td>\n> </tr>\n> </table>\n\nYou can also use attributes to define binding information for aggregations with cardinality `0..n`. For more information, see *Declarative List Binding in XML Views* under [List Binding \\(Aggregation Binding\\)](list-binding-aggregation-binding-91f0577.md).\n\n",
+  "excerpt": "<!-- loio19eabf5b13214f27b929b9473df3195b --> Aggregation Handling in XML Views In XML views, aggregated child controls can be added as child tags. Aggregations of the XML view itself and of the contr...",
+  "wordCount": 451,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

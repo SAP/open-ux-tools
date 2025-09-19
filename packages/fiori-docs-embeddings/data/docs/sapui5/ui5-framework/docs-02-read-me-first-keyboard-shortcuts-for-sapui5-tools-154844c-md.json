@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-02-read-me-first-keyboard-shortcuts-for-sapui5-tools-154844c-md",
+  "title": "Keyboard Shortcuts for SAPUI5 Tools",
+  "category": "ui5-framework",
+  "path": "docs/02_Read-Me-First/keyboard-shortcuts-for-sapui5-tools-154844c.md",
+  "lastModified": "2025-09-01T18:17:10.438Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Keyboard",
+    "Shortcuts",
+    "for",
+    "SAPUI5",
+    "Tools"
+  ],
+  "headers": [
+    "Keyboard Shortcuts for SAPUI5 Tools"
+  ],
+  "content": "<!-- loio154844c3ac2a4675a37aeb6259a5e034 -->\n\n# Keyboard Shortcuts for SAPUI5 Tools\n\nSAPUI5 provides tools for information, diagnostics and testing purposes that are accessible via keyboard shortcuts.\n\n> ### Tip:  \n> For macOS, several keyboards with different key labels exist. The modifier key corresponding to the Windows [Alt\\] key may be labelled either [Option\\] or [Alt\\].\n> \n> Please note that, for both Windows and macOS, only the left [Alt\\] or [Option\\] key can be used in the keyboard shortcuts given below.\n\nThe table shows the SAPUI5 tools available via keyboard shortcuts.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nTool\n\n</th>\n<th valign=\"top\">\n\nShortcut \\(Microsoft Windows\\)\n\n</th>\n<th valign=\"top\">\n\nShortcut \\(macOS\\)\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Technical Information Dialog](../04_Essentials/technical-information-dialog-616a3ef.md#loio616a3ef07f554e20a3adf749c11f64e9) \n\n</td>\n<td valign=\"top\">\n\n[Ctrl\\] + [Shift\\] + [Alt\\] + [P\\]  \n\n</td>\n<td valign=\"top\">\n\n[Ctrl\\] + [Shift\\] + [Alt\\] /[Option\\] + [P\\]  \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Diagnostics Window](../04_Essentials/diagnostics-6ec18e8.md#loio6ec18e80b0ce47f290bc2645b0cc86e6) \n\n</td>\n<td valign=\"top\">\n\n[Ctrl\\] + [Shift\\] + [Alt\\] + [S\\]  \n\n</td>\n<td valign=\"top\">\n\n[Ctrl\\] + [Shift\\] + [Alt\\] /[Option\\] + [S\\]  \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Test Recorder](../04_Essentials/test-recorder-2535ef9.md) \n\n</td>\n<td valign=\"top\">\n\n[Ctrl\\] + [Shift\\] + [Alt\\] + [T\\]  \n\n</td>\n<td valign=\"top\">\n\n[Ctrl\\] + [Shift\\] + [Alt\\] /[Option\\] + [T\\]  \n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio154844c3ac2a4675a37aeb6259a5e034 --> Keyboard Shortcuts for SAPUI5 Tools SAPUI5 provides tools for information, diagnostics and testing purposes that are accessible via keyboard shortcuts. > ...",
+  "wordCount": 194,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

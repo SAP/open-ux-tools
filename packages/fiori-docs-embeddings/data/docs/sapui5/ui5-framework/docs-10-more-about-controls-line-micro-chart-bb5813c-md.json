@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-line-micro-chart-bb5813c-md",
+  "title": "Line Micro Chart",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/line-micro-chart-bb5813c.md",
+  "lastModified": "2025-09-01T18:17:10.693Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Line",
+    "Micro",
+    "Chart"
+  ],
+  "headers": [
+    "Line Micro Chart",
+    "Overview",
+    "Usage",
+    "Properties"
+  ],
+  "content": "<!-- loiobb5813c4e7b2426985eed65965320f00 -->\n\n# Line Micro Chart\n\nDisplays a series of values as segmented lines along a threshold line.\n\n\n\n<a name=\"loiobb5813c4e7b2426985eed65965320f00__section_nkj_1nb_fbb\"/>\n\n## Overview\n\nThe `Line Micro Chart` control is primarily used for embedded analytics applications. It's designed to display a set of ordered points. These points are connected by lines that show a data progression for a specific data range. If you want to add further details, such as decisive values or dimensions to this chart, you can add up to four labels.\n\nFor more information, see the [API Reference](https://ui5.sap.com/#/api/sap.suite.ui.microchart.LineMicroChart) and the [Sample](https://ui5.sap.com/#/entity/sap.suite.ui.microchart.LineMicroChart).\n\n\n\n<a name=\"loiobb5813c4e7b2426985eed65965320f00__section_lk1_ljh_hbb\"/>\n\n## Usage\n\nWith the line micro chart, you can visualize the diagram curve and show trends. If you want to stress values that are above or below a certain threshold, you can use data points.\n\nBy default, the line of the chart is blue. However, you can use different colors, such as semantic colors for the line, to mark positive and negative values.\n\n![](images/Suite_Line_Micro_Chart_-_Usage_1_bfc8015.png)\n\nYou can also choose to use focus points instead of data points. Data points are useful if you want to concentrate on one or two special values, for example, the first and the last data point on the chart. For focus points, you can use any CSS color, but we recommend using semantic colors.\n\n![](images/Suite_Line_Micro_Chart_-_Usage_2_678546d.png)\n\n\n\n<a name=\"loiobb5813c4e7b2426985eed65965320f00__section_p51_cg3_fbb\"/>\n\n## Properties\n\n**Color**\n\nWith the sap.m.`ValueCSSColor` type, the Line Micro Chart can use regular points or emphasized points, with or without semantic colors. For more information, see the [API Reference](https://ui5.sap.com/#/api/sap.m.ValueCSSColor).\n\n**Data Points**\n\nThe *showPoints* property controls whether the points are displayed. The default value is false, which means that the points aren't displayed and only a continuous line is visible. You can use this configuration to show trends and to visualize the data progression. If emphasized points are used, the chart's color and *showPoints* properties don't affect. These properties can be used for regular points only. Don't use these two data point types together in one chart.\n\nThese types of data points are available:\n\n-   LineMicroChartPoint for the *x* and *y* coordinates.\n\n\n-   LineMicroChartEmphasizedPoint consists of the *color* and *show* properties and *x* and *y* properties.\n\n\n**Scaling**\n\nThe chart has a built-in automatic scale that is applied based on existing values, so that all values are visible. You can also set a manual scale, but only a part of the chart may be visible. You can set a manual scale by providing values for the following properties:\n\n-   minXValue\n\n-   maxXValue\n\n-   minYValue\n\n-   maxYValue\n\n\n![](images/Suite_Line_Micro_Chart_-_Scaling_dbfcdda.png)\n\n",
+  "excerpt": "<!-- loiobb5813c4e7b2426985eed65965320f00 --> Line Micro Chart Displays a series of values as segmented lines along a threshold line. <a name=\"loiobb5813c4e7b2426985eed65965320f00__section_nkj_1nb_fbb...",
+  "wordCount": 413,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-sidecontent-fragment-xml",
+  "title": "SideContent.fragment",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/SideContent.fragment.xml",
+  "lastModified": "2025-09-01T18:17:10.727Z",
+  "tags": [
+    "features",
+    "xml",
+    "SideContent",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.md\n\n```xml\n# SideContent.fragment.xml\n\n```xml\n<core:FragmentDefinition xmlns:core=\"sap.ui.core\" xmlns=\"sap.m\" xmlns:l=\"sap.ui.layout\" xmlns:f=\"sap.f\" xmlns:grid=\"sap.ui.layout.cssgrid\" >\n\t<l:VerticalLayout core:require=\"{handler: 'sap/fe/featureShowcase/mainApp/ext/CustomController'}\" width=\"100%\">\n\t\t<!-- Search-Term: #SideContent -->\n\t\t<Title text=\"Side Content\"/>\n\t\t<Button text=\"Change Criticality\" press=\"handler.onChangeCriticality\"/>\n\t\t<Text text=\"{description}\"/>\n\t</l:VerticalLayout>\n</core:FragmentDefinition>\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "SideContent.fragment.md xml SideContent.fragment.md xml SideContent.fragment.md xml SideContent.fragment.md xml SideContent.fragment.xml",
+  "wordCount": 62,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

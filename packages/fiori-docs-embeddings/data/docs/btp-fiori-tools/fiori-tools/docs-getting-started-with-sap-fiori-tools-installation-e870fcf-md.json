@@ -1,0 +1,21 @@
+{
+  "id": "btp-fiori-tools-docs-getting-started-with-sap-fiori-tools-installation-e870fcf-md",
+  "title": "Installation",
+  "category": "fiori-tools",
+  "path": "docs/Getting-Started-with-SAP-Fiori-Tools/installation-e870fcf.md",
+  "lastModified": "2025-09-01T18:17:10.155Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Installation"
+  ],
+  "headers": [
+    "Installation"
+  ],
+  "content": "<!-- loioe870fcff88b245e9b48a9d9f81715ac0 -->\n\n# Installation\n\nThis section contains installation instructions on the following integrated development environments:\n\n-   [SAP Business Application Studio](sap-business-application-studio-b011040.md)\n\n-   [Visual Studio Code](visual-studio-code-17efa21.md#loio17efa217f7f34a9eba53d7b209ca4280)\n\n",
+  "excerpt": "<!-- loioe870fcff88b245e9b48a9d9f81715ac0 --> Installation This section contains installation instructions on the following integrated development environments: -   SAP Business Application Studio -  ...",
+  "wordCount": 26,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

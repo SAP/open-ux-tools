@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-view-view1-view-xml",
+  "title": "View1.view",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/view/View1.view.xml",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "xml",
+    "View1",
+    "view"
+  ],
+  "headers": [],
+  "content": "# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.md\n\n```xml\n# View1.view.xml\n\n```xml\n<mvc:View controllerName=\"ns.manageproductsneo.controller.View1\" xmlns:mvc=\"sap.ui.core.mvc\" displayBlock=\"true\" xmlns=\"sap.m\">\n\t<Shell id=\"shell\">\n\t\t<App id=\"app\">\n\t\t\t<pages>\n\t\t\t\t<Page id=\"page\" title=\"{i18n>title}\">\n\t\t\t\t\t<content></content>\n\t\t\t\t</Page>\n\t\t\t</pages>\n\t\t</App>\n\t</Shell>\n</mvc:View>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "View1.view.md xml View1.view.md xml View1.view.md xml View1.view.md xml View1.view.xml",
+  "wordCount": 55,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

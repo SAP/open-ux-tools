@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-using-custom-code-before-standard-operations-877e5ff-md",
+  "title": "Using Custom Code Before Standard Operations",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/using-custom-code-before-standard-operations-877e5ff.md",
+  "lastModified": "2025-09-01T18:17:10.659Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Using",
+    "Custom",
+    "Code",
+    "Before",
+    "Standard",
+    "Operations"
+  ],
+  "headers": [
+    "Using Custom Code Before Standard Operations",
+    "Related Links"
+  ],
+  "content": "<!-- loio877e5ff4e9e243e4a821811b183f8937 -->\n\n# Using Custom Code Before Standard Operations\n\nYou can add custom coding before calling standard methods provided by SAP Fiori elements.\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V4.\n\nYou can use the `onBefore` extension methods to add custom coding. The following extension methods are supported:\n\n-   `onBeforeCreate`\n\n    triggered before the standard create method is invoked\n\n-   `onBeforeEdit`\n\n    triggered before the standard edit flow is invoked\n\n-   `onBeforeSave`\n\n    triggered before the standard save method is invoked\n\n-   `onBeforeDiscard`\n\n    triggered before the standard draft discard is invoked\n\n-   `onBeforeDelete`\n\n    triggered before the standard delete method is invoked for an object page, or for each selected table context\n\n\nFor more information about using the extension methods, see the *Related Links* section below.\n\n> ### Note:  \n> If you want to use custom code to display messages, use the `securedExecution` method.\n> \n> Also use this method to wrap custom code in case it changes the state of the object. In this case, ensure that the `\"updatesDocument\"` property is set to true so that SAP Fiori elements can display a confirmation popover, allowing users to discard their changes if they try to cancel or navigate away from the object.\n\n\n\n<a name=\"loio877e5ff4e9e243e4a821811b183f8937__section_emm_bgh_fsb\"/>\n\n## Related Links\n\n-   You can explore and work with the coding yourself. Check out our live example in the flexible programming model explorer at [Custom Hooks](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/controllerExtensions/controllerExtensionsOverview/basicExtensibility).\n\n-   For more information, see [EditFlow](https://ui5.sap.com/#/api/sap.fe.core.controllerextensions.EditFlow) in the Demo Kit.\n\n\n",
+  "excerpt": "<!-- loio877e5ff4e9e243e4a821811b183f8937 --> Using Custom Code Before Standard Operations You can add custom coding before calling standard methods provided by SAP Fiori elements. > Note:   > This to...",
+  "wordCount": 248,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

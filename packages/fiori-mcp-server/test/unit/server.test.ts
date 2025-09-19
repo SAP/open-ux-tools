@@ -49,6 +49,7 @@ describe('FioriFunctionalityServer', () => {
         const onRequestCB = setRequestHandlerCall[1];
         const result = await onRequestCB();
         expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
+            'doc-search',
             'list-fiori-apps',
             'list-functionality',
             'get-functionality-details',
