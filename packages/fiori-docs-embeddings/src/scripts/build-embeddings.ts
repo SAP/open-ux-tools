@@ -12,6 +12,7 @@ interface EmbeddingConfig {
     chunkSize: number;
     chunkOverlap: number;
     batchSize: number;
+    maxVectorsPerTable: number;
 }
 
 interface Document {
@@ -60,14 +61,13 @@ interface VectorData {
     path: string;
     chunk_index: number;
     document_id: string;
-    metadata: {
-        tags: string[];
-        headers: string[];
-        lastModified: string;
-        wordCount: number;
-        excerpt: string;
-        totalChunks: number;
-    };
+    // Flattened metadata fields
+    tags_json: string;
+    headers_json: string;
+    lastModified: string;
+    wordCount: number;
+    excerpt: string;
+    totalChunks: number;
     [key: string]: unknown;
 }
 
@@ -96,9 +96,10 @@ class EmbeddingBuilder {
             docsPath: './data/docs',
             embeddingsPath: './data/embeddings',
             model: 'Xenova/all-MiniLM-L6-v2',
-            chunkSize: 2000, // Increased to reduce number of chunks
-            chunkOverlap: 100, // Reduced overlap
-            batchSize: 20 // Increased batch size for faster processing
+            chunkSize: 2000, // Much larger chunks to reduce count
+            chunkOverlap: 100, // Minimal overlap
+            batchSize: 20, // Increased batch size for faster processing
+            maxVectorsPerTable: 5000 // Limit vectors per table to control file size
         };
         this.pipeline = null;
         this.documents = [];
@@ -359,7 +360,7 @@ class EmbeddingBuilder {
         const dbPath = path.resolve(this.config.embeddingsPath);
         const db = await connect(dbPath);
 
-        // Prepare data for LanceDB
+        // Prepare data for LanceDB with flattened structure
         const vectorData: VectorData[] = this.chunks
             .filter((chunk) => chunk.vector)
             .map((chunk) => ({
@@ -371,35 +372,84 @@ class EmbeddingBuilder {
                 path: chunk.path,
                 chunk_index: chunk.chunkIndex,
                 document_id: chunk.documentId,
-                metadata: {
-                    tags: chunk.metadata.tags,
-                    headers: chunk.metadata.headers,
-                    lastModified: chunk.metadata.lastModified,
-                    wordCount: chunk.metadata.wordCount,
-                    excerpt: chunk.metadata.excerpt,
-                    totalChunks: chunk.metadata.totalChunks
-                }
+                // Flatten metadata to avoid schema inference issues
+                tags_json: JSON.stringify(chunk.metadata.tags || []),
+                headers_json: JSON.stringify(chunk.metadata.headers || []),
+                lastModified: chunk.metadata.lastModified || '',
+                wordCount: chunk.metadata.wordCount || 0,
+                excerpt: chunk.metadata.excerpt || '',
+                totalChunks: chunk.metadata.totalChunks || 1
             }));
 
         console.log(`Storing ${vectorData.length} vectors in LanceDB`);
 
-        // Check if table exists and drop it to ensure clean rebuild
-        try {
-            const existingTable = await db.openTable('documents');
-            if (existingTable) {
-                console.log('🗑️  Dropping existing documents table...');
-                await db.dropTable('documents');
-                console.log('✓ Existing table dropped');
-            }
-        } catch {
-            // Table doesn't exist, which is fine
-            console.log('📝 Creating new documents table...');
+        // Split data into smaller chunks to avoid large files
+        const maxVectorsPerTable = this.config.maxVectorsPerTable;
+        const tableChunks: VectorData[][] = [];
+
+        for (let i = 0; i < vectorData.length; i += maxVectorsPerTable) {
+            tableChunks.push(vectorData.slice(i, i + maxVectorsPerTable));
         }
 
-        // Create new table
-        await db.createTable('documents', vectorData);
+        console.log(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
 
-        console.log('✓ Vector database created');
+        // Drop existing tables
+        for (let i = 0; i < tableChunks.length; i++) {
+            const tableName = `documents_${i.toString().padStart(3, '0')}`;
+            try {
+                await db.dropTable(tableName);
+                console.log(`🗑️  Dropped existing table: ${tableName}`);
+            } catch {
+                // Table doesn't exist, which is fine
+            }
+        }
+
+        // Create new tables with explicit schema
+        for (let i = 0; i < tableChunks.length; i++) {
+            const tableName = `documents_${i.toString().padStart(3, '0')}`;
+            const chunk = tableChunks[i];
+
+            // Flatten metadata to avoid schema inference issues with nested arrays
+            const normalizedChunk = chunk.map((item) => {
+                // Safely access metadata with proper typing
+                const metadata = item.metadata || ({} as any);
+
+                return {
+                    id: item.id || '',
+                    vector: Array.isArray(item.vector) ? item.vector : [],
+                    content: item.content || '',
+                    title: item.title || '',
+                    category: item.category || '',
+                    path: item.path || '',
+                    chunk_index: typeof item.chunk_index === 'number' ? item.chunk_index : 0,
+                    document_id: item.document_id || '',
+                    // Flatten metadata fields to avoid nested array issues
+                    tags_json: JSON.stringify(Array.isArray(metadata.tags) ? metadata.tags : []),
+                    headers_json: JSON.stringify(Array.isArray(metadata.headers) ? metadata.headers : []),
+                    lastModified: typeof metadata.lastModified === 'string' ? metadata.lastModified : '',
+                    wordCount: typeof metadata.wordCount === 'number' ? metadata.wordCount : 0,
+                    excerpt: typeof metadata.excerpt === 'string' ? metadata.excerpt : '',
+                    totalChunks: typeof metadata.totalChunks === 'number' ? metadata.totalChunks : 1
+                };
+            });
+
+            console.log(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
+            await db.createTable(tableName, normalizedChunk);
+            console.log(`✓ Created table ${tableName}`);
+        }
+
+        // Create a table index file for easy querying
+        const tableIndex = {
+            tables: tableChunks.map((_, i) => `documents_${i.toString().padStart(3, '0')}`),
+            totalTables: tableChunks.length,
+            maxVectorsPerTable,
+            totalVectors: vectorData.length
+        };
+
+        const tableIndexPath = path.join(this.config.embeddingsPath, 'table_index.json');
+        await fs.writeFile(tableIndexPath, JSON.stringify(tableIndex, null, 2));
+
+        console.log('✓ Vector database created with multiple tables');
 
         // Create metadata file
         const metadata: EmbeddingMetadata = {
