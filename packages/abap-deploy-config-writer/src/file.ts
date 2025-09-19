@@ -1,6 +1,7 @@
 import { join } from 'path';
 import fg from 'fast-glob';
 import { platform } from 'os';
+import { existsSync } from 'fs';
 import { FileName, type Package, getReuseLibs } from '@sap-ux/project-access';
 import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_IGNORE, UI5_REPO_TEXT_FILES } from './constants';
 import { coerce, satisfies } from 'semver';
@@ -116,4 +117,16 @@ export async function writeUi5RepositoryIgnore(fs: Editor, path?: string): Promi
             writeUi5RepositoryFile(fs, path, UI5_REPO_IGNORE, '^.*.ts$\n^.*.ts.map$');
         }
     }
+}
+
+/**
+ * Checks if the project is a TypeScript project.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path
+ * @returns true if the project is a TypeScript project, false otherwise
+ */
+export function isTsProject(fs: Editor, basePath: string): boolean {
+    const tsconfigPath = join(basePath, FileName.Tsconfig);
+    return fs.exists(tsconfigPath) || existsSync(tsconfigPath);
 }
