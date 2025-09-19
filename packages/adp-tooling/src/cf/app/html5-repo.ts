@@ -78,6 +78,7 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             await createService(spaceGuid, 'app-runtime', HTML5_APPS_REPO_RUNTIME, logger, ['html5-apps-repo-rt']);
             serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
             if (!serviceKeys?.credentials?.length) {
+                logger.debug(t('error.noUaaCredentialsFoundForHtml5Repo'));
                 throw new Error(t('error.cannotFindHtml5RepoRuntime'));
             }
         }
@@ -104,12 +105,9 @@ export async function downloadAppContent(
     const appNameVersion = `${appName}-${appVersion}`;
     try {
         const htmlRepoCredentials = await getHtml5RepoCredentials(spaceGuid, logger);
-        if (htmlRepoCredentials?.credentials?.length === 0) {
-            throw new Error(t('error.noUaaCredentialsFoundForHtml5Repo'));
-        }
 
-        const token = await getToken(htmlRepoCredentials.credentials[0].uaa);
-        const uri = `${htmlRepoCredentials.credentials[0].uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
+        const token = await getToken(htmlRepoCredentials?.credentials[0]?.uaa);
+        const uri = `${htmlRepoCredentials?.credentials[0]?.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
         const zip = await downloadZip(token, appHostId, uri);
 
         let admZip;
@@ -137,6 +135,7 @@ export async function downloadAppContent(
             throw new Error(t('error.failedToParseManifestJson', { error: e.message }));
         }
     } catch (e) {
+        logger.error(e);
         throw new Error(t('error.failedToDownloadAppContent', { spaceGuid, appName, appHostId, error: e.message }));
     }
 }
