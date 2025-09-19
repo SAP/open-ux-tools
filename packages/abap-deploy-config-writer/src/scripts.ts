@@ -45,18 +45,19 @@ export async function updateScriptsForAdp(
     const shouldAddBuildScript = !lrep || isTsProject(fs, basePath);
     if (shouldAddBuildScript) {
         await updateScripts(basePath, deployConfigFile, fs);
-    } else {
-        // deploy script
-        const deployScript = `${DEPLOY_SCRIPT} --config ${deployConfigFile}`;
-        await updatePackageScript(basePath, 'deploy', deployScript, fs);
-        // undeploy script
-        const undeployScript = `${UNDEPLOY_SCRIPT} --config ${deployConfigFile}`;
-        await updatePackageScript(basePath, 'undeploy', undeployScript, fs);
-        // test mode script
-        const deployTestModeScript = `${DEPLOY_SCRIPT} --config ${deployConfigFile} --testMode true`;
-        await updatePackageScript(basePath, 'deploy-test', deployTestModeScript, fs);
-
-        // dependencies
-        await addPackageDevDependency(basePath, RIMRAF, RIMRAF_VERSION, fs);
+        return;
     }
+
+    // deploy script
+    const deployScript = `${DEPLOY_SCRIPT} --config ${deployConfigFile}`;
+    await updatePackageScript(basePath, 'deploy', deployScript, fs);
+    // undeploy script
+    const undeployScript = `${UNDEPLOY_SCRIPT} --config ${deployConfigFile}`;
+    await updatePackageScript(basePath, 'undeploy', undeployScript, fs);
+    // test mode script
+    const deployTestModeScript = `${DEPLOY_SCRIPT} --config ${deployConfigFile} --testMode true`;
+    await updatePackageScript(basePath, 'deploy-test', deployTestModeScript, fs);
+
+    // dependencies
+    await addPackageDevDependency(basePath, RIMRAF, RIMRAF_VERSION, fs);
 }
