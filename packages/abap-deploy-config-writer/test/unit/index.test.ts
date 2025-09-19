@@ -3,7 +3,6 @@ import { generate } from '../../src';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
 
-import { isAdpProject } from '../../src/file';
 import type { DeployConfigOptions } from '../../src/types';
 
 describe('generate', () => {

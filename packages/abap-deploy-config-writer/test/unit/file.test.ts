@@ -5,7 +5,7 @@ import { existsSync } from 'fs';
 
 import { FileName } from '@sap-ux/project-access';
 
-import { addUi5Dependency, isAdpProject, isTsProject } from '../../src/file';
+import { addUi5Dependency, isTsProject } from '../../src/file';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -23,45 +23,6 @@ describe('File utils', () => {
             }
         });
         expect(addUi5Dependency(fs, 'base/path', 'dep')).toBeUndefined();
-    });
-
-    describe('isAdpProject', () => {
-        test('should return true when manifest.appdescr_variant exists in memory', () => {
-            const fs = create(createStorage());
-            const basePath = '/test/project';
-            const variantPath = join(basePath, 'webapp', FileName.ManifestAppDescrVar);
-
-            jest.spyOn(fs, 'exists').mockReturnValue(true);
-
-            expect(isAdpProject(fs, basePath)).toBe(true);
-            expect(fs.exists).toHaveBeenCalledWith(variantPath);
-        });
-
-        test('should return true when manifest.appdescr_variant exists on disk', () => {
-            const fs = create(createStorage());
-            const basePath = '/test/project';
-            const variantPath = join(basePath, 'webapp', FileName.ManifestAppDescrVar);
-
-            jest.spyOn(fs, 'exists').mockReturnValue(false);
-            existsSyncMock.mockReturnValue(true);
-
-            expect(isAdpProject(fs, basePath)).toBe(true);
-            expect(fs.exists).toHaveBeenCalledWith(variantPath);
-            expect(existsSync).toHaveBeenCalledWith(variantPath);
-        });
-
-        test('should return false when manifest.appdescr_variant does not exist', () => {
-            const fs = create(createStorage());
-            const basePath = '/test/project';
-            const variantPath = join(basePath, 'webapp', FileName.ManifestAppDescrVar);
-
-            jest.spyOn(fs, 'exists').mockReturnValue(false);
-            existsSyncMock.mockReturnValue(false);
-
-            expect(isAdpProject(fs, basePath)).toBe(false);
-            expect(fs.exists).toHaveBeenCalledWith(variantPath);
-            expect(existsSync).toHaveBeenCalledWith(variantPath);
-        });
     });
 
     describe('isTsProject', () => {

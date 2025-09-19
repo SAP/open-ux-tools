@@ -7,7 +7,7 @@ import { getDeployConfig, updateBaseConfig } from './config';
 import {
     addUi5Dependency,
     getLibraryPath,
-    isAdpProject,
+    isTsProject,
     writeUi5RepositoryFiles,
     writeUi5RepositoryIgnore
 } from './file';
@@ -15,7 +15,7 @@ import { UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION } from './constants'
 import type { DeployConfigOptions } from './types';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { updateScripts, updateScriptsForAdp } from './scripts';
+import { updateScripts } from './scripts';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -51,11 +51,8 @@ async function generate(
     const deployConfig = await getDeployConfig(abapConfig, baseConfig);
     fs.write(deployFilePath, deployConfig.toString());
 
-    if (isAdpProject(fs, basePath)) {
-        await updateScriptsForAdp(basePath, deployConfigFile, abapConfig.lrep, fs);
-    } else {
-        await updateScripts(basePath, deployConfigFile, fs);
-    }
+    const includeBuildScript = !abapConfig.lrep || isTsProject(fs, basePath);
+    await updateScripts(basePath, deployConfigFile, fs, includeBuildScript);
 
     if (isLib) {
         // ui5 repo ignore file

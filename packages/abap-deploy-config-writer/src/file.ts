@@ -120,18 +120,6 @@ export async function writeUi5RepositoryIgnore(fs: Editor, path?: string): Promi
 }
 
 /**
- * Checks if the project is an ADP project.
- *
- * @param fs - the memfs editor instance
- * @param basePath - the base path
- * @returns true if the project is an ADP project, false otherwise
- */
-export function isAdpProject(fs: Editor, basePath: string): boolean {
-    const variantPath = join(basePath, 'webapp', FileName.ManifestAppDescrVar);
-    return fs.exists(variantPath) || existsSync(variantPath);
-}
-
-/**
  * Checks if the project is a TypeScript project.
  *
  * @param fs - the memfs editor instance
