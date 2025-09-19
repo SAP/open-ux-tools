@@ -75,7 +75,7 @@
 
 ### Patch Changes
 
--   4fad77a: Regenerate output schema for 'get-functionality-details' tool
+-   4fad77a: Regenerate output schema for 'get_functionality_details' tool
 
 ## 0.0.2
 
