@@ -73,12 +73,18 @@ export interface OdataService {
      * Annotations can either be EDMX annotations or CDS annotations.
      */
     annotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[] | CdsAnnotationsInfo | CdsAnnotationsInfo[];
+    valueListReferences?: ValueListReference[];
     localAnnotationsName?: string | string[]; // The name or names used in the manifest.json and as the filenames for local annotations
     previewSettings?: Partial<ProxyBackend>;
     /**
      * Indicates whether certificate errors should be ignored.
      */
     ignoreCertError?: boolean;
+}
+
+export interface ValueListReference {
+    url: string;
+    metadata: string;
 }
 
 export type EdmxOdataService = Omit<OdataService, 'annotations'> & {

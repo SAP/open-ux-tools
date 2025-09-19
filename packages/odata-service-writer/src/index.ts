@@ -173,3 +173,4 @@ async function remove(basePath: string, service: OdataService, fs?: Editor): Pro
 
 export { generate, update, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
 export { getAnnotationNamespaces, NamespaceAlias };
+export { generate as generateValueListReferences } from './data/value-list-references';

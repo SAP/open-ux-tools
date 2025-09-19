@@ -384,7 +384,7 @@ export class FioriAppGenerator extends Generator {
                     this.state,
                     !!service.capService || this.options.generateIndexHtml
                 );
-                await generateFioriElementsApp(destRoot, feApp, this.fs);
+                await generateFioriElementsApp(destRoot, feApp, undefined, this.fs);
                 appConfig = feApp;
             }
 

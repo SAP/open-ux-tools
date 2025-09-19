@@ -12,10 +12,25 @@
   },
   "references": [
     {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../fiori-annotation-api"
+    },
+    {
       "path": "../mockserver-config-writer"
     },
     {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
+    },
+    {
       "path": "../project-access"
+    },
+    {
+      "path": "../system-access"
     },
     {
       "path": "../ui5-config"
