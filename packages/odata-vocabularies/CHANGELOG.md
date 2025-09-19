@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.14
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
 ## 0.4.13
 
 ### Patch Changes
