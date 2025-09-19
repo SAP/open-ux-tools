@@ -62,7 +62,7 @@
         "@sap-ux/vocabularies-types": "0.13.0",
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.12",
         "@types/lodash": "4.14.202",
         "jest-extended": "6.0.0"
     },
