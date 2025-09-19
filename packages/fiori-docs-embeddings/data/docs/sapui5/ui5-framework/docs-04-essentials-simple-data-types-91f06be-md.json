@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-simple-data-types-91f06be-md",
+  "title": "Simple Data Types",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/simple-data-types-91f06be.md",
+  "lastModified": "2025-09-01T18:17:10.543Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Simple",
+    "Data",
+    "Types"
+  ],
+  "headers": [
+    "Simple Data Types"
+  ],
+  "content": "<!-- loio91f06be06f4d1014b6dd926db0e91070 -->\n\n# Simple Data Types\n\nFor a complete list of all simple types, see [API Reference: `sap.ui.model.Type`](https://ui5.sap.com/#/api/sap.ui.model.type/overview). \n\n",
+  "excerpt": "<!-- loio91f06be06f4d1014b6dd926db0e91070 --> Simple Data Types For a complete list of all simple types, see API Reference: sap.ui.model.Type.",
+  "wordCount": 20,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

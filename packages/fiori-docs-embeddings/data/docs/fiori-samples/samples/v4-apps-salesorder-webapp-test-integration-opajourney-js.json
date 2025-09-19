@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-webapp-test-integration-opajourney-js",
+  "title": "OpaJourney",
+  "category": "samples",
+  "path": "V4/apps/salesorder/webapp/test/integration/OpaJourney.js",
+  "lastModified": "2025-09-01T18:17:10.819Z",
+  "tags": [
+    "samples",
+    "js",
+    "OpaJourney"
+  ],
+  "headers": [],
+  "content": "# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.md\n\n```javascript\n# OpaJourney.js\n\n```javascript\nsap.ui.define(['sap/ui/test/opaQunit'], function(opaTest) {\n    'use strict';\n\n    var Journey = {\n        run: function() {\n            QUnit.module('Sample journey');\n\n            opaTest('#000: Start', function(Given, When, Then) {\n                Given.iResetTestData().and.iStartMyApp();\n                Then.onTheMainPage.iSeeThisPage();\n            });\n            \n            opaTest('#1: ListReport: Check List Report Page loads', function(Given, When, Then) {\n                When.onTheMainPage.onFilterBar().iExecuteSearch();\n                Then.onTheMainPage.onTable().iCheckRows();\n            });\n\n            opaTest('#2: Object Page: Check Object Page loads', function(Given, When, Then) {\n                Then.onTheMainPage.iSeeThisPage();\n            });\n            \n            opaTest('#999: Tear down', function(Given, When, Then) {\n                Given.iTearDownMyApp();\n            });\n        }\n    };\n\n    return Journey;\n});\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "OpaJourney.md javascript OpaJourney.md javascript OpaJourney.md javascript OpaJourney.md javascript OpaJourney.js",
+  "wordCount": 100,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

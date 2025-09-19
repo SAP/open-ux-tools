@@ -4,6 +4,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
+import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -38,6 +39,11 @@ async function createRouter(
             throw new Error('No manifest.json found.');
         }
     }
+
+    if (isRemoteConnectionsEnabled()) {
+        await logRemoteUrl(logger);
+    }
+
     // add exposed endpoints for cds-plugin-ui5
     flp.router.getAppPages = (): string[] => getPreviewPaths(config).map(({ path }) => path);
     return flp.router;

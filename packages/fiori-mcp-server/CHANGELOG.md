@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.1
+
+### Patch Changes
+
+-   306561e: Fix publishing of embeddings package
+
+## 0.1.0
+
+### Minor Changes
+
+-   a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.
+
 ## 0.0.11
 
 ### Patch Changes

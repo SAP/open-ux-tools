@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-drag-and-drop-configuration-56007f4-md",
+  "title": "Drag-and-Drop Configuration",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/drag-and-drop-configuration-56007f4.md",
+  "lastModified": "2025-09-01T18:17:10.513Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Drag",
+    "and",
+    "Drop",
+    "Configuration"
+  ],
+  "headers": [
+    "Drag-and-Drop Configuration",
+    "Overview"
+  ],
+  "content": "<!-- loio56007f46e7db494bbaadbfa5e8d50ea8 -->\n\n# Drag-and-Drop Configuration\n\nTo use drag and drop, you have to provide the required configuration using the `dragDropConfig` aggregation in `sap.ui.core.Element`.\n\n\n\n<a name=\"loio56007f46e7db494bbaadbfa5e8d50ea8__section_rn3_w3g_x2b\"/>\n\n## Overview\n\nThe `dragDropConfig` aggregation with multiplicity `0..n` is enabled for all controls and elements in SAPUI5. However, it has to be defined in the metadata first.\n\n> ### Note:  \n> This configuration might be ignored due to metadata restrictions of `sap.ui.core.Element.extend`. For more information, see the [API Reference: `sap.ui.core.Element.extend`](https://ui5.sap.com/#/api/sap.ui.core.Element/methods/sap.ui.core.Element.extend). \n\nTo enable configuration, the following configuration entities for the aggregation are available:\n\n-   `DragInfo`\n\n    This class can be used to enable dragging if the drop target is unknown, or if you are not the owner of the target. Additional checks can be done during the `dragStart` event, and the default behavior can be changed.\n\n-   `DropInfo`\n\n    This class can be used as a general drop target. Incoming data might have to be validated during the `dragEnter` event. Applications have to implement the `drop` event.\n\n\nBoth `DragInfo` and `DropInfo` provide the `groupName` property. If this property has been specified, the `DropInfo` object only interacts with the relevant `DragInfo` classes within the same group.\n\n-   `DragDropInfo`\n\n    This class can be used if the drag source and the drop target are closely connected, and both are known. The most common use case is rearranging items.\n\n\n**Related Information**  \n\n\n[API Reference: `dragDropConfig`](https://ui5.sap.com/#/api/sap.ui.core.Element/aggregations)\n\n[Drag-and-Drop Metadata](drag-and-drop-metadata-da7f3fc.md \"To influence the drag-and-drop behavior, use the metadata definition of a control.\")\n\n",
+  "excerpt": "<!-- loio56007f46e7db494bbaadbfa5e8d50ea8 --> Drag-and-Drop Configuration To use drag and drop, you have to provide the required configuration using the dragDropConfig aggregation in sap.ui.core.Eleme...",
+  "wordCount": 238,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

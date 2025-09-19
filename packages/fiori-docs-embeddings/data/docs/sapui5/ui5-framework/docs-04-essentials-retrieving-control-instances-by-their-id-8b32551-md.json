@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-retrieving-control-instances-by-their-id-8b32551-md",
+  "title": "Retrieving Control Instances by Their ID",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/retrieving-control-instances-by-their-id-8b32551.md",
+  "lastModified": "2025-09-01T18:17:10.539Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Retrieving",
+    "Control",
+    "Instances",
+    "Their"
+  ],
+  "headers": [
+    "Retrieving Control Instances by Their ID",
+    "Context"
+  ],
+  "content": "<!-- loio8b325518a2ae48ee91eb2dacda1d1420 -->\n\n# Retrieving Control Instances by Their ID\n\nA control instance can be found in a fragment by means of its ID.\n\n\n\n## Context\n\nDue to the above prefixing that guarantees unique IDs, there are different cases possible which require different calls.\n\nAssuming the control has the ID `myControl`, there are two ways how to retrieve it by its ID.\n\n-   Retrieving a control instance when the fragment is not part of a view\n    -   When no fragment ID was given: `myControl = Element.getElementbyId(\"myControl\")`, with `Element` required from module `sap/ui/core/Element`\n\n    -   When a fragment ID `myFrag` was given: `myControl = Fragment.byId(\"myFrag\", \"myControl\")`, with `Fragment` required from module `sap/ui/core/Fragment`\n\n\n-   Retrieving a control instance when the fragment is embedded into a view and the code is inside a controller. The controller is called `this` in the following examples.\n\n    -   When no fragment ID was given: `myControl = this.byId(\"myControl\")`\n\n    -   When a fragment ID `myFrag` was given: `myControl = this.byId(Fragment.createId(\"myFrag\", \"myControl\"))`, with `Fragment` required from module `sap/ui/core/Fragment`\n\n\n\n",
+  "excerpt": "<!-- loio8b325518a2ae48ee91eb2dacda1d1420 --> Retrieving Control Instances by Their ID A control instance can be found in a fragment by means of its ID. Context Due to the above prefixing that guarant...",
+  "wordCount": 168,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

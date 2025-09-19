@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-localservice-mockdata-sepmra-i-productmaincategory-json",
+  "title": "SEPMRA I ProductMainCategory",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/localService/mockdata/SEPMRA_I_ProductMainCategory.json",
+  "lastModified": "2025-09-01T18:17:10.800Z",
+  "tags": [
+    "samples",
+    "json",
+    "SEPMRA",
+    "ProductMainCategory"
+  ],
+  "headers": [],
+  "content": "# SEPMRA_I_ProductMainCategory.json\n\n```json\n[\n  {\n    \"MainProductCategory\": \"Computer Systems\"\n  },\n  {\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"MainProductCategory\": \"Printers & Scanners\"\n  },\n  {\n    \"MainProductCategory\": \"Software\"\n  },\n  {\n    \"MainProductCategory\": \"TV, Video & HiFi\"\n  },\n  {\n    \"MainProductCategory\": \"Smartphones & Tablets\"\n  }\n]\n```",
+  "excerpt": "SEPMRA_I_ProductMainCategory.json",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

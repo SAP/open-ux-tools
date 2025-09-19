@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-04-essentials-navigate-with-dynamic-targets-856d6c6-md",
+  "title": "Navigate with Dynamic Targets",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/navigate-with-dynamic-targets-856d6c6.md",
+  "lastModified": "2025-09-01T18:17:10.529Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Navigate",
+    "with",
+    "Dynamic",
+    "Targets"
+  ],
+  "headers": [
+    "Navigate with Dynamic Targets",
+    "Adding Dynamic Targets",
+    "Displaying Dynamic Targets"
+  ],
+  "content": "<!-- loio856d6c6a408846b480ca177b9a1aab62 -->\n\n# Navigate with Dynamic Targets\n\nThe `addTarget` method in the `sap.ui.core.routing.Targets` class enables you to add targets to the router dynamically at runtime. Components or views can serve as dynamic targets.\n\nUsually, routing targets \\(that represent views or components\\) are defined statically in the [Routing Configuration](routing-configuration-9023130.md) inside the `manifest.json` file. But there are more and more scenarios where a target can't be defined during design time because the necessary information is only available at runtime. This could apply, for example, to a routing target that depends on the user configuration and must be loaded from the back end at runtime.\n\n> ### Note:  \n> Defining the targets statically in the `manifest.json` file is the preferred solution, as this allows for optimization possibilities \\(e.g. during build time\\). Only make use of dynamic targets when a static declaration is not possible, e.g. because certain information is not available during design time.\n\nBefore a target can be displayed, it needs to be added to the router. The SAPUI5 routing provides APIs to let an application add routing targets dynamically and to display them.\n\n\n\n<a name=\"loio856d6c6a408846b480ca177b9a1aab62__section_jnj_rgx_mjb\"/>\n\n## Adding Dynamic Targets\n\nUse the [addTarget](https://ui5.sap.com/#/api/sap.ui.core.routing.Targets/methods/addTarget) API of the `sap.ui.core.routing.Targets` module to add dynamic routing targets:\n\n```js\nvar oTargetOptions = {\n    name: \"DynamicTargetComponent\",\n    type: \"Component\",\n    controlId: ...,\n    controlAggregation: ...,\n    id: ...,\n    ...\n};\noRouter.getTargets().addTarget(\"myDynamicTarget\", oTargetOptions);\n```\n\nOn top of the other target options, the following configuration options can be used to display a `Component` or `View` as a dynamic target:\n\n-   `name`: The component or view name\n\n-   `type`: Set to either `Component` or `View`\n\n-   `options` \\(optional\\): Relevant for targets of type `Component`\n\n-   `containerOptions` \\(optional\\): Relevant for targets of type `Component`\n\n\n> ### Note:  \n> The `usage` property cannot be used for dynamic targets. For more information on the available target options, see [Enabling Routing in Nested Components](enabling-routing-in-nested-components-fb19f50.md).\n\n\n\n<a name=\"loio856d6c6a408846b480ca177b9a1aab62__section_u1j_1hx_mjb\"/>\n\n## Displaying Dynamic Targets\n\nAfter a target has been added, it is possible to display it with the [display](https://ui5.sap.com/#/api/sap.ui.core.routing.Targets/methods/display) method of the `sap.ui.core.routing.Targets` module.\n\nA typical use case is to display a dynamic target after navigating to a route. By default there is no connection between a dynamically added target and the matched route, which would be relevant for the life-cycle of targets and the handling of the browser hash. In this case, the target will not be suspended after navigating away from the corresponding route, and the hash of the router will be reset.\n\nHowever, if it's relevant to keep the hash in the router and make the target suspended after navigating away, the information about the target being connected to the matched route needs to be provided. In such a case, it is necessary to provide the `routeRelevant` parameter to the `display` method with its value set to `true`.\n\nAfter defining a target as **route-relevant**, a connection between the active route and the target is created. Navigating away from the route will remove the dynamic target, so that the dynamic target won't be displayed automatically once the same route is matched again. To display the dynamic target once the route is matched again, the `display` method needs to be called again.\n\n```js\noRouter.getTargets().display({\n    name: \"myDynamicTarget\",\n    prefix: ...,\n    routeRelevant: true\n});\n```\n\n",
+  "excerpt": "<!-- loio856d6c6a408846b480ca177b9a1aab62 --> Navigate with Dynamic Targets The addTarget method in the sap.ui.core.routing.Targets class enables you to add targets to the router dynamically at runtim...",
+  "wordCount": 532,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

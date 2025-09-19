@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-03-get-started-step-5-batch-groups-ef2af49-md",
+  "title": "Step 5: Batch Groups",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-5-batch-groups-ef2af49.md",
+  "lastModified": "2025-09-01T18:17:10.476Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Batch",
+    "Groups"
+  ],
+  "headers": [
+    "Step 5: Batch Groups",
+    "Preview",
+    "Coding",
+    "webapp/manifest.json"
+  ],
+  "content": "<!-- loioef2af4957fae469e9203e98006d3ee75 -->\n\n# Step 5: Batch Groups\n\nIn this step, we have a closer look at batch groups. Batch groups are used to group multiple requests into one server request to improve the overall performance.\n\n\n\n<a name=\"loioef2af4957fae469e9203e98006d3ee75__section_bt4_fxc_z1b\"/>\n\n## Preview\n\n  \n  \n**No visual change compared to the last step**\n\n![](images/Tutorial_OData_V4_Step_4_3ac4fcc.png \"No visual change compared to the last step\")\n\n\n\n<a name=\"loioef2af4957fae469e9203e98006d3ee75__section_tsr_gxc_z1b\"/>\n\n## Coding\n\nYou can view and download all files at [OData V4 - Step 5](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.odatav4/sample/sap.ui.core.tutorial.odatav4.05).\n\n\n\n<a name=\"loioef2af4957fae469e9203e98006d3ee75__section_pp2_mxc_z1b\"/>\n\n## webapp/manifest.json\n\n```json\n...\n\t\t\t\t\"\": {\n\t\t\t\t\"dataSource\": \"default\",\n\t\t\t\t\"settings\": {\n\t\t\t\t\t\"autoExpandSelect\": true,\n\t\t\t\t\t\"operationMode\": \"Server\",\n\t\t\t\t\t\"groupId\": \"$auto\"\n\t\t\t\t}\n...\n```\n\nIn the previous steps, batch processing was turned off, so that we could monitor the network traffic between our app and the service more easily. Now we turn on batch processing by changing the `groupID` to `$auto`. You can also just remove the line from the code as this is the default.\n\nWe now run the app and open the browser developer tools. On the *Console* tab, we clear all messages and choose the *Refresh* button.\n\n> ### Tip:  \n> Change the settings of the *Console* so that it only displays information messages, not warnings and errors, to make it easier to find the messages we're looking for.\n\nWe see that the request is now bundled: To read the user data, the app now sends a `POST` request instead of a `GET` request to the server. The URL of the `POST` request does not include the `path` to the data we want. Instead it ends with `$batch` that indicates that this is a batch request.\n\nA `$batch` request uses multipart MIME to put several requests into one. This makes it harder to analyze when looking at the request in the browser developer tools. To overcome this issue, you can:\n\n-   Switch the group ID to `$direct` temporarily by changing the source code or changing the default value in the debugger.\n\n-   Copy the relevant part of the request or response from the developer tools to an editor and auto-format it as JSON to analyze it.\n\n\n**Related Information**  \n\n\n[Batch Control](../04_Essentials/batch-control-74142a3.md \"OData V4 allows you to group multiple operations into a single HTTP request payload, as described in the official OData V4 specification Part 1, Batch Requests (see the link under Related Information for more details).\")\n\n[Performance Aspects](../04_Essentials/performance-aspects-5a0d286.md \"The OData V4 model offers the features described below which influence performance.\")\n\n",
+  "excerpt": "<!-- loioef2af4957fae469e9203e98006d3ee75 --> Step 5: Batch Groups In this step, we have a closer look at batch groups. Batch groups are used to group multiple requests into one server request to impr...",
+  "wordCount": 394,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

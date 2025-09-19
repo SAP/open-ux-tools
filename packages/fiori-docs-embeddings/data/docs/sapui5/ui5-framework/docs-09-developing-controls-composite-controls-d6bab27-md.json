@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-09-developing-controls-composite-controls-d6bab27-md",
+  "title": "Composite Controls",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/composite-controls-d6bab27.md",
+  "lastModified": "2025-09-01T18:17:10.673Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Composite",
+    "Controls"
+  ],
+  "headers": [
+    "Composite Controls"
+  ],
+  "content": "<!-- loiod6bab27b5dc041b29b419bae8ae8f1d1 -->\n\n# Composite Controls\n\nComposite controls are implemented by reusing other controls.\n\n",
+  "excerpt": "<!-- loiod6bab27b5dc041b29b419bae8ae8f1d1 --> Composite Controls Composite controls are implemented by reusing other controls.",
+  "wordCount": 15,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

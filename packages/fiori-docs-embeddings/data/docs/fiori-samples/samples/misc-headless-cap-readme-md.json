@@ -1,0 +1,29 @@
+{
+  "id": "fiori-samples-misc-headless-cap-readme-md",
+  "title": "Running CAP Headless",
+  "category": "samples",
+  "path": "misc/headless/cap/README.md",
+  "lastModified": "2025-09-01T18:17:10.806Z",
+  "tags": [
+    "samples",
+    "md",
+    "Running",
+    "CAP",
+    "Headless"
+  ],
+  "headers": [
+    "Running CAP Headless",
+    "Prerequisites",
+    "Create a CAP project (Optional)",
+    "Create a SAP Fiori UI and deployment configuration",
+    "Run headless generator",
+    "Gotchas",
+    "License"
+  ],
+  "content": "# Running CAP Headless\n\nAppend a SAP UI application with a managed approuter configuration to an existing CAP project, using the headless generator.  \n\n# Prerequisites\n\n- `@sap/cds-dk` is installed globally, if not, run `npm i -g @sap/cds-dk` from a new terminal window\n\n# Create a CAP project (Optional)\n\nGenerate a CAP project with sample data and a HANA configuration;\n\n```bash\ncds init managedAppCAPProject && cd managedAppCAPProject && cds add tiny-sample && cds add hana && cds add mta && npm install && cds build --for hana && cp gen/db/package.json db && npm i\n```\n\n# Create a SAP Fiori UI and deployment configuration\n\nGenerate a new configuration file called `cap_app_config.json` and update the properties to reflect your CAP project, the CAP Service properties and the specific SAP Fiori project attributes.\n\n```bash\ntouch cap_app_config.json\n```\n\nAmend the following configuration properties, this assumes the root folder is called `managedAppCAPProject`, only the target folder will differ between Business Application Studio (BAS) and VSCode;\n\n```JSON\n{\n    \"version\": \"0.1\",\n    \"floorplan\": \"FE_LROP\", // Fiori Elements List Report Object Page\n    \"project\":\n    {\n        \"title\": \"Project's \\\"Title\\\"\",\n        \"description\": \"Test 'Project' \\\"Description\\\"\",\n        \"namespace\": \"cap.namespace\", // Update or remove if not required\n        \"ui5Version\": \"1.90.0\",\n        \"localUI5Version\": \"1.82.2\",\n        \"name\": \"mylropproject\", // SAP Fiori UI project name\n        \"sapux\": true,\n        \"targetFolder\": \"/Users/MyUser/Documents/managedAppCAPProject/app/\" // Target location of new project appended with project name i.e. /Users/MyUser/Documents/managedAppCAPProject/app/mylropproject\n    },\n    \"service\":\n    {\n        \"servicePath\": \"/odata/v4/catalog/\",\n        \"capService\":\n        {\n            \"projectPath\": \"./\",\n            \"serviceName\": \"CatalogService\",\n            \"serviceCdsPath\": \"srv/cat-service.cds\",\n            \"appPath\": \"app\" // The CAP default apps folder, only update if not using default CAP settings\n        }\n    },\n    \"entityConfig\":\n    {\n        \"mainEntity\":\n        {\n            \"entityName\": \"Books\"\n        }\n    },\n    \"deployConfig\":\n    {\n        \"deployTarget\": \"CF\", // Cloud Foundry\n        \"destinationName\": \"fiori-default-srv-api\", // Should be not be changed, reflects the destination instance exposing the CAP project\n        \"addToManagedAppRouter\": true, // Toggle this value if a mananaged approuter already exists or if the using a standalone appprouter\n        \"addMTADestination\": true // Toggle this value if the existing mta.yaml already contains a destination service that you want to use\n    }\n}\n```\n\n# Run headless generator\n\nInside the root of the newly created CAP project, run the headless generator with the SAP UI and deployment configuration;\n\n```bash\nyo @sap/fiori-elements:headless <path-to-config-file> <optional-path-to-output-or-cwd> <options>\n```\n\nOptions:\n--force : Overwrite the output files\n--skipInstall: Skip the install phase\n--deleteFile: Delete the input app configuration file\n--logLevel debug | info\n\nFor example;\n\n```bash\nyo @sap/fiori:headless ./cap_app_config.json ./\n```\n\nWith `logLevel` and `skipInstall` enabled;\n```bash\nyo @sap/fiori:headless ./cap_app_config.json --logLevel debug --skipInstall\n```\n\n# Gotchas\n\n1. If you want to generate a SAP Fiori UI application without any Cloud Foundry deployment configuration, then remove `deployConfig` from `cap_app_config.josn`.\n1. If you have created a CAP project using an existing `managed` or `standalone` approuter configuration, then `addToManagedAppRouter` should be removed or set to `false`.\n\n### License\nCopyright (c) 2009-2025 SAP SE or an SAP affiliate company. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](/LICENSES/Apache-2.0.txt) file.\n",
+  "excerpt": "Running CAP Headless Append a SAP UI application with a managed approuter configuration to an existing CAP project, using the headless generator.   Prerequisites - @sap/cds-dk is installed globally, i...",
+  "wordCount": 479,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

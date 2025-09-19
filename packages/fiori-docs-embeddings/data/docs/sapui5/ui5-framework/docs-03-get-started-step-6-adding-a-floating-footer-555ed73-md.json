@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-6-adding-a-floating-footer-555ed73-md",
+  "title": "Step 6: Adding a Floating Footer",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-6-adding-a-floating-footer-555ed73.md",
+  "lastModified": "2025-09-01T18:17:10.478Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Adding",
+    "Floating",
+    "Footer"
+  ],
+  "headers": [
+    "Step 6: Adding a Floating Footer",
+    "Preview",
+    "Coding",
+    "webapp/view/App.view.xml \\[MODIFY\\]",
+    "webapp/view/Detail.view.xml \\[MODIFY\\]",
+    "webapp/view/Detail.view.xml \\[MODIFY\\]",
+    "webapp/controller/Detail.controller.js \\[NEW\\]"
+  ],
+  "content": "<!-- loio555ed73903b34c70a23ba13af1a5d71e -->\n\n# Step 6: Adding a Floating Footer\n\nIn this step, we add a floating footer to the detail page.\n\n\n\n<a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_ed2_4dd_lbb\"/>\n\n## Preview\n\n  \n  \n**ObjectPageLayout with a floating footer**\n\n![](images/Floating_Footer_Fiori_2_0_Tutorial_24122e0.png \"ObjectPageLayout with a floating footer\")\n\n\n\n<a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_fd2_4dd_lbb\"/>\n\n## Coding\n\nYou can view and download all files at [Flexible Column Layout App - Step 6](https://ui5.sap.com/#/sample/sap.f.tutorial.fcl.06/preview).\n\n\n\n<a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_jtj_mnj_l4b\"/>\n\n## webapp/view/App.view.xml \\[MODIFY\\]\n\n```\n<mvc:View\n\tdisplayBlock=\"true\"\n\theight=\"100%\"\n\txmlns=\"sap.f\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\t<FlexibleColumnLayout id=\"flexibleColumnLayout\" stateChange=\"onStateChanged\" backgroundDesign=\"Solid\">\n\t\t<beginColumnPages>\n\t\t\t<mvc:XMLView id=\"beginView\" viewName=\"sap.ui.demo.fcl.view.List\"/>\n\t\t</beginColumnPages>\n\t\t<midColumnPages>\n\t\t\t<mvc:XMLView id=\"detailView\" viewName=\"sap.ui.demo.fcl.view.Detail\"/>\n\t\t</midColumnPages>\n\t</FlexibleColumnLayout>\n</mvc:View>\n```\n\nFirst, we communicate changes to the layout with the use of the `stateChange` event.\n\n\n\n<a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_dp4_lnj_l4b\"/>\n\n## webapp/view/Detail.view.xml \\[MODIFY\\]\n\n```\n\t\t...\n\t\t</sections>\n\n\t\t<footer>\n\t\t\t<m:OverflowToolbar>\n\t\t\t\t<m:ToolbarSpacer/>\n\t\t\t\t<m:Button type=\"Accept\" text=\"Save\"/>\n\t\t\t\t<m:Button type=\"Reject\" text=\"Cancel\"/>\n\t\t\t</m:OverflowToolbar>\n\t\t</footer>\n\t</ObjectPageLayout>\n</mvc:View>\n```\n\nWe add a footer inside the `sap.uxap.ObjectPageLayout`.\n\n\n\n<a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_nq4_knj_l4b\"/>\n\n## webapp/view/Detail.view.xml \\[MODIFY\\]\n\n```xml\n<mvc:View\n\tcontrollerName=\"sap.ui.demo.fcl.controller.Detail\"\n\txmlns=\"sap.uxap\"\n\txmlns:m=\"sap.m\"\n\txmlns:f=\"sap.f\"\n\txmlns:form=\"sap.ui.layout.form\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\t<ObjectPageLayout\n\t\tid=\"ObjectPageLayout\"\n\t\tshowTitleInHeaderContent=\"true\"\n\t\talwaysShowContentHeader=\"false\"\n\t\tpreserveHeaderStateOnScroll=\"false\"\n\t\theaderContentPinnable=\"true\"\n\t\tisChildPage=\"true\"\n\t\tupperCaseAnchorBar=\"false\">\n\t\t<headerTitle>\n\t\t\t<ObjectPageDynamicHeaderTitle>\n\t\t\t\t<actions>\n\t\t\t\t\t<m:ToggleButton\n\t\t\t\t\t\ttext=\"Edit\"\n\t\t\t\t\t\ttype=\"Emphasized\"\n\t\t\t\t\t\tpress=\".onEditToggleButtonPress\"/>\n\t\t\t\t\t<m:Button\n\t\t\t\t\t\ttext=\"Delete\"\n\t\t\t\t\t\ttype=\"Transparent\"/>\n\t\t\t\t\t<m:Button\n\t\t\t\t\t\ttext=\"Copy\"\n\t\t\t\t\t\ttype=\"Transparent\"/>\n\t\t\t\t\t<m:Button\n\t\t\t\t\t\ticon=\"sap-icon://action\"\n\t\t\t\t\t\ttype=\"Transparent\"/>\n\t\t\t\t</actions>\n\t\t\t</ObjectPageDynamicHeaderTitle>\n\t\t</headerTitle>\n\t\t...\n```\n\nWe add a `press` event handler to the *Edit* button.\n\n\n\n<a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_z1v_jnj_l4b\"/>\n\n## webapp/controller/Detail.controller.js \\[NEW\\]\n\n```js\nsap.ui.define([\n\t\"sap/ui/core/mvc/Controller\"\n], function (Controller) {\n\t\"use strict\";\n\n\treturn Controller.extend(\"sap.ui.demo.fcl.controller.Detail\", {\n\t\tonEditToggleButtonPress: function() {\n\t\t\tvar oObjectPage = this.getView().byId(\"ObjectPageLayout\"),\n\t\t\t\tbCurrentShowFooterState = oObjectPage.getShowFooter();\n\n\t\t\toObjectPage.setShowFooter(!bCurrentShowFooterState);\n\t\t}\n\t});\n});\n```\n\nFinally, we create the controller and add a simple function to it to show and hide the footer.\n\n",
+  "excerpt": "<!-- loio555ed73903b34c70a23ba13af1a5d71e --> Step 6: Adding a Floating Footer In this step, we add a floating footer to the detail page. <a name=\"loio555ed73903b34c70a23ba13af1a5d71e__section_ed2_4dd...",
+  "wordCount": 230,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

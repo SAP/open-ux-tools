@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-using-factory-functions-335848a-md",
+  "title": "Using Factory Functions",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/using-factory-functions-335848a.md",
+  "lastModified": "2025-09-01T18:17:10.552Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Using",
+    "Factory",
+    "Functions"
+  ],
+  "headers": [
+    "Using Factory Functions"
+  ],
+  "content": "<!-- loio335848ac1174435c901baaa55f6d7819 -->\n\n# Using Factory Functions\n\nThe factory function is a more powerful approach for creating controls from model data. The factory function is called for each entry of a control's aggregation, and the developer can decide whether each entry shall be represented by the same control with different properties or even by a completely different control for each entry.\n\nThe factory function comes with the parameters `sId`, which should be used as an ID for the new control, and `oContext`, which is for accessing the model data of the entry. The returned object must be of type `sap.ui.core.Element`. Here's how this scenario can be realized in an XML view and a controller using our JSON model data from [List Binding \\(Aggregation Binding\\)](list-binding-aggregation-binding-91f0577.md):\n\n```xml\n<mvc:View\n    controllerName=\"sap.ui.sample.App\"\n    xmlns=\"sap.m\"\n    xmlns:l=\"sap.ui.layout\"\n    xmlns:mvc=\"sap.ui.core.mvc\">\n    <l:VerticalLayout content=\"{path: '/companies', factory: '.createContent'}\" class=\"sapUiContentPadding\" width=\"100%\"/>\n</mvc:View>\n```\n\nPlease note the `'.'` in `factory: '.createContent'`. The class `App.controller.js` contains the implementation of our factory method:\n\n```js\nsap.ui.define([\n    \"sap/ui/core/mvc/Controller\",\n    \"sap/ui/model/json/JSONModel\",\n    \"sap/ui/model/type/String\",\n    \"sap/ui/model/type/Float\",\n    \"sap/m/Input\",\n    \"sap/m/Text\",\n    \"sap/m/CheckBox\"\n], function (Controller, JSONModel, StringType, Float, Input, Text, CheckBox) {\n    \"use strict\";\n\n    return Controller.extend(\"sap.ui.sample.App\", {\n        onInit() {\n            …\n        },\n        createContent(sId, oContext) {\n            const oRevenue = oContext.getProperty(\"revenue\");\n            switch(typeof oRevenue) {\n                case \"number\":\n                    return new Input(sId, {value: {path: \"revenue\", type: Float}}); \n                case \"boolean\":\n                    return new CheckBox(sId, {checked: {path: \"revenue\"}});\n                default: // For Strings and other cases\n                    return new Text(sId, {text: {path: \"revenue\", type: StringType}});\n            }\n        }\n    });\n});\n```\n\nIf you would like to avoid using the XML view, you would proceed as follows:\n\n```js\n// \"Input\" required from module \"sap/m/Input\"\n// \"CheckBox\" required from module \"sap/m/CheckBox\"\n// \"StringType\" required from module \"sap/ui/model/type/String\"\n// \"Float\" required from module \"sap/ui/model/type/Float\"\n\noVerticalLayout.bindAggregation(\"content\", \"/companies\", (sId, oContext) => {\nconst oRevenue = oContext.getProperty(\"revenue\");\n    switch(typeof oRevenue) {\n        case \"number\":\n            return new Input(sId, {value: {path: \"revenue\", type: Float}});\n        case \"boolean\":\n            return new CheckBox(sId, {checked: {path: \"revenue\"}});\n        default: // For Strings and other cases\n            return new Text(sId, {text: {path: \"revenue\", type: StringType}});\n    }\n});\n```\n\n**Related Information**  \n\n\n[Tutorial Step 15: Aggregation Binding Using a Factory Function](../03_Get-Started/step-15-aggregation-binding-using-a-factory-function-284a036.md \"Instead of using a single hard-coded template control, we now opt for a factory function to generate different controls based on the data received at runtime. This approach is much more flexible and allows for the display of complex or heterogeneous data.\")\n\n",
+  "excerpt": "<!-- loio335848ac1174435c901baaa55f6d7819 --> Using Factory Functions The factory function is a more powerful approach for creating controls from model data. The factory function is called for each en...",
+  "wordCount": 375,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
