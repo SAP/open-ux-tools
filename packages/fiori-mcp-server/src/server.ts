@@ -98,19 +98,19 @@ export class FioriFunctionalityServer {
                 };
 
                 switch (name) {
-                    case 'doc-search':
+                    case 'search_docs':
                         result = await docSearch(args as DocSearchInput);
                         return this.convertResultToCallToolResult(result.results);
-                    case 'list-fiori-apps':
+                    case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
-                    case 'list-functionality':
+                    case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
-                    case 'get-functionality-details':
+                    case 'get_functionality_details':
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
                         break;
-                    case 'execute-functionality':
+                    case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:

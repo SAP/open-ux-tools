@@ -2,7 +2,7 @@ import * as zod from 'zod';
 import { FunctionalityIdSchema } from './basic';
 
 /**
- * Input interface for the 'list-fiori-apps' functionality
+ * Input interface for the 'list_fiori_apps' functionality
  */
 export const ListFioriAppsInputSchema = zod.object({
     /** Array of paths to search for Fiori applications */
@@ -14,7 +14,7 @@ export const ListFioriAppsInputSchema = zod.object({
 });
 
 /**
- * Input interface for the 'list-functionality' functionality
+ * Input interface for the 'list_functionality' functionality
  */
 export const ListFunctionalitiesInputSchema = zod.object({
     /** Path to the Fiori application */
@@ -26,7 +26,7 @@ export const ListFunctionalitiesInputSchema = zod.object({
 });
 
 /**
- * Input interface for the 'get-functionality-details' functionality
+ * Input interface for the 'get_functionality_details' functionality
  */
 export const GetFunctionalityDetailsInputSchema = zod.object({
     /** Path to the Fiori application */
@@ -36,7 +36,7 @@ export const GetFunctionalityDetailsInputSchema = zod.object({
 });
 
 /**
- * Input interface for the 'execute-functionality' functionality
+ * Input interface for the 'execute_functionality' functionality
  */
 export const ExecuteFunctionalityInputSchema = zod.object({
     /** ID or array of IDs of the functionality(ies) to execute */

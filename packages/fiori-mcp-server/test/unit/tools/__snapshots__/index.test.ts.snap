@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Tools schemas execute-functionality: Input schema for "execute-functionality" 1`] = `
+exports[`Tools schemas execute_functionality: Input schema for "execute-functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -47,7 +47,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas execute-functionality: Output schema for "execute-functionality" 1`] = `
+exports[`Tools schemas execute_functionality: Output schema for "execute-functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -104,7 +104,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas get-functionality-details: Input schema for "get-functionality-details" 1`] = `
+exports[`Tools schemas get_functionality_details: Input schema for "get-functionality-details" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -142,7 +142,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas get-functionality-details: Output schema for "get-functionality-details" 1`] = `
+exports[`Tools schemas get_functionality_details: Output schema for "get-functionality-details" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -465,7 +465,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-fiori-apps: Input schema for "list-fiori-apps" 1`] = `
+exports[`Tools schemas list_fiori_apps: Input schema for "list-fiori-apps" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -484,7 +484,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-fiori-apps: Output schema for "list-fiori-apps" 1`] = `
+exports[`Tools schemas list_fiori_apps: Output schema for "list-fiori-apps" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -537,7 +537,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-functionality: Input schema for "list-functionality" 1`] = `
+exports[`Tools schemas list_functionality: Input schema for "list-functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -553,7 +553,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-functionality: Output schema for "list-functionality" 1`] = `
+exports[`Tools schemas list_functionality: Output schema for "list-functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
