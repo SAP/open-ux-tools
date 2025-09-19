@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.13.117
+
+### Patch Changes
+
+-   Updated dependencies [c15aa4f]
+    -   @sap-ux/abap-deploy-config-writer@0.2.15
+
 ## 0.13.116
 
 ### Patch Changes

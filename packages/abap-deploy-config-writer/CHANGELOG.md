@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.15
+
+### Patch Changes
+
+-   c15aa4f: fix: Wrong npm deploy scripts are created for ADP onPremise projects
+
 ## 0.2.14
 
 ### Patch Changes
