@@ -824,6 +824,66 @@ describe('fiori annotation service', () => {
                 const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
                 expect(() => service.getSchema()).not.toThrow();
             });
+
+            test('flattened annotations with collection', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+
+                const fsEditor = await createFsEditorForProject(root);
+                const mdPath = pathFromUri(project.files.annotations);
+                const mdContent = fsEditor.read(mdPath);
+                const mdTestData = `${mdContent}
+            annotate service.Individual with @(
+                UI.LineItem.@UI.Criticality: #Critical,
+                UI.LineItem: [{ Value: 'Id' }]
+            );`;
+                fsEditor.write(mdPath, mdTestData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+
+                expect(service.getSchema().schema.annotations[project.files.annotations]).toMatchSnapshot();
+            });
+
+            test('flattened annotations with record', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+
+                const fsEditor = await createFsEditorForProject(root);
+                const mdPath = pathFromUri(project.files.annotations);
+                const mdContent = fsEditor.read(mdPath);
+                const mdTestData = `${mdContent}
+            annotate service.Individual with @(
+                UI.FieldGroup.@Validation.Exclusive,
+                UI.FieldGroup: {
+                     $Type: 'UI.FieldGroupType',
+                     Data: []
+                }
+            );`;
+                fsEditor.write(mdPath, mdTestData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+
+                expect(service.getSchema().schema.annotations[project.files.annotations]).toMatchSnapshot();
+            });
+
+            test('flattened annotations with value', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+
+                const fsEditor = await createFsEditorForProject(root);
+                const mdPath = pathFromUri(project.files.annotations);
+                const mdContent = fsEditor.read(mdPath);
+                const mdTestData = `${mdContent}
+            annotate service.Individual with {
+                @(
+                    Common.Text.@UI.TextArrangement: #TextLast,
+                    Common.Text                    : id
+                )
+                id;
+            };`;
+                fsEditor.write(mdPath, mdTestData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+
+                expect(service.getSchema().schema.annotations[project.files.annotations]).toMatchSnapshot();
+            });
         });
     });
     describe('insert', () => {
