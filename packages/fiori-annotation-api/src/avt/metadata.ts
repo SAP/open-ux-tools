@@ -209,7 +209,7 @@ class MetadataConverter {
                         isCollection: !!element.isCollectionValued,
                         containsTarget: false,
                         partner: '',
-                        referentialConstraint: []
+                        referentialConstraint: subElement.referentialConstraints ?? []
                     };
                     complexTypeNavProperties.push(navProp);
                 }
@@ -282,7 +282,7 @@ class MetadataConverter {
                 isCollection: !!element.isCollectionValued,
                 containsTarget: false,
                 partner: '',
-                referentialConstraint: []
+                referentialConstraint: element.referentialConstraints ?? []
             };
             navigationProperties.push(property);
         }
