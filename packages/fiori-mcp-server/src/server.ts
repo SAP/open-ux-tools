@@ -72,7 +72,9 @@ export class FioriFunctionalityServer {
      * Sets up telemetry.
      */
     private async setupTelemetry(): Promise<void> {
-        await TelemetryHelper.initTelemetrySettings();
+        TelemetryHelper.initTelemetrySettings().catch((error) => {
+            console.error('Error initializing telemetry settings:', error);
+        });
     }
 
     /**
@@ -88,14 +90,11 @@ export class FioriFunctionalityServer {
 
         this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const { name, arguments: args } = request.params as { name: string; arguments: ToolArgs };
+            const telemetryData: TelemetryData = { tool: name, functionalityId: (args as any)?.functionalityId };
 
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
-                const telemetryProperties: TelemetryData = {
-                    tool: name,
-                    functionalityId: (args as any)?.functionalityId
-                };
 
                 switch (name) {
                     case 'doc-search':
@@ -114,14 +113,21 @@ export class FioriFunctionalityServer {
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
-                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
+                        TelemetryHelper.sendTelemetry(unknownTool, telemetryData, (args as any)?.appPath).catch(() => {
+                            /* ignore telemetry errors */
+                        });
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
                         );
                 }
-                await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
+                TelemetryHelper.sendTelemetry(name, telemetryData, (args as any)?.appPath).catch(() => {
+                    /* ignore telemetry errors */
+                });
                 return this.convertResultToCallToolResult(result);
             } catch (error) {
+                TelemetryHelper.sendTelemetry(name, { ...telemetryData }, (args as any)?.appPath, error).catch(() => {
+                    /* ignore telemetry errors */
+                });
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {
                     content: [
