@@ -196,8 +196,10 @@ export class MtaConfig {
             name: `${this.prefix?.slice(0, 100)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-plan': 'application',
                 service: 'xsuaa',
+                'service-plan': 'application',
+                path: './xs-security.json',
+                'service-name': `${this.prefix?.slice(0, 100)}-xsuaa-service`,
                 config: { xsappname: `${this.prefix?.slice(0, 100)}` + '-${space-guid}', 'tenant-mode': 'dedicated' }
             }
         };
