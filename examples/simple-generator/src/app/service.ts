@@ -21,7 +21,7 @@ export interface ServiceInfo {
  * @param generator an instance of a yeoman generator
  * @returns a service configuration
  */
-export async function getServiceInfo(generator: Generator): Promise<ServiceInfo> {
+export async function getServiceInfo(generator: Generator): Promise<[ServiceInfo, AbapServiceProvider]> {
     const { url } = await generator.prompt({
         type: 'input',
         name: 'url',
@@ -47,11 +47,14 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
         getLogger(generator)
     );
 
-    return {
-        url: serviceUrl.origin,
-        path: serviceUrl.pathname,
-        ...(await getMetadata(generator, provider, serviceUrl.pathname))
-    };
+    return [
+        {
+            url: serviceUrl.origin,
+            path: serviceUrl.pathname,
+            ...(await getMetadata(generator, provider, serviceUrl.pathname))
+        },
+        provider
+    ];
 }
 
 /**
@@ -84,7 +87,7 @@ async function askToStoreCredentials(generator: Generator, provider: AbapService
  * @param generator an instance of a yeoman generator
  * @returns a service configuration
  */
-export async function getServiceInfoInBAS(generator: Generator): Promise<ServiceInfo> {
+export async function getServiceInfoInBAS(generator: Generator): Promise<[ServiceInfo, AbapServiceProvider]> {
     const { destination, path } = await generator.prompt([
         {
             type: 'input',
@@ -103,11 +106,14 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
     ]);
 
     const provider = createForDestination({}, { Name: destination, WebIDEUsage: 'abap' }) as AbapServiceProvider;
-    return {
-        destination,
-        path,
-        ...(await getMetadata(generator, provider, path))
-    };
+    return [
+        {
+            destination,
+            path,
+            ...(await getMetadata(generator, provider, path))
+        },
+        provider
+    ];
 }
 
 /**
