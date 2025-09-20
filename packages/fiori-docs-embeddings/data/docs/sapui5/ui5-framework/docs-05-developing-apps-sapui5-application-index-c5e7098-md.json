@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-05-developing-apps-sapui5-application-index-c5e7098-md",
+  "title": "SAPUI5 Application Index",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/sapui5-application-index-c5e7098.md",
+  "lastModified": "2025-09-01T18:17:10.564Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "SAPUI5",
+    "Application",
+    "Index"
+  ],
+  "headers": [
+    "SAPUI5 Application Index"
+  ],
+  "content": "<!-- loioc5e7098474274d3eb7379047ab792f1f -->\n\n# SAPUI5 Application Index\n\nThis index provides an indexing and caching mechanism for information related to apps, components, and libraries in the SAPUI5 ABAP repository and related to components and libraries in the SAPUI5 distribution layer.\n\n> ### Caution:  \n> The index is used by several different services such as the SAP Fiori launchpad and cache buster. This means you have to make sure that the index is updated using the calculation report whenever the content of the SAPUI5 ABAP repository has changed. For more information whether the report is executed automatically or you have to run it manually, see [Calculation Report - Automatic Run vs. Manual Scheduling](calculation-report-automatic-run-vs-manual-scheduling-fbce0ba.md).\n> \n> Also descriptor and component IDs used in single SAPUI5 repositories have to be unique and valid. Fore more information, see [Check Your SAPUI5 Application](check-your-sapui5-application-3dd3736.md).\n\nThe index makes it possible to retrieve and find this information significantly faster than when carrying out the calculations each time it's requested. The index is also required, for example, for finding the paths to SAP Fiori libraries.\n\nThe index contains the following:\n\n-   Cache busting information on the level of single and multiple application resources\n\n-   Certain properties or attributes \\(for example, component ID, used library, or dependencies\\) stored in the descriptor for apps, components, and libraries\n\n    For more information, see [Manifest \\(Descriptor for Applications, Components, and Libraries\\)](../04_Essentials/manifest-descriptor-for-applications-components-and-libraries-be0cf40.md).\n\n\n**Also in this section:**\n\n[How is the Index Calculated?](how-is-the-index-calculated-8a4856a.md)\n\n[Calculation Issues](calculation-issues-d2babc9.md)\n\n[Monitoring](monitoring-7b89328.md)\n\n",
+  "excerpt": "<!-- loioc5e7098474274d3eb7379047ab792f1f --> SAPUI5 Application Index This index provides an indexing and caching mechanism for information related to apps, components, and libraries in the SAPUI5 AB...",
+  "wordCount": 239,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

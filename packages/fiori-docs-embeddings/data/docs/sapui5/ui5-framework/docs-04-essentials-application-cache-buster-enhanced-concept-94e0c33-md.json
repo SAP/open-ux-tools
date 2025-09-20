@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-04-essentials-application-cache-buster-enhanced-concept-94e0c33-md",
+  "title": "Application Cache Buster: Enhanced Concept",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/application-cache-buster-enhanced-concept-94e0c33.md",
+  "lastModified": "2025-09-01T18:17:10.491Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Application",
+    "Cache",
+    "Buster",
+    "Enhanced",
+    "Concept"
+  ],
+  "headers": [
+    "Application Cache Buster: Enhanced Concept",
+    "Registration of external URLs",
+    "Avoid handling of specific URLs"
+  ],
+  "content": "<!-- loio94e0c33e22474538a65f5f5b4920cdaf -->\n\n# Application Cache Buster: Enhanced Concept\n\nThe enhanced concept for application cache buster takes care about most of the URLs in a general way.\n\nThe first iteration of the Application Cache Buster only supports files which have been loaded via `jQuery.ajax`. The enhanced concept supports the transformation of URLs for `sap.ui.dom.includeScript`, `sap.ui.dom.includeStyleSheet`, and properties of the type `sap.ui.core/URI`. Additionally the enhanced concept allows to register components or base URLs which are considered by the Application Cache Buster. This base URL is used to load the index file with the timestamp information.\n\n\n\n<a name=\"loio94e0c33e22474538a65f5f5b4920cdaf__section_N10028_N10011_N10001\"/>\n\n## Registration of external URLs\n\nIf you do not specify all the applications in the bootstrap configuration, you can also register them during runtime. To register additional locations, use the following API:\n\n```js\n\nsap.ui.core.AppCacheBuster.register(\"/sap/bc/my/other/component\");\n```\n\n\n\n<a name=\"loio94e0c33e22474538a65f5f5b4920cdaf__section_N1003A_N10011_N10001\"/>\n\n## Avoid handling of specific URLs\n\nTo avoid handling of specific URLs, you can override the default behavior as follows:\n\n```js\n\nsap.ui.core.AppCacheBuster.handleURL = function(sURL) {\n  return sURL !== \"my/specific/url\";\n};\n```\n\n",
+  "excerpt": "<!-- loio94e0c33e22474538a65f5f5b4920cdaf --> Application Cache Buster: Enhanced Concept The enhanced concept for application cache buster takes care about most of the URLs in a general way. The first...",
+  "wordCount": 165,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

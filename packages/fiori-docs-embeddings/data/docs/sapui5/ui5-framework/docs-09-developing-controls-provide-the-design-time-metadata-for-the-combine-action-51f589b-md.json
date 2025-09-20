@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-09-developing-controls-provide-the-design-time-metadata-for-the-combine-action-51f589b-md",
+  "title": "Provide the Design-Time Metadata for the *Combine* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/provide-the-design-time-metadata-for-the-combine-action-51f589b.md",
+  "lastModified": "2025-09-01T18:17:10.681Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Provide",
+    "the",
+    "Design",
+    "Time",
+    "Metadata",
+    "for",
+    "Combine",
+    "Action"
+  ],
+  "headers": [
+    "Provide the Design-Time Metadata for the *Combine* Action"
+  ],
+  "content": "<!-- loio51f589b65e9642c4949639fdb995257a -->\n\n# Provide the Design-Time Metadata for the *Combine* Action\n\nProvide the design-time metadata for the *combine* action.\n\nTo provide the design-time information needed for the *combine* action, use the `<control>.designtime.js` file, which is located next to the control implementation in the Git directory structure. Create the file if it's missing. Ensure that the `designTime` attribute in the metadata of the control is set. For more information, see [Enable a Control for Design-Time Usage](enable-a-control-for-design-time-usage-6888c17.md).\n\nThe following table shows a hierarchical overview of the properties:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 1\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 2\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 3\\)\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"5\">\n\n`actions: <object>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nDescribes the actions that can be applied to the element.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"4\">\n\n`\"combine\": <object>|<function>`\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nProvides or computes the design-time metadata specific to the *combine* action for an element as an object with the following properties.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`changeType: <string>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\nProvides the value of `changeType` from the previous step.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`isEnabled: <function>|<boolean>` \\(optional\\)\n\n</td>\n<td valign=\"top\">\n\nDefault is `true`. The `isEnabled` value or function is used to decide whether the *combine* action is available in SAPUI5 flexibility. You get the selected SAPUI5 element as a function parameter.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`changeOnRelevantContainer: <boolean>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\nMust be `true`. This property is needed for setting the selector to the relevant container.\n\n</td>\n</tr>\n</table>\n\nHere's an example:\n\n> ### Sample Code:  \n> Example of `sap.m.Button` design-time file\n> \n> ```\n> sap.ui.define(function () {\n>    \"use strict\";\n>    return {\n>       actions: {\n>          combine: {\n>             changeType: \"combineButtons\", // Has to be equal to the registered name in <Control>.flexibility.js\n>             changeOnRelevantContainer: true, // Has to be always `true` for combine action\n>             isEnabled: true\n>          }\n>       }\n>    };\n> });\n> ```\n\n",
+  "excerpt": "<!-- loio51f589b65e9642c4949639fdb995257a --> Provide the Design-Time Metadata for the Combine Action Provide the design-time metadata for the combine action. To provide the design-time information ne...",
+  "wordCount": 338,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

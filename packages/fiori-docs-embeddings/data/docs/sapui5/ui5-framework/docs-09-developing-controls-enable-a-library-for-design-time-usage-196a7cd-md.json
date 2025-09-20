@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-09-developing-controls-enable-a-library-for-design-time-usage-196a7cd-md",
+  "title": "Enable a Library for Design-Time Usage",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/enable-a-library-for-design-time-usage-196a7cd.md",
+  "lastModified": "2025-09-01T18:17:10.676Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Enable",
+    "Library",
+    "for",
+    "Design",
+    "Time",
+    "Usage"
+  ],
+  "headers": [
+    "Enable a Library for Design-Time Usage",
+    "Context",
+    "Procedure"
+  ],
+  "content": "<!-- loio196a7cd972e24983ac891a7d1cf8fc5b -->\n\n# Enable a Library for Design-Time Usage\n\nTo enable a library for design-time usage, follow the steps described here.\n\n\n\n<a name=\"loio196a7cd972e24983ac891a7d1cf8fc5b__context_ffr_rgd_gyb\"/>\n\n## Context\n\nThese steps need to be done only once for a library that contains multiple controls.\n\n\n\n## Procedure\n\n1.  Create a `designtime` folder in the root of the library \\(`<lib_namespace>/designtime`\\).\n\n2.  Create a `library.designtime.js` file in this folder \\(`<lib_namespace>/designtime/library.designtime.js`\\).\n\n    > ### Sample Code:  \n    > Initial Content \\(replace `<lib_namespace>`\\)\n    > \n    > ```\n    > /**\n    >  * Initialization of design-time code and shared classes for the library <lib_namespace>.\n    >  */\n    > sap.ui.define([], function() {\n    >     \"use strict\";\n    >     return {};\n    > });\n    > ```\n\n3.  Open the `library.js` file of the library and add the module path to the `library.designtime.js` file.\n\n    > ### Sample Code:  \n    > ```\n    > sap.ui.define(['sap/ui/core/Lib'], function(Library) {\n    > ...\n    >     Library.init({\n    >         name : \"<lib_namespace>\",\n    >         apiVersion: 2,\n    >         version: \"${version}\",\n    >         dependencies : [\"sap.ui.core\"],\n    >         designtime: \"<lib_namespace>/designtime/library.designtime\" //HERE\n    >     });\n    > });\n    > ```\n\n4.  If you're using translated texts in your `designtime` file, add a `messagebundle.properties` file and include the texts.\n\n    Provide a new GUID for the message bundle, like in line 2 in the following example:\n\n    > ### Sample Code:  \n    > ```\n    > #This is the resource bundle for design time of the <lib_namespace> library\n    > #__ldi.translation.uuid=35653b13-1ec8-4fb2-83d9-ac4d31591f1d\n    > \n    > #XMIT: Radio button control name caption\n    > RADIOBUTTON_NAME=Radio Button\n    > \n    > ```\n\n\n",
+  "excerpt": "<!-- loio196a7cd972e24983ac891a7d1cf8fc5b --> Enable a Library for Design-Time Usage To enable a library for design-time usage, follow the steps described here. <a name=\"loio196a7cd972e24983ac891a7d1c...",
+  "wordCount": 232,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

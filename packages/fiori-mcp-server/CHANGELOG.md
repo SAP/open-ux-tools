@@ -1,5 +1,43 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.2
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
+## 0.1.1
+
+### Patch Changes
+
+-   306561e: Fix publishing of embeddings package
+
+## 0.1.0
+
+### Minor Changes
+
+-   a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.
+
+## 0.0.11
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.20
+
+## 0.0.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/telemetry@0.6.20
+-   @sap-ux/fiori-annotation-api@0.6.19
+
+## 0.0.9
+
+### Patch Changes
+
+-   5b06421: Simplify "generate-fiori-ui-app" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
+
 ## 0.0.8
 
 ### Patch Changes

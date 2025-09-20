@@ -1,0 +1,27 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-configure-page-elements-047507c-md",
+  "title": "Configure Page Elements",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/configure-page-elements-047507c.md",
+  "lastModified": "2025-09-01T18:17:10.135Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Configure",
+    "Page",
+    "Elements"
+  ],
+  "headers": [
+    "Configure Page Elements",
+    "Page Editor Features",
+    "Supported Templates of SAP Fiori elements",
+    "How to Use Page Editor",
+    "Application Modeler Tree View"
+  ],
+  "content": "<!-- loio047507c86afa4e96bb3d284adb9f4726 -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Configure Page Elements\n\nDevelopers can configure SAP Fiori elements applications by using manifest settings and SAPUI5 flexibility changes \\(OData V2\\) in the *Page Editor*. The configuration properties available for UI-based maintenance are provided by the <code><a href=\"https://www.npmjs.com/package/@sap/ux-specification\">@sap/ux-specification</a></code> node module, which is installed in the application's root folder.\n\nThere are different module versions that correspond to the different SAPUI5 versions. You can find the right version by checking the UI5-\\* tags at [@sap/ux-specification](https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions). For more information on changing the `minUI5version`, see [Application SAPUI5 Version](../Project-Functions/application-sapui5-version-009f43e.md).\n\nAn overview of the available manifest and **UI5** flexibility properties can be accessed in the [Application Information](../Project-Functions/application-information-c3e0989.md) page. In addition, you can access the Configuration Documentation by right-clicking on your project in the tree view of the application modeler.\n\n![](images/Fiori_Tools_Configuration_Documentation_a4a31c8.png)\n\n\n\n<a name=\"loio047507c86afa4e96bb3d284adb9f4726__section_s4m_mxm_xlb\"/>\n\n## Page Editor Features\n\nThe *Page Editor* provides an outline view of the configurable elements on the selected page. To change settings, click on a node in the outline to open the *Property Panel*. The *Property Panel* displays the editable properties, provides a search filter option, info tooltips for properties, and the option to edit the property directly in the associated file.\n\nIn the *Page Editor*, you can create and maintain annotation-based UI elements for *List Report*, *Object Page*, and *Form Entry Page* OData V4 applications. With this feature available in the application modeler, application development becomes even easier and up-to-speed. For more information, see [Maintaining Annotation-Based Elements](maintaining-annotation-based-elements-a524d8a.md).\n\n\n\n\n\n### Supported Templates of SAP Fiori elements\n\n-   *List Report Page* with OData V2 and OData V4\n-   *Worklist Page* with OData V2 and OData V4\n-   *Analytical List Page* with OData V2 and OData V4\n-   *Overview Page* with OData V2 and OData V4\n-   *Form Entry Object Page* with OData V4\n-   *Custom Page* with OData V4\n\n\n\n<a name=\"loio047507c86afa4e96bb3d284adb9f4726__section_k2b_vrl_1qb\"/>\n\n## How to Use Page Editor\n\nTo start using *Page Editor*, follow one of the available scenarios:\n\n-   Select the root folder of your app or any folder in your workspace within Explorer, right-click, and click *Show Page Map*. For more information about the *Page Map*, see [Define Application Structure](define-application-structure-bae38e6.md).\n-   Select the page that you want to configure and click the :pencil2: \\(*Configure Page*\\) icon.\n-   Navigate to the project sidebar view and click the respective page node in the tree view of the application modeler.\n-   In the text editor of the virtual `JSON` file of the page, click the <span class=\"SAP-icons-V5\"></span> \\(*Show Page Editor*\\) icon in the Editor Title menu.\n\n\n\n<a name=\"loio047507c86afa4e96bb3d284adb9f4726__section_isw_gff_1qb\"/>\n\n## Application Modeler Tree View\n\nBy default, the project is displayed with a simplified tree view. The tree view reflects the hierarchy of the virtual files, such as *Project Name* \\> *App Name* \\> *Pages* \\> *Page Name*.\n\nTo configure page layout and navigation, click the *Map* node that resides in the tree view. Then, the [Define Application Structure](define-application-structure-bae38e6.md) opens at the right side of the tree view.\n\nIf you want to switch to the technical view displaying the full path with all the files generated in the background, you need to enable the JSON schema files. To do so, perform the following steps:\n\n1.  Navigate to *Settings* \\> **.\n2.  Select the *Show JSON Schemas* box.\n\nAs a result, the tree view of the application modeler is now updated with the generated `JSON` schemas files.\n\n",
+  "excerpt": "<!-- loio047507c86afa4e96bb3d284adb9f4726 --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Configure Page Elements Developers can configure SAP Fiori elements applications by u...",
+  "wordCount": 554,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

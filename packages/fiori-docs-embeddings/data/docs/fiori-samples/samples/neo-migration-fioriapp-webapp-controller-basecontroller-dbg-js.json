@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-controller-basecontroller-dbg-js",
+  "title": "BaseController dbg",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/controller/BaseController-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.809Z",
+  "tags": [
+    "samples",
+    "js",
+    "BaseController",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController dbg.md\n\n```javascript\n# BaseController-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/core/mvc/Controller\",\n\t\"sap/ui/core/UIComponent\",\n\t\"sap/m/library\"\n], function (Controller, UIComponent, mobileLibrary) {\n\t\"use strict\";\n\n\treturn Controller.extend(\"ns.manageproductsneo.controller.BaseController\", {\n\t\t/**\n\t\t * Convenience method for accessing the router.\n\t\t * @public\n\t\t * @returns {sap.ui.core.routing.Router} the router for this component\n\t\t */\n\t\tgetRouter : function () {\n\t\t\treturn UIComponent.getRouterFor(this);\n\t\t},\n\n\t\t/**\n\t\t * Convenience method for getting the view model by name.\n\t\t * @public\n\t\t * @param {string} [sName] the model name\n\t\t * @returns {sap.ui.model.Model} the model instance\n\t\t */\n\t\tgetModel : function (sName) {\n\t\t\treturn this.getView().getModel(sName);\n\t\t},\n\n\t\t/**\n\t\t * Convenience method for setting the view model.\n\t\t * @public\n\t\t * @param {sap.ui.model.Model} oModel the model instance\n\t\t * @param {string} sName the model name\n\t\t * @returns {sap.ui.mvc.View} the view instance\n\t\t */\n\t\tsetModel : function (oModel, sName) {\n\t\t\treturn this.getView().setModel(oModel, sName);\n\t\t},\n\n\t\t/**\n\t\t * Getter for the resource bundle.\n\t\t * @public\n\t\t * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component\n\t\t */\n\t\tgetResourceBundle : function () {\n\t\t\treturn this.getOwnerComponent().getModel(\"i18n\").getResourceBundle();\n\t\t},\n\n\t\t/**\n\t\t * Event handler when the share by E-Mail button has been clicked\n\t\t * @public\n\t\t */\n\t\tonShareEmailPress : function () {\n\t\t\tvar oViewModel = (this.getModel(\"objectView\") || this.getModel(\"worklistView\"));\n\t\t\tmobileLibrary.URLHelper.triggerEmail(\n\t\t\t\tnull,\n\t\t\t\toViewModel.getProperty(\"/shareSendEmailSubject\"),\n\t\t\t\toViewModel.getProperty(\"/shareSendEmailMessage\")\n\t\t\t);\n\t\t}\n\n\t});\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "BaseController dbg.md javascript BaseController dbg.md javascript BaseController dbg.md javascript BaseController dbg.md javascript BaseController-dbg.js",
+  "wordCount": 224,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

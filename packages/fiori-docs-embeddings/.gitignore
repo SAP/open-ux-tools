@@ -1,0 +1,8 @@
+.claude
+node_modules/
+dist/**/*
+.env
+data/embeddings/**/*
+bundle/data/embeddings/**/*
+
+*.tgz

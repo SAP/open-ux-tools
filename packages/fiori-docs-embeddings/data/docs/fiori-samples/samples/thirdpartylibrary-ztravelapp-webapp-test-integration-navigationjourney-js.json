@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-test-integration-navigationjourney-js",
+  "title": "NavigationJourney",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/test/integration/NavigationJourney.js",
+  "lastModified": "2025-09-01T18:17:10.818Z",
+  "tags": [
+    "samples",
+    "js",
+    "NavigationJourney"
+  ],
+  "headers": [],
+  "content": "# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.md\n\n```javascript\n# NavigationJourney.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"sap/ui/test/opaQunit\",\n\t\"./pages/App\",\n\t\"./pages/View1\"\n], function (opaTest) {\n\t\"use strict\";\n\n\tQUnit.module(\"Navigation Journey\");\n\n\topaTest(\"Should see the initial page of the app\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iStartMyApp();\n\n\t\t// Assertions\n\t\tThen.onTheAppPage.iShouldSeeTheApp();\n      \tThen.onTheViewPage.iShouldSeeThePageView();\n\n\t\t//Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n});\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "NavigationJourney.md javascript NavigationJourney.md javascript NavigationJourney.md javascript NavigationJourney.md javascript NavigationJourney.js",
+  "wordCount": 74,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-package-json",
+  "title": "fiori elements tutorial",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/package.json",
+  "lastModified": "2025-09-01T18:17:10.797Z",
+  "tags": [
+    "samples",
+    "json",
+    "fiori",
+    "elements",
+    "tutorial"
+  ],
+  "headers": [],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"fiori_elements_tutorial\",\n  \"version\": \"1.0.0\",\n  \"description\": \"A simple CAP project.\",\n  \"repository\": \"<Add your repository here>\",\n  \"license\": \"UNLICENSED\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@sap/cds\": \"^6\",\n    \"express\": \"^4\"\n  },\n  \"devDependencies\": {\n    \"@sap/ux-specification\": \"^1.102.14\",\n    \"sqlite3\": \"5.0.0\"\n  },\n  \"scripts\": {\n    \"start\": \"npx cds run\",\n    \"watch\": \"npx cds watch\",\n    \"watch-incidents\": \"cds watch --open incidents/webapp/index.html?sap-ui-xx-viewCache=false\"\n  },\n  \"cds\": {\n    \"requires\": {\n      \"db\": {\n        \"kind\": \"sql\"\n      }\n    },\n    \"odata\": {\n      \"version\": \"v4\"\n    }\n  },\n  \"sapux\": [\n    \"app/incidents\"\n  ]\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 74,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

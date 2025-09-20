@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-07-apf-administration-information-for-sap-s-4hana-cloud-public-edition-b098fd8-md",
+  "title": "Administration Information for SAP S/4HANA Cloud Public Edition",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/administration-information-for-sap-s-4hana-cloud-public-edition-b098fd8.md",
+  "lastModified": "2025-09-01T18:17:10.663Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Administration",
+    "Information",
+    "for",
+    "SAP",
+    "4HANA",
+    "Cloud",
+    "Public",
+    "Edition"
+  ],
+  "headers": [
+    "Administration Information for SAP S/4HANA Cloud Public Edition"
+  ],
+  "content": "<!-- loiob098fd8d11b344dbb43bcdbff6ff80b2 -->\n\n# Administration Information for SAP S/4HANA Cloud Public Edition\n\nWhen you, as an administrator, create business users, ensure that they have the business catalog `SAP_CA_BC_APF_MODELING_PC` assigned.\n\nYou can also create users based on the business role template `SAP_BC_ANALYTICS_SPECIALIST`. This template includes the business catalog mentioned above, but also other business catalogs, which you may or may not need. You can use the template or assign the business catalog directly to the users as required.\n\n> ### Note:  \n> To authorize users for the OData services required to create a configuration for an APF-based app, you must assign them additional business catalogs as the start authorizations for OData services are not included in the business catalog `SAP_CA_BC_APF_MODELING_PC`.\n\n",
+  "excerpt": "<!-- loiob098fd8d11b344dbb43bcdbff6ff80b2 --> Administration Information for SAP S/4HANA Cloud Public Edition When you, as an administrator, create business users, ensure that they have the business c...",
+  "wordCount": 120,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

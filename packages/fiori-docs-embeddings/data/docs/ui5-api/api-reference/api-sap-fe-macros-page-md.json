@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-page-md",
+  "title": "sap.fe.macros.Page",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.Page.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "Page"
+  ],
+  "headers": [
+    "sap.fe.macros.Page"
+  ],
+  "content": "# sap.fe.macros.Page\n\n<p>Provides a Page building block that can be used to create a page with a title and content\nBy default, the page comes with an ObjectTitle</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/Page\n\n",
+  "excerpt": "sap.fe.macros.Page <p>Provides a Page building block that can be used to create a page with a title and content By default, the page comes with an ObjectTitle</p> Type: class Module: sap/fe/macros/Pag...",
+  "wordCount": 33,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-choosing-filter-modes-00c19e1-md",
+  "title": "Choosing Filter Modes",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/choosing-filter-modes-00c19e1.md",
+  "lastModified": "2025-09-01T18:17:10.584Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Choosing",
+    "Filter",
+    "Modes"
+  ],
+  "headers": [
+    "Choosing Filter Modes",
+    "Filter Bar Customization",
+    "Filter Modes",
+    "Additional Features in SAP Fiori Elements for OData V2"
+  ],
+  "content": "<!-- loio00c19e14b02c462c80566fa8b8751137 -->\n\n# Choosing Filter Modes\n\nALP offers compact and visual filter modes. You can choose to set filters from both modes.\n\n\n\n> ### Note:  \n> Based on the annotation configuration, filter dimensions show up in either of the filter modes, or on both the filter modes. However, a filter field on the visual filter always shows up in compact filter mode.\n\n\n\n## Filter Bar Customization\n\nYou can customize filter fields or charts that show up on the filter bar. Use the *Adapt Filters \\(<number\\>\\)* option in the header area to customize both filter modes.\n\n> ### Note:  \n> The filter selection count depends on the number of fields you select and is not based on the individual field values set within the field. The count also includes filters set from the filter dialog that are not seen on the filter bar.\n\n\n\n<a name=\"loio00c19e14b02c462c80566fa8b8751137__section_vdg_zl1_bqb\"/>\n\n## Filter Modes\n\nAnalytical List Page lets you toggle between the visual filter and compact filter, even while filter conditions are applied. When you toggle, ALP ensures that the filter values in one mode sync with those in the other mode. However, filter selections in fields without visual filter configuration are seen only in compact filters. When a user is on the visual filter bar, all filter values from the regular filter bar are applied to the main content area – including those regular filter fields that have no corresponding visual filter field.\n\n\n\n<a name=\"loio00c19e14b02c462c80566fa8b8751137__section_fyp_sl1_bqb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\nIn visual filter mode, you can change the chart type, sort order, and measure according to your needs. Visual filter supports three basic chart types: bar, donut, and line.\n\n**Related Information**  \n\n\n[Configuring the Title Area](configuring-the-title-area-ebdb5da.md \"The dynamic area of the analytical list page is the title area.\")\n\n[Managing Variants](managing-variants-8ce658e.md \"Allows you manage variants with different structures in the filter and content areas.\")\n\n[Enhancing ValueList Annotations for Visual Filters](enhancing-valuelist-annotations-for-visual-filters-16d43eb.md \"The value list annotation lets you map an entity to another entity that is associated with a different entity set. The value list annotation defines the relationship between filter fields of the main entity set and the fields in the value help entity set.\")\n\n",
+  "excerpt": "<!-- loio00c19e14b02c462c80566fa8b8751137 --> Choosing Filter Modes ALP offers compact and visual filter modes. You can choose to set filters from both modes. > Note:   > Based on the annotation confi...",
+  "wordCount": 363,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

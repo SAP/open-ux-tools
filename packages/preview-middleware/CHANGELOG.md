@@ -1,5 +1,53 @@
 # @sap-ux/preview-middleware
 
+## 0.23.13
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/adp-tooling@0.15.30
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-access@1.32.1
+
+## 0.23.12
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/adp-tooling@0.15.29
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.11
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/adp-tooling@0.15.28
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.10
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
+## 0.23.9
+
+### Patch Changes
+
+-   4fa9dd9: fix: for disabling change table column quick action when variant management is disabled
+
+## 0.23.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.27
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/system-access@0.6.16
+
 ## 0.23.7
 
 ### Patch Changes

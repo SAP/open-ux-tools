@@ -76,6 +76,11 @@ Add these rules to your existing global or project-specific [`AGENTS.md`](https:
 
 ## [Available Tools](#available-tools)
 
+#### `doc-search`
+Searches Fiori Elements, Annotations, SAPUI5, Fiori tools documentation for the given query.
+Note: the results are based on the the most recent indexed version of SAPUI5 documentation
+
+
 #### `list-fiori-apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
