@@ -2281,6 +2281,9 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
