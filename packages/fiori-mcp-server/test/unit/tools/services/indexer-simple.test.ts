@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import { SimpleDocumentIndexer } from '../../../../src/tools/services/indexer-simple';
 import { FileStoreService } from '../../../../src/tools/services/filestore';
 import { SimpleVectorService } from '../../../../src/tools/services/vector-simple';
-import { logger } from '../../../../src/tools/services/utils/logger';
+import { logger } from '../../../../src/utils/logger';
 import { resolveEmbeddingsPath } from '../../../../src/utils/embeddings-path';
 import type { DocumentMeta } from '../../../../src/tools/services/types/index';
 
@@ -10,7 +10,7 @@ import type { DocumentMeta } from '../../../../src/tools/services/types/index';
 jest.mock('fs/promises');
 jest.mock('../../../../src/tools/services/filestore');
 jest.mock('../../../../src/tools/services/vector-simple');
-jest.mock('../../../../src/tools/services/utils/logger');
+jest.mock('../../../../src/utils/logger');
 jest.mock('../../../../src/utils/embeddings-path');
 
 const mockFs = fs as jest.Mocked<typeof fs>;
@@ -161,8 +161,7 @@ describe('SimpleDocumentIndexer', () => {
 
             await expect(indexer.initialize()).rejects.toThrow('Failed to initialize indexer: Error: Filestore failed');
             expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Filestore initialization failed. Please install @sap-ux/fiori-docs-embeddings for full documentation search capabilities:',
-                fileStoreError
+                `Filestore initialization failed. Please install @sap-ux/fiori-docs-embeddings for full documentation search capabilities: ${fileStoreError}`
             );
         });
 
@@ -182,8 +181,7 @@ describe('SimpleDocumentIndexer', () => {
             await indexer.initialize();
 
             expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Vector service initialization failed, disabling vector search. Install @sap-ux/fiori-docs-embeddings for full capabilities:',
-                vectorError
+                `Vector service initialization failed, disabling vector search. Install @sap-ux/fiori-docs-embeddings for full capabilities: ${vectorError}`
             );
             expect(mockLogger.log).toHaveBeenCalledWith('✓ Document indexer initialized');
         });
@@ -204,8 +202,7 @@ describe('SimpleDocumentIndexer', () => {
             await indexer.initialize();
 
             expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Failed to load keyword index, keyword search will be limited:',
-                keywordError
+                `Failed to load keyword index, keyword search will be limited: ${keywordError}`
             );
             expect(mockLogger.log).toHaveBeenCalledWith('✓ Document indexer initialized');
         });
@@ -450,7 +447,7 @@ describe('SimpleDocumentIndexer', () => {
             const results = await indexer.findSimilarDocuments('doc1');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith('Find similar documents failed:', expect.any(Error));
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Find similar documents failed:'));
         });
 
         it('should skip documents that cannot be retrieved', async () => {

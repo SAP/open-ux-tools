@@ -3,13 +3,13 @@ import path from 'path';
 import { connect } from '@lancedb/lancedb';
 import type { EmbeddingMetadata } from '../../../../src/tools/services/vector-simple';
 import { SimpleVectorService } from '../../../../src/tools/services/vector-simple';
-import { logger } from '../../../../src/tools/services/utils/logger';
+import { logger } from '../../../../src/utils/logger';
 import { resolveEmbeddingsPath } from '../../../../src/utils/embeddings-path';
 
 // Mock dependencies
 jest.mock('fs/promises');
 jest.mock('@lancedb/lancedb');
-jest.mock('../../../../src/tools/services/utils/logger');
+jest.mock('../../../../src/utils/logger');
 jest.mock('../../../../src/utils/embeddings-path');
 
 const mockFs = fs as jest.Mocked<typeof fs>;
@@ -329,7 +329,7 @@ describe('SimpleVectorService', () => {
             await expect(vectorService.semanticSearch(queryVector)).rejects.toThrow(
                 'Semantic search failed: Error: Search failed'
             );
-            expect(mockLogger.error).toHaveBeenCalledWith('Semantic search failed:', searchError);
+            expect(mockLogger.error).toHaveBeenCalledWith(`Semantic search failed: ${searchError}`);
         });
 
         it('should handle results without distance property', async () => {
@@ -429,7 +429,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.findSimilarToDocument('doc1');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith('Find similar documents failed:', searchError);
+            expect(mockLogger.error).toHaveBeenCalledWith(`Find similar documents failed: ${searchError}`);
         });
 
         it('should use default limit when not specified', async () => {
@@ -493,7 +493,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.getDocumentsByCategory('guides');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith('Get documents by category failed:', searchError);
+            expect(mockLogger.error).toHaveBeenCalledWith(`Get documents by category failed: ${searchError}`);
         });
     });
 

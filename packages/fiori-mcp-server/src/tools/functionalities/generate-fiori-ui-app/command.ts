@@ -7,6 +7,7 @@ import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
 import * as z from 'zod';
 import packageJson from '../../../../package.json';
+import { logger } from '../../../utils/logger';
 
 const GeneratorConfigSchemaCAP = z.object({
     floorplan: z.literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE']),
@@ -115,12 +116,12 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force  --skipInstall`.trim();
 
         const { stdout, stderr } = await exec(command, { cwd: targetDir });
-        console.log(stdout);
+        logger.info(stdout);
         if (stderr) {
-            console.error(stderr);
+            logger.error(stderr);
         }
     } catch (error) {
-        console.error('Error generating application:', error);
+        logger.error(`Error generating application: ${error}`);
         return {
             functionalityId: GENERATE_FIORI_UI_APP_ID,
             status: 'Error',

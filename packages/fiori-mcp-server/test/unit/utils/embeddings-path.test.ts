@@ -1,11 +1,11 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { resolveEmbeddingsPath, hasEmbeddingsData } from '../../../src/utils/embeddings-path';
-import { logger } from '../../../src/tools/services/utils/logger';
+import { logger } from '../../../src/utils/logger';
 
 // Mock dependencies
 jest.mock('fs/promises');
-jest.mock('../../../src/tools/services/utils/logger');
+jest.mock('../../../src/utils/logger');
 
 const mockFs = fs as jest.Mocked<typeof fs>;
 const mockLogger = logger as jest.Mocked<typeof logger>;

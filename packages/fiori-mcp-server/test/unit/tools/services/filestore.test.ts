@@ -3,12 +3,12 @@ import path from 'path';
 import type { FileStoreIndex } from '../../../../src/tools/services/filestore';
 import { FileStoreService } from '../../../../src/tools/services/filestore';
 import type { DocumentMeta } from '../../../../src/tools/services/types/index';
-import { logger } from '../../../../src/tools/services/utils/logger';
+import { logger } from '../../../../src/utils/logger';
 import { resolveEmbeddingsPath } from '../../../../src/utils/embeddings-path';
 
 // Mock dependencies
 jest.mock('fs/promises');
-jest.mock('../../../../src/tools/services/utils/logger');
+jest.mock('../../../../src/utils/logger');
 jest.mock('../../../../src/utils/embeddings-path');
 
 const mockFs = fs as jest.Mocked<typeof fs>;
@@ -218,7 +218,7 @@ describe('FileStoreService', () => {
             const result = await fileStore.getDocument('doc1');
 
             expect(result).toBeNull();
-            expect(mockLogger.warn).toHaveBeenCalledWith('Failed to load document doc1:', readError);
+            expect(mockLogger.warn).toHaveBeenCalledWith(`Failed to load document doc1: ${readError}`);
         });
 
         it('should parse lastModified date correctly', async () => {

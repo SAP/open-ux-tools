@@ -1,7 +1,7 @@
 import type { DocumentMeta, SearchResult } from './types/index';
 import { FileStoreService } from './filestore';
 import { SimpleVectorService } from './vector-simple';
-import { logger } from './utils/logger';
+import { logger } from '../../utils/logger';
 import { resolveEmbeddingsPath } from '../../utils/embeddings-path';
 import fs from 'fs/promises';
 import path from 'path';
@@ -43,8 +43,7 @@ export class SimpleDocumentIndexer {
                 await this.fileStore.initialize();
             } catch (error) {
                 logger.warn(
-                    'Filestore initialization failed. Please install @sap-ux/fiori-docs-embeddings for full documentation search capabilities:',
-                    error
+                    `Filestore initialization failed. Please install @sap-ux/fiori-docs-embeddings for full documentation search capabilities: ${error}`
                 );
                 throw error; // Cannot continue without docs
             }
@@ -56,8 +55,7 @@ export class SimpleDocumentIndexer {
                     logger.log('✓ Vector search enabled');
                 } catch (error) {
                     logger.warn(
-                        'Vector service initialization failed, disabling vector search. Install @sap-ux/fiori-docs-embeddings for full capabilities:',
-                        error
+                        `Vector service initialization failed, disabling vector search. Install @sap-ux/fiori-docs-embeddings for full capabilities: ${error}`
                     );
                     this.vectorService = null;
                 }
@@ -97,7 +95,7 @@ export class SimpleDocumentIndexer {
                 `✓ Loaded keyword index: ${this.keywordIndex.size} terms (external: ${pathInfo.isExternalPackage})`
             );
         } catch (error) {
-            logger.warn('Failed to load keyword index, keyword search will be limited:', error);
+            logger.warn(`Failed to load keyword index, keyword search will be limited: ${error}`);
         }
     }
 
@@ -198,7 +196,7 @@ export class SimpleDocumentIndexer {
             logger.warn('Semantic search requires embedding generation - falling back to keyword search');
             return this.search(query, maxResults);
         } catch (error) {
-            logger.error('Semantic search failed, falling back to keyword search:', error);
+            logger.error(`Semantic search failed, falling back to keyword search: ${error}`);
             return this.search(query, maxResults);
         }
     }
@@ -253,7 +251,7 @@ export class SimpleDocumentIndexer {
 
             return results;
         } catch (error) {
-            logger.error('Find similar documents failed:', error);
+            logger.error(`Find similar documents failed: ${error}`);
             return [];
         }
     }
