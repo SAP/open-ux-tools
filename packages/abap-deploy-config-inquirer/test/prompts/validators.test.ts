@@ -448,10 +448,10 @@ describe('Test validators', () => {
             expect(result).toBe(true);
         });
 
-        it('should return true for onPremise system with default onPremise package', async () => {
+        it('should return true for onPremise system', async () => {
             PromptState.abapDeployConfig.isS4HC = false;
             const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
-            const result = await validatePackage('$TMP', previousAnswers, {
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(getSystemInfoSpy).not.toHaveBeenCalled();
