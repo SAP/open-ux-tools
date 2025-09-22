@@ -635,17 +635,33 @@ exports[`ControllerExtension generateControllerExtension New controller extensio
 
 exports[`ControllerExtension generateControllerExtension Typescript controller Check "ControllerExtension.d.ts" file 1`] = `
 "/**
- * Helper to be able to define how to get the page specific extension API when writing a controller extension.
- */
+* Helper to be able to define how to get the page specific extension API when writing a controller extension.
+*/
 declare module 'sap/ui/core/mvc/ControllerExtension' {
-    export default class ControllerExtension<API> {
-        static overrides: unknown;
-        base: {
-            getExtensionAPI(): API;
-        }
-    }
-}
-"
+  import View from 'sap/ui/core/mvc/View';
+  import AppComponent from 'sap/fe/core/AppComponent';
+  import Controller from 'sap/ui/core/mvc/Controller';
+  import EditFlow from 'sap/fe/core/controllerExtensions/EditFlow';
+  import IntentBasedNavigation from 'sap/fe/core/controllerExtensions/IntentBasedNavigation';
+  import ViewState from 'sap/fe/core/controllerExtensions/ViewState';
+  import Routing from 'sap/fe/core/controllerExtensions/Routing';
+ 
+  export default class ControllerExtension<ExtensionAPI> {
+    override?: Overrides;
+    base: {
+      getExtensionAPI(): ExtensionAPI;
+      getView(): View;
+      getAppComponent(): AppComponent;
+    };
+  }
+ 
+  export type Overrides<GenericController extends Controller = Controller> = {
+    editFlow?: Partial<EditFlow>;
+    intentBasedNavigation?: Partial<IntentBasedNavigation>;
+    routing?: Partial<Routing>;
+    viewState?: Partial<ViewState>;
+  } & Partial<GenericController>;
+}"
 `;
 
 exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - ListReport 1`] = `
