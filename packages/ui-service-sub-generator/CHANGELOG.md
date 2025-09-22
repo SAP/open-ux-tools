@@ -1,5 +1,40 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.79
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/telemetry@0.6.23
+    -   @sap-ux/ui-service-inquirer@0.2.17
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/system-access@0.6.17
+
+## 0.1.78
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.16
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/telemetry@0.6.22
+-   @sap-ux/inquirer-common@0.7.43
+-   @sap-ux/ui-service-inquirer@0.2.16
+
+## 0.1.77
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.15
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/telemetry@0.6.21
+-   @sap-ux/inquirer-common@0.7.42
+-   @sap-ux/ui-service-inquirer@0.2.15
+
 ## 0.1.76
 
 ### Patch Changes
