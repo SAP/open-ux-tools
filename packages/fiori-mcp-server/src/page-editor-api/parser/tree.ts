@@ -274,7 +274,7 @@ export function getPropertyData(
             if (property.schema.enum) {
                 getEnumOptions(property.schema.enum);
             } else {
-                logger.warn(`Unhandled property: ${property}`);
+                logger.warn(`Unhandled property: ${JSON.stringify(property)}`);
             }
             break;
         }
