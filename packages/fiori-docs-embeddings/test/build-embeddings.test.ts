@@ -361,7 +361,11 @@ describe('EmbeddingBuilder', () => {
 
             expect(mockFs.mkdir).toHaveBeenCalledWith('./data/embeddings', { recursive: true });
             expect(mockConnect).toHaveBeenCalled();
-            expect(mockDb.createTable).toHaveBeenCalledWith('documents', expect.any(Array));
+            expect(mockDb.createTable).toHaveBeenCalledWith('documents_000', expect.any(Array));
+            expect(mockFs.writeFile).toHaveBeenCalledWith(
+                expect.stringContaining('table_index.json'),
+                expect.stringContaining('documents_000')
+            );
             expect(metadata).toMatchObject({
                 version: '1.0.0',
                 model: 'Xenova/all-MiniLM-L6-v2',
@@ -385,12 +389,31 @@ describe('EmbeddingBuilder', () => {
             mockFs.writeFile.mockResolvedValue(undefined);
 
             const builder = new EmbeddingBuilder();
-            builder.chunks = [];
+            builder.chunks = [
+                {
+                    id: 'chunk-1',
+                    documentId: 'doc-1',
+                    chunkIndex: 0,
+                    content: 'test content',
+                    title: 'Test',
+                    category: 'test',
+                    path: 'test.md',
+                    vector: [0.1, 0.2, 0.3],
+                    metadata: {
+                        tags: ['test'],
+                        headers: ['Header'],
+                        lastModified: '2023-01-01',
+                        wordCount: 2,
+                        excerpt: 'test content',
+                        totalChunks: 1
+                    }
+                }
+            ];
             builder.documents = [];
 
             await builder.createVectorDatabase();
 
-            expect(mockDb.dropTable).toHaveBeenCalledWith('documents');
+            expect(mockDb.dropTable).toHaveBeenCalledWith('documents_000');
             expect(mockDb.createTable).toHaveBeenCalled();
         });
     });
