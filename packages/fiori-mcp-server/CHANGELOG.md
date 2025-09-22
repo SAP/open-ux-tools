@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.3
+
+### Patch Changes
+
+-   f3768a9: Update MCP to use snake case instead of kebab case in MCP tool names. Rename doc_search to search_docs.
+
 ## 0.1.2
 
 ### Patch Changes
