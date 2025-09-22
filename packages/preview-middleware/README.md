@@ -226,4 +226,4 @@ server:
 ```
 
 ## [Limitations](#limitations)
-- When serving the UI5 sources from npmjs, virtual endpoints are only supported for UI5 versions >= `1.84.x`.
+- When serving the UI5 sources from npmjs, flex changes for virtual endpoints are only supported for UI5 versions >= `1.84.x`.
