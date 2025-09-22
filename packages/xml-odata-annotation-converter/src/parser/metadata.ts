@@ -399,10 +399,10 @@ function createMetadataElementNodeForType(
 }
 
 /**
- * Converts string value to number.
+ * Converts string value to boolean value.
  *
  * @param value Input
- * @returns Parsed number or undefined otherwise
+ * @returns Parsed boolean value or undefined otherwise
  */
 function stringToBoolean(value: string | undefined): boolean | undefined {
     if (value === 'true') {
