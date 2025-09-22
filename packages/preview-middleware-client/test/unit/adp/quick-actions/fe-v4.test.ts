@@ -43,7 +43,8 @@ import {
     GRID_TABLE_TYPE,
     SMART_TABLE_TYPE,
     MDC_TABLE_TYPE,
-    TREE_TABLE_TYPE
+    TREE_TABLE_TYPE,
+    M_TABLE_TYPE
 } from '../../../../src/adp/quick-actions/control-types';
 import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
@@ -674,9 +675,20 @@ describe('FE V4 quick actions', () => {
         });
 
         describe('change table columns', () => {
-            test('initialize and execute action', async () => {
+            interface TestCase {
+                variantManagement: boolean;
+            }
+            const testCases: TestCase[] = [
+                {
+                    variantManagement: true
+                },
+                {
+                    variantManagement: false
+                }
+            ];
+            test.each(testCases)('initialize and execute action', async (testCase) => {
                 const pageView = new XMLView();
-                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(testCase.variantManagement);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
@@ -769,7 +781,7 @@ describe('FE V4 quick actions', () => {
                         actions.splice(i, 1);
                     }
                 }
-
+                const enabled = testCase.variantManagement;
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -780,7 +792,18 @@ describe('FE V4 quick actions', () => {
                                     id: 'listReport0-change-table-columns',
                                     title: 'Change Table Columns',
                                     enabled: true,
-                                    children: [{ path: '0', children: [], enabled: true, label: `'MyTable' table` }]
+                                    children: [
+                                        {
+                                            path: '0',
+                                            children: [],
+                                            enabled,
+                                            label: `'MyTable' table`,
+                                            ...(!testCase.variantManagement && {
+                                                tooltip:
+                                                    'This action has been disabled because variant management is disabled. Enable variant management and try again.'
+                                            })
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -791,6 +814,10 @@ describe('FE V4 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-change-table-columns', kind: 'nested', path: '0' })
                 );
 
+                if (!testCase.variantManagement) {
+                    expect(execute).not.toHaveBeenCalled();
+                    return;
+                }
                 expect(execute).toHaveBeenCalledWith('Table', 'CTX_SETTINGS0');
             });
         });
@@ -1807,6 +1834,12 @@ describe('FE V4 quick actions', () => {
             describe('create table custom column', () => {
                 const testCases = [
                     {
+                        tableType: M_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => M_TABLE_TYPE,
+                        enable: true
+                    },
+                    {
                         tableType: MDC_TABLE_TYPE,
                         dialog: DialogNames.ADD_FRAGMENT,
                         toString: () => MDC_TABLE_TYPE,
@@ -1914,7 +1947,7 @@ describe('FE V4 quick actions', () => {
                                     return [
                                         {
                                             isA: (type: string) => type === testCase.tableType,
-                                            getAggregation: () => 'items'
+                                            getAggregation: () => []
                                         }
                                     ];
                                 },
@@ -2001,7 +2034,7 @@ describe('FE V4 quick actions', () => {
                                         'enabled': testCase.enable,
                                         tooltip: testCase.enable
                                             ? undefined
-                                            : 'This action has been disabled because the table rows are not available. Please load the table data and try again',
+                                            : 'This action has been disabled because the table rows are not available. Please load the table data and try again.',
                                         'id': 'objectPage0-create-table-custom-column',
                                         'kind': 'nested',
                                         'title': 'Add Custom Table Column'

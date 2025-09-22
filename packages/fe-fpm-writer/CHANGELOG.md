@@ -1,5 +1,54 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.23
+-   @sap-ux/project-access@1.32.1
+
+## 0.38.8
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/fiori-annotation-api@0.6.22
+
+## 0.38.7
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/fiori-annotation-api@0.6.21
+
+## 0.38.6
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.20
+
+## 0.38.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/fiori-annotation-api@0.6.19
+
+## 0.38.4
+
+### Patch Changes
+
+-   Updated dependencies [a6ff2aa]
+    -   @sap-ux/fiori-annotation-api@0.6.18
+
+## 0.38.3
+
+### Patch Changes
+
+-   080480a: Update EJS templates for JavaScript and TypeScript event handlers: parameters are updated based on documentation/examples and JSDoc comments are generated accordingly.
+
 ## 0.38.2
 
 ### Patch Changes

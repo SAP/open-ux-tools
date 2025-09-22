@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-08-extending-sapui5-applications-view-replacement-98861cf-md",
+  "title": "View Replacement",
+  "category": "ui5-framework",
+  "path": "docs/08_Extending_SAPUI5_Applications/view-replacement-98861cf.md",
+  "lastModified": "2025-09-01T18:17:10.672Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "View",
+    "Replacement"
+  ],
+  "headers": [
+    "View Replacement"
+  ],
+  "content": "<!-- loio98861cf90b874e3394b666cfb347ff0b -->\n\n# View Replacement\n\nViews of a delivered standard application can be replaced to adapt the application to the customer needs.\n\nIf the extension points provided for view extension are not sufficient to meet the requirements of the custom application, you can replace the standard view with a custom view.\n\nThe following view is delivered in the standard application:\n\n```js\n\n<mvc:View xmlns=\"sap.m\" xmlns:mvc=\"sap.ui.core.mvc\">\n    <TextView text=\"SAP View 'Sub1' - this one should have been replaced by the customer View\"></TextView>  \n</mvc:View>\n\n```\n\nThis is the custom view to replace the standard view:\n\n```js\n\n<mvc:View xmlns=\"sap.m\" xmlns:mvc=\"sap.ui.core.mvc\">\n    <TextView text=\"Custom View 'Sub1' - this one replaces the original SAP View 'Sub1'\"></TextView>    \n</mvc:View>\n```\n\nThe following extension replaces the custom view with the view in the standard application\n\n```js\n\nextensions: {\n    .....some more content\n    \"sap.ui.viewReplacements\": {\n        \"samples.components.ext.sap.Sub1\": {\n            viewName: \"samples.components.ext.customer.CustomSub1\",\n            type: \"XML\"\n        }\n    },\n    .....some more content\n\n```\n\n",
+  "excerpt": "<!-- loio98861cf90b874e3394b666cfb347ff0b --> View Replacement Views of a delivered standard application can be replaced to adapt the application to the customer needs. If the extension points provide...",
+  "wordCount": 146,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

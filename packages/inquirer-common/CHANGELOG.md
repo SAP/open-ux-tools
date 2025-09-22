@@ -1,5 +1,44 @@
 # @sap-ux/inquirer-common
 
+## 0.7.44
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/telemetry@0.6.23
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/fiori-generator-shared@0.13.17
+
+## 0.7.43
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.16
+-   @sap-ux/telemetry@0.6.22
+
+## 0.7.42
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.15
+-   @sap-ux/telemetry@0.6.21
+
+## 0.7.41
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.20
+-   @sap-ux/fiori-generator-shared@0.13.14
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+
 ## 0.7.39
 
 ### Patch Changes

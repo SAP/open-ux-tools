@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/annotation-generator",
-    "version": "0.3.55",
+    "version": "0.3.61",
     "description": "Library that provides API for generation of annotations by SAP Fiori App Generator",
     "publisher": "SAPSE",
     "repository": {
@@ -35,7 +35,7 @@
         "mem-fs": "2.1.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "npm-run-all": "4.1.5"
+        "npm-run-all2": "5.0.0"
     },
     "files": [
         "dist/"

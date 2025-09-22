@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-customfilter-rating-js",
+  "title": "CustomFilter Rating",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/CustomFilter-Rating.js",
+  "lastModified": "2025-09-01T18:17:10.727Z",
+  "tags": [
+    "features",
+    "js",
+    "CustomFilter",
+    "Rating"
+  ],
+  "headers": [],
+  "content": "# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter Rating.md\n\n```javascript\n# CustomFilter-Rating.js\n\n```javascript\nsap.ui.define([\"sap/ui/model/Filter\", \"sap/ui/model/FilterOperator\"], function(Filter, FilterOperator) {\n\t\"use strict\";\n\n\treturn {\n\t\t//Search-Term: \"customFilter\"\n\t\tonReset: function(oEvent) {\n\t\t\tthis.setFilterValues(\"starsValue\");\n\t\t}\n\t};\n});\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "CustomFilter Rating.md javascript CustomFilter Rating.md javascript CustomFilter Rating.md javascript CustomFilter Rating.md javascript CustomFilter-Rating.js",
+  "wordCount": 62,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

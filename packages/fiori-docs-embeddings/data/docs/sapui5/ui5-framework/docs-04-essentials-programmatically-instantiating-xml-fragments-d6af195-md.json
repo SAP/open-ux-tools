@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-programmatically-instantiating-xml-fragments-d6af195-md",
+  "title": "Programmatically Instantiating XML Fragments",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/programmatically-instantiating-xml-fragments-d6af195.md",
+  "lastModified": "2025-09-01T18:17:10.536Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Programmatically",
+    "Instantiating",
+    "XML",
+    "Fragments"
+  ],
+  "headers": [
+    "Programmatically Instantiating XML Fragments",
+    "Context"
+  ],
+  "content": "<!-- loiod6af195124cf430599530668ddea7425 -->\n\n# Programmatically Instantiating XML Fragments\n\nFor each fragment type, SAPUI5 provides a method that can be used to programmatically instantiate a fragment.\n\n\n\n## Context\n\nTo give an example of a programmatic instantiation of an XML fragment, you first have to define one. The following code presents an example definition:\n\n```xml\n<Button xmlns=\"sap.m\" id=\"btnInFragment\" text=\"Hello World\" />\n```\n\nThis fragment can be instantiated from a controller as follows:\n\n```xml\n\nthis.loadFragment({\n    name: \"my.useful.VerySimpleUiPart\"\n}).then(function(oMyButton) {\n    // ...\n});\n```\n\n> ### Note:  \n> Fragments of any type can be used within views of any type.\n\nIf XML fragments are used within XML views, the fragment ID is prefixed by default with the view ID. This will allow you to call `this.byId(…)` in the view's controller in order to retrieve controls inside the fragment. The following code inside the controller will instantiate the above fragment with the `Button`, and then retrieve the `Button` via its ID:\n\n```xml\n\nthis.loadFragment({\n    name: \"my.useful.VerySimpleUiPart\"\n}).then(function(myButton) {\n    // Retrieve the button via its ID\n    // in this exsample: myButton == theSameButton\n    var theSameButton = this.byId(\"btnInFragment\");\n}.bind(this));\n```\n\n> ### Caution:  \n> Make sure that you are correctly chaining to the `loadFragment` Promise!\n> \n> Calling `Element.getElementById(\"...\")` \\(with `Element` required from module `sap/ui/core/Element`\\) or `oController.byId(\"...\")` before the `loadFragment` Promise is resolved, will result in `undefined`.\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.core.mvc.Controller.loadFragment()`](https://ui5.sap.com/#/api/sap.ui.core.mvc.Controller/methods/loadFragment)\n\n",
+  "excerpt": "<!-- loiod6af195124cf430599530668ddea7425 --> Programmatically Instantiating XML Fragments For each fragment type, SAPUI5 provides a method that can be used to programmatically instantiate a fragment....",
+  "wordCount": 225,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

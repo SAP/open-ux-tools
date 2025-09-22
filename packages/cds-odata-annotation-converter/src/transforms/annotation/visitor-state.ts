@@ -1,4 +1,4 @@
-import type { Diagnostic, Element, Position } from '@sap-ux/odata-annotation-core-types';
+import type { Element, ExtendedDiagnostic, Position } from '@sap-ux/odata-annotation-core-types';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 export interface Context {
@@ -56,7 +56,7 @@ export class VisitorState {
     /**
      * @returns array of diagnostics array.
      */
-    get diagnostics(): Diagnostic[] {
+    get diagnostics(): ExtendedDiagnostic[] {
         return this._diagnostics;
     }
 
@@ -70,9 +70,9 @@ export class VisitorState {
     get pathSet(): Set<string> {
         return this._pathSet;
     }
-    private _contextStack: Context[] = [];
-    private _diagnostics: Diagnostic[] = [];
-    private _pathSet = new Set<string>();
+    private readonly _contextStack: Context[] = [];
+    private readonly _diagnostics: ExtendedDiagnostic[] = [];
+    private readonly _pathSet = new Set<string>();
 
     /**
      *
@@ -86,11 +86,11 @@ export class VisitorState {
      *
      * @param context context.
      */
-    pushContext(context: Context) {
+    pushContext(context: Context): void {
         this._contextStack.push(Object.seal({ ...context }));
     }
 
-    popContext() {
+    popContext(): void {
         this._contextStack.splice(-1);
     }
 
@@ -99,7 +99,7 @@ export class VisitorState {
      *
      * @param diagnostic - The diagnostic to be added.
      */
-    addDiagnostic(diagnostic: Diagnostic) {
+    addDiagnostic(diagnostic: ExtendedDiagnostic): void {
         this._diagnostics.push(diagnostic);
     }
 
@@ -107,7 +107,7 @@ export class VisitorState {
      *
      * @param path - The path to be added.
      */
-    addPath(path: string) {
+    addPath(path: string): void {
         this._pathSet.add(path);
     }
 }

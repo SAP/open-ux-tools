@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-integration-notfoundjourney-js",
+  "title": "NotFoundJourney",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/test/integration/NotFoundJourney.js",
+  "lastModified": "2025-09-01T18:17:10.810Z",
+  "tags": [
+    "samples",
+    "js",
+    "NotFoundJourney"
+  ],
+  "headers": [],
+  "content": "# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.md\n\n```javascript\n# NotFoundJourney.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/opaQunit\",\"./pages/Worklist\",\"./pages/Browser\",\"./pages/NotFound\",\"./pages/App\"],function(e){\"use strict\";QUnit.module(\"NotFound\");e(\"Should see the resource not found page when changing to an invalid hash\",function(e,o,t){e.iStartMyApp();o.onTheBrowser.iChangeTheHashToSomethingInvalid();t.onTheNotFoundPage.iShouldSeeResourceNotFound()});e(\"Clicking the 'Show my worklist' link on the 'Resource not found' page should bring me back to the worklist\",function(e,o,t){o.onTheNotFoundPage.iPressTheNotFoundShowWorklistLink();t.onTheWorklistPage.iShouldSeeTheTable()});e(\"Should see the not found text for no search results\",function(e,o,t){o.onTheWorklistPage.iSearchForSomethingWithNoResults();t.onTheWorklistPage.iShouldSeeTheNoDataTextForNoSearchResults()});e(\"Clicking the back button should take me back to the not found page\",function(e,o,t){o.onTheBrowser.iPressOnTheBackwardsButton();t.onTheNotFoundPage.iShouldSeeResourceNotFound();t.iTeardownMyApp()});e(\"Should see the 'Object not found' page if an invalid object id has been called\",function(e,o,t){e.iStartMyApp({hash:\"Products/SomeInvalidObjectId\"});t.onTheNotFoundPage.iShouldSeeObjectNotFound()});e(\"Clicking the 'Show my worklist' link on the 'Object not found' page should bring me back to the worklist\",function(e,o,t){o.onTheNotFoundPage.iPressTheObjectNotFoundShowWorklistLink();t.onTheWorklistPage.iShouldSeeTheTable();t.iTeardownMyApp()})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "NotFoundJourney.md javascript NotFoundJourney.md javascript NotFoundJourney.md javascript NotFoundJourney.md javascript NotFoundJourney.js",
+  "wordCount": 121,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

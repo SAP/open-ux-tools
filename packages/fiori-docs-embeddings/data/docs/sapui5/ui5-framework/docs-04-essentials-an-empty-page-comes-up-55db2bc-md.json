@@ -1,0 +1,31 @@
+{
+  "id": "sapui5-docs-04-essentials-an-empty-page-comes-up-55db2bc-md",
+  "title": "An Empty Page Comes Up",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/an-empty-page-comes-up-55db2bc.md",
+  "lastModified": "2025-09-01T18:17:10.490Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Empty",
+    "Page",
+    "Comes"
+  ],
+  "headers": [
+    "An Empty Page Comes Up",
+    "Preview",
+    "Root Cause",
+    "Resolution",
+    "Console shows `\"ReferenceError: sap is not defined\"`",
+    "Console shows `SyntaxError: <error details>`",
+    "Console shows `Error: Invalid XML`",
+    "Console shows `Uncaught Error: failed to load 'sap/m/xxxxx.js'`",
+    "Console shows no error"
+  ],
+  "content": "<!-- loio55db2bc60d694d1eacab4d4410f5dc46 -->\n\n# An Empty Page Comes Up\n\nYou find yourself in one of these situations:\n\n-   The browser shows an empty page: there's no content and no error message is displayed\n\n-   An `Uncaught Error` message is shown in the developer console\n\n\n\n\n## Preview\n\n  \n  \n**The browser displays an empty page and an Uncaught Error is issued in the console**\n\n![](../03_Get-Started/images/FAK1_Empty_Page_Comes_Up_873b3c2.png \"The browser displays an empty page and an Uncaught Error is issued in\n\t\t\t\t\tthe console\")\n\n\n\n## Root Cause\n\nThis can happen for one of the following reasons:\n\n-   A critical reference error is prohibiting the app from starting.\n\n-   A syntax error is stopping the execution of your application code.\n\n-   A parsing error has occurred in an XML view.\n\n-   The tag of the control is written with lowercase letters.\n\n-   The root view is missing a root control.\n\n\n\n\n## Resolution\n\n\n\n### Console shows `\"ReferenceError: sap is not defined\"`\n\nHave a look at the `resource` path in the bootstrap of the HTML page you are trying to open. The path to the file `sap-ui-core.js` is probably incorrect and needs to point to the path where the SAPUI5 resources are located \\(typically globally under `/resources` or locally under `resources`\\).\n\nOther development environments might need the resources to be copied to the server and referenced relatively to the app \\(see [Standard Variant for Bootstrapping](standard-variant-for-bootstrapping-91f1f45.md)\\).\n\nAlternatively, you can use the CDN version \\(see [Variant for Bootstrapping from Content Delivery Network](variant-for-bootstrapping-from-content-delivery-network-2d3eb2f.md)\\).\n\n\n\n### Console shows `SyntaxError: <error details>`\n\nA JavaScript error in the application code throws an exception and stops all subsequent execution. Take a look at the error details: In most cases, the root cause is mentioned in the first line of the error message.\n\nThe stack trace can provide more context on the execution scope. Analyze it from thoroughly to find a line referencing your application code and start debugging there.\n\n\n\n### Console shows `Error: Invalid XML`\n\nIf the XML view to be displayed cannot be parsed, SAPUI5 stops the execution and throws a parse error. Check the XML view for namespace issues, typos, and missing closing tags. Do a schema validation with an XML validator tool.\n\n\n\n### Console shows `Uncaught Error: failed to load 'sap/m/xxxxx.js'`\n\nDuring the development on Microsoft Windows, your app works fine, but a soon as you deploy it on a Linux system, only an empty page comes up.\n\nThis could happen if you wrote the tag of the control with lowercase letters, because Linux systems use case-sensitive file names.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nCorrect Example\n\n</th>\n<th valign=\"top\">\n\nIncorrect Example\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n<code>&lt;<b>B</b>utton text=\"Click me\" /&gt;</code> \n\n</td>\n<td valign=\"top\">\n\n<code>&lt;<b>b</b>utton text=\"Click me\" /&gt;</code>\n\nError message: `Uncaught Error: failed to load 'sap/m/button.js'`\n\n</td>\n</tr>\n</table>\n\n> ### Tip:  \n> Control tags always start with capital letters after the namespace like `<Button>`, `<l:FixFlex>`, `<f:SimpleForm>`.\n> \n> Aggregations always start with lowercase letters like `<content>`, `<l:fixContent>`, `<f:content>`\n\n\n\n### Console shows no error\n\nYour root view is missing a root control. In the context of SAPUI5, `sap.m.App` or `sap.m.SplitApp` function as root controls. Please check your root view \\(for example `App.view.xml`\\) and add the missing root control.\n\n",
+  "excerpt": "<!-- loio55db2bc60d694d1eacab4d4410f5dc46 --> An Empty Page Comes Up You find yourself in one of these situations: -   The browser shows an empty page: there's no content and no error message is displ...",
+  "wordCount": 522,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

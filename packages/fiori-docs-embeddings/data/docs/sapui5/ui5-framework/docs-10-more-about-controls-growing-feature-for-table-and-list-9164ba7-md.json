@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-growing-feature-for-table-and-list-9164ba7-md",
+  "title": "Growing Feature for Table and List",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/growing-feature-for-table-and-list-9164ba7.md",
+  "lastModified": "2025-09-01T18:17:10.691Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Growing",
+    "Feature",
+    "for",
+    "Table",
+    "and",
+    "List"
+  ],
+  "headers": [
+    "Growing Feature for Table and List",
+    "Sample"
+  ],
+  "content": "<!-- loio9164ba7047b74a25a19baf9c5bb986ae -->\n\n# Growing Feature for Table and List\n\n`sap.m.ListBase` provides growing-related properties, which can be used for tables and lists.\n\nA growing list has a loading mechanism that requests data from the model in a lazy way. This enables the app to only fetch data from the server as and when necessary.\n\n> ### Note:  \n> Before release 1.16, the `sap.m.GrowingList` control existed as an extension of the `sap.m.List` control. As this is now deprecated, use the properties as described here instead.\n\nThe growing-related properties of `sap.m.ListBase` are:\n\n-   `growing`: Boolean to set the growing feature to on or off\n-   `growingScrollToLoad`: If you want to allow more data to be fetched when the user scrolls down to the end of the current items, set this boolean property to true; otherwise a trigger button must be used\n-   `growingThreshold`: The number of items that are requested each time from the model\n-   `growingTriggerText`: The text on a trigger button used to cause a request for more data\n\n> ### Note:  \n> For `sap.m.listbase`, the growing feature containing the growing property is not supported when used in combination with two-way binding for a table or list.\n> \n> Also, as the growing feature enables extended change detection for the binding, it only updates rows that are changed. This means that if the position of a particular row has not been changed, this row will **not** be updated.\n\nTo enable data for a table to be fetched on demand like this, you just need to set the values for these properties appropriately on your table control. For example, adding the highlighted lines as shown in the following code will cause five items to be displayed in the table initially along with a *More* button \\(this is the default text used if you don't set a different text using the `growingTriggerText` property\\), as shown below the code:\n\n```js\n\n <List\n    items=\"{/ProductCollection}\"\n    headerText=\"Products\"\n    growing=\"true\"\n    growingThreshold=\"4\"\n    growingScrollToLoad=\"false\">\n    <StandardListItem\n      title=\"{Name}\"\n      description=\"{ProductId}\"\n      icon=\"{ProductPicUrl}\"\n      iconDensityAware=\"false\"\n      iconInset=\"false\" />\n  </List>\n\n```\n\n![](images/SAPUI5_Mobile_Table_Feature_Growing_1_26_f77f218.png)\n\nIf you want the user to have to scroll down to see more items \\(by setting the `growingScrollToLoad` property to true\\), you must ensure that the control is within a container that has a scroll feature, such as an `sap.m.Page` in an `sap.m.App` control, like this:\n\n```js\n\n<App>\n   <Page title=\"Table Events\">\n      <Table>\n         ...\n      </Table>\n   </Page>\n<App>\n\n```\n\n\n\n## Sample\n\nFor more information, see the [sample](https://ui5.sap.com/#/entity/sap.m.List/sample/sap.m.sample.ListGrowing) in the Demo Kit.\n\n",
+  "excerpt": "<!-- loio9164ba7047b74a25a19baf9c5bb986ae --> Growing Feature for Table and List sap.m.ListBase provides growing-related properties, which can be used for tables and lists. A growing list has a loadin...",
+  "wordCount": 403,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

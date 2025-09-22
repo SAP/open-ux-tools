@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-worklistjourney-dbg-js",
+  "title": "WorklistJourney dbg",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/WorklistJourney-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "WorklistJourney",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney dbg.md\n\n```javascript\n# WorklistJourney-dbg.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"sap/ui/test/opaQunit\",\n\t\"sap/ui/Device\",\n\t\"./pages/Worklist\",\n\t\"./pages/App\"\n], function (opaTest, Device) {\n\t\"use strict\";\n\n\tQUnit.module(\"Worklist\");\n\n\topaTest(\"Should see the table with all entries\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iStartMyApp();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTableShouldHaveAllEntries().\n\t\t\tand.theTableShouldContainOnlyFormattedUnitNumbers().\n\t\t\tand.theTitleShouldDisplayTheTotalAmountOfItems();\n\t});\n\n\topaTest(\"Search for the First object should deliver results that contain the firstObject in the name\", function (Given, When, Then) {\n\t\t//Actions\n\t\tWhen.onTheWorklistPage.iSearchForTheFirstObject();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTableShowsOnlyObjectsWithTheSearchStringInTheirTitle();\n\t});\n\n\topaTest(\"Entering something that cannot be found into search field and pressing search field's refresh should leave the list as it was\", function (Given, When, Then) {\n\t\t//Actions\n\t\tWhen.onTheWorklistPage.iTypeSomethingInTheSearchThatCannotBeFoundAndTriggerRefresh();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTableHasEntries();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "WorklistJourney dbg.md javascript WorklistJourney dbg.md javascript WorklistJourney dbg.md javascript WorklistJourney dbg.md javascript WorklistJourney-dbg.js",
+  "wordCount": 142,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}
