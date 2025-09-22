@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/telemetry",
-    "version": "0.6.21",
+    "version": "0.6.23",
     "description": "Library for sending usage telemetry data",
     "repository": {
         "type": "git",
@@ -34,7 +34,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "applicationinsights": "2.9.2",
-        "axios": "1.11.0",
+        "axios": "1.12.2",
         "performance-now": "2.1.0",
         "yaml": "2.3.3"
     },
