@@ -5,7 +5,7 @@ import { ToolsLogger, LogLevel, ConsoleTransport } from '@sap-ux/logger';
  */
 function getLogLevel(): LogLevel {
     // Check multiple possible sources for the log level
-    const globalLogLevel = (global as any).LOG_LEVEL;
+    const globalLogLevel = (globalThis as any).LOG_LEVEL;
     const envLogLevel = process.env.LOG_LEVEL;
     const argsLogLevel = process.argv.find((arg) => arg.startsWith('--log-level='))?.split('=')[1];
 
