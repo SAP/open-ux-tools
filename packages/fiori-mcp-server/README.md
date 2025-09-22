@@ -79,7 +79,7 @@ Searches Fiori Elements, Annotations, SAPUI5, Fiori tools documentation for the 
 Note: the results are based on the the most recent indexed version of SAPUI5 documentation
 
 
-#### `list-fiori-apps`
+#### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
 #### `list-functionalities` (Step 1 of 3)
@@ -92,10 +92,10 @@ The main functionalities are:
 - Adding and modifying controller extensions
 - Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
 
-#### `get-functionality-details` (Step 2 of 3)
+#### `get_functionality_details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
 
-#### `execute-functionality` (Step 3 of 3)
+#### `execute_functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
 
 ## Code of Conduct

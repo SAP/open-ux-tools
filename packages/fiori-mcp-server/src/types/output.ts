@@ -25,7 +25,7 @@ export const ListFunctionalitiesOutputSchema = zod.object({
 export const GetFunctionalityDetailsOutputSchema = zod.object({
     /** ID of the functionality */
     functionalityId: FunctionalityIdSchema.describe(
-        'Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`'
+        'Identifier to pass as the `functionalityId` parameter when calling `get_functionality_details` or `execute_functionality`'
     ),
     /** Name of the functionality */
     name: zod.string(),

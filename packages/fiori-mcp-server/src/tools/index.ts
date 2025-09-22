@@ -48,7 +48,7 @@ export const tools = [
                     You MUST use a functionalityId from this tool's output to request details to the functionality in 'get_functionality_details' (Step 2).
                     You MUST not use a functionalityId as name of a tool.
                     Do not guess, assume, or use any functionality not present in this list, as it is invalid and will cause the operation to fail.
-                    **Note: If the target application is not known, use the list-fiori-apps tool first to identify it.**
+                    **Note: If the target application is not known, use the list_fiori_apps tool first to identify it.**
                     if the functionality list does not include a functionality to support the current goal, then try using the search_docs tool as a fallback.`,
         inputSchema: convertToSchema(Input.ListFunctionalitiesInputSchema),
         outputSchema: convertToSchema(Output.ListFunctionalitiesOutputSchema)
@@ -67,7 +67,7 @@ export const tools = [
         description: `**(Step 3 of 3)**
                     Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
                     This is the **final step** of the workflow and performs the actual creation or modification.
-                    You MUST provide the exact parameter information obtained from get-functionality-details (Step 2).`,
+                    You MUST provide the exact parameter information obtained from get_functionality_details (Step 2).`,
         inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
     }

@@ -280,7 +280,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);

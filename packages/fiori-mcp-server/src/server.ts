@@ -116,7 +116,7 @@ export class FioriFunctionalityServer {
                     default:
                         await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
