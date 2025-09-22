@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.23.1",
+    "version": "0.23.13",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -50,7 +50,9 @@
         "@sap-ux/i18n": "workspace:*",
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0"
+        "mem-fs-editor": "9.4.0",
+        "qrcode": "1.5.4",
+        "@sap/bas-sdk": "3.11.6"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
@@ -59,6 +61,7 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "@types/connect": "^3.4.38",
+        "@types/qrcode": "1.5.5",
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.21",
         "@types/mem-fs": "1.1.2",

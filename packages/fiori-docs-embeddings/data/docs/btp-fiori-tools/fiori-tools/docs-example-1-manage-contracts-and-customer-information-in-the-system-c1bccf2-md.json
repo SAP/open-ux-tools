@@ -1,0 +1,28 @@
+{
+  "id": "btp-fiori-tools-docs-example-1-manage-contracts-and-customer-information-in-the-system-c1bccf2-md",
+  "title": "Example 1: Manage Contracts and Customer Information in the System",
+  "category": "fiori-tools",
+  "path": "docs/example-1-manage-contracts-and-customer-information-in-the-system-c1bccf2.md",
+  "lastModified": "2025-09-01T18:17:10.147Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Example",
+    "Manage",
+    "Contracts",
+    "and",
+    "Customer",
+    "Information",
+    "the",
+    "System"
+  ],
+  "headers": [
+    "Example 1: Manage Contracts and Customer Information in the System"
+  ],
+  "content": "<!-- loioc1bccf2d2fc74d9e8d835c7c58b9f199 -->\n\n# Example 1: Manage Contracts and Customer Information in the System\n\n> ### Sample Code:  \n> ```\n> I want to create an SAP Fiori application that satisfies the requirements from the following user story:\n> \n> Description\n> \n> As a contract manager or administrator, I want to create and manage contracts and customer information in the system, \n> so that I can effectively track and handle legal agreements and customer interactions.\n> \n> Customer Description\n> Contract: A Contract involves defining a structured representation of a legal agreement or arrangement between two or more parties. \n> Contracts can cover a wide range of agreements, such as sales contracts, service agreements, employment contracts, and more. \n> Common attributes of a contract might include:\n> Contract ID: A unique identifier for the contract.\n> 1. Contract ID: A unique identifier for the contract.\n> 2. Customer: Information about the customer involved\n> 3. Contract Type: The type of contract (e.g. sales, service, employment).\n> 4. Start Date: The date on which the contract becomes valid.\n> 5. End Date: The date on which the contract expires (if applicable).\n> 6. Status: The current status of the contract (draft, active, expired, terminated, etc.)\n> \n> Customer: A customer is an individual, organization, or entity that purchases goods, products, or services from another party, \n> typically a business or seller. A typical customer has the following attributes:\n> 1. Name\n> 2. Identification Number\n> 3. Address\n> 4. Contact Information\n> \n> Identification Number: A unique identification number for a customer is a distinct and non-repeating numerical value \n> assigned to each customer record within a database or information system. This number serves as a primary key or identifier \n> that uniquely distinguishes one customer from another.\n> Name: A \"name\" typically refers to the given name of a person or entity, or a label by which they are addressed or identified.\n> Address: An \"address\" typically refers to a physical location where an individual, business, or entity is situated \n> or can be reached.\n> \n> Acceptance Criteria\n> \n> Scenario 1: List All Contracts\n> Given I am logged into the contract management system, when I launch the SAP Fiori application to maintain contracts, \n> then I should be able to view the list of all the contracts in a list without pressing the GO button.\n> The list of all the contracts should have : Contract ID, Customer, Contract Type and Start Date\n> Next to this list, I would like to see the list of all customers.\n> The list of filters should include Contract Type, Contract Status and Start Date.\n> \n> Scenario 2: View Contract Details\n> Given I am logged into the contract management system, when I select a specific contract from the list of SAP Fiori application, \n> then I should be able to view the contract details.\n> The contract details will be:\n> \n> Field Name       Tab in App       Section or Field Group\n> ----------       ----------       ----------------------\n> ContractID       Contract Data    Contract Details\n> Customer Name    Contract Data    Contract Details\n> Contract Type    Contract Data    Contract Details\n> Status           Contract Data    Contract Details\n> Start Date       Contract Data    Contract Details\n> End Date         Contract Data    Contract Details\n> ```\n\n",
+  "excerpt": "<!-- loioc1bccf2d2fc74d9e8d835c7c58b9f199 --> Example 1: Manage Contracts and Customer Information in the System > Sample Code:   > ` > I want to create an SAP Fiori application that satisfies the req...",
+  "wordCount": 552,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

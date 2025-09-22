@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-03-get-started-step-3-handling-custom-url-parameters-46c1ca4-md",
+  "title": "Step 3: Handling Custom URL Parameters",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-3-handling-custom-url-parameters-46c1ca4.md",
+  "lastModified": "2025-09-01T18:17:10.468Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Handling",
+    "Custom",
+    "URL",
+    "Parameters"
+  ],
+  "headers": [
+    "Step 3: Handling Custom URL Parameters",
+    "Preview",
+    "Coding",
+    "webapp/localService/mockserver.js"
+  ],
+  "content": "<!-- loio46c1ca4eb2804af6bfa371ad51c9b887 -->\n\n# Step 3: Handling Custom URL Parameters\n\nIn this step, we add the functionality to interpret URL parameters in our local mock server configuration.\n\nWe know that the OData V2 provider of this service implements a URL parameter that returns only the first three entries of a set. So, for example, calling the URL with parameter`/Meetups?first=3` should return only the first 3 meet-up entries instead of all available entries.\n\n\n\n## Preview\n\n  \n  \n**After clicking \"Get First Three Meet-Ups\", only the first three meetups are shown**\n\n![The graphic has an explanatory text.](images/Tutorial_Mock_Server_Step_3_e65ccb2.png \"After clicking \"Get First Three Meet-Ups\", only the first three meetups are shown\")\n\n\n\n## Coding\n\nYou can view and download all files in the Demo Kit at [Mock Server - Step 3](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.mockserver/sample/sap.ui.core.tutorial.mockserver.03).\n\n\n\n## webapp/localService/mockserver.js\n\n```js\nsap.ui.define([\n    \"sap/ui/core/util/MockServer\",\n    \"sap/base/Log\"\n], (MockServer, Log) => {\n    \"use strict\";\n\n    return {\n        /**\n         * Initializes the mock server.\n         * You can configure the delay with the URL parameter \"serverDelay\".\n         * The local mock data in this folder is returned instead of the real data for testing.\n         * @public\n         */\n        init() {\n            // create\n            const oMockServer = new MockServer({rootUri: \"/\"});\n\n            oMockServer.simulate(\"../localService/metadata.xml\", {\n                sMockdataBaseUrl: \"../localService/mockdata\",\n                bGenerateMissingMockData: true\n            });\n\n            // handling custom URL parameter step\n            const fnCustom = (oEvent) => {\n                const oXhr = oEvent.getParameter(\"oXhr\");\n                if (oXhr?.url.includes(\"first\")) {\n                    oEvent.getParameter(\"oFilteredData\").results.splice(3, 100);\n                }\n            };\n            oMockServer.attachAfter(\"GET\", fnCustom, \"Meetups\");\n\n\n            // start\n            oMockServer.start();\n\n            Log.info(\"Running the app with mock data\");\n        }\n    };\n});\n\n```\n\nIn some scenarios, a server-specific implementation is used to calculate the returned data. For example, you can use a custom URL parameter that is typically interpreted by the server. The mock server ignores it, thus still returning the entire set of meet-ups.\n\nIn this tutorial, we use the URL parameter `first=3` to fetch the first three entries. So, for example, calling to `/Meetups?first=3` should return at most three meet-up entries.\n\nHowever, since this is a custom parameter that is not part of the standard official OData V2 query options, it will not get processed correctly by the mock server. Moreover, the mock server simply ignores it and return the entire set of meet-ups.\n\nWe now enable the functionality when running in mock mode. As its functionality corresponds to the OData V2 `$top` system query, we simply evaluate it to `$top` at runtime.\n\nFirst, we create a callback function that we later attach to every `GET` request made to the `Meetups` entity set of the service. Note that we choose the `attachAfter` event that is fired after the built-in request processing of the mock server. The event contains the actual `XHR` object and the mock data to be returned to the application. Inside the callback function we remove all results starting from third entry: The `oFilteredData` parameter comes with the event `attachAfter` and contains the mock data entries that are about to be returned in the response.\n\nSecond, we attach the callback to every `GET` request to the specific `Meetups` entity set.\n\nWith these changes in place, the mock server will now properly handle the custom \"first\" parameter. When the button in the application is pressed, only 3 rows will be displayed, mirroring the expected behavior of an actual server.\n\n",
+  "excerpt": "<!-- loio46c1ca4eb2804af6bfa371ad51c9b887 --> Step 3: Handling Custom URL Parameters In this step, we add the functionality to interpret URL parameters in our local mock server configuration. We know ...",
+  "wordCount": 523,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

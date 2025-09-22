@@ -1,0 +1,23 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-maintaining-building-blocks-6d3ad83-md",
+  "title": "Maintaining Building Blocks",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/maintaining-building-blocks-6d3ad83.md",
+  "lastModified": "2025-09-01T18:17:10.142Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Maintaining",
+    "Building",
+    "Blocks"
+  ],
+  "headers": [
+    "Maintaining Building Blocks"
+  ],
+  "content": "<!-- loio6d3ad83b9694475684d41f017bbccf20 -->\n\n# Maintaining Building Blocks\n\nThe *Page Editor* supports adding and maintaining properties of SAP Fiori elements building blocks for OData V4-based applications. For more information about building blocks, see [Building Block Overview](https://sapui5.hana.ondemand.com/test-resources/sap/fe/core/fpmExplorer/index.html#/buildingBlocks/buildingBlockOverview).\n\n> ### Note:  \n> Currently, the *Page Editor* supports adding custom pages and custom sections to an object page.\n\n![](images/Custom_Section_9fbfc17.png)\n\nYou can see the existing building blocks in the *Page Editor*.\n\nYou can create the following building blocks using the *Page Editor*:\n\n-   *Chart*\n-   *Filter Bar*\n-   *Table*\n\n![Property Panel](images/PageEditor_Table_ObjectPage_29081e5.png)\n\nThe *Page Editor* property panel shows XML properties and annotation properties, both of which can be modified.\n\n",
+  "excerpt": "<!-- loio6d3ad83b9694475684d41f017bbccf20 --> Maintaining Building Blocks The Page Editor supports adding and maintaining properties of SAP Fiori elements building blocks for OData V4-based applicatio...",
+  "wordCount": 104,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

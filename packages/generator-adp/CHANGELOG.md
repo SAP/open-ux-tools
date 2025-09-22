@@ -1,5 +1,135 @@
 # @sap-ux/generator-adp
 
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/adp-tooling@0.15.30
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/odata-service-writer@0.27.22
+    -   @sap-ux/project-access@1.32.1
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/adp-tooling@0.15.29
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/fiori-generator-shared@0.13.16
+    -   @sap-ux/odata-service-writer@0.27.21
+    -   @sap-ux/project-input-validator@0.6.21
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.43
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/adp-tooling@0.15.28
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/fiori-generator-shared@0.13.15
+    -   @sap-ux/odata-service-writer@0.27.20
+    -   @sap-ux/project-input-validator@0.6.20
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.42
+
+## 0.4.0
+
+### Minor Changes
+
+-   e36b965: fix(adp-generator): In case the base app inbounds api call fails for the selected application we display the error next to the application prompt.
+
+## 0.3.78
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.27
+-   @sap-ux/odata-service-writer@0.27.19
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.14
+-   @sap-ux/project-input-validator@0.6.19
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.41
+
+## 0.3.77
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/inquirer-common@0.7.40
+    -   @sap-ux/adp-tooling@0.15.26
+
+## 0.3.76
+
+### Patch Changes
+
+-   66cc543: fix: Extensibility generator cannot be resolved in the bundled ADP generator
+
+## 0.3.75
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/adp-tooling@0.15.25
+
+## 0.3.74
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/inquirer-common@0.7.39
+    -   @sap-ux/adp-tooling@0.15.24
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/system-access@0.6.16
+
+## 0.3.73
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/adp-tooling@0.15.23
+    -   @sap-ux/system-access@0.6.15
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/inquirer-common@0.7.38
+
+## 0.3.72
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/adp-tooling@0.15.22
+    -   @sap-ux/fiori-generator-shared@0.13.11
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/odata-service-writer@0.27.18
+    -   @sap-ux/project-access@1.30.13
+    -   @sap-ux/project-input-validator@0.6.18
+
+## 0.3.71
+
+### Patch Changes
+
+-   384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
+-   Updated dependencies [384bb40]
+    -   @sap-ux/adp-tooling@0.15.21
+
 ## 0.3.70
 
 ### Patch Changes

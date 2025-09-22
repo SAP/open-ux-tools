@@ -1,5 +1,69 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.6.23
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/odata-vocabularies@0.4.14
+    -   @sap-ux/cds-annotation-parser@0.2.17
+    -   @sap-ux/cds-odata-annotation-converter@0.6.9
+    -   @sap-ux/xml-odata-annotation-converter@0.3.7
+    -   @sap-ux/project-access@1.32.1
+
+## 0.6.22
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/cds-odata-annotation-converter@0.6.8
+
+## 0.6.21
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/cds-odata-annotation-converter@0.6.8
+
+## 0.6.20
+
+### Patch Changes
+
+-   Updated dependencies [1f18878]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.8
+    -   @sap-ux/odata-annotation-core-types@0.4.6
+    -   @sap-ux/odata-annotation-core@0.2.7
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.13
+    -   @sap-ux/xml-odata-annotation-converter@0.3.7
+    -   @sap-ux/cds-annotation-parser@0.2.16
+
+## 0.6.19
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/cds-odata-annotation-converter@0.6.7
+
+## 0.6.18
+
+### Patch Changes
+
+-   a6ff2aa: fix: [CDS] update change for primitive annotation values using annotation shortcut syntax.
+
+## 0.6.17
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/odata-vocabularies@0.4.12
+    -   @sap-ux/cds-annotation-parser@0.2.15
+    -   @sap-ux/cds-odata-annotation-converter@0.6.7
+    -   @sap-ux/xml-odata-annotation-converter@0.3.6
+    -   @sap-ux/project-access@1.30.13
+
 ## 0.6.16
 
 ### Patch Changes

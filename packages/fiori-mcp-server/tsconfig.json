@@ -1,0 +1,46 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-annotation-api"
+    },
+    {
+      "path": "../fiori-docs-embeddings"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
+    },
+    {
+      "path": "../text-document-utils"
+    }
+  ]
+}

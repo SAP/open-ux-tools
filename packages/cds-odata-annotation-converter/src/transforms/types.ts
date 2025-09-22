@@ -1,4 +1,4 @@
-import type { Position, Range, Diagnostic, Element } from '@sap-ux/odata-annotation-core';
+import type { Position, Range, Element, ExtendedDiagnostic } from '@sap-ux/odata-annotation-core';
 
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
@@ -38,5 +38,5 @@ export type VisitorReturnValue = {
     nodeRange?: Range;
     pathSet?: Set<string>;
     references?: Reference[];
-    diagnostics?: Diagnostic[];
+    diagnostics?: ExtendedDiagnostic[];
 };

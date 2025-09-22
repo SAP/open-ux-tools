@@ -61,7 +61,7 @@ describe('CF Writer Base', () => {
 
     describe('Generate Base Config - Standalone', () => {
         test('Generate deployment configs - standalone with ABAP service provider', async () => {
-            jest.setTimeout(20000);
+            jest.setTimeout(20_000);
             const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
             apiGetInstanceCredentialsMock.mockResolvedValue({
                 credentials: {

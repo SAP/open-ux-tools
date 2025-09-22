@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-03-get-started-step-11-pages-and-panels-3b9d9f8-md",
+  "title": "Step 11: Pages and Panels",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-11-pages-and-panels-3b9d9f8.md",
+  "lastModified": "2025-09-01T18:17:10.451Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Pages",
+    "and",
+    "Panels"
+  ],
+  "headers": [
+    "Step 11: Pages and Panels",
+    "Preview",
+    "Coding",
+    "webapp/view/App.view.xml",
+    "webapp/i18n/i18n.properties"
+  ],
+  "content": "<!-- loio3b9d9f84930d43df90ad0789d99bd4a3 -->\n\n# Step 11: Pages and Panels\n\nAfter all the work on the app structure it's time to improve the look of our app. We will use two controls from the `sap.m` library to add a bit more \"bling\" to our UI. You will also learn about control aggregations in this step.\n\n\n\n## Preview\n\n  \n  \n**A panel is now displaying the controls from the previous steps**\n\n![The graphic has an explanatory text.](images/UI5_Walkthrough_Step_11_97feb54.png \"A panel is now displaying the controls from the previous steps\")\n\n\n\n<a name=\"loio3b9d9f84930d43df90ad0789d99bd4a3__section_dkx_kp2_syb\"/>\n\n## Coding\n\nYou can view and download all files at [Walkthrough - Step 11](https://ui5.sap.com/#/entity/sap.m.tutorial.walkthrough/sample/sap.m.tutorial.walkthrough.11).\n\n\n\n<a name=\"loio3b9d9f84930d43df90ad0789d99bd4a3__section_ekx_kp2_syb\"/>\n\n## webapp/view/App.view.xml\n\n```xml\n<mvc:View\n   controllerName=\"ui5.walkthrough.controller.App\"\n   xmlns=\"sap.m\"\n   xmlns:mvc=\"sap.ui.core.mvc\"\n  displayBlock=\"true\">\n   <App>\n      <pages>\n         <Page title=\"{i18n>homePageTitle}\">\n            <content>\n               <Panel\n                  headerText=\"{i18n>helloPanelTitle}\">\n                  <content>\n                     <Button\n                        text=\"{i18n>showHelloButtonText}\"\n                        press=\".onShowHello\"/>\n                     <Input\n                        value=\"{/recipient/name}\"\n                        description=\"Hello {/recipient/name}\"\n                        valueLiveUpdate=\"true\"\n                        width=\"60%\"/>\n                  </content>\n               </Panel>\n            </content>\n         </Page>\n      </pages>\n   </App>\n</mvc:View>\n```\n\nWe put both the input field and the button inside a containing control called `sap/m/Page`. The page provides an aggregation to `0..N` other controls called `content`. It also displays the title attribute in a header section on top of the content. The page itself is placed into the `pages` aggregation of another control called `sap/m/App` which does the following important things for us:\n\n-   It writes a bunch of properties into the header of the `index.html` that are necessary for proper display on mobile devices.\n\n-   It offers functionality to navigate between pages with animations. We will use this soon.\n\n\nIn order to make the fullscreen height of the view work properly, we add the `displayBlock` attribute with the value `true` to the view. The actual content is wrapped inside a `Panel` control, in order to group related content.\n\n\n\n## webapp/i18n/i18n.properties\n\n```ini\n# App Descriptor\nappTitle=Hello World\nappDescription=A simple walkthrough app that explains the most important concepts of SAPUI5\n\n# Hello Panel\nshowHelloButtonText=Say Hello\nhelloMsg=Hello {0}\nhomePageTitle=Walkthrough\nhelloPanelTitle=Hello World\n```\n\nWe add new key/value pairs to our text bundle for the start page title and the panel title.\n\n**Related Information**  \n\n\n[API Reference: `sap.m.NavContainer`](https://ui5.sap.com/#/api/sap.m.NavContainer)\n\n[Samples: `sap.m.NavContainer` ](https://ui5.sap.com/#/entity/sap.m.NavContainer)\n\n[API Reference: `sap.m.Page`](https://ui5.sap.com/#/api/sap.m.Page)\n\n[Samples: `sap.m.Page` ](https://ui5.sap.com/#/entity/sap.m.Page)\n\n",
+  "excerpt": "<!-- loio3b9d9f84930d43df90ad0789d99bd4a3 --> Step 11: Pages and Panels After all the work on the app structure it's time to improve the look of our app. We will use two controls from the sap.m librar...",
+  "wordCount": 338,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

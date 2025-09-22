@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-test-integration-alljourneys-js",
+  "title": "AllJourneys",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/test/integration/AllJourneys.js",
+  "lastModified": "2025-09-01T18:17:10.818Z",
+  "tags": [
+    "samples",
+    "js",
+    "AllJourneys"
+  ],
+  "headers": [],
+  "content": "# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/test/Opa5\",\n\t\"./arrangements/Startup\",\n\t\"./NavigationJourney\"\n], function (Opa5, Startup) {\n\t\"use strict\";\n\n\tOpa5.extendConfig({\n\t\tarrangements: new Startup(),\n\t\tviewNamespace: \"ztest.docapp1.ztravel.view.\",\n\t\tautoWait: true\n\t});\n});\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "AllJourneys.md javascript AllJourneys.md javascript AllJourneys.md javascript AllJourneys.md javascript AllJourneys.js",
+  "wordCount": 57,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

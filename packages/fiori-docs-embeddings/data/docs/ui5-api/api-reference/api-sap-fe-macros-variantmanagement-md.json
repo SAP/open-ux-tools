@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-variantmanagement-md",
+  "title": "sap.fe.macros.VariantManagement",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.VariantManagement.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "VariantManagement"
+  ],
+  "headers": [
+    "sap.fe.macros.VariantManagement"
+  ],
+  "content": "# sap.fe.macros.VariantManagement\n\n<p>Building block used to create a Variant Management based on the metadata provided by OData V4.<br/>Usage example:\n<pre>\n&lt;macro:VariantManagement\nid=\"SomeUniqueIdentifier\"\nfor=\"{listOfControlIds&gt;}\"\n/&gt;\n</pre><br/><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"test-resources/sap/fe/core/fpmExplorer/index.html#/buildingBlocks/filterBar/filterBarVMWithTable\">Overview of Building Blocks</a>\n\t\t\t<img src=\"./resources/sap/ui/documentation/sdk/images/link-sap.png\"\n\t\t\ttitle=\"Information published on SAP site\" class=\"sapUISDKExternalLink\"/>\n</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/VariantManagement\n\n",
+  "excerpt": "sap.fe.macros.VariantManagement <p>Building block used to create a Variant Management based on the metadata provided by OData V4.<br/>Usage example: <pre> &lt;macro:VariantManagement id=\"SomeUniqueIde...",
+  "wordCount": 46,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

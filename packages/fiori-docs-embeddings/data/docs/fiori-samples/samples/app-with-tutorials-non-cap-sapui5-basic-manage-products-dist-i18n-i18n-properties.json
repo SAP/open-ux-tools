@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-i18n-i18n-properties",
+  "title": "i18n",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/i18n/i18n.properties",
+  "lastModified": "2025-09-01T18:17:10.800Z",
+  "tags": [
+    "samples",
+    "properties",
+    "i18n"
+  ],
+  "headers": [],
+  "content": "# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.properties\n\n```properties\nappTitle=Products\nappDescription=Displays products\n\n\nCurrency=EUR\nDiscontinued=Discontinued\nAvailable=Available\n\n# List View\nListTitle=Product Overview\n\n# Detail View\nDetailTitle=Product Details\nOrdered=Ordered\nNotOrdered=Not Ordered\nOrderButtonText=Order\nOrderDialogTitle=Order Product\nOrderDialogMsg=Do you want to order this product now?\nOrderDialogSuccessMsg=The product has been ordered\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "i18n.md properties i18n.md properties i18n.md properties i18n.md properties i18n.properties",
+  "wordCount": 71,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

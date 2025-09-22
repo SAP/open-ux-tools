@@ -1,5 +1,108 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.20
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/nodejs-utils@0.2.4
+
+## 1.6.19
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.16
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.43
+
+## 1.6.18
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.15
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.42
+
+## 1.6.17
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/fiori-generator-shared@0.13.14
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.41
+
+## 1.6.16
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/inquirer-common@0.7.40
+
+## 1.6.15
+
+### Patch Changes
+
+-   f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
+
+## 1.6.14
+
+### Patch Changes
+
+-   2aecea7: Adjust the deployment host info message.
+
+## 1.6.13
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/inquirer-common@0.7.39
+-   @sap-ux/fiori-generator-shared@0.13.12
+-   @sap-ux/system-access@0.6.16
+
+## 1.6.12
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/system-access@0.6.15
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/inquirer-common@0.7.38
+
+## 1.6.11
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/fiori-generator-shared@0.13.11
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/nodejs-utils@0.2.3
+
+## 1.6.10
+
+### Patch Changes
+
+-   384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
+
 ## 1.6.9
 
 ### Patch Changes

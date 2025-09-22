@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test update middleware add fiori-tools-preview to ui5.yaml file w/o middlewares 1`] = `
 "specVersion: \\"3.0\\"

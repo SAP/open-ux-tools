@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-03-get-started-step-3-automatic-data-type-detection-96bb6e0-md",
+  "title": "Step 3: Automatic Data Type Detection",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-3-automatic-data-type-detection-96bb6e0.md",
+  "lastModified": "2025-09-01T18:17:10.466Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Automatic",
+    "Data",
+    "Type",
+    "Detection"
+  ],
+  "headers": [
+    "Step 3: Automatic Data Type Detection",
+    "Preview",
+    "Coding",
+    "webapp/manifest.json",
+    "localService/metadata.xml"
+  ],
+  "content": "<!-- loio96bb6e06fa22491fa65a5040f6da099c -->\n\n# Step 3: Automatic Data Type Detection\n\nIn this step, we use the automatic data type detection of the OData V4 model to parse, validate, and format user entries. The service metadata contains type information for the properties of each entity.\n\nThe OData V4 Model utilizes this information to compute the corresponding SAPUI5 type, including constraints, and sets this type to the SAPUI5 property binding for the entity property. For example, for `<Input value={Age}/>` the SAPUI5 type `Int64` is used, which corresponds to the OData type `Edm.Int64`.\n\n\n\n<a name=\"loio96bb6e06fa22491fa65a5040f6da099c__section_bt4_fxc_z1b\"/>\n\n## Preview\n\n  \n  \n**Input does not match the underlying data type**\n\n![](images/Tutorial_OData_V4_Step_3_8320fcf.png \"Input does not match the underlying data type\")\n\n\n\n<a name=\"loio96bb6e06fa22491fa65a5040f6da099c__section_tsr_gxc_z1b\"/>\n\n## Coding\n\nYou can view and download all files at [OData V4 - Step 3](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.odatav4/sample/sap.ui.core.tutorial.odatav4.03).\n\n\n\n<a name=\"loio96bb6e06fa22491fa65a5040f6da099c__section_pp2_mxc_z1b\"/>\n\n## webapp/manifest.json\n\n```json\n{\n\t\"_version\": \"1.12.0\",\n\t\"sap.app\": {...\n\t},\n\t\"sap.ui\": {\n\t\t\"technology\": \"UI5\",\n\t\t\"deviceTypes\": {\n\t\t   \n\t\t}\n\t},\n\t\"sap.ui5\": {\n\t\t\"rootView\": {\n\t\t...\n\t\t},\n\t\t\"dependencies\": {\n\t\t\t...\n\t\t\t}\n\t\t},\n\t\t\"contentDensities\": {\n\t\t\t...\n\t\t},\n\t\t\"handleValidation\": true,\n\t\t\n\t\t\"models\": {\n\t\t\t...\n\t\t}\n\t},\n\t...\n}\n\n```\n\nIn the `manifest.json` descriptor file, we add the `\"handleValidation\": true` setting. This makes sure that any validation errors that are detected by the SAPUI5 types are shown on the UI using the message manager.\n\nWe now run the app using the `index.html` file and enter values that don't match the type and constraints given in the metadata file. For example, enter the string value `Young at Heart` in field *Age*, which requires an integer input \\(SAPUI5 type `sap.ui.model.odata.type.Int64`, corresponding to OData type `Edm.Int64`\\), or remove an entry from the *User Name* or *First Name* fields, which are mandatory. Fields with incorrect entries are highlighted and an error message is displayed.\n\n> ### Note:  \n> If you explicitly define a type in the binding info of a control, the automatic type detection for that binding will be turned off. For example, if you change the `Input` for `Age` in the view to `<Input value=\"{path: 'Age', type: 'StringType'}\" />`, the `String` type will be used, not the `Int64` type from the service metadata. Note that `StringType` has to be required from `sap/ui/model/odata/type/String` as shown in [Binding Syntax](../04_Essentials/binding-syntax-e2e6f41.md).\n\n\n\n<a name=\"loio96bb6e06fa22491fa65a5040f6da099c__section_pvc_fyc_z1b\"/>\n\n## localService/metadata.xml\n\n```xml\n<EntityType Name=\"Person\">\n\t<Key>\n\t\t<PropertyRef Name=\"UserName\" />\n\t</Key>\n\t<Property Name=\"UserName\" Type=\"Edm.String\" Nullable=\"false\" />\n\t<Property Name=\"FirstName\" Type=\"Edm.String\" />\n\t<Property Name=\"LastName\" Type=\"Edm.String\" />\n\t<Property Name=\"MiddleName\" Type=\"Edm.String\" />\n\t<Property Name=\"Gender\" Type=\"Microsoft.OData.Service.Sample.TrippinInMemory.Models.PersonGender\"\n\t\t\t  Nullable=\"false\" />\n\t<Property Name=\"Age\" Type=\"Edm.Int64\" />\n   \n```\n\nTo make the *User Name* optional, we remove the parameter `Nullable=\"false\"` from the `UserName` property. You can play around with the settings for the other properties, for example, change the type of property `Age` to `Type=\"Edm.String\"` to allow free text.\n\n\n\n> ### Tip:  \n> To see the metadata of an OData service, you append the `$metadata` variable to the URL of the service. You can try this, for example, with [http://services.odata.org/TripPinRESTierService/](http://services.odata.org/TripPinRESTierService/) and [http://services.odata.org/TripPinRESTierService/$metadata](http://services.odata.org/TripPinRESTierService/$metadata)\n\n**Related Information**  \n\n\n[Type Determination](../04_Essentials/type-determination-53cdd55.md \"\")\n\n[API Reference: `sap.ui.model.odata.type`](https://ui5.sap.com/#/api/sap.ui.model.odata.type)\n\n[Sample for `sap.ui.core.mvc.XMLView`: *XML Templating: UI5 OData types*](https://ui5.sap.com/#/entity/sap.ui.core.mvc.XMLView/sample/sap.ui.core.sample.ViewTemplate.types)\n\n",
+  "excerpt": "<!-- loio96bb6e06fa22491fa65a5040f6da099c --> Step 3: Automatic Data Type Detection In this step, we use the automatic data type detection of the OData V4 model to parse, validate, and format user ent...",
+  "wordCount": 486,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

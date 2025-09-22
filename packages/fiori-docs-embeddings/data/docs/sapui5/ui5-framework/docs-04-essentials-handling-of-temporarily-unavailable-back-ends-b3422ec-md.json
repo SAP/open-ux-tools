@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-04-essentials-handling-of-temporarily-unavailable-back-ends-b3422ec-md",
+  "title": "Handling of Temporarily Unavailable Back Ends",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/handling-of-temporarily-unavailable-back-ends-b3422ec.md",
+  "lastModified": "2025-09-01T18:17:10.518Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Handling",
+    "Temporarily",
+    "Unavailable",
+    "Back",
+    "Ends"
+  ],
+  "headers": [
+    "Handling of Temporarily Unavailable Back Ends",
+    "Implementing the Handler"
+  ],
+  "content": "<!-- loiob3422ec53888461d9c47ef0e809ff3f1 -->\n\n# Handling of Temporarily Unavailable Back Ends\n\nAn OData back end cannot process incoming requests while it is under maintenance. Instead, it can respond with an HTTP 503 status code \\(Service Unavailable\\) and a \"Retry-After\" header.\n\nFor this scenario, SAPUI5 offers the [`v4.ODataModel#setRetryAfterHandler`](https://ui5.sap.com/#/api/sap.ui.model.odata.v4.ODataModel%23methods/setRetryAfterHandler) API, by which an application can set a handler to determine when requests should be repeated and how the app should behave in the meantime.\n\nAll requests which are sent after a model's initialisation and the registration of the handler via the `ODataModel#setRetryAfterHandler` API are supported by this feature.\n\n\n\n<a name=\"loiob3422ec53888461d9c47ef0e809ff3f1__section_uqy_yc1_q2c\"/>\n\n## Implementing the Handler\n\nThe `ODataModel#setRetryAfterHandler` API expects a function as parameter, which receives an error object with the following properties:\n\n-   `retryAfter` - The \"Retry-After\" value as a JavaScript `Date` instance. This property determines the point in time when the back end is presumed to be available again.\n-   `message` - The error response body in plain text, e.g. \"`503 Service Not Available DB migration in progress 2024-06-03 11:53:53`\".\n\nThe handler must return a Promise which controls when the request is to be repeated. In the Promise constructor, an application can decide what to do while it is waiting for the given timespan to pass. By resolving the Promise, the application initiates the repetition of the request.\n\nIf the promise is rejected, the request will not be repeated. In this case, the given error object is passed to the reject function, and the error message is propagated to the [`MessageModel`](https://ui5.sap.com/#/api/sap.ui.model.message.MessageModel).\n\n> ### Example:  \n> `#retryAfter` handler\n> \n> ```js\n> this.getView().getModel().setRetryAfterHandler((oError) => {\n>     const iNow = new Date().getTime();\n>     const iEnd = oError.retryAfter.getTime();\n>     const iRetryAfterMilliSeconds = iEnd - iNow;\n>  \n>     // Lock UI and show dialog with a progress bar here\n>          \n>     return new Promise((fnResolve, fnReject) => {               \n>         setTimeout(() => {          \n>             fnResolve();\n>             // Close the previously shown dialog here\n>         }, iRetryAfterMilliSeconds);\n>     });\n> });\n> ```\n\nIn the above example, the application calculates a time at which it will retry the request.\n\nThe returned Promise is resolved after the calculated time, which results in the repetition of the request which received the 503 response. Additionally, failed requests which were sent in parallel to the first one are queued for repetition, too. The UI should be locked during the retry process, for example by using a dialog with a progress bar.\n\nIn case multiple models are available for the same back end, the application is responsible for ensuring that all handlers registered for the different models use the same Promise.\n\n> ### Caution:  \n> Overwriting a callback handler set by libraries\n> \n> If your application was developed in an environment in which libraries register a callback handler, the application should not use the `ODataModel#setRetryAfterHandler` API to overwrite the set handler.For an example, see *Special Handling of 503 Messages \\(\"Service Unavailable\" \\)* in [Using Messages](../06_SAP_Fiori_Elements/using-messages-239b192.md).\n\n",
+  "excerpt": "<!-- loiob3422ec53888461d9c47ef0e809ff3f1 --> Handling of Temporarily Unavailable Back Ends An OData back end cannot process incoming requests while it is under maintenance. Instead, it can respond wi...",
+  "wordCount": 482,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

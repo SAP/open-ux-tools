@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-overriding-the-horizontal-alignment-of-annotation-based-table-columns-fb93920-md",
+  "title": "Overriding the Horizontal Alignment of Annotation-Based Table Columns",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/overriding-the-horizontal-alignment-of-annotation-based-table-columns-fb93920.md",
+  "lastModified": "2025-09-01T18:17:10.641Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Overriding",
+    "the",
+    "Horizontal",
+    "Alignment",
+    "Annotation",
+    "Based",
+    "Table",
+    "Columns"
+  ],
+  "headers": [
+    "Overriding the Horizontal Alignment of Annotation-Based Table Columns"
+  ],
+  "content": "<!-- loiofb93920a2ee145c5bf2b5d1bacb79ab3 -->\n\n# Overriding the Horizontal Alignment of Annotation-Based Table Columns\n\nYou can override the horizontal alignment of table columns by using manifest settings.\n\n> ### Note:  \n> This topic is only applicable to SAP Fiori elements for OData V4.\n\nMake the settings in the `manifest.json` file as follows:\n\n> ### Sample Code:  \n> ```\n> \"SalesOrderManageObjectPage\": {\n>     \"options\": {\n>         \"settings\": {\n>             \"controlConfiguration\": {\n>                 \"_Item/@com.sap.vocabularies.UI.v1.LineItem\": {\n>                     \"columns\": {\n>                         \"DataField::Material\": {\n>                             \"horizontalAlign\": \"Center\"\n>                         }\n>                     }\n>                 }\n>             }\n>         }\n>     }\n> }\n> ```\n\nThe result is as follows:\n\n![](images/Overriding_the_Horizontal_Alignment_of_Annotation-Based_Table_Columns_fc4e1b4.png)\n\nThe following values are supported for the `horizontalAlign` property:\n\n-   \"Begin\"\n-   \"Center\"\n-   \"End\"\n\n",
+  "excerpt": "<!-- loiofb93920a2ee145c5bf2b5d1bacb79ab3 --> Overriding the Horizontal Alignment of Annotation-Based Table Columns You can override the horizontal alignment of table columns by using manifest setting...",
+  "wordCount": 118,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

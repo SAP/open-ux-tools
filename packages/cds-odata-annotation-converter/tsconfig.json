@@ -4,8 +4,7 @@
         "incremental": true,
         "outDir": "dist",
         "rootDir": "src",
-        "lib": ["ES2021"],
-        "target": "ES2021"
+        "lib": ["ES2023"],
     },
   "include": [
     "src/**/*.ts",

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create with anchor - 1.85 ui5 1`] = `
 Object {
@@ -152,6 +152,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -177,6 +182,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -233,6 +243,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -278,6 +293,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -324,6 +344,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -370,6 +395,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -395,6 +425,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -441,6 +476,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -466,6 +506,11 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-neo-mta-yaml",
+  "title": "mta",
+  "category": "samples",
+  "path": "neo-migration/neo/mta.yaml",
+  "lastModified": "2025-09-01T18:17:10.812Z",
+  "tags": [
+    "samples",
+    "yaml",
+    "mta"
+  ],
+  "headers": [],
+  "content": "# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.md\n\n```yaml\n# mta.yaml\n\n```yaml\nID: solution2911b\nversion: 1.0.0\n_schema-version: '3.1'\nparameters:\n  hcp-deployer-version: 1.1.0\nmodules:\n- name: manageproductsneo2911\n  type: com.sap.hcp.html5\n  path: html5-app-folder\n  build-parameters:\n    builder: zip, grunt, fetcher (choose one)\n    fetcher-opts:\n      repo-type: maven\n      repo-coordinates: group-id:artifact-id:version:type:classifier\n    grunt-opts:\n    - clean\n  parameters:\n    name: manageproductsneo2911\n    permissions:\n    - role: role2\n      name: AccessNorthwindBackend\n    version: 1.0.0\n  requires:\n  - name: role2\n  - name: northwind\n- name: role2\n  type: com.sap.hcp.html5.role\n  path: dummy\n  parameters:\n    name: role2\n- name: northwind\n  type: com.sap.hcp.destination\n  path: dummy\n  parameters:\n    additional-properties:\n      WebIDEEnabled: 'true'\n      WebIDEUsage: odata_gen\n    authentication: NoAuthentication\n    name: northwind\n    proxy-type: Internet\n    type: HTTP\n    url: https://services.odata.org\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "mta.md yaml mta.md yaml mta.md yaml mta.md yaml mta.yaml",
+  "wordCount": 119,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-03-get-started-step-1-creating-a-rule-control-eefe8c6-md",
+  "title": "Step 1: Creating a Rule Control",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-1-creating-a-rule-control-eefe8c6.md",
+  "lastModified": "2025-09-01T18:17:10.447Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Creating",
+    "Rule",
+    "Control"
+  ],
+  "headers": [
+    "Step 1: Creating a Rule Control",
+    "Coding",
+    "Page.view.xml"
+  ],
+  "content": "<!-- loioeefe8c641bee4a46a88c56cb26dc072c -->\n\n# Step 1: Creating a Rule Control\n\nIn this step, we embed rule builder of type `TextRule` into an application view.\n\n\n\n<a name=\"loioeefe8c641bee4a46a88c56cb26dc072c__section_mjx_fn3_rz\"/>\n\n## Coding\n\nYou can view and download all files at [Rule Builder - Text Rule](https://ui5.sap.com/#/entity/sap.rules.ui.RuleBuilder/sample/sap.rules.ui.sample.TextRule).\n\n\n\n<a name=\"loioeefe8c641bee4a46a88c56cb26dc072c__section_e3n_xn3_rz\"/>\n\n## Page.view.xml\n\n```xml\n<mvc:View\n        xmlns:mvc=\"sap.ui.core.mvc\"\n        displayBlock=\"true\"\n        xmlns=\"sap.m\"\n        controllerName=\"sap.rules.ui.sample.TextRule.Page\"\n        viewName=\"sap.rules.ui.sample.TextRule.Page.view\"\n        xmlns:rules=\"sap.rules.ui\">\n    <Button id=\"editButton\" press=\"handleEditButton\" text=\"Edit\"/>\n    <rules:RuleBuilder id=\"ruleBuilder\" types=\"TextRule\" editable=\"false\"/>\n</mvc:View> \n\n```\n\n",
+  "excerpt": "<!-- loioeefe8c641bee4a46a88c56cb26dc072c --> Step 1: Creating a Rule Control In this step, we embed rule builder of type TextRule into an application view. <a name=\"loioeefe8c641bee4a46a88c56cb26dc07...",
+  "wordCount": 64,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -227,7 +227,7 @@ describe('Backend system data provider', () => {
                 username: 'user2'
             }
         });
-        await new SystemDataProvider(logger).getAll();
+        const systems = await new SystemDataProvider(logger).getAll();
         expect(mockFilesystemStore.write).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
             id: 'http://example1/000',
@@ -237,5 +237,14 @@ describe('Backend system data provider', () => {
                 name: 'http://example1, client 000'
             }
         });
+        expect(systems).toEqual([
+            {
+                url: 'http://example1',
+                client: '000',
+                name: 'http://example1, client 000',
+                username: 'user1',
+                password: 'pass1'
+            }
+        ]);
     });
 });

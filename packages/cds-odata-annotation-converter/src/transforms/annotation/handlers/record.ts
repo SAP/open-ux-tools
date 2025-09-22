@@ -1,13 +1,17 @@
 import { RECORD_TYPE, STRING_LITERAL_TYPE, nodeRange, ReservedProperties } from '@sap-ux/cds-annotation-parser';
-import type { Record, RecordProperty, AnnotationNode } from '@sap-ux/cds-annotation-parser';
+import type { Record, RecordProperty, AnnotationNode, Annotation } from '@sap-ux/cds-annotation-parser';
 
-import type { Deprecated$ValueSyntax, Element } from '@sap-ux/odata-annotation-core-types';
+import type { CommonCaseIssue, Element, Position } from '@sap-ux/odata-annotation-core-types';
 import {
-    Diagnostic,
+    COMMON_CASE_ISSUE,
+    DEPRECATED_$VALUE_SYNTAX,
+    Range,
+    TextEdit,
     createElementNode,
     createAttributeNode,
     Edm,
-    DiagnosticSeverity
+    DiagnosticSeverity,
+    MISSING_REQUIRED_PROPERTY
 } from '@sap-ux/odata-annotation-core-types';
 
 import { i18n } from '../../../i18n';
@@ -19,12 +23,15 @@ import { EdmJsonVisitor } from './edm-json';
 export const recordHandler: NodeHandler<Record> = {
     type: RECORD_TYPE,
     getChildren,
-    convert(state: VisitorState, node: Record): ConvertResult {
+    convert(state: VisitorState, node: Record, parent?: AnnotationNode): ConvertResult {
         const element: Element = createElementNode({
             name: Edm.Record,
             range: nodeRange(node, true),
             contentRange: nodeRange(node, false)
         });
+        if (!parent) {
+            return element;
+        }
         const { typeProperty, valueProperty, edmJsonProperty } = findReservedProperties(node.properties);
 
         const explicitType = getExplicitType(typeProperty, state.context);
@@ -34,11 +41,11 @@ export const recordHandler: NodeHandler<Record> = {
         const recordType = explicitType ?? implicitType;
 
         if (edmJsonProperty) {
-            return handleEdmJson(state, edmJsonProperty);
+            return handleEdmJson(state, edmJsonProperty, parent);
         }
 
         const isValueContainer = getIsValueContainer(state, valueProperty);
-        handleValueProperty(state, node, isValueContainer ?? false, valueProperty);
+        handleValueProperty(state, node, isValueContainer ?? false, valueProperty, parent);
 
         state.pushContext({ ...state.context, recordType, inValueContainer: isValueContainer });
         if (isValueContainer) {
@@ -174,17 +181,19 @@ function findReservedProperties(properties: RecordProperty[]): FoundReservedProp
  *
  * @param state - The visitor state.
  * @param edmJsonProperty - The EdmJson record property to handle.
+ * @param parent - The parent AnnotationNode.
  * @returns The processed element, subtree, or undefined if not applicable.
  */
 function handleEdmJson(
     state: VisitorState,
-    edmJsonProperty: RecordProperty | undefined
+    edmJsonProperty: RecordProperty | undefined,
+    parent: AnnotationNode
 ): Element | Subtree | undefined {
     if (edmJsonProperty) {
         validateReservedPropertyName(state, ReservedProperties.EdmJson, edmJsonProperty);
         if (edmJsonProperty.value && edmJsonProperty.name.value === ReservedProperties.EdmJson) {
             const edmVisitor = new EdmJsonVisitor(state);
-            return edmVisitor.visit(edmJsonProperty.value);
+            return edmVisitor.visit(edmJsonProperty.value, parent);
         }
     }
     return undefined;
@@ -197,24 +206,31 @@ function handleEdmJson(
  * @param node - The record node.
  * @param isValueContainer - A boolean indicating whether the node is a value container.
  * @param valueProperty - The value property associated with the record node.
+ * @param parent - Parent node.
  */
 function handleValueProperty(
     state: VisitorState,
     node: Record,
     isValueContainer: boolean,
-    valueProperty: RecordProperty | undefined
+    valueProperty: RecordProperty | undefined,
+    parent: AnnotationNode
 ): void {
     if (isValueContainer) {
         if (!valueProperty && node.range) {
             const message = i18n.t('Mandatory_property_not_provided_0', {
                 property: ReservedProperties.Value
             });
-            state.addDiagnostic(Diagnostic.create(node.range, message, DiagnosticSeverity.Error));
+            state.addDiagnostic({
+                rule: MISSING_REQUIRED_PROPERTY,
+                range: node.range,
+                message,
+                severity: DiagnosticSeverity.Error
+            });
         }
 
         validateReservedPropertyName(state, ReservedProperties.Value, valueProperty);
         addDiagnosticForExtraneousProperties(state, node, valueProperty);
-        addDeprecatedDiagnostics(state, node, valueProperty);
+        addDeprecatedDiagnostics(state, node, valueProperty, parent);
     }
 }
 
@@ -224,21 +240,105 @@ function handleValueProperty(
  * @param state - The visitor state.
  * @param node - The artificial record node containing the $value property.
  * @param valueProperty - $value property node.
+ * @param parent - Parent node.
  */
-function addDeprecatedDiagnostics(state: VisitorState, node: Record, valueProperty: RecordProperty | undefined): void {
-    if (!valueProperty?.name?.range) {
+function addDeprecatedDiagnostics(
+    state: VisitorState,
+    node: Record,
+    valueProperty: RecordProperty | undefined,
+    parent: AnnotationNode
+): void {
+    if (!valueProperty?.name.range || !node.range || !parent.range || !valueProperty.range) {
         return;
     }
-    const diagnostic: Deprecated$ValueSyntax = {
+    if ((parent.type !== 'annotation' && parent.type !== 'record-property') || !parent.value?.range) {
+        return;
+    }
+
+    const edits: TextEdit[] = [];
+
+    const prefix = getNestedPrefix(parent);
+
+    if (!prefix) {
+        return;
+    }
+    const parentRange = structuredClone(parent.range);
+    const startPosition = getStartPosition(parent);
+    if (!startPosition) {
+        return;
+    }
+    const opening = structuredClone(Range.create(startPosition, node.range.start));
+
+    // We need to remove everything from the $value container except the actual value
+    // Annotations will be cut out separately
+    opening.end.line = valueProperty.name.range.end.line;
+    opening.end.character = valueProperty.name.range.end.character;
+    const closing = structuredClone(Range.create(node.range.end, parent.range.end));
+    closing.start.line = valueProperty.range.end.line;
+    closing.start.character = valueProperty.range.end.character;
+    edits.push(TextEdit.del(opening));
+    if (valueProperty.value?.range && valueProperty.value.range.start.line !== valueProperty.value.range.end.line) {
+        const indentSize = 4;
+        for (let i = valueProperty.value.range.start.line + 1; i <= valueProperty.value.range.end.line; i++) {
+            edits.push(TextEdit.del(Range.create(i, 0, i, indentSize)));
+        }
+    }
+    edits.push(TextEdit.del(closing));
+
+    const additionalAnnotationRanges: Range[] = [];
+    for (const annotation of node.annotations ?? []) {
+        if (!annotation.range) {
+            continue;
+        }
+        additionalAnnotationRanges.push(annotation.range);
+    }
+    state.addDiagnostic({
         message: i18n.t('diagnostics.deprecated_$value_syntax'),
-        rule: 'deprecated-$value-syntax',
+        rule: DEPRECATED_$VALUE_SYNTAX,
         range: valueProperty.name.range,
         severity: DiagnosticSeverity.Warning,
         data: {
-            descriptionLink: 'https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations'
+            descriptionLink: 'https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations',
+            valueReplacement: edits,
+            additionalAnnotationRanges,
+            prefix,
+            parentRange
         }
-    };
-    state.addDiagnostic(diagnostic);
+    });
+}
+
+/**
+ * Gets start position of the node.
+ *
+ * @param node - Parent node.
+ * @returns Position if available.
+ */
+function getStartPosition(node: Annotation | RecordProperty): Position | undefined {
+    if (node.type === 'annotation') {
+        return node.qualifier ? node.qualifier.range?.end : node.term.range?.end;
+    } else if (node.type === 'record-property') {
+        return node.name.range?.end;
+    }
+    return undefined;
+}
+
+/**
+ * Creates a prefix for nested annotations based on the parent node.
+ *
+ * @param parent - Parent node.
+ * @returns Prefix that should be used for nested annotations.
+ */
+function getNestedPrefix(parent: Annotation | RecordProperty): string {
+    if (parent.type === 'annotation') {
+        if (parent.qualifier) {
+            // Qualifier in flattened syntax still requires escaping
+            return `![${parent.term.value}#${parent.qualifier.value}]`;
+        }
+        return parent.term.value;
+    } else if (parent.type === 'record-property') {
+        return parent.name.value;
+    }
+    return '';
 }
 
 /**
@@ -287,11 +387,12 @@ function validateReservedPropertyName(
     if (property && property.name.value !== expectedName && property.name.range) {
         // check if case issue
         const currentValue = property.name.value;
-        const diagnostic = {
+        const diagnostic: CommonCaseIssue = {
             message: i18n.t('Wrong_element_0_Did_you_mean_1', {
                 currentValue: currentValue,
                 proposedValue: expectedName
             }),
+            rule: COMMON_CASE_ISSUE,
             range: property.name.range,
             severity: DiagnosticSeverity.Error,
             data: {

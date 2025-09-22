@@ -1,5 +1,21 @@
 # @sap-ux/reload-middleware
 
+## 0.3.2
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+
 ## 0.3.0
 
 ### Minor Changes
