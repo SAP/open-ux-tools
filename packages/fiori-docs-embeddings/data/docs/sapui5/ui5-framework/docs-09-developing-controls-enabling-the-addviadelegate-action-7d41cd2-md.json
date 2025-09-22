@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-enabling-the-addviadelegate-action-7d41cd2-md",
+  "title": "Enabling the *AddViaDelegate* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/enabling-the-addviadelegate-action-7d41cd2.md",
+  "lastModified": "2025-09-01T18:17:10.676Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Enabling",
+    "the",
+    "AddViaDelegate",
+    "Action"
+  ],
+  "headers": [
+    "Enabling the *AddViaDelegate* Action"
+  ],
+  "content": "<!-- loio7d41cd2069ba426b8f7e116f91a5067b -->\n\n# Enabling the *AddViaDelegate* Action\n\nThis section shows an example how to enable enable a control for the *AddViaDelegate* action.\n\n",
+  "excerpt": "<!-- loio7d41cd2069ba426b8f7e116f91a5067b --> Enabling the AddViaDelegate Action This section shows an example how to enable enable a control for the AddViaDelegate action.",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-4-adding-a-detail-page-4e4315c-md",
+  "title": "Step 4: Adding a Detail Page",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-4-adding-a-detail-page-4e4315c.md",
+  "lastModified": "2025-09-01T18:17:10.474Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Adding",
+    "Detail",
+    "Page"
+  ],
+  "headers": [
+    "Step 4: Adding a Detail Page",
+    "Preview",
+    "Coding",
+    "webapp/view/Detail.view.xml \\[NEW\\]",
+    "webapp/view/App.view.xml \\[MODIFY\\]",
+    "webapp/view/List.view.xml \\[MODIFY\\]",
+    "webapp/controller/List.controller.js \\[MODIFY\\]"
+  ],
+  "content": "<!-- loio4e4315cef89e48ceb60b4dc12f5be2d2 -->\n\n# Step 4: Adding a Detail Page\n\nIn this step, we add an empty detail page.\n\n\n\n<a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_ed2_4dd_lbb\"/>\n\n## Preview\n\n  \n  \n**List Page with Empty Detail Page**\n\n![](images/Master_Page_with_Empty_Detail_Page_Fiori_2_0_Tutorial_10dec0c.gif \"List Page with Empty Detail Page\")\n\n\n\n<a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_fd2_4dd_lbb\"/>\n\n## Coding\n\nYou can view and download all files at [Flexible Column Layout App - Step 4](https://ui5.sap.com/#/sample/sap.f.tutorial.fcl.04/preview).\n\n\n\n<a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_a5b_clj_l4b\"/>\n\n## webapp/view/Detail.view.xml \\[NEW\\]\n\n```xml\n<mvc:View\n\txmlns:mvc=\"sap.ui.core.mvc\">\n</mvc:View>\n```\n\nFirst, we create a blank detail page.\n\n\n\n<a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_t3z_1lj_l4b\"/>\n\n## webapp/view/App.view.xml \\[MODIFY\\]\n\n```xml\n<mvc:View\n\tdisplayBlock=\"true\"\n\theight=\"100%\"\n\txmlns=\"sap.f\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\t<FlexibleColumnLayout id=\"flexibleColumnLayout\" backgroundDesign=\"Solid\">\n\t\t<beginColumnPages>\n\t\t\t<mvc:XMLView id=\"beginView\" viewName=\"sap.ui.demo.fcl.view.List\"/>\n\t\t</beginColumnPages>\n\t\t<midColumnPages>\n\t\t\t<mvc:XMLView id=\"detailView\" viewName=\"sap.ui.demo.fcl.view.Detail\"/>\n\t\t</midColumnPages>\n\t</FlexibleColumnLayout>\n</mvc:View>\n```\n\nWe add the detail page in `FlexibleColumnLayout's` `midColumnPages` aggregation in the `App.view.xml` file. This way the detail page will be displayed in the middle column.\n\n\n\n<a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_xw1_1lj_l4b\"/>\n\n## webapp/view/List.view.xml \\[MODIFY\\]\n\n```xml\n\t\t...\n\t\t<!-- DynamicPage Content -->\n\t\t\t\t\t...\n\n\t\t\t\t\t...\n\t\t\t\t\t<items>\n\t\t\t\t\t\t<ColumnListItem type=\"Navigation\" press=\".onListItemPress\">\n\t\t\t\t\t\t\t<cells>\n\t\t\t\t\t\t\t\t<ObjectIdentifier title=\"{products>Name}\" text=\"{products>ProductId}\"/>\n\t\t\t\t\t\t\t\t<ObjectNumber\n\t\t\t\t\t\t\t\t\tcore:require=\"{\n\t\t\t\t\t\t\t\t\t\tCurrency: 'sap/ui/model/type/Currency'\n\t\t\t\t\t\t\t\t\t}\"\n\t\t\t\t\t\t\t\t\tnumber=\"{\n\t\t\t\t\t\t\t\t\t\tparts:[\n\t\t\t\t\t\t\t\t\t\t\t{path:'products>Price'},\n\t\t\t\t\t\t\t\t\t\t\t{path:'products>CurrencyCode'}\n\t\t\t\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t\t\t\ttype: 'Currency',\n\t\t\t\t\t\t\t\t\t\tformatOptions: {showMeasure: false}\n\t\t\t\t\t\t\t\t\t}\"\n\t\t\t\t\t\t\t\t\tunit=\"{products>CurrencyCode}\"/>\n\t\t\t\t\t\t\t</cells>\n\t\t\t\t\t\t</ColumnListItem>\n\t\t\t\t\t</items>\n\t\t\t\t\t...\n```\n\nWe add a `press` handler to each `ColumnListItem` in the `List.view.xml`.\n\n\n\n<a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_nxz_ykj_l4b\"/>\n\n## webapp/controller/List.controller.js \\[MODIFY\\]\n\n```js\nsap.ui.define([\n\t\"sap/ui/core/mvc/Controller\",\n\t\"sap/ui/model/Filter\",\n\t\"sap/ui/model/FilterOperator\",\n\t\"sap/ui/model/Sorter\",\n\t\"sap/m/MessageBox\",\n\t\"sap/f/library\"\n], function (Controller, Filter, FilterOperator, Sorter, MessageBox, fioriLibrary) {\n\t\"use strict\";\n\n\treturn Controller.extend(\"sap.ui.demo.fcl.controller.List\", {\n\t\tonInit: function () {\n\t\t\tthis.oView = this.getView();\n\t\t\tthis._bDescendingSort = false;\n\t\t\tthis.oProductsTable = this.oView.byId(\"productsTable\");\n\t\t},\n\n\t\tonSearch: function (oEvent) {\n\t\t\tvar oTableSearchState = [],\n\t\t\t\tsQuery = oEvent.getParameter(\"query\");\n\n\t\t\tif (sQuery && sQuery.length > 0) {\n\t\t\t\toTableSearchState = [new Filter(\"Name\", FilterOperator.Contains, sQuery)];\n\t\t\t}\n\n\t\t\tthis.oProductsTable.getBinding(\"items\").filter(oTableSearchState, \"Application\");\n\t\t},\n\n\t\tonAdd: function () {\n\t\t\tMessageBox.information(\"This functionality is not ready yet.\", {title: \"Aw, Snap!\"});\n\t\t},\n\n\t\tonSort: function () {\n\t\t\tthis._bDescendingSort = !this._bDescendingSort;\n\t\t\tvar oBinding = this.oProductsTable.getBinding(\"items\"),\n\t\t\t\toSorter = new Sorter(\"Name\", this._bDescendingSort);\n\n\t\t\toBinding.sort(oSorter);\n\t\t},\n\n\t\tonListItemPress: function () {\n\t\t\tvar oFCL = this.oView.getParent().getParent();\n\n\t\t\toFCL.setLayout(fioriLibrary.LayoutType.TwoColumnsMidExpanded);\n\t\t}\n\t});\n});\n\n```\n\nIn the `List.controller.js`, we attach a `onListItemPress` function to the `press` handler, which changes the `layout` to `TwoColumnsBeginExpanded`. This means that there are going to be two columns, where the first one is larger than the second. For more information on the available layout types, see [Types of Layout](../10_More_About_Controls/types-of-layout-3b9f760.md).\n\n",
+  "excerpt": "<!-- loio4e4315cef89e48ceb60b4dc12f5be2d2 --> Step 4: Adding a Detail Page In this step, we add an empty detail page. <a name=\"loio4e4315cef89e48ceb60b4dc12f5be2d2__section_ed2_4dd_lbb\"/> Preview     ...",
+  "wordCount": 342,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

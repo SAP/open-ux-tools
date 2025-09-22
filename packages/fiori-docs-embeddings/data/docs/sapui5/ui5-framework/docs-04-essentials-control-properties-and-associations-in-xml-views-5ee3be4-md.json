@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-04-essentials-control-properties-and-associations-in-xml-views-5ee3be4-md",
+  "title": "Control Properties and Associations in XML Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/control-properties-and-associations-in-xml-views-5ee3be4.md",
+  "lastModified": "2025-09-01T18:17:10.500Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Control",
+    "Properties",
+    "and",
+    "Associations",
+    "XML",
+    "Views"
+  ],
+  "headers": [
+    "Control Properties and Associations in XML Views",
+    "Properties",
+    "Associations"
+  ],
+  "content": "<!-- loio5ee3be4727864bb08b991414e0428e38 -->\n\n# Control Properties and Associations in XML Views\n\n\n\n## Properties\n\nProperty values for controls in XML views are specified as attributes of the XML element tag of the control. The name of the attribute corresponds to the name of the property in the API reference, for example, the property `text` of a the `sap.m.Text` control is specified as <code>text=\"<i>value</i>\"</code>.\n\n> ### Note:  \n> The XML view offers special handling for context bindings and style classes. You can specify them via the `binding` and `class` attributes on a control's XML node.\n> \n> Please be aware that these attributes are not properties of the respective controls and thus are not supported by a control's constructor. For more information, see [Context Binding \\(Element Binding\\)](context-binding-element-binding-91f05e8.md)and [Using CSS Style Sheets in XML Views \\(deprecated\\)](using-css-style-sheets-in-xml-views-deprecated-b564935.md).\n\n> ### Note:  \n> Escape characters that have a special meaning in XML \\(like `<`, or `&`\\) when they occur in a property value. Use XML entities instead \\(like `&lt;` instead of a `<`, or `&amp;` instead of `&`\\).\n\nAttributes in XML views use the same binding syntax as constructors of controls. For example, `\"{customerName}\"` is used to bind a property against the model property with name `\"customerName\"`.\n\n**Example:** `sap.m.Text` with plain text:\n\n```xml\n<Text text=\"My Text\"/>\n```\n\n**Example:** `sap.m.Text` with text provided by a binding:\n\n```xml\n<Text text=\"{customerName}\"/>\n```\n\n**Example:** `sap.m.Text` with escaped special characters:\n\n```xml\n<Text text=\"&lt;div&gt;My HTML Text&lt;/div&gt;\"/>\n```\n\n> ### Note:  \n> Properties of type `function` can be specified similar to [event handlers in XML views](handling-events-in-xml-views-b0fb4de.md). However, the legacy syntax of function names without dots is not supported.\n\n\n\n## Associations\n\n-   Associations of **cardinality `1`**: Define the ID of the associated element in an attribute that has the same name as the association in the XML view.\n\n    **Example:** `sap.m.Select` with preselected item with ID **item2** :\n\n    ```xml\n    <Select selectedItem=\"item2\">\n        <items>\n            <core:Item id=\"item1\" key=\"article_1\" text=\"Article 1\" />\n            <core:Item id=\"item2\" key=\"article_2\" text=\"Article 2\" />\n            <core:Item id=\"item3\" key=\"article_3\" text=\"Article 3\" />\n        </items>\n    </Select>\n    ```\n\n-   Associations of **cardinality `0..n`**: You can define multiple IDs separated by a blank.\n\n    **Example:** `sap.m.MultiComboBox` with preselected items **item2** and **item3**:\n\n    ```xml\n    <MultiComboBox selectedItems=\"item2 item3\">\n        <items>\n            <core:Item id=\"item1\" key=\"article_1\" text=\"Article 1\" />\n            <core:Item id=\"item2\" key=\"article_2\" text=\"Article 2\" />\n            <core:Item id=\"item3\" key=\"article_3\" text=\"Article 3\" />\n        </items>\n    </MultiComboBox>\n    ```\n\n\n",
+  "excerpt": "<!-- loio5ee3be4727864bb08b991414e0428e38 --> Control Properties and Associations in XML Views Properties Property values for controls in XML views are specified as attributes of the XML element tag o...",
+  "wordCount": 377,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

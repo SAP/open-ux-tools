@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-declarative-support-associations-deprecated-91f13d9-md",
+  "title": "Declarative Support: Associations \\(deprecated\\)",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/declarative-support-associations-deprecated-91f13d9.md",
+  "lastModified": "2025-09-01T18:17:10.508Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Declarative",
+    "Support",
+    "Associations",
+    "deprecated"
+  ],
+  "headers": [
+    "Declarative Support: Associations \\(deprecated\\)"
+  ],
+  "content": "<!-- loio91f13d9a6f4d1014b6dd926db0e91070 -->\n\n# Declarative Support: Associations \\(deprecated\\)\n\nAn association is defined as a data attribute of the HTML tag. Instead of passing the reference to another control you define the ID of another control.\n\n> ### Caution:  \n> Deprecated as of UI5 version 1.120, replaced by [XML View](xml-view-91f2928.md).\n\nThe following code gives an example:\n\n```html\n\n<div data-sap-ui-type=\"sap.m.Label\" data-text=\"Message:\" data-label-for=\"message\"></div>\n<div data-sap-ui-type=\"sap.m.Input\" id=\"message\"></div>\n```\n\nThe code snippet defines the link between `Label` and `Input` by using the ID of `Input` as a value for the `data-label-for` attribute of the `Label`.\n\n",
+  "excerpt": "<!-- loio91f13d9a6f4d1014b6dd926db0e91070 --> Declarative Support: Associations \\(deprecated\\) An association is defined as a data attribute of the HTML tag. Instead of passing the reference to anothe...",
+  "wordCount": 91,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

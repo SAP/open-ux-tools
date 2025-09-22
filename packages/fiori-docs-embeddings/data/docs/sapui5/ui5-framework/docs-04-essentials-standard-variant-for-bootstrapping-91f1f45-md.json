@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-standard-variant-for-bootstrapping-91f1f45-md",
+  "title": "Standard Variant for Bootstrapping",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/standard-variant-for-bootstrapping-91f1f45.md",
+  "lastModified": "2025-09-01T18:17:10.545Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Standard",
+    "Variant",
+    "for",
+    "Bootstrapping"
+  ],
+  "headers": [
+    "Standard Variant for Bootstrapping"
+  ],
+  "content": "<!-- loio91f1f4536f4d1014b6dd926db0e91070 -->\n\n# Standard Variant for Bootstrapping\n\nThe standard variant for bootstrapping loads all JavaScript modules of a library in advance with one single request for performance reasons.\n\nThe library preload file `library-preload.js` contains all modules of a certain library. These modules will only be executed on demand, if the application requires them. Using preloads significantly reduces the number of roundtrips since the single modules are bundled in one file.\n\n> ### Note:  \n> An application must **not** reference the `library-preload.js`. If preload files exist, SAPUI5 automatically loads them. The dependencies to libraries are defined as part of the manifest namespace `sap.ui5/dependencies/libs`. For further information, see [Manifest \\(Descriptor for Applications, Components, and Libraries\\)](manifest-descriptor-for-applications-components-and-libraries-be0cf40.md).\n\nBy setting the `async=true` configuration parameter, the module loader loads the modules and preload files asynchronously. You can enable it in an existing application by specifying the `sap-ui-async` configuration parameter in the start URL, or by adding the `data-sap-ui-async` attribute to the bootstrap tag:\n\n```html\n<script\n    id=\"sap-ui-bootstrap\"\n    src=\"resources/sap-ui-core.js\"\n    data-sap-ui-async=\"true\"\n    data-sap-ui-on-init=\"module:my/app/main\"\n    data-sap-ui-resource-roots='{\"my.app\": \"./\"}'\n></script>\n```\n\n> ### Note:  \n> Before you use the `async` configuration parameter, make sure your app is ready for asynchronous loading, see [Best Practices for Loading Modules](best-practices-for-loading-modules-00737d6.md) and [Is Your Application Ready for Asynchronous Loading?](../03_Get-Started/is-your-application-ready-for-asynchronous-loading-493a15a.md).\n\n**Related Information**  \n\n\n[noJQuery Variant for Bootstrapping](nojquery-variant-for-bootstrapping-91f1dd0.md \"The noJQuery variant supports bootstrapping for an application that already integrates jQuery or uses a different jQuery version than SAPUI5.\")\n\n[Configuration of the SAPUI5 Runtime](configuration-of-the-sapui5-runtime-91f08de.md \"SAPUI5 provides several options for the configuration of the SAPUI5 runtime. The possible ways to provide input for the available configuration options are described in detail.\")\n\n[Is Your Application Ready for Asynchronous Loading?](../03_Get-Started/is-your-application-ready-for-asynchronous-loading-493a15a.md \"Find a collection of information that helps you to find out if your application is ready for asynchronous loading.\")\n\n",
+  "excerpt": "<!-- loio91f1f4536f4d1014b6dd926db0e91070 --> Standard Variant for Bootstrapping The standard variant for bootstrapping loads all JavaScript modules of a library in advance with one single request for...",
+  "wordCount": 286,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

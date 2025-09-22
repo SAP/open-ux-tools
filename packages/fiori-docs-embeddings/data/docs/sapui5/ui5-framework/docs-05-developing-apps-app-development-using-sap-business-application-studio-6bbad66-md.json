@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-05-developing-apps-app-development-using-sap-business-application-studio-6bbad66-md",
+  "title": "App Development Using SAP Business Application Studio",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/app-development-using-sap-business-application-studio-6bbad66.md",
+  "lastModified": "2025-09-01T18:17:10.557Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "App",
+    "Development",
+    "Using",
+    "SAP",
+    "Business",
+    "Application",
+    "Studio"
+  ],
+  "headers": [
+    "App Development Using SAP Business Application Studio",
+    "Overview",
+    "Selected Features",
+    "How to access SAP Business Application Studio"
+  ],
+  "content": "<!-- loio6bbad66475d040f39df6fbbaabe6f40f -->\n\n# App Development Using SAP Business Application Studio\n\nLearn how you can use SAP Business Application Studio together with UI5 Tooling to develop state-of-the-art UI5 apps.\n\n\n\n<a name=\"loio6bbad66475d040f39df6fbbaabe6f40f__section_w2q_sky_ymb\"/>\n\n## Overview\n\nSAP Business Application Studio is an SAP Business Technology Platform service in the Cloud Foundry environment. It is built on open-source and leading industry standards and supports a modular approach to developing different kinds of apps.\n\nFor a general overview and more information about the capabilities of SAP Business Application Studio, refer to the official [SAP Business Application Studio product page](https://help.sap.com/viewer/product/SAP%20Business%20Application%20Studio/Cloud/en-US).\n\n\n\n<a name=\"loio6bbad66475d040f39df6fbbaabe6f40f__section_chw_xrb_vmb\"/>\n\n## Selected Features\n\nSAP Business Application Studio offers the following features \\(selection\\):\n\n-   Support for several development scenarios\n-   App deployment to various environments\n-   Extension of existing apps\n-   Launchpad integration\n-   Validation and testing functions\n-   Git integration\n-   Productivity tools\n\n\n\n<a name=\"loio6bbad66475d040f39df6fbbaabe6f40f__section_v1r_lcs_ymb\"/>\n\n## How to access SAP Business Application Studio\n\nIf you do not have existing access to SAP Business Application Studio, you can get a fully-functional SAP BTP free tier account. From there, you can access and use SAP Business Application Studio.\n\n1.  [Get a Free Tier Account on SAP BTP](https://developers.sap.com/tutorials/hcp-create-trial-account.html)\n2.  [Set Up SAP Business Application Studio for Development](https://developers.sap.com/tutorials/appstudio-onboarding.html)\\#\n3.  [Create a Dev Space for SAP Fiori Apps](https://developers.sap.com/tutorials/appstudio-devspace-fiori-create.html)\n4.  [Create a Destination within the Cloud Foundry Environment](https://developers.sap.com/tutorials/cp-cf-create-destination.html)\n\n    Optional. This will create a destination within the SAP BTP Cloud Foundry environment so that you can access the free Northwind OData services. You need this to get sample data for some of our [Tutorials](../03_Get-Started/get-started-setup-tutorials-and-demo-apps-8b49fc1.md)\n\n5.  [Create an Empty SAPUI5 Project](https://developers.sap.com/tutorials/sapui5-101-create-project.html)\n\n    With this step, you set up an empty freestyle SAPUI5 app project.\n\n\n",
+  "excerpt": "<!-- loio6bbad66475d040f39df6fbbaabe6f40f --> App Development Using SAP Business Application Studio Learn how you can use SAP Business Application Studio together with UI5 Tooling to develop state-of-...",
+  "wordCount": 272,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-initmockserver-js",
+  "title": "initMockServer",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/test/initMockServer.js",
+  "lastModified": "2025-09-01T18:17:10.809Z",
+  "tags": [
+    "samples",
+    "js",
+    "initMockServer"
+  ],
+  "headers": [],
+  "content": "# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.md\n\n```javascript\n# initMockServer.js\n\n```javascript\nsap.ui.define([\"mycompany/myapp/MyWorklistApp/localService/mockserver\",\"sap/m/MessageBox\"],function(e,i){\"use strict\";var o=[];o.push(e.init());Promise.all(o).catch(function(e){i.error(e.message)}).finally(function(){sap.ui.require([\"sap/ui/core/ComponentSupport\"])})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "initMockServer.md javascript initMockServer.md javascript initMockServer.md javascript initMockServer.md javascript initMockServer.js",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

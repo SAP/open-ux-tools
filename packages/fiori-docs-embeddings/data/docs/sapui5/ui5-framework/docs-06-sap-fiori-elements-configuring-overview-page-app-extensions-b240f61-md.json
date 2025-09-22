@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-configuring-overview-page-app-extensions-b240f61-md",
+  "title": "Configuring Overview Page App Extensions",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/configuring-overview-page-app-extensions-b240f61.md",
+  "lastModified": "2025-09-01T18:17:10.589Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Configuring",
+    "Overview",
+    "Page",
+    "App",
+    "Extensions"
+  ],
+  "headers": [
+    "Configuring Overview Page App Extensions"
+  ],
+  "content": "<!-- loiob240f612227547d99e7fe76dd03da375 -->\n\n# Configuring Overview Page App Extensions\n\nLets you customize the card and filter area to design a robust application.\n\n",
+  "excerpt": "<!-- loiob240f612227547d99e7fe76dd03da375 --> Configuring Overview Page App Extensions Lets you customize the card and filter area to design a robust application.",
+  "wordCount": 23,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

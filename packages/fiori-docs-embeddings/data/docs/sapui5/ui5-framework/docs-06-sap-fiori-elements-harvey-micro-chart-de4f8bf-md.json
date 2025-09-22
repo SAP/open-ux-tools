@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-harvey-micro-chart-de4f8bf-md",
+  "title": "Harvey Micro Chart",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/harvey-micro-chart-de4f8bf.md",
+  "lastModified": "2025-09-01T18:17:10.628Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Harvey",
+    "Micro",
+    "Chart"
+  ],
+  "headers": [
+    "Harvey Micro Chart",
+    "`UI.Chart` Annotation",
+    "`UI.DataPoint` Annotation"
+  ],
+  "content": "<!-- loiode4f8bf44b9846ccace1d78f3915aa81 -->\n\n# Harvey Micro Chart\n\n![](images/Harvey_Micro_Chart_5026048.png)\n\n> ### Note:  \n> A single measure value is shown against a maximum value. For more information about this chart type, see [Samples](https://ui5.sap.com/1.82.5/#/entity/sap.suite.ui.microchart.HarveyBallMicroChart).\n\n\n\n<a name=\"loiode4f8bf44b9846ccace1d78f3915aa81__section_llx_jhq_qmb\"/>\n\n## `UI.Chart` Annotation\n\nThe `UI.Chart Title` property is used for the title. The `UI.Chart Description` property is used for the subtitle.\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> \n> <Annotation Term=\"UI.Chart\" Qualifier=\"SpecificationWidthHarveyChart\">\n>     <Record>\n>         <PropertyValue EnumMember=\"UI.ChartType/Pie\" Property=\"ChartType\" />\n>         <PropertyValue Property=\"Title\" String=\"Sold to Produced Harvey Chart\" />\n>         <PropertyValue Property=\"Description\" String=\"Harvey Chart\" />\n>         <PropertyValue Property=\"Measures\">\n>             <Collection>\n>                 <PropertyPath>Sold</PropertyPath>\n>             </Collection>\n>         </PropertyValue>\n>         <PropertyValue Property=\"MeasureAttributes\">\n>             <Collection>\n>                 <Record Type=\"UI.ChartMeasureAttributeType\">\n>                     <PropertyValue Property=\"DataPoint\" AnnotationPath=\"@UI.DataPoint\" />\n>                 </Record>\n>             </Collection>\n>         </PropertyValue>\n>     </Record>\n> </Annotation>\n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.Chart: [\n>   {\n>     title: 'Sold to Produced Harvey Chart',\n>     description: 'Harvey Chart',\n>     chartType: #PIE,\n>     measures: [\n>       'Sold'\n>     ],\n>     measureAttributes: [\n>       {\n>         measure: 'Sold',\n>         role: #AXIS_1,\n>         asDataPoint: true\n>       }\n>     ],\n>     qualifier: 'SpecificationWidthHarveyChart'\n>   }\n> ]\n> annotate view STTA_C_MP_PRODUCT with {\n> \n> }\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> UI.Chart #SpecificationWidthHarveyChart : {\n>     ChartType : #Pie,\n>     Title : 'Sold to Produced Harvey Chart',\n>     Description : 'Harvey Chart',\n>     Measures : [\n>         Sold\n>     ],\n>     MeasureAttributes : [\n>         {\n>             $Type : 'UI.ChartMeasureAttributeType',\n>             DataPoint : '@UI.DataPoint'\n>         }\n>     ]\n> }\n> \n> ```\n\n\n\n<a name=\"loiode4f8bf44b9846ccace1d78f3915aa81__section_bgx_jhq_qmb\"/>\n\n## `UI.DataPoint` Annotation\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotation Term=\"UI.DataPoint\">\n>     <Record>\n>         <PropertyValue Path=\"Sold\" Property=\"Value\" />\n>         <PropertyValue Path=\"Produced\" Property=\"MaximumValue\" />\n>         <PropertyValue Path=\"criticalityValue\" Property=\"Criticality\" />\n>     </Record>\n> </Annotation>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.dataPoint: {\n>   criticality: 'criticalityValue',\n>   maximumValue: 20\n> }\n> Sold;\n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> UI.DataPoint : {\n>     Value : Sold,\n>     MaximumValue : Produced,\n>     Criticality : criticalityValue\n> }\n> ```\n\nFor semanting coloring, only the `Criticality` annotation is supported.\n\nThe following annotations are mandatory and must be used in the harvey micro chart:\n\n-   `UI.Chart` → `ChartType`: `\"Pie\"`\n\n-   `UI.Chart` → `Measures`\n\n-   `UI.Chart` → `MeasureAttributes` → `DataPoint`\n\n-   `UI.DataPoint`→ `MaximumValue`\n\n-   In case semantic coloring is required, use `UI.DataPoint` → `Criticality`\n\n\n",
+  "excerpt": "<!-- loiode4f8bf44b9846ccace1d78f3915aa81 --> Harvey Micro Chart ! > Note:   > A single measure value is shown against a maximum value. For more information about this chart type, see Samples. <a name...",
+  "wordCount": 421,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

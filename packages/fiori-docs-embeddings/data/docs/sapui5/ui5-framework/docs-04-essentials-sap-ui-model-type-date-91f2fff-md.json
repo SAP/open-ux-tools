@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-sap-ui-model-type-date-91f2fff-md",
+  "title": "sap.ui.model.type.Date",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/sap-ui-model-type-date-91f2fff.md",
+  "lastModified": "2025-09-01T18:17:10.541Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "sap",
+    "model",
+    "type",
+    "Date"
+  ],
+  "headers": [
+    "sap.ui.model.type.Date"
+  ],
+  "content": "<!-- loio91f2fff06f4d1014b6dd926db0e91070 -->\n\n# sap.ui.model.type.Date\n\nThe `Date` data type represents a date \\(without time\\).\n\nThis type transforms a source value \\(given value in the model\\) into a formatted date string and the other way round.\n\nThe format patterns must be defined in LDML Date Format notation. For the output, the use of a style \\(\"short, \"medium\", \"long\" or \"full\"\\) instead of a pattern is preferred, as it will automatically use a locale-dependent date pattern.\n\nExamples how a `Date` type can be initialized:\n\n```js\n// \"TypeDate\" required  from \"sap/ui/model/type/Date\"\n\n// The source value is given as Javascript Date object. The used output pattern depends on the locale settings (default).\nvar oType = new TypeDate();\n\n// The source value is given as Javascript Date object. The used output pattern is \"yy-MM-dd\": e.g. 09-11-27\noType = new TypeDate({pattern: \"yy-MM-dd\"}); \n\n// The source value is given as string in \"yyyy/MM/dd\" format. The used output style is \"long\". The styles are language dependent.\n// The following styles are possible: short, medium (default), long, full\n// This might be the common use case.\noType = new TypeDate({source: {pattern: \"yyyy/MM/dd\"}, style: \"long\"}); \n\n// The source value is given as string in \"yyyy/MM/dd\" format. The used output pattern is \"EEEE, MMMM d, yyyy\": e.g. Saturday, August 22, 2043\noType = new TypeDate({source: {pattern: \"yyyy/MM/dd\"}, pattern: \"EEEE, MMMM d, yyyy\"}); \n\n// The source value is given as timestamp. The used output pattern is \"dd.MM.yyyy\": e.g. 22.12.2010\noType = new TypeDate({source: {pattern: \"timestamp\"}, pattern: \"dd.MM.yyyy\"}); \n\n// The source value is given as string. The used input pattern depends on the locale settings (default). The used output pattern is \"dd '|' MM '|' yyyy\": e.g. 22 | 12 | 2010\noType = new TypeDate({source: {}, pattern: \"dd.MM.yyyy\"});\n```\n\nThe `Date` type supports the following validation constraints:\n\n-   `maximum` \\(expects a date presented in the source-pattern format\\)\n-   `minimum` \\(expects a date presented in the source-pattern format\\)\n\nFor more information, see the [API Reference: `sap.ui.model.type.Date`](https://ui5.sap.com/#/api/sap.ui.model.type.Date).\n\n",
+  "excerpt": "<!-- loio91f2fff06f4d1014b6dd926db0e91070 --> sap.ui.model.type.Date The Date data type represents a date \\(without time\\). This type transforms a source value \\(given value in the model\\) into a form...",
+  "wordCount": 324,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-05-developing-apps-labeling-and-tooltips-329a029-md",
+  "title": "Labeling and Tooltips",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/labeling-and-tooltips-329a029.md",
+  "lastModified": "2025-09-01T18:17:10.562Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Labeling",
+    "and",
+    "Tooltips"
+  ],
+  "headers": [
+    "Labeling and Tooltips",
+    "General Considerations",
+    "Rules and Guidelines for Labeling and Tooltips"
+  ],
+  "content": "<!-- loio329a029f39e249a1bf89e3ffc006c8e1 -->\n\n# Labeling and Tooltips\n\nThe following guidelines help you properly label your controls in order to have good accessibility.\n\n\n\n<a name=\"loio329a029f39e249a1bf89e3ffc006c8e1__section_ujj_dpb_t2b\"/>\n\n## General Considerations\n\nTop 5 things to do for better screen reader support for labels\n\n-   Label all elements and element containers correctly and completely.\n\n-   Provide text alternatives for visual labels\n\n    Use tooltips only in rare cases. They should not be used as a replacement for a label. For more information, see [Using Tooltips](https://experience.sap.com/fiori-design-web/using-tooltips/) in the Fiori Guidelines.\n\n-   Use the `alt` attribute for images\n\n-   Describe controls and give additional information as part of the UI\n\n    Use `ariaDescribedBy` where needed.\n\n-   Identify regions correctly according to their purpose.\n\n    Use containers with a correct meaning and Landmark roles.\n\n-   Provide accessible alternatives and describe how to use them \\(for example in the documentation of the application\\).\n\n\n\n\n<a name=\"loio329a029f39e249a1bf89e3ffc006c8e1__section_ujb_dpb_t2b\"/>\n\n## Rules and Guidelines for Labeling and Tooltips\n\n-   Non-decorative `sap.m.Image`/`sap.ui.core.Icon` should provide a meaningful alternative explanation in the `alt` property.\n\n    > ### Example:  \n    > ```\n    > <Image id=\"image_not_decorative\" src=\"IMAGE_PATH\" alt=\"This is an image showing an elephant\" decorative=false>\n    > ```\n\n-   Interactive `sap.m.Image`/`sap.ui.core.Icon` \\(that has a press handler\\) should not be decorative.\n\n    > ### Example:  \n    > ```\n    > <Image src=\"IMAGE_PATH\" alt=\"This is an image with a press handler\" decorative=false press=onImagePress>\n    > ```\n\n-   Icon-only `sap.m.Button` should have a tooltip.\n\n    > ### Example:  \n    > ```\n    > <Button icon=\"sap-icon://action\" press=\"onPress\" tooltip=\"Action Name\" ariaLabelledBy=\"actionButtonLabel\"/>\n    > ```\n\n-   Button that has a text, should **not** have a tooltip.\n\n    > ### Example:  \n    > ```\n    > <Button text=\"Default\" press=\"onPress\" />\n    > ```\n\n-   Labels should **not** have a tooltip, as it could lead to ambiguity. For more information, see [Firoi Guidelines for Using Tooltips](https://experience.sap.com/fiori-design-web/using-tooltips/).\n\n-   Input elements should have labels. Every input needs a label for its purpose. Even if the app doesn't include one, you can set one in `sap.ui.core.InvisibleText`. The placeholder text should not be used as a label.\n\n-   Tables should have titles. Tables with hidden titles or in containers with titles \\(for example,single tables in tab strip panels\\) should be labeled with `sap.ui.core.InvisibleText` in combination with `ariaLabelledBy`.\n\n-   `ariaLabelledBy` and `ariaDescribedBy` associations should point to existing DOM elements.\n\n    > ### Example:  \n    > ```\n    >  <Page title=\"Page\">\n    > \t<content>   \n    > \t\t<Button text=\"Home\" ariaLabelledBy=\"invisibleId\"/>   \n    > \t\t<core:InvisibleText id=\"invisibleId\" text=\"I am a hidden label\"/>  \n    > \t</content> \n    > </Page>\n    > \n    > ```\n\n-   Labels should be connected with the labelled elements via `labelfor`.\n\n    > ### Example:  \n    > ```\n    > <Label text=\"Name\" labelFor=\"I1\"> \n    > <Input id=\"I1\">\n    > \n    > ```\n\n\n> ### Note:  \n> If you want to enlarge the size of the standard tooltips, you need to change the system font size. Tooltips are rendered by the browser using native window API and thus their size cannot be influenced by the SAPUI5 framework.\n\n",
+  "excerpt": "<!-- loio329a029f39e249a1bf89e3ffc006c8e1 --> Labeling and Tooltips The following guidelines help you properly label your controls in order to have good accessibility. <a name=\"loio329a029f39e249a1bf8...",
+  "wordCount": 459,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

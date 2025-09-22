@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-navigationjourney-dbg-js",
+  "title": "NavigationJourney dbg",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/NavigationJourney-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "NavigationJourney",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney dbg.md\n\n```javascript\n# NavigationJourney-dbg.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"sap/ui/test/opaQunit\",\n\t\"sap/ui/Device\",\n\t\"./pages/Worklist\",\n\t\"./pages/Browser\",\n\t\"./pages/Object\",\n\t\"./pages/App\"\n], function (opaTest, Device) {\n\t\"use strict\";\n\n\tvar iDelay = 100;\n\n\tQUnit.module(\"Navigation\");\n\n\topaTest(\"Should see the objects list\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iStartMyApp();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.iShouldSeeTheTable();\n\t});\n\n\topaTest(\"Should react on hash change\", function (Given, When, Then) {\n\t\t// Actions\n\t\tWhen.onTheWorklistPage.iRememberTheItemAtPosition(2);\n\t\tWhen.onTheBrowser.iChangeTheHashToTheRememberedItem();\n\n\t\t// Assertions\n\t\tThen.onTheObjectPage.iShouldSeeTheRememberedObject();\n\t});\n\n\topaTest(\"Should go back to the TablePage\", function (Given, When, Then) {\n\t\t// Actions\n\t\tWhen.onTheBrowser.iPressOnTheBackwardsButton();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.iShouldSeeTheTable();\n\t});\n\n\topaTest(\"Object Page shows the correct object Details\", function (Given, When, Then) {\n\t\t// Actions\n\t\tWhen.onTheWorklistPage.iRememberTheItemAtPosition(1).\n\t\t\tand.iPressATableItemAtPosition(1);\n\n\t\t// Assertions\n\t\tThen.onTheObjectPage.iShouldSeeTheRememberedObject();\n\t});\n\n\topaTest(\"Should be on the table page again when browser back is pressed\", function (Given, When, Then) {\n\t\t// Actions\n\t\tWhen.onTheBrowser.iPressOnTheBackwardsButton();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.iShouldSeeTheTable();\n\t});\n\n\topaTest(\"Should be on the object page again when browser forwards is pressed\", function (Given, When, Then) {\n\t\t// Actions\n\t\tWhen.onTheBrowser.iPressOnTheForwardsButton();\n\n\t\t// Assertions\n\t\tThen.onTheObjectPage.iShouldSeeTheRememberedObject();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n\n\topaTest(\"Start the App and simulate metadata error: MessageBox should be shown\", function (Given, When, Then) {\n\t\t//Arrangement\n\t\tGiven.iStartMyApp({\n\t\t\tdelay: iDelay,\n\t\t\tmetadataError: true\n\t\t});\n\n\t\t//Assertions\n\t\tThen.onTheAppPage.iShouldSeeTheMessageBox();\n\n\t\t// Actions\n\t\tWhen.onTheAppPage.iCloseTheMessageBox();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n\n\topaTest(\"Start the App and simulate bad request error: MessageBox should be shown\", function (Given, When, Then) {\n\t\t//Arrangement\n\t\tGiven.iStartMyApp({\n\t\t\tdelay: iDelay,\n\t\t\terrorType: \"serverError\"\n\t\t});\n\n\t\t//Assertions\n\t\tThen.onTheAppPage.iShouldSeeTheMessageBox();\n\n\t\t// Actions\n\t\tWhen.onTheAppPage.iCloseTheMessageBox();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "NavigationJourney dbg.md javascript NavigationJourney dbg.md javascript NavigationJourney dbg.md javascript NavigationJourney dbg.md javascript NavigationJourney-dbg.js",
+  "wordCount": 255,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

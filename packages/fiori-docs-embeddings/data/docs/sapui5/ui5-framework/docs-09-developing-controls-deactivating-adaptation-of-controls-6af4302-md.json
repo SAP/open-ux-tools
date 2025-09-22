@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-09-developing-controls-deactivating-adaptation-of-controls-6af4302-md",
+  "title": "Deactivating Adaptation of Controls",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/deactivating-adaptation-of-controls-6af4302.md",
+  "lastModified": "2025-09-01T18:17:10.674Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Deactivating",
+    "Adaptation",
+    "Controls"
+  ],
+  "headers": [
+    "Deactivating Adaptation of Controls"
+  ],
+  "content": "<!-- loio6af43022e00945019903f8e9410eb6e5 -->\n\n# Deactivating Adaptation of Controls\n\nYou can specify that some controls cannot be adapted.\n\nTo deactivate adaptation of controls, use the following design-time metadata:\n\n-   `{ actions: \"not-adaptable\" }`: Disable all actions.\n\n-   `{ actions: \"not-adaptable-tree\" }`: Disable all actions on a control and all its children.\n\n-   `{ actions: \"not-adaptable-visibility\" }`: Disable all actions that influence the visibility: *reveal* and *remove*.\n\n\nYou can deactivate adaptation of dependent child controls by overwriting the `actions` property. There are two options to do so:\n\n-   Overwrite with `null` value \\(soft\\)\n\n    Overwrites all actions for all other controls with `null` values. No actions are available for adaptation, but the controls are still adaptable. They can have property changes or other technical change handlers, like `addXML`.\n\n    ```\n    ... propagateMetadata: function() { return { actions: null } } ...\n    ```\n\n-   Overwrite with `not-adaptable` value \\(hard\\)\n\n    Overwrites all actions for all other controls with `null` values and determines that the control is not adaptable \\(not editable\\). Also, no property changes and other technical change handlers are possible.\n\n    ```\n    ... propagateMetadata: function() { return { actions: \"not-adaptable\" } } ...\n    ```\n\n\nYou can also deactivate adaptation for a particular instance with instance-specific control design-time metadata. For more information, see [Instance-Specific Design-Time Metadata](instance-specific-design-time-metadata-8fa2324.md).\n\n",
+  "excerpt": "<!-- loio6af43022e00945019903f8e9410eb6e5 --> Deactivating Adaptation of Controls You can specify that some controls cannot be adapted. To deactivate adaptation of controls, use the following design-t...",
+  "wordCount": 210,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

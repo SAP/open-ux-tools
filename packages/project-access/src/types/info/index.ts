@@ -1,4 +1,4 @@
-import type { CapProjectType } from '../cap';
+import type { CapCustomPaths, CapProjectType } from '../cap';
 import type { ManifestNamespace } from '../webapp';
 
 export interface Project {
@@ -18,6 +18,11 @@ export interface Project {
      * is an empty string ''.
      */
     apps: { [index: string]: ApplicationStructure };
+
+    /**
+     * The custom paths for CAP projects.
+     */
+    capCustomPaths?: CapCustomPaths;
 }
 
 export interface ApplicationStructure {

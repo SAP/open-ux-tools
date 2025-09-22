@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-sap-ui-model-type-string-91f31c2-md",
+  "title": "sap.ui.model.type.String",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/sap-ui-model-type-string-91f31c2.md",
+  "lastModified": "2025-09-01T18:17:10.541Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "sap",
+    "model",
+    "type",
+    "String"
+  ],
+  "headers": [
+    "sap.ui.model.type.String"
+  ],
+  "content": "<!-- loio91f31c206f4d1014b6dd926db0e91070 -->\n\n# sap.ui.model.type.String\n\nThe `String` data type represents a string.\n\nThe source value \\(value given in the model\\) must be given as a string and is transformed into the type of the bound control property as follows:\n\n-   `string`: No transformation needed\n-   `integer`/`float`: String is parsed accordingly\n-   `boolean`: \"true\" or \"X\" are interpreted as true, \"false\" or \" \" as false\n\nThe `string` type does not have any format options.\n\nExample how a `String` type can be initialized:\n\n```js\n// \"TypeString\" required from module \"sap/ui/model/type/String\"\n\n// The source value is given as string. The length of the string must not be greater than 5.\nvar oType = new TypeString(null, {maxLength: 5});\n```\n\nThe `String` type supports the following validation constraints:\n\n-   `maxLength` \\(expects an integer number\\)\n-   `minLength` \\(expects an integer number\\)\n-   `startsWith` \\(expects a string\\)\n-   `startsWithIgnoreCase` \\(expects a string\\)\n-   `endsWith` \\(expects a string\\)\n-   `endsWithIgnoreCase` \\(expects a string\\)\n-   `contains` \\(expects a string\\)\n-   `equals` \\(expects a string\\)\n-   `search` \\(expects a regular expression\\)\n\nFor more information, see API Reference: [`sap.ui.model.type.String`](https://ui5.sap.com/#/api/sap.ui.model.type.String).\n\n",
+  "excerpt": "<!-- loio91f31c206f4d1014b6dd926db0e91070 --> sap.ui.model.type.String The String data type represents a string. The source value \\(value given in the model\\) must be given as a string and is transfor...",
+  "wordCount": 180,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

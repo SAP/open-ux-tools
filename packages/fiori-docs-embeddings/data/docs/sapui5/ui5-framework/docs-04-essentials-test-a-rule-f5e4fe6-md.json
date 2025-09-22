@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-test-a-rule-f5e4fe6-md",
+  "title": "Test a Rule",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/test-a-rule-f5e4fe6.md",
+  "lastModified": "2025-09-01T18:17:10.547Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Test",
+    "Rule"
+  ],
+  "headers": [
+    "Test a Rule",
+    "Manual Testing on an App",
+    "Test your rule on locally running apps",
+    "Test your locally modified rule on a remotely running app"
+  ],
+  "content": "<!-- loiof5e4fe68e6ea4774b049962498f0e101 -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Test a Rule\n\nAfter you create a rule, you can test it manually on an app.\n\n\n\n<a name=\"loiof5e4fe68e6ea4774b049962498f0e101__section_ngl_mkg_h1b\"/>\n\n## Manual Testing on an App\n\n\n\n### Test your rule on locally running apps\n\nIf you want to test a Support Assistant rule on a locally running app, there are several steps you need to follow:\n\n1.  Start your server with the Support Assistant and support rules code loaded locally.\n\n2.  Start the app from your local server and call the Technical Information Dialog \\(available as of version 1.44\\).\n\n3.  Press *Activate Support Assistant* and it will load from your local server. If the Support Assistant is not loading, click the gear icon <span style=\"font-size:36px;line-height: 40px;\"><span style=\"color:#ffffff;\"><span style=\"background-color:#009de0;\"><span class=\"SAP-icons-V5\"></span></span></span></span> next to the button, select *Recommended locations*, and from the dropdown list choose the current version app.\n\n4.  After it loads, if you have correctly entered your data when creating the rule, you should see the title of your rule in the *Available Rulesets* tab.\n\n5.  To execute your rule, select it from the list and press *Analyze*. Your check function will be invoked and then you can put a debugger in your code or insert a breakpoint and see if you are getting the right results.\n\n6.  After your rule was executed, you will get the analysis of all results and the issues that it generated.\n\n\n\n\n### Test your locally modified rule on a remotely running app\n\nTo test your locally modified rule on other apps:\n\n1.  Start your server with the Support Assistant and support rules code loaded locally.\n\n2.  Start the app that you want to test your locally modified rule on and call the Technical Information Dialog \\(available as of version 1.44\\).\n\n3.  Select the gear icon <span style=\"font-size:36px;line-height: 40px;\"><span style=\"color:#ffffff;\"><span style=\"background-color:#009de0;\"><span class=\"SAP-icons-V5\"></span></span></span></span> next to the *Activate Support Assistant* and select *Custom Location*.\n\n4.  In the input field, write the path to the Support Assistant location from your local server. For example, `http://localhost:8080/testsuite/resources/sap/ui/support/`. This way you can load your version of the Support Assistant with the newly created or modified rule. If the remote app is hosted on an HTTPS server, the local server should run on and support HTTPS protocol.\n\n5.  Close the popup and select *Activate Support Assistant*. You will be able to load the local version of the Support Assistant with the app that you want to test it on.\n\n6.  To execute your rule, select it from the list and choose *Analyze*. Your check function will be invoked and then you can put a debugger in your code or insert a breakpoint and see if you are getting the right results.\n\n7.  After your rule was executed, you will get the analysis of all results and the issues that it generated.\n\n\n",
+  "excerpt": "<!-- loiof5e4fe68e6ea4774b049962498f0e101 --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Test a Rule After you create a rule, you can test it manually on an app. <a name=\"loi...",
+  "wordCount": 465,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

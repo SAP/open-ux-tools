@@ -38,7 +38,7 @@ export type Test = zod.infer<typeof FunctionalityIdSchema>;
  */
 export const FunctionalitySchema = zod.object({
     functionalityId: FunctionalityIdSchema.describe(
-        'Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`'
+        'Identifier to pass as the `functionalityId` parameter when calling `get_functionality_details` or `execute_functionality`'
     ),
     description: zod.string()
 });

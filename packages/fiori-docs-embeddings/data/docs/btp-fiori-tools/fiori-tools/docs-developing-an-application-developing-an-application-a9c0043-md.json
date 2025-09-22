@@ -1,0 +1,22 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-developing-an-application-a9c0043-md",
+  "title": "Developing an Application",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/developing-an-application-a9c0043.md",
+  "lastModified": "2025-09-01T18:17:10.137Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Developing",
+    "Application"
+  ],
+  "headers": [
+    "Developing an Application"
+  ],
+  "content": "<!-- loioa9c004397af5461fbf765419fc1d606a -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Developing an Application\n\nOnce the application has been [generated](../Generating-an-Application/SAP-Fiori-Elements/sap-fiori-elements-1488469.md), you can use SAP Fiori Tools – Application Modeler extension to [preview](../Previewing-an-Application/previewing-an-application-b962685.md) and customize the SAP Fiori elements application.\n\nThis extension provides the following capabilities.\n\n-   [Define Application Structure](define-application-structure-bae38e6.md) - The *Page Map* provides a visual representation of the application pages, navigations, and the service entities that it uses. You can add new navigations and pages, delete pages, and navigate to corresponding editing tools. In addition, you can see global page settings that can be applied to the whole project.\n\n    ![Page Map](images/FIORI_TOOLS_PAGE_MAP_96cfbae.png)\n\n    Click the :pencil2: \\(*Configure Page*\\) icon to open the *Page Editor*.\n\n-   [Configure Page Elements](configure-page-elements-047507c.md) - The *Page Editor* provides an outline view of the configurable nodes on the selected page.\n\n    ![Page Editor](images/FIORI_TOOLS_PAGE_EDITOR_f3232a4.png)\n\n    Once you select any node to change the settings, the *Property Panel* opens.\n\n    ![Property Pane](images/FIORI_TOOLS_PROPERTY_PANE_257df73.png)\n\n    The saved changes are converted into corresponding artifact changes or UI flexibility changes in the project's folder of the application. Afterwards, the refresh of the [preview](../Previewing-an-Application/previewing-an-application-b962685.md) is triggered.\n\n\n",
+  "excerpt": "<!-- loioa9c004397af5461fbf765419fc1d606a --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Developing an Application Once the application has been generated, you can use SAP Fi...",
+  "wordCount": 176,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

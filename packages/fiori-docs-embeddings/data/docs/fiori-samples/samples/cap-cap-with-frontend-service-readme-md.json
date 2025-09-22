@@ -1,0 +1,37 @@
+{
+  "id": "fiori-samples-cap-cap-with-frontend-service-readme-md",
+  "title": "Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Application Frontend Service",
+  "category": "samples",
+  "path": "cap/cap-with-frontend-service/README.md",
+  "lastModified": "2025-09-01T18:17:10.805Z",
+  "tags": [
+    "samples",
+    "md",
+    "Get",
+    "Started",
+    "with",
+    "SAP",
+    "Cloud",
+    "Application",
+    "Programming",
+    "Model",
+    "CAP",
+    "using",
+    "Fiori",
+    "tools",
+    "and",
+    "Frontend",
+    "Service"
+  ],
+  "headers": [
+    "Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Application Frontend Service",
+    "Sample Applications",
+    "License"
+  ],
+  "content": "# Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Application Frontend Service\n\n1. SAP Help Portal - [What Is Application Frontend Service](https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service?version=Cloud)?\n\n2. Blog Post - [Introducing Application Frontend Service](https://community.sap.com/t5/technology-blog-posts-by-sap/introducing-application-frontend-service/ba-p/14091408)\n\n3. Blog Post - [Simple UI Applications with Application Frontend Service](https://community.sap.com/t5/technology-blog-posts-by-sap/simple-ui-applications-with-application-frontend-service/ba-p/14096009)\n\n# Sample Applications\n\nComing soon....\n\n\n### License\nCopyright (c) 2009-2025 SAP SE or an SAP affiliate company. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](../../LICENSES/Apache-2.0.txt) file.\n\n\n\n\n\n",
+  "excerpt": "Get Started with SAP Cloud Application Programming Model (CAP) using Fiori tools and Application Frontend Service 1. SAP Help Portal - What Is Application Frontend Service? 2. Blog Post - Introducing ...",
+  "wordCount": 83,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

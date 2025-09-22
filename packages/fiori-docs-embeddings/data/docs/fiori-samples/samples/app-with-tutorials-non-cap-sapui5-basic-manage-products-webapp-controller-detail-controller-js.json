@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-controller-detail-controller-js",
+  "title": "Detail.controller",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/controller/Detail.controller.js",
+  "lastModified": "2025-09-01T18:17:10.801Z",
+  "tags": [
+    "samples",
+    "js",
+    "Detail",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.md\n\n```javascript\n# Detail.controller.js\n\n```javascript\nsap.ui.define([\n    \"sap/ui/core/mvc/Controller\",\n    \"sap/m/MessageBox\",\n    \"sap/m/MessageToast\"\n  ],\n  \n  function (Controller, MessageBox, MessageToast) {\n        \"use strict\";\n  \n        return Controller.extend(\"sap.btp.sapui5.controller.Detail\", {\n            onInit: function () {\n                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);\n                oRouter.getRoute(\"detail\").attachMatched(this._onRouteMatched, this);\n            },\n            _onRouteMatched: function (oEvent) {\n                var oArgs, oView;\n                oArgs = oEvent.getParameter(\"arguments\");\n                oView = this.getView();\n                oView.bindElement({\n                    path: \"/Products(\" + oArgs.productId + \")\",\n                    events: {\n                        dataRequested: function () {\n                            oView.setBusy(true);\n                        },\n                        dataReceived: function () {\n                            oView.setBusy(false);\n                        }\n                    }\n                });\n            },\n            handleNavButtonPress: function (evt) {\n                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);\n                oRouter.navTo(\"home\");\n            },\n\n            handleOrder: function (evt) {\n                // show confirmation dialog\n                var bundle = this.getView().getModel(\"i18n\").getResourceBundle();\n                MessageBox.confirm(\n                    bundle.getText(\"OrderDialogMsg\"),\n                    function (oAction) {\n                        if (MessageBox.Action.OK === oAction) {\n                            // notify user\n                            var successMsg = bundle.getText(\"OrderDialogSuccessMsg\");\n                            MessageToast.show(successMsg);\n                            // TODO call proper service method and update model (not part of this tutorial)\n                        }\n                    },\n                    bundle.getText(\"OrderDialogTitle\")\n                );\n            }\n        });\n    });\n  \n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Detail.controller.md javascript Detail.controller.md javascript Detail.controller.md javascript Detail.controller.md javascript Detail.controller.js",
+  "wordCount": 160,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

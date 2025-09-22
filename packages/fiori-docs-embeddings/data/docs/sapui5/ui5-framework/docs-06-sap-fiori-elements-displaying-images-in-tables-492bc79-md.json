@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-displaying-images-in-tables-492bc79-md",
+  "title": "Displaying Images in Tables",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/displaying-images-in-tables-492bc79.md",
+  "lastModified": "2025-09-01T18:17:10.606Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Displaying",
+    "Images",
+    "Tables"
+  ],
+  "headers": [
+    "Displaying Images in Tables",
+    "Additional Features in SAP Fiori Elements for OData V4"
+  ],
+  "content": "<!-- loio492bc791a7bd41cd9932fdf5d3aa2656 -->\n\n# Displaying Images in Tables\n\nTo display images in tables, you must first add a data field with a value that relates to an image URL.\n\n\n\nThis is shown in the following example:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Record Type=\"UI.DataField\">\n>     <PropertyValue Property=\"Value\" Path=\"ProductPictureURL\"/>\n>     <Annotation Term=\"UI.Importance\" EnumMember=\"UI.ImportanceType/High\"/>\n> </Record>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.lineItem: [{ importance: #HIGH }]\n> PRODUCTPICTUREURL;\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> {\n>     $Type : 'UI.DataField',\n>     Value : ProductPictureURL,\n>     ![@UI.Importance] : #High\n> }\n> ```\n\nYou also need to annotate the property with the `UI.IsImageUrl` annotation to specify that this property contains an image URL, as shown in the following example:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotations Target=\"STTA_PROD_MAN.STTA_C_MP_ProductType/ProductPictureURL\">\n>     <Annotation Term=\"UI.IsImageUrl\" />\n>     <Annotation Term=\"Common.Text\" String=\"{Product}\" />\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @Semantics.imageUrl: true\n> @UI.textArrangement: #TEXT_ONLY\n> PRODUCTPICTUREURL;\n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> annotate STTA_PROD_MAN.STTA_C_MP_ProductType with {\n>   @UI.IsImageUrl : true\n>   @Common.Text : '{Product}'\n>   ProductPictureURL\n> };\n> \n> ```\n\nThe `Common.Text` annotation is optional. You can use it to provide textual information for the image, for example, for accessibility purposes. This text is not visible on the UI, but can be read by screen readers. From a technical perspective, the provided string \\(in this example, the product\\) is assigned to the `alt` property of the `sap.m.Image` instance.\n\n\n\n<a name=\"loio492bc791a7bd41cd9932fdf5d3aa2656__section_hwk_2nh_2nb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V4\n\nA property containing media data of type **stream**, such as an image, is also supported. The local annotation file needs to specify that this property contains a URL and a Media Content Type set to `image/<File_Format>`, as in the following example:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotations Target=\"STTA_PROD_MAN.STTA_C_MP_ProductType/ProductPictureURL\">\n>    <Annotation Term=\"Common.Text\" String=\"{Product}\" /> \n>    <Annotation Term=\"Core.IsURL\" Bool=\"true\"/>\n>    <Annotation Term=\"Core.MediaType\" String=\"image/jpg\"/>\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> annotate STTA_PROD_MAN.STTA_C_MP_ProductType with {\n>   @Common.Text : '{Product}'\n>   @Core.IsURL : true\n>   @Core.MediaType : 'image/jpg'\n>   ProductPictureURL\n> };\n> ```\n\n**Stream** properties are just supported for read-only cases, which means **stream** property data is only read via URL and isn't editable via URL. For more information, see [Stream Properties on OData v4](http://docs.oasis-open.org/odata/odata-json-format/v4.0/os/odata-json-format-v4.0-os.html#_Toc372793075).\n\nYou can also use media data of type **binary** instead of **stream**. The local annotation file only needs to include the property containing the Media Content Type set to `image/<File_Format>`, as shown in the example below:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotations Target=\"STTA_PROD_MAN.STTA_C_MP_ProductType/ProductPictureURL\">\n>    <Annotation Term=\"Common.Text\" String=\"{Product}\" /> \n>    <Annotation Term=\"Core.MediaType\" String=\"image/png\"/>\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> annotate STTA_PROD_MAN.STTA_C_MP_ProductType with {\n>   @Common.Text : '{Product}'\n>   @Core.MediaType : 'image/png'\n>   ProductPictureURL\n> };\n> ```\n\n",
+  "excerpt": "<!-- loio492bc791a7bd41cd9932fdf5d3aa2656 --> Displaying Images in Tables To display images in tables, you must first add a data field with a value that relates to an image URL. This is shown in the f...",
+  "wordCount": 526,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

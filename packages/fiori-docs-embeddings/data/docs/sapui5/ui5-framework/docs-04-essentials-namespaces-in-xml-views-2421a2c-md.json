@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-namespaces-in-xml-views-2421a2c-md",
+  "title": "Namespaces in XML Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/namespaces-in-xml-views-2421a2c.md",
+  "lastModified": "2025-09-01T18:17:10.529Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Namespaces",
+    "XML",
+    "Views"
+  ],
+  "headers": [
+    "Namespaces in XML Views"
+  ],
+  "content": "<!-- loio2421a2c9fa574b2e937461b5313671f0 -->\n\n# Namespaces in XML Views\n\nThe names of the SAPUI5 control libraries and the related subpackages are mapped to XML namespaces.\n\nOne of the required namespaces can be defined as the default namespace \\(`xmlns=\"...\"`\\). The control tags for this namespace do not need a prefix.\n\nThe `View` tag is required and in the example below, the `sap.ui.core.mvc` namespace is defined with alias `mvc`. Technically, you can define any alias for namespaces. However, the convention is to use the last part of the full package name.\n\nA control can be located in a subpackage of a control library, for example `sap.ui.layout.form.Form` is located in the `sap.ui.layout` library, but the full package name is `sap.ui.layout.form`. You have to specify this subpackage as a separate XML namespace, even if `sap.ui.layout` is already defined as namespace.\n\n```xml\n<mvc:View\n     xmlns:mvc=\"sap.ui.core.mvc\"\n     xmlns:layout=\"sap.ui.layout\"\n     xmlns:form=\"sap.ui.layout.form\"\n     xmlns=\"sap.m\">\n</mvc:View>\n```\n\n",
+  "excerpt": "<!-- loio2421a2c9fa574b2e937461b5313671f0 --> Namespaces in XML Views The names of the SAPUI5 control libraries and the related subpackages are mapped to XML namespaces. One of the required namespaces...",
+  "wordCount": 144,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

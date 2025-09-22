@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-multiple-module-locations-1dfab2e-md",
+  "title": "Multiple Module Locations",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/multiple-module-locations-1dfab2e.md",
+  "lastModified": "2025-09-01T18:17:10.529Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Multiple",
+    "Module",
+    "Locations"
+  ],
+  "headers": [
+    "Multiple Module Locations"
+  ],
+  "content": "<!-- loio1dfab2e19fc0479d9dfcefc28d3642f1 -->\n\n# Multiple Module Locations\n\nSAPUI5 supports multiple module locations by means of the `sap.ui.loader.config` function.\n\nIn web applications, modules can be located in different locations, such as servers and web apps. A web application can, for example, be deployed as an individual web app and contain modules that have to be loaded at runtime. SAPUI5 and its modules, however, have to be loaded either from a content delivery network \\(CDN\\) or from a centrally deployed web app. By default, SAPUI5 loads modules from its resource root URL, that is, from the centrally deployed web application. This would fail for modules that are contained in your web application.\n\nThe `sap.ui.loader.config` function associates a module name prefix with a URL prefix. All modules are loaded from the registered URL instead of the standard resource root URL:\n\n```js\nsap.ui.loader.config({\n\tpaths: {\n\t\t\"my/module\": \"https://example.com/resources/my/module\"\n\t}\n});\n```\n\nThus, it is possible to redirect the request for the application-specific modules to the corresponding web application:\n\n```js\n// redirect the 'my.webapp' package to the local web app\nsap.ui.loader.config({\n\tpaths: {\n\t\t\"my/webapp\": \"my-webapp/resources/my/webapp\"\n\t}\n});\nsap.ui.require([\n\t\"sap/ui/core/Core\",\t\n\t\"my/webapp/MyModule01\"\t// loads /my-webapp/resources/my/webapp/MyModule01.js\n], (Core, MyModule01) => {\n\t// … \n});\n```\n\n> ### Note:  \n> The registered URL above contains the transformed module name prefix `my/webapp/`. This allows a more flexible packaging of the modules, for example, if you decide to deploy all modules named `my.company.*` to the central URL `http://my.company/shared/` without packaging them into a two level hierarchy of subfolders:\n> \n> ```js\n> sap.ui.loader.config({\n> \tpaths: {\n> \t\t\"my/company\": \"http://my.company/shared/\"\n> \t}\n> });\n> ```\n> \n> However, when the standard build tools of the SAPUI5 framework are used, the full package name will be part of the runtime file hierarchy and the registration must contain the transformed package hierarchy as above.\n\n",
+  "excerpt": "<!-- loio1dfab2e19fc0479d9dfcefc28d3642f1 --> Multiple Module Locations SAPUI5 supports multiple module locations by means of the sap.ui.loader.config function. In web applications, modules can be loc...",
+  "wordCount": 301,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

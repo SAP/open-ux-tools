@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-unit-unittests-qunit-js",
+  "title": "unitTests.qunit",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/unit/unitTests.qunit.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "unitTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.md\n\n```javascript\n# unitTests.qunit.js\n\n```javascript\nQUnit.config.autostart=false;sap.ui.getCore().attachInit(function(){\"use strict\";sap.ui.require([\"mycompany/myapp/MyWorklistApp/test/unit/AllTests\"],function(){QUnit.start()})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "unitTests.qunit.md javascript unitTests.qunit.md javascript unitTests.qunit.md javascript unitTests.qunit.md javascript unitTests.qunit.js",
+  "wordCount": 38,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

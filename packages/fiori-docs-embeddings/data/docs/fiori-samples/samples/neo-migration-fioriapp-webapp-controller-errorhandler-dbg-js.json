@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-controller-errorhandler-dbg-js",
+  "title": "ErrorHandler dbg",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/controller/ErrorHandler-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.809Z",
+  "tags": [
+    "samples",
+    "js",
+    "ErrorHandler",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler dbg.md\n\n```javascript\n# ErrorHandler-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/base/Object\",\n\t\"sap/m/MessageBox\"\n], function (UI5Object, MessageBox) {\n\t\"use strict\";\n\n\treturn UI5Object.extend(\"ns.manageproductsneo.controller.ErrorHandler\", {\n\n\t\t/**\n\t\t * Handles application errors by automatically attaching to the model events and displaying errors when needed.\n\t\t * @class\n\t\t * @param {sap.ui.core.UIComponent} oComponent reference to the app's component\n\t\t * @public\n\t\t * @alias mycompany.myapp.MyWorklistApp.controller.ErrorHandler\n\t\t */\n\t\tconstructor : function (oComponent) {\n\t\t\tthis._oResourceBundle = oComponent.getModel(\"i18n\").getResourceBundle();\n\t\t\tthis._oComponent = oComponent;\n\t\t\tthis._oModel = oComponent.getModel();\n\t\t\tthis._bMessageOpen = false;\n\t\t\tthis._sErrorText = this._oResourceBundle.getText(\"errorText\");\n\n\t\t\tthis._oModel.attachMetadataFailed(function (oEvent) {\n\t\t\t\tvar oParams = oEvent.getParameters();\n\t\t\t\tthis._showServiceError(oParams.response);\n\t\t\t}, this);\n\n\t\t\tthis._oModel.attachRequestFailed(function (oEvent) {\n\t\t\t\tvar oParams = oEvent.getParameters();\n\t\t\t\t// An entity that was not found in the service is also throwing a 404 error in oData.\n\t\t\t\t// We already cover this case with a notFound target so we skip it here.\n\t\t\t\t// A request that cannot be sent to the server is a technical error that we have to handle though\n\t\t\t\tif (oParams.response.statusCode !== \"404\" || (oParams.response.statusCode === 404 && oParams.response.responseText.indexOf(\"Cannot POST\") === 0)) {\n\t\t\t\t\tthis._showServiceError(oParams.response);\n\t\t\t\t}\n\t\t\t}, this);\n\t\t},\n\n\t\t/**\n\t\t * Shows a {@link sap.m.MessageBox} when a service call has failed.\n\t\t * Only the first error message will be display.\n\t\t * @param {string} sDetails a technical error to be displayed on request\n\t\t * @private\n\t\t */\n\t\t_showServiceError : function (sDetails) {\n\t\t\tif (this._bMessageOpen) {\n\t\t\t\treturn;\n\t\t\t}\n\t\t\tthis._bMessageOpen = true;\n\t\t\tMessageBox.error(\n\t\t\t\tthis._sErrorText,\n\t\t\t\t{\n\t\t\t\t\tid : \"serviceErrorMessageBox\",\n\t\t\t\t\tdetails: sDetails,\n\t\t\t\t\tstyleClass: this._oComponent.getContentDensityClass(),\n\t\t\t\t\tactions: [MessageBox.Action.CLOSE],\n\t\t\t\t\tonClose: function () {\n\t\t\t\t\t\tthis._bMessageOpen = false;\n\t\t\t\t\t}.bind(this)\n\t\t\t\t}\n\t\t\t);\n\t\t}\n\n\t});\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "ErrorHandler dbg.md javascript ErrorHandler dbg.md javascript ErrorHandler dbg.md javascript ErrorHandler dbg.md javascript ErrorHandler-dbg.js",
+  "wordCount": 274,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

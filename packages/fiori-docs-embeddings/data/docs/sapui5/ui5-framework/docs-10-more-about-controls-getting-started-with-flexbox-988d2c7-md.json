@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-getting-started-with-flexbox-988d2c7-md",
+  "title": "Getting Started With FlexBox",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/getting-started-with-flexbox-988d2c7.md",
+  "lastModified": "2025-09-01T18:17:10.691Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Getting",
+    "Started",
+    "With",
+    "FlexBox"
+  ],
+  "headers": [
+    "Getting Started With FlexBox",
+    "Layout properties"
+  ],
+  "content": "<!-- loio988d2c7652684dea98f9d6dbc94000c0 -->\n\n# Getting Started With FlexBox\n\nFor a flexible box layout, create a `FlexBox` control and add any kind of controls to it.\n\nYou can either use the `addItem` method \\(see option 1\\), or the `items` aggregation of a configuration object \\(see option 2\\).\n\nOption 1\n\n```js\n\n// FlexBox required from \"sap/m/FlexBox\"\n// Button required from \"sap/m/Button\"\n\nvar oMyFlexbox = new FlexBox();\noMyFlexbox.addItem(new Button({text: \"Button 1\"}));\noMyFlexbox.addItem(new Button({text: \"Button 2\"}));\n```\n\nOption 2\n\n```js\n\n// FlexBox required from \"sap/m/FlexBox\"\n// Button required from \"sap/m/Button\"\n\nvar oMyFlexbox = new FlexBox({\n    items: [\n        new Button({text: \"Button 1\"}),\n        new Button({text: \"Button 2\"})\n    ]\n});\n```\n\nThe following figure gives an example how the result looks like if used inside a mobile app page. The necessary code is not shown here.\n\n![SAPUI5 Mobile FlexBox Buttons](images/SAPUI5_Mobile_FlexBox_Buttons_e6a78df.png)\n\n\n\n<a name=\"loio988d2c7652684dea98f9d6dbc94000c0__section_N1003F_N10011_N10001\"/>\n\n## Layout properties\n\nSome properties that affect the layout need to be set in the `FlexBox` control. Other properties can be attached to the controls which are placed inside the `FlexBox` by means of the `layoutData` aggregation. The layout direction, for example is set in the `FlexBox` as follows:\n\n```js\n\n// FlexBox required from \"sap/m/FlexBox\"\n// Button required from \"sap/m/Button\"\n\nvar oMyFlexbox = new FlexBox({\n    items: [\n        new Button({text: \"Button 1\"}),\n        new Button({text: \"Button 2\"})\n    ],\n    direction: \"Column\"\n});\n```\n\n![SAPUI5 Mobile FlexBox Buttons Vertical](images/SAPUI5_Mobile_FlexBox_Buttons_Vertical_d37cdf0.png)\n\nThe order is attached to the button inside a `FlexItemData` object as follows:\n\n```js\n\n// FlexBox required from \"sap/m/FlexBox\"\n// Button required from \"sap/m/Button\"\n// FlexItemData required from \"sap/m/FlexItemData\"\n\nvar oMyFlexbox = new FlexBox({\n    items: [\n        new Button({\n            text: \"Button 1\",\n            layoutData: new FlexItemData({order: 2})\n        }),\n        new Button({text: \"Button 2\"})\n    ]\n});\n```\n\n![SAPUI5 Mobile FlexBox Buttons Ordered](images/SAPUI5_Mobile_FlexBox_Buttons_Ordered_01f7519.png)\n\n> ### Note:  \n> The `FlexBox` control is a wrapper for the flexible box layout properties in CSS. The control renderer sets the CSS properties on the appropriate HTML elements. The actual layouting is done by the browser.\n\nThe controls that you place in the `FlexBox` control are each wrapped in a `DIV` or `LI` element, depending on the `renderType` property. All elements are placed inside another `DIV` or `UL` container, again depending on the `renderType`. If you use `Bare` as `renderType`, elements will be rendered without a wrapping HTML tag. The outermost element represents the so-called *flex container* while its child elements are *flex items*. The HTML structure resulting from all of the examples above looks as follows:\n\n```html\n\n<div class=\"sapMFlexBox\">\n\n       <div class=\"sapMFlexItem\">\n\n              <button id=\"__button1\">Button 1</button>\n\n       </div>\n\n       <div class=\"sapMFlexItem\">\n              \n              <button id=\"__button2\">Button 2</button>\n\n       </div>\n</div>\n```\n\n> ### Note:  \n> The `layoutData` properties that you can attach to a control are applied to its wrapper element with *sapMFlexItem* class.\n\nThe two additional controls `HBox` and `VBox` are `FlexBoxes` that are fixed to horizontally or vertically layout their children.\n\n",
+  "excerpt": "<!-- loio988d2c7652684dea98f9d6dbc94000c0 --> Getting Started With FlexBox For a flexible box layout, create a FlexBox control and add any kind of controls to it. You can either use the addItem method...",
+  "wordCount": 457,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

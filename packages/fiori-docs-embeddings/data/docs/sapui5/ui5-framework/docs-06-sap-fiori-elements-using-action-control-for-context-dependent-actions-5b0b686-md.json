@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-using-action-control-for-context-dependent-actions-5b0b686-md",
+  "title": "Using Action Control for Context-Dependent Actions",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/using-action-control-for-context-dependent-actions-5b0b686.md",
+  "lastModified": "2025-09-01T18:17:10.659Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Using",
+    "Action",
+    "Control",
+    "for",
+    "Context",
+    "Dependent",
+    "Actions"
+  ],
+  "headers": [
+    "Using Action Control for Context-Dependent Actions",
+    "Additional Features in SAP Fiori Elements for OData V2",
+    "Additional Features in SAP Fiori Elements for OData V4"
+  ],
+  "content": "<!-- loio5b0b686a3b7a491a9ec654b4f1536fa8 -->\n\n# Using Action Control for Context-Dependent Actions\n\nAction control refers to the ability of applications to be able to configure app-specific actions so that they are only enabled for certain instances of the object, but not others.\n\n\n\n<a name=\"loio5b0b686a3b7a491a9ec654b4f1536fa8__section_dhs_mjc_2nb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\nYou can use action control to display actions by adding the `sap:action-for` and `sap:applicable-path` terms to your action or function import.\n\nActions that you've defined using these annotations are context-dependent. This means that users have to select an item or a line in a list. Only then are the actions enabled.\n\nIn the applicable path, you specify a Boolean property for the entity type that controls whether the function import can be invoked. SAP Fiori elements evaluates the applicable path and sets the visibility of the corresponding action based on the Boolean property value.\n\nIf the condition, as defined by the applicable-path variable, is not fulfilled, the action is hidden or disabled as follows:\n\n-   The action is hidden if it is on a page header level or for line item buttons in a table\n\n-   The action is disabled for header buttons in a table\n\n    > ### Note:  \n    > In addition to `sap:applicable-path`, it is not recommended to use `UI.Hidden` for `DataFieldForAction` within page header. If `UI.Hidden` is defined, it takes the precedence and may result in a deviation from the UX recommended behaviour for button visibility.\n\n\n> ### Sample Code:  \n> ```\n> <FunctionImport Name=\"SEPMRA_C_PD_ProductCopy\" \n>                 ReturnType=\"SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType\" \n>                 EntitySet=\"SEPMRA_C_PD_Product\" m:HttpMethod=\"POST\"\n>                 sap:action-for=\"SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType\" \n>                 sap:applicable-path=\"IsActiveEntity\">\n>     <Parameter Name=\"ProductDraftUUID\" Type=\"Edm.Guid\" Mode=\"In\"/>\n>     <Parameter Name=\"ActiveProduct\" Type=\"Edm.String\" Mode=\"In\" MaxLength=\"10\"/>\n> </FunctionImport>\n> \n> ```\n\n> ### Note:  \n> If the function import action parameters are dynamic, and if for a selected instance no parameter is required, then the parameter dialog is not displayed. This behavior is applicable only for single-context select actions.\n\n\n\n<a name=\"loio5b0b686a3b7a491a9ec654b4f1536fa8__section_hhv_qjc_2nb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V4\n\nYou can use action control to enable or disable actions by adding the `OperationAvailable` term.\n\nFor more information, see the [Enabling Custom Actions Defined Using Annotations](actions-cbf16c5.md#loiocbf16c599f2d4b8796e3702f7d4aae6c__subsection_xkx_gwq_nsb) section in [Actions](actions-cbf16c5.md).\n\n\n\n> ### Note:  \n> If multi-select is available in a table, the action is allowed when at least one of the marked entries fulfills the condition.\n\n",
+  "excerpt": "<!-- loio5b0b686a3b7a491a9ec654b4f1536fa8 --> Using Action Control for Context-Dependent Actions Action control refers to the ability of applications to be able to configure app-specific actions so th...",
+  "wordCount": 380,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

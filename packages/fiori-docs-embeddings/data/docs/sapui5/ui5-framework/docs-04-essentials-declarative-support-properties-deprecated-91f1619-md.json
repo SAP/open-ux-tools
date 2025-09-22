@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-declarative-support-properties-deprecated-91f1619-md",
+  "title": "Declarative Support: Properties \\(deprecated\\)",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/declarative-support-properties-deprecated-91f1619.md",
+  "lastModified": "2025-09-01T18:17:10.508Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Declarative",
+    "Support",
+    "Properties",
+    "deprecated"
+  ],
+  "headers": [
+    "Declarative Support: Properties \\(deprecated\\)"
+  ],
+  "content": "<!-- loio91f161996f4d1014b6dd926db0e91070 -->\n\n# Declarative Support: Properties \\(deprecated\\)\n\nFor setting a property, define the property as a data attribute of the corresponding HTML tag.\n\n> ### Caution:  \n> Deprecated as of UI5 version 1.120, replaced by [XML View](xml-view-91f2928.md).\n\nTo add text to the button, add the attribute `data-text` to its HTML tag:\n\n```html\n\n<div data-sap-ui-type=\"sap.m.Button\" data-text=\"HelloWorld\"></div>\n```\n\n> ### Note:  \n> To define a property with upper case characters, you have to \"escape\" them with a dash character, similar to CSS attributes. The following code gives an example:\n> \n> ```html\n> \n> <div data-sap-ui-type=\"sap.ui.commons.ApplicationHeader\" data-display-logoff=\"false\" data-display-welcome=\"false\"></div>\n> ```\n> \n> As the name of the attributes of HTML tags are case-insensitive, the properties `displayLogoff` and `displayWelcome` of the `ApplicationHeader` control have to be \"escaped\" as `data-display-logoff` and `data-display-welcome` for the name of the attributes of the HTML tag. Keep this in mind when matching properties, associations, or events as an attribute of the HTML tag.\n> \n> The <code><code>id</code></code> attribute defines the ID of a control:\n> \n> ```html\n> \n> <div data-sap-ui-type=\"sap.m.Button\" id=\"myButton\"></div>\n> ```\n> \n> To add a CSS class to the control, use the class attribute:\n> \n> ```html\n> \n> <div data-sap-ui-type=\"sap.m.Button\" class=\"my-button\"></div>\n> ```\n\n",
+  "excerpt": "<!-- loio91f161996f4d1014b6dd926db0e91070 --> Declarative Support: Properties \\(deprecated\\) For setting a property, define the property as a data attribute of the corresponding HTML tag. > Caution:  ...",
+  "wordCount": 202,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

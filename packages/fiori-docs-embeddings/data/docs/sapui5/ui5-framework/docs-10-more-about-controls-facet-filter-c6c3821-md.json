@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-facet-filter-c6c3821-md",
+  "title": "Facet Filter",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/facet-filter-c6c3821.md",
+  "lastModified": "2025-09-01T18:17:10.689Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Facet",
+    "Filter"
+  ],
+  "headers": [
+    "Facet Filter",
+    "Example"
+  ],
+  "content": "<!-- loioc6c38217a4a64001a22ad76cdfa97fae -->\n\n# Facet Filter\n\nFacet filters \\(`sap.m.FacetFilter`\\) support users in finding the information they need from potentially very large data sets.\n\nWith the facet filter, users can explore a data collection by applying multiple filters along certain discrete attributes or facets of the overall data collection.\n\nThe following figure shows the structure of the facet filter in default 'Simple' type.\n\n![](images/SAPUI5_Facet_Filter_Anatomy_f144853.png)\n\nThe facet filter supports the following two types that can be configured using the control's `type` property:\n\n-   Simple type\n\n    With the Simple type facet filter you can offer multiple filters \\('facets'\\) to assist the user in narrowing down the data in, say, a table. With this default 'Simple' type, each filter is displayed in a row for selectionThe simple type is the default type and available for desktop and tablets.\n\n-   Light type\n\n    It is for small displays where only a selectable summary bar is shown, and a dialog is shown for setting the facet values. The \"Light\" type is automatically enabled on smartphone-sized devices, but is also available for desktop and tablets.\n\n\nIn addition, you can define Custom type facet filters by setting custom filtering criteria. For example, Custom type can be applied instead of the default filtering criteria of the control when searching in the FacetFilterList.\n\n\n\n## Example\n\nYour application displays a large list of products that can be grouped by category and supplier. With the facet filter, you allow users to dynamically filter the list so that it displays products from the categories and suppliers they want to see. In the following figure, the `FacetFilter` control is outlined in red and will be referred to as the 'toolbar' for the user. In this example the user has set the following filters, using the Simple type facet filter:\n\n-   Category: Printers\n\n-   SupplierName \\(Alpha Printers\\)\n\n\n![](images/SAPUI5_Facet_Filter_Example_f57566c.png)\n\n",
+  "excerpt": "<!-- loioc6c38217a4a64001a22ad76cdfa97fae --> Facet Filter Facet filters \\(sap.m.FacetFilter\\) support users in finding the information they need from potentially very large data sets. With the facet ...",
+  "wordCount": 303,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

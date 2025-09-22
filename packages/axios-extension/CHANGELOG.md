@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 1.22.8
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+
 ## 1.22.7
 
 ### Patch Changes

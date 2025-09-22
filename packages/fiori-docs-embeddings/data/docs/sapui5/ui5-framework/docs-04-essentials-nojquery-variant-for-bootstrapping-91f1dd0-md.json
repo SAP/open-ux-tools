@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-nojquery-variant-for-bootstrapping-91f1dd0-md",
+  "title": "noJQuery Variant for Bootstrapping",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/nojquery-variant-for-bootstrapping-91f1dd0.md",
+  "lastModified": "2025-09-01T18:17:10.530Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "noJQuery",
+    "Variant",
+    "for",
+    "Bootstrapping"
+  ],
+  "headers": [
+    "noJQuery Variant for Bootstrapping"
+  ],
+  "content": "<!-- loio91f1dd0c6f4d1014b6dd926db0e91070 -->\n\n# noJQuery Variant for Bootstrapping\n\nThe noJQuery variant supports bootstrapping for an application that already integrates jQuery or uses a different jQuery version than SAPUI5.\n\nIn this variant, you include the `resources/sap-ui-core-nojQuery.js` file in your HTML page. Make sure that jQuery and `jquery-ui-position` have been loaded beforehand. The following code snippet shows an example:\n\n```html\n\n    <!-- include some jQuery version -->\n    <script src=\"my-jQuery-min.js\" ></script>\n\n    <!-- application does not have its own jquery-ui-position, so it might use the one from SAPUI5 -->\n    <script src=\"resources/sap/ui/thirdparty/jqueryui/jquery-ui-position.js\" ></script>\n\n    <!-- now booting SAPUI5 -->\n    <script \n            id=\"sap-ui-bootstrap\"            \n            src=\"resources/sap-ui-core-nojQuery.js\" \n            data-sap-ui-libs=\"sap.m\">\n    </script> \n```\n\n",
+  "excerpt": "<!-- loio91f1dd0c6f4d1014b6dd926db0e91070 --> noJQuery Variant for Bootstrapping The noJQuery variant supports bootstrapping for an application that already integrates jQuery or uses a different jQuer...",
+  "wordCount": 99,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

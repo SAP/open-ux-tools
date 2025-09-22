@@ -1,0 +1,21 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-customcolumn-daterangelr-fragment-xml",
+  "title": "CustomColumn DateRangeLR.fragment",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/CustomColumn-DateRangeLR.fragment.xml",
+  "lastModified": "2025-09-01T18:17:10.726Z",
+  "tags": [
+    "features",
+    "xml",
+    "CustomColumn",
+    "DateRangeLR",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn DateRangeLR.fragment.md\n\n```xml\n# CustomColumn-DateRangeLR.fragment.xml\n\n```xml\n<!-- #CustomColumn -->\n<core:FragmentDefinition xmlns:core=\"sap.ui.core\" xmlns=\"sap.m\">\n        <Label text=\"{validFrom} - {validTo}\"/>\n</core:FragmentDefinition>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "CustomColumn DateRangeLR.fragment.md xml CustomColumn DateRangeLR.fragment.md xml CustomColumn DateRangeLR.fragment.md xml CustomColumn DateRangeLR.fragment.md xml CustomColumn-DateRangeLR.fragment.xm...",
+  "wordCount": 55,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-semantic-pages-84f3d52-md",
+  "title": "Semantic Pages",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/semantic-pages-84f3d52.md",
+  "lastModified": "2025-09-01T18:17:10.701Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Semantic",
+    "Pages"
+  ],
+  "headers": [
+    "Semantic Pages"
+  ],
+  "content": "<!-- loio84f3d52f492648d5b594e4f45dca7727 -->\n\n# Semantic Pages\n\nThe semantic page controls help the app designers and developers implement and comply with the SAP Fiori design guidelines more easily.\n\nThe benefit of these controls is to separate the design requirements from the actual app implementations, allowing these requirements to be adjusted centrally for the controls without the apps having to reimplement them with each change.\n\nThe main functionality of the semantic pages is to predefine the placement, behavior and styles of the page elements, such as titles and actions. Content specified in the aggregations is automatically positioned in dedicated sections of the header or the footer of the pages.\n\nThere are two separate and non-dependent `semantic` namespaces in the main SAPUI5 libraries:\n\n-   `sap.f.semantic`\n\n-   `sap.m.semantic`\n\n\nBoth of them extend and enhance the base pages of the library they are in - `sap.m.Page` and `sap.f.DynamicPage`. They allow app developers to quickly add controls to the page that correspond to common operations, such as add, delete and filter. They only have to specify the action type, and the required styling and positioning is automatically added internally.\n\n",
+  "excerpt": "<!-- loio84f3d52f492648d5b594e4f45dca7727 --> Semantic Pages The semantic page controls help the app designers and developers implement and comply with the SAP Fiori design guidelines more easily. The...",
+  "wordCount": 184,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

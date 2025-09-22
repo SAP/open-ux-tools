@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-supported-elements-in-page-editor-47f0424-md",
+  "title": "Supported Elements in Page Editor",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/supported-elements-in-page-editor-47f0424.md",
+  "lastModified": "2025-09-01T18:17:10.146Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Supported",
+    "Elements",
+    "Page",
+    "Editor"
+  ],
+  "headers": [
+    "Supported Elements in Page Editor",
+    "List Report Elements",
+    "Object and Form Entry Page"
+  ],
+  "content": "<!-- loio47f0424e5bab4efab1cdba3839e18546 -->\n\n# Supported Elements in Page Editor\n\nThe following annotation-based UI elements are supported in [Configure Page Elements](configure-page-elements-047507c.md). All the other elements can be modified directly in the annotation file.\n\n\n\n<a name=\"loio47f0424e5bab4efab1cdba3839e18546__section_fst_nyx_dsb\"/>\n\n## List Report Elements\n\nThe *List Report* lets the user work with a large list of items. It combines powerful functions for filtering and displaying results. The *List Report* consists of many elements. For more information, see [List Report Elements](https://ui5.sap.com/#/topic/1cf5c7f5b81c4cb3ba98fd14314d4504).\n\n> ### Note:  \n> As stated above, only these elements are supported by [Configure Page Elements](configure-page-elements-047507c.md). All other elements can be modified directly in the annotation file.\n\n-   [Filter Fields](filter-fields-0b84286.md)\n-   [Table](table-aaff7b1.md)\n\n\n\n<a name=\"loio47f0424e5bab4efab1cdba3839e18546__section_erd_lby_dsb\"/>\n\n## Object and Form Entry Page\n\nThe *Object Page* lets you display, edit, and create objects, as well as save drafts. It is suitable for both simple objects and more complex, multifaceted objects. The *Object Page* view gives you optimal support for multiple devices. The *Object Page* consists of many elements. For more information, see [Object Page](https://ui5.sap.com/#/topic/645e27ae85d54c8cbc3f6722184a24a1).\n\n> ### Note:  \n> As stated above, only these elements are supported by [Configure Page Elements](configure-page-elements-047507c.md). All other elements can be modified directly in the annotation file.\n\n-   [Header](header-a05d7fc.md#loioa05d7fc1bbbf42a0ade9fb50f6b58b56)\n-   [Form Section](form-section-4102b3d.md)\n-   [Table Section](table-section-fc59378.md)\n-   [Identification Section](identification-section-b83f501.md)\n-   [Group Section](group-section-1894c47.md)\n-   [Adding Custom Section](maintaining-extension-based-elements-02172d2.md#loiode514dafa2364693baeabbb40d564006)\n-   [Footer](footer-1b391bd.md)\n\n**Related Information**  \n\n\n[Maintaining Annotations with Language Server](maintaining-annotations-with-language-server-6fc93f8.md)\n\n",
+  "excerpt": "<!-- loio47f0424e5bab4efab1cdba3839e18546 --> Supported Elements in Page Editor The following annotation-based UI elements are supported in Configure Page Elements. All the other elements can be modif...",
+  "wordCount": 220,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

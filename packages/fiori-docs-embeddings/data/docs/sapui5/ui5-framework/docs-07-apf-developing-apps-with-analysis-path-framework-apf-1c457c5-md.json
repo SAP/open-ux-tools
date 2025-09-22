@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-07-apf-developing-apps-with-analysis-path-framework-apf-1c457c5-md",
+  "title": "Developing Apps with Analysis Path Framework \\(APF\\)",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/developing-apps-with-analysis-path-framework-apf-1c457c5.md",
+  "lastModified": "2025-09-01T18:17:10.667Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Developing",
+    "Apps",
+    "with",
+    "Analysis",
+    "Path",
+    "Framework",
+    "APF"
+  ],
+  "headers": [
+    "Developing Apps with Analysis Path Framework \\(APF\\)",
+    "Key Features"
+  ],
+  "content": "<!-- loio1c457c53595a6655e10000000a423f68 -->\n\n# Developing Apps with Analysis Path Framework \\(APF\\)\n\nAnalysis Path Framework \\(APF\\) provides reuse components that allow you to build and enhance interactive analytical Web applications.\n\nYou can use APF-based applications to explore KPIs and their influencing factors by drilling down into multidimensional representations of data, such as charts or tables.\n\nAPF is available with:\n\n-   SAP Business Suite powered by SAP HANA\n\n-   SAP S/4HANA\n\n\n\n\n## Key Features\n\nThe key features of APF include the following:\n\n-   APF-based applications:\n\n    -   SAP Fiori applications for a data driven, chart-based drill-down analysis targeted at business users\n\n    -   Step-by-step analysis of data by building analysis paths using a set of preconfigured analysis steps\n    -   Select data to filter the information provided in subsequent steps\n\n    -   Save, retrieve, and print analysis paths\n\n    -   Use of OData services to expose the data on the UI. Each step can have its own OData service so that you can define cross-scenarios that use data from different application areas or systems.\n\n    -   Supported data sources for the OData services:\n\n        -   Calculation views\n\n        -   ABAP CDS views\n        -   BW OData queries\n\n\n-   APF Configuration Modeler:\n\n    -   Enables you to create your own APF-based applications in a very quick and easy way and to enhance shipped applications.\n\n    -   Configure an APF-based app without having to code:\n\n        -   Choose from predefined UI elements, such as chart types, tables, and filters. APF takes care of the interaction between these UI elements.\n\n        -   Assign OData services to analysis steps or filters, for example. APF then takes care of the OData request handling, such as when a request is triggered and how it is parameterized.\n\n\n    -   Execute APF-based applications directly from the APF Configuration Modeler using the generic runtime application provided by APF.\n\n    -   In SAP S/4HANA, the APF Configuration Modeler provides in-app help to get context-sensitive user assistance for individual entry fields.\n\n\n-   Integration\n\n    -   Integration with SAP Fiori and SAP Smart Business, which allows you to launch APF-based applications from different tiles or other apps, handing over filters and parameters to the APF-based application.\n    -   Navigation from APF-based applications to other apps, for example, to view additional information or to take action in a transactional app, handing over filters and parameters of the APF-based application to the target application.\n\n\n\nTo learn more about APF-based apps and how to configure them, see the following sections:\n\n\n\n![](images/Image_Map_APF_Overview_4db50b8.png)\n\nIf you need more technical background information, see the following sections:\n\n\n\n![](images/Image_Map_APF_Background_Information_c8a2f56.png)\n\n**Related Information**  \n\n\n[https://wiki.scn.sap.com/wiki/x/lCe7Gg](https://wiki.scn.sap.com/wiki/x/lCe7Gg)\n\n",
+  "excerpt": "<!-- loio1c457c53595a6655e10000000a423f68 --> Developing Apps with Analysis Path Framework \\(APF\\) Analysis Path Framework \\(APF\\) provides reuse components that allow you to build and enhance interac...",
+  "wordCount": 413,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

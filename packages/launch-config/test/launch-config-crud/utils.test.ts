@@ -11,6 +11,8 @@ describe('utils', () => {
                 ui5Version: 'DUMMY_UI5_VERSION',
                 ui5VersionUri: 'DUMMY_UI5_URI'
             });
+            expect(launchConfig.console).toStrictEqual('internalConsole');
+            expect(launchConfig.internalConsoleOptions).toStrictEqual('openOnSessionStart');
             expect(launchConfig.env.FIORI_TOOLS_UI5_VERSION).toEqual('DUMMY_UI5_VERSION');
             expect(launchConfig.env.FIORI_TOOLS_UI5_URI).toEqual('DUMMY_UI5_URI');
             expect(launchConfig.env.FIORI_TOOLS_BACKEND_CONFIG).toBeUndefined();
@@ -54,6 +56,18 @@ describe('utils', () => {
                 startFile: 'index.html'
             });
             expect(launchConfig.args).toStrictEqual(['--open', 'index.html']);
+        });
+
+        it('should generate Launch config with remote access', () => {
+            const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
+                name: 'TEST_NAME',
+                projectRoot: TestPaths.v2,
+                oDataVersion: '2.0',
+                remoteAccess: true
+            });
+            expect(launchConfig.internalConsoleOptions).not.toBeDefined();
+            expect(launchConfig.console).toStrictEqual('integratedTerminal');
+            expect(launchConfig.args).toStrictEqual(['--accept-remote-connections']);
         });
     });
 
@@ -175,6 +189,15 @@ describe('utils', () => {
                 oDataVersion
             );
             expect(result.visible).toBeFalsy();
+        });
+
+        it('should resolve remoteAccess', () => {
+            const fioriOptions = getFioriOptions(
+                { ...defaultLaunchConfig, args: ['--accept-remote-connections'] } as LaunchConfig,
+                projectRoot,
+                oDataVersion
+            );
+            expect(fioriOptions).toEqual(expect.objectContaining({ remoteAccess: true }));
         });
     });
 });

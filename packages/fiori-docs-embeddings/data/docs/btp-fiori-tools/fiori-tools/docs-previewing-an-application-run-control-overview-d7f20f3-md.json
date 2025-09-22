@@ -1,0 +1,24 @@
+{
+  "id": "btp-fiori-tools-docs-previewing-an-application-run-control-overview-d7f20f3-md",
+  "title": "Run Control Overview",
+  "category": "fiori-tools",
+  "path": "docs/Previewing-an-Application/run-control-overview-d7f20f3.md",
+  "lastModified": "2025-09-01T18:17:10.160Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Run",
+    "Control",
+    "Overview"
+  ],
+  "headers": [
+    "Run Control Overview",
+    "Example"
+  ],
+  "content": "<!-- loiod7f20f306af14d34999f56a536f28d47 -->\n\n# Run Control Overview\n\nThe *Run Configuration* dialog looks for the `<workspace_root>/.vscode/launch.json` file, but it will not traverse into any subfolders so it will not find any configurations inside `launch.json` files that reside in nested folders. You can merge configurations from multiple`launch.json` files by using workspaces. Here is a sample that shows different development environment setups.\n\n\n\n<a name=\"loiod7f20f306af14d34999f56a536f28d47__section_sdc_rwh_fsb\"/>\n\n## Example\n\nAssuming the following file system structure:\n\n![](images/RunConfig_Image1_5cfcf01.png)\n\nThe `launch.json` files contain the configuration noted next to them: **Config One**, **Config Two**, and**Config Subfolder**. Depending on which folder you choose, you will get different results.\n\nWhen opening Folder\\_One, Config One is shown in *Run and Debug* view.\n\n![](images/Runconfiguration_Image2_247b086.png)\n\n![](images/Runconfig_Image3_ad1782a.png)\n\nIf you open Folder Two, the *Run and Debug* view shows Config Two.\n\n![](images/Runconfig_image4_7cc5305.png)\n\n> ### Note:  \n> The config from Subfolder is not shown because the`launch.json` configuration file cannot be found in the `<workspace_root>/.vscode` file.\n\nWhen you open Subfolder in your development environment, only Config Subfolder is shown.\n\nIn addition, you can create a workspace, by opening one of the folders and selecting *Add Folder to Workspace* in your development environment. The workspace can be configured in many ways. Here are some examples:\n\n-   **workspace root:** Folder\\_One\n\n    Only **Config One** is displayed, same as shown above in Open Folder\\_One.\n\n-   **workspace roots**: Folder\\_One, Folder\\_Two\n\n    ![](images/Runconfig_Image5_7d410a4.png)\n\n    In this case, Config One and Config Two are displayed, because these two configurations can be found in `Folder_One/.vscode/launch.json` and `Folder_Two/.vscode/launch.json`\n\n    ![](images/Runconfig_Image6_7fe89a4.png)\n\n-   **workspace roots**: Folder\\_One, Folder\\_Two, Subfolder\n\n    ![](images/Runconfig_Image7_9d494db.png)\n\n    In this case configurations from all three `launch.json` files are displayed:\n\n    ![](images/Runconfig_Image8_40f2fe8.png)\n\n\n> ### Note:  \n> As seen in the last example, you can add a subfolder of an existing workspace root folder as a standalone workspace root.\n\nFor more information on run configurations, see[Launch configurations](https://code.visualstudio.com/docs/editor/debugging#_launch-configurations) \n\n**Related Information**  \n\n\n[Create a New Run Configuration in Visual Studio Code](create-a-new-run-configuration-in-visual-studio-code-3b1f37e.md)\n\n[Create a New Run Configuration in SAP Business Application Studio](create-a-new-run-configuration-in-sap-business-application-studio-05f2a9e.md)\n\n",
+  "excerpt": "<!-- loiod7f20f306af14d34999f56a536f28d47 --> Run Control Overview The Run Configuration dialog looks for the <workspace_root>/.vscode/launch.json file, but it will not traverse into any subfolders so...",
+  "wordCount": 314,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-04-essentials-structuring-components-and-descriptor-dc9e11c-md",
+  "title": "Structuring: Components and Descriptor",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/structuring-components-and-descriptor-dc9e11c.md",
+  "lastModified": "2025-09-01T18:17:10.545Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Structuring",
+    "Components",
+    "and",
+    "Descriptor"
+  ],
+  "headers": [
+    "Structuring: Components and Descriptor"
+  ],
+  "content": "<!-- loiodc9e11c3889441429a60ee871da6f3cb -->\n\n# Structuring: Components and Descriptor\n\nSAPUI5 provides Components as independent and reusable parts of UI5 applications. They facilitate the encapsulation of closely related parts of an application, thus enabling developers to structure and maintain their applications more easily.\n\n",
+  "excerpt": "<!-- loiodc9e11c3889441429a60ee871da6f3cb --> Structuring: Components and Descriptor SAPUI5 provides Components as independent and reusable parts of UI5 applications. They facilitate the encapsulation...",
+  "wordCount": 42,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

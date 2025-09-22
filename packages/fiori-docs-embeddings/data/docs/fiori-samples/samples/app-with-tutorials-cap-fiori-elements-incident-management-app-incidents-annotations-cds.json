@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-annotations-cds",
+  "title": "annotations",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/annotations.cds",
+  "lastModified": "2025-09-01T18:17:10.796Z",
+  "tags": [
+    "samples",
+    "cds",
+    "annotations"
+  ],
+  "headers": [],
+  "content": "# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.md\n\n```cds\n# annotations.cds\n\n```cds\nusing IncidentService as service from '../../srv/incidentservice';\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "annotations.md cds annotations.md cds annotations.md cds annotations.md cds annotations.cds",
+  "wordCount": 42,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-enabling-the-search-function-3cdebee-md",
+  "title": "Enabling the Search Function",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/enabling-the-search-function-3cdebee.md",
+  "lastModified": "2025-09-01T18:17:10.614Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Enabling",
+    "the",
+    "Search",
+    "Function"
+  ],
+  "headers": [
+    "Enabling the Search Function",
+    "Additional Features in SAP Fiori Elements for OData V2",
+    "Metadata XML",
+    "Additional Features in SAP Fiori Elements for OData V4",
+    "More Information"
+  ],
+  "content": "<!-- loio3cdebeebb04b4205908140242c9d6817 -->\n\n# Enabling the Search Function\n\nYou can enable the *Search* function in the list report.\n\nThe search is restricted to 1000 characters.\n\n\n\n<a name=\"loio3cdebeebb04b4205908140242c9d6817__section_rbx_2bh_psb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\nTo enable the search function, you must set `sap:searchable` to `true` for the root entity set.\n\n  \n  \n**List Report: Search**\n\n\n\n![](images/ListReport_Search_8f1dc18.png)\n\n\n\n### Metadata XML\n\n```xml\n<EntitySet Name=\"SEPMRA_C_PD_Product\"EntityType=\"SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType\" sap:searchable=\"true\" sap:content-version=\"1\"/>\n```\n\n\n\n\n\n<a name=\"loio3cdebeebb04b4205908140242c9d6817__section_knm_fch_psb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V4\n\nThe *Search* field is enabled by default.\n\nIf the underlying entity doesn't support the search functionality, you can disable it by setting `Searchable` to `false` in the `SearchRestriction` annotation.\n\nThe following sample code shows how to disable the search functionality for the `SalesOrder` entity:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```\n> <Annotations Target=\"SAP__self.Container/SalesOrder\">\n>    <Annotation Term=\"SAP__capabilities.SearchRestrictions\">\n>       <Record>\n>          <PropertyValue Property=\"Searchable\" Bool=\"false\" />\n>       </Record>\n>    </Annotation>\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> @Search.searchable: false\n> annotate view ZC_SalesOrder with { };\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> annotate SalesOrder with @Capabilities: {SearchRestrictions: {Searchable: false}};\n> ```\n\nFor more information about how to enable and disable the *Search* field for analytical tables, see the corresponding section in [Setting the Table Type](setting-the-table-type-7f844f1.md).\n\n\n\n<a name=\"loio3cdebeebb04b4205908140242c9d6817__section_q5w_tgf_nmb\"/>\n\n## More Information\n\nFor more information about configuring the filter bar in a list report, see [Adapting the Filter Bar](adapting-the-filter-bar-609c39a.md).\n\n",
+  "excerpt": "<!-- loio3cdebeebb04b4205908140242c9d6817 --> Enabling the Search Function You can enable the Search function in the list report. The search is restricted to 1000 characters. <a name=\"loio3cdebeebb04b...",
+  "wordCount": 246,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

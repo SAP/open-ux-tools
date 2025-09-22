@@ -1,0 +1,21 @@
+{
+  "id": "sapui5-docs-09-developing-controls-condensing-f4e064b-md",
+  "title": "Condensing",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/condensing-f4e064b.md",
+  "lastModified": "2025-09-01T18:17:10.673Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Condensing"
+  ],
+  "headers": [
+    "Condensing"
+  ],
+  "content": "<!-- loiof4e064b604c8460781b01b0a9247b105 -->\n\n# Condensing\n\nCondensing reduces overhead when creating changes.\n\nEach UI change made by a developer, key user or end user with SAPUI5 flexibility results in a change file being stored in the back end. Multiple changes to the same control can lead to superfluous changes that are not required for the target UI, for example, a text being renamed multiple times. Condensing minimizes the number of changes to be stored as much as possible. Certain changes, however, can't be condensed - for example, if they have been made on different layers or in different versions. Change handlers therefore have to classify the type of changes they create.\n\nWhen the `getCondenserInfo` function is implemented, the change type is enabled to be condensed. Redundant changes are deleted while preserving the target UI. There are several classifications available, but no option to define a custom classification. Depending on the classification, different properties have to be returned by the function:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nClassification\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n<th valign=\"top\">\n\nExample\n\n</th>\n<th valign=\"top\">\n\nRequired Properties\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nAll classifications\n\n</td>\n<td valign=\"top\">\n\n \n\n</td>\n<td valign=\"top\">\n\n \n\n</td>\n<td valign=\"top\">\n\n`affectedControl, classification`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nLastOneWins\n\n</td>\n<td valign=\"top\">\n\nAll changes except for the last one are removed.\n\n</td>\n<td valign=\"top\">\n\n*rename*\n\n</td>\n<td valign=\"top\">\n\n`uniqueKey`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nReverse\n\n</td>\n<td valign=\"top\">\n\nTwo change types reverse each other like a toggle. A maximum of one change is left.\n\n</td>\n<td valign=\"top\">\n\n*hide*/*unhide*\n\n</td>\n<td valign=\"top\">\n\n`uniqueKey`\n\nThe unique key has to be the same for both change types that reverse each other.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nMove\n\n</td>\n<td valign=\"top\">\n\nA control is moved inside a container.After any number of *move* changes, only one change of this type remains per control.\n\n</td>\n<td valign=\"top\">\n\n \n\n</td>\n<td valign=\"top\">\n\n`sourceContainer, targetContainer, sourceIndex, sourceAggregation, targetAggregation, setTargetIndex, getTargetIndex`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nCreate\n\n</td>\n<td valign=\"top\">\n\nA new control is created \\(it's not just changing the visibility\\) that was previously not in the container.\n\n</td>\n<td valign=\"top\">\n\n \n\n</td>\n<td valign=\"top\">\n\n`targetContainer, targetAggregation, setTargetIndex, getTargetIndex`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nDestroy\n\n</td>\n<td valign=\"top\">\n\nA control is destroyed or removed from the container.\n\n</td>\n<td valign=\"top\">\n\n \n\n</td>\n<td valign=\"top\">\n\n`targetContainer, sourceIndex, targetAggregation`\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nUpdate\n\n</td>\n<td valign=\"top\">\n\nA change is deleted and integrated in another change.\n\n</td>\n<td valign=\"top\">\n\n*addIFrame* + *UpdateIFrame*\n\n</td>\n<td valign=\"top\">\n\n`uniqueKey, updateContent`\n\nThe `uniqueKey` and `affectedControl` have to be the same as in the change into which this change is integrated.\n\nThe updates themselves are last one wins, so only the newest *update* change gets integrated.\n\nThe *update* change must not have any impact on any indices.\n\nThe change that receives the update can be of any kind, but additionally needs the *update* property.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loiof4e064b604c8460781b01b0a9247b105 --> Condensing Condensing reduces overhead when creating changes. Each UI change made by a developer, key user or end user with SAPUI5 flexibility results in ...",
+  "wordCount": 472,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
