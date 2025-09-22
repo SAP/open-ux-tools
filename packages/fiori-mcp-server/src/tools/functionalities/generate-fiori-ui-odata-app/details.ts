@@ -1,14 +1,9 @@
-import { command } from './command';
-import { GENERATE_FIORI_UI_ODATA_APP_ID, LATEST_UI5_VERSION } from '../../../constant';
-import type {
-    ExecuteFunctionalityInput,
-    ExecuteFunctionalityOutput,
-    FunctionalityHandlers,
-    GetFunctionalityDetailsOutput
-} from '../../../types';
+import type { GetFunctionalityDetailsOutput } from '../../../types';
 
-export const GENERATE_FIORI_UI_ODATA_APP: GetFunctionalityDetailsOutput = {
-    functionalityId: GENERATE_FIORI_UI_ODATA_APP_ID,
+import { GENERATE_FIORI_UI_ODATA_APP_ID as functionalityId, LATEST_UI5_VERSION } from '../../../constant';
+
+export default {
+    functionalityId,
     name: 'Generate SAP Fiori UI Application for non-CAP Projects',
     description: `Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
                 Crucially, you must first construct the appGenConfig JSON argument.
@@ -191,28 +186,4 @@ export const GENERATE_FIORI_UI_ODATA_APP: GetFunctionalityDetailsOutput = {
             required: true
         }
     ]
-};
-
-/**
- * Retrieves the details of the Generate SAP Fiori UI Application functionality.
- *
- * @returns A promise that resolves to the functionality details output.
- */
-async function getFunctionalityDetails(): Promise<GetFunctionalityDetailsOutput> {
-    return GENERATE_FIORI_UI_ODATA_APP;
-}
-
-/**
- * Executes the Generate SAP Fiori UI Application functionality.
- *
- * @param params - The input parameters for executing the functionality.
- * @returns A promise that resolves to the execution output.
- */
-async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    return command(params);
-}
-
-export const generateFioriUIodataAppHandlers: FunctionalityHandlers = {
-    getFunctionalityDetails,
-    executeFunctionality
-};
+} as GetFunctionalityDetailsOutput;

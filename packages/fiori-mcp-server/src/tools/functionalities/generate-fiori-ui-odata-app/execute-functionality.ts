@@ -6,7 +6,7 @@ import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
 import * as z from 'zod';
-import { GENERATE_FIORI_UI_ODATA_APP_ID } from '../../../constant';
+import { GENERATE_FIORI_UI_ODATA_APP_ID as functionalityId } from '../../../constant';
 import { GeneratorConfigSchemaNonCAP } from './generator-schema';
 
 const exec = promisify(execAsync);
@@ -17,7 +17,7 @@ const exec = promisify(execAsync);
  * @param params Input parameters for application generation.
  * @returns Application generation execution output.
  */
-export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
+export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     console.log('Starting Fiori UI generation...');
 
     let generatorConfigNonCap;
@@ -59,7 +59,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     } catch (error) {
         console.error('Error generating application:', error);
         return {
-            functionalityId: GENERATE_FIORI_UI_ODATA_APP_ID,
+            functionalityId,
             status: 'Error',
             message: 'Error generating application: ' + error.message,
             parameters: params.parameters,
@@ -75,7 +75,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     }
 
     return {
-        functionalityId: GENERATE_FIORI_UI_ODATA_APP_ID,
+        functionalityId,
         status: 'Success',
         message: 'Generation completed successfully: ' + appPath,
         parameters: params.parameters,
