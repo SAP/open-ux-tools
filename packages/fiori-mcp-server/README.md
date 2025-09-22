@@ -75,8 +75,8 @@ The following rules help guide the LLM to use the server correctly:
 ## [Available Tools](#available-tools)
 
 #### `search_docs`
-Searches Fiori Elements, Annotations, SAPUI5, Fiori tools documentation for the given query.
-Note: the results are based on the most recent indexed version of SAPUI5 documentation
+Searches Fiori Elements, Annotations, UI5, Fiori tools documentation for the given query.
+Note: the results are based on the most recent indexed version of UI5 documentation
 
 
 #### `list_fiori_apps`
