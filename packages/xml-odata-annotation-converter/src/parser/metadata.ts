@@ -189,9 +189,9 @@ function convertMetadataElement(context: Context, element: XMLElement): Metadata
                     ...context,
                     parent: metadataElement,
                     parentPath:
-                        context.parentPath !== ''
-                            ? `${context.parentPath}/${metadataElement.name}`
-                            : metadataElement.name
+                        context.parentPath === ''
+                            ? metadataElement.name
+                            : `${context.parentPath}/${metadataElement.name}`
                 },
                 child
             );
@@ -557,6 +557,18 @@ function getPrimitiveTypeName(typeName: string, baseTypeName: string, elementNam
 }
 
 /**
+ *  Converts to singular type name.
+ *
+ * @param fqTypeName Fully qualified name for a type.
+ * @returns singular type name.
+ */
+function getTypeName(fqTypeName: FullyQualifiedTypeName): FullyQualifiedName {
+    // links always go to entityTypes/complexTypes/functions or actions, which are defined as direct container children
+    // --> use fully qualified name as path with single segment (strip Collection())
+    return fqTypeName.startsWith('Collection(') ? fqTypeName.slice(11, -1) : fqTypeName;
+}
+
+/**
  * Adjusts medatata element properties and returns V2 function import md nodes (in case of FunctionImport element) or empty array.
  *
  * @param context context
@@ -571,18 +583,6 @@ function adjustMetadataElement(
     type: string | undefined,
     metadataElementProperties: MetadataElementProperties
 ): MetadataElement[] | undefined {
-    /**
-     *  Converts to singular type name.
-     *
-     * @param fqTypeName Fully qualified name for a type.
-     * @returns singular type name.
-     */
-    function getTypeName(fqTypeName: FullyQualifiedTypeName): FullyQualifiedName {
-        // links always go to entityTypes/complexTypes/functions or actions, which are defined as direct container children
-        // --> use fully qualified name as path with single segment (strip Collection())
-        return fqTypeName.startsWith('Collection(') ? fqTypeName.slice(11, -1) : fqTypeName;
-    }
-
     if (!type) {
         return undefined;
     }
