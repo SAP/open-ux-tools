@@ -1,5 +1,16 @@
 # @sap-ux/environment-check
 
+## 0.18.32
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/project-access@1.32.1
+
 ## 0.18.31
 
 ### Patch Changes
