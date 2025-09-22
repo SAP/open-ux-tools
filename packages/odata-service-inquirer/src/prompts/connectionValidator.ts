@@ -343,6 +343,9 @@ export class ConnectionValidator {
 
             if (isSystem) {
                 await this.createSystemConnection({ axiosConfig, url, odataVersion });
+                const systemInfo = await (this.serviceProvider as AbapServiceProvider).getSystemInfo();
+                this._connectedUserName = systemInfo?.userName;
+                this._connectedSystemName = systemInfo?.systemID;
             } else {
                 // Full service URL
                 await this.createOdataServiceConnection(axiosConfig, url.pathname);
@@ -673,7 +676,7 @@ export class ConnectionValidator {
             this.systemAuthType = 'serviceKey';
             await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
             // Cache the user info
-            this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).getUserInfo();
+            this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
             this._serviceInfo = serviceInfo;
             this._validatedUrl = serviceInfo.url;
             return this.getValidationResultFromStatusCode(200);

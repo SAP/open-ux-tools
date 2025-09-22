@@ -77,9 +77,12 @@ export function getSystemUrlQuestion<T extends Answers>(
                 cachedConnectedSystem.backendSystem?.authenticationType === 'reentranceTicket'
             ) {
                 connectValidator.setConnectedSystem(cachedConnectedSystem);
-            } else if (isBackendSystemKeyExisting(PromptState.backendSystemsCache, url)) {
-                // Not a cached connection so re-validate as new backend system entry
-                return t('prompts.validationMessages.backendSystemExistsWarning');
+            } else {
+                const existingBackend = isBackendSystemKeyExisting(PromptState.backendSystemsCache, url);
+                if (existingBackend) {
+                    // Not a cached connection so re-validate as new backend system entry
+                    return t('prompts.validationMessages.backendSystemExistsWarning', { backendName: existingBackend.name });
+                }
             }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,

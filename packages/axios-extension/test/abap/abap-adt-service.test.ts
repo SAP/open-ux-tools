@@ -15,7 +15,7 @@ import {
 } from '../../src';
 import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src';
 import * as auth from '../../src/auth';
-import type { ArchiveFileNode } from '../../src/abap/types';
+import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
 import fs from 'fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { Uaa } from '../../src/auth/uaa';
@@ -427,8 +427,14 @@ describe.only('Use existing connection session', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)
             .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'))
-            .get('/userinfo')
-            .reply(200, { email: 'emailTest', name: 'nameTest' });
+            .get('/system')
+            .reply(200, {
+                userFullName: 'User FullName',
+                userName: 'userName01',
+                client: '100',
+                systemID: 'ABC01',
+                language: 'EN',
+            } as SystemInfo);
 
         const config = cloneDeep(existingCookieConfigForAbapOnCloudEmbeddedSteampunk);
         const provider = createForAbapOnCloud(config as any);

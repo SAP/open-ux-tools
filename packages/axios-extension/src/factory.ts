@@ -194,7 +194,7 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
                 ...config
             });
             if (!cookies) {
-                // Service Key based connectitvity is removed from Steampunk 2511 so now we always use reentrance
+                // Always use re-entrance tickets regardless of the ABAP Cloud environment
                 attachReentranceTicketAuthInterceptor({ provider });
             }
             break;

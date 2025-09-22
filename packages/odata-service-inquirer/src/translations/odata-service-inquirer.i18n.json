@@ -59,7 +59,7 @@
             "capProjectNotFound": "The folder you have selected does not contain a valid CAP project. Please check and try again.",
             "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
             "annotationsNotFound": "Annotations not found for the specified service.",
-            "backendSystemExistsWarning": "A saved system connection entry already exists with the same URL. Please reuse the existing entry or remove it, using the systems panel, before adding a new connection.",
+            "backendSystemExistsWarning": "A saved system connection entry: {{backendName}} already exists with the same URL. Please reuse the existing entry or remove it, using the systems panel, before adding a new connection.",
             "reentranceTicketSystemHostOnly": "ABAP cloud system urls must only contain the hostname (e.g. 'https://123.abc.com')"
         },
         "warnings": {
