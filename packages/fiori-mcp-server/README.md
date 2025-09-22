@@ -82,7 +82,7 @@ Note: the results are based on the the most recent indexed version of SAPUI5 doc
 #### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
-#### `list-functionalities` (Step 1 of 3)
+#### `list_functionalities` (Step 1 of 3)
 Gets the list of supported functionalities to create a new or modify an existing SAP Fiori application.
 
 The main functionalities are:
