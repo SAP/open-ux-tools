@@ -20,6 +20,7 @@ import type {
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
+import { logger } from './utils/logger';
 
 type ToolArgs =
     | DocSearchInput
@@ -61,7 +62,7 @@ export class FioriFunctionalityServer {
      * Logs MCP errors and handles the SIGINT signal for graceful shutdown.
      */
     private setupErrorHandling(): void {
-        this.server.onerror = (error) => console.error('[MCP Error]', error);
+        this.server.onerror = (error) => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
             await this.server.close();
             process.exit(0);
@@ -98,25 +99,25 @@ export class FioriFunctionalityServer {
                 };
 
                 switch (name) {
-                    case 'doc-search':
+                    case 'search_docs':
                         result = await docSearch(args as DocSearchInput);
                         return this.convertResultToCallToolResult(result.results);
-                    case 'list-fiori-apps':
+                    case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
-                    case 'list-functionality':
+                    case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
-                    case 'get-functionality-details':
+                    case 'get_functionality_details':
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
                         break;
-                    case 'execute-functionality':
+                    case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
                         await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
@@ -166,6 +167,6 @@ export class FioriFunctionalityServer {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         await this.setupTelemetry();
-        console.error('Fiori Functionality MCP Server running on stdio');
+        logger.info('Fiori Functionality MCP Server running on stdio');
     }
 }
