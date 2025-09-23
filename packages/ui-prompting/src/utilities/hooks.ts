@@ -86,7 +86,7 @@ export function usePromptMessage(message?: AsyncDynamicQuestionProperty<string, 
                 .catch(() => setResolvedMessage(''));
         } else if (typeof message === 'string') {
             setResolvedMessage(message);
-        } 
+        }
     }, [message, answers]);
     return resolvedessage;
 }
