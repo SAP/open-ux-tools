@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.12.3
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
 ## 0.12.2
 
 ### Patch Changes

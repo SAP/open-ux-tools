@@ -22,6 +22,7 @@ import { FieldsAggregation, ConnectedFieldsAggregation } from './fields';
 import { isArrayEndsWith, getMatchingNode } from './utils';
 import { ActionsAggregation } from './actions';
 import i18next from 'i18next';
+import { logger } from '../../../utils/logger';
 import { FilterFieldsAggregation } from './filter-fields';
 import { VisualFiltersAggregation } from './visual-filters';
 import { SectionAggregation, HeaderSectionsAggregation, SubSectionsAggregation } from './sections';
@@ -932,7 +933,7 @@ export class PageEditModel {
             if (currentNode[property] !== undefined || (property === 'i18nClassification' && property in currentNode)) {
                 if (!this.isCorrectSchemaProperty(property, currentNode[property])) {
                     // schema property is not correct - throw error and do not store value, because it can give unpredictable behavior
-                    console.error(
+                    logger.error(
                         i18next.t('SCHEMA_PARSING_ERROR_UNEXPECTED_VALUE', {
                             name: property,
                             value: JSON.stringify(currentNode[property])

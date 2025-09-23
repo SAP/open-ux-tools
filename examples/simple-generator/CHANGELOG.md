@@ -1,5 +1,17 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.77
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/fiori-elements-writer@2.7.8
+    -   @sap-ux/fiori-freestyle-writer@2.4.45
+
 ## 1.1.76
 
 ### Patch Changes
