@@ -263,7 +263,7 @@ export class FlpSandbox {
             );
             if (!isCDN) {
                 this.logger.warn(
-                    `Local Flex changes are not supported for the current UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs. Consider using a proxy to load UI5 resources from the CDN (e.g., https://ui5.sap.com), or upgrade the UI5 version in the yaml configuration to at least 1.84.`
+                    `The preview with virtual endpoints does not support flex changes for the current UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs. Consider using a proxy to load UI5 resources from the CDN (e.g., https://ui5.sap.com), or upgrade the UI5 version in the yaml configuration to at least 1.84.`
                 );
             }
         } else {
