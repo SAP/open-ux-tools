@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.21
+
+### Patch Changes
+
+-   bfdbaca: fix: Deploy Config generator should not validate the package for OnPremise systems for ADP
+
 ## 1.6.20
 
 ### Patch Changes
