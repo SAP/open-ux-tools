@@ -351,8 +351,8 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
         choices: [
-            { name: t('bindingContextType.option.relative') as string, value: 'relative' },
-            { name: t('bindingContextType.option.absolute') as string, value: 'absolute' }
+            { name: t('bindingContextType.option.absolute') as string, value: 'absolute' },
+            { name: t('bindingContextType.option.relative') as string, value: 'relative' }
         ],
         guiOptions: {
             ...guiOptions,
