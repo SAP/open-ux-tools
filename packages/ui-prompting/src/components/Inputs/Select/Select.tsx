@@ -38,7 +38,7 @@ export const Select = (props: SelectProps) => {
     }, [options]);
 
     const resolvedMessage = usePromptMessage(message, answers);
-    const label = resolvedMessage && resolvedMessage.trim() ? resolvedMessage : name;
+    const label = resolvedMessage?.trim() ? resolvedMessage : name;
 
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {

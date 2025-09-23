@@ -21,7 +21,7 @@ export async function loadEntitySets(context: PromptContext): Promise<EntitySet[
         throw new Error('Project is undefined. Cannot fetch entity sets.');
     }
     if (!cachedEntitySets) {
-        cachedEntitySets = await getEntitySets(project, appId);
+        cachedEntitySets ??= await getEntitySets(project, appId);
     }
     return cachedEntitySets;
 }

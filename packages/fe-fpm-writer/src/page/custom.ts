@@ -74,19 +74,6 @@ export function getTemplateRoot(ui5Version?: string): string {
 }
 
 /**
- * Adds the richtexteditor namespace to the XML fragment if it is missing.
- *
- * @param xmlDocument - The parsed XML document representing the fragment.
- */
-export function handleRichTextEditorBlock(xmlDocument: Document): void {
-    const fragmentDef = xmlDocument.documentElement;
-    const macrosNamespace = (xmlDocument.firstChild as any)._nsMap.macros;
-    if (fragmentDef && !fragmentDef.hasAttribute(`xmlns:richtexteditor`)) {
-        fragmentDef.setAttribute('xmlns:richtexteditor', `${macrosNamespace}.richtexteditor`);
-    }
-}
-
-/**
  * Handles the creation of a page building block for a custom page.
  *
  * @param {string} basePath - The base path of the UI5 application.

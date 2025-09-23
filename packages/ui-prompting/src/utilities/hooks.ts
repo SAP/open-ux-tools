@@ -78,7 +78,7 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
  * @returns The resolved message string
  */
 export function usePromptMessage(message?: AsyncDynamicQuestionProperty<string, Answers>, answers?: any): string {
-    const [resolvedessage, setResolvedMessage] = useState<string>('');
+    const [resolvedMessage, setResolvedMessage] = useState<string>('');
     useEffect(() => {
         if (typeof message === 'function') {
             Promise.resolve(message(answers ?? {}))
@@ -86,9 +86,9 @@ export function usePromptMessage(message?: AsyncDynamicQuestionProperty<string, 
                 .catch(() => setResolvedMessage(''));
         } else if (typeof message === 'string') {
             setResolvedMessage(message);
-        } 
+        }
     }, [message, answers]);
-    return resolvedessage;
+    return resolvedMessage;
 }
 
 /**

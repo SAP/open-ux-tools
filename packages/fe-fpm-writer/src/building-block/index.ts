@@ -23,7 +23,6 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddMacrosNamespace } from './prompts/utils/xml';
-import { handleRichTextEditorBlock } from '../page/custom';
 import { i18nNamespaces, translate } from '../i18n';
 
 const PLACEHOLDERS = {
@@ -94,6 +93,19 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
+}
+
+/**
+ * Adds the richtexteditor namespace to the XML fragment if it is missing.
+ *
+ * @param xmlDocument - The parsed XML document representing the fragment.
+ */
+export function handleRichTextEditorBlock(xmlDocument: Document): void {
+    const fragmentDef = xmlDocument.documentElement;
+    const macrosNamespace = (xmlDocument.firstChild as any)._nsMap.macros;
+    if (fragmentDef && !fragmentDef.hasAttribute(`xmlns:richtexteditor`)) {
+        fragmentDef.setAttribute('xmlns:richtexteditor', `${macrosNamespace}.richtexteditor`);
+    }
 }
 
 /**
