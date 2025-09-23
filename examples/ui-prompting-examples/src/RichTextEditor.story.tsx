@@ -23,10 +23,10 @@ export const ExternalValues = (): JSX.Element => {
                     buttonGroup: {
                         name: 'edit-actions',
                         buttons: 'copy,paste,undo,redo',
-                        visible: 'false',
-                        priority: '20',
-                        customToolbarPriority: '5',
-                        row: '2'
+                        visible: false,
+                        priority: 20,
+                        customToolbarPriority: 5,
+                        row: 2
                     }
                 }
             }}
