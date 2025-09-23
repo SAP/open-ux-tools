@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.3
+
+### Patch Changes
+
+-   f3768a9: Update MCP to use snake case instead of kebab case in MCP tool names. Rename doc_search to search_docs.
+
+## 0.1.2
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
 ## 0.1.1
 
 ### Patch Changes
@@ -69,7 +81,7 @@
 
 ### Patch Changes
 
--   4fad77a: Regenerate output schema for 'get-functionality-details' tool
+-   4fad77a: Regenerate output schema for 'get_functionality_details' tool
 
 ## 0.0.2
 

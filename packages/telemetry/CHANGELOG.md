@@ -1,5 +1,16 @@
 # @sap-ux/telemetry
 
+## 0.6.23
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/project-access@1.32.1
+    -   @sap-ux/nodejs-utils@0.2.4
+
 ## 0.6.22
 
 ### Patch Changes
