@@ -6,7 +6,7 @@ import { t } from '../../i18n';
 import { getRouterType } from './yaml';
 import { getYamlContent } from './yaml-loader';
 import { requestCfApi } from '../services/api';
-import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../../types';
+import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, AppRouterType } from '../../types';
 
 /**
  * Get the approuter type.
@@ -53,8 +53,8 @@ export function getServicesForFile(mtaFilePath: string, logger: ToolsLogger): Bu
     const serviceNames: BusinessServiceResource[] = [];
     const parsed = getYamlContent(mtaFilePath);
     if (parsed?.resources && Array.isArray(parsed.resources)) {
-        parsed.resources.forEach((resource: Resource) => {
-            const name = resource?.parameters?.['service-name'] || resource.name;
+        for (const resource of parsed.resources) {
+            const name = resource?.parameters?.['service-name'] ?? resource.name;
             const label = resource?.parameters?.service as string;
             if (name) {
                 serviceNames.push({ name, label });
@@ -62,7 +62,7 @@ export function getServicesForFile(mtaFilePath: string, logger: ToolsLogger): Bu
                     logger?.log(`Service '${name}' will be ignored without 'service' parameter`);
                 }
             }
-        });
+        }
     }
     return serviceNames;
 }
@@ -101,8 +101,9 @@ async function filterServices(businessServices: BusinessServiceResource[], logge
     logger?.log(`Filtering services. Request to: ${url}, result: ${JSON.stringify(json)}`);
 
     const businessServiceNames = new Set(businessServices.map((service) => service.label));
+
     const result: string[] = [];
-    json?.resources?.forEach((resource: CfServiceOffering) => {
+    for (const resource of json?.resources ?? []) {
         if (businessServiceNames.has(resource.name)) {
             const sapService = resource?.['broker_catalog']?.metadata?.sapservice;
             if (sapService && ['v2', 'v4'].includes(sapService?.odataversion ?? '')) {
@@ -111,7 +112,7 @@ async function filterServices(businessServices: BusinessServiceResource[], logge
                 logger?.log(`Service '${resource.name}' doesn't support V2/V4 Odata and will be ignored`);
             }
         }
-    });
+    }
 
     if (result.length === 0) {
         throw new Error(t('error.noBusinessServicesFound'));
