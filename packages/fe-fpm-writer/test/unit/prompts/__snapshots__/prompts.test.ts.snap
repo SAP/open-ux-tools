@@ -1769,7 +1769,7 @@ Object {
         "placeholder": "Select a view or fragment file",
         "selectType": "dynamic",
       },
-      "message": "View or Fragment File",
+      "message": "view or fragment File",
       "name": "viewOrFragmentPath",
       "type": "list",
       "validate": [Function],
