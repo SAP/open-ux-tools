@@ -212,11 +212,11 @@ const ns1 = {
         'richTextEditor': {
             'id': {
                 'message': 'Building Block ID',
-                'validation': 'An ID is required to generate the rich text editor building block'
+                'validation': 'An ID is required to generate the Rich Text Editor building block'
             },
             'viewOrFragmentPath': {
-                'message': 'View or Fragment File',
-                'validation': 'A View or Fragment is required to generate the page building block.'
+                'message': 'view or fragment File',
+                'validation': 'A View or Fragment is required to generate the Rich Text Editor building block.'
             },
             'bindingContextType': 'Binding Context',
             'valueSource': 'Value Source',
@@ -260,7 +260,7 @@ const ns1 = {
     },
     'richTextEditorBuildingBlock': {
         'minUi5VersionRequirement':
-            'The Rich Text Editor block feature requires SAPUI5 1.117.0 or higher. The current version is {{ minUI5Version }}, so the Page building block will not be added.'
+            'The Rich Text Editor building block feature requires SAPUI5 1.117.0 or higher. The current version is {{ minUI5Version }}, so the Rich Text Editor building block will not be added.'
     }
 };
 export default ns1;
