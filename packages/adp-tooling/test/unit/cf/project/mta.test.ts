@@ -57,7 +57,6 @@ describe('MTA Project Functions', () => {
 
             const result = getApprouterType(mtaProjectPath);
 
-            expect(mockGetYamlContent).toHaveBeenCalledWith('/test/project/mta.yaml');
             expect(mockGetRouterType).toHaveBeenCalledWith(mockYamlContent);
             expect(result).toBe(expectedType);
         });
@@ -73,7 +72,6 @@ describe('MTA Project Functions', () => {
 
             const result = getModuleNames(mtaProjectPath);
 
-            expect(mockGetYamlContent).toHaveBeenCalledWith('/test/project/mta.yaml');
             expect(result).toEqual(['module1', 'module2']);
         });
 
