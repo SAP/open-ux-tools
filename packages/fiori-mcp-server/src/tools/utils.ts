@@ -2,6 +2,7 @@ import { findProjectRoot, createApplicationAccess, getProject, DirName } from '@
 import { join } from 'path';
 import * as zod from 'zod';
 import type { Appdetails } from '../types';
+import { logger } from '../utils/logger';
 
 /**
  * Resolves the application details from a given path.
@@ -22,7 +23,7 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
                 applicationAccess
             };
         } catch (e) {
-            console.log(`Application was not found by given path. Error: ${e}`);
+            logger.warn(`Application was not found by given path. Error: ${e}`);
             // Fallback - project without app
             const root = await findProjectRoot(path);
             const project = await getProject(root);
@@ -34,7 +35,7 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
             }
         }
     } catch (e) {
-        console.log(`Project was not found by given path. Error: ${e}`);
+        logger.warn(`Project was not found by given path. Error: ${e}`);
         return undefined;
     }
 
