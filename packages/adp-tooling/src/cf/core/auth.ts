@@ -13,7 +13,7 @@ import type { CfConfig, Organization } from '../../types';
 export async function isCfInstalled(): Promise<boolean> {
     try {
         await checkForCf();
-    } catch (error) {
+    } catch (e) {
         return false;
     }
 
@@ -28,7 +28,7 @@ export async function isCfInstalled(): Promise<boolean> {
  */
 export async function isExternalLoginEnabled(vscode: any): Promise<boolean> {
     const commands = await vscode.commands.getCommands();
-    return commands.includes('cf.login');
+    return commands?.includes('cf.login');
 }
 
 /**
