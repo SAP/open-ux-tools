@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.5
+
+### Patch Changes
+
+-   5591f68: feat: integrate ux logger utility across the fiori-mcp-server package
+
 ## 0.1.4
 
 ### Patch Changes

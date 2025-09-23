@@ -16,6 +16,7 @@ import {
     DATA_FIELD_FOR_ACTION_GROUP
 } from './model';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
+import { logger } from '../../utils/logger';
 
 interface TraverseNodeData {
     text: string;
@@ -273,7 +274,7 @@ export function getPropertyData(
             if (property.schema.enum) {
                 getEnumOptions(property.schema.enum);
             } else {
-                console.warn('Unhandled property', property);
+                logger.warn(`Unhandled property: ${JSON.stringify(property)}`);
             }
             break;
         }
