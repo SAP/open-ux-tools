@@ -12,20 +12,6 @@
 import type { FullyQualifiedName, FullyQualifiedTypeName } from '../specification';
 
 /**
- * Facets provide further details on types definitions, terms or properties
- * http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#_Toc26368805
- */
-export interface Facets {
-    isNullable?: boolean; // source: $Nullable; whether the property can have the value null
-    // $MaxLength; maximum length of a binary, stream or string value; no usage in supported vocabularies
-    precision?: number; // source: $Precision, for a decimal value: the maximum number of significant decimal digits..
-    // ..for a temporal value (e.g. time of dat): the number of decimal places allowed in the seconds
-    // $Scale; maximum number of digits allowed to the right.. ; no usage in supported vocabularies
-    // $SRID: no usage in supported vocabularies
-    // $Unicode; applicable to string values; no usage in supported vocabularies
-}
-
-/**
  * Constraints can be provided via Annotations on terms or properties
  * (commented out terms have been considered but discarded)
  */
