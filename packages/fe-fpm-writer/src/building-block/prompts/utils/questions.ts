@@ -238,7 +238,6 @@ export function getTargetPropertiesPrompt(
         name: 'buildingBlockData.targetProperty',
         choices: project
             ? async (answers?: Answers) => {
-                debugger;
                   const entitySets = await loadEntitySets(context);
 
                   const { bindingContextType, entitySet: selectedNavProp } = answers?.buildingBlockData?.metaPath ?? {};
