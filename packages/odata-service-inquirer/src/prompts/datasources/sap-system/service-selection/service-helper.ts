@@ -1,3 +1,7 @@
+import { join as joinPosix } from 'path/posix';
+
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
 import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 import {
     type Annotations,
@@ -278,6 +282,46 @@ type ValidateServiceResult = {
 };
 
 /**
+ * Collects ValueListReferences annotation values from the service metadata and annotation files.
+ *
+ * @param servicePath - The service path to which the value list references belong
+ * @param metadata - The metadata of the service
+ * @param annotations - The annotation files
+ * @returns A list of ValueListReferences found in the metadata and annotations.
+ */
+export function getValueListReferenceServices(
+    servicePath: string,
+    metadata: ConvertedMetadata | undefined,
+    annotations: Annotations[]
+): Record<string, { data?: string; path: string }[]> {
+    if (!metadata) {
+        return {};
+    }
+    const files = [
+        { data: metadata, path: servicePath },
+        ...annotations.map((annotationFile) => ({ data: annotationFile.Definitions, path: annotationFile.Uri }))
+    ];
+    const valueListReferences: Record<string, { data?: string; path: string }[]> = {};
+    for (const { data, path } of files) {
+        const schema = typeof data === 'string' ? convert(parse(data)) : data;
+        for (const entityType of schema.entityTypes) {
+            for (const property of entityType.entityProperties) {
+                const values =
+                    property.annotations.Common?.ValueListReferences?.map((reference) => ({
+                        path: joinPosix(path, reference as string).replace('/$metadata', '')
+                    })) ?? [];
+                if (values.length) {
+                    const target = `${entityType.name}/${property.name}`;
+                    valueListReferences[target] ??= [];
+                    valueListReferences[target].push(...values);
+                }
+            }
+        }
+    }
+    return valueListReferences;
+}
+
+/**
  * If we are validating a v2 service and do not have a catalog connection, we may still attempt to get the annotations but need a catalog.
  * This scenario occurs for full/partial url destinations.
  *
@@ -326,6 +370,24 @@ export async function validateService(
     if (url) {
         origin = new URL(url).origin;
     }
+
+    PromptState.odataService.valueListReferences = getValueListReferenceServices(
+        service.servicePath,
+        convertedMetadata,
+        annotations ?? []
+    );
+
+    const targets = Object.keys(PromptState.odataService.valueListReferences);
+    if (targets.length) {
+        await Promise.allSettled(
+            targets.flatMap((target) =>
+                PromptState.odataService.valueListReferences![target].map(async (reference) => {
+                    reference.data = await connectionValidator.serviceProvider!.service(reference.path).metadata();
+                })
+            )
+        );
+    }
+
     PromptState.odataService.annotations = annotations;
     PromptState.odataService.metadata = metadata;
     PromptState.odataService.odataVersion =
