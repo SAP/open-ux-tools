@@ -4,6 +4,24 @@ import { getDataSourceAnnotationFileMap, ODataVersion } from '../../adp/api-hand
 import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status';
 
 /**
+ * Describes an OData service instance for health checking.
+ */
+interface ODataServiceInfo {
+    /**
+     * The URL of the OData service.
+     */
+    serviceUrl: string;
+    /**
+     * The OData protocol version ('v2' or 'v4').
+     */
+    oDataVersion: ODataVersion;
+    /**
+     * Optional error message from backend metadata retrieval.
+     */
+    metadataReadErrorMsg: string | undefined;
+}
+
+/**
  * Use this class to do a health check for an OData service, supports both v2 and v4
  * format. This health checker ensures not only that $metadata is valid, but also that UI5
  * itself can consume the service via its models.
@@ -18,7 +36,9 @@ export class ODataHealthChecker {
     async getHealthStatus(): Promise<ODataHealthStatus[]> {
         const services = await this.getServices();
         const metadataPromises = await Promise.allSettled(
-            services.map(({ serviceUrl, oDataVersion }) => this.getServiceMetadata(serviceUrl, oDataVersion))
+            services.map(({ serviceUrl, oDataVersion, metadataReadErrorMsg }) =>
+                this.getServiceMetadata(serviceUrl, oDataVersion, metadataReadErrorMsg)
+            )
         );
 
         return metadataPromises.map((metadataPromise, idx) =>
@@ -36,16 +56,24 @@ export class ODataHealthChecker {
      *
      * @param {string} serviceUrl - The OData service url.
      * @param {ODataVersion} oDataVersion - The OData version.
+     * @param {string|undefined} metadataReadErrorMsg - Any backend error message during the metadata retreival in the backend.
+     * The metadata is used to determine the oData version and send that version back to the client.
      * @returns {Promise<any>} Rsolved with valid metadata.
      */
-    private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
+    private async getServiceMetadata(
+        serviceUrl: string,
+        oDataVersion: ODataVersion,
+        metadataReadErrorMsg: string | undefined
+    ): Promise<ODataMetadata> {
         switch (oDataVersion) {
             case 'v2':
                 return this.getServiceV2Metadata(serviceUrl);
             case 'v4':
                 return this.getServiceV4Metadata(serviceUrl);
-            default:
-                throw new Error('Unable to read OData version from the metadata xml.');
+            default: {
+                const errorDetails = metadataReadErrorMsg ? ` ${metadataReadErrorMsg}` : '';
+                throw new Error(`Unable to read OData version from the metadata xml.${errorDetails}`);
+            }
         }
     }
 
@@ -80,11 +108,12 @@ export class ODataHealthChecker {
             );
     }
 
-    private async getServices(): Promise<{ serviceUrl: string; oDataVersion: ODataVersion }[]> {
+    private async getServices(): Promise<ODataServiceInfo[]> {
         const { annotationDataSourceMap } = await getDataSourceAnnotationFileMap();
-        return Object.values(annotationDataSourceMap).map(({ serviceUrl, oDataVersion }) => ({
+        return Object.values(annotationDataSourceMap).map(({ serviceUrl, oDataVersion, metadataReadErrorMsg }) => ({
             serviceUrl,
-            oDataVersion
+            oDataVersion,
+            metadataReadErrorMsg
         }));
     }
 }

@@ -1,6 +1,6 @@
 import ODataModel2, {
-    oDataDestroySpy as oDataV2DestroySpy,
-    oDataMetadataLoadedSpy
+    oDataMetadataLoadedSpy,
+    oDataDestroySpy as oDataV2DestroySpy
 } from 'mock/sap/ui/model/odata/v2/ODataModel';
 import ODataModel4, {
     oDataRequestObjectSpy,
@@ -115,6 +115,31 @@ describe('ODataHealthChecker', () => {
 
             // Assert
             expect(result).toHaveLength(0);
+        });
+
+        it('should handle error during OData version retrieval', async () => {
+            // Arrange
+            const metadataReadErrorMsg = 'Failed to read metadata on the server.';
+            const mockServices = {
+                annotationDataSourceMap: {
+                    errorService: {
+                        serviceUrl: 'http://localhost:8080/error',
+                        metadataReadErrorMsg
+                    }
+                }
+            };
+
+            mockGetDataSourceAnnotationFileMap.mockResolvedValue(mockServices);
+
+            // Act
+            const result = await healthChecker.getHealthStatus();
+            const versionRetreivalErrorMessage = (result[0] as ODataDownStatus).errorMessage;
+
+            // Assert
+            expect(result[0].serviceUrl).toBe('http://localhost:8080/error');
+            expect(versionRetreivalErrorMessage).toBe(
+                `Unable to read OData version from the metadata xml. ${metadataReadErrorMsg}`
+            );
         });
     });
 });
