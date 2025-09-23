@@ -16,7 +16,8 @@ export enum PromptsType {
     Chart = 'chart',
     Table = 'table',
     Page = 'page',
-    BuildingBlocks = 'building-blocks'
+    BuildingBlocks = 'building-blocks',
+    RichTextEditor = 'rich-text-editor'
 }
 
 export interface Prompts<T extends Answers = Answers> {
@@ -25,11 +26,22 @@ export interface Prompts<T extends Answers = Answers> {
     initialAnswers?: Subset<T>;
 }
 
+/**
+ * Options for prompt context.
+ * - `pageContextEntitySet`: The entity set representing the page context (e.g., for an object page).
+ * - `filterEntityProperties`: List of property names to exclude.
+ */
+export interface PromptContextOptions {
+    pageContextEntitySet?: string;
+    filterEntityProperties?: string[];
+}
+
 export interface PromptContext {
     fs: Editor;
     project?: Project;
     appPath: string;
     appId: string;
+    options?: PromptContextOptions;
 }
 
 // Apply Partial on all nested level in object

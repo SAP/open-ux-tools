@@ -1,0 +1,14 @@
+<<%- macrosNamespace %>:RichTextEditorWithMetadata
+    metaPath="<%- data.metaPath %>"
+    id="<%- data.id %>">
+    <macros:buttonGroups>
+        <richtexteditor:ButtonGroup
+            name="<%- data.buttonGroup.name %>"
+            buttons="<%- data.buttonGroup.buttons %>"
+            visible="<%- data.buttonGroup.visible %>"
+            <% if (typeof data.buttonGroup.priority !== 'undefined') { %>priority="<%- data.buttonGroup.priority %>" <% } %>
+            <% if (typeof data.buttonGroup.customToolbarPriority !== 'undefined') { %>customToolbarPriority="<%- data.buttonGroup.customToolbarPriority %>" <% } %>
+            <% if (typeof data.buttonGroup.row !== 'undefined') { %>row="<%- data.buttonGroup.row %>" <% } %>
+        />
+    </macros:buttonGroups>
+</<%- macrosNamespace %>:RichTextEditorWithMetadata>

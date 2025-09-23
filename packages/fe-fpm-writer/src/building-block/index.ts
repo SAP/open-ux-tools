@@ -3,7 +3,14 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse, relative } from 'path';
-import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
+import {
+    BuildingBlockType,
+    type BuildingBlock,
+    type BuildingBlockConfig,
+    type BuildingBlockMetaPath,
+    type RichTextEditor,
+    bindingContextAbsolute
+} from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -16,6 +23,8 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddMacrosNamespace } from './prompts/utils/xml';
+import { handleRichTextEditorBlock } from '../page/custom';
+import { i18nNamespaces, translate } from '../i18n';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -56,6 +65,11 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { content: manifest } = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
+
+    if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+        handleRichTextEditorBlock(xmlDocument);
+    }
+
     fs = updateViewFile(
         basePath,
         viewOrFragmentPath,
@@ -138,12 +152,14 @@ function getDefaultMetaPath(applyContextPath: boolean, usePlaceholders?: boolean
  * @param {boolean} applyContextPath - whether to apply contextPath.
  * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @param {boolean} targetProperty - Whether to construct metaPath using targetProperty.
  * @returns {MetadataPath} Resolved metadata path information.
  */
 function getMetaPath(
     applyContextPath: boolean,
     metaPath?: BuildingBlockMetaPath,
-    usePlaceholders?: boolean
+    usePlaceholders?: boolean,
+    targetProperty?: string
 ): MetadataPath {
     if (!metaPath) {
         return getDefaultMetaPath(applyContextPath, usePlaceholders);
@@ -160,6 +176,16 @@ function getMetaPath(
             contextPath: qualifierParts.length ? `/${entitySet}/${qualifierParts.join('/')}` : `/${entitySet}`
         };
     }
+
+    if (targetProperty) {
+        const isAbsolute = bindingContextType === bindingContextAbsolute;
+        // Example usage:
+        // Absolute: entitySet = "Travel", targetProperty = "Status" => "/Travel/Status"
+        // Relative: entitySet = "_Agency", targetProperty = "AgencyType" => "_Agency/AgencyType"
+        const prefix = isAbsolute ? '/' : '';
+        return { metaPath: `${prefix}${entitySet}/${targetProperty}` };
+    }
+
     return {
         metaPath:
             bindingContextType === 'absolute' || alwaysAbsolutePath
@@ -191,11 +217,21 @@ function getTemplateContent<T extends BuildingBlock>(
         // Special handling for chart - while runtime does not support approach without contextPath
         // or for equal or below UI5 v1.96.0 contextPath is applied
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        let targetProperty: string | undefined;
+        if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+            if (minUI5Version && lt(minUI5Version, '1.117.0')) {
+                const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
+                throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);
+            }
+            // Get target property for RichTextEditor building block
+            targetProperty = (buildingBlockData as RichTextEditor).targetProperty;
+        }
+
         const applyContextPath =
             buildingBlockData.buildingBlockType === BuildingBlockType.Chart ||
             !!(minUI5Version && lt(minUI5Version, '1.97.0'));
         // Convert object based metapath to string
-        const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders);
+        const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders, targetProperty);
         buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
         if (!buildingBlockData.contextPath && metadataPath.contextPath) {
             buildingBlockData.contextPath = metadataPath.contextPath;

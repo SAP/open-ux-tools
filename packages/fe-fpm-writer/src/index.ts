@@ -28,7 +28,8 @@ export {
     FieldFormatOptions,
     Table,
     BuildingBlockConfig,
-    Page
+    Page,
+    RichTextEditor
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
@@ -36,6 +37,7 @@ export {
     FilterBarPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
+    RichTextEditorPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {
