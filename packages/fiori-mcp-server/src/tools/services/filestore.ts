@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import type { DocumentMeta } from './types/index';
-import { logger } from './utils/logger';
+import { logger } from '../../utils/logger';
 import { resolveEmbeddingsPath } from '../../utils/embeddings-path';
 
 export interface FileStoreIndex {
@@ -96,7 +96,7 @@ export class FileStoreService {
 
             return doc;
         } catch (error) {
-            logger.warn(`Failed to load document ${id}:`, error);
+            logger.warn(`Failed to load document ${id}: ${error}`);
             return null;
         }
     }
