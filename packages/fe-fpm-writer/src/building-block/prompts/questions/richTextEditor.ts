@@ -5,7 +5,8 @@ import {
     getBuildingBlockIdPrompt,
     getEntityPrompt,
     getTargetPropertiesPrompt,
-    getAggregationPathPrompt
+    getAggregationPathPrompt,
+    getViewOrFragmentPathPrompt
 } from '../utils';
 import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType, bindingContextAbsolute } from '../../types';
@@ -37,6 +38,13 @@ export async function getRichTextEditorBuildingBlockPrompts(
                 message: t('id.message') as string,
                 guiOptions: {
                     mandatory: true
+                }
+            }),
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
+                message: t('viewOrFragmentPath.message') as string,
+                guiOptions: {
+                    mandatory: true,
+                    dependantPromptNames: ['aggregationPath']
                 }
             }),
             getBindingContextTypePrompt({

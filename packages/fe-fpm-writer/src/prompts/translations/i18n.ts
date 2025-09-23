@@ -214,6 +214,10 @@ const ns1 = {
                 'message': 'Building Block ID',
                 'validation': 'An ID is required to generate the rich text editor building block'
             },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation': 'A View or Fragment is required to generate the page building block.'
+            },
             'bindingContextType': 'Binding Context',
             'valueSource': 'Value Source',
             'entitySet': 'Entity',
