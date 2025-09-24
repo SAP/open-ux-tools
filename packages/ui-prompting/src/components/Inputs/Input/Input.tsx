@@ -15,6 +15,7 @@ export const Input = (props: InputProps) => {
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
+        debugger;
         setValue(newValue ?? '');
         onChange?.(name, newValue);
     };

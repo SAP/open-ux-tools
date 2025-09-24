@@ -53,7 +53,7 @@ export function getXPathStringsForXmlFile(
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
-        const macrosNamespace = getOrAddMacrosNamespace(xmlDocument);
+        const macrosNamespace = getOrAddNamespace(xmlDocument);
         pageMacroDefinition = macrosNamespace ? `${macrosNamespace}:Page` : 'macros:Page';
         let hasPageMacroChild = false;
 
@@ -130,7 +130,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
  * @param type - The type of namespace ('macros', 'richtexteditor', 'page')
  * @returns The prefix bound to the namespace URI (existing or newly added)
  */
-export function getOrAddMacrosNamespace(
+export function getOrAddNamespace(
     ui5XmlDocument: Document,
     type: BuildingBlockType.RichTextEditor | BuildingBlockType.Page = BuildingBlockType.Page
 ): string {

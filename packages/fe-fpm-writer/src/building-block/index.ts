@@ -22,7 +22,7 @@ import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
-import { getOrAddMacrosNamespace } from './prompts/utils/xml';
+import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
 
 const PLACEHOLDERS = {
@@ -106,7 +106,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
  * @param xmlDocument - The parsed XML document representing the fragment.
  */
 export function handleRichTextEditorBlock(xmlDocument: Document): void {
-    const rtePrefix = getOrAddMacrosNamespace(xmlDocument, BuildingBlockType.RichTextEditor);
+    const rtePrefix = getOrAddNamespace(xmlDocument, BuildingBlockType.RichTextEditor);
     const fragmentDef = xmlDocument.documentElement;
     fragmentDef.setAttribute(`xmlns:${rtePrefix}`, 'sap.fe.macros.richtexteditor');
 }
@@ -255,7 +255,7 @@ function getTemplateContent<T extends BuildingBlock>(
     return render(
         fs.read(templateFilePath),
         {
-            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
+            macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument) : 'macros',
             data: buildingBlockData
         },
         {}

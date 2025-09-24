@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { isElementIdAvailable, getOrAddMacrosNamespace } from '../../../../../src/building-block/prompts/utils/xml';
+import { isElementIdAvailable, getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml';
 import { DOMParser } from '@xmldom/xmldom';
 import { BuildingBlockType } from '../../../../../src/building-block/types';
 
@@ -116,23 +116,23 @@ describe('getOrAddMacrosNamespace', () => {
 
     it('returns existing prefix for macros namespace in mvc:View', () => {
         const xmlDoc = createViewXmlDoc({ 'xmlns:macros': 'sap.fe.macros' });
-        expect(getOrAddMacrosNamespace(xmlDoc, BuildingBlockType.Page)).toBe('macros');
+        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.Page)).toBe('macros');
     });
 
     it('returns existing prefix for richtexteditor namespace in FragmentDefinition', () => {
         const xmlDoc = createFragmentXmlDoc({ 'xmlns:rte': 'sap.fe.macros.richtexteditor' });
-        expect(getOrAddMacrosNamespace(xmlDoc, BuildingBlockType.RichTextEditor)).toBe('rte');
+        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.RichTextEditor)).toBe('rte');
     });
 
     it('adds macros namespace if missing and returns default prefix in mvc:View', () => {
         const xmlDoc = createViewXmlDoc();
-        expect(getOrAddMacrosNamespace(xmlDoc, BuildingBlockType.Page)).toBe('macros');
+        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.Page)).toBe('macros');
         expect(xmlDoc.documentElement.getAttribute('xmlns:macros')).toBe('sap.fe.macros');
     });
 
     it('adds richtexteditor namespace if missing and returns default prefix in FragmentDefinition', () => {
         const xmlDoc = createFragmentXmlDoc();
-        expect(getOrAddMacrosNamespace(xmlDoc, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
+        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
         expect(xmlDoc.documentElement.getAttribute('xmlns:richtexteditor')).toBe('sap.fe.macros.richtexteditor');
     });
 
@@ -141,16 +141,16 @@ describe('getOrAddMacrosNamespace', () => {
             'xmlns:macros': 'sap.fe.macros',
             'xmlns:richtexteditor': 'sap.fe.macros.richtexteditor'
         });
-        expect(getOrAddMacrosNamespace(xmlDocView, BuildingBlockType.Page)).toBe('macros');
-        expect(getOrAddMacrosNamespace(xmlDocView, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
+        expect(getOrAddNamespace(xmlDocView, BuildingBlockType.Page)).toBe('macros');
+        expect(getOrAddNamespace(xmlDocView, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
         expect(xmlDocView.documentElement.attributes.length).toBeGreaterThanOrEqual(2);
 
         const xmlDocFragment = createFragmentXmlDoc({
             'xmlns:macros': 'sap.fe.macros',
             'xmlns:richtexteditor': 'sap.fe.macros.richtexteditor'
         });
-        expect(getOrAddMacrosNamespace(xmlDocFragment, BuildingBlockType.Page)).toBe('macros');
-        expect(getOrAddMacrosNamespace(xmlDocFragment, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
+        expect(getOrAddNamespace(xmlDocFragment, BuildingBlockType.Page)).toBe('macros');
+        expect(getOrAddNamespace(xmlDocFragment, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
         expect(xmlDocFragment.documentElement.attributes.length).toBe(2);
     });
 });
