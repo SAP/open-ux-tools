@@ -19,4 +19,8 @@ export interface UI5LibraryPromptOptions {
      * Optionally register the `inquirer-autocomplete-prompt` plugin and use for UI5 version searching
      */
     useAutocomplete?: boolean;
+    /**
+     * Optionally provide a resolved UI5 version that matches available npm packages
+     */
+    resolvedUi5Version?: string;
 }
