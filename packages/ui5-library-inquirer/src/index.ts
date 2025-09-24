@@ -42,8 +42,8 @@ async function findNearestNpmVersion(selectedVersion: string): Promise<string> {
     try {
         const npmVersions = await executeNpmUI5VersionsCmd();
 
-        // Remove any non-version strings and sort versions
-        const validVersions = npmVersions.filter((v) => /^\d+\.\d+\.\d+/.test(v)).sort(compareVersions);
+        // Remove any non-version strings and sort versions (strict semver matching)
+        const validVersions = npmVersions.filter((v) => /^\d+\.\d+\.\d+$/.test(v)).sort(compareVersions);
 
         if (validVersions.length === 0) {
             return selectedVersion; // Fallback to selected version if no npm versions found
