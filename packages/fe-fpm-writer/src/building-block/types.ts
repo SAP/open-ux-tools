@@ -8,7 +8,8 @@ export enum BuildingBlockType {
     Chart = 'chart',
     Field = 'field',
     Page = 'page',
-    Table = 'table'
+    Table = 'table',
+    CustomColumn = 'custom-column'
 }
 
 /**
@@ -404,6 +405,14 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+}
+
+export interface CustomColumn extends BuildingBlock {
+    title: string;
+    customColumnFragmentPath: string;
+    customColumnFragmentName: string;
+    appName?: string;
+    hasTableColumns?: boolean;
 }
 
 /**

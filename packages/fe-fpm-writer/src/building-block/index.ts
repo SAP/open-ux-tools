@@ -3,7 +3,13 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse, relative } from 'path';
-import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
+import {
+    BuildingBlockType,
+    type BuildingBlock,
+    type BuildingBlockConfig,
+    type BuildingBlockMetaPath,
+    type CustomColumn
+} from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -53,13 +59,22 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     // Read the view xml and template files and update contents of the view xml file
+    let updatedAggregationPath;
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
+    if (config.buildingBlockData?.buildingBlockType === BuildingBlockType.CustomColumn) {
+        // check xmlDocument for macrosTable element
+        const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
+        if (hasTableColumn) {
+            (buildingBlockData as unknown as CustomColumn).hasTableColumns = true;
+            updatedAggregationPath = aggregationPath + '/macros:columns';
+        }
+    }
     const { content: manifest } = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
     fs = updateViewFile(
         basePath,
         viewOrFragmentPath,
-        aggregationPath,
+        updatedAggregationPath ?? aggregationPath,
         xmlDocument,
         templateDocument,
         fs,
@@ -208,7 +223,9 @@ function getTemplateContent<T extends BuildingBlock>(
     return render(
         fs.read(templateFilePath),
         {
-            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
+            macrosNamespace: viewDocument
+                ? getOrAddMacrosNamespace(viewDocument, buildingBlockData.buildingBlockType)
+                : 'macros',
             data: buildingBlockData
         },
         {}
@@ -219,12 +236,13 @@ function getTemplateContent<T extends BuildingBlock>(
  * Method returns the manifest content for the required dependency library.
  *
  * @param {Editor} fs - the memfs editor instance
+ * @param {string} library - the dependency library
  * @returns {Promise<string>} Manifest content for the required dependency library.
  */
-export async function getManifestContent(fs: Editor): Promise<string> {
+export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'): Promise<string> {
     // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
     const templatePath = getTemplatePath('/building-block/common/manifest.json');
-    return render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } });
+    return render(fs.read(templatePath), { libraries: { [library]: {} } });
 }
 
 /**

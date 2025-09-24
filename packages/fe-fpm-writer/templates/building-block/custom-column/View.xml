@@ -1,0 +1,5 @@
+<% if (!data.hasTableColumns) { %><macros:columns>
+    <% } %><macrosTable:Column header="<%- data.title %>" importance="High" width="20em" key="myColumnKey">
+        <core:Fragment fragmentName="<%- data.appName %>.ext.fragment.<%- data.customColumnFragmentName %>" type="XML" />
+    </macrosTable:Column>
+<% if (!data.hasTableColumns) { %></macros:columns><% } %>
