@@ -1,6 +1,6 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
-import { BuildingBlock, BuildingBlockConfig, BuildingBlockType } from '../../types';
+import { BuildingBlockType } from '../../types';
 
 /**
  * Method validates if passed id is available.
