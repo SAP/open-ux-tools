@@ -1,7 +1,7 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { OperationsType } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
@@ -1177,12 +1177,7 @@ export type CfServicesPromptOptions = Partial<{
 
 export interface RequestArguments {
     url: string;
-    options: {
-        headers: {
-            'Content-Type': string;
-            Authorization?: string;
-        };
-    };
+    options: AxiosRequestConfig;
 }
 
 /**

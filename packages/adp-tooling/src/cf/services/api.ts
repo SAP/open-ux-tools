@@ -1,6 +1,7 @@
 import * as fs from 'fs';
+import axios from 'axios';
 import * as path from 'path';
-import axios, { type AxiosResponse } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 
@@ -22,8 +23,8 @@ import type {
 } from '../../types';
 import { t } from '../../i18n';
 import { isLoggedInCf } from '../core/auth';
-import { createServiceKey, getServiceKeys } from './cli';
 import { getProjectNameForXsSecurity } from '../project';
+import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
 
 interface FDCResponse {
     results: CFApp[];
@@ -65,11 +66,11 @@ export async function getBusinessServiceKeys(
  * @param {CfConfig} cfConfig - The CF config.
  * @returns {RequestArguments} The request arguments.
  */
-function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
+export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     const fdcUrl = 'https://ui5-flexibility-design-and-configuration.';
     const cfApiEndpoint = `https://api.cf.${cfConfig.url}`;
     const endpointParts = /https:\/\/api\.cf(?:\.([^-.]*)(-\d+)?(\.hana\.ondemand\.com)|(.*))/.exec(cfApiEndpoint);
-    const options: any = {
+    const options: AxiosRequestConfig = {
         withCredentials: true,
         headers: {
             'Content-Type': 'application/json'
@@ -97,7 +98,7 @@ function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     // Add authorization token for non-BAS environments or private cloud
     // For BAS environments with mTLS, the certificate authentication is handled automatically
     if (!isAppStudio() || !endpointParts?.[3]) {
-        options.headers['Authorization'] = `Bearer ${cfConfig.token}`;
+        options.headers!['Authorization'] = `Bearer ${cfConfig.token}`;
     }
 
     return {
@@ -138,28 +139,6 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
     } catch (error) {
         logger?.error(`Getting FDC apps failed. Request url: ${url}. ${error}`);
         throw new Error(t('error.failedToGetFDCApps', { error: error.message }));
-    }
-}
-
-/**
- * Request CF API.
- *
- * @param {string} url - The URL.
- * @returns {Promise<T>} The response.
- */
-export async function requestCfApi<T = unknown>(url: string): Promise<T> {
-    try {
-        const response = await CFToolsCli.Cli.execute(['curl', url], { env: { 'CF_COLOR': 'false' } });
-        if (response.exitCode === 0) {
-            try {
-                return JSON.parse(response.stdout);
-            } catch (e) {
-                throw new Error(t('error.failedToParseCFAPIResponse', { error: e.message }));
-            }
-        }
-        throw new Error(response.stderr);
-    } catch (e) {
-        throw new Error(t('error.failedToRequestCFAPI', { error: e.message }));
     }
 }
 
@@ -208,6 +187,7 @@ export async function createService(
                 xsSecurity = JSON.parse(xsContent) as unknown as { xsappname?: string };
                 xsSecurity.xsappname = xsSecurityProjectName;
             } catch (err) {
+                logger?.error(`Failed to parse xs-security.json file: ${err}`);
                 throw new Error(t('error.xsSecurityJsonCouldNotBeParsed'));
             }
 
@@ -315,15 +295,17 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
         .map(([key, value]) => `${PARAM_MAP.get(key)}=${value.join(',')}`);
     const uriParameters = parameters.length > 0 ? `?${parameters.join('&')}` : '';
     const uri = `/v3/service_instances` + uriParameters;
+
     try {
         const json = await requestCfApi<CfAPIResponse<CfServiceInstance>>(uri);
-        if (json?.resources && Array.isArray(json.resources)) {
-            return json.resources.map((service: CfServiceInstance) => ({
-                name: service.name,
-                guid: service.guid
-            }));
+        if (!json?.resources || !Array.isArray(json.resources)) {
+            throw new Error(t('error.noValidJsonForServiceInstance'));
         }
-        throw new Error(t('error.noValidJsonForServiceInstance'));
+
+        return json.resources.map((service: CfServiceInstance) => ({
+            name: service.name,
+            guid: service.guid
+        }));
     } catch (e) {
         throw new Error(t('error.failedToGetServiceInstance', { uriParameters, error: e.message }));
     }

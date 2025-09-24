@@ -5,7 +5,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { t } from '../../i18n';
 import { getRouterType } from './yaml';
 import { getYamlContent } from './yaml-loader';
-import { requestCfApi } from '../services/api';
+import { requestCfApi } from '../services/cli';
 import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, AppRouterType } from '../../types';
 
 /**

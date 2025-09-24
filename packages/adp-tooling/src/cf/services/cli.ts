@@ -82,3 +82,25 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
         throw new Error(t('error.createServiceKeyFailed', { serviceInstanceName, error: e.message }));
     }
 }
+
+/**
+ * Request CF API.
+ *
+ * @param {string} url - The URL.
+ * @returns {Promise<T>} The response.
+ */
+export async function requestCfApi<T = unknown>(url: string): Promise<T> {
+    try {
+        const response = await CFToolsCli.Cli.execute(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        if (response.exitCode === 0) {
+            try {
+                return JSON.parse(response.stdout);
+            } catch (e) {
+                throw new Error(t('error.failedToParseCFAPIResponse', { error: e.message }));
+            }
+        }
+        throw new Error(response.stderr);
+    } catch (e) {
+        throw new Error(t('error.failedToRequestCFAPI', { error: e.message }));
+    }
+}

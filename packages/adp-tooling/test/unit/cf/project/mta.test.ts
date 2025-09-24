@@ -11,7 +11,7 @@ import {
     readMta
 } from '../../../../src/cf/project/mta';
 import { initI18n, t } from '../../../../src/i18n';
-import { requestCfApi } from '../../../../src/cf/services/api';
+import { requestCfApi } from '../../../../src/cf/services/cli';
 import { getRouterType } from '../../../../src/cf/project/yaml';
 import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
 
@@ -23,7 +23,7 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: jest.fn()
 }));
 
-jest.mock('../../../../src/cf/services/api', () => ({
+jest.mock('../../../../src/cf/services/cli', () => ({
     requestCfApi: jest.fn()
 }));
 
