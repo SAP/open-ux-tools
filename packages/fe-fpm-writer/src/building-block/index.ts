@@ -66,6 +66,11 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
 
     if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        if (minUI5Version && lt(minUI5Version, '1.117.0')) {
+            const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
+            throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);
+        }
         handleRichTextEditorBlock(xmlDocument);
     }
 
@@ -101,11 +106,9 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
  * @param xmlDocument - The parsed XML document representing the fragment.
  */
 export function handleRichTextEditorBlock(xmlDocument: Document): void {
+    const rtePrefix = getOrAddMacrosNamespace(xmlDocument, BuildingBlockType.RichTextEditor);
     const fragmentDef = xmlDocument.documentElement;
-    const macrosNamespace = (xmlDocument.firstChild as any)._nsMap.macros;
-    if (fragmentDef && !fragmentDef.hasAttribute(`xmlns:richtexteditor`)) {
-        fragmentDef.setAttribute('xmlns:richtexteditor', `${macrosNamespace}.richtexteditor`);
-    }
+    fragmentDef.setAttribute(`xmlns:${rtePrefix}`, 'sap.fe.macros.richtexteditor');
 }
 
 /**
@@ -176,7 +179,7 @@ function getMetaPath(
     if (!metaPath) {
         return getDefaultMetaPath(applyContextPath, usePlaceholders);
     }
-    const { bindingContextType = 'absolute', alwaysAbsolutePath = true } = metaPath;
+    const { bindingContextType = bindingContextAbsolute, alwaysAbsolutePath = true } = metaPath;
     let { entitySet, qualifier } = metaPath;
     entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
@@ -200,7 +203,7 @@ function getMetaPath(
 
     return {
         metaPath:
-            bindingContextType === 'absolute' || alwaysAbsolutePath
+            bindingContextType === bindingContextAbsolute || alwaysAbsolutePath
                 ? `/${entitySet}/${qualifierOrPlaceholder}`
                 : qualifierOrPlaceholder
     };
@@ -231,10 +234,6 @@ function getTemplateContent<T extends BuildingBlock>(
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         let targetProperty: string | undefined;
         if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
-            if (minUI5Version && lt(minUI5Version, '1.117.0')) {
-                const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
-                throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);
-            }
             // Get target property for RichTextEditor building block
             targetProperty = (buildingBlockData as RichTextEditor).targetProperty;
         }

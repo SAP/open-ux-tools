@@ -6,7 +6,8 @@ import {
     getEntityPrompt,
     getTargetPropertiesPrompt,
     getAggregationPathPrompt,
-    getViewOrFragmentPathPrompt
+    getViewOrFragmentPathPrompt,
+    getBooleanPrompt
 } from '../utils';
 import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType, bindingContextAbsolute } from '../../types';
@@ -90,12 +91,11 @@ export async function getRichTextEditorBuildingBlockPrompts(
                 message: t('buttonGroup.buttons') as string,
                 default: defaultAnswers.buttonGroup.buttons
             },
-            {
+            getBooleanPrompt({
                 name: 'buildingBlockData.buttonGroup.visible',
-                type: 'input',
                 message: t('buttonGroup.visible') as string,
                 default: defaultAnswers.buttonGroup.visible
-            },
+            }),
             {
                 name: 'buildingBlockData.buttonGroup.priority',
                 type: 'input',

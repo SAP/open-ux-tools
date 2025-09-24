@@ -6,7 +6,7 @@ import { getEntitySets } from './service';
 /**
  * Loads entity sets from cache or fetches them for the given context.
  */
-let cachedEntitySets: EntitySet[] | undefined;
+const entitySetCache: Record<string, EntitySet[]> = {};
 
 /**
  * Loads and caches entity sets for the given prompt context.
@@ -20,9 +20,11 @@ export async function loadEntitySets(context: PromptContext): Promise<EntitySet[
     if (!project || Object.keys(project).length === 0) {
         throw new Error('Project is undefined. Cannot fetch entity sets.');
     }
-
-    cachedEntitySets ??= await getEntitySets(project, appId);
-    return cachedEntitySets;
+    const cacheKey = JSON.stringify(project) + ':' + appId;
+    if (!entitySetCache[cacheKey]) {
+        entitySetCache[cacheKey] = await getEntitySets(project, appId);
+    }
+    return entitySetCache[cacheKey];
 }
 
 /**

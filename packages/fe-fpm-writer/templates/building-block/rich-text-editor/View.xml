@@ -1,7 +1,7 @@
 <<%- macrosNamespace %>:RichTextEditorWithMetadata
     metaPath="<%- data.metaPath %>"
     id="<%- data.id %>">
-    <macros:buttonGroups>
+    <<%- macrosNamespace %>:buttonGroups>
         <richtexteditor:ButtonGroup
             name="<%- data.buttonGroup.name %>"
             buttons="<%- data.buttonGroup.buttons %>"
@@ -10,5 +10,5 @@
             <% if (typeof data.buttonGroup.customToolbarPriority !== 'undefined') { %>customToolbarPriority="<%- data.buttonGroup.customToolbarPriority %>" <% } %>
             <% if (typeof data.buttonGroup.row !== 'undefined') { %>row="<%- data.buttonGroup.row %>" <% } %>
         />
-    </macros:buttonGroups>
+    </<%- macrosNamespace %>:buttonGroups>
 </<%- macrosNamespace %>:RichTextEditorWithMetadata>

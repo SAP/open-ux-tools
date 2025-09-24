@@ -1,5 +1,6 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
+import { BuildingBlockType } from '../../types';
 
 /**
  * Method validates if passed id is available.
@@ -123,17 +124,33 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
 }
 
 /**
- * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
+ * Ensures that a given XML namespace URI is defined in the document and returns its prefix.
  *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @returns {string} the macros namespace
+ * @param ui5XmlDocument - The XML document
+ * @param type - The type of namespace ('macros', 'richtexteditor', 'page')
+ * @returns The prefix bound to the namespace URI (existing or newly added)
  */
-export function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
-        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+export function getOrAddMacrosNamespace(
+    ui5XmlDocument: Document,
+    type: BuildingBlockType.RichTextEditor | BuildingBlockType.Page = BuildingBlockType.Page
+): string {
+    type NamespaceType = BuildingBlockType.RichTextEditor | BuildingBlockType.Page;
+    const namespaceConfig: Record<NamespaceType, { uri: string; prefix: string }> = {
+        [BuildingBlockType.RichTextEditor]: { uri: 'sap.fe.macros.richtexteditor', prefix: 'richtexteditor' },
+        [BuildingBlockType.Page]: { uri: 'sap.fe.macros', prefix: 'macros' }
+    };
+    const { uri: namespaceUri, prefix: defaultPrefix } = namespaceConfig[type];
+    const root = ui5XmlDocument.documentElement;
+
+    // Check all namespace attributes for a matching URI
+    for (const attr of Array.from(root.attributes)) {
+        if (attr.name.startsWith('xmlns:') && attr.value === namespaceUri) {
+            return attr.name.split(':')[1]; // Return existing prefix
+        }
     }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
+
+    // Otherwise, add a new namespace binding with the default prefix
+    root.setAttributeNS('http://www.w3.org/2000/xmlns/', `xmlns:${defaultPrefix}`, namespaceUri);
+
+    return defaultPrefix;
 }
