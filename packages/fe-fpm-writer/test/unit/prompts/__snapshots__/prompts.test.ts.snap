@@ -1847,10 +1847,23 @@ Object {
       "type": "input",
     },
     Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
       "default": true,
+      "guiOptions": Object {
+        "selectType": "static",
+      },
       "message": "Visible",
       "name": "buildingBlockData.buttonGroup.visible",
-      "type": "input",
+      "type": "list",
     },
     Object {
       "message": "Priority",
