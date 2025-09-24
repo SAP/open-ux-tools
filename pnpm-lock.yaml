@@ -8,7 +8,6 @@ overrides:
   router>path-to-regexp: 0.1.12
   router@2.0.0>path-to-regexp: 8.2.0
   '@storybook/manager-api>store2': 2.14.4
-  '@sap/bas-sdk>axios': ^1.12.2
   mta-local: 1.0.4
   axios@<1.12.0: ^1.12.2
 
@@ -935,8 +934,8 @@ importers:
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
-        specifier: 3.11.6
-        version: 3.11.6
+        specifier: 3.12.0
+        version: 3.12.0
       '@sap/cf-tools':
         specifier: 3.2.2
         version: 3.2.2
@@ -1675,8 +1674,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@sap/bas-sdk':
-        specifier: 3.11.6
-        version: 3.11.6
+        specifier: 3.12.0
+        version: 3.12.0
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -3134,8 +3133,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       '@sap/bas-sdk':
-        specifier: 3.11.6
-        version: 3.11.6
+        specifier: 3.12.0
+        version: 3.12.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -9262,26 +9261,10 @@ packages:
       yaml: 2.2.2
     dev: true
 
-  /@sap/bas-sdk@3.11.6:
-    resolution: {integrity: sha512-2IMsL0/cXxN2GFTkmq2m9TbY3lKtnKGjOONalw3WTJRH+yWCog2q5f5V2Xf+P+oem67UQcubkMPlbdqmvVIYDA==}
-    dependencies:
-      axios: 1.12.2
-      cross-spawn: 7.0.5
-      fs-extra: 11.2.0
-      jwt-decode: 4.0.0
-      lodash: 4.17.21
-      url-join: 4.0.1
-      ws: 8.17.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - utf-8-validate
-    dev: false
-
   /@sap/bas-sdk@3.12.0:
     resolution: {integrity: sha512-7PHLhBtJYNAYkgCuLz8TPHuIYhqlKZxqyT0MAtF05bNLKOLpcMhX3OG0FyypVWmjhGo9qKeG78NTlmMHOMcsQg==}
     dependencies:
-      axios: 1.12.2
+      axios: 1.12.0
       cross-spawn: 7.0.5
       fs-extra: 11.2.0
       jwt-decode: 4.0.0
@@ -9292,7 +9275,6 @@ packages:
       - bufferutil
       - debug
       - utf-8-validate
-    dev: true
 
   /@sap/cds-compiler@4.8.0:
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
