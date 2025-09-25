@@ -494,7 +494,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const errorMessage = error.message;
             expect(errorMessage).toBeTruthy();
             expect(result).toEqual(errorMessage);
-            expect(configPrompter['appValidationErrorMessage']).toBe(errorMessage);
         });
 
         it('application prompt validate should return string when manifest flexEnabled is false', async () => {

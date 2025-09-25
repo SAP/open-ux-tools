@@ -512,13 +512,12 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isAppStudio() && isKnownUnsupported) {
+        if (isAppStudio() && isKnownUnsupported && !this.isCloud) {
             this.logger.error(validationResult);
             this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
-            // Continue to the next prompt for extension project only if the project
-            // is NOT cloud project.
-            return this.isCloud ? validationResult : true;
+            // Continue to the next prompt for extension project.
+            return true;
         }
 
         if (typeof validationResult === 'string') {
