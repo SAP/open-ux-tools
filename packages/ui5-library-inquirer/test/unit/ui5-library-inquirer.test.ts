@@ -1,6 +1,6 @@
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import { getPrompts, prompt, findNearestNpmVersion, promptWithVersionResolution } from '../../src/index';
+import { getPrompts, prompt, findNearestNpmVersion } from '../../src/index';
 import type { UI5LibraryAnswers } from '../../src/types';
 import { initI18n } from '../../src/i18n';
 import * as ui5LibInqApi from '../../src/index';
@@ -368,55 +368,6 @@ describe('Version Resolution Tests', () => {
 
             expect(result.ui5Version).toBeUndefined();
             expect(executeNpmSpy).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('promptWithVersionResolution', () => {
-        const mockAnswers: UI5LibraryAnswers = {
-            libraryName: 'testLib',
-            namespace: 'test.ns',
-            targetFolder: '/test/folder',
-            ui5Version: '1.118.5',
-            enableTypescript: true
-        };
-
-        it('should perform version resolution', async () => {
-            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
-            jest.spyOn(inquirer, 'prompt').mockResolvedValue(mockAnswers);
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
-
-            const result = await promptWithVersionResolution();
-
-            expect(result.ui5Version).toBe('1.118.0'); // Should be resolved
-        });
-
-        it('should work with adapter', async () => {
-            const mockAdapter: InquirerAdapter = {
-                prompt: jest.fn().mockResolvedValue(mockAnswers),
-                promptModule: createPromptModule()
-            };
-            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
-
-            const result = await promptWithVersionResolution({}, mockAdapter);
-
-            expect(mockAdapter.prompt).toHaveBeenCalled();
-            expect(result.ui5Version).toBe('1.118.0');
-        });
-
-        it('should handle case when no ui5Version is provided', async () => {
-            const noVersionAnswers = { ...mockAnswers, ui5Version: undefined };
-            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
-            jest.spyOn(inquirer, 'prompt').mockResolvedValue(noVersionAnswers);
-            const executeNpmSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd');
-
-            const result = await promptWithVersionResolution();
-
-            expect(executeNpmSpy).not.toHaveBeenCalled();
-            expect(result.ui5Version).toBeUndefined();
         });
     });
 });
