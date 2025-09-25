@@ -126,7 +126,8 @@ export function getTransportRequestPrompts(
                     : t('prompts.config.transport.common.transportRequest'),
             guiOptions: {
                 hint: t('prompts.config.transport.common.provideTransportRequest'),
-                breadcrumb: t('prompts.config.transport.common.transportRequest')
+                breadcrumb: t('prompts.config.transport.common.transportRequest'),
+                mandatory: PromptState.transportAnswers.transportRequired
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
                 previousAnswers.transportManual || options.transportManual?.default,

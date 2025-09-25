@@ -61,6 +61,7 @@ describe('getTransportRequestPrompts', () => {
                 "guiOptions": Object {
                   "breadcrumb": "Transport Request",
                   "hint": "Provide a transport request for your application.",
+                  "mandatory": true,
                 },
                 "message": [Function],
                 "name": "transportManual",
