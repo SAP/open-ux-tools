@@ -84,3 +84,14 @@ export const convertToSchema = (schema: zod.ZodType): zod.core.JSONSchema.JSONSc
     delete jsonSchema.$schema;
     return jsonSchema;
 };
+
+export function validateWithSchema<T extends zod.ZodTypeAny>(schema: T, data: unknown): zod.infer<T> {
+    try {
+        return schema.parse(data);
+    } catch (error) {
+        if (error instanceof zod.ZodError) {
+            throw new Error(`Missing required fields in parameters. ${JSON.stringify(error.issues, null, 4)}`);
+        }
+        throw new Error('Unknown error. Recheck input parameters.');
+    }
+}

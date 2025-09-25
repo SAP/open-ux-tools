@@ -1,6 +1,6 @@
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { getTree } from '../../../src/page-editor-api/parser';
-import type { PageAnnotations } from '../../../src/page-editor-api/parser';
+import type { PageAnnotations, TreeNode } from '../../../src/page-editor-api/parser';
 import applicationSchema from './test-data/schema/App.json';
 import applicationConfig from './test-data/config/App.json';
 import listReportSchema from './test-data/schema/ListReport.json';
@@ -20,17 +20,24 @@ import visualFiltersConfig from './test-data/config/VisualFilters.json';
 import visualFiltersAnnotations from './test-data/annotations/VisualFilters.json';
 import customPageSchema from './test-data/schema/CustomPage.json';
 import customPageConfig from './test-data/config/CustomPage.json';
+import { JSONSchema4 } from 'json-schema';
 
 describe('getTree', () => {
     beforeEach(async () => {});
 
+    const cleanupSchema = (data: TreeNode) => {
+        data.schema = undefined as unknown as JSONSchema4;
+    };
+
     test('getTree - Application', async () => {
         const data = getTree(JSON.stringify(applicationSchema), applicationConfig, PageTypeV4.ListReport);
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
     test('getTree - ListReport page', async () => {
         const data = getTree(JSON.stringify(listReportSchema), listReportConfig, PageTypeV4.ListReport);
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
@@ -40,6 +47,7 @@ describe('getTree', () => {
             multiViewListReportConfig,
             PageTypeV4.ListReport
         );
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
@@ -56,21 +64,25 @@ describe('getTree', () => {
                 }
             }
         });
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
     test('getTree - ObjectPage page', async () => {
         const data = getTree(JSON.stringify(objectPageSchema), objectPageConfig, PageTypeV4.ObjectPage);
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
     test('getTree - ListReport page V2', async () => {
         const data = getTree(JSON.stringify(listReportV2Schema), listReportV2Config, PageTypeV4.ListReport);
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
     test('getTree - ObjectPage page V2', async () => {
         const data = getTree(JSON.stringify(objectPageV2Schema), objectPageV2Config, PageTypeV4.ObjectPage);
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
@@ -81,11 +93,13 @@ describe('getTree', () => {
             PageTypeV4.ListReport,
             visualFiltersAnnotations as PageAnnotations
         );
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
     test('getTree - CustomPage', async () => {
         const data = getTree(JSON.stringify(customPageSchema), customPageConfig, PageTypeV4.FPMCustomPage);
+        cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 });

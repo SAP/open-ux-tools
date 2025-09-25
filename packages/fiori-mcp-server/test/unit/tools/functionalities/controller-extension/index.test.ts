@@ -64,35 +64,7 @@ describe('create-controller-extension', () => {
                 appPath: appPath,
                 functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId
             });
-            expect(details).toEqual({
-                description:
-                    'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.',
-                functionalityId: 'create-controller-extension',
-                name: 'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry',
-                parameters: [
-                    {
-                        defaultValue: 'ListReport',
-                        description: 'Type of page',
-                        id: 'pageType',
-                        options: ['ListReport', 'ObjectPage'],
-                        required: true,
-                        type: 'string'
-                    },
-                    {
-                        description: 'Name of new controller extension file',
-                        id: 'controllerName',
-                        required: true,
-                        type: 'string'
-                    },
-                    {
-                        description:
-                            'If controller extenison should be assigned for specific page, then pageId should be provided',
-                        id: 'pageId',
-                        options: ['TravelList', 'TravelObjectPage'],
-                        type: 'string'
-                    }
-                ]
-            });
+            expect(details).toMatchSnapshot();
         });
 
         test('getFunctionalityDetails - unresolvable project', async () => {
@@ -100,17 +72,12 @@ describe('create-controller-extension', () => {
                 throw new Error('Test error');
             });
             mockSpecificationImport(importProjectMock);
-            const details = await createControllerExtensionHandlers.getFunctionalityDetails({
-                appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId
-            });
-            expect(details).toEqual({
-                ...CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
-                parameters: [
-                    CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.parameters[0],
-                    CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.parameters[2]
-                ]
-            });
+            await expect(
+                createControllerExtensionHandlers.getFunctionalityDetails({
+                    appPath: appPath,
+                    functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId
+                })
+            ).rejects.toThrow('Invalid Project Root or Application Path');
         });
     });
 

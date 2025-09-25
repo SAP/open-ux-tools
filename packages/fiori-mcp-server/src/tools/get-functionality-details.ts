@@ -3,6 +3,7 @@ import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath, TreeNodeProperty } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
 import { resolveApplication } from './utils';
+import { JSONSchema4 } from 'json-schema';
 
 /**
  * Retrieves functionality details based on the provided input parameters.
@@ -43,33 +44,6 @@ export async function getFunctionalityDetails(
 }
 
 /**
- * Converts TreeNodeProperty objects to Parameter objects.
- *
- * @param properties - An array of TreeNodeProperty objects to convert.
- * @returns An array of Parameter objects.
- */
-function getParameters(properties: TreeNodeProperty[]): Parameter[] {
-    const parameters: Parameter[] = [];
-    for (const property of properties) {
-        const parameter: Parameter = {
-            id: property.name,
-            name: property.displayName,
-            description: property.description,
-            type: property.type,
-            currentValue: property.value
-        };
-        if (property.options) {
-            parameter.options = property.options.map((option) => option.key ?? null);
-        }
-        if (property.properties) {
-            parameter.parameters = getParameters(property.properties);
-        }
-        parameters.push(parameter);
-    }
-    return parameters;
-}
-
-/**
  * Retrieves property details from a page tree node based on the provided property path.
  *
  * @param page - The root TreeNode of the page.
@@ -78,31 +52,37 @@ function getParameters(properties: TreeNodeProperty[]): Parameter[] {
  */
 function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunctionalityDetailsOutput | undefined {
     const { property, node } = findByPath([page], propertyPath) ?? {};
+    const rootSchema = page?.schema ?? {};
     let details: GetFunctionalityDetailsOutput | undefined;
     if (property) {
         // Property was found by path
-        const parameters = getParameters([property]);
+        const schema = property.schema ?? {};
+        const parameters = resolveRefs(schema, rootSchema);
         details = {
             functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
-            parameters
+            parameters: {
+                ...parameters,
+                name: property.name
+            }
         };
     } else if (node?.path.length) {
         // Node was found by path - list node properties
-        let parameters: Parameter[] = [];
-        for (const property of node.properties) {
-            parameters = parameters.concat(getParameters([property]));
-        }
+        const schema = node.schema ?? {};
+        const parameters = resolveRefs(schema, rootSchema);
         details = {
             functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
-            parameters
+            parameters: {
+                ...parameters,
+                name: node.path[node.path.length - 1]
+            }
         };
     }
     return details;
@@ -148,4 +128,68 @@ export function resolveFunctionality(functionalityId: FunctionalityId): {
     }
 
     return { pageName, propertyPath };
+}
+
+// We should prepare schema which merges references into passed schema fragment/segment
+function resolveRefs(schema: JSONSchema4, fullSchema: JSONSchema4, seen = new Set()): JSONSchema4 {
+    if (!schema || typeof schema !== 'object') {
+        return schema;
+    }
+
+    // If schema has $ref, resolve it
+    if (schema.$ref) {
+        const ref = schema.$ref;
+
+        if (!ref.startsWith('#/definitions/')) {
+            throw new Error(`Only local definitions are supported, got: ${ref}`);
+        }
+
+        const defName = ref.replace('#/definitions/', '');
+        const defSchema = (fullSchema.definitions?.[defName] ?? null) as JSONSchema4 | null;
+
+        if (!defSchema) {
+            throw new Error(`Definition '${defName}' not found in fullSchema`);
+        }
+
+        if (seen.has(ref)) {
+            // Prevent infinite recursion (cyclic refs)
+            return { ...defSchema };
+        }
+        seen.add(ref);
+
+        // Merge the referenced schema with any extra props from the current schema (besides $ref)
+        const { $ref, ...rest } = schema;
+        return resolveRefs({ ...defSchema, ...rest }, fullSchema, seen);
+    }
+
+    // Recursively resolve inside properties, items, etc.
+    const resolved: JSONSchema4 = { ...schema };
+
+    if (resolved.properties) {
+        resolved.properties = Object.fromEntries(
+            Object.entries(resolved.properties).map(([k, v]) => [k, resolveRefs(v as JSONSchema4, fullSchema, seen)])
+        );
+    }
+
+    if (resolved.items) {
+        if (Array.isArray(resolved.items)) {
+            resolved.items = resolved.items.map((item) => resolveRefs(item as JSONSchema4, fullSchema, seen));
+        } else {
+            resolved.items = resolveRefs(resolved.items as JSONSchema4, fullSchema, seen);
+        }
+    }
+
+    if (resolved.allOf) {
+        resolved.allOf = resolved.allOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+    }
+
+    if (resolved.anyOf) {
+        resolved.anyOf = resolved.anyOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+    }
+
+    if (resolved.oneOf) {
+        resolved.oneOf = resolved.oneOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+    }
+
+    return resolved;
 }
