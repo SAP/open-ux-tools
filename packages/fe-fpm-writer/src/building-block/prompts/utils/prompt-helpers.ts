@@ -77,7 +77,7 @@ export function resolveEntitySetTargets(
     bindingContextType?: string,
     selectedContext?: string
 ): Property[] {
-    const contextName = pageContextEntitySet ? pageContextEntitySet : selectedContext;
+    const contextName = pageContextEntitySet || selectedContext;
     const entitySet = entitySets.find((es) => es.name === contextName);
 
     // Return an empty list if no context (entity set or navigation property) has been selected yet by the user
