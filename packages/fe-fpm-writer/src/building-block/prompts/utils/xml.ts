@@ -148,8 +148,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
  */
 function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | null {
     // Check all namespace attributes for a matching URI
-    for (let i = 0; i < root.attributes.length; i++) {
-        const attr = root.attributes[i];
+    for (const attr of Array.from(root.attributes)) {
         if (attr.value === namespaceUri) {
             if (attr.name === 'xmlns') {
                 // Default namespace (no prefix)
