@@ -1777,12 +1777,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
