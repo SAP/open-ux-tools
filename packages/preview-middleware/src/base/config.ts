@@ -13,6 +13,7 @@ import type {
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
@@ -68,7 +69,7 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     init?: string;
-    flex?: {
+    flexSettings?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;
@@ -144,6 +145,16 @@ const UI5_LIBS = [
     'sap.webanalytics',
     'sap.zen'
 ] as const;
+
+/**
+ * Type guard for FlexConnector.
+ *
+ * @param connector - the connector to check
+ * @returns true if the connector is a FlexConnector, false otherwise
+ */
+export function isFlexConnector(connector: FlexConnector | CustomConnector): connector is FlexConnector {
+    return 'connector' in connector;
+}
 
 /**
  * Gets the UI5 libs dependencies from manifest.json.
@@ -319,11 +330,10 @@ async function getI18nTextFromProperty(
     propertyValue: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
-    //i18n model format could be {{key}} or {i18n>key}
-    if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+    const propertyI18nKey = extractDoubleCurlyBracketsKey(propertyValue ?? '');
+    if (!projectRoot || !propertyI18nKey) {
         return propertyValue;
     }
-    const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
     const projectAccess = await createProjectAccess(projectRoot);
     const applicationIds = projectAccess.getApplicationIds();
     try {
@@ -443,20 +453,20 @@ function generateTestRunners(
     for (const test of configs ?? []) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
-            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.html'), 'utf-8');
+            const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.ejs'), 'utf-8');
             const testTemplateConfig = createTestTemplateConfig(
                 testConfig,
                 manifest['sap.app'].id,
                 flpTemplConfig.ui5.theme
             );
-            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
         } else if (test.framework === 'Testsuite') {
-            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.html'), 'utf-8');
+            const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.ejs'), 'utf-8');
             const testTemplateConfig = {
                 basePath: flpTemplConfig.basePath,
                 initPath: testConfig.init
             };
-            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
         }
     }
 }
@@ -485,7 +495,7 @@ export async function generatePreviewFiles(
     }
 
     // generate FLP configuration
-    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.html'), 'utf-8');
+    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');
     const flpConfig = getFlpConfigWithDefaults(config.flp);
 
     const webappPath = await getWebappPath(basePath, fs);

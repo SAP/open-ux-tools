@@ -1,0 +1,28 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-table-section-fc59378-md",
+  "title": "Table Section",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/table-section-fc59378.md",
+  "lastModified": "2025-09-01T18:17:10.147Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Table",
+    "Section"
+  ],
+  "headers": [
+    "Table Section",
+    "Adding Table Section",
+    "Moving Table Section",
+    "Deleting Table Section",
+    "Maintaining Table Section Properties",
+    "Label",
+    "Hidden"
+  ],
+  "content": "<!-- loiofc593789991c46348b31c1bc3b9d9182 -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Table Section\n\nA table section can be added either on the section node or inside the group on the subsection node.\n\n-   [Add Table Section](table-section-fc59378.md#loiofc593789991c46348b31c1bc3b9d9182__section_g5r_hpb_zrb)\n-   [Move Table Section](table-section-fc59378.md#loiofc593789991c46348b31c1bc3b9d9182__section_udp_pxx_xrb)\n-   [Change Table Section Label](table-section-fc59378.md#loiofc593789991c46348b31c1bc3b9d9182__section_yn2_2qb_zrb)\n-   [Delete Table Section](table-section-fc59378.md#loiofc593789991c46348b31c1bc3b9d9182__section_cwh_qxx_xrb)\n\n\n\n<a name=\"loiofc593789991c46348b31c1bc3b9d9182__section_g5r_hpb_zrb\"/>\n\n## Adding Table Section\n\nTo add a table section, perform the following steps:\n\n1.  Click the *Object/Form Entry Page* to open the *Page Editor*.\n2.  Navigate to the section node in the outline and click the :heavy_plus_sign: \\(*Add*\\) icon.\n\n    As a result, a dropdown menu displaying the supported section types appears.\n\n3.  Select *Add Table Section* from the dropdown list.\n\n    A pop-up window *Add Table Section* appears.\n\n4.  Enter a title in the *Label* text box.\n5.  Then, enter *Value Source Entity* to define the table data source and click *Add*.\n\nAs a result, you can see the following changes applied:\n\n-   A new `UI.LineItem` with empty collection and a new reference facet with an `annotationPath` pointing to the created `UI.LineItem` is added to the existing `UI.Facets`.\n-   If not yet available, a new `UI.Facets` annotation is created under the entity associated with that *Object Page*.\n-   If `UI.Facets` exists on an underlying layer, the annotation in the underlying layer will be overridden.\n-   For CAP CDS, a using statement is added to the overridden file if not yet there.\n\n\n\n<a name=\"loiofc593789991c46348b31c1bc3b9d9182__section_udp_pxx_xrb\"/>\n\n## Moving Table Section\n\nThe user can change the order of the sections created in the application. By using the drag-and-drop functionality, drag the required section to a different position within its application:\n\n-   When dropped, the records in the `UI.Facets` collection are reordered.\n\n-   When SAP Fiori application is rendered, sections are displayed based on the records sequence in the `UI.Facets` annotation.\n\n\n**Move multiple sections**\n\nAnnotation Library supports mass moving of the sections. To move the multiple sections to another position, perform the following steps:\n\n1.  Use the [Ctrl\\] + [Click\\]  combination to select more than one section.\n2.  Drag the selected section to a different position with your pointer/mouse.\n\n\n\n<a name=\"loiofc593789991c46348b31c1bc3b9d9182__section_cwh_qxx_xrb\"/>\n\n## Deleting Table Section\n\nTo delete the section in the application, perform the following steps:\n\n1.  Navigate to the section layer.\n2.  Click the :wastebasket: \\(*Delete*\\) icon to open the *Delete Confirmation* popup window.\n3.  Click *Delete* to confirm the action.\n\n> ### Note:  \n> This action deletes the referenced facet record from `UI.Facets` of the section in the Appendix.\n\n> ### Note:  \n> To clean up the orphaned `UI.LineItem` annotation, you need to explicitly run the cleanup procedure that deletes the unreferenced annotation.\n\n\n\n<a name=\"loiofc593789991c46348b31c1bc3b9d9182__section_yn2_2qb_zrb\"/>\n\n## Maintaining Table Section Properties\n\n\n\n### Label\n\nTo change the section label, perform the following steps:\n\n1.  Select the required section and navigate to the properties pane area.\n2.  Enter a new name in the *Label* text box. This field defines the text to be displayed at a section label.\n\n    The section is renamed both in the *Page Editor* and in the application preview.\n\n\nFor more information, see [Label](appendix-457f2e9.md#loiod44832d99bdf4f73ba14cdbb16dc9301).\n\n\n\n### Hidden\n\nFor more information. see [Hidden](appendix-457f2e9.md#loiof7ad71792a0044d6b6172f078827bdc0).\n\n**Related Information**  \n\n\n[Table Actions](table-actions-da1931b.md)\n\n[Table Columns](table-columns-a80d603.md)\n\n",
+  "excerpt": "<!-- loiofc593789991c46348b31c1bc3b9d9182 --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Table Section A table section can be added either on the section node or inside the g...",
+  "wordCount": 512,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

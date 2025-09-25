@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected prompts 1`] = `
 [
@@ -10,7 +10,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
       "breadcrumb": "CAP Project",
       "mandatory": true,
     },
-    "message": "Choose your CAP project",
+    "message": "Choose a CAP Project",
     "name": "capProject",
     "type": "list",
     "when": [Function],
@@ -22,7 +22,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
       "mandatory": true,
     },
     "guiType": "folder-browser",
-    "message": "CAP project folder path",
+    "message": "CAP Project Folder Path",
     "name": "capProjectPath",
     "type": "input",
     "validate": [Function],
@@ -36,7 +36,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "OData service",
+    "message": "OData Service",
     "name": "capService",
     "type": "list",
     "validate": [Function],

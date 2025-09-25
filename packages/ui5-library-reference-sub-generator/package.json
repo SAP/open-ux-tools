@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-reference-sub-generator",
     "description": "Generator for adding reference libraries to a project",
-    "version": "0.1.15",
+    "version": "0.1.45",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,7 +18,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -37,11 +37,11 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-library-reference-inquirer": "workspace:*",
         "@sap-ux/ui5-library-reference-writer": "workspace:*",
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/types": "29.6.3",
+        "@jest/types": "30.0.1",
         "@types/fs-extra": "9.0.13",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
@@ -50,6 +50,7 @@
         "@vscode-logging/logger": "2.0.0",
         "fs-extra": "10.0.0",
         "rimraf": "5.0.5",
+        "vscode-uri": "3.0.7",
         "yeoman-test": "6.3.0"
     },
     "engines": {

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ui5-test-writer - Integration tests Generate initial OPA test files and add more pages 1`] = `
 Object {

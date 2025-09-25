@@ -1,5 +1,32 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+
+## 0.2.2
+
+### Patch Changes
+
+-   84a8d56: Adds logger support to CommandRunner
+
 ## 0.2.1
 
 ### Patch Changes

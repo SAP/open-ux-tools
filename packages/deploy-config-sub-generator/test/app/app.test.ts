@@ -26,7 +26,10 @@ jest.mock('fs', () => {
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
-    return _fs.use(vol as unknown as typeof fs);
+    const memfs = _fs.use(vol as unknown as typeof fs);
+    memfs.realpath = fsLib.realpath;
+    memfs.realpathSync = fsLib.realpathSync;
+    return memfs;
 });
 
 jest.mock('@sap-ux/cf-deploy-config-writer', () => {
@@ -267,8 +270,15 @@ describe('Deployment Generator', () => {
                     hint: false,
                     useAutocomplete: true
                 },
-                overwriteDestinationName: false,
-                routerType: true
+                overwriteCfConfig: {
+                    hide: true
+                },
+                routerType: {
+                    hide: false
+                },
+                addManagedAppRouter: {
+                    hide: true
+                }
             },
             expect.any(Object)
         );

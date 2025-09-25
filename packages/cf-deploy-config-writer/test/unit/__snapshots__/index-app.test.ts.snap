@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CF Writer App Generate deployment configs - HTML5 App and destination read from ui5.yaml 1`] = `
 Object {
@@ -1122,6 +1122,248 @@ resources:
       service-plan: app-host
       service: html5-apps-repo
 "
+`;
+
+exports[`CF Writer App Generate deployment configs - HTML5 app with no datasource configured 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"basicappnodatasource\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"private\\": true,
+    \\"description\\": \\"An SAP Fiori application.\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@ui5/cli\\": \\"^3.0.0\\",
+        \\"@sap/ux-ui5-tooling\\": \\"1\\",
+        \\"ui5-task-zipper\\": \\"^3.4.x\\",
+        \\"rimraf\\": \\"^5.0.5\\",
+        \\"mbt\\": \\"^1.2.29\\"
+    },
+    \\"scripts\\": {
+        \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#basicappnodatasource-display\\\\\\"\\",
+        \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#basicappnodatasource-display\\\\\\"\\",
+        \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+        \\"deploy\\": \\"fiori cfDeploy\\",
+        \\"deploy-config\\": \\"fiori add deploy-config\\",
+        \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+        \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+        \\"unit-tests\\": \\"fiori run --open 'test/unit/unitTests.qunit.html'\\",
+        \\"int-tests\\": \\"fiori run --open 'test/integration/opaTests.qunit.html'\\",
+        \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\",
+        \\"build:mta\\": \\"rimraf resources mta_archives && mbt build\\",
+        \\"undeploy\\": \\"cf undeploy basicappnodatasource --delete-services --delete-service-keys --delete-service-brokers\\"
+    },
+    \\"sapuxLayer\\": \\"VENDOR\\"
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'basicappnodatasource'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: basicappnodatasource
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.59.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"basicappnodatasource\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"@sap/generator-fiori:basic\\",
+      \\"version\\": \\"1.14.2-pre-20240708140014-4973a7ece.0\\",
+      \\"toolsId\\": \\"c1c8a120-2e9a-4d6e-8363-7e2622948044\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.125.1\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.f\\": {},
+        \\"sap.suite.ui.generic.template\\": {},
+        \\"sap.ui.comp\\": {},
+        \\"sap.ui.generic.app\\": {},
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"basicappnodatasource.i18n.i18n\\"
+        }
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": [
+        {
+          \\"uri\\": \\"css/style.css\\"
+        }
+      ]
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.m.routing.Router\\",
+        \\"viewType\\": \\"XML\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"basicappnodatasource.view\\",
+        \\"controlAggregation\\": \\"pages\\",
+        \\"controlId\\": \\"app\\",
+        \\"clearControlAggregation\\": false
+      },
+      \\"routes\\": [
+        {
+          \\"name\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
+          \\"target\\": [
+            \\"TargetView1\\"
+          ]
+        }
+      ],
+      \\"targets\\": {
+        \\"TargetView1\\": {
+          \\"viewType\\": \\"XML\\",
+          \\"transition\\": \\"slide\\",
+          \\"clearControlAggregation\\": false,
+          \\"viewId\\": \\"View1\\",
+          \\"viewName\\": \\"View1\\"
+        }
+      }
+    },
+    \\"rootView\\": {
+      \\"viewName\\": \\"basicappnodatasource.view.App\\",
+      \\"type\\": \\"XML\\",
+      \\"async\\": true,
+      \\"id\\": \\"App\\"
+    }
+  },
+  \\"sap.cloud\\": {
+    \\"public\\": true,
+    \\"service\\": \\"basicappnodatasource\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "xs-app.json": Object {
+    "contents": "{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^<apply-service-segment-path>/(.*)$\\",
+      \\"target\\": \\"<apply-service-segment-path>/$1\\",
+      \\"destination\\": \\"test\\",
+      \\"authenticationType\\": \\"xsuaa\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"html5-apps-repo-rt\\",
+      \\"authenticationType\\": \\"xsuaa\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "xs-security.json": Object {
+    "contents": "{
+  \\"xsappname\\": \\"basicappnodatasource\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+",
+    "state": "modified",
+  },
+}
 `;
 
 exports[`CF Writer App Generate deployment configs - ensure mta.save does not exit  1`] = `

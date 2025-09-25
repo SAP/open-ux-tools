@@ -9,7 +9,6 @@ import { FileName, getMtaPath, hasDependency, type Package } from '@sap-ux/proje
 import {
     CloudFoundry,
     RouterModule,
-    ResourceMTADestination,
     DefaultMTADestination,
     SRV_API,
     ManagedXSUAA,
@@ -89,7 +88,7 @@ export class MtaConfig {
         try {
             await this.loadMTAResources();
             await this.loadMTAModules();
-            this.mtaId = await this.mta.getMtaID();
+            this.mtaId = await this.mta?.getMtaID();
         } catch (error) {
             this.log?.error(t('error.unableToLoadMTA', { error, mtaDir: this.mtaDir }));
         }
@@ -142,7 +141,7 @@ export class MtaConfig {
     }
 
     private async loadMTAModules(): Promise<void> {
-        const modules = (await this.mta.getModules()) || [];
+        const modules = (await this.mta?.getModules()) || [];
         modules.forEach((module: mta.Module) => {
             if (module.type) {
                 if (module.type === 'html5') {
@@ -170,7 +169,7 @@ export class MtaConfig {
         const appHostName = this.resources.get(HTML5RepoHost)?.name;
         if (appHostName) {
             const appContentModule: mta.Module = {
-                name: `${this.prefix.slice(0, 100)}-app-content`,
+                name: `${this.prefix?.slice(0, 100)}-app-content`,
                 type: 'com.sap.application.content',
                 path: '.',
                 requires: [
@@ -186,7 +185,7 @@ export class MtaConfig {
                     requires: []
                 }
             };
-            await this.mta.addModule(appContentModule);
+            await this.mta?.addModule(appContentModule);
             this.modules.set('com.sap.application.content:resource', appContentModule);
             this.dirty = true;
         }
@@ -194,26 +193,26 @@ export class MtaConfig {
 
     private async addUaa(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix.slice(0, 100)}-uaa`,
+            name: `${this.prefix?.slice(0, 100)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 'service-plan': 'application',
                 service: 'xsuaa',
-                config: { xsappname: `${this.prefix.slice(0, 100)}` + '-${space-guid}', 'tenant-mode': 'dedicated' }
+                config: { xsappname: `${this.prefix?.slice(0, 100)}` + '-${space-guid}', 'tenant-mode': 'dedicated' }
             }
         };
-        await this.mta.addResource(resource);
+        await this.mta?.addResource(resource);
         this.resources.set('xsuaa', resource);
         this.dirty = true;
     }
 
     private async addHtml5Runtime(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix.slice(0, 100)}-html5-repo-runtime`,
+            name: `${this.prefix?.slice(0, 100)}-html5-repo-runtime`,
             type: 'org.cloudfoundry.managed-service',
             parameters: { 'service-plan': 'app-runtime', service: 'html5-apps-repo' }
         };
-        await this.mta.addResource(resource);
+        await this.mta?.addResource(resource);
         this.resources.set('html5-apps-repo:app-runtime', resource);
         this.dirty = true;
     }
@@ -229,9 +228,9 @@ export class MtaConfig {
         if (resource && !resource.parameters?.['service-name']) {
             resource.parameters = {
                 ...(resource.parameters ?? {}),
-                'service-name': `${this.prefix.slice(0, 100)}-${serviceName}-service`
+                'service-name': `${this.prefix?.slice(0, 100)}-${serviceName}-service`
             };
-            await this.mta.updateResource(resource);
+            await this.mta?.updateResource(resource);
             this.resources.set(resourceName, resource);
             this.dirty = true;
         }
@@ -239,31 +238,31 @@ export class MtaConfig {
 
     private async addAppFrontResource(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix.slice(0, 94)}-app-front`,
+            name: `${this.prefix?.slice(0, 94)}-app-front`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'app-front',
-                'service-name': `${this.prefix.slice(0, 96)}-app-front-service`,
+                'service-name': `${this.prefix?.slice(0, 96)}-app-front-service`,
                 'service-plan': 'developer'
             }
         };
-        await this.mta.addResource(resource);
+        await this.mta?.addResource(resource);
         this.resources.set(ManagedAppFront, resource);
         this.dirty = true;
     }
 
     private async addHtml5Host(): Promise<void> {
-        const html5host = `${this.prefix.slice(0, 100)}-repo-host`; // Need to cater for -key being added too!
+        const html5host = `${this.prefix?.slice(0, 100)}-repo-host`; // Need to cater for -key being added too!
         const resource: mta.Resource = {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-name': `${this.prefix.slice(0, 100)}-html5-service`,
+                'service-name': `${this.prefix?.slice(0, 100)}-html5-service`,
                 'service-plan': 'app-host',
                 service: 'html5-apps-repo'
             }
         };
-        await this.mta.addResource(resource);
+        await this.mta?.addResource(resource);
         this.resources.set(HTML5RepoHost, resource);
         this.dirty = true;
     }
@@ -274,7 +273,7 @@ export class MtaConfig {
      * @param isManagedApp - If the destination service is for a managed app
      */
     private async addDestinationResource(isManagedApp = false): Promise<void> {
-        const destinationName = `${this.prefix.slice(0, 100)}-destination-service`;
+        const destinationName = `${this.prefix?.slice(0, 100)}-destination-service`;
         const resource: mta.Resource = {
             name: destinationName,
             type: 'org.cloudfoundry.managed-service',
@@ -288,7 +287,7 @@ export class MtaConfig {
                 }
             }
         };
-        await this.mta.addResource(resource);
+        await this.mta?.addResource(resource);
         this.resources.set('destination', resource);
         this.dirty = true;
     }
@@ -324,7 +323,7 @@ export class MtaConfig {
             ) {
                 resource.parameters.config.init_data.instance.destinations.push(UI5Destination);
             }
-            await this.mta.updateResource(resource);
+            await this.mta?.updateResource(resource);
             this.resources.set('destination', resource);
             this.dirty = true;
         }
@@ -351,7 +350,7 @@ export class MtaConfig {
             if (mtaResource && !serverModule.requires?.some((ele) => ele.name === mtaResource.name)) {
                 serverModule.requires = [...(serverModule.requires ?? []), ...[{ name: mtaResource.name }]];
             }
-            await this.mta.updateModule(serverModule);
+            await this.mta?.updateModule(serverModule);
             this.modules.set(moduleType, serverModule);
             this.dirty = true;
         }
@@ -365,24 +364,24 @@ export class MtaConfig {
     private async addManagedUAAWithSecurity(): Promise<void> {
         this.log?.debug(t('debug.addXsuaaService'));
         const resource: mta.Resource = {
-            name: `${this.prefix.slice(0, 100)}-uaa`,
+            name: `${this.prefix?.slice(0, 100)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 path: './xs-security.json',
                 service: 'xsuaa',
-                'service-name': `${this.prefix.slice(0, 100)}-xsuaa-service`,
+                'service-name': `${this.prefix?.slice(0, 100)}-xsuaa-service`,
                 'service-plan': 'application',
                 ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
                     ? {
                           config: {
-                              xsappname: `${this.prefix.slice(0, 100)}-\${org}-\${space}`,
+                              xsappname: `${this.prefix?.slice(0, 100)}-\${org}-\${space}`,
                               'tenant-mode': 'dedicated'
                           }
                       }
                     : {})
             }
         };
-        await this.mta.addResource(resource);
+        await this.mta?.addResource(resource);
         this.resources.set(ManagedXSUAA, resource);
         this.dirty = true;
     }
@@ -429,7 +428,7 @@ export class MtaConfig {
             this.modules.get('approuter.nodejs')
         ].filter((elem) => elem !== undefined)) {
             const destinationName =
-                this.resources.get('destination')?.name ?? `${this.prefix.slice(0, 100)}-destination-service`;
+                this.resources.get('destination')?.name ?? `${this.prefix?.slice(0, 100)}-destination-service`;
             if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
                 if (module.type === 'approuter.nodejs') {
                     module.requires.push({
@@ -445,7 +444,7 @@ export class MtaConfig {
                         }
                     });
                 }
-                await this.mta.updateModule(module);
+                await this.mta?.updateModule(module);
                 this.dirty = true;
             }
         }
@@ -483,9 +482,7 @@ export class MtaConfig {
                 // In theory, if there is more than one, it should be same!
                 moduleDestinations.some((destination: MTADestinationType) => {
                     cloudServiceName = destination['sap.cloud.service'] || undefined;
-                    if (cloudServiceName) {
-                        return true; // breakout
-                    }
+                    return !!cloudServiceName;
                 });
             }
         });
@@ -526,7 +523,7 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async updateParameters(parameters: mta.Parameters): Promise<void> {
-        await this.mta.updateParameters(parameters);
+        await this.mta?.updateParameters(parameters);
         this.dirty = true;
     }
 
@@ -537,7 +534,7 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async updateBuildParams(parameters: mta.ProjectBuildParameters): Promise<void> {
-        await this.mta.updateBuildParameters(parameters);
+        await this.mta?.updateBuildParameters(parameters);
         this.dirty = true;
     }
 
@@ -573,7 +570,7 @@ export class MtaConfig {
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
             }
-            await this.mta.updateModule(contentModule);
+            await this.mta?.updateModule(contentModule);
             this.dirty = true;
         }
 
@@ -585,7 +582,7 @@ export class MtaConfig {
                 path: appPath,
                 'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
             } as HTML5App;
-            await this.mta.addModule(app);
+            await this.mta?.addModule(app);
             this.apps.set(appName, app);
             this.dirty = true;
             this.log?.debug(t('debug.html5AppAdded', { appName }));
@@ -606,7 +603,7 @@ export class MtaConfig {
                     ) as Package;
                     if (packageJson && hasDependency(packageJson, '@sap/ux-ui5-tooling')) {
                         app['build-parameters'].commands = ['npm install', 'npm run build:cf'];
-                        await this.mta.updateModule(app);
+                        await this.mta?.updateModule(app);
                         this.dirty = true;
                     }
                 } catch (error) {
@@ -624,13 +621,13 @@ export class MtaConfig {
     public async addConnectivityResource(): Promise<void> {
         const serviceType: ResourceType = 'connectivity';
         const resourceType = CloudFoundryServiceType.Managed;
-        const resourceName = `${this.prefix.slice(0, 100)}-connectivity`;
+        const resourceName = `${this.prefix?.slice(0, 100)}-connectivity`;
 
         const router = this.modules.get('approuter.nodejs');
         if (router) {
             if (router.requires?.findIndex((resource) => resource.name === resourceName) === -1) {
                 router.requires.push({ name: resourceName });
-                await this.mta.updateModule(router);
+                await this.mta?.updateModule(router);
             }
         }
 
@@ -644,7 +641,7 @@ export class MtaConfig {
         };
 
         if (!this.resources.has(serviceType)) {
-            await this.mta.addResource(connectivityResource);
+            await this.mta?.addResource(connectivityResource);
             this.resources.set(serviceType, connectivityResource);
         }
         this.dirty = true;
@@ -726,12 +723,12 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addAbapService(serviceName: string, btpService: string): Promise<void> {
-        const newResourceName = `${this.prefix.slice(0, 24)}-abap-${serviceName.slice(0, 20)}`;
+        const newResourceName = `${this.prefix?.slice(0, 24)}-abap-${serviceName.slice(0, 20)}`;
         const router = this.modules.get('approuter.nodejs');
         if (router) {
             if (router.requires?.findIndex((resource) => resource.name === newResourceName) === -1) {
                 router.requires.push({ name: newResourceName });
-                await this.mta.updateModule(router);
+                await this.mta?.updateModule(router);
             }
         }
         const abapServiceResource: mta.Resource = {
@@ -746,7 +743,7 @@ export class MtaConfig {
         };
 
         if (!this.resources.has(newResourceName)) {
-            await this.mta.addResource(abapServiceResource);
+            await this.mta?.addResource(abapServiceResource);
             this.resources.set(newResourceName, abapServiceResource);
         }
         this.dirty = true;
@@ -792,7 +789,7 @@ export class MtaConfig {
         const destinationName = this.resources.get('destination')?.name;
         if (destinationName && xsuaaName && appRuntimeName) {
             const router: mta.Module = {
-                name: `${this.prefix.slice(0, 100)}-router`,
+                name: `${this.prefix?.slice(0, 100)}-router`,
                 type: 'approuter.nodejs',
                 path: fromServerGenerator ? `${RouterModule}` : `${CloudFoundry}/${RouterModule}`,
                 parameters: {
@@ -809,7 +806,7 @@ export class MtaConfig {
                     }
                 ]
             };
-            await this.mta.addModule(router);
+            await this.mta?.addModule(router);
             this.modules.set('approuter.nodejs', router);
             this.dirty = true;
         }
@@ -853,7 +850,7 @@ export class MtaConfig {
         let destinationServiceName = this.resources.get('destination')?.name;
         if (!destinationServiceName) {
             this.log?.info(t('info.existingDestinationNotFound'));
-            destinationServiceName = `${this.prefix.slice(0, 100)}-destination-service`;
+            destinationServiceName = `${this.prefix?.slice(0, 100)}-destination-service`;
         }
 
         const appMtaId = this.mtaId;
@@ -934,11 +931,7 @@ export class MtaConfig {
         const module = this.modules.get('com.sap.application.content:appfront');
         if (module) {
             // If the destination provided is `fiori-default-srv-api` then use the default destination name
-            const destName =
-                cfDestination === DefaultMTADestination
-                    ? this.getFormattedPrefix(ResourceMTADestination)
-                    : cfDestination;
-
+            const destName = cfDestination === DefaultMTADestination ? SRV_API : cfDestination;
             // Ensure the destination does not exist already!
             if (
                 !module.parameters?.config?.destinations?.some(
@@ -951,7 +944,7 @@ export class MtaConfig {
                 };
 
                 module.parameters?.config?.destinations.push(destination);
-                await this.mta.updateModule(module);
+                await this.mta?.updateModule(module);
             }
         }
     }
@@ -965,6 +958,7 @@ export class MtaConfig {
     private async appendInstanceBasedDestination(cfDestination: string | undefined): Promise<void> {
         // Part 1. Update the destination service with the new instance based destination
         const destinationResource = this.resources.get('destination');
+        const capDestName = cfDestination === DefaultMTADestination ? SRV_API : cfDestination;
         if (destinationResource) {
             if (!destinationResource.requires?.some((ele) => ele.name === SRV_API)) {
                 destinationResource.requires = [
@@ -976,23 +970,27 @@ export class MtaConfig {
                     ]
                 ];
             }
-            // If the destination provided is `fiori-default-srv-api` then use the default destination name
-            const capDestName =
-                cfDestination === DefaultMTADestination
-                    ? this.getFormattedPrefix(ResourceMTADestination)
-                    : cfDestination;
-            // Ensure the destination does not exist already!
-            if (
-                !destinationResource.parameters?.config?.init_data?.instance?.destinations?.some(
-                    (destination: MTADestinationType) => destination.Name === capDestName
-                )
-            ) {
-                destinationResource.parameters?.config?.init_data?.instance?.destinations?.push({
-                    ...MTAAPIDestination,
-                    Name: capDestName
-                });
+            // Part 2. Only append the default destination if it does not exist already
+            const isSrvApiExisting =
+                cfDestination === SRV_API &&
+                destinationResource.parameters?.config?.init_data?.instance?.destinations?.some(
+                    (destination: MTADestinationType) => destination.Name === SRV_API
+                );
+
+            // Part 3. If the destination is not already existing, append it
+            if (!isSrvApiExisting) {
+                if (
+                    !destinationResource.parameters?.config?.init_data?.instance?.destinations?.some(
+                        (destination: MTADestinationType) => destination.Name === capDestName
+                    )
+                ) {
+                    destinationResource.parameters?.config?.init_data?.instance?.destinations?.push({
+                        ...MTAAPIDestination,
+                        Name: capDestName
+                    });
+                }
             }
-            await this.mta.updateResource(destinationResource);
+            await this.mta?.updateResource(destinationResource);
             this.resources.set('destination', destinationResource);
             // Only make additional modifications if the MTA destination is added
             await this.updateServerModule(
@@ -1009,7 +1007,7 @@ export class MtaConfig {
      */
     public async save(): Promise<boolean> {
         if (this.dirty) {
-            await this.mta.save();
+            await this.mta?.save();
         }
         return this.dirty;
     }
@@ -1031,7 +1029,7 @@ export class MtaConfig {
             const appHostName = this.resources.get(ManagedAppFront)?.name;
             if (appHostName) {
                 const appContentModule: mta.Module = {
-                    name: `${this.prefix.slice(0, 100)}-app-content`,
+                    name: `${this.prefix?.slice(0, 100)}-app-content`,
                     type: 'com.sap.application.content',
                     path: '.',
                     requires: [
@@ -1052,7 +1050,7 @@ export class MtaConfig {
                 if (this.modules.has('nodejs')) {
                     appContentModule.requires?.push({ name: SRV_API });
                 }
-                await this.mta.addModule(appContentModule);
+                await this.mta?.addModule(appContentModule);
                 this.modules.set('com.sap.application.content:appfront', appContentModule);
                 this.dirty = true;
             }
@@ -1092,7 +1090,7 @@ export class MtaConfig {
             const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
             if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
                 const router: mta.Module = {
-                    name: `${this.prefix.slice(0, 100)}-destination-content`,
+                    name: `${this.prefix?.slice(0, 100)}-destination-content`,
                     type: 'com.sap.application.content',
                     requires: [
                         {
@@ -1123,17 +1121,17 @@ export class MtaConfig {
                             instance: {
                                 destinations: [
                                     {
-                                        Name: `${this.prefix.slice(0, 100)}_html_repo_host`,
+                                        Name: `${this.prefix?.slice(0, 100)}_html_repo_host`,
                                         ServiceInstanceName: appHostServiceName,
                                         ServiceKeyName: `${appHostName}-key`,
-                                        'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                                        'sap.cloud.service': `${this.prefix?.slice(0, 100)}`
                                     },
                                     {
                                         Authentication: 'OAuth2UserTokenExchange',
-                                        Name: `${this.prefix.slice(0, 100)}_uaa`,
+                                        Name: `${this.prefix?.slice(0, 100)}_uaa`,
                                         ServiceInstanceName: managedXSUAAServiceName,
                                         ServiceKeyName: `${managedXSUAAName}-key`,
-                                        'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                                        'sap.cloud.service': `${this.prefix?.slice(0, 100)}`
                                     }
                                 ],
                                 'existing_destinations_policy': 'update'
@@ -1144,7 +1142,7 @@ export class MtaConfig {
                         'no-source': true
                     }
                 };
-                await this.mta.addModule(router);
+                await this.mta?.addModule(router);
                 this.modules.set('com.sap.application.content:destination', router);
                 this.dirty = true;
             }

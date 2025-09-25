@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-personalization-dialog-a3c3c5e-md",
+  "title": "Personalization Dialog",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/personalization-dialog-a3c3c5e.md",
+  "lastModified": "2025-09-01T18:17:10.698Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Personalization",
+    "Dialog"
+  ],
+  "headers": [
+    "Personalization Dialog",
+    "Overview",
+    "Details"
+  ],
+  "content": "<!-- loioa3c3c5eb54bc4cc38e6cfbd8e90c6a01 -->\n\n# Personalization Dialog\n\nThe `sap.m.p13n.Popup` control in the `sap.m.p13n` namespace provides a dialog or popover for personalizing content, for example, of a table, such as selecting columns and adapting their order.\n\nFor more information about this control, see the [API Reference](https://ui5.sap.com/#/api/sap.m.p13n) and the [Sample](https://ui5.sap.com/#/entity/sap.m.p13n.Popup/sample/sap.m.sample.p13n.Popup).\n\n\n\n## Overview\n\nThe `sap.m.p13n` namespace offers you personalization content and allows the consuming application to define various settings for controls, as shown in the example below for tables using panels. Different panels with reusable content for the various types of personalization are available for freestyle use in the application.\n\nThe panels represent the settings on the user interface. They are aggregated to `sap.m.p13n.Popup`. This control can be used as a container for these panels.\n\n\n\n## Details\n\nThe following panels are available in the `sap.m.p13n.Popup` control:\n\n-   `sap.m.p13n.SelectionPanel`\n\n    Defines a number of custom properties that allow you to select and deselect fields as columns in your table, for example, and to change their order. You can also search for and toggle between selected and deselected fields.\n\n-   `sap.m.p13n.SortPanel`\n\n    Defines a number of properties that allow you to sort your items based on various criteria, for example, in ascending or descending order.\n\n-   `sap.m.p13n.GroupPanel`\n\n    Defines a number of properties that allow you to group your data.\n\n\nThe following buttons are available in the dialog:\n\n-   *OK*\n\n    Closes the personalization dialog.\n\n-   *Cancel*\n\n    Closes the personalization dialog.\n\n    All changes made by the end user in the dialog that is currently open are rejected.\n\n-   *Reset*\n\n    Personalization dialog remains open.\n\n    All changes made by the end user are set back to the initial state.\n\n    > ### Note:  \n    > The control only provides the visual representation of the table settings on the user interface. The consuming application must ensure the settings are actually changed in the table.\n\n\n**Related Information**  \n\n\n[Enablement of Personalization \\(With Variant Management\\)](enablement-of-personalization-with-variant-management-f280251.md \"The simple concept of personalization allows the user to personalize a control and to persist these settings using a VariantManagement control.\")\n\n",
+  "excerpt": "<!-- loioa3c3c5eb54bc4cc38e6cfbd8e90c6a01 --> Personalization Dialog The sap.m.p13n.Popup control in the sap.m.p13n namespace provides a dialog or popover for personalizing content, for example, of a ...",
+  "wordCount": 329,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

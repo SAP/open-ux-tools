@@ -45,7 +45,7 @@ import {
 } from '@sap-ux/inquirer-common';
 import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
 /**
  * Generator for adding a FLP configuration to an adaptation project.
@@ -69,6 +69,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private ui5Yaml: AdpPreviewConfig;
     private credentials: CredentialsAnswers;
     private inbounds?: ManifestNamespace.Inbound;
+    private layer: UI5FlexLayer;
     private appId: string;
     private variant: DescriptorVariant;
     private tileSettingsAnswers?: TileSettingsAnswers;
@@ -90,6 +91,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.options = opts;
         this.vscode = opts.vscode;
         this.inbounds = opts.inbounds;
+        this.layer = opts.layer;
 
         initAppWizardCache(this.logger, this.appWizard);
         this._setupFLPConfigPrompts();
@@ -151,7 +153,11 @@ export default class AdpFlpConfigGenerator extends Generator {
             return;
         }
         try {
-            const config = getAdpFlpInboundsWriterConfig(this.answers, this.tileSettingsAnswers as TileSettingsAnswers);
+            const config = getAdpFlpInboundsWriterConfig(
+                this.answers,
+                this.layer,
+                this.tileSettingsAnswers as TileSettingsAnswers
+            );
             await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
@@ -414,6 +420,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
+        this.layer = this.variant.layer;
 
         await this._initAbapServiceProvider();
 

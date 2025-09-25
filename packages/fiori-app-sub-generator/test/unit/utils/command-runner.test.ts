@@ -23,7 +23,7 @@ describe('Test command-runner', () => {
             }, 10);
         });
         const cmdRunner = new CommandRunner(console as any);
-        await expect(cmdRunner.run('fakeCmd')).rejects.toThrowError('Command failed with error: spawn ENOENT');
+        await expect(cmdRunner.run('fakeCmd')).rejects.toThrow('Command failed with error.: spawn ENOENT');
     });
 
     test('Test CommandRunner ', async () => {

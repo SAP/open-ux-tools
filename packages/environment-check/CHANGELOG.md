@@ -1,5 +1,194 @@
 # @sap-ux/environment-check
 
+## 0.18.33
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+
+## 0.18.32
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/project-access@1.32.1
+
+## 0.18.31
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/axios-extension@1.22.7
+
+## 0.18.30
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/axios-extension@1.22.7
+
+## 0.18.29
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/axios-extension@1.22.7
+
+## 0.18.28
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+
+## 0.18.27
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/ui5-config@0.29.3
+
+## 0.18.26
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/project-access@1.30.13
+
+## 0.18.25
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/ui5-config@0.29.2
+
+## 0.18.24
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+
+## 0.18.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/axios-extension@1.22.5
+
+## 0.18.22
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+
+## 0.18.21
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+    -   @sap-ux/axios-extension@1.22.4
+
+## 0.18.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/axios-extension@1.22.4
+
+## 0.18.19
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/axios-extension@1.22.4
+
+## 0.18.18
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+
+## 0.18.17
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/axios-extension@1.22.3
+
+## 0.18.16
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.18.15
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+    -   @sap-ux/axios-extension@1.22.3
+
+## 0.18.14
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/axios-extension@1.22.3
+
+## 0.18.13
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.18.12
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/axios-extension@1.22.3
+
+## 0.18.11
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/store@1.1.1
+    -   @sap-ux/ui5-config@0.28.2
+
 ## 0.18.10
 
 ### Patch Changes

@@ -8,6 +8,8 @@ import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
 import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
+import type { Logger } from '@sap-ux/logger';
+import { i18nNamespaces, translate } from '../../../src/i18n';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -49,13 +51,13 @@ describe('CustomPage', () => {
         const target = join(testDir, 'validateBasePathRequired');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
 
-        await expect(validateBasePath(target, fs)).rejects.toThrowError('Dependency sap.fe.templates is missing');
+        await expect(validateBasePath(target, fs)).rejects.toThrow('Dependency sap.fe.templates is missing');
     });
 
     test('validateBasePath - required libs `sap.fe.templates` or `sap.fe.core` missing', async () => {
         const target = join(testDir, 'validateBasePathRequired');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        await expect(validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).rejects.toThrowError(
+        await expect(validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).rejects.toThrow(
             'All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
         );
     });
@@ -65,15 +67,15 @@ describe('CustomPage', () => {
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
         expect(validateBasePath(target, fs, [])).toBeTruthy();
 
-        await expect(validateBasePath(join(testDir, '' + Date.now()), fs, [])).rejects.toThrowError();
+        await expect(validateBasePath(join(testDir, '' + Date.now()), fs, [])).rejects.toThrow();
         await expect(
             async () => await generateCustomPage(join(testDir, '' + Date.now()), {} as CustomPage)
-        ).rejects.toThrowError();
+        ).rejects.toThrow();
 
         const invalidManifest = JSON.parse(testAppManifest);
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
-        await expect(validateBasePath(target, fs, [])).resolves.not.toThrowError();
+        await expect(validateBasePath(target, fs, [])).resolves.not.toThrow();
     });
 
     describe('generateCustomPage: different versions or target folder', () => {
@@ -163,7 +165,7 @@ describe('CustomPage', () => {
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             await expect(
                 async () => await generateCustomPage(target, { ...minimalInput, minUI5Version: '1.83' }, fs)
-            ).rejects.toThrowError();
+            ).rejects.toThrow();
         });
 
         test('latest version with minimal input but different target folder', async () => {
@@ -289,6 +291,52 @@ describe('CustomPage', () => {
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             await generateCustomPage(target, input, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('should generate a custom page with pageBuildingBlockTitle enabled', async () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithPageBuildingBlockTitle = {
+                ...input,
+                pageBuildingBlockTitle: 'Test Page Title'
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs);
+
+            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            expect(fs.exists(viewXmlPath)).toBe(true);
+            const viewXml = fs.read(viewXmlPath).toString();
+            expect(viewXml).toContain('macros:Page');
+            expect(viewXml).toContain('Test Page Title');
+
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+        });
+
+        test('should log a warning when min ui5 version is not met for page building block feature', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+            const inputWithPageBuildingBlockTitle = {
+                ...input,
+                minUI5Version: '1.120',
+                pageBuildingBlockTitle: 'Test Page Title'
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+
+            await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
+
+            expect(log.warn).toHaveBeenCalledWith(
+                t('minUi5VersionRequirement', { minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version })
+            );
+
+            // page macros should not be added
+            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            expect(fs.exists(viewXmlPath)).toBe(true);
+            const viewXml = fs.read(viewXmlPath).toString();
+            expect(viewXml).not.toContain('macros:Page');
+            expect(viewXml).not.toContain('Test Page Title');
+            expect(viewXml).toContain('<Page');
         });
     });
 

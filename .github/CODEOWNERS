@@ -111,6 +111,15 @@
 # Module: jest-environment-ui5
 /packages/jest-environment-ui5/ @SAP/ux-tools-ui5-jest
 
+# Module: ux-tools-control-property-editor
+/tests/integration/adaptation-editor/ @SAP/ux-tools-control-property-editor
+
+# Module: odata-service-inquirer
+/packages/odata-service-inquirer/ @SAP/ux-tools-fiori-app-sub-generator
+
+# Module: fiori-app-sub-generator
+/packages/fiori-app-sub-generator/ @SAP/ux-tools-fiori-app-sub-generator
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
@@ -137,3 +146,5 @@
 **/i18n.json @SAP/ux-tools-text-reviewers
 **/*.i18n.json @SAP/ux-tools-text-reviewers
 packages/preview-middleware-client/src/messagebundle.properties @SAP/ux-tools-text-reviewers
+**/translations/i18n.ts @SAP/ux-tools-text-reviewers
+

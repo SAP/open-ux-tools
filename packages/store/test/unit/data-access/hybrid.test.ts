@@ -12,7 +12,8 @@ const mockFilesystemStore = {
     read: jest.fn(),
     del: jest.fn(),
     getAll: jest.fn(),
-    readAll: jest.fn()
+    readAll: jest.fn(),
+    partialUpdate: jest.fn()
 };
 mockFileSystemAccess.mockReturnValue(mockFilesystemStore);
 
@@ -213,6 +214,19 @@ describe('hybrid store', () => {
                     /* onlysecure */ { prop1: 1 }
                 ]);
             });
+
+            it('returns entities from the filesystem and does not check secure store', async () => {
+                const fsEntities = {
+                    '42': { prop1: 42, prop2: '13' },
+                    '13': { prop1: 1, prop2: 'b' }
+                };
+                mockFilesystemStore.readAll.mockResolvedValueOnce(fsEntities);
+                mockSecureStore.getAll.mockResolvedValueOnce(undefined);
+
+                await expect(
+                    getHybridStore(logger).getAll({ entityName: 'dummy', includeSensitiveData: false })
+                ).resolves.toIncludeSameMembers(Object.values(fsEntities));
+            });
         });
     });
 
@@ -225,15 +239,15 @@ describe('hybrid store', () => {
             mockSecureStore.save = jest.fn();
 
             await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasOnlyOrdinaryProps() });
-            expect(mockSecureStore.save).not.toBeCalled();
-            expect(mockFilesystemStore.write).not.toBeCalled();
+            expect(mockSecureStore.save).not.toHaveBeenCalled();
+            expect(mockFilesystemStore.write).not.toHaveBeenCalled();
         });
 
         it('writes serializable properties to file system', async () => {
             mockSecureStore.save = jest.fn();
 
             await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSerializableProps() });
-            expect(mockSecureStore.save).not.toBeCalled();
+            expect(mockSecureStore.save).not.toHaveBeenCalled();
             expect(mockFilesystemStore.write).toHaveBeenCalledWith(
                 expect.objectContaining({
                     entity: {
@@ -248,7 +262,7 @@ describe('hybrid store', () => {
             mockSecureStore.save = jest.fn();
 
             await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSensitiveDataProps() });
-            expect(mockFilesystemStore.write).not.toBeCalled();
+            expect(mockFilesystemStore.write).not.toHaveBeenCalled();
             expect(mockSecureStore.save).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
                 sensitiveDataProperty1: '1',
                 sensitiveDataProperty2: '2'

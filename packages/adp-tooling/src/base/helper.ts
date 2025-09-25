@@ -1,9 +1,10 @@
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative, basename, dirname } from 'path';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
+
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
+import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
@@ -61,29 +62,50 @@ export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
 }
 
 /**
- * Returns the adaptation project configuration, throws an error if not found.
+ * Reads the UI5 YAML configuration and returns the parsed `UI5Config` instance.
  *
- * @param {string} basePath - The path to the adaptation project.
- * @param {string} yamlPath - The path to yaml configuration file.
- * @returns {Promise<AdpPreviewConfig>} the adp configuration
+ * @param {string} basePath - Adaptation project root
+ * @param {string} yamlPath - Relative or absolute path to the ui5.yaml file
+ * @returns {Promise<UI5Config>} The `UI5Config` object.
+ */
+export async function readUi5Config(basePath: string, yamlPath: string): Promise<UI5Config> {
+    const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
+    return readUi5Yaml(dirname(ui5ConfigPath), basename(ui5ConfigPath));
+}
+
+/**
+ * Extracts the `adp` preview configuration from a UI5 YAML config (if present).
+ *
+ * @param {UI5Config} ui5Conf Parsed UI5 configuration
+ * @returns The `AdpPreviewConfig` object if found, otherwise `undefined`.
+ */
+export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefined {
+    const customMiddleware =
+        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
+        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
+    return customMiddleware?.configuration?.adp;
+}
+
+/**
+ * Convenience wrapper that reads the ui5.yaml and directly returns the ADP preview configuration.
+ * Throws if the configuration cannot be found.
+ *
+ * @param basePath  Adaptation project root
+ * @param yamlPath  Relative or absolute path to the ui5.yaml file
+ * @returns The `AdpPreviewConfig` object if found, otherwise throws an error.
  */
 export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
-    const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-    let ui5Conf: UI5Config;
-    let adp: AdpPreviewConfig | undefined;
     try {
-        ui5Conf = await readUi5Yaml(dirname(ui5ConfigPath), basename(ui5ConfigPath));
-        const customMiddleware =
-            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
-            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
-        adp = customMiddleware?.configuration?.adp;
+        const ui5Conf = await readUi5Config(basePath, yamlPath);
+        const adp = extractAdpConfig(ui5Conf);
+        if (!adp) {
+            throw new Error('Could not extract ADP configuration from ui5.yaml');
+        }
+        return adp;
     } catch (error) {
-        // do nothing here
-    }
-    if (!adp) {
+        const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
     }
-    return adp;
 }
 
 /**
@@ -124,9 +146,9 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
     if (!inbounds || inbounds.length === 0) {
         return undefined;
     }
-    return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-        // Skip if hideLauncher is not false
-        if (!inbound?.content || inbound.content.hideLauncher !== false) {
+    const filteredInbounds = inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
+        // Skip if hideLauncher is true
+        if (!inbound?.content || inbound.content.hideLauncher === true) {
             return acc;
         }
         const { semanticObject, action } = inbound.content;
@@ -136,4 +158,6 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
         }
         return acc;
     }, {} as { [key: string]: InboundContent });
+
+    return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
 }

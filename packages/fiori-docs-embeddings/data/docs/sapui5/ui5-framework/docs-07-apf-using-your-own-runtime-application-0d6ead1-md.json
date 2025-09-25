@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-07-apf-using-your-own-runtime-application-0d6ead1-md",
+  "title": "Using Your Own Runtime Application",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/using-your-own-runtime-application-0d6ead1.md",
+  "lastModified": "2025-09-01T18:17:10.671Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Using",
+    "Your",
+    "Own",
+    "Runtime",
+    "Application"
+  ],
+  "headers": [
+    "Using Your Own Runtime Application"
+  ],
+  "content": "<!-- loio0d6ead17f48b4ccab3ff53e7e8bcc173 -->\n\n# Using Your Own Runtime Application\n\nThis section describes how to create an APF-based SAPUI5 application using your own runtime application.\n\nYou need your own runtime application if you can’t use the generic runtime application shipped with APF, for example, because you need more than one language or a footer toolbar, or because you want to implement extensions, such as your own start filters.\n\nThe following steps are required:\n\n1.  Build content using the APF Configuration Modeler\n\n    For more information, see [APF Configuration Modeler](apf-configuration-modeler-b57224b.md).\n\n2.  Develop the Component.js file\n\n    For more information, see [Consuming APF](consuming-apf-0109e67.md).\n\n3.  Maintain the manifest.json file\n\n    For more information, see [Descriptor \\(manifest.json\\)](descriptor-manifest-json-74038a5.md).\n\n    In particular, you must maintain the following properties:\n\n\n    <table>\n    <tr>\n    <th valign=\"top\">\n\n    Property\n    \n    </th>\n    <th valign=\"top\">\n\n    Description\n    \n    </th>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.app.i18n\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    The location of the text resource files. A text resource file contains the texts that the text keys used in the configuration refer to. When you export a configuration using the APF Configuration Modeler, a text file is also exported. More text files containing translations can be added in the same location.\n\n    Enter the path of the text resource files relative to the web root of the component.\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.app.title\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    Enter \"\\{\\{`AnalyticalConfigurationName`\\}\\}\". This refers to the text key included in the exported text properties file and defines the app name.\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.app.dataSources.AnalyticalConfigurationLocation\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    The location of the analytical configuration file, which is created when you export a configuration. Enter the path of the configuration file relative to the web root of the component.\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.app.dataSources.PathPersistenceServiceRoot\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    Enter the service root for the path persistence service. See [Descriptor \\(manifest.json\\)](descriptor-manifest-json-74038a5.md) for the correct values depending on the platform you use.\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.apf.activateFilterReduction\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    This property is relevant if you use CDS views that are executed on the Analytic Engine or BW OData queries. If this is the case, set it to true. If not, set it to false.\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.apf.activateLrep\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    If you use SAP S/4HANA, this property is mandatory and must be set to `true`. Otherwise set it to `false`.\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `\"sap.ui5.dependencies\"` \n    \n    </td>\n    <td valign=\"top\">\n    \n    Enter your current SAPUI5 version.\n    \n    </td>\n    </tr>\n    </table>\n    \n\n",
+  "excerpt": "<!-- loio0d6ead17f48b4ccab3ff53e7e8bcc173 --> Using Your Own Runtime Application This section describes how to create an APF-based SAPUI5 application using your own runtime application. You need your ...",
+  "wordCount": 393,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

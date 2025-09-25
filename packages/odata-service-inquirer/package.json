@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/odata-service-inquirer",
     "description": "Prompts module that can prompt users for inputs required for odata service writing",
-    "version": "2.5.6",
+    "version": "2.8.6",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,7 +18,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -31,7 +31,7 @@
     ],
     "dependencies": {
         "@sap/cf-tools": "3.2.2",
-        "@sap-ux/annotation-converter": "0.10.2",
+        "@sap-ux/annotation-converter": "0.10.3",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.9.1",
@@ -44,10 +44,11 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "axios": "1.8.2",
+        "axios": "1.12.2",
         "axios-logger": "2.8.0",
+        "circular-reference-remover": "2.1.0",
         "fast-xml-parser": "4.4.1",
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1"
     },
@@ -60,10 +61,10 @@
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/vocabularies-types": "0.13.0",
         "@sap-devx/yeoman-ui-types": "1.14.4",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "jest-extended": "3.2.4"
+        "jest-extended": "6.0.0"
     },
     "engines": {
         "node": ">=20.x"

@@ -71,11 +71,14 @@ export function getPrompts(
                     return t('validators.fileDoesNotExist');
                 }
 
-                if (
-                    existsSync(
-                        join(await getWebappPath(basePath), DirName.Changes, DirName.Annotations, basename(filePath))
-                    )
-                ) {
+                const annotationFilePath = join(
+                    await getWebappPath(basePath),
+                    DirName.Changes,
+                    DirName.Annotations,
+                    basename(filePath)
+                );
+
+                if (existsSync(annotationFilePath)) {
                     return t('validators.annotationFileAlreadyExists');
                 }
 

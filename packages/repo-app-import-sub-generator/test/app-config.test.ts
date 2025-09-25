@@ -124,7 +124,8 @@ describe('getAppConfig', () => {
         },
         appOptions: {
             addAnnotations: true,
-            addTests: true
+            addTests: true,
+            useVirtualPreviewEndpoints: true
         },
         ui5: {
             localVersion: '1.88.0'
@@ -270,7 +271,7 @@ describe('getAppConfig', () => {
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
         const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockSystem, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.dataSourcesNotFound'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.dataSourcesNotFound'));
     });
 
     it('should log an error if fetchServiceMetadata throws an error', async () => {

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-inquirer",
     "description": "Prompts module that can provide prompts for UI5 library writer",
-    "version": "0.4.17",
+    "version": "0.4.48",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,7 +18,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -34,12 +34,12 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
         "inquirer": "8.2.6",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6"
     },
     "engines": {

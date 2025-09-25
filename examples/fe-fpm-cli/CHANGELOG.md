@@ -1,5 +1,169 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.36
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.10
+
+## 0.1.35
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.9
+
+## 0.1.34
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.8
+
+## 0.1.33
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.7
+
+## 0.1.32
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.6
+
+## 0.1.31
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.5
+
+## 0.1.30
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.4
+
+## 0.1.29
+
+### Patch Changes
+
+-   Updated dependencies [080480a]
+    -   @sap-ux/fe-fpm-writer@0.38.3
+
+## 0.1.28
+
+### Patch Changes
+
+-   Updated dependencies [b3e95fb]
+    -   @sap-ux/fe-fpm-writer@0.38.2
+
+## 0.1.27
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.1
+
+## 0.1.26
+
+### Patch Changes
+
+-   Updated dependencies [43f94eb]
+    -   @sap-ux/fe-fpm-writer@0.38.0
+
+## 0.1.25
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.37.3
+
+## 0.1.24
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.37.2
+
+## 0.1.23
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.37.1
+
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [69cfbe3]
+    -   @sap-ux/fe-fpm-writer@0.37.0
+
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [47bd07a]
+    -   @sap-ux/fe-fpm-writer@0.36.1
+
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [f81c86b]
+    -   @sap-ux/fe-fpm-writer@0.36.0
+
+## 0.1.19
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.15
+
+## 0.1.18
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.14
+
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.13
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [2cae662]
+    -   @sap-ux/fe-fpm-writer@0.35.12
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.11
+
+## 0.1.14
+
+### Patch Changes
+
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fe-fpm-writer@0.35.10
+
+## 0.1.13
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.8
+
+## 0.1.11
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.35.7
+
 ## 0.1.10
 
 ### Patch Changes

@@ -220,7 +220,7 @@ describe('Test FioriAppGenerator', () => {
             await fioriAppGen.writing();
             console.log('Floorplan wrote:', floorplan);
 
-            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying '${floorplan}' template files...`);
+            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying ${floorplan} template files...`);
             expect(transformState).toHaveBeenCalledWith(fioriAppGen['state'], true);
             expect(testFloorplan.generateMockFunc).toHaveBeenCalledWith(
                 appPath,
@@ -303,7 +303,7 @@ describe('Test FioriAppGenerator', () => {
             } as Project
         };
         fioriAppGen['state'] = { ...mockState, floorplan: FloorplanFE.FE_LROP } as State;
-        await expect(fioriAppGen.writing()).rejects.toThrowError();
+        await expect(fioriAppGen.writing()).rejects.toThrow();
         expect(DefaultLogger.fatal).toHaveBeenCalledWith(
             expect.stringContaining(t('error.errorWritingApplicationFiles'))
         );

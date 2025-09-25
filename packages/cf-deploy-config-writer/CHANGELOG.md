@@ -1,5 +1,159 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.27
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/nodejs-utils@0.2.5
+
+## 0.3.26
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/project-access@1.32.1
+    -   @sap-ux/nodejs-utils@0.2.4
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+
+## 0.3.24
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+
+## 0.3.22
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/project-access@1.30.13
+    -   @sap-ux/nodejs-utils@0.2.3
+
+## 0.3.21
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.3.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+
+## 0.3.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
+## 0.3.15
+
+### Patch Changes
+
+-   97a61f2: Align destination instance with srv-api if already appended
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+
+## 0.3.13
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+
+## 0.3.11
+
+### Patch Changes
+
+-   58df005: Handle service segement when no datasource is selected
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.3.9
+
+### Patch Changes
+
+-   1998ebb: Update approuter configuration
+
+## 0.3.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+
 ## 0.3.6
 
 ### Patch Changes

@@ -68,7 +68,7 @@ Array of additional application configurations:
 | `framework`     | `string`   | mandatory        | `undefined`    | Currently `OPA5`, `QUnit` (only QUnit 2.3.2 provided as third-party module using [OpenUI5](https://github.com/SAP/openui5/blob/master/THIRDPARTY.txt)/SAPUI5) and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (such as karma) |
 | `path`          | `string`   | optional         | `(calculated)` | The mount point to be used for test suite. By default, `/test/opaTests.qunit.html` is used for `OPA5`, `/test/unitTests.qunit.html` is used for `QUnit`, and `/test/testsuite.qunit.html` is used for `Testsuite`                                                                                                       |
 | `init`          | `string`   | optional         | `undefined`    | The mount point to be used for custom test runner script                                                                                                                                                                                                                                                                |
-| `pattern`       | `string`   | optional         | `(calculated)` | Optional glob pattern to find the tests. By default, `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit` (not applicable for `Testsuite`)                                                                                                                                               |
+| `pattern`       | `string`   | optional         | `(calculated)` | Optional glob pattern to find the tests. By default, `/test/**/*Journey.{js,ts}` is used for `OPA5` and `/test/**/*Test.{js,ts}` is used for `QUnit` (not applicable for `Testsuite`)                                                                                                                                   |
 
 
 ## [Usage](#usage)
@@ -177,8 +177,17 @@ When the middleware is used in an adaptation project together with a middleware 
   afterMiddleware: preview-middleware
 ```
 
+### [Mobile Device Preview](#mobile-device-preview)
+The preview middleware supports previewing applications on physical mobile devices, enabling developers to test their applications on real mobile devices directly from Visual Studio Code or SAP Business Application Studio.
+
+Using the `--accept-remote-connections` argument, a remote URL that can be accessed from mobile devices on the same network will be logged in the console, and a QR code will be displayed for easy access.
+
+```Json
+"start-mobile": "ui5 serve --open test/flp.html#app-preview --accept-remote-connections"
+```
+ 
 ### [Programmatic Usage](#programmatic-usage)
-Alternatively you can use the underlying middleware fuction programmatically, e.g. for the case when you want to incorporate the `preview-middleware` functionality in your own middleware.
+Alternatively you can use the underlying middleware function programmatically. This is useful when you want to incorporate the `preview-middleware` functionality in your own middleware.
 
 ```typescript
 import { FlpSandbox } from '@sap-ux/preview-middleware';

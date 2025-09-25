@@ -95,8 +95,8 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, '../sample/basicapp'), appPath);
         const localFs = await generateAppConfig({ appPath }, undefined, logger);
-        expect(isAppStudioMock).toBeCalledTimes(1);
-        expect(listDestinationsMock).toBeCalledTimes(1);
+        expect(isAppStudioMock).toHaveBeenCalledTimes(1);
+        expect(listDestinationsMock).toHaveBeenCalledTimes(1);
         expect(localFs.dump(appPath)).toMatchSnapshot();
         expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
     });
@@ -110,7 +110,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, '../sample/basicapp'), appPath);
         const localFs = await generateAppConfig({ appPath }, undefined, logger);
-        expect(isAppStudioMock).toBeCalledTimes(1);
+        expect(isAppStudioMock).toHaveBeenCalledTimes(1);
         expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
         expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
@@ -124,7 +124,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
         const localFs = await generateAppConfig({ appPath, addManagedAppRouter: true }, undefined, logger);
-        expect(listDestinationsMock).toBeCalledTimes(0);
+        expect(listDestinationsMock).toHaveBeenCalledTimes(0);
         expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
         expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
@@ -138,7 +138,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/multi`), appPath);
         const localFs = await generateAppConfig({ appPath, addManagedAppRouter: true });
-        expect(listDestinationsMock).toBeCalledTimes(0);
+        expect(listDestinationsMock).toHaveBeenCalledTimes(0);
         expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
         expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
@@ -147,7 +147,7 @@ describe('CF Writer App', () => {
     test('Throw an exception if the appPath is not found', async () => {
         const appName = 'validate';
         const appPath = join(outputDir, appName);
-        await expect(generateAppConfig({ appPath }, undefined, logger)).rejects.toThrowError();
+        await expect(generateAppConfig({ appPath }, undefined, logger)).rejects.toThrow();
     });
 
     test('Generate deployment configs - should fail if no HTML5 app found', async () => {
@@ -156,7 +156,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/standalone`), appPath);
-        await expect(generateAppConfig({ appPath, addManagedAppRouter: false })).rejects.toThrowError(
+        await expect(generateAppConfig({ appPath, addManagedAppRouter: false })).rejects.toThrow(
             /No SAP Fiori UI5 application found./
         );
     });
@@ -196,5 +196,17 @@ describe('CF Writer App', () => {
         expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
         expect(fs.read(join(appPath, 'xs-security.json'))).toMatchSnapshot();
+    });
+
+    test('Generate deployment configs - HTML5 app with no datasource configured', async () => {
+        isAppStudioMock.mockResolvedValue(true);
+        listDestinationsMock.mockResolvedValue(destinationsMock);
+        const appName = 'basicappnodatasource';
+        const appPath = join(outputDir, appName);
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(appPath);
+        fsExtra.copySync(join(__dirname, '../sample/basicappnodatasource'), appPath);
+        const localFs = await generateAppConfig({ appPath, destinationName: 'test' }, undefined, logger);
+        expect(localFs.dump(appPath)).toMatchSnapshot();
     });
 });

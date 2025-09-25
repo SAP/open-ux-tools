@@ -119,9 +119,10 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
+        await super.onCreateBtnPressHandler();
+
 
         const flexSettings = this.rta.getFlexSettings();
         const navProperty = this.model.getProperty('/selectedNavigation/key');
@@ -179,7 +180,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         }
 
         const command = await CommandFactory.getCommandFor(
-            this.runtimeControl,
+            this.getRuntimeControl(),
             'appDescriptor',
             modifiedValue,
             null,

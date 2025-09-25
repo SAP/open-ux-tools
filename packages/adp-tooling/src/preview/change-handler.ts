@@ -4,7 +4,8 @@ import type {
     CommonChangeProperties,
     CodeExtChange,
     AnnotationFileChange,
-    CommonAdditionalChangeInfoProperties
+    CommonAdditionalChangeInfoProperties,
+    AppDescriptorV4Change
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
@@ -36,10 +37,10 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
     getData: (change: AddXMLChange) => T;
 }
 
-const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
     [OBJECT_PAGE_CUSTOM_SECTION]: {
         path: 'common/op-custom-section.xml',
-        getData: () => {
+        getData: (): { ids: Record<string, string> } => {
             const uuid = randomBytes(4).toString('hex');
             return {
                 ids: {
@@ -221,6 +222,17 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
 }
 
 /**
+ * Determines whether a given change is of type `V4 Descriptor Change`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is either 'appdescr_fe_changePageConfiguration',
+ *          indicating the change is of type `V4 Descriptor Change`.
+ */
+export function isV4DescriptorChange(change: CommonChangeProperties): change is AppDescriptorV4Change {
+    return change.changeType === 'appdescr_fe_changePageConfiguration';
+}
+
+/**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
@@ -246,10 +258,15 @@ export function addXmlFragment(
             const template = render(text, templateConfig.getData(change));
             fs.write(fullPath, template);
         } else {
-            // copy default fragment template
+            // use default fragment template
             const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
-            fs.copy(fragmentTemplatePath, fullPath);
+            const text = fs.read(fragmentTemplatePath);
+            const template = render(text, {
+                targetAggregation: additionalChangeInfo?.targetAggregation,
+                controlType: additionalChangeInfo?.controlType
+            });
+            fs.write(fullPath, template);
         }
         logger.info(`XML Fragment "${fragmentPath}" was created`);
     } catch (error) {
@@ -296,7 +313,7 @@ export async function addControllerExtension(
 /**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
- * @param {string} basePath - The base path of the project.
+ * @param {string} webappPath - The path to the webapp of the project.
  * @param {string} projectRoot - The root path of the project.
  * @param {AnnotationFileChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
@@ -304,7 +321,7 @@ export async function addControllerExtension(
  *@param {AbapServiceProvider} provider - abap provider.
  */
 export async function addAnnotationFile(
-    basePath: string,
+    webappPath: string,
     projectRoot: string,
     change: AnnotationFileChange,
     fs: Editor,
@@ -315,12 +332,12 @@ export async function addAnnotationFile(
     const annotationDataSourceKey = annotations[0];
     const annotationUriSegments = dataSource[annotationDataSourceKey].uri.split('/');
     annotationUriSegments.shift();
-    const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
+    const fullPath = join(webappPath, DirName.Changes, ...annotationUriSegments);
     try {
-        const variant = await getVariant(basePath);
+        const variant = await getVariant(projectRoot);
         const manifestService = await ManifestService.initMergedManifest(
             provider,
-            basePath,
+            projectRoot,
             variant,
             logger as unknown as ToolsLogger
         );

@@ -12,12 +12,13 @@ import type {
     Project,
     ProjectType
 } from '../types';
-import { getCapProjectType } from './cap';
+import { getCapCustomPaths, getCapProjectType } from './cap';
 import { getI18nPropertiesPaths } from './i18n/i18n';
 import { findAllApps, findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
 import { gte, valid } from 'semver';
+import { normalizePath } from '../path';
 
 /**
  * Returns the project structure for a given Fiori project.
@@ -32,12 +33,14 @@ export async function getProject(root: string, memFs?: Editor): Promise<Project>
     }
     const capProjectType = await getCapProjectType(root);
     const projectType = capProjectType ?? 'EDMXBackend';
+    const capCustomPaths = projectType === 'EDMXBackend' ? undefined : await getCapCustomPaths(root);
     const appFolders = await getAppFolders(root, memFs);
     const apps = await getApps(root, appFolders, memFs);
     return {
-        root,
+        root: normalizePath(root),
         projectType,
-        apps
+        apps,
+        capCustomPaths
     };
 }
 

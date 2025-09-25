@@ -5,6 +5,7 @@ import * as systemSelection from '../../src/prompts/datasources/sap-system/syste
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
 import { type BackendSystem } from '@sap-ux/store';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
@@ -16,6 +17,10 @@ jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
     ...jest.requireActual('../../src/prompts/datasources/sap-system/system-selection')
 }));
 
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: jest.fn()
+}));
+
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
@@ -23,11 +28,13 @@ jest.mock('@sap-ux/store', () => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',
-                url: 'http://url1'
+                url: 'http://url1',
+                systemType: 'OnPrem'
             },
             {
                 name: 'storedSystem2',
-                url: 'http://url2'
+                url: 'http://url2',
+                systemType: 'BTP'
             }
         ] as BackendSystem[])
     }))
@@ -36,6 +43,7 @@ jest.mock('@sap-ux/store', () => ({
 describe('API tests', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('getPrompts', async () => {

@@ -1,5 +1,47 @@
 # @sap-ux/ui5-config
 
+## 0.29.5
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
+## 0.29.4
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+
+## 0.29.3
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
+## 0.29.2
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+
+## 0.29.1
+
+### Patch Changes
+
+-   43bc887: add getter for ui5 framework
+
+## 0.29.0
+
+### Minor Changes
+
+-   c0fa1d1: enhance support for adding and updating preview configuration
+
+## 0.28.3
+
+### Patch Changes
+
+-   f75b89d: Get mock data server config from ui5 yaml file
+
 ## 0.28.2
 
 ### Patch Changes

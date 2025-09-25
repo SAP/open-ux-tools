@@ -35,8 +35,8 @@ describe('migration', () => {
 
             await migrateToLatestVersion({ secureStore: mockSecureStore, logger, dataProvider: mockDataProvider });
 
-            expect(mockDataProvider.write).not.toBeCalled();
-            expect(mockSecureStore.delete).not.toBeCalled();
+            expect(mockDataProvider.write).not.toHaveBeenCalled();
+            expect(mockSecureStore.delete).not.toHaveBeenCalled();
         });
 
         test('just deletes the legacy key if key in new format found', async () => {
@@ -45,9 +45,9 @@ describe('migration', () => {
 
             await migrateToLatestVersion({ secureStore: mockSecureStore, logger, dataProvider: mockDataProvider });
 
-            expect(mockDataProvider.write).not.toBeCalled();
-            expect(mockSecureStore.delete).toBeCalledTimes(1);
-            expect(mockSecureStore.delete).toBeCalledWith(LEGACY_API_HUB_API_SERVICE, LEGACY_API_HUB_API_KEY);
+            expect(mockDataProvider.write).not.toHaveBeenCalled();
+            expect(mockSecureStore.delete).toHaveBeenCalledTimes(1);
+            expect(mockSecureStore.delete).toHaveBeenCalledWith(LEGACY_API_HUB_API_SERVICE, LEGACY_API_HUB_API_KEY);
         });
 
         test('migrates to new format if legacy format found and no data found in new format', async () => {
@@ -57,10 +57,10 @@ describe('migration', () => {
 
             await migrateToLatestVersion({ secureStore: mockSecureStore, logger, dataProvider: mockDataProvider });
 
-            expect(mockDataProvider.write).toBeCalledTimes(1);
-            expect(mockDataProvider.write).toBeCalledWith(expect.objectContaining({ apiKey: API_KEY }));
-            expect(mockSecureStore.delete).toBeCalledTimes(1);
-            expect(mockSecureStore.delete).toBeCalledWith(LEGACY_API_HUB_API_SERVICE, LEGACY_API_HUB_API_KEY);
+            expect(mockDataProvider.write).toHaveBeenCalledTimes(1);
+            expect(mockDataProvider.write).toHaveBeenCalledWith(expect.objectContaining({ apiKey: API_KEY }));
+            expect(mockSecureStore.delete).toHaveBeenCalledTimes(1);
+            expect(mockSecureStore.delete).toHaveBeenCalledWith(LEGACY_API_HUB_API_SERVICE, LEGACY_API_HUB_API_KEY);
         });
     });
 });

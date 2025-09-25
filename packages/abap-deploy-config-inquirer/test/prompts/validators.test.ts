@@ -1,6 +1,7 @@
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import { AxiosError } from 'axios';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { AuthenticationType } from '../../../store/src';
 import { initI18n, t } from '../../src/i18n';
 import { PromptState } from '../../src/prompts/prompt-state';
@@ -28,6 +29,12 @@ import * as utils from '../../src/utils';
 import * as validatorUtils from '../../src/validator-utils';
 import { mockDestinations } from '../fixtures/destinations';
 
+jest.mock('@sap-ux/btp-utils', () => ({
+    isAppStudio: jest.fn(),
+    isS4HC: jest.fn(),
+    isAbapEnvironmentOnBtp: jest.fn()
+}));
+
 jest.mock('../../src/service-provider-utils', () => ({
     getTransportListFromService: jest.fn(),
     getSystemInfo: jest.fn(),
@@ -35,6 +42,8 @@ jest.mock('../../src/service-provider-utils', () => ({
 }));
 
 jest.mock('../../src/service-provider-utils/abap-service-provider');
+
+const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('Test validators', () => {
     const previousAnswers = {
@@ -253,6 +262,10 @@ describe('Test validators', () => {
     });
 
     describe('validateCredentials', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('should return error for no credentials', async () => {
             expect(await validateCredentials('', previousAnswers)).toBe(t('errors.requireCredentials'));
         });
@@ -273,6 +286,70 @@ describe('Test validators', () => {
             expect(await validateCredentials('pass1', { ...previousAnswers, username: 'user1' })).toBe(
                 t('errors.incorrectCredentials')
             );
+        });
+
+        it('should check system type when shouldCheckSystemType is true and in App Studio', async () => {
+            mockIsAppStudio.mockReturnValueOnce(true);
+
+            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: false
+            });
+            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(true);
+
+            const result = await validateCredentials(
+                'pass1',
+                { ...previousAnswers, username: 'user1' },
+                undefined,
+                true
+            );
+
+            expect(result).toBe(true);
+            expect(mockIsAppStudio).toHaveBeenCalled();
+            expect(serviceProviderUtils.isAbapCloud).toHaveBeenCalled();
+            expect(PromptState.abapDeployConfig.isS4HC).toBe(true);
+        });
+
+        it('should not check system type when shouldCheckSystemType is false', async () => {
+            mockIsAppStudio.mockReturnValueOnce(true);
+
+            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: false
+            });
+
+            const result = await validateCredentials(
+                'pass1',
+                { ...previousAnswers, username: 'user1' },
+                undefined,
+                false
+            );
+
+            expect(result).toBe(true);
+            expect(mockIsAppStudio).toHaveBeenCalled();
+            // isAbapCloud should not be called because shouldCheckSystemType is false
+            expect(serviceProviderUtils.isAbapCloud).not.toHaveBeenCalled();
+        });
+
+        it('should not check system type when not in App Studio even if shouldCheckSystemType is true', async () => {
+            mockIsAppStudio.mockReturnValueOnce(false);
+
+            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: false
+            });
+
+            const result = await validateCredentials(
+                'pass1',
+                { ...previousAnswers, username: 'user1' },
+                undefined,
+                true
+            );
+
+            expect(result).toBe(true);
+            expect(mockIsAppStudio).toHaveBeenCalled();
+            // isAbapCloud should not be called because isAppStudio() returns false
+            expect(serviceProviderUtils.isAbapCloud).not.toHaveBeenCalled();
         });
     });
 
@@ -371,10 +448,10 @@ describe('Test validators', () => {
             expect(result).toBe(true);
         });
 
-        it('should return true for onPremise system with default onPremise package', async () => {
+        it('should return true for onPremise system', async () => {
             PromptState.abapDeployConfig.isS4HC = false;
             const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
-            const result = await validatePackage('$TMP', previousAnswers, {
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(getSystemInfoSpy).not.toHaveBeenCalled();
@@ -479,6 +556,20 @@ describe('Test validators', () => {
                 apiExist: true,
                 systemInfo: {
                     adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
+                    activeLanguages: []
+                }
+            });
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(result).toBe(true);
+        });
+
+        it('should return true when there are more than one project type for a package', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY, AdaptationProjectType.ON_PREMISE],
                     activeLanguages: []
                 }
             });

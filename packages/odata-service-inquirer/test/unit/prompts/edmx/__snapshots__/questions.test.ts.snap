@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test entity prompts getEntityQuestions should return the questions when no options specified 1`] = `
 [
@@ -185,7 +185,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "guiOptions": {
       "breadcrumb": true,
     },
-    "message": "Main entity",
+    "message": "Main Entity",
     "name": "mainEntity",
     "source": [Function],
     "type": "list",
@@ -198,13 +198,14 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
     },
-    "message": "Navigation entity",
+    "message": "Navigation Entity",
     "name": "navigationEntity",
     "source": [Function],
     "type": "list",
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "choices": [
       {
         "name": "Analytical",
@@ -223,12 +224,13 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
         "value": "TreeTable",
       },
     ],
-    "default": "ResponsiveTable",
+    "default": [Function],
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "breadcrumb": true,
-      "hint": "Defines the table type for the List Report Page.",
+      "hint": "Defines the table type for the list report page.",
     },
-    "message": "Table type",
+    "message": "Table Type",
     "name": "tableType",
     "type": "list",
     "when": [Function],
@@ -240,7 +242,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
       "hint": "Leading property that decides between either a recursive hierarchy or data aggregation.",
       "mandatory": true,
     },
-    "message": "Hierarchy qualifier",
+    "message": "Hierarchy Qualifier",
     "name": "hierarchyQualifier",
     "type": "input",
     "validate": [Function],

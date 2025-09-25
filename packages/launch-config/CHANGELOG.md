@@ -1,5 +1,136 @@
 # @sap-ux/launch-config
 
+## 0.10.25
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/project-access@1.32.1
+
+## 0.10.24
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+
+## 0.10.23
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+
+## 0.10.22
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
+## 0.10.21
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/ui5-info@0.12.2
+    -   @sap-ux/project-access@1.30.13
+
+## 0.10.19
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.10.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.10.17
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+
+## 0.10.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+
+## 0.10.15
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+
+## 0.10.14
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+
+## 0.10.13
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+
+## 0.10.12
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+
+## 0.10.10
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.10.9
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+
 ## 0.10.7
 
 ### Patch Changes

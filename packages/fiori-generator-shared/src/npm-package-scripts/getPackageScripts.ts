@@ -1,5 +1,6 @@
 import type { PackageJsonScripts, PackageScriptsOptions } from './types';
 import { t } from '../i18n';
+import { SCRIPT_FLP_SANDBOX } from '../constants';
 
 /**
  * Builds the command for the `start-noflp` script in `package.json`.
@@ -19,7 +20,7 @@ function buildStartNoFLPCommand(localOnly: boolean, searchParams?: URLSearchPara
     if (localOnly) {
         return `echo \\"${t('info.mockOnlyWarning')}\\"`;
     }
-    return `fiori run --open "index.html${searchParam}"`;
+    return `fiori run --open "/index.html${searchParam}"`;
 }
 
 /**
@@ -44,7 +45,7 @@ function buildParams(searchParams?: URLSearchParams, flpAppId?: string): string 
  *                               message is returned instead of a command.
  * @param {string} params - The query parameters to be included in the command URL.
  * @param {string} [startFile] - The path to the file to be opened with the `start` command.
- *                                If not provided, defaults to `'test/flpSandbox.html'`.
+ *                                If not provided, defaults to `'/test/flpSandbox.html'`.
  * @returns {string} - The command for the `start` script, including either a warning message or the `fiori run`
  *                     command with the specified file and parameters.
  */
@@ -52,7 +53,7 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
     if (localOnly) {
         return `echo \\"${t('info.mockOnlyWarning')}\\"`;
     }
-    return `fiori run --open "${startFile ?? 'test/flpSandbox.html'}${params}"`;
+    return `fiori run --open "${startFile ?? SCRIPT_FLP_SANDBOX}${params}"`;
 }
 
 /**
@@ -62,10 +63,14 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * When virtual endpoints are used, the search parameters are injected at runtime.
  *
  * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command.
+ * @param {string} [flpAppId] - The FLP application ID to use as the anchor in the preview URL.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(addSearchParams: boolean): string {
-    const previewAppAnchor = '#app-preview';
+function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId?: string): string {
+    let previewAppAnchor = '#app-preview';
+    if (addSearchParams && flpAppId) {
+        previewAppAnchor = `#${flpAppId}`;
+    }
     let urlParam = '';
     if (addSearchParams) {
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
@@ -76,7 +81,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
     // eslint-disable-next-line no-useless-escape
-    return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
+    return `fiori run --open \"/preview.html${urlParam}${previewAppAnchor}\"`;
 }
 
 /**
@@ -109,7 +114,7 @@ export function getPackageScripts({
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, queryParams, startFile),
         'start-local': `fiori run --config ./ui5-local.yaml --open "${
-            localStartFile ?? 'test/flpSandbox.html'
+            localStartFile ?? SCRIPT_FLP_SANDBOX
         }${queryParams}"`
     };
 
@@ -119,17 +124,17 @@ export function getPackageScripts({
 
     if (addMock) {
         scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "${
-            localStartFile ?? 'test/flpSandbox.html'
+            localStartFile ?? SCRIPT_FLP_SANDBOX
         }${queryParams}"`;
     }
 
     if (addTest) {
-        scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
+        scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "/test/integration/opaTests.qunit.html"';
     }
 
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(!supportVirtualEndpoints);
+        : getVariantPreviewAppScript(!supportVirtualEndpoints, flpAppId);
 
     return scripts;
 }

@@ -1,5 +1,121 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.19
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/project-access@1.32.1
+
+## 0.6.18
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+
+## 0.6.17
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+
+## 0.6.16
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+
+## 0.6.15
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/project-access@1.30.13
+
+## 0.6.14
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.6.13
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.6.12
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+
+## 0.6.11
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+
+## 0.6.8
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.6.5
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+
 ## 0.6.3
 
 ### Patch Changes

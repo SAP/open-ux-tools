@@ -1,5 +1,87 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.16
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+
+## 1.5.15
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+
+## 1.5.14
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+
+## 1.5.13
+
+### Patch Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
+## 1.5.12
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+
+## 1.5.11
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+
+## 1.5.10
+
+### Patch Changes
+
+-   4e0bd83: fix(deps): update dependency @ui5/manifest to v1.76.0
+
+## 1.5.9
+
+### Patch Changes
+
+-   2809593: update test snapshots to reflect latest template and linting changes
+
+## 1.5.8
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.5.7
+
+### Patch Changes
+
+-   c0fa1d1: enhance support for adding and updating preview configuration
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.5.6
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 1.5.5
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+
 ## 1.5.4
 
 ### Patch Changes

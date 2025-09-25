@@ -48,6 +48,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    isFlexConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -245,8 +246,10 @@ export class FlpSandbox {
      * @private
      */
     private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
-            this.templateConfig.ui5.flex?.splice(1, 1);
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 76) {
+            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter((connector) =>
+                isFlexConnector(connector)
+            );
             this.logger.debug(
                 `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
             );
@@ -254,7 +257,11 @@ export class FlpSandbox {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            this.templateConfig.ui5.flex?.splice(0, 1);
+            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter(
+                (connector) =>
+                    !isFlexConnector(connector) ||
+                    (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
+            );
             this.logger.debug(
                 `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
             );
@@ -284,8 +291,8 @@ export class FlpSandbox {
             libs.push('sap.ui.rta');
             config.ui5.libs = libs.join(',');
         }
-        config.flex = {
-            layer: rta.layer,
+        config.flexSettings = {
+            layer: rta.layer ?? 'CUSTOMER_BASE',
             ...rta.options,
             generator: editor.generator ?? defaultGenerator,
             developerMode: editor.developerMode === true,
@@ -335,7 +342,7 @@ export class FlpSandbox {
         if (scenario === 'ADAPTATION_PROJECT') {
             templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
         }
-        const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+        const template = readFileSync(join(__dirname, '../../templates/flp/editor.ejs'), 'utf-8');
         const features = FeatureToggleAccess.getAllFeatureToggles();
         const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
         let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
@@ -542,7 +549,7 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            this.logger.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
             version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
@@ -553,7 +560,7 @@ export class FlpSandbox {
             ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
         ) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
-            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
+            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`);
         }
 
         return {
@@ -572,13 +579,13 @@ export class FlpSandbox {
      */
     private getSandboxTemplate(ui5Version: Ui5Version): string {
         this.logger.info(
-            `Using sandbox template for UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
+            `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
         const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
-        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.ejs`), 'utf-8');
     }
 
     /**
@@ -803,7 +810,7 @@ export class FlpSandbox {
             this.logger.warn('Skip testsuite generation. No test frameworks configured.');
             return;
         }
-        const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
+        const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.ejs'), 'utf-8');
         const config = mergeTestConfigDefaults(testsuiteConfig);
         this.logger.debug(`Add route for ${config.path}`);
         this.router.get(
@@ -929,7 +936,7 @@ export class FlpSandbox {
      */
     private addTestRoutes(configs: TestConfig[], id: string): void {
         const ns = id.replace(/\./g, '/');
-        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
+        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);
             this.logger.debug(`Add route for ${config.path}`);

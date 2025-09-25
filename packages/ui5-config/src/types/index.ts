@@ -35,6 +35,10 @@ export interface AbapDeployConfig {
     app: BspApp | Adp;
     ignoreCertError?: boolean;
     index?: boolean; // generate standalone index.html during deployment
+    /**
+     * The lrep namespace to be used for the deployment configuration for ADP projects
+     */
+    lrep?: string;
 }
 
 export interface FioriAppReloadConfig {
@@ -64,7 +68,7 @@ export interface FioriPreviewConfig {
      * Configuration object for the local Fiori launchpad
      */
     flp: {
-        theme: string; // Name of the UI5 Theme to be used
+        theme?: string; // Name of the UI5 Theme to be used
         path?: string; // The mount point of the local Fiori launchpad
         /**
          * Intent to be used for the application

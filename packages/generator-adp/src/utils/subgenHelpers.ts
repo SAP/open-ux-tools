@@ -3,10 +3,10 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ConfigAnswers, AttributesAnswers, SystemLookup } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
+import { getExtensionProjectData } from '../app/extension-project';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -23,6 +23,7 @@ interface FlpGenProps {
     vscode: unknown;
     projectRootPath: string;
     inbounds?: ManifestNamespace.Inbound;
+    layer: FlexLayer;
 }
 
 /**
@@ -30,11 +31,19 @@ interface FlpGenProps {
  */
 interface DeployGenOptions {
     projectName: string;
-    targetFolder: string;
-    client?: string;
+    projectPath: string;
     connectedSystem: string;
-    destinationName?: string;
+    system?: Endpoint;
 }
+
+/**
+ * Static validation configuration for package prompts in ADP deployment.
+ */
+const PACKAGE_ADDITIONAL_VALIDATION = {
+    shouldValidatePackageForStartingPrefix: true,
+    shouldValidatePackageType: true,
+    shouldValidateFormatAndSpecialCharacters: true
+} as const;
 
 /**
  * Composes the FLP config sub-generator using `composeWith`. This generator is used to scaffold
@@ -48,26 +57,27 @@ interface DeployGenOptions {
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export function addFlpGen(
-    { projectRootPath, vscode, inbounds }: FlpGenProps,
+    { projectRootPath, vscode, inbounds, layer }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
         /**
-         * We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
+         * We are using this namespace for now because '@sap/fiori:adp-flp-config' is not yet bundled in '@sap/generator-fiori'.
          */
-        composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
+        composeWith('@sap/fiori:adp-flp-config', {
             launchAsSubGen: true,
             vscode,
             inbounds,
+            layer,
             data: { projectRootPath },
             appWizard
         });
-        logger.info(`'@sap-ux/adp-flp-config-sub-generator' was called.`);
+        logger.info(`'@sap/fiori:adp-flp-config' was called.`);
     } catch (e) {
         logger.error(e);
-        throw new Error(`Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: ${e.message}`);
+        throw new Error(`Could not call '@sap/fiori:adp-flp-config' sub-generator: ${e.message}`);
     }
 }
 
@@ -78,32 +88,45 @@ export function addFlpGen(
  * @param {DeployGenOptions} options - Deployment generator input options
  * @param {string} options.projectName - Project name
  * @param {string} options.targetFolder - Folder where project will be generated
- * @param {string} options.applicationType - Type of application being deployed
- * @param {string} options.client - (Optional) ABAP client number
- * @param {string} options.connectedSystem - (Optional) Connected system data
- * @param {string} options.destinationName - (Optional) Destination name for deployment
+ * @param {string} options.connectedSystem - Connected system data
+ * @param {Endpoint} options.system - (Optional) System endpoint with connection details
  * @param {Generator['composeWith']} composeWith - Yeoman composeWith method from generator context
  * @param {ToolsLogger} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
 export function addDeployGen(
-    { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
+    { projectName, projectPath, connectedSystem, system }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
+        const subGenPromptOptions = {
+            ui5AbapRepo: { hideIfOnPremise: true },
+            transportInputChoice: { hideIfOnPremise: true },
+            overwriteAbapConfig: { hide: true },
+            packageAutocomplete: {
+                additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
+            },
+            packageManual: {
+                additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
+            },
+            targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+        };
+
         const generatorOptions = {
             launchDeployConfigAsSubGenerator: true,
             projectName,
-            projectPath: targetFolder,
+            projectPath,
             telemetryData: { appType: 'Fiori Adaptation' },
             appWizard,
             logWrapper: logger,
             target: 'abap',
-            ...(client && { appGenClient: client }),
+            subGenPromptOptions,
             ...(connectedSystem && { connectedSystem }),
-            ...(destinationName && { appGenDestination: destinationName })
+            ...(system?.Name && { appGenDestination: system.Name }),
+            ...(system?.Client && { appGenClient: system.Client }),
+            ...(system?.Url && { appGenServiceHost: system.Url })
         };
 
         composeWith('@sap/fiori:deploy-config', generatorOptions);
@@ -133,9 +156,8 @@ export async function addExtProjectGen(
 ): Promise<void> {
     try {
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
-        const generator = resolveNodeModuleGenerator();
 
-        composeWith(generator!, {
+        composeWith('@bas-dev/extensibility-sub', {
             arguments: [JSON.stringify(data)],
             appWizard
         });

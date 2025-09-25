@@ -1,5 +1,183 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.18
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/telemetry@0.6.24
+
+## 0.13.17
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/telemetry@0.6.23
+    -   @sap-ux/project-access@1.32.1
+
+## 0.13.16
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/telemetry@0.6.22
+
+## 0.13.15
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/telemetry@0.6.21
+
+## 0.13.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/telemetry@0.6.20
+
+## 0.13.13
+
+### Patch Changes
+
+-   3c094af: updated variant preview to use dynamic anchor if not using virtual endpoints
+
+## 0.13.12
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.19
+
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/telemetry@0.6.18
+    -   @sap-ux/project-access@1.30.13
+
+## 0.13.10
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.17
+
+## 0.13.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/telemetry@0.6.16
+
+## 0.13.8
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/telemetry@0.6.15
+
+## 0.13.7
+
+### Patch Changes
+
+-   Updated dependencies [18a5ee2]
+    -   @sap-ux/telemetry@0.6.14
+
+## 0.13.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/telemetry@0.6.13
+
+## 0.13.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/telemetry@0.6.12
+
+## 0.13.4
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/telemetry@0.6.11
+
+## 0.13.3
+
+### Patch Changes
+
+-   ca44076: move headless AppConfig type and associated types to fiori gen shared module
+
+## 0.13.2
+
+### Patch Changes
+
+-   d75db00: Append leading forward slash
+
+## 0.13.1
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/telemetry@0.6.10
+
+## 0.13.0
+
+### Minor Changes
+
+-   58abe82: Add optional isActive parameter to isExtensionInstalled function & add support for checking command registration
+
+## 0.12.16
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/telemetry@0.6.9
+
+## 0.12.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/telemetry@0.6.8
+
+## 0.12.14
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/telemetry@0.6.7
+
+## 0.12.13
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.12.12
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/telemetry@0.6.6
+
+## 0.12.11
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+
 ## 0.12.10
 
 ### Patch Changes

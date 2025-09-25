@@ -1,11 +1,12 @@
-import { sapCoreMock } from 'mock/window';
-import { OutlineService } from '../../../../src/cpe/outline/service';
-import * as nodes from '../../../../src/cpe/outline/nodes';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import { sapCoreMock } from 'mock/window';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import Log from 'sap/base/Log';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import * as nodes from '../../../../src/cpe/outline/nodes';
+import { OutlineService } from '../../../../src/cpe/outline/service';
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -89,7 +90,8 @@ describe('index', () => {
     });
 
     test('initOutline - exception', async () => {
-        transformNodesSpy.mockRejectedValue('error');
+        transformNodesSpy.mockRejectedValue(new Error('error'));
+        jest.spyOn(CommunicationService, 'sendAction');
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
         // transformNodesSpy called but rejected.

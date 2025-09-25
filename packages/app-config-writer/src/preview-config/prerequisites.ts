@@ -8,7 +8,7 @@ import {
     hasDependency
 } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { satisfies, valid } from 'semver';
+import { satisfies, valid, validRange, outside } from 'semver';
 
 const packageName = {
     WDIO_QUNIT_SERVICE: 'wdio-qunit-service',
@@ -42,6 +42,10 @@ function isLowerThanMinimalVersion(
     if (versionInfo === 'latest') {
         // In case of 'latest' we know the minimal version is met
         return false;
+    }
+    if (validRange(versionInfo)) {
+        // In case of a valid range the minimal version must not be outside the range in high direction
+        return outside(minVersionInfo, versionInfo, '>');
     }
     if (valid(versionInfo)) {
         // In case of a valid version we add a prefix to make it a range

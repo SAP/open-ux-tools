@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-disabling-the-editing-status-filter-8eb695a-md",
+  "title": "Disabling the Editing Status Filter",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/disabling-the-editing-status-filter-8eb695a.md",
+  "lastModified": "2025-09-01T18:17:10.605Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Disabling",
+    "the",
+    "Editing",
+    "Status",
+    "Filter"
+  ],
+  "headers": [
+    "Disabling the Editing Status Filter"
+  ],
+  "content": "<!-- loio8eb695ac473b4ab0a726e4021ce35cf4 -->\n\n# Disabling the Editing Status Filter\n\nApplication developers have an option to disable the *Editing Status* filter.\n\nThe *Editing Status* filter is enabled by default in the list report page of draft-enabled applications.\n\n  \n  \n**Editing Status filter**\n\n![](images/Editing_Status_Filter_d6891a2.png \"Editing Status filter\")\n\nTo disable this filter, you must add the following sample code to your annotation file:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotations Target=\"TravelService.EntityContainer/Travel\">\n>    <Annotation Term=\"Capabilities.NavigationRestrictions\">\n>       <Record Type=\"Capabilities.NavigationRestrictionsType\">\n>          <PropertyValue Property=\"RestrictedProperties\">\n>             <Collection>\n>                <Record Type=\"Capabilities.NavigationPropertyRestriction\">\n>                   <PropertyValue Property=\"NavigationProperty\" NavigationPropertyPath=\"DraftAdministrativeData\"/>\n>                   <PropertyValue Property=\"FilterRestrictions\">\n>                      <Record Type=\"Capabilities.FilterRestrictionsType\">\n>                         <PropertyValue Property=\"Filterable\" Bool=\"false\"/>\n>                      </Record>\n>                   </PropertyValue>\n>                </Record>\n>            </Collection>\n>         </PropertyValue>\n>       </Record>\n>    </Annotation>\n> </Annotations>\n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> No ABAP CDS annotation sample is available. Please use the local XML annotation.\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> annotate TravelService.Travel with @(\n> Capabilities: {\n>    NavigationRestrictions : {\n>        $Type : 'Capabilities.NavigationRestrictionsType',\n>        RestrictedProperties : [\n>            {\n>                $Type : 'Capabilities.NavigationPropertyRestriction',\n>                NavigationProperty : DraftAdministrativeData,\n>                FilterRestrictions : {\n>                    $Type : 'Capabilities.FilterRestrictionsType',\n>                    Filterable : false,\n>                },\n>            },\n>        ],\n>    },\n> });\n> ```\n\nIf you disable the *Editing Status* filter, end users can no longer filter their objects based on the editing status.\n\n",
+  "excerpt": "<!-- loio8eb695ac473b4ab0a726e4021ce35cf4 --> Disabling the Editing Status Filter Application developers have an option to disable the Editing Status filter. The Editing Status filter is enabled by de...",
+  "wordCount": 226,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

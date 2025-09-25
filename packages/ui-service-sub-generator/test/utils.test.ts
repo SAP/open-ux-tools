@@ -50,7 +50,7 @@ describe('test helper functions', () => {
             get: jest.fn()
         } as any;
         expect(checkConnection(providerMock)).toBeDefined();
-        expect(providerMock.get).toBeCalled();
+        expect(providerMock.get).toHaveBeenCalled();
     });
 
     test('test checkConnection - throws', async () => {
@@ -60,7 +60,7 @@ describe('test helper functions', () => {
             })
         } as any;
         expect(await checkConnection(providerMock)).toEqual(false);
-        expect(providerMock.get).toBeCalled();
+        expect(providerMock.get).toHaveBeenCalled();
     });
 
     describe('generate functions', () => {
@@ -138,7 +138,7 @@ describe('test helper functions', () => {
             await expect(
                 utils.generateService(generatorMock, state.content, 'tr12345', appWizardMock as AppWizard)
             ).resolves.not.toThrow();
-            expect(appWizardMock.showError).toBeCalled();
+            expect(appWizardMock.showError).toHaveBeenCalled();
         });
 
         test('generateService - should write BAS service metadata file', async () => {
@@ -278,7 +278,7 @@ describe('test helper functions', () => {
         } as any;
         await utils.writeBASMetadata(serviceConfig, memFs, appWizardMock, inputData, providerMockError);
         expect(appWizardMock.showInformation).toHaveBeenLastCalledWith(
-            'UI Service ZUI_BANKTP132_O4 has been created successfully, but could not be added to your project',
+            'The UI service: ZUI_BANKTP132_O4 has been created but could not be added to your project.',
             1
         );
     });
@@ -287,12 +287,12 @@ describe('test helper functions', () => {
         const state = {
             content: `{"general":{"namespace":"/ITAPC1/"},"businessService": {
                 "serviceDefinition": {
-                    "serviceDefinitionName": "ZUI_BANKTP134_O4",
-                    "serviceDefinitionNameOrgn": "ZUI_BANKTP134_O4"
+                    "serviceDefinitionName": "/ITAPC1/ZUI_BANKTP134_O4",
+                    "serviceDefinitionNameOrgn": "/ITAPC1/ZUI_BANKTP134_O4"
                 },
                 "serviceBinding": {
-                    "serviceBindingName": "ZUI_BANKTP132_O4",
-                    "serviceBindingNameOrgn": "ZUI_BANKTP132_O4",
+                    "serviceBindingName": "/ITAPC1/ZUI_BANKTP132_O4",
+                    "serviceBindingNameOrgn": "/ITAPC1/ZUI_BANKTP132_O4",
                     "bindingType": "v4Ui"
                 }
             }
@@ -343,7 +343,7 @@ describe('test helper functions', () => {
         mockIsAppStudio.mockReturnValue(false);
         await utils.runPostGenHook(options, system, content, providerMock);
         jest.advanceTimersByTime(1000);
-        expect(options.vscode.commands.executeCommand).toBeCalledWith('sap.ux.service.generated.handler', {
+        expect(options.vscode.commands.executeCommand).toHaveBeenCalledWith('sap.ux.service.generated.handler', {
             type: 'SERVICE_GEN_DATA',
             service: {
                 metadata: '',
@@ -397,7 +397,7 @@ describe('test helper functions', () => {
         };
         await utils.runPostGenHook(options, system, content, providerMock);
         jest.advanceTimersByTime(1000);
-        expect(options.vscode.commands.executeCommand).toBeCalledWith('sap.ux.service.generated.handler', {
+        expect(options.vscode.commands.executeCommand).toHaveBeenCalledWith('sap.ux.service.generated.handler', {
             type: 'SERVICE_GEN_DATA',
             service: {
                 metadata: '',

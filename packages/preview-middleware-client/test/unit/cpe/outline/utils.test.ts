@@ -43,8 +43,8 @@ describe('utils', () => {
 
             // assert
             expect(editable).toBeTruthy();
-            expect(OverlayUtil.getClosestOverlayFor).toBeCalledWith('mockControl');
-            expect(getRuntimeControlSpy).toBeCalledWith(mockControlOverlay);
+            expect(OverlayUtil.getClosestOverlayFor).toHaveBeenCalledWith('mockControl');
+            expect(getRuntimeControlSpy).toHaveBeenCalledWith(mockControlOverlay);
         });
     });
 });

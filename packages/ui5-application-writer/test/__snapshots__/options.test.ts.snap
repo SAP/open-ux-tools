@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`UI5 templates generates options: \`codeAssist, eslint, sapux\` 1`] = `
 Object {
@@ -117,7 +117,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -195,13 +195,13 @@ appDescription=Test App Description",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"app.with.namespace\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -374,7 +374,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -629,7 +629,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -707,13 +707,13 @@ appDescription=Test App Description",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"app.with.namespace\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -1125,7 +1125,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -1203,13 +1203,13 @@ appDescription=Test App Description",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"app.with.namespace\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -1649,7 +1649,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -1726,13 +1726,13 @@ appDescription=Test App Description",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"app.with.namespace\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -2044,7 +2044,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -2143,13 +2143,13 @@ appDescription=Test App Description",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"app.with.namespace\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">

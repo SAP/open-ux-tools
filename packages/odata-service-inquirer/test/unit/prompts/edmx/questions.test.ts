@@ -10,7 +10,7 @@ import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import * as EntityHelper from '../../../../src/prompts/edmx/entity-helper';
 import { getEntitySelectionQuestions } from '../../../../src/prompts/edmx/questions';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import type { EntitySelectionAnswers } from '../../../../src/types';
+import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types';
 import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
@@ -47,7 +47,7 @@ describe('Test entity prompts', () => {
         const errorLogSpy = jest.spyOn(LoggerHelper.logger, 'error');
         questions = getEntitySelectionQuestions('{}', 'lrop');
         expect(questions).toEqual([]);
-        expect(errorLogSpy).toBeCalledWith(expect.stringMatching('Unable to parse entities'));
+        expect(errorLogSpy).toHaveBeenCalledWith(expect.stringMatching('Unable to parse entities'));
     });
 
     test('getEntityQuestions should return prompts based options specified', () => {
@@ -199,7 +199,9 @@ describe('Test entity prompts', () => {
         PromptState.isYUI = false;
         questions = getEntitySelectionQuestions(metadataV2NoEntities, 'worklist');
         mainEntityPrompt = questions.find((question) => question.name === EntityPromptNames.mainEntity) as ListQuestion;
-        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(t('errors.exitingGeneration'));
+        expect(() => (mainEntityPrompt.validate as Function)()).toThrow(
+            'Exiting generation. Exit: The template and service selected have no relevant entities that you can use.'
+        );
     });
 
     test('should show line item annotation generation prompt and additional messages', async () => {
@@ -315,16 +317,16 @@ describe('Test entity prompts', () => {
         expect(questions).toContainEqual(expect.objectContaining({ name: EntityPromptNames.tableType }));
         expect(questions).toContainEqual(expect.objectContaining({ name: EntityPromptNames.hierarchyQualifier }));
 
-        let tabelType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
+        let tableType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
         expect(
-            (tabelType.when as Function)({
+            (tableType.when as Function)({
                 [EntityPromptNames.mainEntity]: {
                     entitySetName: 'SEPMRA_C_PD_Product',
                     entitySetType: 'SEPMRA_C_PD_ProductType'
                 } as EntityAnswer
             })
         ).toBe(true);
-        expect(tabelType.choices as []).toEqual([
+        expect(tableType.choices as []).toEqual([
             {
                 name: 'Analytical',
                 value: 'AnalyticalTable'
@@ -342,25 +344,50 @@ describe('Test entity prompts', () => {
                 value: 'TreeTable'
             }
         ]);
-        expect(tabelType.default).toEqual('ResponsiveTable');
+        expect(tableType.default()).toEqual('ResponsiveTable');
 
-        questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'alp', false);
-        tabelType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
-        expect(tabelType.choices as []).toEqual([
-            {
-                name: 'Analytical',
-                value: 'AnalyticalTable'
-            },
-            {
-                name: 'Grid',
-                value: 'GridTable'
-            },
-            {
-                name: 'Responsive',
-                value: 'ResponsiveTable'
+        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
+        questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'lrop', false);
+        tableType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
+        // Simulate prevAnswers with mainEntity that has aggregate transformations
+        const aggEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SalesOrderItem',
+                entitySetType: 'com.c_salesordermanage_sd_aggregate.SalesOrderItem'
             }
-        ]);
-        expect(tabelType.default).toEqual('AnalyticalTable');
+        };
+        expect((tableType.default as Function)(aggEntity)).toEqual('AnalyticalTable');
+        expect((tableType.additionalMessages as Function)('AnalyticalTable')).toEqual({
+            message: t('prompts.tableType.analyticalTableDefault'),
+            severity: Severity.information
+        });
+
+        // If the user has already selected a table type, return it
+        const prevAnswersWithTableType = {
+            [EntityPromptNames.tableType]: 'GridTable',
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'Customer',
+                entitySetType: 'com.c_salesordermanage_sd_aggregate.Customer'
+            }
+        };
+        expect((tableType.default as Function)(prevAnswersWithTableType)).toEqual('GridTable');
+
+        // Otherwise, default to ResponsiveTable
+        const prevAnswersNoSpecial = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SomeOtherEntity',
+                entitySetType: 'SomeOtherType'
+            }
+        };
+        expect((tableType.default as Function)(prevAnswersNoSpecial)).toEqual('ResponsiveTable');
+
+        // If no prevAnswers, default to ResponsiveTable
+        expect((tableType.default as Function)()).toEqual('ResponsiveTable');
+
+        // For ALP, use AnalyticalTable as default
+        questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'alp', false);
+        tableType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
+        expect((tableType.default as Function)({})).toEqual('AnalyticalTable');
 
         const hierarchyQualifier = questions.find(
             (question) => question.name === EntityPromptNames.hierarchyQualifier
@@ -519,5 +546,60 @@ describe('Test entity prompts', () => {
                 } as EntityAnswer
             })
         ).toBe(true);
+    });
+
+    test('pageBuildingBlockTitle question is displayed when addPageBuildingBlock is true', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.message).toBe(t('prompts.pageBuildingBlock.message'));
+        expect(addPageBuildingBlockQuestion.default).toBe(false);
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages({
+                addPageBuildingBlock: true
+            } as PageBuildingBlockAnswers);
+            expect(message).toEqual({
+                message: t('prompts.pageBuildingBlock.warning'),
+                severity: Severity.warning
+            });
+        }
+
+        const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
+        expect(typeof pageBlockTitleQuestion?.when).toBe('function');
+        if (typeof pageBlockTitleQuestion?.when === 'function') {
+            expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: true } as PageBuildingBlockAnswers)).toBe(true);
+        }
+        // check that page title is mandatory
+        if (typeof pageBlockTitleQuestion?.validate === 'function') {
+            expect(pageBlockTitleQuestion.validate('')).toBe(false);
+            expect(pageBlockTitleQuestion.validate('My Title')).toBe(true);
+        }
+    });
+
+    test('pageBuildingBlockTitle question is not displayed when addPageBuildingBlock is false', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages();
+            expect(message).toEqual(undefined);
+        }
+
+        const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
+        // Should not display when addPageBuildingBlock is false
+        if (typeof pageBlockTitleQuestion?.when === 'function') {
+            expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: false } as PageBuildingBlockAnswers)).toBe(
+                false
+            );
+        }
     });
 });

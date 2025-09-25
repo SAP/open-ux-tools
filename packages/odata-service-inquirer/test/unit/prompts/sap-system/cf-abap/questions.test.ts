@@ -7,6 +7,7 @@ import { type ServiceInstanceInfo } from '@sap/cf-tools';
 import * as cfTools from '@sap/cf-tools';
 import { PromptState } from '../../../../../src/utils/prompt-state';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
+import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -58,7 +59,9 @@ jest.mock('@sap-ux/btp-utils', () => {
         isAppStudio: jest.fn().mockImplementation(() => true)
     };
 });
-
+beforeAll(async () => {
+    await initI18nOdataServiceInquirer();
+});
 /**
  * Note `getCFDiscoverPrompts` is mostly tested as part of `abap-on-btp` tests.
  * Tests here are to cover BAS specific prompts.
@@ -77,7 +80,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
                 },
-                "message": "prompts.cloudFoundryAbapSystem.message",
+                "message": "ABAP environment",
                 "name": "cfAbapBas:cloudFoundryAbapSystem",
                 "type": "list",
                 "validate": [Function],
@@ -92,7 +95,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 "default": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
-                  "breadcrumb": "prompts.systemService.breadcrumb",
+                  "breadcrumb": "Service",
                   "mandatory": true,
                 },
                 "message": [Function],
@@ -123,7 +126,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 serviceName: 'test1-cfServicetechnicalName'
             } as ServiceInstanceInfo)
         ).toBe(true);
-        expect(getCredsSpy).toBeCalledWith('test1-cFAbapService');
+        expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalledWith(
             'test1-cFAbapService',
             {
@@ -151,7 +154,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 serviceName: 'test1-cfServicetechnicalName'
             } as ServiceInstanceInfo)
         ).toEqual(errMsg);
-        expect(getCredsSpy).toBeCalledWith('test1-cFAbapService');
+        expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalled();
     });
 });

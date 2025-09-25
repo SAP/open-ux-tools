@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-04-essentials-ids-in-js-fragments-896fa9a-md",
+  "title": "IDs in JS Fragments",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/ids-in-js-fragments-896fa9a.md",
+  "lastModified": "2025-09-01T18:17:10.519Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "IDs",
+    "Fragments"
+  ],
+  "headers": [
+    "IDs in JS Fragments"
+  ],
+  "content": "<!-- loio896fa9aae5fb40deb209bc31ead99ba7 -->\n\n# IDs in JS Fragments\n\nThe fragment logic of JS fragments cannot influence the IDs of controls that are created in the `createContent()` method.\n\nThis behavior is similar to how JS views behave regarding IDs. When a stable ID is given within a JS fragment, the `this.createId()` method should be used:\n\n```js\ncreateContent: function(oController ) {\n\tvar oButton  = new sap.m.Button(this.createId(\"btnInJsFragment\"), { \n\t// use createId() to let the fragment influence the ID\n\t    text: \"Hello JS World\"\n\t}); \n\treturn oButton ; \n}\n```\n\nIf an ID is given when the fragment is instantiated, `createId()` will add it as prefix. Else, `createId()` will leave the given ID untouched.\n\nIt is, however, possible that a containing view may add its prefix. For more information, see [IDs of Fragments in Views](ids-of-fragments-in-views-f10bf70.md).\n\n",
+  "excerpt": "<!-- loio896fa9aae5fb40deb209bc31ead99ba7 --> IDs in JS Fragments The fragment logic of JS fragments cannot influence the IDs of controls that are created in the createContent() method. This behavior ...",
+  "wordCount": 131,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`API tests getPrompts, i18n is loaded 1`] = `
 [
@@ -25,7 +25,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "guiOptions": {
       "breadcrumb": true,
     },
-    "message": "Data source",
+    "message": "Data Source",
     "name": "datasourceType",
     "type": "list",
   },
@@ -33,7 +33,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "additionalMessages": [Function],
     "choices": [
       {
-        "name": "New system",
+        "name": "New System",
         "value": {
           "system": "!@£*&937newSystem*X~qy^",
           "type": "newSystemChoice",
@@ -44,16 +44,18 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "value": {
           "system": {
             "name": "storedSystem1",
+            "systemType": "OnPrem",
             "url": "http://url1",
           },
           "type": "backendSystem",
         },
       },
       {
-        "name": "storedSystem2",
+        "name": "storedSystem2 (BTP)",
         "value": {
           "system": {
             "name": "storedSystem2",
+            "systemType": "BTP",
             "url": "http://url2",
           },
           "type": "backendSystem",
@@ -125,7 +127,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "value": "abapOnPrem",
       },
     ],
-    "message": "System type",
+    "message": "System Type",
     "name": "newSystemType",
     "type": "list",
     "when": [Function],
@@ -249,7 +251,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "mandatory": true,
     },
     "guiType": "file-browser",
-    "message": "Service key file path",
+    "message": "Service Key File Path",
     "name": "serviceKey",
     "type": "input",
     "validate": [Function],
@@ -304,7 +306,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "mandatory": true,
     },
     "guiType": "file-browser",
-    "message": "Metadata file path",
+    "message": "Metadata File Path",
     "name": "metadataFilePath",
     "type": "input",
     "validate": [Function],
@@ -318,7 +320,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "breadcrumb": "CAP Project",
       "mandatory": true,
     },
-    "message": "Choose your CAP project",
+    "message": "Choose a CAP Project",
     "name": "capProject",
     "type": "list",
     "when": [Function],
@@ -330,7 +332,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "mandatory": true,
     },
     "guiType": "folder-browser",
-    "message": "CAP project folder path",
+    "message": "CAP Project Folder Path",
     "name": "capProjectPath",
     "type": "input",
     "validate": [Function],
@@ -344,7 +346,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "OData service",
+    "message": "OData Service",
     "name": "capService",
     "type": "list",
     "validate": [Function],

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-db--i18n-i18n-properties",
+  "title": "i18n",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/db/_i18n/i18n.properties",
+  "lastModified": "2025-09-01T18:17:10.797Z",
+  "tags": [
+    "samples",
+    "properties",
+    "i18n"
+  ],
+  "headers": [],
+  "content": "# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.md\n\n```properties\n# i18n.properties\n\n```properties\n# Entities\n#XFLD\nIncident=Incident\n#XFLD\nIncidents=Incidents\n#XFLD\nAssignedContact=Assigned Contact\n#XFLD\nIncidentOverview=Incident Overview\n#XFLD\nIncidentDescription=Incident Description\n#XFLD\nGeneralInformation=General Information\n#XFLD\nIncidentDetails=Incident Details\n#XFLD\nAdminData=Admin Data\n#XFLD\nIncidentProcessFlow=Incident Process Flow\n#XFLD\nInlineAction=Inline Action\n#XFLD\nIncidentsPerCategory=Incidents Per Category\n# Incidents\n#XFLD\nTitle=Title\n#XFLD\nCategory=Category\n#XFLD\nPriority=Priority\n#XFLD\nIncidentStatus=Incident Status\n#XFLD\nIncidentDescription=Incident Description\n# IncidentFlow\n#XFLD\nProcessStep=Process Step\n#XFLD\nProcessStepStatus=Process Step Status\n#XFLD\nStepStartDate=Starting at\n#XFLD\nStepEndDate=Ending at\n# Individual\n#XFLD\nFirstName=First Name\n#XFLD\nLastName=Last Name\n#XFLD\nFullName=Name\n#XFLD\nCreatedBy=Created By\n#XFLD\nEmailAddress=Email Address\n\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "i18n.md properties i18n.md properties i18n.md properties i18n.md properties i18n.properties",
+  "wordCount": 116,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

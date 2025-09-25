@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test UI5 Library Reference Writer should generate the UI5 library reference (sap.ui5.dependencies.libs does not exist) 1`] = `
 Object {

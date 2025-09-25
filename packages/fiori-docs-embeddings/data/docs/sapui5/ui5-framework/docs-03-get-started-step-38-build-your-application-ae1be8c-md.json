@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-38-build-your-application-ae1be8c-md",
+  "title": "Step 38: Build Your Application",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-38-build-your-application-ae1be8c.md",
+  "lastModified": "2025-09-01T18:17:10.473Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Build",
+    "Your",
+    "Application"
+  ],
+  "headers": [
+    "Step 38: Build Your Application",
+    "Preview",
+    "Coding",
+    "package.json",
+    "Install a Local Web Server",
+    "package.json",
+    "Congratulations!"
+  ],
+  "content": "<!-- loioae1be8cc26064274bbc5925a9cd59640 -->\n\n# Step 38: Build Your Application\n\nIn this step we're going to build our application and consume the speed of a built SAPUI5 application.\n\n\n\n## Preview\n\n  \n  \n**The UI5 application is built and served**\n\n![The overview page of the application. Contains a Hello World header with buttons and a text input. The lower part shows list of invoices with details, grouped by vendor names.](images/UI5_Walkthrough_Step_38_fb12cea.png \"The UI5 application is built and served\")\n\n\n\n<a name=\"loioae1be8cc26064274bbc5925a9cd59640__section_uxj_4h4_tyb\"/>\n\n## Coding\n\nYou can view and download all files at [Walkthrough - Step 38](https://ui5.sap.com/#/entity/sap.m.tutorial.walkthrough/sample/sap.m.tutorial.walkthrough.38).\n\n\n\n<a name=\"loioae1be8cc26064274bbc5925a9cd59640__section_vxj_4h4_tyb\"/>\n\n## package.json\n\nWe introduce a new npm script called \"build\", which executes a UI5 Tooling build. As command-line arguments, we add `-all` to also build the framework dependencies \\(e.g. `sap.ui.core`, etc.\\) and `--clean-dest` to clear any output of a previous build from the `dist` folder before creating the new build result.\n\n```\n{\n  \"name\": \"ui5.walkthrough\",\n  \"version\": \"1.0.0\",\n  \"description\": \"The UI5 walkthrough application\",\n  \"scripts\": {\n      \"start\": \"ui5 serve -o test/mockServer.html\",\n      \"build\": \"ui5 build --all --clean-dest\"\n  },\n  \"devDependencies\": {\n    \"@ui5/cli\": \"^3\",\n    \"ui5-middleware-simpleproxy\": \"^3\"\n  }\n}\n```\n\nOpen a terminal and execute `npm run build` in the project root folder.\n\nCongrats! You have successfully built your UI5 application.\n\n\n\n<a name=\"loioae1be8cc26064274bbc5925a9cd59640__section_f2r_rh4_tyb\"/>\n\n## Install a Local Web Server\n\nTo test the built result, we can serve the build output locally. To do this, we have to add a local web server hosting the built resources. For this tutorial we choose an npm package called [local-web-server](https://www.npmjs.com/package/local-web-server).\n\nTherefore, we have to install the new package by executing `npm i -D local-web-server`.\n\nTo actually use the newly added web server, we have to add a new script to our `package.json` which we'll call `serve-dist`. This script starts the `local-web-server` by pointing to the UI5 build output located in the `dist` folder of our project. The `--compress` flag optimizes the responses sent by the server to the client.\n\n\n\n<a name=\"loioae1be8cc26064274bbc5925a9cd59640__section_cxw_th4_tyb\"/>\n\n## package.json\n\n```\n{\n  \"name\": \"ui5.walkthrough\",\n  \"version\": \"1.0.0\",\n  \"description\": \"The UI5 walkthrough application\",\n  \"scripts\": {\n      \"start\": \"ui5 serve -o test/mockServer.html\",\n      \"build\": \"ui5 build --all --clean-dest\",\n      \"serve-dist\": \"ws --compress -d dist --open\"\n  },\n  \"devDependencies\": {\n    \"@ui5/cli\": \"^3\",\n    \"local-web-server\": \"^5\",\n    \"ui5-middleware-simpleproxy\": \"^3\"\n  }\n}\n```\n\nNow it's time to start the server by executing `npm run serve-dist` in a terminal in the project root folder. Your default browser opens automatically and the built application is hosted. The `local-web-server` does not offer proxy capabilities so far, nor does it allow to open a specific HTML file in the browser. To display any actual data, it is therefore necessary to open the `test/mockServer.html` file in the browser instead of the `index.html`.\n\n\n\n<a name=\"loioae1be8cc26064274bbc5925a9cd59640__section_u12_lby_tfb\"/>\n\n## Congratulations!\n\nYou've completed the walkthrough, good job! You should now be familiar with all the major development paradigms and concepts of SAPUI5. Our other tutorials focus on particular aspects of SAPUI5 and some advanced topics, so if you want to dive deeper into specific topics, feel free to explore!\n\n**Related Information**  \n\n\n[UI5 Tooling documentation](https://sap.github.io/ui5-tooling/stable/)\n\n",
+  "excerpt": "<!-- loioae1be8cc26064274bbc5925a9cd59640 --> Step 38: Build Your Application In this step we're going to build our application and consume the speed of a built SAPUI5 application. Preview       The U...",
+  "wordCount": 487,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

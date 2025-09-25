@@ -1,5 +1,416 @@
 # @sap-ux/preview-middleware
 
+## 0.23.14
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/system-access@0.6.18
+
+## 0.23.13
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/adp-tooling@0.15.30
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-access@1.32.1
+
+## 0.23.12
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/adp-tooling@0.15.29
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.11
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/adp-tooling@0.15.28
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.10
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
+## 0.23.9
+
+### Patch Changes
+
+-   4fa9dd9: fix: for disabling change table column quick action when variant management is disabled
+
+## 0.23.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.27
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/system-access@0.6.16
+
+## 0.23.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.26
+
+## 0.23.6
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/adp-tooling@0.15.25
+
+## 0.23.5
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/adp-tooling@0.15.24
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.23
+-   @sap-ux/system-access@0.6.15
+
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/adp-tooling@0.15.22
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.23.2
+
+### Patch Changes
+
+-   Updated dependencies [384bb40]
+    -   @sap-ux/adp-tooling@0.15.21
+
+## 0.23.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.20
+-   @sap-ux/system-access@0.6.13
+
+## 0.23.0
+
+### Minor Changes
+
+-   372e9ce: fix: [ADP][Info center] Remove all messages from the info center which overlap with messages added with the ui5 Log library.
+
+## 0.22.1
+
+### Patch Changes
+
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
+## 0.22.0
+
+### Minor Changes
+
+-   a39e0d9: fix: [ADP] For ui5 components which do not provide api.json we do not display Documentation error in the info center.
+
+## 0.21.7
+
+### Patch Changes
+
+-   Updated dependencies [9f84298]
+    -   @sap-ux/adp-tooling@0.15.18
+
+## 0.21.6
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/adp-tooling@0.15.17
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/system-access@0.6.12
+
+## 0.21.5
+
+### Patch Changes
+
+-   @sap-ux/i18n@0.3.3
+-   @sap-ux/adp-tooling@0.15.16
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/system-access@0.6.12
+
+## 0.21.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.15
+
+## 0.21.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.14
+
+## 0.21.2
+
+### Patch Changes
+
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
+## 0.21.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+-   Updated dependencies [98fbd93]
+    -   @sap-ux/adp-tooling@0.15.13
+
+## 0.21.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.12
+-   @sap-ux/system-access@0.6.12
+
+## 0.20.74
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.11
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/system-access@0.6.11
+
+## 0.20.73
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.10
+
+## 0.20.72
+
+### Patch Changes
+
+-   009143e: fix: resolve i18n key
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+    -   @sap-ux/adp-tooling@0.15.9
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/system-access@0.6.11
+
+## 0.20.71
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/adp-tooling@0.15.8
+    -   @sap-ux/system-access@0.6.11
+
+## 0.20.70
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.7
+-   @sap-ux/system-access@0.6.11
+
+## 0.20.69
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+
+## 0.20.68
+
+### Patch Changes
+
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+
+## 0.20.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.4
+
+## 0.20.66
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.3
+
+## 0.20.65
+
+### Patch Changes
+
+-   22fc2bf: feat: change file type of templates to ejs
+
+## 0.20.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.2
+
+## 0.20.63
+
+### Patch Changes
+
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+
+## 0.20.62
+
+### Patch Changes
+
+-   Updated dependencies [e53c1f8]
+    -   @sap-ux/adp-tooling@0.15.0
+
+## 0.20.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.44
+
+## 0.20.60
+
+### Patch Changes
+
+-   eafb486: fix: default layer for rta
+
+## 0.20.59
+
+### Patch Changes
+
+-   e5de360: fix: adjust test runner default pattern to avoid picking up wrong files
+
+## 0.20.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.43
+
+## 0.20.57
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.42
+
+## 0.20.56
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/adp-tooling@0.14.41
+    -   @sap-ux/system-access@0.6.10
+
+## 0.20.55
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.40
+
+## 0.20.54
+
+### Patch Changes
+
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/adp-tooling@0.14.39
+    -   @sap-ux/system-access@0.6.10
+
+## 0.20.53
+
+### Patch Changes
+
+-   Updated dependencies [e9beeb4]
+    -   @sap-ux/adp-tooling@0.14.38
+
+## 0.20.52
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.37
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/system-access@0.6.9
+
+## 0.20.51
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/adp-tooling@0.14.36
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.50
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
+## 0.20.49
+
+### Patch Changes
+
+-   67cf59e: make connector handling more robust and adjust min UI5 version for workspace connector usage to 1.76
+
+## 0.20.48
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+
+## 0.20.47
+
+### Patch Changes
+
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.20.46
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.45
+
+### Patch Changes
+
+-   0db69d6: fix: wrong property path used for Show Counts configuration change
+
+## 0.20.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.32
+-   @sap-ux/system-access@0.6.9
+
 ## 0.20.43
 
 ### Patch Changes

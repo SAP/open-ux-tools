@@ -100,9 +100,9 @@ describe('add/model', () => {
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+        expect(loggerMock.debug).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             service: mockAnswers,
             variant: descriptorVariant
         });
@@ -115,9 +115,9 @@ describe('add/model', () => {
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+        expect(loggerMock.debug).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             service: mockService,
             annotation: mockAnnotation,
             variant: descriptorVariant
@@ -129,9 +129,9 @@ describe('add/model', () => {
         addNewModelCommand(command);
         await command.parseAsync(getArgv('', '-s'));
 
-        expect(loggerMock.debug).not.toBeCalled();
-        expect(traceSpy).toBeCalled();
-        expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+        expect(loggerMock.debug).not.toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
+        expect(generateChangeMock).toHaveBeenCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             service: mockAnswers,
             variant: descriptorVariant
         });
@@ -146,7 +146,7 @@ describe('add/model', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(generateChangeMock).not.toBeCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(generateChangeMock).not.toHaveBeenCalled();
     });
 });

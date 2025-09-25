@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Repo App Download Should execute post app gen hook event when postGenCommand is provided 1`] = `
 {
@@ -78,7 +78,6 @@ exports[`Repo App Download Should execute post app gen hook event when postGenCo
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},
@@ -282,7 +281,6 @@ exports[`Repo App Download Should not throw error in end phase if telemetry fail
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},
@@ -486,7 +484,6 @@ exports[`Repo App Download Should successfully run app download from repository 
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},
@@ -690,7 +687,6 @@ exports[`Repo App Download Should successfully run app download from repository 
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},

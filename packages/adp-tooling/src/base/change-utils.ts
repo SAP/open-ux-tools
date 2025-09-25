@@ -31,6 +31,7 @@ interface InboundChange extends ManifestChangeProperties {
  * @param {AnnotationsData} annotation - The annotation data.
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {string} templatesPath - The path to the templates used for generating changes.
  * @returns {void}
  */
 export function writeAnnotationChange(
@@ -38,7 +39,8 @@ export function writeAnnotationChange(
     timestamp: number,
     annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties | undefined,
-    fs: Editor
+    fs: Editor,
+    templatesPath?: string
 ): void {
     try {
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
@@ -51,14 +53,9 @@ export function writeAnnotationChange(
         }
 
         if (!annotation.filePath) {
-            const annotationsTemplate = path.join(
-                __dirname,
-                '..',
-                '..',
-                'templates',
-                'changes',
-                TemplateFileName.Annotation
-            );
+            const annotationsTemplate = templatesPath
+                ? path.join(templatesPath, 'changes', TemplateFileName.Annotation)
+                : path.join(__dirname, '..', '..', 'templates', 'changes', TemplateFileName.Annotation);
             const { namespaces, serviceUrl } = annotation;
             const schemaNamespace = `local_${timestamp}`;
             renderFile(annotationsTemplate, { namespaces, path: serviceUrl, schemaNamespace }, {}, (err, str) => {

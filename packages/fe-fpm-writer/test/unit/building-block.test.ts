@@ -54,7 +54,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid project folder/);
+        ).rejects.toThrow(/Invalid project folder/);
 
         // Test generator with an invalid view path
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -72,7 +72,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid view path/);
+        ).rejects.toThrow(/Invalid view path/);
     });
 
     test('validate view path', async () => {
@@ -93,7 +93,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid view path testViewPath./);
+        ).rejects.toThrow(/Invalid view path testViewPath./);
     });
 
     const dependenciesInput = [
@@ -160,7 +160,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Aggregation control not found/);
+        ).rejects.toThrow(/Aggregation control not found/);
     });
 
     test('validate xml view file', async () => {
@@ -182,7 +182,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid view path/);
+        ).rejects.toThrow(/Invalid view path/);
     });
 
     test('validate xml view content', async () => {
@@ -212,7 +212,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Unable to parse xml view file/);
+        ).rejects.toThrow(/Unable to parse xml view file/);
     });
 
     test('fails to read view content', async () => {
@@ -228,7 +228,7 @@ describe('Building Blocks', () => {
                         buildingBlockType: BuildingBlockType.FilterBar
                     }
                 })
-        ).rejects.toThrowError(/Unable to read xml view file/);
+        ).rejects.toThrow(/Unable to read xml view file/);
     });
 
     const testInput = [
@@ -768,5 +768,58 @@ describe('Building Blocks', () => {
             fs
         );
         expect(fs.readJSON(join(basePath, manifestFilePath))).toMatchSnapshot();
+    });
+
+    test('generate Page building block with replace target locator set', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block');
+        const pageBlockData = {
+            id: 'testPage',
+            buildingBlockType: BuildingBlockType.Page,
+            title: 'Test Page Title',
+            description: 'Test Page Description'
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: pageBlockData,
+                replace: true
+            },
+            fs
+        );
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block');
+        await writeFilesForDebugging(fs);
+    });
+
+    test('throws error if aggregationPath not found', async () => {
+        const aggregationPath = `/mvc:Test`;
+        const basePath = join(testAppPath, 'generate-page-block-error');
+        const pageBlockData = {
+            id: 'testPage',
+            buildingBlockType: BuildingBlockType.Page,
+            title: 'Test Page Title',
+            description: 'Test Page Description'
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await expect(
+            async () =>
+                await generateBuildingBlock(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: pageBlockData,
+                        replace: true
+                    },
+                    fs
+                )
+        ).rejects.toThrow(`Aggregation control not found /mvc:Test.`);
     });
 });

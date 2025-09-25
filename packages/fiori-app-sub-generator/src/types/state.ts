@@ -12,7 +12,7 @@ import type {
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants';
 import type { Script } from './common';
-import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
+import type { AppGenInfo, Floorplan } from '@sap-ux/fiori-generator-shared';
 
 export interface Project {
     targetFolder: string;
@@ -36,6 +36,7 @@ export interface Project {
     flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
     minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
     manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
+    addCdsUi5Plugin?: boolean; // add cds ui5 plugin to the project (will also enable npm workspaces)
 }
 
 export interface Credentials {
@@ -149,36 +150,3 @@ export interface ALPOptions {
     smartVariantManagement: boolean;
     selectionMode: TableSelectionMode;
 }
-
-// Union types to expose a single interface property for Floorplan
-// This provides a layer of abstraction to isolate internal changes from external headless API consumers
-// Since these keys are used as an external API definiton they need to be meaningful
-// Note that ordering here determines rendering order
-/**
- * Due to ts(18033) we cannot use the type values directly here:
- * FF_SIMPLE = FFTemplateType.Basic // Once https://github.com/microsoft/TypeScript/pull/59475 is merged we can remove the hardcoded values and directly use the template values
- */
-export enum FloorplanFF {
-    FF_SIMPLE = 'basic'
-}
-/**
- * Due to ts(18033) we cannot use the type values directly here:
- * Once https://github.com/microsoft/TypeScript/pull/59475 is merged we can remove hardcoded values and directly use the template values
- * FE_FPM = FETemplateType.FlexibleProgrammingModel,
- * FE_LROP = FETemplateType.ListReportObjectPage,
- * FE_OVP = FETemplateType.OverviewPage,
- * FE_ALP = FETemplateType.AnalyticalListPage,
- * FE_FEOP = FETemplateType.FormEntryObjectPage,
- * FE_WORKLIST = FETemplateType.Worklist
- */
-export enum FloorplanFE {
-    FE_FPM = 'fpm',
-    FE_LROP = 'lrop',
-    FE_OVP = 'ovp',
-    FE_ALP = 'alp',
-    FE_FEOP = 'feop',
-    FE_WORKLIST = 'worklist'
-}
-
-// Used internally to join Floorplan types from multiple generators (until we have a merged type)
-export type Floorplan = FloorplanFE | FloorplanFF;

@@ -231,7 +231,7 @@ describe('Test FioriAppGenerator', () => {
             {
                 default: 'View1',
                 guiOptions: { breadcrumb: true },
-                message: 'View name',
+                message: 'View Name',
                 name: 'viewName',
                 type: 'input',
                 validate: expect.any(Function)
@@ -269,8 +269,10 @@ describe('Test FioriAppGenerator', () => {
         options.showCollabDraftWarning = true;
         options.workspaceFolders = ['folder1', 'folder2'];
         options.promptSettings = {
-            systemSelection: {
-                defaultChoice: 'system1'
+            '@sap/generator-fiori': {
+                systemSelection: {
+                    defaultChoice: 'system1'
+                }
             }
         };
 
@@ -404,6 +406,92 @@ describe('Test FioriAppGenerator', () => {
         });
     });
 
+    test('Should prompt for entity related answers custom page ', async () => {
+        // Force cache usage, YUI only
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        // Must be a datasource that provides an service to be cached (DatasourceType.none is not cached)
+        odataServiceAnswers.source = DatasourceType.odataServiceUrl;
+        // Set cache to simulate back navigation state (edmx and cap service) restoration entity prompting
+        const mockCachedService: Service = {
+            edmx: '<edmx></edmx>',
+            capService: {
+                projectPath: '/cap/project/path',
+                serviceName: 'aCapService'
+            },
+            annotations: [
+                {
+                    TechnicalName: 'testAnnotationsTechName',
+                    Definitions: 'testAnnotations',
+                    Version: '1.0.0',
+                    Uri: 'testUri'
+                }
+            ],
+            source: DatasourceType.capProject
+        };
+        // Note: These are not real-world combinations of options and state, they are for testing as many branches and options as possible
+        (options.appWizard as AppWizardCache)!['$fiori-cache'] = {
+            service: mockCachedService
+        };
+        options.floorplan = FloorplanFE.FE_FPM;
+        options.preselectedEntityName = 'TestPreSelectedEntity';
+        options.showLayoutPrompts = false;
+        // Skipping the project attributes step for this test
+        options.fioriSteps = FIORI_STEPS.filter((step) => step.key !== STEP_PROJECT_ATTRIBUTES);
+
+        const mockEntityRelatedAnswers: EntityRelatedAnswers = {
+            mainEntity: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            },
+            navigationEntity: {
+                entitySetName: 'to_ProductTextSetName',
+                navigationPropertyName: 'to_ProductTextNavPropName'
+            },
+            presentationQualifier: '',
+            tableType: 'ResponsiveTable',
+            tableSelectionMode: 'None'
+        };
+        // Should prompt for entity related answers
+        const promptForEntitiesSpy = jest
+            .spyOn(FioriAppGenerator.prototype, 'prompt')
+            .mockResolvedValueOnce(mockEntityRelatedAnswers);
+
+        const fioriAppGen = new FioriAppGenerator([], options);
+        await fioriAppGen.initializing();
+        await fioriAppGen.prompting();
+
+        // Should pass relevant option to `getEntityRelatedPrompts`
+        expect(getEntityRelatedPrompts).toHaveBeenCalledWith(
+            mockCachedService.edmx,
+            'fpm',
+            true,
+            {
+                defaultMainEntityName: 'TestPreSelectedEntity',
+                hideTableLayoutPrompts: true,
+                useAutoComplete: false,
+                displayPageBuildingBlockPrompt: true
+            },
+            mockCachedService.annotations?.[0],
+            expect.objectContaining({ debug: expect.any(Function) }), // Logger
+            true
+        );
+        // Should prompt for entity related answers, since this is an FE floorplan
+        expect(promptForEntitiesSpy).toHaveBeenCalledWith(mockEntityRelatedQuestions);
+        expect(fioriAppGen['state'].entityRelatedConfig).toEqual({
+            mainEntity: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            },
+            navigationEntity: {
+                entitySetName: 'to_ProductTextSetName',
+                navigationPropertyName: 'to_ProductTextNavPropName'
+            },
+            presentationQualifier: '',
+            tableSelectionMode: 'None',
+            tableType: 'ResponsiveTable'
+        });
+    });
+
     test('Should prompt for project attributes', async () => {
         options.floorplan = FloorplanFF.FF_SIMPLE;
         // Skipping the service selection step for this test
@@ -437,7 +525,7 @@ describe('Test FioriAppGenerator', () => {
                 promptSettings: undefined,
                 promptExtension: undefined
             },
-            expect.objectContaining([
+            expect.arrayContaining([
                 {
                     activeSteps: expect.any(YeomanUiSteps),
                     dependentMap: expect.any(Object)
@@ -472,14 +560,16 @@ describe('Test FioriAppGenerator', () => {
             floorplan: FloorplanFE.FE_WORKLIST
         };
         options.promptSettings = {
-            name: {
-                hide: true
-            },
-            targetFolder: {
-                hide: true
-            },
-            ui5Version: {
-                hide: true
+            '@sap/generator-fiori': {
+                name: {
+                    hide: true
+                },
+                targetFolder: {
+                    hide: true
+                },
+                ui5Version: {
+                    hide: true
+                }
             }
         };
         options.extensions = {
@@ -497,17 +587,17 @@ describe('Test FioriAppGenerator', () => {
         // Should call to prompt for UI5 application answers with the expected parameters
         expect(promptUI5ApplicationAnswers).toHaveBeenCalledWith(
             {
-                projectName: undefined,
+                name: undefined,
                 targetFolder: undefined,
                 service: {
                     edmx: '<edmx></edmx>',
                     source: DatasourceType.sapSystem
                 },
                 floorplan: FloorplanFF.FF_SIMPLE,
-                promptSettings: options.promptSettings,
+                promptSettings: options.promptSettings['@sap/generator-fiori'],
                 promptExtension: options.extensions
             },
-            expect.objectContaining([
+            expect.arrayContaining([
                 {
                     activeSteps: expect.any(YeomanUiSteps),
                     dependentMap: expect.any(Object)
@@ -541,6 +631,19 @@ describe('Test FioriAppGenerator', () => {
                 source: DatasourceType.none
             },
             floorplan: FloorplanFF.FF_SIMPLE
+        };
+        options.promptSettings = {
+            '@sap-ux/deploy-config-sub-generator': {
+                'ui5AbapRepo': {
+                    hide: true,
+                    default: 'ZAPP'
+                }
+            },
+            '@sap-ux/flp-config-sub-generator': {
+                'semanticObject': {
+                    hide: true
+                }
+            }
         };
         // Answers to add deploy config and flp config
         ui5ApplicationAnswers.addDeployConfig = true;
@@ -581,7 +684,13 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) }, // AppWizard
+            {
+                'ui5AbapRepo': {
+                    hide: true,
+                    default: 'ZAPP'
+                }
+            }
         );
 
         expect(addFlpGen).toHaveBeenCalledWith(
@@ -594,7 +703,12 @@ describe('Test FioriAppGenerator', () => {
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // VSCode
-            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) }, // AppWizard
+            {
+                'semanticObject': {
+                    hide: true
+                }
+            }
         );
 
         // If the FLP config step is skipped, the addFlpGen should be called with skipPrompt: true, if `addFlpConfig` is true (can be set from adaptors, for example)
@@ -610,6 +724,7 @@ describe('Test FioriAppGenerator', () => {
             },
             floorplan: FloorplanFF.FF_SIMPLE
         };
+        options.promptSettings = undefined; // No prompt settings for this test
         // Skipping the FLP config step should still call the addFlpGen but with the skipPrompt option true
         ui5ApplicationAnswers.addFlpConfig = true;
         (addFlpGen as jest.Mock).mockClear();
@@ -628,7 +743,8 @@ describe('Test FioriAppGenerator', () => {
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // VSCode
-            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) }, // AppWizard
+            undefined
         );
         // Should only be called for deploy config step, not flp config step since its skipped
         expect(updateDependentStep).toHaveBeenCalledTimes(1);
@@ -644,14 +760,14 @@ describe('Test FioriAppGenerator', () => {
         options.floorplan = undefined; // Force an error since supported odata version lookup requires a floorplan
         const fioriAppGen = new FioriAppGenerator([], options);
         await fioriAppGen.initializing();
-        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
+        await expect(fioriAppGen.prompting()).rejects.toThrow(t('error.fatalError'));
 
         expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
 
         // Fatal error must exit YUI or genertion continues
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         await fioriAppGen.initializing();
-        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
+        await expect(fioriAppGen.prompting()).rejects.toThrow(t('error.fatalError'));
         expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
         expect(options.appWizard?.showError).toHaveBeenCalledWith(
             expect.stringContaining(t('error.fatalError')),

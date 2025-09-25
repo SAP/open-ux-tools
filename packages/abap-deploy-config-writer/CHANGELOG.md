@@ -1,5 +1,186 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.17
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.18
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-access@1.32.1
+
+## 0.2.15
+
+### Patch Changes
+
+-   c15aa4f: fix: Wrong npm deploy scripts are created for ADP onPremise projects
+
+## 0.2.14
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/system-access@0.6.16
+
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/system-access@0.6.16
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/system-access@0.6.16
+
+## 0.2.11
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.16
+
+## 0.2.10
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.15
+-   @sap-ux/ui5-config@0.29.3
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.2.8
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.13
+-   @sap-ux/ui5-config@0.29.2
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/system-access@0.6.12
+
+## 0.2.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/system-access@0.6.12
+
+## 0.2.5
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.12
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+    -   @sap-ux/system-access@0.6.11
+
+## 0.2.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/system-access@0.6.11
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/system-access@0.6.11
+
+## 0.2.1
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.11
+
+## 0.2.0
+
+### Minor Changes
+
+-   e53c1f8: Remove archive.zip from deploy script to allow passing any of the additional CLI params.
+
+## 0.1.17
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/system-access@0.6.10
+
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.10
+-   @sap-ux/ui5-config@0.29.0
+
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.14
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/ui5-config@0.28.2
+
 ## 0.1.11
 
 ### Patch Changes

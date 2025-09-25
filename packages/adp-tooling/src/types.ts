@@ -99,6 +99,10 @@ export interface AdpWriterConfig {
          * Optional: if set to true then the generated project will support typescript
          */
         enableTypeScript?: boolean;
+        /**
+         * Optional: path to the template files to be used for generation
+         */
+        templatePathOverwrite?: string;
     };
 }
 
@@ -253,6 +257,8 @@ export interface CommonChangeProperties {
 
 export interface CommonAdditionalChangeInfoProperties {
     templateName?: string;
+    targetAggregation?: string;
+    controlType?: string;
 }
 
 export interface ManifestChangeProperties {
@@ -285,7 +291,16 @@ export interface AddXMLChange extends CommonChangeProperties {
     dependentSelector: Record<string, unknown>;
     jsOnly: boolean;
 }
-
+export interface AppDescriptorV4Change<T = unknown> extends CommonChangeProperties {
+    changeType: 'appdescr_fe_changePageConfiguration';
+    content: {
+        entityPropertyChange: {
+            propertyPath: string;
+            operation: string;
+            propertyValue: string | boolean | number | T;
+        };
+    };
+}
 export interface CodeExtChange extends CommonChangeProperties {
     changeType: 'codeExt';
     content: {

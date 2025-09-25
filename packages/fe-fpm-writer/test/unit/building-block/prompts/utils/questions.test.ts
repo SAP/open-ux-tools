@@ -20,6 +20,7 @@ import {
     getViewOrFragmentPathPrompt
 } from '../../../../../src/building-block/prompts/utils/questions';
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
+import { BuildingBlockType } from '../../../../../src';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -71,7 +72,7 @@ describe('utils - questions', () => {
             ...context,
             project: {} as unknown as Project
         });
-        await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrowError();
+        await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrow();
     });
 
     test('transformChoices', async () => {
@@ -152,7 +153,7 @@ describe('utils - questions', () => {
                         }
                     }
                 })
-        ).rejects.toThrowError();
+        ).rejects.toThrow();
 
         // no entity set in answers
         choices = await choicesProp({
@@ -193,6 +194,28 @@ describe('utils - questions', () => {
         aggregationPathPrompt = getAggregationPathPrompt(context);
         expect(aggregationPathPrompt).toMatchSnapshot();
     });
+
+    test('getAggregationPathPrompt with page macro', async () => {
+        const contextWithPageMacro = {
+            ...context,
+            appPath: projectFolder
+        };
+        const aggregationPathPrompt = getAggregationPathPrompt(contextWithPageMacro, {
+            message: 'AggregationPathMessage'
+        });
+        expect(aggregationPathPrompt).toMatchSnapshot();
+        const choicesProp = aggregationPathPrompt.choices as Choices;
+        expect(choicesProp).toBeDefined();
+        let choices = await choicesProp({
+            viewOrFragmentPath: join('webapp/ext/view/Page.view.xml')
+        });
+        expect(choices).toMatchSnapshot();
+
+        choices = await choicesProp({
+            viewOrFragmentPath: join('webapp/ext/view/Page.view.xml')
+        });
+    });
+
     test('getViewOrFragmentPathPrompt', async () => {
         let viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError', {
             message: 'testMessage',
@@ -204,7 +227,7 @@ describe('utils - questions', () => {
         const choicesProp = viewOrFragmentPathPrompt.choices as Choices;
         expect(choicesProp).toBeDefined();
         const choices = await choicesProp();
-        expect(choices.length).toBe(1);
+        expect(choices.length).toBe(2);
 
         const validateFn = viewOrFragmentPathPrompt.validate;
         expect(typeof validateFn).toBe('function');

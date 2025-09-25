@@ -1,6 +1,7 @@
 import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import { t } from './i18n';
+import { GeneratorTypes } from '../types';
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
@@ -50,13 +51,13 @@ export function getFlpPages(showTileSettingsPage: boolean, projectName: string):
  * @param {boolean} hasBaseAppInbound - Indicates if the base app inbound exists.
  * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
  * @param {string} projectName - The name of the project.
- * @param {boolean} [shouldAdd] - Whether to add (`true`) or remove (`false`) the steps.
+ * @param {boolean} shouldAdd - Whether to add (`true`) or remove (`false`) the steps.
  */
 export function updateFlpWizardSteps(
     hasBaseAppInbound: boolean,
     prompts: YeomanUiSteps,
     projectName: string,
-    shouldAdd: boolean = true
+    shouldAdd: boolean
 ): void {
     const pages = getFlpPages(hasBaseAppInbound, projectName);
     if (pages.length === 2) {
@@ -121,5 +122,60 @@ export function updateWizardSteps(
         prompts.splice(targetIdx, 0, [step]);
     } else if (existingIdx !== -1) {
         prompts.splice(existingIdx, 1, []);
+    }
+}
+
+/**
+ * Returns the error page for the given sub generator type.
+ *
+ * @param {GeneratorTypes} subGenType - The type of sub generator.
+ * @returns {IPrompt[]} The error page for the given sub generator type.
+ */
+export function getSubGenErrorPage(subGenType: GeneratorTypes): IPrompt[] {
+    switch (subGenType) {
+        case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
+            return [{ name: t('yuiNavSteps.addLocalAnnotationFileName'), description: '' }];
+        case GeneratorTypes.CHANGE_DATA_SOURCE:
+            return [{ name: t('yuiNavSteps.replaceODataServiceName'), description: '' }];
+        default:
+            return [];
+    }
+}
+
+/**
+ * Returns the wizard pages for sub-generators that may trigger an ABAP login step.
+ *
+ * Depending on the destination system's authentication requirements, a
+ * credentials page can be shown before the business-specific page.
+ *
+ * @param {GeneratorTypes} type - The sub-generator type requesting pages.
+ * @param {string} destination - ID of the destination system (used only for UI text).
+ * @returns {IPrompt[]} The page definitions consumed by Yeoman-UI <Prompts>.
+ */
+export function getSubGenAuthPages(type: GeneratorTypes, destination: string): IPrompt[] {
+    const getCredentialsPageProps = (nameBase: string): { name: string; description: string } => ({
+        name: `${nameBase} - Credentials`,
+        description: `Enter credentials for your adaptation project's system (${destination})`
+    });
+
+    switch (type) {
+        case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
+            return [
+                getCredentialsPageProps(t('yuiNavSteps.addLocalAnnotationFileName')),
+                {
+                    name: t('yuiNavSteps.addLocalAnnotationFileName'),
+                    description: t('yuiNavSteps.addLocalAnnotationFileDescr')
+                }
+            ];
+        case GeneratorTypes.CHANGE_DATA_SOURCE:
+            return [
+                getCredentialsPageProps(t('yuiNavSteps.replaceODataServiceName')),
+                {
+                    name: t('yuiNavSteps.replaceODataServiceName'),
+                    description: t('yuiNavSteps.replaceODataServiceDescr')
+                }
+            ];
+        default:
+            return [];
     }
 }

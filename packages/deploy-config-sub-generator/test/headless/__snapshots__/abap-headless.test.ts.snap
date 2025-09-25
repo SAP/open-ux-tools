@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test ABAP headless generator should generate ABAP deploy config for an on-prem destination (BAS) 1`] = `
 "{
@@ -21,7 +21,7 @@ exports[`Test ABAP headless generator should generate ABAP deploy config for an 
     "start": "fiori run --open \\"test/flp.html#app-preview\\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
     "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
@@ -85,7 +85,7 @@ exports[`Test ABAP headless generator should generate ABAP deploy config for an 
     "start": "fiori run --open \\"test/flp.html#app-preview\\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
     "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
@@ -150,7 +150,7 @@ exports[`Test ABAP headless generator should generate ABAP deploy config for btp
     "start": "fiori run --open \\"test/flp.html#app-preview\\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
     "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
@@ -214,7 +214,7 @@ exports[`Test ABAP headless generator should generate ABAP deploy config for on-
     "start": "fiori run --open \\"test/flp.html#app-preview\\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
     "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",

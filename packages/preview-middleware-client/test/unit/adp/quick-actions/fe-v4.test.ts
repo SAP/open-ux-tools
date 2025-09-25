@@ -43,7 +43,8 @@ import {
     GRID_TABLE_TYPE,
     SMART_TABLE_TYPE,
     MDC_TABLE_TYPE,
-    TREE_TABLE_TYPE
+    TREE_TABLE_TYPE,
+    M_TABLE_TYPE
 } from '../../../../src/adp/quick-actions/control-types';
 import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
@@ -534,15 +535,14 @@ describe('FE V4 quick actions', () => {
                     { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
 
-                expect(reportTelemetrySpy).toHaveBeenCalledWith(
-                   {
-                        category: 'QuickAction',
-                        quickActionSteps: 2,
-                        actionName: 'add-controller-to-page',
-                        telemetryEventIdentifier,
-                        ui5Version: '1.127.0',
-                        appType: 'fe-v4'
-                    })
+                expect(reportTelemetrySpy).toHaveBeenCalledWith({
+                    category: 'QuickAction',
+                    quickActionSteps: 2,
+                    actionName: 'add-controller-to-page',
+                    telemetryEventIdentifier,
+                    ui5Version: '1.127.0',
+                    appType: 'fe-v4'
+                });
             });
 
             test('initialize and execute action with existing controller change', async () => {
@@ -651,7 +651,8 @@ describe('FE V4 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: false,
-                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
+                                    tooltip:
+                                        'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
@@ -674,9 +675,20 @@ describe('FE V4 quick actions', () => {
         });
 
         describe('change table columns', () => {
-            test('initialize and execute action', async () => {
+            interface TestCase {
+                variantManagement: boolean;
+            }
+            const testCases: TestCase[] = [
+                {
+                    variantManagement: true
+                },
+                {
+                    variantManagement: false
+                }
+            ];
+            test.each(testCases)('initialize and execute action', async (testCase) => {
                 const pageView = new XMLView();
-                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(testCase.variantManagement);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
@@ -769,7 +781,7 @@ describe('FE V4 quick actions', () => {
                         actions.splice(i, 1);
                     }
                 }
-
+                const enabled = testCase.variantManagement;
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -780,7 +792,18 @@ describe('FE V4 quick actions', () => {
                                     id: 'listReport0-change-table-columns',
                                     title: 'Change Table Columns',
                                     enabled: true,
-                                    children: [{ path: '0', children: [], enabled: true, label: `'MyTable' table` }]
+                                    children: [
+                                        {
+                                            path: '0',
+                                            children: [],
+                                            enabled,
+                                            label: `'MyTable' table`,
+                                            ...(!testCase.variantManagement && {
+                                                tooltip:
+                                                    'This action has been disabled because variant management is disabled. Enable variant management and try again.'
+                                            })
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -791,6 +814,10 @@ describe('FE V4 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-change-table-columns', kind: 'nested', path: '0' })
                 );
 
+                if (!testCase.variantManagement) {
+                    expect(execute).not.toHaveBeenCalled();
+                    return;
+                }
                 expect(execute).toHaveBeenCalledWith('Table', 'CTX_SETTINGS0');
             });
         });
@@ -1201,6 +1228,7 @@ describe('FE V4 quick actions', () => {
 
                 mockOverlay.getDesignTimeMetadata.mockReturnValue({
                     getData: jest.fn().mockReturnValue({
+                        manifestSettings: jest.fn().mockReturnValue([]),
                         manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                         manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                             {
@@ -1519,6 +1547,7 @@ describe('FE V4 quick actions', () => {
 
                         mockOverlay.getDesignTimeMetadata.mockReturnValue({
                             getData: jest.fn().mockReturnValue({
+                                manifestSettings: jest.fn().mockReturnValue([]),
                                 manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                 manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                                     {
@@ -1805,6 +1834,12 @@ describe('FE V4 quick actions', () => {
             describe('create table custom column', () => {
                 const testCases = [
                     {
+                        tableType: M_TABLE_TYPE,
+                        dialog: DialogNames.ADD_FRAGMENT,
+                        toString: () => M_TABLE_TYPE,
+                        enable: true
+                    },
+                    {
                         tableType: MDC_TABLE_TYPE,
                         dialog: DialogNames.ADD_FRAGMENT,
                         toString: () => MDC_TABLE_TYPE,
@@ -1912,7 +1947,7 @@ describe('FE V4 quick actions', () => {
                                     return [
                                         {
                                             isA: (type: string) => type === testCase.tableType,
-                                            getAggregation: () => 'items'
+                                            getAggregation: () => []
                                         }
                                     ];
                                 },
@@ -1999,7 +2034,7 @@ describe('FE V4 quick actions', () => {
                                         'enabled': testCase.enable,
                                         tooltip: testCase.enable
                                             ? undefined
-                                            : 'This action has been disabled because the table rows are not available. Please load the table data and try again',
+                                            : 'This action has been disabled because the table rows are not available. Please load the table data and try again.',
                                         'id': 'objectPage0-create-table-custom-column',
                                         'kind': 'nested',
                                         'title': 'Add Custom Table Column'
@@ -2154,6 +2189,7 @@ describe('FE V4 quick actions', () => {
 
                         mockOverlay.getDesignTimeMetadata.mockReturnValue({
                             getData: jest.fn().mockReturnValue({
+                                manifestSettings: jest.fn().mockReturnValue([]),
                                 manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                 manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                                     {
@@ -2427,6 +2463,7 @@ describe('FE V4 quick actions', () => {
 
                             mockOverlay.getDesignTimeMetadata.mockReturnValue({
                                 getData: jest.fn().mockReturnValue({
+                                    manifestSettings: jest.fn().mockReturnValue([]),
                                     manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                     manifestPropertyChange: jest
                                         .fn()
@@ -2499,7 +2536,7 @@ describe('FE V4 quick actions', () => {
                             enabled: true,
                             id: 'objectPage0-add-controller-to-page',
                             kind: 'simple',
-                            title: 'Add Controller to Page',
+                            title: 'Add Controller to Page'
                         },
                         {
                             enabled: true,
@@ -2561,6 +2598,175 @@ describe('FE V4 quick actions', () => {
                             }
                         });
                     }
+                });
+            });
+
+            describe('add custom section', () => {
+                test('initialize and execute action', async () => {
+                    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+                    mockTelemetryEventIdentifier();
+                    const pageView = new XMLView();
+                    FlexUtils.getViewForControl.mockImplementation(() => {
+                        return {
+                            getId: () => 'MyView',
+                            getController: () => {
+                                return {
+                                    getMetadata: () => {
+                                        return {
+                                            getName: () => 'MyController'
+                                        };
+                                    }
+                                };
+                            }
+                        };
+                    });
+
+                    fetchMock.mockResolvedValue({
+                        json: jest
+                            .fn()
+                            .mockReturnValueOnce({
+                                controllerExists: false,
+                                controllerPath: '',
+                                controllerPathFromRoot: '',
+                                isRunningInBAS: false
+                            })
+                            .mockReturnValueOnce({ controllers: [] }),
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const appComponent = new AppComponentMock();
+                    const component = new TemplateComponentMock();
+                    jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                    jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                        return component as unknown as UIComponent;
+                    });
+                    sapCoreMock.byId.mockImplementation((id) => {
+                        if (id == 'ObjectPageLayout') {
+                            pageView.getViewData.mockImplementation(() => ({
+                                stableId: 'appId::BookingObjectPage'
+                            }));
+                            pageView.getLocalId.mockImplementation(() => 'appId::BookingObjectPage');
+                            return {
+                                getId: () => 'ObjectPageLayout',
+                                getDomRef: () => ({}),
+                                getParent: () => pageView,
+                                getShowHeaderContent: () => false,
+                                getSections: jest.fn().mockReturnValue([
+                                    {
+                                        getId: () => 'section1::entity1'
+                                    }
+                                ]),
+                                getHeaderContent: () => {
+                                    return [new FlexBox()];
+                                }
+                            };
+                        }
+                        if (id == 'NavContainer') {
+                            const container = new NavContainer();
+                            const component = new TemplateComponentMock();
+                            pageView.getDomRef.mockImplementation(() => {
+                                return {
+                                    contains: () => true
+                                };
+                            });
+                            pageView.getId.mockReturnValue('test.app::ProductDetails');
+                            pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ObjectPage.ObjectPage');
+                            const componentContainer = new ComponentContainer();
+                            jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                                return 'component-id';
+                            });
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                                if (id === 'component-id') {
+                                    return component as unknown as ComponentMock;
+                                }
+                            });
+                            container.getCurrentPage.mockImplementation(() => {
+                                return componentContainer;
+                            });
+                            component.getRootControl.mockImplementation(() => {
+                                return pageView;
+                            });
+                            return container;
+                        }
+                    });
+
+                    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                    jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(() => {
+                        return {
+                            projectId: 'dummyProjectId'
+                        } as FlexSettings;
+                    });
+                    const registry = new FEV4QuickActionRegistry();
+                    const service = new QuickActionService(
+                        rtaMock,
+                        new OutlineService(rtaMock, mockChangeService),
+                        [registry],
+                        { onStackChange: jest.fn() } as any
+                    );
+                    await service.init(sendActionMock, subscribeMock);
+                    mockTelemetryEventIdentifier();
+                    await service.reloadQuickActions({
+                        'sap.uxap.ObjectPageLayout': [
+                            {
+                                controlId: 'ObjectPageLayout'
+                            } as any
+                        ],
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+
+                    const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+
+                    for (let i = actions.length - 1; i >= 0; i--) {
+                        if (actions[i].title !== 'Add Custom Section') {
+                            actions.splice(i, 1);
+                        }
+                    }
+                    expect(sendActionMock).toHaveBeenCalledWith(
+                        quickActionListChanged([
+                            {
+                                title: 'OBJECT PAGE',
+                                actions: [
+                                    {
+                                        kind: 'simple',
+                                        id: 'objectPage0-op-add-custom-section',
+                                        title: 'Add Custom Section',
+                                        enabled: true,
+                                        tooltip: undefined
+                                    }
+                                ]
+                            }
+                        ])
+                    );
+
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'objectPage0-op-add-custom-section', kind: 'simple' })
+                    );
+
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        'AddCustomFragment',
+                        undefined,
+                        {
+                            propertyPath: 'content/body/sections/',
+                            appDescriptor: {
+                                anchor: 'BookingObjectPage',
+                                appComponent,
+                                projectId: 'dummyProjectId',
+                                appType: 'fe-v4',
+                                pageId: 'BookingObjectPage'
+                            },
+                            title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
+                        },
+                        {
+                            'actionName': 'op-add-custom-section',
+                            telemetryEventIdentifier
+                        }
+                    );
                 });
             });
         });

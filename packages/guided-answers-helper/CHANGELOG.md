@@ -1,5 +1,17 @@
 # @sap-ux/guided-answers-helper
 
+## 0.4.0
+
+### Minor Changes
+
+-   b6ce4a2: Change Guided Answers error icon colour.
+
+## 0.3.1
+
+### Patch Changes
+
+-   485ae8d: Resize the guided answers icon.
+
 ## 0.3.0
 
 ### Minor Changes

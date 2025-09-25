@@ -1,5 +1,288 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.52
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/inquirer-common@0.7.45
+    -   @sap-ux/system-access@0.6.18
+
+## 0.16.51
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.16.50
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/project-input-validator@0.6.21
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.43
+
+## 0.16.49
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/project-input-validator@0.6.20
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.42
+
+## 0.16.48
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/project-input-validator@0.6.19
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.41
+
+## 0.16.47
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.40
+
+## 0.16.46
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/inquirer-common@0.7.39
+-   @sap-ux/system-access@0.6.16
+
+## 0.16.45
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.15
+-   @sap-ux/ui5-config@0.29.3
+-   @sap-ux/inquirer-common@0.7.38
+
+## 0.16.44
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/project-input-validator@0.6.18
+
+## 0.16.43
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.13
+-   @sap-ux/ui5-config@0.29.2
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.16.42
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.16.41
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.16.40
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.16.39
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.16.38
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/system-access@0.6.12
+
+## 0.16.37
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/project-input-validator@0.6.15
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.31
+
+## 0.16.36
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.16.35
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/project-input-validator@0.6.14
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.16.34
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/project-input-validator@0.6.13
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.28
+
+## 0.16.33
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/system-access@0.6.11
+
+## 0.16.32
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.27
+
+## 0.16.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.26
+
+## 0.16.30
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.16.29
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
+## 0.16.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.24
+
+## 0.16.27
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/project-input-validator@0.6.11
+-   @sap-ux/system-access@0.6.10
+-   @sap-ux/inquirer-common@0.7.23
+
+## 0.16.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.16.25
+
+### Patch Changes
+
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.16.24
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/project-input-validator@0.6.9
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.20
+
+## 0.16.23
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/project-input-validator@0.6.8
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.16.22
+
+### Patch Changes
+
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.16.21
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.16.20
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/ui5-config@0.28.2
+-   @sap-ux/inquirer-common@0.7.16
+
 ## 0.16.19
 
 ### Patch Changes

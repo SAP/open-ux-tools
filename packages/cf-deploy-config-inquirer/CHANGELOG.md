@@ -1,5 +1,216 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/inquirer-common@0.7.45
+
+## 0.5.16
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/btp-utils@1.1.2
+
+## 0.5.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.43
+
+## 0.5.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.42
+
+## 0.5.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.41
+
+## 0.5.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.40
+
+## 0.5.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.39
+
+## 0.5.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.38
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/btp-utils@1.1.1
+
+## 0.5.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.5.7
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.31
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.5.0
+
+### Minor Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+
+## 0.4.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.28
+
+## 0.4.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
+## 0.3.30
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.27
+
+## 0.3.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.26
+
+## 0.3.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.3.27
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.24
+
+## 0.3.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.23
+
+## 0.3.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.3.24
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.3.23
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.3.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.3.21
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   b9675bb: Update the MTA ID error message.
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.3.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.3.19
+
+### Patch Changes
+
+-   48af01a: Validate long Windows path in deployment configuration.
+
+## 0.3.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.16
+
 ## 0.3.17
 
 ### Patch Changes

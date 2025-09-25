@@ -133,7 +133,7 @@ export function getViewOrFragmentPathPrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('viewOrFragmentPath.defaultPlaceholder') as string)
         }
     };
 }
@@ -163,7 +163,7 @@ export async function getCAPServicePrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('service.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('service.defaultPlaceholder') as string)
         }
     };
 }
@@ -194,7 +194,7 @@ export function getEntityPrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('entity.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('entity.defaultPlaceholder') as string)
         }
     };
 }
@@ -232,6 +232,7 @@ export function getAggregationPathPrompt(
 ): ListPromptQuestion {
     const { fs, project, appPath } = context;
     const { guiOptions } = properties;
+
     return {
         ...properties,
         type: 'list',
@@ -240,10 +241,12 @@ export function getAggregationPathPrompt(
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
                   if (viewOrFragmentPath) {
-                      const choices = transformChoices(
-                          getXPathStringsForXmlFile(join(appPath, viewOrFragmentPath), fs),
-                          false
+                      const { inputChoices, pageMacroDefinition } = getXPathStringsForXmlFile(
+                          join(appPath, viewOrFragmentPath),
+                          fs
                       );
+                      const key = Object.keys(inputChoices).find((k) => k.endsWith(`/${pageMacroDefinition}`));
+                      const choices = transformChoices(inputChoices, false, key);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
                       }
@@ -255,7 +258,7 @@ export function getAggregationPathPrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('aggregationPath.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('aggregationPath.defaultPlaceholder') as string)
         }
     };
 }
@@ -265,12 +268,23 @@ export function getAggregationPathPrompt(
  *
  * @param obj - object to be converted to choices
  * @param sort - apply alphabetical sort(default is "true")
+ * @param defaultKey - default key to be checked in choices
  * @returns the list of choices.
  */
-export function transformChoices(obj: Record<string, string> | string[], sort = true): PromptListChoices {
+export function transformChoices(
+    obj: Record<string, string> | string[],
+    sort = true,
+    defaultKey?: string
+): PromptListChoices {
     let choices: PromptListChoices = [];
     if (!Array.isArray(obj)) {
-        choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+        choices = Object.entries(obj).map(([key, value]) => {
+            // Add checked if value matches defaultKey example: `/mvc:View/macro:Page/`
+            if (key === defaultKey) {
+                return { name: key, value, checked: true };
+            }
+            return { name: key, value };
+        });
         if (sort) {
             choices = (choices as { name: string; value: string }[]).sort((a, b) => a.name.localeCompare(b.name));
         }
@@ -300,7 +314,7 @@ export function getFilterBarIdPrompt(
         name: 'buildingBlockData.filterBar',
         guiOptions: {
             ...guiOptions,
-            placeholder: guiOptions?.placeholder ?? t('filterBar.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('filterBar.defaultPlaceholder') as string)
         }
     };
     if (properties.type === 'input') {
@@ -337,8 +351,8 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
         choices: [
-            { name: t('bindingContextType.option.relative'), value: 'relative' },
-            { name: t('bindingContextType.option.absolute'), value: 'absolute' }
+            { name: t('bindingContextType.option.relative') as string, value: 'relative' },
+            { name: t('bindingContextType.option.absolute') as string, value: 'absolute' }
         ],
         guiOptions: {
             ...guiOptions,
@@ -375,13 +389,13 @@ export function getBuildingBlockIdPrompt(
             } else {
                 return answers?.viewOrFragmentPath &&
                     !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
-                    ? t('id.existingIdValidation')
+                    ? (t('id.existingIdValidation') as string)
                     : true;
             }
         },
         guiOptions: {
             ...guiOptions,
-            placeholder: guiOptions?.placeholder ?? t('id.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('id.defaultPlaceholder') as string)
         }
     };
 }

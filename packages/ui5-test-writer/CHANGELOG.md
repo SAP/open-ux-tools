@@ -1,5 +1,154 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.1
+-   @sap-ux/ui5-application-writer@1.5.16
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/ui5-application-writer@1.5.15
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/ui5-application-writer@1.5.15
+
+## 0.7.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/ui5-application-writer@1.5.15
+
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.13
+-   @sap-ux/ui5-application-writer@1.5.14
+
+## 0.7.21
+
+### Patch Changes
+
+-   1fff3c0: use self contained journeys for OPA tests
+
+## 0.7.20
+
+### Patch Changes
+
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/ui5-application-writer@1.5.13
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-application-writer@1.5.12
+    -   @sap-ux/project-access@1.30.12
+
+## 0.7.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/ui5-application-writer@1.5.11
+
+## 0.7.17
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+
+## 0.7.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/ui5-application-writer@1.5.11
+
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/ui5-application-writer@1.5.10
+
+## 0.7.14
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/ui5-application-writer@1.5.10
+
+## 0.7.13
+
+### Patch Changes
+
+-   2809593: update test snapshots to reflect latest template and linting changes
+-   Updated dependencies [2809593]
+    -   @sap-ux/ui5-application-writer@1.5.9
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/ui5-application-writer@1.5.8
+
+## 0.7.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/ui5-application-writer@1.5.8
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-application-writer@1.5.7
+    -   @sap-ux/project-access@1.30.6
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/ui5-application-writer@1.5.6
+
+## 0.7.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/ui5-application-writer@1.5.6
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-application-writer@1.5.5
+
 ## 0.7.6
 
 ### Patch Changes

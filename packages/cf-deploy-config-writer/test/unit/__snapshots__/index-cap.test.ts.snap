@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CF Writer CAP Validate generation of CAP mta configurations managed 1`] = `
 "_schema-version: 3.3.0
@@ -367,23 +367,14 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`
 exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`] = `
 "{
     \\"name\\": \\"app-router\\",
-    \\"private\\": true,
     \\"description\\": \\"App router\\",
-    \\"engines\\": {
-        \\"node\\": \\">= 16.0.0\\"
-    },
     \\"scripts\\": {
-        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\",
-        \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
+        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^19\\"
-    },
-    \\"devDependencies\\": {
-        \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"
+        \\"@sap/approuter\\": \\"^20.0.0\\"
     }
-}
-"
+}"
 `;
 
 exports[`CF Writer CAP Validate generation of CAP mta configurations standard 4`] = `

@@ -108,12 +108,16 @@ export async function writeBASMetadata(
  */
 export function getRelativeUrlFromContent(content: string): string {
     const contentJson = JSON.parse(content);
-    let serviceNamespace = SAP_NAMESPACE;
-    if (contentJson.general?.namespace?.startsWith('/')) {
-        // set namespace to value from suggested content, removing leading and trailing slashes
-        serviceNamespace = contentJson.general.namespace.replace(/^\/|\/$/g, '');
+    let serviceBinding = contentJson?.businessService?.serviceBinding?.serviceBindingName?.replace(/^\/|\/$/g, '');
+    let serviceDefinitionName = contentJson?.businessService?.serviceDefinition?.serviceDefinitionName?.replace(
+        /^\/|\/$/g,
+        ''
+    );
+    if (!contentJson.general?.namespace?.startsWith('/')) {
+        serviceBinding = `${SAP_NAMESPACE}/${serviceBinding}`;
+        serviceDefinitionName = `${SAP_NAMESPACE}/${serviceDefinitionName}`;
     }
-    return `/sap/opu/odata4/${serviceNamespace}/${contentJson.businessService.serviceBinding.serviceBindingName}/srvd/${serviceNamespace}/${contentJson.businessService.serviceDefinition.serviceDefinitionName}/0001/`;
+    return `/sap/opu/odata4/${serviceBinding}/srvd/${serviceDefinitionName}/0001/`;
 }
 
 /**

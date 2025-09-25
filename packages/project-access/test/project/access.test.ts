@@ -107,7 +107,7 @@ describe('Test function createApplicationAccess()', () => {
         ]);
 
         // Result check
-        expect(createAnnotationI18nEntriesMock).toBeCalledWith(
+        expect(createAnnotationI18nEntriesMock).toHaveBeenCalledWith(
             appRoot,
             join(appRoot, 'webapp/manifest.json'),
             appAccess.project.apps[''].i18n,
@@ -120,7 +120,7 @@ describe('Test function createApplicationAccess()', () => {
             ],
             undefined
         );
-        expect(createUI5I18nEntriesMock).toBeCalledWith(
+        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
             appRoot,
             appAccess.project.apps[''].manifest,
             appAccess.project.apps[''].i18n,
@@ -128,7 +128,7 @@ describe('Test function createApplicationAccess()', () => {
             'modelKey',
             undefined
         );
-        expect(createManifestI18nEntriesMock).toBeCalledWith(
+        expect(createManifestI18nEntriesMock).toHaveBeenCalledWith(
             appRoot,
             appAccess.app.i18n,
             [
@@ -163,7 +163,7 @@ describe('Test function createApplicationAccess()', () => {
         ]);
 
         // Result check
-        expect(createAnnotationI18nEntriesMock).toBeCalledWith(
+        expect(createAnnotationI18nEntriesMock).toHaveBeenCalledWith(
             appRoot,
             join(appRoot, 'webapp/manifest.json'),
             appAccess.project.apps[''].i18n,
@@ -176,7 +176,7 @@ describe('Test function createApplicationAccess()', () => {
             ],
             memFs
         );
-        expect(createUI5I18nEntriesMock).toBeCalledWith(
+        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
             appRoot,
             appAccess.project.apps[''].manifest,
             appAccess.project.apps[''].i18n,
@@ -184,7 +184,7 @@ describe('Test function createApplicationAccess()', () => {
             'modelKey',
             memFs
         );
-        expect(createManifestI18nEntriesMock).toBeCalledWith(
+        expect(createManifestI18nEntriesMock).toHaveBeenCalledWith(
             appRoot,
             appAccess.app.i18n,
             [
@@ -208,8 +208,8 @@ describe('Test function createApplicationAccess()', () => {
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }]);
 
         // Result check
-        expect(createCapI18nEntriesMock).toBeCalledWith(projectRoot, 'filePath', [], undefined);
-        expect(createUI5I18nEntriesMock).toBeCalledWith(
+        expect(createCapI18nEntriesMock).toHaveBeenCalledWith(projectRoot, 'filePath', [], undefined);
+        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
             projectRoot,
             appAccess.app.manifest,
             appAccess.app.i18n,
@@ -231,8 +231,8 @@ describe('Test function createApplicationAccess()', () => {
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'i18n');
 
         // Result check
-        expect(createCapI18nEntriesMock).toBeCalledWith(projectRoot, 'filePath', [], memFs);
-        expect(createUI5I18nEntriesMock).toBeCalledWith(
+        expect(createCapI18nEntriesMock).toHaveBeenCalledWith(projectRoot, 'filePath', [], memFs);
+        expect(createUI5I18nEntriesMock).toHaveBeenCalledWith(
             projectRoot,
             appAccess.app.manifest,
             appAccess.app.i18n,
@@ -252,7 +252,7 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updatePackageJSON(updateFileContent);
         // Result check
-        expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "sapux": false\n}\n', { encoding: 'utf8' });
+        expect(writeFileSpy).toHaveBeenCalledWith(pckgPath, '{\n    "sapux": false\n}\n', { encoding: 'utf8' });
     });
 
     test('Update package.json of standalone app - mem-fs-editor (mocked)', async () => {
@@ -280,7 +280,7 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updatePackageJSON(updateFileContent);
         // Result check
-        expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "name": "two"\n}\n', { encoding: 'utf8' });
+        expect(writeFileSpy).toHaveBeenCalledWith(pckgPath, '{\n    "name": "two"\n}\n', { encoding: 'utf8' });
     });
 
     test('Update package.json of app in CAP project - mem-fs-editor (mocked)', async () => {
@@ -323,7 +323,7 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updateManifestJSON(updateFileContent);
         // Result check
-        expect(writeFileSpy).toBeCalledWith(manifestPath, '{\n    "sap.app": {}\n}\n', { encoding: 'utf8' });
+        expect(writeFileSpy).toHaveBeenCalledWith(manifestPath, '{\n    "sap.app": {}\n}\n', { encoding: 'utf8' });
     });
 
     test('Update manifest.json of standalone app - mem-fs-editor (mocked)', async () => {

@@ -1,5 +1,220 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.4.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.45
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.4.46
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.21
+-   @sap-ux/inquirer-common@0.7.43
+
+## 0.4.45
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.20
+-   @sap-ux/inquirer-common@0.7.42
+
+## 0.4.44
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.19
+-   @sap-ux/inquirer-common@0.7.41
+
+## 0.4.43
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.40
+
+## 0.4.42
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.39
+
+## 0.4.41
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.38
+
+## 0.4.40
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/ui5-info@0.12.2
+    -   @sap-ux/project-input-validator@0.6.18
+
+## 0.4.39
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.4.38
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.4.37
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.4.36
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.4.35
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.4.34
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.15
+-   @sap-ux/inquirer-common@0.7.31
+
+## 0.4.33
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.4.32
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.14
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.4.31
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.13
+-   @sap-ux/inquirer-common@0.7.28
+
+## 0.4.30
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.27
+
+## 0.4.29
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+    -   @sap-ux/inquirer-common@0.7.26
+
+## 0.4.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.4.27
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
+## 0.4.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.24
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.11
+-   @sap-ux/inquirer-common@0.7.23
+
+## 0.4.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.4.23
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.4.22
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.4.21
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.8
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.4.20
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.4.19
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.6
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.4.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.16
+
 ## 0.4.17
 
 ### Patch Changes

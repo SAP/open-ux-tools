@@ -12,7 +12,8 @@ describe('System migration data provider', () => {
         read: jest.fn(),
         del: jest.fn(),
         getAll: jest.fn(),
-        readAll: jest.fn()
+        readAll: jest.fn(),
+        partialUpdate: jest.fn()
     };
     beforeEach(() => {
         mockGetFilesystemStore.mockReturnValue(mockFsStore);
@@ -30,7 +31,7 @@ describe('System migration data provider', () => {
         await expect(new SystemMigrationStatusDataProvider(logger).read(new SystemMigrationStatusKey())).resolves.toBe(
             migrationStatus
         );
-        expect(mockFsStore.read).toBeCalledWith({
+        expect(mockFsStore.read).toHaveBeenCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId()
         });
@@ -47,7 +48,7 @@ describe('System migration data provider', () => {
         await expect(
             new SystemMigrationStatusDataProvider(logger).write(new SystemMigrationStatus(migrationStatus))
         ).resolves.toBe(migrationStatus);
-        expect(mockFsStore.write).toBeCalledWith({
+        expect(mockFsStore.write).toHaveBeenCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId(),
             entity: new SystemMigrationStatus(migrationStatus)
@@ -65,7 +66,7 @@ describe('System migration data provider', () => {
         await expect(
             new SystemMigrationStatusDataProvider(logger).delete(new SystemMigrationStatus(migrationStatus))
         ).resolves.toBe(true);
-        expect(mockFsStore.del).toBeCalledWith({
+        expect(mockFsStore.del).toHaveBeenCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId()
         });
@@ -82,7 +83,7 @@ describe('System migration data provider', () => {
         await expect(new SystemMigrationStatusDataProvider(logger).getAll()).resolves.toEqual([
             new SystemMigrationStatus(migrationStatus)
         ]);
-        expect(mockFsStore.getAll).toBeCalledWith({
+        expect(mockFsStore.getAll).toHaveBeenCalledWith({
             entityName: Entities.SystemMigrationStatus
         });
     });

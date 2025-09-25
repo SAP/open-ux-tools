@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-03-get-started-load-only-what-you-really-need-e8fca3e-md",
+  "title": "Load Only What You Really Need",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/load-only-what-you-really-need-e8fca3e.md",
+  "lastModified": "2025-09-01T18:17:10.444Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Load",
+    "Only",
+    "What",
+    "You",
+    "Really",
+    "Need"
+  ],
+  "headers": [
+    "Load Only What You Really Need",
+    "Keep Your Library Dependencies Up To Date",
+    "Declare Local Dependencies",
+    "Use Lazy Loading"
+  ],
+  "content": "<!-- loioe8fca3e4c68a4f289660299d806ba99e -->\n\n# Load Only What You Really Need\n\nThe amount of resources and data that your app loads will directly affect the performance of your app. You should declare all dependencies and remove unused libraries and classes from your code.\n\n\n\n<a name=\"loioe8fca3e4c68a4f289660299d806ba99e__section_dvs_cvy_yfb\"/>\n\n## Keep Your Library Dependencies Up To Date\n\nAlways define the libraries you use in the manifest and remove all libraries that you do not intend to use in your code. If you have no manifest, you have to specify the used libraries in the SAPUI5 bootstrap. If you specify the used libraries in either place, they are loaded optimized. This means that all used controls, styles, etc. are not requested separately. For every mentioned library, the library preload file, the library styles, and the text translations are loaded once during the application startup. No further requests are necessary while using the application, because all needed artefacts are already included in the respective library preload file.\n\n```json\n\"sap.ui5\": {\n\t\"dependencies\": {\n\t\t\"minUI5Version\": \"1.60.0\",\n\t\t\"libs\": {\n\t\t\t\"sap.ui.core\": {},\n\t\t\t\"sap.m\": {},\n\t\t\t\"sap.ui.layout\": {}\n\t\t}\n\t}\n\t...\n}\n```\n\n-   Learn how: Walkthrough Tutorial [Step 10: Descriptor for Applications](step-10-descriptor-for-applications-8f93bf2.md)\n-   Find out more: [Manifest \\(Descriptor for Applications, Components, and Libraries\\)](../04_Essentials/manifest-descriptor-for-applications-components-and-libraries-be0cf40.md)\n\n\n\n<a name=\"loioe8fca3e4c68a4f289660299d806ba99e__section_pxb_zvy_yfb\"/>\n\n## Declare Local Dependencies\n\nIn the JavaScript files of your app, define all dependencies to SAPUI5 framework classes and app resources via `sap.ui.define`. If you have unused dependencies, you should remove them right away.\n\nThe UI5 Tooling can then create a \"cleaned-up\" version of your app that only contains the resources you really need. The so-called application preload will greatly speed up the initial load time of your app.\n\n```json\nsap.ui.define([\n\t\"sap/ui/core/mvc/Controller\",\n\t\"sap/m/MessageToast\",\n\t\"sap/base/Log\"\n], function (Controller, MessageToast, Log) {\n\t...\n```\n\n-   Learn how: Walkthrough Tutorial [Step 10: Descriptor for Applications](step-10-descriptor-for-applications-8f93bf2.md)\n-   Find out more:\n    -   [Modules and Dependencies](../04_Essentials/modules-and-dependencies-91f23a7.md)\n    -   [https://help.sap.com/viewer/825270ffffe74d9f988a0f0066ad59f0/Cloud/en-US/dfb26ef028624cf486a8bbb0bfd459ff.html](https://help.sap.com/viewer/825270ffffe74d9f988a0f0066ad59f0/Cloud/en-US/dfb26ef028624cf486a8bbb0bfd459ff.html)\n    -   [UI5 Tooling](https://sap.github.io/ui5-tooling/)\n\n\n\n\n<a name=\"loioe8fca3e4c68a4f289660299d806ba99e__section_s3g_5yy_yfb\"/>\n\n## Use Lazy Loading\n\nUse controls like `sap.m.List` or UI patterns that support displaying data selectively or with pagination. Make sure that your backend service is designed to deliver small chunks of data as well.\n\n```\n<List\n\tgrowing=\"true\"\n\tgrowingThreshold=\"20\"\n\t...>\n```\n\n-   Learn how: Testing Tutorial [Step 7: Changing the Table to a Growing Table](step-7-changing-the-table-to-a-growing-table-016e0d4.md)\n\n-   Find out more: [Growing Feature for Table and List](../10_More_About_Controls/growing-feature-for-table-and-list-9164ba7.md)\n\n\n",
+  "excerpt": "<!-- loioe8fca3e4c68a4f289660299d806ba99e --> Load Only What You Really Need The amount of resources and data that your app loads will directly affect the performance of your app. You should declare a...",
+  "wordCount": 376,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

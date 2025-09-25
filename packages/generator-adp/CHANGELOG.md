@@ -1,5 +1,539 @@
 # @sap-ux/generator-adp
 
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/inquirer-common@0.7.45
+    -   @sap-ux/system-access@0.6.18
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/adp-tooling@0.15.30
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/odata-service-writer@0.27.22
+    -   @sap-ux/project-access@1.32.1
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/adp-tooling@0.15.29
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/fiori-generator-shared@0.13.16
+    -   @sap-ux/odata-service-writer@0.27.21
+    -   @sap-ux/project-input-validator@0.6.21
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.43
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/adp-tooling@0.15.28
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/fiori-generator-shared@0.13.15
+    -   @sap-ux/odata-service-writer@0.27.20
+    -   @sap-ux/project-input-validator@0.6.20
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.42
+
+## 0.4.0
+
+### Minor Changes
+
+-   e36b965: fix(adp-generator): In case the base app inbounds api call fails for the selected application we display the error next to the application prompt.
+
+## 0.3.78
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.27
+-   @sap-ux/odata-service-writer@0.27.19
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.14
+-   @sap-ux/project-input-validator@0.6.19
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.41
+
+## 0.3.77
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/inquirer-common@0.7.40
+    -   @sap-ux/adp-tooling@0.15.26
+
+## 0.3.76
+
+### Patch Changes
+
+-   66cc543: fix: Extensibility generator cannot be resolved in the bundled ADP generator
+
+## 0.3.75
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/adp-tooling@0.15.25
+
+## 0.3.74
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/inquirer-common@0.7.39
+    -   @sap-ux/adp-tooling@0.15.24
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/system-access@0.6.16
+
+## 0.3.73
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/adp-tooling@0.15.23
+    -   @sap-ux/system-access@0.6.15
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/inquirer-common@0.7.38
+
+## 0.3.72
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/adp-tooling@0.15.22
+    -   @sap-ux/fiori-generator-shared@0.13.11
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/odata-service-writer@0.27.18
+    -   @sap-ux/project-access@1.30.13
+    -   @sap-ux/project-input-validator@0.6.18
+
+## 0.3.71
+
+### Patch Changes
+
+-   384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
+-   Updated dependencies [384bb40]
+    -   @sap-ux/adp-tooling@0.15.21
+
+## 0.3.70
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/adp-tooling@0.15.20
+    -   @sap-ux/system-access@0.6.13
+    -   @sap-ux/fiori-generator-shared@0.13.10
+    -   @sap-ux/inquirer-common@0.7.36
+
+## 0.3.69
+
+### Patch Changes
+
+-   49ee46c: fix: ADP Generator shows project type even if request for system info is failing
+
+## 0.3.68
+
+### Patch Changes
+
+-   73ef87a: fix: ADP Generator shows misleading additional message when system requires auth
+
+## 0.3.67
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
+## 0.3.66
+
+### Patch Changes
+
+-   Updated dependencies [9f84298]
+    -   @sap-ux/adp-tooling@0.15.18
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.64
+
+## 0.3.65
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/adp-tooling@0.15.17
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.63
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.3.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.16
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/adp-flp-config-sub-generator@0.1.62
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.3.63
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+-   @sap-ux/adp-flp-config-sub-generator@0.1.61
+-   @sap-ux/adp-tooling@0.15.15
+
+## 0.3.62
+
+### Patch Changes
+
+-   f5f6a31: fix: Pass the same prompt options when running deployment generator as a step or standalone
+
+## 0.3.61
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.7
+-   @sap-ux/inquirer-common@0.7.32
+-   @sap-ux/adp-flp-config-sub-generator@0.1.60
+-   @sap-ux/adp-tooling@0.15.14
+
+## 0.3.60
+
+### Patch Changes
+
+-   Updated dependencies [98fbd93]
+    -   @sap-ux/adp-tooling@0.15.13
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.59
+
+## 0.3.59
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.58
+    -   @sap-ux/adp-tooling@0.15.12
+    -   @sap-ux/fiori-generator-shared@0.13.6
+    -   @sap-ux/system-access@0.6.12
+
+## 0.3.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.11
+-   @sap-ux/odata-service-writer@0.27.15
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/adp-flp-config-sub-generator@0.1.57
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.6
+-   @sap-ux/project-input-validator@0.6.15
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.31
+
+## 0.3.57
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.56
+    -   @sap-ux/adp-tooling@0.15.10
+
+## 0.3.56
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.9
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/adp-flp-config-sub-generator@0.1.55
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/odata-service-writer@0.27.14
+-   @sap-ux/project-input-validator@0.6.14
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.3.55
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.54
+    -   @sap-ux/adp-tooling@0.15.8
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/odata-service-writer@0.27.13
+    -   @sap-ux/project-input-validator@0.6.13
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.28
+
+## 0.3.54
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.53
+    -   @sap-ux/adp-tooling@0.15.7
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/system-access@0.6.11
+
+## 0.3.53
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.52
+
+## 0.3.52
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.51
+
+## 0.3.51
+
+### Patch Changes
+
+-   @sap-ux/adp-flp-config-sub-generator@0.1.50
+
+## 0.3.50
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.49
+    -   @sap-ux/inquirer-common@0.7.27
+    -   @sap-ux/adp-tooling@0.15.4
+
+## 0.3.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.3
+-   @sap-ux/inquirer-common@0.7.26
+-   @sap-ux/adp-flp-config-sub-generator@0.1.48
+
+## 0.3.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.2
+-   @sap-ux/adp-flp-config-sub-generator@0.1.47
+
+## 0.3.47
+
+### Patch Changes
+
+-   52ac1b0: feat: Add ADP manifest change wizard sub-generators
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.46
+
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [e53c1f8]
+    -   @sap-ux/adp-tooling@0.15.0
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.45
+
+## 0.3.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+-   @sap-ux/adp-flp-config-sub-generator@0.1.44
+-   @sap-ux/adp-tooling@0.14.44
+
+## 0.3.44
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+    -   @sap-ux/adp-tooling@0.14.43
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.43
+
+## 0.3.43
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.42
+    -   @sap-ux/inquirer-common@0.7.24
+    -   @sap-ux/adp-tooling@0.14.42
+
+## 0.3.42
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.41
+    -   @sap-ux/adp-tooling@0.14.41
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.13.1
+    -   @sap-ux/project-input-validator@0.6.11
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/inquirer-common@0.7.23
+
+## 0.3.41
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.40
+    -   @sap-ux/inquirer-common@0.7.22
+    -   @sap-ux/adp-tooling@0.14.40
+
+## 0.3.40
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.39
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/adp-tooling@0.14.39
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/system-access@0.6.10
+
+## 0.3.39
+
+### Patch Changes
+
+-   e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
+-   Updated dependencies [e9beeb4]
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.38
+    -   @sap-ux/adp-tooling@0.14.38
+
+## 0.3.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.37
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/adp-flp-config-sub-generator@0.1.37
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/fiori-generator-shared@0.12.15
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.3.37
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.36
+    -   @sap-ux/adp-tooling@0.14.36
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.12.14
+    -   @sap-ux/project-input-validator@0.6.8
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.19
+
+## 0.3.36
+
+### Patch Changes
+
+-   e10af5d: feat(generator-adp): Various improvements for ADP generator
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.35
+
+## 0.3.34
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.34
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/inquirer-common@0.7.18
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.33
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.12.12
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.3.32
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/store@1.1.1
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.32
+    -   @sap-ux/adp-tooling@0.14.32
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/fiori-generator-shared@0.12.11
+    -   @sap-ux/inquirer-common@0.7.16
+
 ## 0.3.31
 
 ### Patch Changes

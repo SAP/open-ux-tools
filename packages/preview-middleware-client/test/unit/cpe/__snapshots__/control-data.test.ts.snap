@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`controlData buildControlData - disabled properties for noStableId 1`] = `
 Object {
@@ -161,6 +161,22 @@ Object {
       "type": "string",
       "ui5Type": undefined,
       "value": "USA table",
+    },
+    Object {
+      "documentation": Object {
+        "defaultValue": "false",
+        "description": "Show Counts",
+        "propertyName": "showCounts",
+        "type": "boolean",
+      },
+      "editor": "checkbox",
+      "isEnabled": true,
+      "name": "showCounts",
+      "propertyType": "configuration",
+      "readableName": "Show Counts",
+      "type": "boolean",
+      "ui5Type": undefined,
+      "value": true,
     },
     Object {
       "documentation": Object {

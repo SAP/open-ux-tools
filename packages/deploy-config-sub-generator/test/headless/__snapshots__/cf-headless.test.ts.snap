@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 1`] = `
 "_schema-version: '3.1'
@@ -121,7 +121,7 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-              - Name: cappapp-srv-api
+              - Name: srv-api
                 Type: HTTP
                 URL: ~{srv-api/srv-url}
                 ProxyType: Internet
@@ -384,7 +384,7 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-              - Name: cappapp-srv-api
+              - Name: srv-api
                 Type: HTTP
                 URL: ~{srv-api/srv-url}
                 ProxyType: Internet
@@ -518,7 +518,7 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
     {
       "source": "^/catalog/(.*)$",
       "target": "/catalog/$1",
-      "destination": "cappapp-srv-api",
+      "destination": "srv-api",
       "authenticationType": "xsuaa",
       "csrfProtection": false
     },
@@ -1174,7 +1174,7 @@ resources:
                 URL: https://ui5.sap.com
                 ProxyType: Internet
                 Authentication: NoAuthentication
-              - Name: cappapp-srv-api
+              - Name: srv-api
                 Type: HTTP
                 URL: ~{srv-api/srv-url}
                 ProxyType: Internet

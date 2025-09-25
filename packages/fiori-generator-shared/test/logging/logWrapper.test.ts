@@ -39,7 +39,7 @@ describe('Test logWrapper', () => {
 
         LogWrapper['_yoLogger'] = undefined as any;
         LogWrapper['logAtLevel']('info', 'Info message');
-        expect(consoleErrorSpy).toHaveBeenCalledWith('LogWrapper is not initialised');
+        expect(consoleErrorSpy).toHaveBeenCalledWith('`LogWrapper` is not initialised.');
 
         console.log = jest.fn();
         //@ts-expect-error - private member access
@@ -98,7 +98,7 @@ describe('Test logWrapper', () => {
         } as unknown as IVSCodeExtLogger;
 
         new LogWrapper('ExtensionLogger', {} as YoLogger, 'info', mockExtensionLogger);
-        expect(mockLogger.debug).toHaveBeenCalledWith('Logging has been configured at log level: info');
+        expect(mockLogger.debug).toHaveBeenCalledWith('Logging has been configured at log level: info.');
     });
 
     test('should be compatible with `@sap-ux/logger`', () => {

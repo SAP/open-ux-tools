@@ -8,7 +8,8 @@ import {
     getInboundsFromManifest,
     getVariant,
     getBaseAppInbounds,
-    type InternalInboundNavigation
+    type InternalInboundNavigation,
+    type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
@@ -30,6 +31,8 @@ import { validateBasePath } from '../../validation';
 import { filterLabelTypeQuestions } from '../../common/prompts';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 
+type Variant = { isAdp: true; content: DescriptorVariant } | { isAdp: false; content: undefined };
+
 /**
  * Add the "add inbound-navigation" command to a passed command.
  *
@@ -37,6 +40,7 @@ import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
  */
 export function addInboundNavigationConfigCommand(cmd: Command): void {
     cmd.command('inbound-navigation [path]')
+        .description('Add Fiori Launchpad inbound navigation configuration to a project.')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', FileName.Ui5Yaml)
@@ -67,7 +71,15 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 
         const fs = create(createStorage());
 
-        const inbounds = await getInbounds(basePath, yamlPath, isAdp, fs, logger);
+        let variant: Variant;
+
+        if (!isAdp) {
+            variant = { isAdp: false, content: undefined };
+        } else {
+            variant = { isAdp: true, content: await getVariant(basePath, fs) };
+        }
+
+        const inbounds = await getInbounds(basePath, yamlPath, fs, logger, variant);
         let tileSettingsAnswers: TileSettingsAnswers | undefined;
         if (inbounds && isAdp) {
             tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(), false);
@@ -80,8 +92,8 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
             return;
         }
 
-        if (isAdp) {
-            const config = getAdpFlpInboundsWriterConfig(answers, tileSettingsAnswers);
+        if (variant.isAdp) {
+            const config = getAdpFlpInboundsWriterConfig(answers, variant.content.layer, tileSettingsAnswers);
             await generateInboundConfig(basePath, config as InternalInboundNavigation, fs);
         } else {
             await generateInboundNavigationConfig(basePath, answers, true, fs);
@@ -103,23 +115,22 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
  *
  * @param {string} basePath - The base path to the project.
  * @param {string} yamlPath - The path to the project configuration file in YAML format.
- * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
+ * @param {DescriptorVariant} [variant] - The descriptor variant, if applicable.
  * @returns {Promise<ManifestNamespace.Inbound | undefined>} The inbounds from the manifest or mapped from the system.
  */
 async function getInbounds(
     basePath: string,
     yamlPath: string,
-    isAdp: boolean,
     fs: Editor,
-    logger: ToolsLogger
+    logger: ToolsLogger,
+    variant: Variant
 ): Promise<ManifestNamespace.Inbound | undefined> {
-    if (isAdp) {
-        const appId = (await getVariant(basePath)).reference;
+    if (variant.isAdp) {
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-        return getBaseAppInbounds(appId, provider);
+        return getBaseAppInbounds(variant.content.reference as string, provider);
     }
 
     const manifest = await retrieveManifest(basePath, fs);

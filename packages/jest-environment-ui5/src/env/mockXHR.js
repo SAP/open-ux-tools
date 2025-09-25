@@ -15,8 +15,8 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, X
 
     /**
      * Handles the real XHR send.
-     * @param mockXHR The mock XHR object.
-     * @param data The data to send.
+     * @param {object} mockXHR The mock XHR object.
+     * @param {object} data The data to send.
      */
     function handleRealXHRSend(mockXHR, data) {
         realXhr.addEventListener('load', function () {

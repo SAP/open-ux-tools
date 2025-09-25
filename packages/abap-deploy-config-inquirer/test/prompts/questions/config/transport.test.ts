@@ -25,7 +25,7 @@ describe('getTransportRequestPrompts', () => {
                 "guiOptions": Object {
                   "applyDefaultWhenDirty": true,
                 },
-                "message": "How do you want to enter the transport request?",
+                "message": "Select How You Want to Enter the Transport Request",
                 "name": "transportInputChoice",
                 "type": "list",
                 "validate": [Function],
@@ -38,7 +38,7 @@ describe('getTransportRequestPrompts', () => {
               },
               Object {
                 "default": [Function],
-                "message": "Created new Transport Request",
+                "message": "Created New Transport Request",
                 "name": "transportCreated",
                 "type": "input",
                 "when": [Function],
@@ -48,7 +48,7 @@ describe('getTransportRequestPrompts', () => {
                 "default": [Function],
                 "guiOptions": Object {
                   "breadcrumb": "Transport Request",
-                  "hint": "Provide a transport request for your application",
+                  "hint": "Provide a transport request for your application.",
                 },
                 "message": "Transport Request",
                 "name": "transportFromList",
@@ -60,7 +60,7 @@ describe('getTransportRequestPrompts', () => {
                 "filter": [Function],
                 "guiOptions": Object {
                   "breadcrumb": "Transport Request",
-                  "hint": "Provide a transport request for your application",
+                  "hint": "Provide a transport request for your application.",
                 },
                 "message": [Function],
                 "name": "transportManual",
@@ -87,19 +87,19 @@ describe('getTransportRequestPrompts', () => {
             expect(((transportInputChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
                   Object {
-                    "name": "Enter manually",
+                    "name": "Enter Manually",
                     "value": "EnterManualChoice",
                   },
                   Object {
-                    "name": "Choose from existing",
+                    "name": "Choose from Existing",
                     "value": "ListExistingChoice",
                   },
                   Object {
-                    "name": "Create during deployment",
+                    "name": "Create During Deployment",
                     "value": "CreateDuringDeployChoice",
                   },
                   Object {
-                    "name": "Create new",
+                    "name": "Create New",
                     "value": "CreateNewChoice",
                   },
                 ]
@@ -125,21 +125,21 @@ describe('getTransportRequestPrompts', () => {
             expect((transportInputChoicePrompt.when as Function)()).toBe(true);
             expect(transportInputChoicePrompt.message).toBe(t('prompts.config.transport.transportInputChoice.message'));
             expect(((transportInputChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
-              Array [
-                Object {
-                  "name": "Enter manually",
-                  "value": "EnterManualChoice",
-                },
-                Object {
-                  "name": "Choose from existing",
-                  "value": "ListExistingChoice",
-                },
-                Object {
-                  "name": "Create new",
-                  "value": "CreateNewChoice",
-                },
-              ]
-          `);
+                Array [
+                  Object {
+                    "name": "Enter Manually",
+                    "value": "EnterManualChoice",
+                  },
+                  Object {
+                    "name": "Choose from Existing",
+                    "value": "ListExistingChoice",
+                  },
+                  Object {
+                    "name": "Create New",
+                    "value": "CreateNewChoice",
+                  },
+                ]
+            `);
 
             expect((transportInputChoicePrompt.default as Function)({})).toBe(TransportChoices.EnterManualChoice);
             expect(await (transportInputChoicePrompt.validate as Function)()).toBe(true);

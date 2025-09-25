@@ -1,29 +1,29 @@
 import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
-    controlSelected,
-    propertyChanged,
-    selectControl,
-    reportTelemetry,
-    Properties,
     changeProperty,
-    PropertyType
+    controlSelected,
+    Properties,
+    propertyChanged,
+    PropertyType,
+    reportTelemetry,
+    selectControl
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
-import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
+import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 
-import type Event from 'sap/ui/base/Event';
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
-import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
-import { getDocumentation } from './documentation';
+import type Event from 'sap/ui/base/Event';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
+import { getDocumentation } from './documentation';
 
 export interface PropertyChangeParams {
     name: string;
@@ -216,7 +216,8 @@ export class SelectionService implements Service {
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
-                        Log.error('Failed to report telemetry', getError(error));
+                        const extendedError = getError(error);
+                        Log.error('Failed to report telemetry', extendedError);
                     } finally {
                         await this.buildProperties(runtimeControl, sendAction, overlayControl);
                         eventOrigin.delete('outline');

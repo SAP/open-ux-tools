@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-05-developing-apps-updating-the-abap-sapui5-patch-version-77d3476-md",
+  "title": "Updating the ABAP SAPUI5 Patch Version",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/updating-the-abap-sapui5-patch-version-77d3476.md",
+  "lastModified": "2025-09-01T18:17:10.567Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Updating",
+    "the",
+    "ABAP",
+    "SAPUI5",
+    "Patch",
+    "Version"
+  ],
+  "headers": [
+    "Updating the ABAP SAPUI5 Patch Version"
+  ],
+  "content": "<!-- loio77d347618dd54e7b863474668e8d43ee -->\n\n# Updating the ABAP SAPUI5 Patch Version\n\nUpdating the patch level will keep your SAPUI5 current and make it more secure. Find more information on how to do this for your ABAP system here.\n\nIf you want to update the installed SAPUI5 release in an ABAP system to a higher patch level, please follow the steps described in the following SAP Note: [3155948](https://me.sap.com/notes/3155948).\n\n",
+  "excerpt": "<!-- loio77d347618dd54e7b863474668e8d43ee --> Updating the ABAP SAPUI5 Patch Version Updating the patch level will keep your SAPUI5 current and make it more secure. Find more information on how to do ...",
+  "wordCount": 67,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

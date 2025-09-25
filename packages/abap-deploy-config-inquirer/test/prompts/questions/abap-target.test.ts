@@ -64,7 +64,7 @@ describe('getAbapTargetPrompts', () => {
                   "breadcrumb": "Target System",
                   "mandatory": true,
                 },
-                "message": "Select Target system",
+                "message": "Select Target System",
                 "name": "targetSystem",
                 "type": "list",
                 "validate": [Function],
@@ -88,7 +88,7 @@ describe('getAbapTargetPrompts', () => {
                 "guiOptions": Object {
                   "breadcrumb": "SCP",
                 },
-                "message": "Is this an SAP Business Technology Platform system?",
+                "message": "Is This an SAP Business Technology Platform System?",
                 "name": "scp",
                 "type": "confirm",
                 "when": [Function],
@@ -115,7 +115,7 @@ describe('getAbapTargetPrompts', () => {
                 "guiOptions": Object {
                   "breadcrumb": "Client",
                 },
-                "message": "Enter client",
+                "message": "Enter Client",
                 "name": "client",
                 "type": "input",
                 "validate": [Function],
@@ -153,7 +153,7 @@ describe('getAbapTargetPrompts', () => {
             expect(await (destPrompt.validate as Function)()).toEqual(true);
             expect(((destPrompt as ListQuestion).additionalMessages as Function)('mockDestination')).toStrictEqual({
                 message: t('warnings.virtualHost'),
-                severity: Severity.warning
+                severity: Severity.information
             });
             expect(((destPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
@@ -285,7 +285,7 @@ describe('getAbapTargetPrompts', () => {
                     targetSystem: 'target1'
                 })
             ).toBe(false);
-            expect(validateTargetSystemUrlCliSpy).toBeCalledTimes(1);
+            expect(validateTargetSystemUrlCliSpy).toHaveBeenCalledTimes(1);
         } else {
             throw new Error('Target system setter prompt not found');
         }
@@ -400,15 +400,15 @@ describe('getAbapTargetPrompts', () => {
             expect(((clientChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
                   Object {
-                    "name": "Use project defined client ",
+                    "name": "Use Project Defined Client: ",
                     "value": "base",
                   },
                   Object {
-                    "name": "Enter client",
+                    "name": "Enter Client",
                     "value": "new",
                   },
                   Object {
-                    "name": "Use default system client",
+                    "name": "Use Default System Client",
                     "value": "blank",
                   },
                 ]

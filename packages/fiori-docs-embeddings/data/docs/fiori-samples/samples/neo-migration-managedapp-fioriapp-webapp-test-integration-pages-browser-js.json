@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-pages-browser-js",
+  "title": "Browser",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/pages/Browser.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "Browser"
+  ],
+  "headers": [],
+  "content": "# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.md\n\n```javascript\n# Browser.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/Opa5\",\"./Common\"],function(t,s){\"use strict\";t.createPageObjects({onTheBrowser:{baseClass:s,actions:{iPressOnTheBackwardsButton:function(){return this.waitFor({success:function(){t.getWindow().history.back()}})},iPressOnTheForwardsButton:function(){return this.waitFor({success:function(){t.getWindow().history.forward()}})},iChangeTheHashToSomethingInvalid:function(){return this.waitFor({success:function(){t.getHashChanger().setHash(\"somethingInvalid\")}})},iChangeTheHashToTheRememberedItem:function(){return this.waitFor({success:function(){var s=this.getContext().currentItem.id;t.getHashChanger().setHash(\"Products/\"+s)}})}},assertions:{}}})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Browser.md javascript Browser.md javascript Browser.md javascript Browser.md javascript Browser.js",
+  "wordCount": 43,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

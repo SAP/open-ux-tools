@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-ids-of-fragments-in-views-f10bf70-md",
+  "title": "IDs of Fragments in Views",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/ids-of-fragments-in-views-f10bf70.md",
+  "lastModified": "2025-09-01T18:17:10.519Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "IDs",
+    "Fragments",
+    "Views"
+  ],
+  "headers": [
+    "IDs of Fragments in Views"
+  ],
+  "content": "<!-- loiof10bf709b05f4adea8f8b8ad9a840247 -->\n\n# IDs of Fragments in Views\n\nFor fragments that are used within declarative views, generated IDs are not prefixed.\n\nThe following rules apply for given IDs:\n\n-   Given IDs are prefixed with only the view ID when no fragment ID was given\n-   Given IDs are prefixed with both view ID and fragment ID when a fragment ID was given\n\n**Related Information**  \n\n\n[Example: JS Fragments Used in XML Views](example-js-fragments-used-in-xml-views-faaff35.md \"Example of JS fragments used in an XML view\")\n\n",
+  "excerpt": "<!-- loiof10bf709b05f4adea8f8b8ad9a840247 --> IDs of Fragments in Views For fragments that are used within declarative views, generated IDs are not prefixed. The following rules apply for given IDs: -...",
+  "wordCount": 82,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

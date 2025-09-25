@@ -9,7 +9,8 @@ import {
     type OdataServicePromptOptions,
     OdataVersion,
     promptNames as odataServiceInquirerPromptNames,
-    prompt as promptOdataService
+    prompt as promptOdataService,
+    type EntityRelatedAnswers
 } from '@sap-ux/odata-service-inquirer';
 import { ClientFactory } from '@sap-ux/telemetry';
 import type {
@@ -24,7 +25,7 @@ import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
-import type { FioriAppGeneratorPromptSettings, Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
+import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
 
@@ -80,7 +81,8 @@ type PromptUI5AppAnswersOptions = {
     projectName?: Project['name'];
     targetFolder?: Project['targetFolder'];
     service: Partial<Service>;
-    promptSettings?: FioriAppGeneratorPromptSettings;
+    entityRelatedConfig?: Partial<EntityRelatedAnswers>;
+    promptSettings?: UI5ApplicationPromptOptions;
     floorplan: Floorplan;
     promptExtension?: UI5ApplicationPromptOptions;
 };
@@ -96,6 +98,7 @@ type PromptUI5AppAnswersOptions = {
  * @param param0.promptSettings
  * @param param0.floorplan
  * @param param0.promptExtension
+ * @param param0.entityRelatedConfig
  * @param yeomanUiStepConfig
  * @param adapter
  * @returns
@@ -106,9 +109,9 @@ export async function promptUI5ApplicationAnswers(
         projectName,
         targetFolder,
         promptSettings,
-
         floorplan,
-        promptExtension
+        promptExtension,
+        entityRelatedConfig
     }: PromptUI5AppAnswersOptions,
     yeomanUiStepConfig: YeomanUiStepConfig[],
     adapter: Adapter
@@ -123,15 +126,16 @@ export async function promptUI5ApplicationAnswers(
         inquirerAdapter = adapter;
     }
 
-    const promptOptions = await createUI5ApplicationPromptOptions(
+    const promptOptions = await createUI5ApplicationPromptOptions({
         service,
-        yeomanUiStepConfig,
+        appGenStepConfigList: yeomanUiStepConfig,
         floorplan,
         projectName,
         targetFolder,
         promptSettings,
-        promptExtension
-    );
+        promptExtension,
+        entityRelatedConfig
+    });
     const ui5AppAnswers: UI5ApplicationAnswers = await promptUI5App(
         inquirerAdapter,
         promptOptions,
@@ -203,33 +207,46 @@ export async function promptOdataServiceAnswers(
     return service;
 }
 
+export type Ui5PromptOptions = PromptUI5AppAnswersOptions & {
+    appGenStepConfigList: YeomanUiStepConfig[];
+};
+
 /**
  * Creates the `UIApplicationPromptOptions`.
  * Note that setting 'default', the default prompt value or function, or 'hide', whether the prompt should be shown,
  * to `undefined` should mean that the setting is ignored by the prompt.
  *
- * @param service
- * @param appGenStepConfigList
- * @param floorplan
- * @param projectName
- * @param targetFolder
- * @param promptSettings
- * @param extensions
+ * @param {object} ui5PromptOptions - Options for configuring the UI5 application prompt.
+ * @param {Partial<Service>} ui5PromptOptions.service - The service configuration.
+ * @param {YeomanUiStepConfig[]} ui5PromptOptions.appGenStepConfigList - The list of Yeoman UI step configurations.
+ * @param {Floorplan} ui5PromptOptions.floorplan - The selected floorplan type.
+ * @param {string} [ui5PromptOptions.projectName] - The name of the project.
+ * @param {string} [ui5PromptOptions.targetFolder] - The target folder for the project.
+ * @param {UI5ApplicationPromptOptions} [ui5PromptOptions.promptSettings] - Additional prompt settings.
+ * @param {UI5ApplicationPromptOptions} [ui5PromptOptions.promptExtension] - Extension prompt settings.
+ * @param {Partial<EntityRelatedAnswers>} [ui5PromptOptions.entityRelatedConfig] - Entity-related configuration.
  * @returns {Promise<UI5ApplicationPromptOptions>} prompt options that may be used to configure UI5 application prompting
  */
 export async function createUI5ApplicationPromptOptions(
-    service: Partial<Readonly<Service>>,
-    appGenStepConfigList: YeomanUiStepConfig[],
-    floorplan: Floorplan,
-    projectName?: Project['name'],
-    targetFolder?: Project['targetFolder'],
-    promptSettings?: FioriAppGeneratorPromptSettings,
-    extensions?: UI5ApplicationPromptOptions
+    ui5PromptOptions: Ui5PromptOptions
 ): Promise<UI5ApplicationPromptOptions> {
+    const {
+        service,
+        appGenStepConfigList,
+        floorplan,
+        projectName,
+        targetFolder,
+        promptSettings,
+        promptExtension: extensions,
+        entityRelatedConfig
+    } = ui5PromptOptions;
+
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
         hide: promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.hide ?? false,
-        minUI5Version: getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
+        minUI5Version:
+            promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
+            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan, entityRelatedConfig),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
         useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };
@@ -350,7 +367,7 @@ export interface OdataServiceInquirerOptions {
      * Note: only some of the allowed prompt options are currently supported.
      * Eventually all should be supported by merging the options with the prompt specific options.
      */
-    promptOptions?: FioriAppGeneratorPromptSettings;
+    promptOptions?: OdataServicePromptOptions;
     showCollabDraftWarning?: boolean;
     workspaceFolders?: string[];
 }
@@ -363,7 +380,7 @@ export interface OdataServiceInquirerOptions {
  * @param options.requiredOdataVersion will trigger warnings in prompts if the OData version is not supported.
  * @param options.allowNoDatasource If true, the user will be able to select 'None' as the datasource type. Fiori Freestyle specific.
  * @param options.capService If provided, the user will not be prompted for the CAP project and the default datasource type will be set to CAP project.
- * @param options.promptOptions A limited set of prompt options that can be set by the caller.
+ * @param options.promptOptions Odata service inquirer prompt options that can be set by the caller.
  * @param options.showCollabDraftWarning If true, a warning will be shown in the prompt if the service is a collaborative draft service.
  * @returns
  */
@@ -380,28 +397,35 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
     return {
         [odataServiceInquirerPromptNames.datasourceType]: {
             default: defaultDatasourceSelection,
-            includeNone: !!options.allowNoDatasource
+            includeNone: !!options.allowNoDatasource,
+            ...options.promptOptions?.datasourceType
         },
         [odataServiceInquirerPromptNames.metadataFilePath]: {
-            requiredOdataVersion: options.requiredOdataVersion
+            requiredOdataVersion: options.requiredOdataVersion,
+            ...options.promptOptions?.metadataFilePath
         },
         [odataServiceInquirerPromptNames.capProject]: {
             capSearchPaths: options.workspaceFolders ?? [],
-            defaultChoice: options.capService?.projectPath
+            defaultChoice: options.capService?.projectPath,
+            ...options.promptOptions?.capProject
         },
         [odataServiceInquirerPromptNames.capService]: {
-            defaultChoice: options.capService
+            defaultChoice: options.capService,
+            ...options.promptOptions?.capService
         },
         [odataServiceInquirerPromptNames.serviceUrl]: {
             requiredOdataVersion: options.requiredOdataVersion,
-            showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI
+            showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI,
+            ...options.promptOptions?.serviceUrl
         },
         [odataServiceInquirerPromptNames.serviceSelection]: {
             useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
-            requiredOdataVersion:
-                options.requiredOdataVersion ?? options.promptOptions?.serviceSelection?.requiredOdataVersion,
+            requiredOdataVersion: options.requiredOdataVersion,
             showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI,
-            serviceFilter: options.promptOptions?.serviceSelection?.serviceFilter
+            ...options.promptOptions?.serviceSelection
+        },
+        [odataServiceInquirerPromptNames.userSystemName]: {
+            ...options.promptOptions?.userSystemName
         },
         [odataServiceInquirerPromptNames.systemSelection]: {
             destinationFilters: {

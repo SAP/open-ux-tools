@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-misc-readme-md",
+  "title": "Referenced Guides",
+  "category": "samples",
+  "path": "misc/README.md",
+  "lastModified": "2025-09-01T18:17:10.808Z",
+  "tags": [
+    "samples",
+    "md",
+    "Referenced",
+    "Guides"
+  ],
+  "headers": [
+    "Referenced Guides",
+    "License"
+  ],
+  "content": "# Referenced Guides\n\n[Consuming and validating SAP BTP destinations to support OData XML Service](destinations/README.md)\n\n[Running SAP Fiori Generator headless](headless/README.md)\n\n[Consuming SAP Cloud Connector via SAP BTP destination](onpremise/README.md)\n\n[Consuming SAP S/4Hana public cloud via SAP BTP destination](s4hana/README.md)\n\n[Proxy Configuration](proxy/README.md)\n\n[Self-Signed SSL Certificate](sslcerts/README.md)\n\n[ABAP CI/CD Pipeline Support with Environment Credentials](cicd/README.md)\n\n[ABAP Cloud Environment - Cross Subaccount and Regions](cicd/README.md)\n\n### License\nCopyright (c) 2009-2025 SAP SE or an SAP affiliate company. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](/LICENSES/Apache-2.0.txt) file.\n\n\n\n",
+  "excerpt": "Referenced Guides Consuming and validating SAP BTP destinations to support OData XML Service Running SAP Fiori Generator headless Consuming SAP Cloud Connector via SAP BTP destination Consuming SAP S/...",
+  "wordCount": 88,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

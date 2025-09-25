@@ -2,27 +2,20 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep';
-import {
-    addPackageDevDependency,
-    FileName,
-    getWebappPath,
-    readUi5Yaml,
-    updatePackageScript
-} from '@sap-ux/project-access';
+import { addPackageDevDependency, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import { getDeployConfig, updateBaseConfig } from './config';
-import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file';
 import {
-    BUILD_SCRIPT,
-    DEPLOY_SCRIPT,
-    RIMRAF,
-    RIMRAF_VERSION,
-    UI5_TASK_FLATTEN_LIB,
-    UI5_TASK_FLATTEN_LIB_VERSION,
-    UNDEPLOY_SCRIPT
-} from './constants';
+    addUi5Dependency,
+    getLibraryPath,
+    isTsProject,
+    writeUi5RepositoryFiles,
+    writeUi5RepositoryIgnore
+} from './file';
+import { UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION } from './constants';
 import type { DeployConfigOptions } from './types';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import { updateScripts } from './scripts';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -58,18 +51,8 @@ async function generate(
     const deployConfig = await getDeployConfig(abapConfig, baseConfig);
     fs.write(deployFilePath, deployConfig.toString());
 
-    // package.json
-    // deploy script
-    const deployScript = `${BUILD_SCRIPT} && ${DEPLOY_SCRIPT} --config ${deployConfigFile} && ${RIMRAF} archive.zip`;
-    await updatePackageScript(basePath, 'deploy', deployScript, fs);
-    // undeploy script
-    const undeployScript = `${BUILD_SCRIPT} && ${UNDEPLOY_SCRIPT} --config ${deployConfigFile}`;
-    await updatePackageScript(basePath, 'undeploy', undeployScript, fs);
-    // test mode script
-    const deployTestModeScript = `${BUILD_SCRIPT} && ${DEPLOY_SCRIPT} --config ${deployConfigFile} --testMode true`;
-    await updatePackageScript(basePath, 'deploy-test', deployTestModeScript, fs);
-    // dependencies
-    await addPackageDevDependency(basePath, RIMRAF, RIMRAF_VERSION, fs);
+    const includeBuildScript = !abapConfig.lrep || isTsProject(fs, basePath);
+    await updateScripts(basePath, deployConfigFile, fs, includeBuildScript);
 
     if (isLib) {
         // ui5 repo ignore file

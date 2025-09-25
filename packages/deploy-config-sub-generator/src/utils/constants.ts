@@ -8,3 +8,7 @@ export const generatorNamespace = (bundledRootGeneratorName: string, subGenName:
 export const generatorTitle = 'Deployment Configuration Generator';
 export const abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
 export const cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };
+
+export enum promptNames {
+    targetName = 'targetName'
+}

@@ -1,5 +1,23 @@
 # @sap-ux/ui5-info
 
+## 0.12.3
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
+## 0.12.2
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
+## 0.12.1
+
+### Patch Changes
+
+-   07d4e25: feat: add filter option for legacy-free UI5 versions
+
 ## 0.12.0
 
 ### Minor Changes

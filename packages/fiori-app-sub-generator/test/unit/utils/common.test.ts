@@ -1,4 +1,4 @@
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import * as capConfigWriter from '@sap-ux/cap-config-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
@@ -10,8 +10,13 @@ import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
-import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants';
-import { convertCapRuntimeToCapProjectType, getCdsUi5PluginInfo, t } from '../../../src/utils';
+import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
+import {
+    convertCapRuntimeToCapProjectType,
+    getCdsUi5PluginInfo,
+    initI18nFioriAppSubGenerator,
+    t
+} from '../../../src/utils';
 import {
     buildSapClientParam,
     generateLaunchConfig,
@@ -22,7 +27,8 @@ import {
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion
+    getRequiredOdataVersion,
+    restoreServiceProviderLoggers
 } from '../../../src/utils/common';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
@@ -86,6 +92,10 @@ const vscodeMock = {
     }
 };
 describe('Test utils', () => {
+    beforeAll(async () => {
+        await initI18nFioriAppSubGenerator();
+        jest.clearAllMocks();
+    });
     test('getODataVersion ', async () => {
         const validMetadataV2 =
             '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +
@@ -96,8 +106,8 @@ describe('Test utils', () => {
         expect(getODataVersion(validMetadataV2)).toEqual(OdataVersion.v2);
         expect(getODataVersion(validMetadataV4)).toEqual(OdataVersion.v4);
 
-        expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrowError(
-            'Application config property edmx cannot be parsed'
+        expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrow(
+            'Application config property: edmx cannot be parsed.'
         );
     });
 
@@ -140,6 +150,16 @@ describe('Test utils', () => {
         expect(minVerson).toBe('1.96.8');
         minVerson = getMinSupportedUI5Version(OdataVersion.v2, FloorplanFE.FE_OVP);
         expect(minVerson).toBe('1.65.0');
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block enabled returns minimum required version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
+        expect(result).toBe(minUi5VersionForPageBuildingBlock);
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block disabled returns minimum version support based on service version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: false });
+        expect(result).toBe('1.94.0');
     });
 
     test('buildSapClientParam', () => {
@@ -313,7 +333,7 @@ describe('Test utils', () => {
             };
 
             expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
-            expect(writeApplicationInfoSettings).toBeCalledWith(projectPath);
+            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
 
         it('should generate correct launch config for OData v4', async () => {
@@ -390,5 +410,26 @@ describe('Test utils', () => {
             expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
+    });
+
+    test('restoreServiceProviderLoggers should re-add removed log ref', () => {
+        const logger = {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+
+        const serviceProvider = {
+            log: {},
+            services: {
+                service1: { log: {} },
+                service2: { log: {} }
+            }
+        } as unknown as ServiceProvider;
+
+        const restoredServiceProvider = restoreServiceProviderLoggers(logger, serviceProvider);
+        expect(restoredServiceProvider?.log).toBe(logger);
+        expect((restoredServiceProvider as any)?.services.service1.log).toBe(logger);
+        expect((restoredServiceProvider as any)?.services.service2.log).toBe(logger);
     });
 });

@@ -17,7 +17,7 @@ describe('getConfirmPrompts', () => {
                 "guiOptions": Object {
                   "breadcrumb": "prompts.confirm.index.hint",
                 },
-                "message": "Generate standalone index.html during deployment",
+                "message": "Generate Standalone index.html During Deployment",
                 "name": "index",
                 "type": "confirm",
                 "when": [Function],
@@ -25,10 +25,10 @@ describe('getConfirmPrompts', () => {
               Object {
                 "default": true,
                 "guiOptions": Object {
-                  "hint": "Deployment config will abort if you choose no. Click Finish to abort.",
+                  "hint": "Deployment config will abort if you choose no. Click 'Finish' to abort.",
                 },
-                "message": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
-                "name": "overwrite",
+                "message": "Editing the deployment configuration will overwrite the existing configuration. Are you sure you want to continue?",
+                "name": "overwriteAbapConfig",
                 "type": "confirm",
                 "validate": [Function],
               },
@@ -53,7 +53,7 @@ describe('getConfirmPrompts', () => {
         jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
 
         const confirmPrompts = getConfirmPrompts({});
-        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwrite);
+        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwriteAbapConfig);
 
         if (overwritePrompt) {
             expect(overwritePrompt.message).toBe(t('prompts.confirm.overwrite.message'));

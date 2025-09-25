@@ -1,5 +1,229 @@
 # @sap-ux/inquirer-common
 
+## 0.7.45
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/telemetry@0.6.24
+
+## 0.7.44
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/telemetry@0.6.23
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/fiori-generator-shared@0.13.17
+
+## 0.7.43
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.16
+-   @sap-ux/telemetry@0.6.22
+
+## 0.7.42
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.15
+-   @sap-ux/telemetry@0.6.21
+
+## 0.7.41
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.20
+-   @sap-ux/fiori-generator-shared@0.13.14
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/fiori-generator-shared@0.13.12
+
+## 0.7.38
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.19
+-   @sap-ux/fiori-generator-shared@0.13.12
+
+## 0.7.37
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/telemetry@0.6.18
+    -   @sap-ux/ui5-info@0.12.2
+    -   @sap-ux/fiori-generator-shared@0.13.11
+
+## 0.7.36
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.17
+-   @sap-ux/fiori-generator-shared@0.13.10
+
+## 0.7.35
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.16
+-   @sap-ux/fiori-generator-shared@0.13.9
+
+## 0.7.34
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/telemetry@0.6.15
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [b6ce4a2]
+    -   @sap-ux/guided-answers-helper@0.4.0
+
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [18a5ee2]
+    -   @sap-ux/telemetry@0.6.14
+    -   @sap-ux/fiori-generator-shared@0.13.7
+
+## 0.7.31
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.13
+-   @sap-ux/fiori-generator-shared@0.13.6
+
+## 0.7.30
+
+### Patch Changes
+
+-   9fa7f0b: move aggregration entity helpers to inq-common
+
+## 0.7.29
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/telemetry@0.6.12
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.4
+-   @sap-ux/telemetry@0.6.11
+
+## 0.7.27
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [485ae8d]
+    -   @sap-ux/guided-answers-helper@0.3.1
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+
+## 0.7.23
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.1
+-   @sap-ux/telemetry@0.6.10
+
+## 0.7.22
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+
+## 0.7.21
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/telemetry@0.6.9
+
+## 0.7.20
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.8
+-   @sap-ux/fiori-generator-shared@0.12.15
+
+## 0.7.19
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.14
+-   @sap-ux/telemetry@0.6.7
+
+## 0.7.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.12
+-   @sap-ux/telemetry@0.6.6
+
+## 0.7.16
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+-   @sap-ux/fiori-generator-shared@0.12.11
+
 ## 0.7.15
 
 ### Patch Changes

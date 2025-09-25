@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`API test getPrompts, no prompt options 1`] = `
 [
@@ -8,7 +8,7 @@ exports[`API test getPrompts, no prompt options 1`] = `
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "Library module name",
+    "message": "Library Module Name",
     "name": "libraryName",
     "type": "input",
     "validate": [Function],
@@ -19,7 +19,7 @@ exports[`API test getPrompts, no prompt options 1`] = `
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "Library namespace",
+    "message": "Library Namespace",
     "name": "namespace",
     "type": "input",
     "validate": [Function],
@@ -32,7 +32,7 @@ exports[`API test getPrompts, no prompt options 1`] = `
       "mandatory": true,
     },
     "guiType": "folder-browser",
-    "message": "Library folder path",
+    "message": "Library Folder Path",
     "name": "targetFolder",
     "type": "input",
     "validate": [Function],
@@ -41,9 +41,9 @@ exports[`API test getPrompts, no prompt options 1`] = `
     "choices": [Function],
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Represents the minimum version of SAPUI5 that this library requires",
+      "hint": "Represents the minimum version of SAPUI5 that this library requires.",
     },
-    "message": "Minimum SAPUI5 version",
+    "message": "Minimum SAPUI5 Version",
     "name": "ui5Version",
     "source": [Function],
     "type": "list",
@@ -69,7 +69,7 @@ exports[`API test getPrompts, prompt options 1`] = `
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "Library module name",
+    "message": "Library Module Name",
     "name": "libraryName",
     "type": "input",
     "validate": [Function],
@@ -80,7 +80,7 @@ exports[`API test getPrompts, prompt options 1`] = `
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "Library namespace",
+    "message": "Library Namespace",
     "name": "namespace",
     "type": "input",
     "validate": [Function],
@@ -93,7 +93,7 @@ exports[`API test getPrompts, prompt options 1`] = `
       "mandatory": true,
     },
     "guiType": "folder-browser",
-    "message": "Library folder path",
+    "message": "Library Folder Path",
     "name": "targetFolder",
     "type": "input",
     "validate": [Function],
@@ -102,9 +102,9 @@ exports[`API test getPrompts, prompt options 1`] = `
     "choices": [Function],
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Represents the minimum version of SAPUI5 that this library requires",
+      "hint": "Represents the minimum version of SAPUI5 that this library requires.",
     },
-    "message": "Minimum SAPUI5 version",
+    "message": "Minimum SAPUI5 Version",
     "name": "ui5Version",
     "source": [Function],
     "type": "autocomplete",

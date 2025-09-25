@@ -11,7 +11,8 @@ import type {
     AnnotationGenerationAnswers,
     EntityPromptOptions,
     EntitySelectionAnswers,
-    TableConfigAnswers
+    TableConfigAnswers,
+    PageBuildingBlockAnswers
 } from '../../types';
 import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
 import { PromptState } from '../../utils';
@@ -21,10 +22,12 @@ import {
     type EntityAnswer,
     type EntityChoiceOptions,
     type EntitySetFilter,
+    getDefaultTableType,
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
 } from './entity-helper';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
  * Validate the entity choice options. If the entity choice options are empty, a validation message will be returned.
@@ -76,7 +79,13 @@ export function getEntitySelectionQuestions(
     isCapService = false,
     promptOptions?: EntityPromptOptions,
     annotations?: Annotations
-): Question<EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers>[] {
+): Question<
+    EntitySelectionAnswers &
+        TableConfigAnswers &
+        AnnotationGenerationAnswers &
+        AlpTableConfigAnswers &
+        PageBuildingBlockAnswers
+>[] {
     const useAutoComplete = promptOptions?.useAutoComplete;
     let entitySetFilter: EntitySetFilter | undefined;
     if (templateType === 'feop' && !!isCapService) {
@@ -97,7 +106,11 @@ export function getEntitySelectionQuestions(
     const odataVersion = entityChoices.odataVersion;
 
     const entityQuestions: Question<
-        EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers
+        EntitySelectionAnswers &
+            TableConfigAnswers &
+            AnnotationGenerationAnswers &
+            AlpTableConfigAnswers &
+            PageBuildingBlockAnswers
     >[] = [];
 
     // OVP only has filter entity, does not use tables and we do not add annotations
@@ -167,10 +180,14 @@ export function getEntitySelectionQuestions(
         } as ListQuestion<EntitySelectionAnswers>);
     }
 
+    if (promptOptions?.displayPageBuildingBlockPrompt) {
+        entityQuestions.push(...getPageBuildingBlockQuestions());
+    }
+
     entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
     if (!promptOptions?.hideTableLayoutPrompts) {
-        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService));
+        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService, convertedMetadata));
     }
 
     if (templateType === 'alp') {
@@ -182,17 +199,62 @@ export function getEntitySelectionQuestions(
 }
 
 /**
+ * Get the questions for page building block.
+ *
+ * @returns the page building block questions
+ */
+function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
+    const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
+
+    pageBuildingBlockQuestions.push({
+        type: 'confirm',
+        name: EntityPromptNames.addPageBuildingBlock,
+        message: t('prompts.pageBuildingBlock.message'),
+        default: false,
+        guiOptions: {
+            breadcrumb: true,
+            hint: t('prompts.pageBuildingBlock.tooltip')
+        },
+        additionalMessages: (addPageBuildingBlock: boolean) => {
+            if (addPageBuildingBlock) {
+                return {
+                    message: t('prompts.pageBuildingBlock.warning'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    } as ConfirmQuestion<PageBuildingBlockAnswers>);
+
+    // If the user wants to add a Page Building Block, ask for the title
+    pageBuildingBlockQuestions.push({
+        when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+        type: 'input',
+        name: EntityPromptNames.pageBuildingBlockTitle,
+        message: t('prompts.pageBuildingBlock.titleMessage'),
+        guiOptions: {
+            breadcrumb: true,
+            mandatory: true
+        },
+        validate: (input: string) => !!input
+    } as InputQuestion<PageBuildingBlockAnswers>);
+
+    return pageBuildingBlockQuestions;
+}
+
+/**
  * Get the questions that may be used to prompt for table layout options.
  *
  * @param templateType used to determine if the tree table option should be included
  * @param odataVersion used to determine if the hierarchy qualifier is required when the selected table type is TreeTable
  * @param isCapService used to determine if the tree table option should be included
+ * @param metadata the metadata (edmx) string of the service
  * @returns the table layout questions
  */
 function getTableLayoutQuestions(
     templateType: TemplateType,
     odataVersion: OdataVersion,
-    isCapService: boolean
+    isCapService: boolean,
+    metadata: ConvertedMetadata
 ): Question<TableConfigAnswers>[] {
     const tableTypeChoices: { name: string; value: TableType }[] = [
         { name: t('prompts.tableType.choiceAnalytical'), value: 'AnalyticalTable' },
@@ -206,7 +268,7 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
-        const tableTypeDefault: TableType = templateType === 'alp' ? 'AnalyticalTable' : 'ResponsiveTable';
+        let setAnalyticalTableDefault = false;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -214,10 +276,29 @@ function getTableLayoutQuestions(
             message: t('prompts.tableType.message'),
             guiOptions: {
                 hint: t('prompts.tableType.hint'),
-                breadcrumb: true
+                breadcrumb: true,
+                applyDefaultWhenDirty: true // set table type on entity selection change
             },
             choices: tableTypeChoices,
-            default: tableTypeDefault
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                const tableTypeDefault = getDefaultTableType(
+                    templateType,
+                    metadata,
+                    odataVersion,
+                    prevAnswers?.mainEntity?.entitySetName,
+                    prevAnswers?.tableType
+                );
+                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
+                return tableTypeDefault.tableType;
+            },
+            additionalMessages: (tableType: TableType) => {
+                if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {
+                    return {
+                        message: t('prompts.tableType.analyticalTableDefault'),
+                        severity: Severity.information
+                    };
+                }
+            }
         } as ListQuestion<TableConfigAnswers>);
 
         tableLayoutQuestions.push({

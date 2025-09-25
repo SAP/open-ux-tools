@@ -70,7 +70,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
                 typescript: config.typescript,
                 templatePath: 'filter/Controller'
             },
-            contextParameter
+            [contextParameter]
         );
     }
 

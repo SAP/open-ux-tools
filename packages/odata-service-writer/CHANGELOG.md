@@ -1,5 +1,138 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.22
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/mockserver-config-writer@0.9.18
+    -   @sap-ux/project-access@1.32.1
+
+## 0.27.21
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/mockserver-config-writer@0.9.17
+
+## 0.27.20
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/mockserver-config-writer@0.9.16
+
+## 0.27.19
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/mockserver-config-writer@0.9.15
+    -   @sap-ux/project-access@1.30.14
+
+## 0.27.18
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/mockserver-config-writer@0.9.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.27.17
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/mockserver-config-writer@0.9.13
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.27.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/mockserver-config-writer@0.9.12
+
+## 0.27.15
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/mockserver-config-writer@0.9.11
+    -   @sap-ux/project-access@1.30.10
+
+## 0.27.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/mockserver-config-writer@0.9.10
+
+## 0.27.13
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/mockserver-config-writer@0.9.9
+
+## 0.27.12
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/mockserver-config-writer@0.9.8
+
+## 0.27.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/mockserver-config-writer@0.9.7
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.27.10
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/mockserver-config-writer@0.9.6
+    -   @sap-ux/project-access@1.30.6
+
+## 0.27.9
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/mockserver-config-writer@0.9.5
+
+## 0.27.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.27.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/mockserver-config-writer@0.9.4
+
 ## 0.27.6
 
 ### Patch Changes

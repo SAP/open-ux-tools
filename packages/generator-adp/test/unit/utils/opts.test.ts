@@ -31,7 +31,7 @@ describe('setHeaderTitle', () => {
     });
 
     it('should not throw if appWizard or setHeaderTitle is missing', () => {
-        expect(() => setHeaderTitle({} as unknown as AppWizard, logger)).not.toThrow();
+        expect(() => setHeaderTitle({}, logger)).not.toThrow();
         expect(logger.error).not.toHaveBeenCalled();
     });
 

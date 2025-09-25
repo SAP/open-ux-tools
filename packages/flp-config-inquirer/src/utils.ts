@@ -2,10 +2,12 @@ import {
     type DescriptorVariant,
     type NewInboundNavigation,
     type InternalInboundNavigation,
-    flpConfigurationExists
+    FlexLayer,
+    flpConfigurationExists,
+    NamespacePrefix
 } from '@sap-ux/adp-tooling';
 import type { InboundContent } from '@sap-ux/axios-extension';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types';
 /**
  * Returns FLP configuration prompt options based on the provided inbounds, variant, and tile settings answers.
@@ -53,40 +55,49 @@ export function getAdpFlpConfigPromptOptions(
 }
 
 /**
- * Returns the configuration for writing FLP inbounds based on the provided answers and inbound content.
+ * Builds the configuration for replacing an existing FLP inbound based on the provided answers and layer.
  *
  * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
- * @param {TileSettingsAnswers} tileSettingsAnswers - The answers for tile settings.
- * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration for FLP inbounds writer.
+ * @param {UI5FlexLayer} layer - The layer of the project.
+ * @returns {InternalInboundNavigation} The configuration for the replaced FLP inbound.
  */
-export function getAdpFlpInboundsWriterConfig(
-    flpConfigAnswers: FLPConfigAnswers,
-    tileSettingsAnswers?: TileSettingsAnswers
-): InternalInboundNavigation | NewInboundNavigation {
-    const { tileHandlingAction } = tileSettingsAnswers ?? {};
-    if (tileHandlingAction === tileActions.REPLACE) {
-        const {
-            semanticObject,
-            action,
-            signature: { parameters } = {}
-        } = flpConfigAnswers.inboundId ?? ({} as InboundContent);
-        const inboundId = !semanticObject || !action ? '' : `${semanticObject}-${action}`;
-
-        return {
-            inboundId,
-            semanticObject: semanticObject ?? '',
-            action: action ?? '',
-            title: flpConfigAnswers.title ?? '',
-            subTitle: flpConfigAnswers.subTitle ?? '',
-            icon: flpConfigAnswers.icon ?? '',
-            additionalParameters: parameters ? JSON.stringify(parameters) : ''
-        };
+function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation {
+    const {
+        semanticObject,
+        action,
+        signature: { parameters } = {}
+    } = flpConfigAnswers.inboundId ?? ({} as InboundContent);
+    let inboundId = !semanticObject || !action ? '' : `${semanticObject}-${action}`;
+    if (inboundId) {
+        inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
     }
+    return {
+        inboundId,
+        semanticObject: semanticObject ?? '',
+        action: action ?? '',
+        title: flpConfigAnswers.title ?? '',
+        subTitle: flpConfigAnswers.subTitle ?? '',
+        icon: flpConfigAnswers.icon ?? '',
+        additionalParameters: parameters ? JSON.stringify(parameters) : ''
+    };
+}
 
-    const inboundId =
+/**
+ * Builds the configuration for adding a new FLP inbound based on the provided answers and layer.
+ *
+ * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
+ * @param {FlexLayer} layer - The layer of the project.
+ * @returns {InternalInboundNavigation} The configuration for the new FLP inbound.
+ */
+function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation {
+    let inboundId =
         !flpConfigAnswers.semanticObject || !flpConfigAnswers.action
             ? ''
             : `${flpConfigAnswers.semanticObject}-${flpConfigAnswers.action}`;
+    if (inboundId) {
+        inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
+    }
+
     return {
         inboundId,
         semanticObject: flpConfigAnswers.semanticObject ?? '',
@@ -96,4 +107,24 @@ export function getAdpFlpInboundsWriterConfig(
         icon: flpConfigAnswers.icon ?? '',
         additionalParameters: flpConfigAnswers.additionalParameters ?? ''
     };
+}
+
+/**
+ * Returns the configuration for writing FLP inbounds based on the provided answers and inbound content.
+ *
+ * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
+ * @param {FlexLayer} layer - The layer of the project.
+ * @param {TileSettingsAnswers} [tileSettingsAnswers] - The answers for tile settings.
+ * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration for FLP inbounds writer.
+ */
+export function getAdpFlpInboundsWriterConfig(
+    flpConfigAnswers: FLPConfigAnswers,
+    layer: UI5FlexLayer,
+    tileSettingsAnswers?: TileSettingsAnswers
+): InternalInboundNavigation | NewInboundNavigation {
+    const { tileHandlingAction } = tileSettingsAnswers ?? {};
+    if (tileHandlingAction === tileActions.REPLACE) {
+        return buildReplaceInboundConfig(flpConfigAnswers, layer);
+    }
+    return buildAddInboundConfig(flpConfigAnswers, layer);
 }

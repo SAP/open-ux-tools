@@ -5,6 +5,8 @@ import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
+import { getBackendSystemType } from '../utils';
+import { getFilesystemStore } from '../data-access/filesystem';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
     implements DataProvider<BackendSystem, BackendSystemKey>
@@ -44,15 +46,94 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         });
     }
 
-    public async getAll(): Promise<BackendSystem[] | []> {
-        const systems = await this.dataAccessor.readAll({ entityName: this.entityName });
+    public async getAll({
+        includeSensitiveData = true
+    }: {
+        includeSensitiveData?: boolean;
+    } = {}): Promise<BackendSystem[] | []> {
+        let systems = await this.dataAccessor.readAll({ entityName: this.entityName, includeSensitiveData });
+        if (!includeSensitiveData) {
+            const allMigrated = await this.ensureSystemTypesExist(systems);
+            if (!allMigrated) {
+                // Re-read to ensure we have the updated data
+                systems = await this.dataAccessor.readAll({
+                    entityName: this.entityName,
+                    includeSensitiveData
+                });
+            }
+        }
+
         for (const id of Object.keys(systems)) {
-            const system = systems[id];
+            const system: BackendSystem | undefined = systems[id];
             if (!system?.url?.trim()) {
-                this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
-                delete systems[id];
+                // attempt to recover the system URL from the ID
+                const backendSystem = await this.recoverBackendSystemFromId(id);
+                if (backendSystem?.url?.trim()) {
+                    systems[id] = { ...system, ...backendSystem };
+                    // requires to write directly to the filesystem
+                    const fileSystem = getFilesystemStore(this.logger);
+                    await fileSystem.write({ entityName: this.entityName, id, entity: backendSystem });
+                } else {
+                    this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
+                    delete systems[id];
+                }
             }
         }
         return Object.values(systems);
+    }
+
+    /**
+     * Recover the URL from the system ID and write it to the file.
+     *
+     * @param systemId - the specific system ID to recover
+     * @returns the recovered partial backend system (a default name with the url and client if present)
+     */
+    private async recoverBackendSystemFromId(systemId: string): Promise<Partial<BackendSystem>> {
+        let backendSystem: Partial<BackendSystem> = {};
+        try {
+            const urlObj = new URL(systemId);
+            const client =
+                urlObj.pathname && /^\d{3}$/.test(urlObj.pathname.slice(1)) ? urlObj.pathname.slice(1) : undefined;
+            backendSystem = {
+                name: urlObj.origin + (client ? ', client ' + client : ''),
+                url: urlObj.origin,
+                ...(client ? { client } : {})
+            };
+        } catch {
+            this.logger.error(`Error while writing recovered entries from the secure store to the file.`);
+        }
+        return backendSystem;
+    }
+
+    private async ensureSystemTypesExist(systems: Record<string, BackendSystem>): Promise<boolean> {
+        let allSystemsHaveType = true;
+
+        for (const [id, system] of Object.entries(systems)) {
+            if (!system?.systemType) {
+                allSystemsHaveType = false;
+                await this.assignSystemType(id);
+            }
+        }
+
+        return allSystemsHaveType;
+    }
+
+    /**
+     * Temporary migration function to infer and assign a systemType to a system by ID.
+     *
+     * @param systemId ID of the system to migrate
+     */
+    private async assignSystemType(systemId: string): Promise<void> {
+        const system = await this.dataAccessor.read({ entityName: this.entityName, id: systemId });
+        if (system) {
+            const inferredType = getBackendSystemType(system);
+            if (inferredType) {
+                await this.dataAccessor.partialUpdate({
+                    entityName: this.entityName,
+                    id: systemId,
+                    entity: { systemType: inferredType }
+                });
+            }
+        }
     }
 };

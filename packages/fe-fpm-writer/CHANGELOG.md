@@ -1,5 +1,186 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.10
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/fiori-annotation-api@0.7.0
+
+## 0.38.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.23
+-   @sap-ux/project-access@1.32.1
+
+## 0.38.8
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/fiori-annotation-api@0.6.22
+
+## 0.38.7
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/fiori-annotation-api@0.6.21
+
+## 0.38.6
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.20
+
+## 0.38.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/fiori-annotation-api@0.6.19
+
+## 0.38.4
+
+### Patch Changes
+
+-   Updated dependencies [a6ff2aa]
+    -   @sap-ux/fiori-annotation-api@0.6.18
+
+## 0.38.3
+
+### Patch Changes
+
+-   080480a: Update EJS templates for JavaScript and TypeScript event handlers: parameters are updated based on documentation/examples and JSDoc comments are generated accordingly.
+
+## 0.38.2
+
+### Patch Changes
+
+-   b3e95fb: add UI5 version check and warning for custom page building block generation
+
+## 0.38.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.17
+-   @sap-ux/project-access@1.30.13
+
+## 0.38.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+## 0.37.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.16
+
+## 0.37.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-annotation-api@0.6.15
+
+## 0.37.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.14
+-   @sap-ux/project-access@1.30.11
+
+## 0.37.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
+## 0.36.1
+
+### Patch Changes
+
+-   47bd07a: Remove default Index logic from getAggregationPathPrompt of fpm writers
+
+## 0.36.0
+
+### Minor Changes
+
+-   f81c86b: Add Page building block support to fpm writer
+
+## 0.35.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/fiori-annotation-api@0.6.13
+
+## 0.35.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/fiori-annotation-api@0.6.12
+
+## 0.35.13
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/fiori-annotation-api@0.6.11
+
+## 0.35.12
+
+### Patch Changes
+
+-   2cae662: fix(deps): update dependency @sap-ux/annotation-converter to v0.10.3
+-   Updated dependencies [2cae662]
+    -   @sap-ux/fiori-annotation-api@0.6.10
+
+## 0.35.11
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/fiori-annotation-api@0.6.9
+
+## 0.35.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/fiori-annotation-api@0.6.8
+
+## 0.35.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/fiori-annotation-api@0.6.7
+
+## 0.35.8
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/fiori-annotation-api@0.6.6
+
+## 0.35.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/fiori-annotation-api@0.6.5
+
 ## 0.35.6
 
 ### Patch Changes

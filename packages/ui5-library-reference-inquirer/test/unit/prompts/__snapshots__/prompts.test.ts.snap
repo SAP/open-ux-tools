@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`getQuestions getQuestions, no project, libs or options 1`] = `
 Array [
@@ -8,7 +8,7 @@ Array [
     "guiOptions": Object {
       "breadcrumb": true,
     },
-    "message": "Project folder path",
+    "message": "Project Folder Path",
     "name": "targetProjectFolder",
     "type": "list",
     "validate": [Function],

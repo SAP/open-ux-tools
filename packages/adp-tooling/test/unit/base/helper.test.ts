@@ -3,8 +3,10 @@ import { existsSync, readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';
+import type { Inbound } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 import {
     getVariant,
@@ -12,11 +14,11 @@ import {
     getWebappFiles,
     flpConfigurationExists,
     updateVariant,
-    isTypescriptSupported
+    isTypescriptSupported,
+    filterAndMapInboundsToManifest,
+    readUi5Config
 } from '../../../src/base/helper';
-
-const readFileSyncMock = readFileSync as jest.Mock;
-const existsSyncMock = existsSync as jest.Mock;
+import { readUi5Yaml } from '@sap-ux/project-access';
 
 jest.mock('fs', () => {
     return {
@@ -26,7 +28,18 @@ jest.mock('fs', () => {
     };
 });
 
+jest.mock('@sap-ux/project-access', () => ({
+    ...jest.requireActual('@sap-ux/project-access'),
+    readUi5Yaml: jest.fn()
+}));
+
+const existsSyncMock = existsSync as jest.Mock;
+const readFileSyncMock = readFileSync as jest.Mock;
+const readUi5YamlMock = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+
 describe('helper', () => {
+    const yamlRelative = 'ui5.yaml';
+
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
     const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
     const mockVariant = jest.requireActual('fs').readFileSync(mockPath, 'utf-8');
@@ -36,6 +49,20 @@ describe('helper', () => {
             client: '100'
         }
     };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('readUi5Config delegates to readUi5Yaml with correct paths', async () => {
+        const dummyConfig = { some: 'config' } as unknown as UI5Config;
+        readUi5YamlMock.mockResolvedValueOnce(dummyConfig);
+
+        const result = await readUi5Config(basePath, yamlRelative);
+
+        expect(readUi5YamlMock).toHaveBeenCalledWith(basePath, yamlRelative);
+        expect(result).toBe(dummyConfig);
+    });
 
     describe('getVariant', () => {
         beforeEach(() => {
@@ -164,10 +191,9 @@ describe('helper', () => {
         });
 
         test('should throw error when no system configuration found', async () => {
-            readFileSyncMock.mockReturnValue('');
-            jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            readUi5YamlMock.mockResolvedValue({
                 findCustomMiddleware: jest.fn().mockReturnValue(undefined)
-            } as Partial<UI5Config> as UI5Config);
+            } as unknown as UI5Config);
 
             await expect(getAdpConfig(basePath, '/path/to/mock/ui5.yaml')).rejects.toThrow(
                 'No system configuration found in ui5.yaml'
@@ -175,13 +201,11 @@ describe('helper', () => {
         });
 
         test('should return adp configuration', async () => {
-            jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            readUi5YamlMock.mockResolvedValue({
                 findCustomMiddleware: jest.fn().mockReturnValue({
-                    configuration: {
-                        adp: mockAdp
-                    }
+                    configuration: { adp: mockAdp }
                 } as Partial<CustomMiddleware> as CustomMiddleware<object>)
-            } as Partial<UI5Config> as UI5Config);
+            } as unknown as UI5Config);
 
             expect(await getAdpConfig(basePath, 'ui5.yaml')).toStrictEqual(mockAdp);
         });
@@ -215,6 +239,96 @@ describe('helper', () => {
                     content: expect.any(String)
                 }
             ]);
+        });
+    });
+
+    describe('filterAndMapInboundsToManifest', () => {
+        test('should map inbounds to manifest format', () => {
+            const inbounds = [
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action1',
+                        title: 'Test Action 1',
+                        description: 'Description 1',
+                        url: '/test/action1',
+                        hideLauncher: false
+                    }
+                },
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action2',
+                        title: 'Test Action 2',
+                        description: 'Description 2',
+                        url: '/test/action2',
+                        hideLauncher: false
+                    }
+                }
+            ] as unknown as Inbound[];
+
+            const result = filterAndMapInboundsToManifest(inbounds);
+
+            expect(result).toEqual({
+                'Test-action1': {
+                    semanticObject: 'Test',
+                    action: 'action1',
+                    title: 'Test Action 1',
+                    description: 'Description 1',
+                    url: '/test/action1',
+                    hideLauncher: false
+                },
+                'Test-action2': {
+                    semanticObject: 'Test',
+                    action: 'action2',
+                    title: 'Test Action 2',
+                    description: 'Description 2',
+                    url: '/test/action2',
+                    hideLauncher: false
+                }
+            });
+        });
+
+        test('should filter out inbounds with hideLauncher equal to true', () => {
+            const inbounds = [
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action1',
+                        title: 'Test Action 1',
+                        description: 'Description 1',
+                        url: '/test/action1',
+                        hideLauncher: true
+                    }
+                },
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action2',
+                        title: 'Test Action 2',
+                        description: 'Description 2',
+                        url: '/test/action2'
+                    }
+                }
+            ] as unknown as Inbound[];
+
+            const result = filterAndMapInboundsToManifest(inbounds);
+
+            expect(result).toEqual({
+                'Test-action2': {
+                    semanticObject: 'Test',
+                    action: 'action2',
+                    title: 'Test Action 2',
+                    description: 'Description 2',
+                    url: '/test/action2'
+                }
+            });
+        });
+
+        test('should return undefined if no inbounds are provided', () => {
+            const result = filterAndMapInboundsToManifest([]);
+
+            expect(result).toBeUndefined();
         });
     });
 });

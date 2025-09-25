@@ -11,14 +11,23 @@ describe('index', () => {
         info: jest.fn(),
         warn: jest.fn()
     } as unknown as Logger;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     const promptOptions: CfDeployConfigPromptOptions = {
         [promptNames.destinationName]: {
             defaultValue: 'defaultDestination',
             hint: false,
             useAutocomplete: true
         },
-        [promptNames.addManagedAppRouter]: true,
-        [promptNames.overwrite]: true
+        [promptNames.addManagedAppRouter]: {
+            hide: true
+        },
+        [promptNames.overwriteCfConfig]: {
+            hide: false
+        }
     };
 
     it('should return prompts from getPrompts', async () => {
@@ -49,8 +58,13 @@ describe('index', () => {
 
     it('should return prompts from getPrompts with router options enabled', async () => {
         const getQuestionsSpy = jest.spyOn(cfPrompts, 'getQuestions');
-        const prompts = await getPrompts({ ...promptOptions, routerType: true, addManagedAppRouter: false }, mockLog);
+        const routerEnabledPromptOptions: CfDeployConfigPromptOptions = {
+            ...promptOptions,
+            [promptNames.routerType]: { hide: false },
+            [promptNames.addManagedAppRouter]: { hide: true }
+        };
+        const prompts = await getPrompts(routerEnabledPromptOptions, mockLog);
         expect(prompts.length).toBe(3);
-        expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions, mockLog);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(routerEnabledPromptOptions, mockLog);
     });
 });

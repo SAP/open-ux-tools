@@ -39,3 +39,4 @@ export const getFioriToolsDirectory = (): string => {
 };
 
 export * from './app-studio';
+export * from './backend';

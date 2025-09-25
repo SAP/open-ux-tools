@@ -1,42 +1,43 @@
 import type {
+    ConfigurationValue,
     ExternalAction,
     PendingChange,
-    UnknownSavedChange,
-    SavedControlChange,
-    ConfigurationValue,
-    SavedGenericChange,
+    PendingGenericChange,
     SavedChange,
-    PendingGenericChange
+    SavedControlChange,
+    SavedGenericChange,
+    UnknownSavedChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
     changeStackModified,
     deletePropertyChanges,
-    propertyChangeFailed,
     FlexChangesEndPoints,
-    reloadApplication,
-    setApplicationRequiresReload,
-    save,
+    GENERIC_CHANGE_KIND,
+    MessageBarType,
     PENDING_CHANGE_TYPE,
-    UNKNOWN_CHANGE_KIND,
-    GENERIC_CHANGE_KIND
+    propertyChangeFailed,
+    reloadApplication,
+    save,
+    setApplicationRequiresReload,
+    UNKNOWN_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
-import { applyChange } from './flex-change';
-import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
-import type Event from 'sap/ui/base/Event';
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
-import { modeAndStackChangeHandler } from '../rta-service';
-import { ChangeDefinition } from 'sap/ui/fl/Change';
-import { getError } from '../../utils/error';
-import MessageToast from 'sap/m/MessageToast';
-import { getTextBundle } from '../../i18n';
-import { getControlById, isA } from '../../utils/core';
+import type Event from 'sap/ui/base/Event';
 import UI5Element from 'sap/ui/core/Element';
+import { ChangeDefinition } from 'sap/ui/fl/Change';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import { getTextBundle } from '../../i18n';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
+import { getControlById, isA } from '../../utils/core';
+import { getError } from '../../utils/error';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
+import { modeAndStackChangeHandler } from '../rta-service';
+import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
+import { applyChange } from './flex-change';
 import {
     ChangeHandler,
-    changeType,
+    ChangeType,
     ConfigChange,
     GENERIC_CHANGE_HANDLER,
     getControlIdByChange,
@@ -115,6 +116,11 @@ export class ChangeService extends EventTarget {
                     const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
+                    await sendInfoCenterMessage({
+                        title: { key: 'CHANGE_CREATION_FAILED_TITLE' },
+                        description: errorMessage,
+                        type: MessageBarType.error
+                    });
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
                     sendAction(propertyChangeFailedAction);
                 }
@@ -315,7 +321,6 @@ export class ChangeService extends EventTarget {
                     Log.error('CPE: Change creation Failed', getError(error));
                 }
             }
-            const resourceBundle = await getTextBundle();
             const eventIndex = this.eventStack.indexOf(event);
             if (this.eventStack.length - 1 === eventIndex) {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
@@ -324,8 +329,10 @@ export class ChangeService extends EventTarget {
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
-                    MessageToast.show(resourceBundle.getText('CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_MESSAGE'), {
-                        duration: 8000
+                    await sendInfoCenterMessage({
+                        title: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
+                        description: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
+                        type: MessageBarType.info
                     });
                     this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
                 }
@@ -444,7 +451,7 @@ export class ChangeService extends EventTarget {
 
         const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
         const { fileName } = changeDefinition;
-        const handler = GENERIC_CHANGE_HANDLER[changeType as changeType] as unknown as ChangeHandler<GenericChange>;
+        const handler = GENERIC_CHANGE_HANDLER[changeType as ChangeType] as unknown as ChangeHandler<GenericChange>;
         if (handler) {
             const {
                 properties,

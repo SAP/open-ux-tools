@@ -16,6 +16,7 @@ import { assertInboundsHasConfig } from './utils';
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
+import { join } from 'path';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
@@ -23,6 +24,8 @@ jest.mock('fs', () => {
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
+    _fs.realpath = fsLib.realpath;
+    _fs.realpathSync = fsLib.realpathSync;
     return _fs.use(vol as unknown as typeof fs);
 });
 
@@ -111,7 +114,7 @@ describe('flp-config generator', () => {
                     }
                 )
                 .run()
-        ).rejects.toThrowError(t('error.noManifest', { path: path.resolve(`${appDir}/webapp/manifest.json`) }));
+        ).rejects.toThrow(t('error.noManifest', { path: path.resolve(`${appDir}/webapp/manifest.json`) }));
     });
 
     it('throw when manifest[sap.app] is missing', async () => {
@@ -137,7 +140,7 @@ describe('flp-config generator', () => {
                     }
                 )
                 .run()
-        ).rejects.toThrowError(t('error.sapNotDefined'));
+        ).rejects.toThrow(t('error.sapNotDefined'));
     });
 
     it('inbound key exists - overwrite: false', async () => {
@@ -516,8 +519,10 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
+        const dirprefix =
+            process.platform == 'win32' ? join(path.parse(process.cwd()).root, OUTPUT_DIR_PREFIX) : OUTPUT_DIR_PREFIX;
         expect(showWarningSpy).toHaveBeenCalledWith(
-            t('warning.updatei18n', { path: `.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json` }),
+            t('warning.updatei18n', { path: `${join(dirprefix, '/app1/webapp/i18n/i18n.properties')}` }),
             MessageType.notification
         );
     });

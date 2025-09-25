@@ -1,5 +1,65 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.17.1
+
+### Patch Changes
+
+-   4fa9dd9: fix: for disabling change table column quick action when variant management is disabled
+
+## 0.17.0
+
+### Minor Changes
+
+-   372e9ce: fix: [ADP][Info center] Remove all messages from the info center which overlap with messages added with the ui5 Log library.
+
+## 0.16.0
+
+### Minor Changes
+
+-   a39e0d9: fix: [ADP] For ui5 components which do not provide api.json we do not display Documentation error in the info center.
+
+## 0.15.3
+
+### Patch Changes
+
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
+## 0.15.2
+
+### Patch Changes
+
+-   f4da4a6: Fix Sonar issue: Invalid loop. Its body allows only one iteration.
+
+## 0.15.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+
+## 0.15.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+## 0.14.11
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
+## 0.14.10
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+
+## 0.14.9
+
+### Patch Changes
+
+-   0db69d6: fix: wrong property path used for Show Counts configuration change
+
 ## 0.14.8
 
 ### Patch Changes

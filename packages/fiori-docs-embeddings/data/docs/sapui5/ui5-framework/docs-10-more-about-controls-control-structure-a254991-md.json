@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-control-structure-a254991-md",
+  "title": "Control Structure",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/control-structure-a254991.md",
+  "lastModified": "2025-09-01T18:17:10.687Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Control",
+    "Structure"
+  ],
+  "headers": [
+    "Control Structure"
+  ],
+  "content": "<!-- loioa254991b7bb040059a95b6a7f551ee51 -->\n\n# Control Structure\n\nThe `sap.f.FlexibleColumnLayout` contains 3 instances of `sap.m.NavContainer` – one for each column.\n\nIt is logically similar to `sap.m.SplitContainer`, however, there are two main differences:\n\n-   Displays up to 3 columns side by side \\(as opposed to 2 columns\\)\n-   The width of the columns is not fixed, but flexible \\(determined by the `layout` property\\)\n\nThe following table respresents how the `FlexibleColumnLayout` roughly relates to the `NavContainer` and `SplitContainer` controls.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nControl\n\n</th>\n<th valign=\"top\">\n\nAPI\n\n</th>\n<th valign=\"top\">\n\nNumber of Pages Displayed\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.m.NavContainer` \n\n</td>\n<td valign=\"top\">\n\n`pages` \\(aggregation\\)\n\n</td>\n<td valign=\"top\">\n\n1 page at a time\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.m.SplitContainer` \n\n</td>\n<td valign=\"top\">\n\n`masterPages` \\(aggregation\\)\n\n`detailPages` \\(aggregation\\)\n\n</td>\n<td valign=\"top\">\n\nUp to 2 pages at a time \\(2 instances of `NavContainer`\\)\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`sap.f.FlexibleColumnLayout` \n\n</td>\n<td valign=\"top\">\n\n`beginColumnPages` \\(aggregation\\)\n\n`midColumnPages` \\(aggregation\\)\n\n`endColumnPages` \\(aggregation\\)\n\n`layout` \\(property of type `sap.f.LayoutType`, determining the relative widths of the 3 `NavContainers`\\)\n\n</td>\n<td valign=\"top\">\n\nUp to 3 pages at a time \\(3 instances of `NavContainer`\\)\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loioa254991b7bb040059a95b6a7f551ee51 --> Control Structure The sap.f.FlexibleColumnLayout contains 3 instances of sap.m.NavContainer – one for each column. It is logically similar to sap.m.SplitC...",
+  "wordCount": 183,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

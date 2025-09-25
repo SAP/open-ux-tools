@@ -145,16 +145,16 @@ describe('Change Utils', () => {
 
         it('should throw error when changeType is an empty string', () => {
             const invalidChangeType = '' as unknown as ChangeType;
-            expect(() =>
-                getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)
-            ).toThrowError(`Could not extract the change name from the change type: ${invalidChangeType}`);
+            expect(() => getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)).toThrow(
+                `Could not extract the change name from the change type: ${invalidChangeType}`
+            );
         });
 
         it('should throw error when changeType is undefined', () => {
             const invalidChangeType = undefined as unknown as ChangeType;
-            expect(() =>
-                getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)
-            ).toThrowError(`Could not extract the change name from the change type: ${invalidChangeType}`);
+            expect(() => getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)).toThrow(
+                `Could not extract the change name from the change type: ${invalidChangeType}`
+            );
         });
 
         it('should return the correct change object structure', () => {
@@ -326,6 +326,7 @@ describe('Change Utils', () => {
         });
 
         const mockProjectPath = 'mock/project/path';
+        const mockTemplatesPath = 'mock/templates/path';
         const mockData = {
             variant: {
                 layer: 'CUSTOMER_BASE',
@@ -348,7 +349,7 @@ describe('Change Utils', () => {
             writeJSON: writeJsonSpy
         };
 
-        it('should write the change file and an empty annotation file for NewEmptyFile option', () => {
+        it('should write the change file and an annotation file from a template', () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(undefined, 'test');
             });
@@ -376,6 +377,52 @@ describe('Change Utils', () => {
 
             expect(renderFileMock).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('templates', 'changes', 'annotation.xml')),
+                expect.objectContaining({
+                    namespaces: [
+                        {
+                            namespace: 'mockNamespace',
+                            alias: 'mockAlias'
+                        }
+                    ],
+                    path: '/path/to/odata',
+                    schemaNamespace: `local_123456789`
+                }),
+                expect.objectContaining({}),
+                expect.any(Function)
+            );
+
+            expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
+        });
+
+        it('should write the change file and an annotation file from a template using the provided templates path', () => {
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(undefined, 'test');
+            });
+            writeAnnotationChange(
+                mockProjectPath,
+                123456789,
+                {
+                    ...(mockData.annotation as AnnotationsData['annotation']),
+                    namespaces: [
+                        {
+                            namespace: 'mockNamespace',
+                            alias: 'mockAlias'
+                        }
+                    ],
+                    serviceUrl: '/path/to/odata'
+                },
+                mockChange as unknown as ManifestChangeProperties,
+                mockFs as unknown as Editor,
+                mockTemplatesPath
+            );
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_123456789_addAnnotationsToOData.change'),
+                mockChange
+            );
+
+            expect(renderFileMock).toHaveBeenCalledWith(
+                expect.stringContaining(path.join(mockTemplatesPath, 'changes', 'annotation.xml')),
                 expect.objectContaining({
                     namespaces: [
                         {

@@ -75,12 +75,14 @@ describe('UI5 templates', () => {
         // Ensure double-quote cannot be used
         await expect(
             generate(projectDir, { ...ui5AppConfig, app: { id: 'test"AppId', projectType: 'EDMXBackend' } })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id contains disallowed characters: \\""`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"The property: app.id contains disallowed characters: \\". Remove these characters and try again."`
+        );
 
         // Ensure undefined, null or '' cannot be used
         await expect(
             generate(projectDir, { ...ui5AppConfig, app: { id: '', projectType: 'EDMXBackend' } })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id must have a value"`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id must have a value."`);
     });
 
     it('generate and evolve to ts', async () => {
@@ -98,10 +100,10 @@ describe('UI5 templates', () => {
         const projectDir = join(outputDir, 'testapp-invalid');
         await generate(projectDir, ui5AppConfig, fs);
         fs.delete(join(projectDir, 'ui5.yaml'));
-        await expect(enableTypescript(projectDir, fs)).rejects.toThrowError();
+        await expect(enableTypescript(projectDir, fs)).rejects.toThrow();
         fs.write(join(projectDir, 'ui5.yaml'), '');
         fs.delete(join(projectDir, 'webapp/manifest.json'));
-        await expect(enableTypescript(projectDir, fs)).rejects.toThrowError();
+        await expect(enableTypescript(projectDir, fs)).rejects.toThrow();
     });
 
     it('Check webapp/index.html templates are generated correctly for CAP application with ui5 version ', async () => {
@@ -169,7 +171,7 @@ describe('UI5 templates', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     ui5:
                       path:
                         - /resources

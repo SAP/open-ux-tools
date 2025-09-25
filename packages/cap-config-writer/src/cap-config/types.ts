@@ -1,6 +1,5 @@
+import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
 import type { CdsVersionInfo, CdsUi5PluginInfo } from '@sap-ux/project-access';
-
-export type CapRuntime = 'Node.js' | 'Java';
 
 export interface CapService {
     /**
@@ -43,7 +42,16 @@ export interface CapProjectSettings {
     packageName: string;
     appId: string;
     sapux?: boolean;
+    /**
+     * @deprecated
+     * Indicates if NPM workspaces will be enabled.
+     * If cds-ui5-plugin is added or `enableCdsUi5Plugin` is true then npm workspaces is enabled.
+     */
     enableNPMWorkspaces?: boolean;
+    /**
+     * Indicates if the CDS UI5 plugin will be added.
+     * If true, npm workspaces will also be automatically enabled.
+     */
     enableCdsUi5Plugin?: boolean;
     enableTypescript?: boolean;
 }

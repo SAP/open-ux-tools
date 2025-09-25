@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.7.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+## 0.6.8
+
+### Patch Changes
+
+-   2518c66: upgrade esbuild to 0.25.6
+
+## 0.6.7
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
 ## 0.6.6
 
 ### Patch Changes

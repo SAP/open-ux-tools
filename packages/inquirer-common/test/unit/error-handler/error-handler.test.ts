@@ -169,7 +169,7 @@ describe('Test ErrorHandler', () => {
                 message: t('errors.servicesUnavailable')
             })
         );
-        expect(mockTelemClient.reportEvent).toBeCalledWith(
+        expect(mockTelemClient.reportEvent).toHaveBeenCalledWith(
             {
                 eventName: 'GA_LINK_CREATED',
                 measurements: {},
@@ -186,7 +186,7 @@ describe('Test ErrorHandler', () => {
         (mockTelemClient.reportEvent as jest.Mock).mockClear();
 
         expect(serviceUnavailableHelpLink?.toString()).toMatchInlineSnapshot(
-            `"An error occurred retrieving service(s) for SAP System. Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366"`
+            `"An error occurred retrieving services for the SAP System. Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366"`
         );
 
         // Uses error state if no error provided
@@ -223,7 +223,7 @@ describe('Test ErrorHandler', () => {
             })
         );
 
-        expect(mockTelemClient.reportEvent).toBeCalledWith(
+        expect(mockTelemClient.reportEvent).toHaveBeenCalledWith(
             {
                 eventName: 'GA_LINK_CREATED',
                 measurements: {},
@@ -238,7 +238,7 @@ describe('Test ErrorHandler', () => {
             SampleRate.NoSampling
         );
         expect(serviceUnavailableHelpNoCommandLink?.toString()).toEqual(
-            'An error occurred retrieving service(s) for SAP System. ' +
+            'An error occurred retrieving services for the SAP System. ' +
                 'Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366'
         );
 

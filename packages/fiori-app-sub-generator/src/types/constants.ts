@@ -85,7 +85,7 @@ export const FIORI_STEPS: FioriStep[] = [
     {
         key: STEP_FLP_CONFIG,
         name: t('steps.flpConfig.title'),
-        description: t('steps.flpConfig.decription'),
+        description: t('steps.flpConfig.description'),
         dependency: t('steps.projectAttributesConfig.title'),
         order: 5
     }
@@ -105,6 +105,8 @@ export const FPM_DEFAULT_PAGE_NAME = 'Main';
 // App gen specific (not writer specific) supported UI5 versions
 export const minSupportedUi5Version = '1.65.0';
 export const minSupportedUi5VersionV4 = '1.84.0';
+// The minimum UI5 version required for page building block feature
+export const minUi5VersionForPageBuildingBlock = '1.136.0';
 export const defaultNavActionTile = 'tile';
 export const defaultNavActionDisplay = 'display';
 

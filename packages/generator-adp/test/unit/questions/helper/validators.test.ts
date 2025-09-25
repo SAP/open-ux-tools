@@ -2,13 +2,8 @@ import type { SystemLookup } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../../src/utils/i18n';
-import { resolveNodeModuleGenerator } from '../../../../src/app/extension-project';
 import { validateJsonInput } from '../../../../src/app/questions/helper/validators';
-import { validateExtensibilityGenerator } from '../../../../src/app/questions/helper/validators';
-
-jest.mock('../../../../src/app/extension-project', () => ({
-    resolveNodeModuleGenerator: jest.fn()
-}));
+import { validateExtensibilityExtension } from '../../../../src/app/questions/helper/validators';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateProjectName: jest.fn(),
@@ -27,7 +22,6 @@ const jsonInput = {
 
 const validateProjectNameMock = validateProjectName as jest.Mock;
 const validateNamespaceAdpMock = validateNamespaceAdp as jest.Mock;
-const resolveNodeModuleGeneratorMock = resolveNodeModuleGenerator as jest.Mock;
 
 describe('validateExtensibilityGenerator', () => {
     beforeEach(() => {
@@ -35,42 +29,66 @@ describe('validateExtensibilityGenerator', () => {
     });
 
     it('should return true when user accepts and generator is found', () => {
-        resolveNodeModuleGeneratorMock.mockReturnValue('/some/path/to/generator');
+        const result = validateExtensibilityExtension({
+            value: true,
+            isApplicationSupported: true,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: true
+        });
 
-        const result = validateExtensibilityGenerator(true, true, true);
-
-        expect(resolveNodeModuleGeneratorMock).toHaveBeenCalled();
         expect(result).toBe(true);
     });
 
     it('should return error message when user accepts but generator is not found', () => {
-        resolveNodeModuleGeneratorMock.mockReturnValue(undefined);
+        const result = validateExtensibilityExtension({
+            value: true,
+            isApplicationSupported: true,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: false
+        });
 
-        const result = validateExtensibilityGenerator(true, true, true);
-
-        expect(resolveNodeModuleGeneratorMock).toHaveBeenCalled();
-        expect(result).toBe(t('error.extensibilityGenNotFound'));
+        expect(result).toBe(t('error.extensibilityExtensionNotFound'));
     });
 
     it('should return true when user declines and app is supported and has sync views', () => {
-        const result = validateExtensibilityGenerator(false, true, true);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: true,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: true
+        });
         expect(result).toBe(true);
     });
 
     it('should return prompt label when user declines and app is unsupported', () => {
-        const result = validateExtensibilityGenerator(false, false, true);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: false,
+            hasSyncViews: true,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(t('prompts.createExtProjectContinueLabel'));
     });
 
     it('should return prompt label when user declines and no sync views exist', () => {
-        const result = validateExtensibilityGenerator(false, true, false);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: true,
+            hasSyncViews: false,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(t('prompts.createExtProjectContinueLabel'));
     });
 
     it('should return prompt label when user declines and both app unsupported and no sync views', () => {
-        const result = validateExtensibilityGenerator(false, false, false);
+        const result = validateExtensibilityExtension({
+            value: false,
+            isApplicationSupported: false,
+            hasSyncViews: false,
+            isExtensibilityExtInstalled: true
+        });
 
         expect(result).toBe(t('prompts.createExtProjectContinueLabel'));
     });
@@ -102,7 +120,7 @@ describe('validateJsonInput', () => {
         const invalidProjectNameMessage = 'invalid project name';
         validateProjectNameMock.mockReturnValue(invalidProjectNameMessage);
         validateNamespaceAdpMock.mockReturnValue(true);
-        await expect(validateJsonInput(systemLookup, true, jsonInput)).rejects.toThrowError(invalidProjectNameMessage);
+        await expect(validateJsonInput(systemLookup, true, jsonInput)).rejects.toThrow(invalidProjectNameMessage);
         expect(systemLookup.getSystemByName).not.toHaveBeenCalled();
     });
 
@@ -110,7 +128,7 @@ describe('validateJsonInput', () => {
         const invalidNamespaceMessage = 'invalid namespace';
         validateNamespaceAdpMock.mockReturnValue(invalidNamespaceMessage);
         validateProjectNameMock.mockReturnValue(true);
-        await expect(validateJsonInput(systemLookup, true, jsonInput)).rejects.toThrowError(invalidNamespaceMessage);
+        await expect(validateJsonInput(systemLookup, true, jsonInput)).rejects.toThrow(invalidNamespaceMessage);
         expect(systemLookup.getSystemByName).not.toHaveBeenCalled();
     });
 
@@ -119,7 +137,7 @@ describe('validateJsonInput', () => {
         validateProjectNameMock.mockReturnValue(true);
         await expect(
             validateJsonInput(systemLookup, true, { ...jsonInput, system: nonExistingSystem })
-        ).rejects.toThrowError(t('error.systemNotFound', { system: nonExistingSystem }));
+        ).rejects.toThrow(t('error.systemNotFound', { system: nonExistingSystem }));
         expect(systemLookup.getSystemByName).toHaveBeenCalledWith(nonExistingSystem);
     });
 });

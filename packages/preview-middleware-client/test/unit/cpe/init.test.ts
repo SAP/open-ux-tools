@@ -2,23 +2,44 @@ import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 import * as common from '@sap-ux-private/control-property-editor-common';
 
+import Log from 'mock/sap/base/Log';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import init from '../../../src/cpe/init';
+import { ChangeService } from '../../../src/cpe/changes';
 import * as flexChange from '../../../src/cpe/changes/flex-change';
+import { CommunicationService } from '../../../src/cpe/communication-service';
+import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
+import { ContextMenuService } from '../../../src/cpe/context-menu-service';
+import init from '../../../src/cpe/init';
 import { OutlineService } from '../../../src/cpe/outline/service';
+import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
+import { RtaService } from '../../../src/cpe/rta-service';
+import { SelectionService } from '../../../src/cpe/selection';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
-import { CommunicationService } from '../../../src/cpe/communication-service';
-import { RtaService } from '../../../src/cpe/rta-service';
-import { ChangeService } from '../../../src/cpe/changes';
-import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
-import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
-import { SelectionService } from '../../../src/cpe/selection';
-import { ContextMenuService } from '../../../src/cpe/context-menu-service';
+
+function getAppLoadedWaitPromise(): Promise<boolean> {
+    return new Promise((resolve) => {
+        CommunicationService.sendAction = jest.fn().mockImplementation((change) => {
+            if (common.appLoaded.match(change)) {
+                resolve(true);
+            }
+        });
+    });
+}
+
+async function waitForCpeInit(rta: RuntimeAuthoring): Promise<void> {
+    const isAppLoadedPromise = getAppLoadedWaitPromise();
+    // a.vasilev: Inside the init function we have a bunch of promises not included
+    // in the await so the only way to include them in the test await so to be able
+    // to verify sendAction gets called before the test ends is to use a deferred promise.
+    // The deffered promise is resolved when the app-loaded action is sent. This
+    // action is sent when all unawaited promises are resolved.
+    await init(rta);
+    await isAppLoadedPromise;
+}
 
 describe('main', () => {
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
@@ -104,8 +125,7 @@ describe('main', () => {
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
-        // const rta = new RuntimeAuthoringMock();
-        await init(rta);
+        await waitForCpeInit(rta);
         const callBackFn = spyPostMessage.mock.calls[2][0];
         (callBackFn as any)('test');
         // apply change without error
@@ -124,25 +144,24 @@ describe('main', () => {
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
-        expect(applyChangeSpy).toBeCalledWith({ rta }, payload);
+        expect(applyChangeSpy).toHaveBeenCalledWith({ rta }, payload);
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
     });
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
+        changesServiceSpy.mockResolvedValue();
         initOutlineSpy.mockRejectedValue(error);
         rtaSpy.mockResolvedValue();
 
         // act
-        await init(rta);
+        await waitForCpeInit(rta);
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
-        expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
+        expect(Log.error).toHaveBeenCalledWith('Service Initialization Failed: ', error);
     });
 
     test('init and appLoaed called', async () => {
-        CommunicationService.sendAction = jest.fn();
-
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
         changesServiceSpy.mockResolvedValue();
@@ -151,16 +170,7 @@ describe('main', () => {
         quickActionServiceSpy.mockResolvedValue();
         contextMenuServiceSpy.mockResolvedValue();
 
-        await init(rta);
-        await Promise.all([
-            initOutlineSpy,
-            rtaSpy,
-            changesServiceSpy,
-            contextMenuServiceSpy,
-            connectorServiceSpy,
-            selectionServiceSpy,
-            quickActionServiceSpy
-        ]);
-        expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
+        await waitForCpeInit(rta);
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.appLoaded());
     });
 });

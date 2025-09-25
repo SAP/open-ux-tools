@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-config-sub-generator",
     "description": "Main generator for configuring ABAP or Cloud Foundry deployment configuration",
-    "version": "0.3.25",
+    "version": "0.4.13",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,7 +18,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -43,7 +43,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "dotenv": "16.3.1",
         "hasbin": "1.2.3",
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
@@ -57,12 +57,12 @@
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
         "@sap-ux/cf-deploy-config-inquirer": "workspace:*",
         "@sap-ux/cf-deploy-config-writer": "workspace:*",
-        "@sap-ux/fiori-app-sub-generator": "workspace:*",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap/mta-lib": "1.7.4",
         "fs-extra": "10.0.0",
         "js-yaml": "4.1.0",
         "memfs": "3.4.13",
+        "os-name": "4.0.1",
         "rimraf": "5.0.5",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"

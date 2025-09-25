@@ -498,6 +498,72 @@ describe('data-access/filesystem', () => {
             });
         });
     });
+
+    describe('partialUpdate', () => {
+        beforeEach(() => {
+            vol.reset();
+        });
+        it('should update the entity with the new properties', async () => {
+            vol.fromNestedJSON({
+                [path.join(basedir(), 'dummies.json')]: JSON.stringify({
+                    dummies: {
+                        '41': { prop1: 41, prop2: '13' },
+                        '13': { prop1: 42, prop2: '1' }
+                    }
+                })
+            });
+
+            await expect(
+                getFilesystemStore(logger).partialUpdate({ entityName: 'dummy', id: '41', entity: { prop3: 'abc' } })
+            ).resolves.toStrictEqual({
+                prop1: 41,
+                prop2: '13',
+                prop3: 'abc'
+            });
+        });
+
+        it('should update the existing properties on the chosen enitity', async () => {
+            vol.fromNestedJSON({
+                [path.join(basedir(), 'dummies.json')]: JSON.stringify({
+                    dummies: {
+                        '41': { prop1: 41, prop2: '13' },
+                        '13': { prop1: 42, prop2: '1' }
+                    }
+                })
+            });
+            await expect(
+                getFilesystemStore(logger).partialUpdate({ entityName: 'dummy', id: '13', entity: { prop2: '2' } })
+            ).resolves.toStrictEqual({
+                prop1: 42,
+                prop2: '2'
+            });
+        });
+
+        test('should return undefined if the entity does not have properties', async () => {
+            vol.fromNestedJSON({
+                [path.join(basedir(), 'dummies.json')]: JSON.stringify({
+                    dummies: {
+                        '41': { prop1: 41, prop2: '13' },
+                        '13': { prop1: 42, prop2: '1' }
+                    }
+                })
+            });
+
+            await expect(
+                getFilesystemStore(logger).partialUpdate({ entityName: 'dummy', id: '42', entity: {} })
+            ).resolves.toBeUndefined();
+        });
+
+        test('should return undefined when entity file is missing', async () => {
+            vol.fromNestedJSON({
+                [basedir()]: {}
+            });
+
+            await expect(
+                getFilesystemStore(logger).partialUpdate({ entityName: 'dummy', id: '13', entity: { prop2: '2' } })
+            ).resolves.toBeUndefined();
+        });
+    });
 });
 
 describe('getFilesystemWatcherFor', () => {
@@ -519,7 +585,7 @@ describe('getFilesystemWatcherFor', () => {
         });
 
         expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeTruthy();
-        expect(mockWatcher).toBeCalledTimes(1);
+        expect(mockWatcher).toHaveBeenCalledTimes(1);
     });
 
     it('will return undefined if a file for an entity does not exist', () => {
@@ -530,6 +596,6 @@ describe('getFilesystemWatcherFor', () => {
         });
 
         expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeUndefined();
-        expect(mockWatcher).toBeCalledTimes(0);
+        expect(mockWatcher).toHaveBeenCalledTimes(0);
     });
 });

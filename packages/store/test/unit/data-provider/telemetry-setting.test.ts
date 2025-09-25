@@ -12,7 +12,8 @@ describe('TelemetrySetting data provider', () => {
         read: jest.fn(),
         del: jest.fn(),
         getAll: jest.fn(),
-        readAll: jest.fn()
+        readAll: jest.fn(),
+        partialUpdate: jest.fn()
     };
     beforeEach(() => {
         mockGetFilesystemStore.mockReturnValue(mockFsStore);
@@ -36,7 +37,7 @@ describe('TelemetrySetting data provider', () => {
         await expect(
             new TelemetryDataProvider(logger).write(new TelemetrySetting(expectedTelemetrySetting))
         ).resolves.toBe(expectedTelemetrySetting);
-        expect(mockFsStore.write).toBeCalledWith({
+        expect(mockFsStore.write).toHaveBeenCalledWith({
             entityName: Entities.TelemetrySetting,
             id: new TelemetrySettingKey().getId(),
             entity: expectedTelemetrySetting
@@ -51,7 +52,7 @@ describe('TelemetrySetting data provider', () => {
         await expect(
             new TelemetryDataProvider(logger).delete(new TelemetrySetting(expectedTelemetrySetting))
         ).resolves.toBe(expectedTelemetrySetting);
-        expect(mockFsStore.del).toBeCalledWith({
+        expect(mockFsStore.del).toHaveBeenCalledWith({
             entityName: Entities.TelemetrySetting,
             id: new TelemetrySettingKey().getId()
         });
@@ -63,7 +64,7 @@ describe('TelemetrySetting data provider', () => {
         };
         mockFsStore.getAll.mockResolvedValueOnce(expectedTelemetrySetting);
         await expect(new TelemetryDataProvider(logger).getAll()).resolves.toBe(expectedTelemetrySetting);
-        expect(mockFsStore.getAll).toBeCalledWith({
+        expect(mockFsStore.getAll).toHaveBeenCalledWith({
             entityName: Entities.TelemetrySetting
         });
     });

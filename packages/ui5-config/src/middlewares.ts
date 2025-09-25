@@ -44,7 +44,7 @@ export function getPreviewMiddlewareConfig({
     flpAction,
     localStartFile
 }: {
-    ui5Theme: string;
+    ui5Theme?: string;
     appId?: string;
     flpAction?: string;
     localStartFile?: string;
@@ -54,7 +54,7 @@ export function getPreviewMiddlewareConfig({
         afterMiddleware: 'fiori-tools-appreload',
         configuration: {
             flp: {
-                theme: ui5Theme
+                ...(ui5Theme && { theme: ui5Theme })
             }
         }
     };
@@ -102,14 +102,14 @@ export function getBackendComments(
  * @param backends configuration of backends
  * @param ui5 UI5 configuration
  * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
- * @param ignoreCertError ignore certificate errors
+ * @param ignoreCertErrors ignore certificate errors
  * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: FioriToolsProxyConfigBackend[],
     ui5?: Partial<FioriToolsProxyConfigUI5>,
     afterMiddleware = 'compression',
-    ignoreCertError: boolean = false
+    ignoreCertErrors: boolean = false
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
@@ -118,12 +118,12 @@ export function getFioriToolsProxyMiddlewareConfig(
         name: 'fiori-tools-proxy',
         afterMiddleware,
         configuration: {
-            ignoreCertError: ignoreCertError
+            ignoreCertErrors: ignoreCertErrors
         }
     };
     let comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
         {
-            path: 'configuration.ignoreCertError',
+            path: 'configuration.ignoreCertErrors',
             comment:
                 ' If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted'
         }

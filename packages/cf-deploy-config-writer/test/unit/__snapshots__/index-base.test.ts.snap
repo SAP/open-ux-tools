@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CF Writer Base Generate Base Config - App Frontend Generate deployment configs - app frontend 1`] = `
 Object {
@@ -246,23 +246,14 @@ archive.zip
   "router/package.json": Object {
     "contents": "{
     \\"name\\": \\"app-router\\",
-    \\"private\\": true,
     \\"description\\": \\"App router\\",
-    \\"engines\\": {
-        \\"node\\": \\">= 16.0.0\\"
-    },
     \\"scripts\\": {
-        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\",
-        \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
+        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^19\\"
-    },
-    \\"devDependencies\\": {
-        \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"
+        \\"@sap/approuter\\": \\"^20.0.0\\"
     }
-}
-",
+}",
     "state": "modified",
   },
   "router/xs-app.json": Object {
@@ -413,23 +404,14 @@ archive.zip
   "router/package.json": Object {
     "contents": "{
     \\"name\\": \\"app-router\\",
-    \\"private\\": true,
     \\"description\\": \\"App router\\",
-    \\"engines\\": {
-        \\"node\\": \\">= 16.0.0\\"
-    },
     \\"scripts\\": {
-        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\",
-        \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
+        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
     },
     \\"dependencies\\": {
-        \\"@sap/approuter\\": \\"^19\\"
-    },
-    \\"devDependencies\\": {
-        \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"
+        \\"@sap/approuter\\": \\"^20.0.0\\"
     }
-}
-",
+}",
     "state": "modified",
   },
   "router/xs-app.json": Object {

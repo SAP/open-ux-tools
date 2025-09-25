@@ -1,5 +1,163 @@
 # @sap-ux/annotation-generator
 
+## 0.3.62
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/odata-annotation-core-types@0.5.0
+    -   @sap-ux/fiori-annotation-api@0.7.0
+    -   @sap-ux/odata-entity-model@0.3.1
+
+## 0.3.61
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.23
+-   @sap-ux/project-access@1.32.1
+
+## 0.3.60
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/fiori-annotation-api@0.6.22
+
+## 0.3.59
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/fiori-annotation-api@0.6.21
+
+## 0.3.58
+
+### Patch Changes
+
+-   Updated dependencies [1f18878]
+    -   @sap-ux/odata-annotation-core-types@0.4.6
+    -   @sap-ux/fiori-annotation-api@0.6.20
+    -   @sap-ux/odata-entity-model@0.3.1
+
+## 0.3.57
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/fiori-annotation-api@0.6.19
+
+## 0.3.56
+
+### Patch Changes
+
+-   Updated dependencies [a6ff2aa]
+    -   @sap-ux/fiori-annotation-api@0.6.18
+
+## 0.3.55
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.17
+-   @sap-ux/project-access@1.30.13
+
+## 0.3.54
+
+### Patch Changes
+
+-   810d7eb: fix: Annotations are not generated if navigation property can't be resolved.
+
+## 0.3.53
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.16
+
+## 0.3.52
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-annotation-api@0.6.15
+
+## 0.3.51
+
+### Patch Changes
+
+-   Updated dependencies [c7db726]
+    -   @sap-ux/odata-annotation-core-types@0.4.5
+    -   @sap-ux/fiori-annotation-api@0.6.14
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/project-access@1.30.11
+
+## 0.3.50
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/fiori-annotation-api@0.6.13
+
+## 0.3.49
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/fiori-annotation-api@0.6.12
+
+## 0.3.48
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/fiori-annotation-api@0.6.11
+
+## 0.3.47
+
+### Patch Changes
+
+-   2cae662: fix(deps): update dependency @sap-ux/annotation-converter to v0.10.3
+-   Updated dependencies [2cae662]
+    -   @sap-ux/fiori-annotation-api@0.6.10
+
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/fiori-annotation-api@0.6.9
+
+## 0.3.45
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.8
+
+## 0.3.44
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/fiori-annotation-api@0.6.7
+
+## 0.3.43
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/fiori-annotation-api@0.6.6
+
+## 0.3.42
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/fiori-annotation-api@0.6.5
+
 ## 0.3.41
 
 ### Patch Changes

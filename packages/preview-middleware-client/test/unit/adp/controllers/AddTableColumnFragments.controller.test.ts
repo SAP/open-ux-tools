@@ -19,6 +19,7 @@ import Control from 'sap/ui/core/Control';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import { getAdditionalChangeInfo } from '../../../../src/utils/additional-change-info';
 import { FlexChange } from 'open/ux/preview/client/flp/common';
+import * as core from '../../../../src/utils/core';
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -92,7 +93,8 @@ describe('AddTableColumnsFragments controller', () => {
                     }),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content'),
                     getName: jest.fn().mockReturnValue('Table')
-                })
+                }),
+                getId: jest.fn().mockReturnValue('runtime-control-id')
             });
 
             ControlUtils.getControlAggregationByName = jest
@@ -198,6 +200,7 @@ describe('AddTableColumnsFragments controller', () => {
                     } as unknown as SimpleForm<Control[]>
                 ])
             } as unknown as Dialog;
+            return addFragment;
         };
 
         beforeEach(() => {
@@ -234,11 +237,17 @@ describe('AddTableColumnsFragments controller', () => {
             test('sets error when column and cell fragments have the same name', () => {
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name1');
-
-                createDialog([
-                    mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error]),
-                    mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
-                ] as unknown as Control[]);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+                rtaMock.getFlexSettings.mockReturnValue({
+                    projectId: 'adp.app'
+                });
+                createDialog(
+                    [
+                        mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error]),
+                        mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
+                    ] as unknown as Control[],
+                    rtaMock
+                );
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -249,7 +258,7 @@ describe('AddTableColumnsFragments controller', () => {
                 expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, '');
                 expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(2, 'Duplicate name');
                 expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(3, 'Duplicate name');
-                expect(beginBtnSetEnabledMock).lastCalledWith(false);
+                expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
             });
 
             test('does not override other errors', () => {
@@ -271,20 +280,28 @@ describe('AddTableColumnsFragments controller', () => {
             });
 
             test('clears errors on value change', () => {
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
+                rtaMock.getFlexSettings.mockReturnValue({
+                    projectId: 'adp.app'
+                });
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name2');
 
-                createDialog([
-                    mockFormInput(true, 'Name2', [ValueState.Error, ValueState.Success], ['Duplicate name', '']),
-                    mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
-                ] as unknown as Control[]);
+                createDialog(
+                    [
+                        mockFormInput(true, 'Name2', [ValueState.Error, ValueState.Success], ['Duplicate name', '']),
+                        mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
+                    ] as unknown as Control[],
+                    rtaMock
+                );
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
                 expect(mocks.setValueStateMock).toHaveBeenCalledTimes(3);
                 expect(mocks.setValueStateMock.mock.calls.every((call) => call[0] === ValueState.Success)).toBe(true);
                 expect(mocks.setValueStateMock).toHaveBeenNthCalledWith(2, ValueState.Success);
-                expect(beginBtnSetEnabledMock).lastCalledWith(true);
+                expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(true);
             });
         });
 
@@ -299,7 +316,7 @@ describe('AddTableColumnsFragments controller', () => {
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
             expect(mocks.setValueStateMock).toHaveBeenCalledWith(ValueState.None);
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('sets error when the fragment name has special characters', () => {
@@ -316,7 +333,7 @@ describe('AddTableColumnsFragments controller', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenCalledWith(
                 'The fragment name cannot contain white spaces or special characters.'
             );
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('sets error when the fragment name contains a whitespace at the end', () => {
@@ -333,7 +350,7 @@ describe('AddTableColumnsFragments controller', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenCalledWith(
                 'The fragment name cannot contain white spaces or special characters.'
             );
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('sets error when the fragment name exceeds 64 characters', () => {
@@ -352,7 +369,7 @@ describe('AddTableColumnsFragments controller', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenCalledWith(
                 'A fragment file name cannot contain more than 64 characters.'
             );
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('does not crash if composite command exists in command stack', () => {
@@ -464,7 +481,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('throws exception if control does not have valid aggregations', async () => {
-            createDialog([
+            const dialogController = createDialog([
                 mockFormInput(true, 'New', ValueState.Success),
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
@@ -476,8 +493,12 @@ describe('AddTableColumnsFragments controller', () => {
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
                 }),
-                getAggregation: getAggregationMock
+                getAggregation: getAggregationMock,
+                getId: jest.fn().mockReturnValue('runtime-control-id')
             } as unknown as ManagedObject);
+            jest.spyOn(core, 'getControlById').mockReturnValue({
+                sId: 'some-id'
+            } as any);
 
             let thrown: string | undefined;
             try {
@@ -492,14 +513,15 @@ describe('AddTableColumnsFragments controller', () => {
                 thrown = (e as Error).message;
             }
             expect(thrown).toBe(`Selected control does not have "columns" aggregation`);
-
+            (dialogController as any)['_runtimeControl'] = undefined;
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({ 'columns': {} }),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
                 }),
-                getAggregation: getAggregationMock
+                getAggregation: getAggregationMock,
+                getId: jest.fn().mockReturnValue('runtime-control-id')
             } as unknown as ManagedObject);
 
             try {
@@ -576,14 +598,20 @@ describe('AddTableColumnsFragments controller', () => {
             rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
 
             sapCoreMock.byId.mockReturnValue({});
-            const getAggregationMock = jest.fn().mockReturnValue([{ dummyAggregation: true }]);
+            const getAggregationMock = jest.fn().mockReturnValue([
+                {
+                    dummyAggregation: true,
+                    getId: jest.fn().mockReturnValue('runtime-control-id')
+                }
+            ]);
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({ 'columns': {}, 'items': {} }),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
                 }),
-                getAggregation: getAggregationMock
+                getAggregation: getAggregationMock,
+                getId: jest.fn().mockReturnValue('runtime-control-id')
             } as unknown as ManagedObject);
 
             createDialog(

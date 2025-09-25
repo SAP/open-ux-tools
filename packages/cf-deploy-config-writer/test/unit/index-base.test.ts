@@ -61,7 +61,7 @@ describe('CF Writer Base', () => {
 
     describe('Generate Base Config - Standalone', () => {
         test('Generate deployment configs - standalone with ABAP service provider', async () => {
-            jest.setTimeout(20000);
+            jest.setTimeout(20_000);
             const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
             apiGetInstanceCredentialsMock.mockResolvedValue({
                 credentials: {
@@ -106,7 +106,7 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(8);
+            expect(debugSpy).toHaveBeenCalledTimes(8);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
@@ -130,7 +130,7 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(10);
+            expect(debugSpy).toHaveBeenCalledTimes(10);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
@@ -154,7 +154,7 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(9);
+            expect(debugSpy).toHaveBeenCalledTimes(9);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(fs.readFileSync(join(mtaPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
@@ -176,19 +176,19 @@ describe('CF Writer Base', () => {
                 routerType: RouterModuleType.Managed
             } as Partial<CFBaseConfig>;
             jest.spyOn(unitTestFs, 'exists').mockReturnValueOnce(true);
-            await expect(generateBaseConfig(config as CFBaseConfig, unitTestFs)).rejects.toThrowError(
+            await expect(generateBaseConfig(config as CFBaseConfig, unitTestFs)).rejects.toThrow(
                 'A folder with same name already exists in the target directory'
             );
             delete config.abapServiceProvider?.abapService;
-            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
+            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(
                 'Missing ABAP service details for direct service binding'
             );
             delete config.routerType;
-            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                'Missing required parameters, MTA path, MTA ID or router type'
+            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(
+                'Missing required parameters, MTA Path, MTA ID, or the Router type is missing.'
             );
             hasSyncMock.mockReturnValue(false);
-            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(MTABinNotFound);
+            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(MTABinNotFound);
         });
         it.each([['~sample'], ['111sample'], [' sample'], ['0sample'], ['.sample'], ['s'.repeat(129)]])(
             'Validate length and starting characters %s',
@@ -203,8 +203,8 @@ describe('CF Writer Base', () => {
                     mtaDescription: 'MyManagedDescription',
                     routerType: RouterModuleType.Managed
                 } as Partial<CFBaseConfig>;
-                await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                    'The MTA ID must start with a letter or underscore and be less than 128 characters long'
+                await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(
+                    'The MTA ID must start with a letter or underscore and be less than 128 characters.'
                 );
             }
         );
@@ -220,8 +220,8 @@ describe('CF Writer Base', () => {
                 mtaDescription: 'MyManagedDescription',
                 routerType: RouterModuleType.Managed
             } as Partial<CFBaseConfig>;
-            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                'The MTA ID can only contain letters, numbers, dashes, periods, underscores'
+            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(
+                'The MTA ID can only contain letters, numbers, dashes, periods, and underscores.'
             );
         });
     });

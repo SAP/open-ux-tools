@@ -11,6 +11,11 @@ import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap
 import type { ConnectedSystem } from '../../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
 import { url } from 'inspector';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: jest.fn()
+}));
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -68,6 +73,8 @@ describe('questions', () => {
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.serviceProvider = serviceProviderMock;
         validateServiceInfoMock = true;
+        // Feature toggle disabled by default - service key shown
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return Abap on BTP questions', () => {
@@ -113,7 +120,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "guiType": "file-browser",
-                "message": "Service key file path",
+                "message": "Service Key File Path",
                 "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
@@ -172,6 +179,39 @@ describe('questions', () => {
               },
             ]
         `);
+    });
+    test.each([
+        {
+            description: 'should show the service key question when feature toggle is disabled (default)',
+            featureEnabled: false,
+            expectServiceKeyChoice: true,
+            expectServiceKeyPrompt: true
+        },
+        {
+            description: 'should hide the service key question when feature toggle is enabled',
+            featureEnabled: true,
+            expectServiceKeyChoice: false,
+            expectServiceKeyPrompt: false
+        }
+    ])('$description', ({ featureEnabled, expectServiceKeyChoice, expectServiceKeyPrompt }) => {
+        (isFeatureEnabled as jest.Mock).mockReturnValue(featureEnabled);
+
+        const questions = getAbapOnBTPSystemQuestions();
+        const authTypePrompt = questions.find((q) => q.name === 'abapOnBtpAuthType') as ListQuestion;
+
+        if (expectServiceKeyChoice) {
+            expect(authTypePrompt.choices).toContainEqual({
+                name: 'Upload a Service Key File',
+                value: 'serviceKey'
+            });
+        } else {
+            expect(authTypePrompt.choices).not.toContainEqual({
+                name: 'Upload a Service Key File',
+                value: 'serviceKey'
+            });
+        }
+
+        expect(questions.some((q) => q.name === 'serviceKey')).toBe(expectServiceKeyPrompt);
     });
 
     test('should show the correct auth type prompt', () => {
@@ -238,15 +278,15 @@ describe('questions', () => {
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(errorHandlerSpy).toHaveBeenCalledWith(
             ERROR_TYPE.NO_ABAP_ENVS,
-            'No ABAP environments in CF space found.'
+            'No ABAP environments in CF space found. Ensure an ABAP environment exists.'
         );
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
-            'No ABAP environments in CF space found. See log for more details.'
+            'No ABAP environments in CF space found. Ensure an ABAP environment exists. For more information, view the logs.'
         );
 
         // CLI throws to exit, as you cannot continue
         PromptState.isYUI = false;
-        await expect(((cfDiscoPrompt as ListQuestion).choices as Function)()).rejects.toThrowError(
+        await expect(((cfDiscoPrompt as ListQuestion).choices as Function)()).rejects.toThrow(
             t('errors.abapEnvsUnavailable')
         );
 
@@ -255,8 +295,7 @@ describe('questions', () => {
         (getServicesFromCF as jest.Mock).mockRejectedValueOnce(new Error('Not logged in'));
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
-            'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry ' +
-                '(see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login). See log for more details.'
+            'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry. For more information, see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login. For more information, view the logs.'
         );
     });
 
@@ -375,7 +414,7 @@ describe('questions', () => {
                 abapOnBtpAuthType: 'cloudFoundry',
                 cloudFoundryAbapSystem: cfDiscoveredAbapEnvsMock[1]
             })
-        ).rejects.toThrowError('Cannot connect');
+        ).rejects.toThrow('Cannot connect');
 
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
         expect(PromptState.odataService.connectedSystem).toBeUndefined();

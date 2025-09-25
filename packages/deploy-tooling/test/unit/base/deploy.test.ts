@@ -57,7 +57,7 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
 
             await deploy(archive, { app, target }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: undefined,
@@ -66,7 +66,7 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockClear();
 
             await deploy(archive, { app, target, test: true, safe: false, credentials }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: true,
@@ -81,13 +81,13 @@ describe('base/deploy', () => {
                 { app, target: { ...target, params }, test: true, safe: false, credentials },
                 nullLogger
             );
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: true,
                 safeMode: false
             });
-            expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+            expect(mockCreateForAbap).toHaveBeenCalledWith(expect.objectContaining({ params }));
         });
 
         test('Log validation summaries regardless of validation result', async () => {
@@ -100,7 +100,7 @@ describe('base/deploy', () => {
             });
 
             await deploy(archive, { app, target }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: undefined,
@@ -109,7 +109,7 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockClear();
 
             await deploy(archive, { app, target, test: true, safe: false, credentials }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: true,
@@ -124,13 +124,13 @@ describe('base/deploy', () => {
                 { app, target: { ...target, params }, test: true, safe: false, credentials },
                 nullLogger
             );
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: true,
                 safeMode: false
             });
-            expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+            expect(mockCreateForAbap).toHaveBeenCalledWith(expect.objectContaining({ params }));
             expect(formatSummaryMock).toHaveBeenCalled();
         });
 
@@ -144,12 +144,12 @@ describe('base/deploy', () => {
             const warnSpy = jest.spyOn(nullLogger, 'warn');
             const infoSpy = jest.spyOn(nullLogger, 'info');
             await deploy(archive, { app, target, yes: true }, nullLogger);
-            expect(mockCreateForAbap).toBeCalledWith(
+            expect(mockCreateForAbap).toHaveBeenCalledWith(
                 expect.objectContaining({ auth: { password: '~password', username: '~username' } })
             );
-            expect(mockCreateForAbap).toBeCalledTimes(3);
-            expect(warnSpy).toBeCalledTimes(3);
-            expect(infoSpy).toBeCalledTimes(4);
+            expect(mockCreateForAbap).toHaveBeenCalledTimes(3);
+            expect(warnSpy).toHaveBeenCalledTimes(3);
+            expect(infoSpy).toHaveBeenCalledTimes(4);
         });
 
         test('Successful retry after known axios error (cloud target)', async () => {
@@ -183,7 +183,7 @@ describe('base/deploy', () => {
                 url: '~url'
             });
 
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: app,
                 testMode: undefined,
@@ -208,9 +208,9 @@ describe('base/deploy', () => {
             } catch (error) {
                 expect(error).toBe(sameIdError);
             }
-            expect(warnSpy).toBeCalledTimes(2);
-            expect(infoSpy).toBeCalledTimes(1);
-            expect(checkForCredentialsMock).toBeCalledTimes(1);
+            expect(warnSpy).toHaveBeenCalledTimes(2);
+            expect(infoSpy).toHaveBeenCalledTimes(1);
+            expect(checkForCredentialsMock).toHaveBeenCalledTimes(1);
         });
 
         test('Axios Error and no retry', async () => {
@@ -266,15 +266,15 @@ describe('base/deploy', () => {
             mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
             const config = { app, target, test: true, safe: false, credentials, createTransport: true };
             await deploy(archive, config, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+            expect(mockedUi5RepoService.deploy).toHaveBeenCalledWith({
                 archive,
                 bsp: { ...app, transport: '~transport123' },
                 testMode: true,
                 safeMode: false
             });
             expect(config.createTransport).toBe(false);
-            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
-            expect(mockedAdtService.createTransportRequest).toBeCalledWith(
+            expect(mockedAdtService.createTransportRequest).toHaveBeenCalledTimes(1);
+            expect(mockedAdtService.createTransportRequest).toHaveBeenCalledWith(
                 expect.objectContaining({ description: 'For ABAP repository ~name, created by SAP Open UX Tools' })
             );
         });
@@ -302,7 +302,7 @@ describe('base/deploy', () => {
             );
 
             expect(tr).toBe('~transport123');
-            expect(createTransportRequestMock).toBeCalledWith(
+            expect(createTransportRequestMock).toHaveBeenCalledWith(
                 expect.objectContaining({
                     description: 'For ABAP repository app-name-with-extra-chars, created by...'
                 })
@@ -322,7 +322,7 @@ describe('base/deploy', () => {
             } catch (error) {
                 expect(error.message).toBe('Transport request could not be created for application ~name.');
             }
-            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+            expect(mockedAdtService.createTransportRequest).toHaveBeenCalledTimes(1);
         });
 
         test('Throws error creating new transport request during deployment', async () => {
@@ -340,7 +340,7 @@ describe('base/deploy', () => {
             } catch (error) {
                 expect(error.message).toBe('ADT Service Not Found');
             }
-            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+            expect(mockedAdtService.createTransportRequest).toHaveBeenCalledTimes(1);
         });
         test('additional info logged', async () => {
             jest.spyOn(nullLogger, 'info');
@@ -358,7 +358,7 @@ describe('base/deploy', () => {
                 mockedLrepService.deploy.mockResolvedValue(undefined);
 
                 await deploy(adpArchive.toBuffer(), { app: {}, target }, nullLogger);
-                expect(mockedLrepService.deploy).toBeCalledWith(expect.any(Buffer), {
+                expect(mockedLrepService.deploy).toHaveBeenCalledWith(expect.any(Buffer), {
                     layer: 'VENDOR',
                     namespace: 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/'
                 });
@@ -392,9 +392,9 @@ describe('base/deploy', () => {
         test('No errors', async () => {
             mockedUi5RepoService.undeploy.mockResolvedValue({});
             await undeploy({ app, target }, nullLogger);
-            expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: undefined });
+            expect(mockedUi5RepoService.undeploy).toHaveBeenCalledWith({ bsp: app, testMode: undefined });
             await undeploy({ app, target, test: true }, nullLogger);
-            expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: true });
+            expect(mockedUi5RepoService.undeploy).toHaveBeenCalledWith({ bsp: app, testMode: true });
         });
 
         test('Creates new transport request during undeployment and reset createTransport param', async () => {
@@ -403,12 +403,37 @@ describe('base/deploy', () => {
             mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
             const config = { app, target, createTransport: true };
             await undeploy(config, nullLogger);
-            expect(mockedUi5RepoService.undeploy).toBeCalledWith({
+            expect(mockedUi5RepoService.undeploy).toHaveBeenCalledWith({
                 bsp: { ...app, transport: '~transport123' },
                 testMode: undefined
             });
             expect(config.createTransport).toBe(false);
-            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+            expect(mockedAdtService.createTransportRequest).toHaveBeenCalledTimes(1);
+        });
+
+        describe('adaptation projects', () => {
+            const adpArchive = new AdmZip();
+            adpArchive.addLocalFolder(join(__dirname, '../../fixtures/adp/webapp'));
+
+            test('should undeploy successfully from LREP', async () => {
+                mockedStoreService.read.mockResolvedValueOnce(credentials);
+                mockedLrepService.undeploy.mockResolvedValue(undefined);
+                mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+
+                const lrep = 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/';
+                const config = {
+                    app: { package: '~package', transport: '~transport' },
+                    target,
+                    createTransport: true,
+                    lrep
+                };
+
+                await undeploy(config, nullLogger);
+                expect(mockedLrepService.undeploy).toHaveBeenCalledWith({
+                    namespace: lrep,
+                    transport: '~transport123'
+                });
+            });
         });
     });
 

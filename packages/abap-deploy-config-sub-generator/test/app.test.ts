@@ -16,11 +16,19 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import { getVariantNamespace } from '../src/utils/project';
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn()
 }));
+
+jest.mock('../src/utils/project.ts', () => ({
+    ...jest.requireActual('../src/utils/project.ts'),
+    getVariantNamespace: jest.fn()
+}));
+
+const mockGetVariantNamespace = getVariantNamespace as jest.Mock;
 
 const mockGetService = getService as jest.Mock;
 mockGetService.mockResolvedValueOnce({
@@ -35,6 +43,8 @@ jest.mock('fs', () => {
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
+    _fs.realpath = fsLib.realpath;
+    _fs.realpathSync = fsLib.realpathSync;
     return _fs.use(vol as unknown as typeof fs);
 });
 
@@ -74,6 +84,7 @@ describe('Test abap deploy configuration generator', () => {
         mockChdir.mockImplementation((dir): void => {
             cwd = dir;
         });
+        mockGetVariantNamespace.mockResolvedValue(undefined);
     });
 
     afterEach(() => {
@@ -133,7 +144,7 @@ describe('Test abap deploy configuration generator', () => {
         );
 
         expect(pkgJson.scripts).toStrictEqual({
-            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip',
+            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml',
             'deploy-test': 'npm run build && fiori deploy --config ui5-deploy.yaml --testMode true',
             'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
         });
@@ -206,7 +217,7 @@ describe('Test abap deploy configuration generator', () => {
         );
 
         expect(pkgJson.scripts).toStrictEqual({
-            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip',
+            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml',
             'deploy-test': 'npm run build && fiori deploy --config ui5-deploy.yaml --testMode true',
             'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
         });
@@ -376,7 +387,7 @@ describe('Test abap deploy configuration generator', () => {
                         shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
-                overwrite: { hide: true },
+                overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: false
                 },
@@ -407,6 +418,7 @@ describe('Test abap deploy configuration generator', () => {
 
     it('should run the generator with correct prompt options for adp project', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockGetVariantNamespace.mockResolvedValue('apps/workcenter/appVariants/customer.app.variant');
         const abapDeployConfigInquirerSpy = jest
             .spyOn(abapInquirer, 'getPrompts')
             .mockResolvedValue({ prompts: [], answers: {} as abapInquirer.AbapDeployConfigAnswersInternal });
@@ -484,7 +496,7 @@ describe('Test abap deploy configuration generator', () => {
                         shouldValidateFormatAndSpecialCharacters: true
                     }
                 },
-                overwrite: { hide: true },
+                overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
                 },
@@ -493,6 +505,127 @@ describe('Test abap deploy configuration generator', () => {
             {},
             false // isYUI
         );
+
+        const ui5DeployConfig = await UI5Config.newInstance(
+            await fs.promises.readFile(`${appDir}/ui5-deploy.yaml`, { encoding: 'utf8' })
+        );
+        const deployTask = ui5DeployConfig.findCustomTask<AbapDeployConfig>(ABAP_DEPLOY_TASK)?.configuration;
+
+        expect(deployTask).toStrictEqual({
+            app: {
+                package: '$TMP',
+                transport: ''
+            },
+            lrep: 'apps/workcenter/appVariants/customer.app.variant',
+            target: {},
+            exclude: ['/test/']
+        });
+    });
+
+    it('should run the generator for adp project on-premise and generate a correct deploy task', async () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockGetVariantNamespace.mockResolvedValue('apps/workcenter/appVariants/customer.app.variant');
+        const abapDeployConfigInquirerSpy = jest.spyOn(abapInquirer, 'getPrompts').mockResolvedValue({
+            prompts: [],
+            answers: {
+                targetSystem: 'https://mock.system.sap:24300',
+                packageInputChoice: PackageInputChoices.EnterManualChoice,
+                packageManual: 'Z123456_UPDATED',
+                transportInputChoice: TransportChoices.EnterManualChoice,
+                transportManual: 'ZTESTK900001'
+            } as abapInquirer.AbapDeployConfigAnswersInternal
+        });
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
+                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/index.html`]: '<html>mock index</html>'
+            },
+            '/'
+        );
+
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+
+        const runContext = yeomanTest
+            .create(
+                AbapDeployGenerator,
+                {
+                    resolved: abapDeployGenPath
+                },
+                {
+                    cwd: appDir
+                }
+            )
+            .withOptions({
+                skipInstall: true,
+                appRootPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
+                index: true,
+                isS4HC: false
+            });
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
+            {
+                backendTarget: {
+                    abapTarget: {
+                        url: 'https://mock.system.sap:24300',
+                        authenticationType: undefined,
+                        client: '',
+                        destination: undefined,
+                        scp: true
+                    },
+                    systemName: undefined,
+                    serviceProvider: undefined,
+                    type: 'application'
+                },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: true },
+                description: { default: undefined },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: true,
+                        shouldValidatePackageForStartingPrefix: true,
+                        shouldValidateFormatAndSpecialCharacters: true
+                    }
+                },
+                transportManual: { default: undefined },
+                index: { indexGenerationAllowed: false },
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: true,
+                        shouldValidatePackageForStartingPrefix: true,
+                        shouldValidateFormatAndSpecialCharacters: true
+                    }
+                },
+                overwriteAbapConfig: { hide: true },
+                transportInputChoice: {
+                    hideIfOnPremise: true
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+            },
+            {},
+            false // isYUI
+        );
+
+        const ui5DeployConfig = await UI5Config.newInstance(
+            await fs.promises.readFile(`${appDir}/ui5-deploy.yaml`, { encoding: 'utf8' })
+        );
+        const deployTask = ui5DeployConfig.findCustomTask<AbapDeployConfig>(ABAP_DEPLOY_TASK)?.configuration;
+
+        expect(deployTask).toStrictEqual({
+            app: {
+                package: 'Z123456_UPDATED',
+                transport: 'ZTESTK900001'
+            },
+            lrep: 'apps/workcenter/appVariants/customer.app.variant',
+            target: {
+                url: 'https://mock.system.sap:24300'
+            },
+            exclude: ['/test/']
+        });
     });
 
     it('handleProjectDoesNotExist - ui5.yaml does not exist in the app folder (CLI)', async () => {

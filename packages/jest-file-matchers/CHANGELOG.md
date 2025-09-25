@@ -1,5 +1,17 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.4
+
+### Patch Changes
+
+-   edac6f4: adds matcher for ui5 version in appgeninfo
+
+## 0.2.3
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.2.2
 
 ### Patch Changes
