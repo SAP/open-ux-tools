@@ -9,7 +9,8 @@ import {
     proxyResponseHandler,
     sendResponse,
     proxyErrorHandler,
-    updateProxyEnv
+    updateProxyEnv,
+    getPathReplace
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import fs from 'fs';
@@ -544,6 +545,40 @@ describe('utils', () => {
             const result = filterCompressedHtmlFiles('my/req/path', req as any);
             expect(result).toBeTruthy();
             expect(req.headers['accept-encoding']).toBeUndefined();
+        });
+    });
+
+    describe('getPathRewrite', () => {
+        test('default rewrite', () => {
+            const config = {
+                path: '/mypath',
+                url: 'https://example.example',
+                version: '1.120.0'
+            };
+            const ui5Ver = '/1.120.0';
+            const rewrite = getPathReplace(config, ui5Ver);
+            expect(rewrite).toEqual({ '/mypath': '/1.120.0/mypath' });
+        });
+
+        test('custom pathRewrite', () => {
+            const config = {
+                pathReplace: 'this/path/should/rewrite/',
+                path: '/mypath',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathReplace(config, ui5Ver);
+            expect(rewrite).toEqual({ '/mypath': 'this/path/should/rewrite/mypath' });
+        });
+
+        test('handle pathRewrite with trailing slash', () => {
+            const config = {
+                path: '/resources',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathReplace(config, ui5Ver);
+            expect(rewrite).toEqual({ '/resources': '/resources' });
         });
     });
 });
