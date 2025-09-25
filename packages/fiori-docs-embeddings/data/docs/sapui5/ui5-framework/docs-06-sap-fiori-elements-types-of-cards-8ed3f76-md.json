@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-types-of-cards-8ed3f76-md",
+  "title": "Types of Cards",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/types-of-cards-8ed3f76.md",
+  "lastModified": "2025-09-01T18:17:10.659Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Types",
+    "Cards"
+  ],
+  "headers": [
+    "Types of Cards",
+    "Additional Features in SAP Fiori Elements for OData V2"
+  ],
+  "content": "<!-- loio8ed3f76b5f62419eb0408c0dba4b2e47 -->\n\n# Types of Cards\n\nOverview pages may contain transactional cards, such as table, list, stack, quick view cards, and analytical chart cards such as line, bubble, donut, column, and bullet chart cards.\n\n\n\nThe following is a list of cards that are available in SAP Fiori elements for OData V2 and SAP Fiori elements for OData V4:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nCard Type\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nTable\n\n</td>\n<td valign=\"top\">\n\nTable cards display a list of records according to the configuration in the `com.sap.vocabularies.UI.v1.LineItem` term. Table cards displays data in a 3-column table layout.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nList\n\n</td>\n<td valign=\"top\">\n\nList cards display lists of records according to the configuration in the `com.sap.vocabularies.UI.v1.LineItem` term. List cards display up to six fields of data in each list item.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nAnalytical Chart\n\n</td>\n<td valign=\"top\">\n\nAnalytical chart cards show data in a variety of chart formats. They can be line, bubble, donut, column, stacked column, vertical column, combination, or scatter chart cards. The value of the template property points to the generic card component `sap.ovp.cards.charts.analytical`.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nLink List\n\n</td>\n<td valign=\"top\">\n\nLink list cards display a list of links with an image or icon and a \\(optional\\) subtitle for each of the links.\n\n</td>\n</tr>\n</table>\n\nYou can set all cards to refresh automatically for a given interval. The minimum and default refresh time is one minute. To enable auto refresh, configure the `refreshIntervalInMinutes` property in the descriptor configuration file.\n\n```\n\"sap.ovp\": {\n        \"globalFilterModel\": \"salesOrder\",\n        \"globalFilterEntityType\": \"GlobalFilters\",\n        ...\n        ...\n        \"refreshIntervalInMinutes\": 12,\n        \"disableTableCardFlexibility\": false,\n               \"cards\": {\n```\n\n\n\n<a name=\"loio8ed3f76b5f62419eb0408c0dba4b2e47__section_a3r_xc3_z4b\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\nThe following additional card types are available only in SAP Fiori elements for OData V2:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nCard Type\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nStack\n\n</td>\n<td valign=\"top\">\n\nStack cards aggregate a set of cards of the same type, which are based on a common topic or action. When clicked, stack cards can display up to 20 cards in an object stream.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nQuick View\n\n</td>\n<td valign=\"top\">\n\nQuick view cards display detailed information about a single record, in greater depth than would be displayed in a table or list.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio8ed3f76b5f62419eb0408c0dba4b2e47 --> Types of Cards Overview pages may contain transactional cards, such as table, list, stack, quick view cards, and analytical chart cards such as line, bubb...",
+  "wordCount": 389,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

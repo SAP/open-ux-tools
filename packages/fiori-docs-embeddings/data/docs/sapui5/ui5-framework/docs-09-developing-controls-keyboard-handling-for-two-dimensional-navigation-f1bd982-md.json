@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-keyboard-handling-for-two-dimensional-navigation-f1bd982-md",
+  "title": "Keyboard Handling for Two-Dimensional Navigation",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/keyboard-handling-for-two-dimensional-navigation-f1bd982.md",
+  "lastModified": "2025-09-01T18:17:10.679Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Keyboard",
+    "Handling",
+    "for",
+    "Two",
+    "Dimensional",
+    "Navigation"
+  ],
+  "headers": [
+    "Keyboard Handling for Two-Dimensional Navigation"
+  ],
+  "content": "<!-- loiof1bd982c780445c6ae2ccdf2b3f478da -->\n\n# Keyboard Handling for Two-Dimensional Navigation\n\nThe following keys and key combinations are used for navigation in two-dimensional item containers \\(for example, calendars and tables\\).\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nKey combination\n\n</th>\n<th valign=\"top\">\n\nBehavior\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Left arrow\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus one item to the **left**.\n\nIf focus is on the first item of a row, move focus to the last item of the previous row.\n\nIf focus is on the first item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Right arrow\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus one item to the **right**.\n\nIf focus is on the last item of a row, move focus to the first item of the next row.\n\nIf focus is on the last item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Up arrow\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the item **above**.\n\nIf focus is on the first item of a column, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[DOWN\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the item **below**.\n\nIf focus is on the last item of a column, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Page up\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus **up** by page size.\n\n> ### Note:  \n> Page size can be set by apps; default page size is 5 rows.\n\nIf there are less items available than page size, move focus to the first item.\n\nIf focus is on the first item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Page down\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus **down** by page size.\n\n> ### Note:  \n> Page size can be set by apps; default page size is 5 rows.\n\nIf there are less items available than page size, move focus to the first item.\n\nIf focus is on the last item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Alt\\] /[Option\\] + [Page up\\] \n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus **left** by page size.\n\n> ### Note:  \n> Page size can be set by apps; default page size is 5 columns.\n\nIf there are less items available than page size, move focus to the first item.\n\nIf focus is on the first item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Alt\\] /[Option\\] + [Page down\\] \n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus **right** by page size.\n\n> ### Note:  \n> Page size can be set by apps; default page size is 5 columns.\n\nIf there are less items available than page size, move focus to the first item.\n\nIf focus is on the first item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Home\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **first** item on the same row.\n\nIf focus is on the first item of a row, move focus to the first item.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[End\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **last** item of the same row.\n\nIf focus is on the last item of a row, move focus to the last item.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Ctrl\\] + [Home\\] \n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **first** item of the same column.\n\nIf focus is on the first item of a column, move focus to the first item.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Ctrl\\] + [End\\] \n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **last** item of the same column.\n\nIf focus is on the last item of a column, move focus to the last item.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loiof1bd982c780445c6ae2ccdf2b3f478da --> Keyboard Handling for Two-Dimensional Navigation The following keys and key combinations are used for navigation in two-dimensional item containers \\(for ...",
+  "wordCount": 639,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

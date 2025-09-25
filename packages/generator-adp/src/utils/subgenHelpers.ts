@@ -6,7 +6,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
+import { getExtensionProjectData } from '../app/extension-project';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -64,9 +64,9 @@ export function addFlpGen(
 ): void {
     try {
         /**
-         * We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
+         * We are using this namespace for now because '@sap/fiori:adp-flp-config' is not yet bundled in '@sap/generator-fiori'.
          */
-        composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
+        composeWith('@sap/fiori:adp-flp-config', {
             launchAsSubGen: true,
             vscode,
             inbounds,
@@ -74,10 +74,10 @@ export function addFlpGen(
             data: { projectRootPath },
             appWizard
         });
-        logger.info(`'@sap-ux/adp-flp-config-sub-generator' was called.`);
+        logger.info(`'@sap/fiori:adp-flp-config' was called.`);
     } catch (e) {
         logger.error(e);
-        throw new Error(`Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: ${e.message}`);
+        throw new Error(`Could not call '@sap/fiori:adp-flp-config' sub-generator: ${e.message}`);
     }
 }
 
@@ -156,9 +156,8 @@ export async function addExtProjectGen(
 ): Promise<void> {
     try {
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
-        const generator = resolveNodeModuleGenerator();
 
-        composeWith(generator!, {
+        composeWith('@bas-dev/extensibility-sub', {
             arguments: [JSON.stringify(data)],
             appWizard
         });

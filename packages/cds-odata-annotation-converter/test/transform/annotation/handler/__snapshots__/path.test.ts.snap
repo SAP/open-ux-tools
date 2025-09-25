@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`annotation conversion path handler convert ![navigation.element.@UI.DataPoint#E]/Value 1`] = `
 Array [
@@ -215,6 +215,7 @@ Array [
         "line": 0,
       },
     },
+    "rule": "common-case-issue",
     "severity": 2,
   },
 ]
@@ -249,6 +250,7 @@ Array [
         "line": 0,
       },
     },
+    "rule": "common-case-issue",
     "severity": 2,
   },
 ]
@@ -284,6 +286,7 @@ Array [
         "line": 0,
       },
     },
+    "rule": "common-case-issue",
     "severity": 2,
   },
   Object {
@@ -306,6 +309,7 @@ Array [
         "line": 0,
       },
     },
+    "rule": "common-case-issue",
     "severity": 2,
   },
 ]

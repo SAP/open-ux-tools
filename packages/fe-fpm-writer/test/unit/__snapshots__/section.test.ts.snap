@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CustomSection generateCustomSection Test 'position' property. Create with anchor - 1.85 ui5 1`] = `
 Object {
@@ -74,6 +74,11 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -97,6 +102,11 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -120,6 +130,11 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -143,7 +158,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -169,7 +184,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -178,6 +193,55 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     };
 });
 "
+`;
+
+exports[`CustomSection generateCustomSection Typescript section Generate with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingCustomSection": Object {
+        "position": Object {
+          "anchor": "IncidentOverviewFacet",
+          "placement": "Before",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+        "title": "Custom Title",
+      },
+      "NewCustomSection": Object {
+        "position": Object {
+          "anchor": "DummyFacet",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "title": "New Custom Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomSection generateCustomSection Typescript section Generate with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomSection generateCustomSection Typescript section Generate with handler, all properties 3`] = `
+"import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider.
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}"
 `;
 
 exports[`CustomSection generateCustomSection Versions 1.84, with handler, all properties 1`] = `
@@ -221,6 +285,11 @@ exports[`CustomSection generateCustomSection Versions 1.84, with handler, all pr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -270,6 +339,11 @@ exports[`CustomSection generateCustomSection Versions 1.85, with handler, all pr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -318,6 +392,11 @@ exports[`CustomSection generateCustomSection Versions 1.86, with handler, all pr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -366,6 +445,11 @@ exports[`CustomSection generateCustomSection Versions 1.89, with handler, all pr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -414,6 +498,11 @@ exports[`CustomSection generateCustomSection Versions 1.90, with handler, all pr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -462,6 +551,11 @@ exports[`CustomSection generateCustomSection Versions 1.98, with handler, all pr
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -725,6 +819,11 @@ exports[`CustomSection generateCustomSection with handler, all properties 3`] = 
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }

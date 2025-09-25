@@ -1,31 +1,29 @@
 import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
-    controlSelected,
-    propertyChanged,
-    selectControl,
-    reportTelemetry,
-    Properties,
     changeProperty,
+    controlSelected,
+    Properties,
+    propertyChanged,
     PropertyType,
-    MessageBarType
+    reportTelemetry,
+    selectControl
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
-import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
+import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 
-import type Event from 'sap/ui/base/Event';
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
-import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
-import { getDocumentation } from './documentation';
+import type Event from 'sap/ui/base/Event';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
-import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { getDocumentation } from './documentation';
 
 export interface PropertyChangeParams {
     name: string;
@@ -114,15 +112,7 @@ export class SelectionService implements Service {
         const eventOrigin: Set<string> = new Set();
         const onselectionChange = this.createOnSelectionChangeHandler(sendAction, eventOrigin);
         this.rta.attachSelectionChange((event) => {
-            onselectionChange(event).catch((error) => {
-                const extendedError = getError(error);
-                Log.error('Event interrupted: ', extendedError);
-                return sendInfoCenterMessage({
-                    title: { key: 'CHANGE_SELECTION_ERROR_TITLE' },
-                    description: extendedError.message,
-                    type: MessageBarType.error
-                });
-            });
+            onselectionChange(event).catch((error) => Log.error('Event interrupted: ', getError(error)));
         });
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (changeProperty.match(action)) {

@@ -1,0 +1,32 @@
+{
+  "id": "sapui5-docs-07-apf-implementation-information-for-sap-business-suite-powered-by-sap-hana-and-sap-bw-on-sap-h-ecf70ad-md",
+  "title": "Implementation Information for SAP Business Suite powered by SAP HANA and SAP BW on SAP HANA",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/implementation-information-for-sap-business-suite-powered-by-sap-hana-and-sap-bw-on-sap-h-ecf70ad.md",
+  "lastModified": "2025-09-01T18:17:10.668Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Implementation",
+    "Information",
+    "for",
+    "SAP",
+    "Business",
+    "Suite",
+    "powered",
+    "HANA",
+    "and"
+  ],
+  "headers": [
+    "Implementation Information for SAP Business Suite powered by SAP HANA and SAP BW on SAP HANA",
+    "Installation of APF on the Front-End Server",
+    "Implementation of Fiori Content for APF",
+    "Implementation of SAP HANA Content for APF"
+  ],
+  "content": "<!-- loioecf70adefd71445586b2fbe264306fdd -->\n\n# Implementation Information for SAP Business Suite powered by SAP HANA and SAP BW on SAP HANA\n\nThe following products are required:\n\n-   SAP Smart Business foundation component 1.0 \\(SAP ANALYTICS FOUNDATION 1.0\\)\n\n    The following software component versions that are relevant for APF are included in this product and installed automatically:\n\n    -   HANA CONTENT HBA APF CORE 100 \\(technical name: HCO\\_HBA\\_R\\_APF\\_CORE\\)\n\n        This component contains the SAP HANA server part of APF.\n\n    -   UISAFND1 100 SP01 \\(technical name: UISAFND1\\)\n\n        This component contains the Fiori content for the APF Configuration Modeler.\n\n\n    > ### Note:  \n    > This product is also included in all SAP Smart Business products.\n\n-   SAP HANA appliance software SPS08 or higher.\n\n\n\n## Installation of APF on the Front-End Server\n\nAs of SAP NetWeaver 7.4, APF is part of software component User Interface Technology \\(`SAP_UI`\\) in SAP NetWeaver. For SAP NetWeaver 7.31 and lower releases, you install User Interface Add-On for SAP NetWeaver to use APF.\n\n\n\n## Implementation of Fiori Content for APF\n\nThe following catalog, group, and role are relevant for the APF Configuration Modeler:\n\n-   Catalog `SAP_APF_DT_TC_A`\n-   Group `SAP_APF_DT_TCG_A`\n-   Role `SAP_APF_DT_TCR_A`\n\nThe following catalog and role are relevant for the generic runtime application:\n\n-   Catalog `SAP_APF_RT_TC_A`\n-   Role `SAP_APF_RT_TCR_A`\n\n\n\n## Implementation of SAP HANA Content for APF\n\nThe following role is relevant for the APF Configuration Modeler:\n\n-   `sap.hba.r.apf.core.roles:AnalyticalConfiguration`\n\nThe following role is relevant for all APF-based applications :\n\n-   `sap.hba.r.apf.core.roles::AnalysisPath`\n\n",
+  "excerpt": "<!-- loioecf70adefd71445586b2fbe264306fdd --> Implementation Information for SAP Business Suite powered by SAP HANA and SAP BW on SAP HANA The following products are required: -   SAP Smart Business f...",
+  "wordCount": 239,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-example-custom-state-handling-bafc1f9-md",
+  "title": "Example: Custom State Handling",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/example-custom-state-handling-bafc1f9.md",
+  "lastModified": "2025-09-01T18:17:10.616Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Example",
+    "Custom",
+    "State",
+    "Handling"
+  ],
+  "headers": [
+    "Example: Custom State Handling"
+  ],
+  "content": "<!-- loiobafc1f9ff60b49fca6d8bb8aa875f075 -->\n\n# Example: Custom State Handling\n\nThis example shows how to implement inner app state handling for custom UI elements.\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V2.\n\nThe custom UI shows a map containing two state information items:\n\n-   The `zoomFactor` is a number between 1 and 100. The `zoomFactor` should be passed to other instances on pagination. The `zoomFactor` should also remain valid for the whole session.\n\n-   The `selectedCity` is information consisting of a country and a city. The selected state should not be passed to other instances. However, it should be bookmarkable for the current instance, when customers enable storage on the frontend server.\n\n\nThe following sample code shows this:\n\n> ### Sample Code:  \n> ```\n> \n> onZoomFactorChange: function(iZoomFactor){\n>     if (!this.isAdoptingState){ // ignore case where we are just adapting to the given state\n>         this.zoomFactor = iZoomFactor;\n>         // Inform framework that state of custom ui area has changed\n>         this.extensionAPI.onCustomStateChange();\n>     }\n> },\n>  \n> \n> onSelectedCityChange: function(sCountry, sCity){\n>     if (!this.isAdoptingState){ // ignore case where we are just adapting to the given state\n>         this.city = sCity;\n>         this.country = sCountry; \n>         // Inform framework that state of custom ui area has changed\n>         this.extensionAPI.onCustomAppStateChange();\n>     }\n> },\n>  \n> \n> provideCustomStateExtension: function(oState){\n>     oState.zoomFactor = {\n>         data: this.zoomFactor,\n>         lifecycle: {\n>             session: true,\n>             pagination: true\n>         }\n>     };\n>     oState.selectedCity = {\n>         data: {\n>             country: this.country,\n>             city: this.city\n>         },\n>         lifecycle: {\n>             permanent: true\n>         }\n>     };\n> },\n>  \n> \n> applyCustomStateExtension: function(oState, bIsSameAsLast){\n>     if (bIsSameasLast){\n>         return; // all controls are still in the correct state\n>     }\n>     this.isAdoptingState = true;\n>     this.setZoomFactor(oState.zoomFactor);\n>     this.setSelectedCity(oState.selectedCity.country, oState.selectedCity.city);\n>     this.isAdoptingState = false;\n> },\n>  \n> \n> setZoomFactor: function(iZoomFactor){\n>     this.zoomFactor = iZoomFactor; \n>     //... custom code which brings the map to the given zoom factor\n> },\n>  \n> \n> setSelectedCity: function(sCountry, sCity){ \n>     this.city = sCity; \n>     this.country = sCountry;\n>     //... custom code which selects the specified city \n> }\n> \n> ```\n\n> ### Note:  \n> We recommend introducing the controller property `isAdoptingState` if `setZoomFactor` and/or `setSelectedCity` trigger the event handlers calls `onZoomFactorChange` or `onSelectedCityChange`, respectively.\n\n",
+  "excerpt": "<!-- loiobafc1f9ff60b49fca6d8bb8aa875f075 --> Example: Custom State Handling This example shows how to implement inner app state handling for custom UI elements. > Note:   > This topic is currently on...",
+  "wordCount": 385,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

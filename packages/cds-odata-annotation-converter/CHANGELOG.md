@@ -1,5 +1,44 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.10
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.8
+-   @sap-ux/odata-vocabularies@0.4.15
+-   @sap-ux/cds-annotation-parser@0.2.18
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/odata-vocabularies@0.4.14
+    -   @sap-ux/cds-annotation-parser@0.2.17
+
+## 0.6.8
+
+### Patch Changes
+
+-   1f18878: feat: extend `deprecated-$value-syntax` diagnostic with data required to create a quick fix.
+    -   @sap-ux/odata-annotation-core@0.2.7
+    -   @sap-ux/odata-vocabularies@0.4.13
+    -   @sap-ux/cds-annotation-parser@0.2.16
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/odata-vocabularies@0.4.12
+    -   @sap-ux/cds-annotation-parser@0.2.15
+
+## 0.6.6
+
+### Patch Changes
+
+-   48c6aaa: fix: crash on empty flattened annotation term conversion
+
 ## 0.6.5
 
 ### Patch Changes

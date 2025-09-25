@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fe-fpm-writer",
     "description": "SAP Fiori elements flexible programming model writer",
-    "version": "0.37.2",
+    "version": "0.38.10",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -32,6 +32,7 @@
         "@sap-ux/annotation-converter": "0.10.3",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "@sap-ux/vocabularies-types": "0.13.0",
         "@xmldom/xmldom": "0.8.10",
         "ejs": "3.1.10",

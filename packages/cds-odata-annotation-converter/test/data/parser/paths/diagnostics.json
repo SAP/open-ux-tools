@@ -1,5 +1,6 @@
 [
     {
+        "rule": "common-case-issue",
         "range": "[(52,39)..(52,40)]",
         "message": "`/` is the wrong path separator. Did you mean `.`?",
         "severity": 2,

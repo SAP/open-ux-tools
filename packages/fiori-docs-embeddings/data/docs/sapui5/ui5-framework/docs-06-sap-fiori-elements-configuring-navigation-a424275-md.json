@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-configuring-navigation-a424275-md",
+  "title": "Configuring Navigation",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/configuring-navigation-a424275.md",
+  "lastModified": "2025-09-01T18:17:10.589Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Configuring",
+    "Navigation"
+  ],
+  "headers": [
+    "Configuring Navigation",
+    "Additional Features in SAP Fiori Elements for OData V2"
+  ],
+  "content": "<!-- loioa42427550b72436a8bdf53045b06effb -->\n\n# Configuring Navigation\n\nSAP Fiori elements control the navigation within an app \\(internal navigation\\) and the navigation to and from an app \\(external navigation\\).\n\n\n\nGeneral navigation aspects are listed in the [Navigation](https://experience.sap.com/fiori-design/concept/navigation/) section of the SAP Fiori Design Guidelines.\n\nWith SAP Fiori elements, the following navigation options are available and can be configured:\n\n-   Internal navigation\n\n    -   Standard navigation within an app\n\n\n    For more information, see [Configuring Internal Navigation](configuring-internal-navigation-2c65f07.md).\n\n-   External navigation\n\n    An SAP Fiori elements app can be the app from which the navigation is triggered \\(outbound\\) or the target of the navigation \\(inbound\\). Of course, both can also be the case in the same navigation.\n\n    -   Outbound navigation\n\n        -   Using a URL\n\n        -   Using a semantic object \\(intent-based navigation\\)\n\n    -   Inbound navigation\n\n\n    For more information, see [Configuring External Navigation](configuring-external-navigation-1d4a0f9.md).\n\n\n\n\n<a name=\"loioa42427550b72436a8bdf53045b06effb__section_u4h_cyf_mtb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\nFor information about navigation options for the overview page, see [Configuring Card Navigation](configuring-card-navigation-530f9e6.md).\n\nWith SAP Fiori elements, the following navigation options are available and can be configured:\n\n-   Internal navigation\n\n    -   Navigation after executing a function\n\n\n\n",
+  "excerpt": "<!-- loioa42427550b72436a8bdf53045b06effb --> Configuring Navigation SAP Fiori elements control the navigation within an app \\(internal navigation\\) and the navigation to and from an app \\(external na...",
+  "wordCount": 183,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

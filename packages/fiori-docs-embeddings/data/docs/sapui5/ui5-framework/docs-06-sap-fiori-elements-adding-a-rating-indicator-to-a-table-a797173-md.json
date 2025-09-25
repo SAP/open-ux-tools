@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-adding-a-rating-indicator-to-a-table-a797173-md",
+  "title": "Adding a Rating Indicator to a Table",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/adding-a-rating-indicator-to-a-table-a797173.md",
+  "lastModified": "2025-09-01T18:17:10.575Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Adding",
+    "Rating",
+    "Indicator",
+    "Table"
+  ],
+  "headers": [
+    "Adding a Rating Indicator to a Table",
+    "Code Samples \\(OData Annotations\\)"
+  ],
+  "content": "<!-- loioa797173b84724ef1bc54d59dc575e52f -->\n\n# Adding a Rating Indicator to a Table\n\nYou can add a read-only rating indicator to a table.\n\n\n\nThe rating indicator allows you to visually represent the value of a field from the back-end system with the corresponding number of stars \\(configurable\\). This field can indicate a rating or classification for a specific object or item.\n\nDecimal values are rounded up or down accordingly. If a value falls between x.25 and x.74, a half star is displayed.\n\n  \n  \n**Rating Indicator in Table**\n\n![](images/Rating_Indicator_in_Table_f83c4d3.png \"Rating Indicator in Table\")\n\n\n\n<a name=\"loioa797173b84724ef1bc54d59dc575e52f__section_dbl_sw1_xlb\"/>\n\n## Code Samples \\(OData Annotations\\)\n\nUse the following annotations to enable the rating indicator and define the maximum number of stars:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotations Target=\"STTA_PROD_MAN.STTA_C_MP_ProductType\">\n>     <Annotation Term=\"UI.DataPoint\" Qualifier=\"Rating\">\n>         <Record>\n>             <PropertyValue Property=\"Value\" Path=\"to_StockAvailability/StockAvailability\" />\n>             <PropertyValue Property=\"TargetValue\" Decimal=\"4\" />\n>             <PropertyValue Property=\"Visualization\" EnumMember=\"UI.VisualizationType/Rating\" />\n>         </Record>\n>     </Annotation>\n>     <Annotation Term=\"UI.LineItem\">\n>         <Collection>\n>             <Record Type=\"UI.DataFieldForAnnotation\">\n>                 <PropertyValue Property=\"Label\" String=\"Rating\" />\n>                 <PropertyValue Property=\"Target\" AnnotationPath=\"@UI.DataPoint#Rating\" />\n>             </Record>\n>             …\n>         </Collection>\n>         …\n>     </Annotation>\n>     …\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> annotate view STTA_C_MP_PRODUCT with {\n> @UI.lineItem: [\n>   {\n>     label: 'Rating',\n>     valueQualifier: 'Rating',\n>     type: #AS_DATAPOINT,\n>     position: 1 \n>   }\n> ]\n>  @UI.dataPoint: {\n>   targetValue: 4,\n>   visualization: #RATING\n>  }\n>  to_stockavailability/stockavailability;\n> }\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> annotate STTA_PROD_MAN.STTA_C_MP_ProductType @(\n>   UI.DataPoint #Rating : {\n>     Value : to_StockAvailability.StockAvailability,\n>     TargetValue : 4,\n>     Visualization : #Rating\n>   },\n> \n>   UI.LineItem : [\n>     {\n>         $Type : 'UI.DataFieldForAnnotation',\n>         Label : 'Rating',\n>         Target : '@UI.DataPoint#Rating'\n>     },\n>   ],\n> );\n> \n> ```\n\n> ### Note:  \n> The `TargetValue` property defines the maximum number of stars. In this case, it is 4.\n\n",
+  "excerpt": "<!-- loioa797173b84724ef1bc54d59dc575e52f --> Adding a Rating Indicator to a Table You can add a read-only rating indicator to a table. The rating indicator allows you to visually represent the value ...",
+  "wordCount": 325,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

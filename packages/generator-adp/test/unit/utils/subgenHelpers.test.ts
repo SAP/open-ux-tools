@@ -4,16 +4,14 @@ import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLooku
 
 import { t } from '../../../src/utils/i18n';
 import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from '../../../src/app/extension-project';
+import { getExtensionProjectData } from '../../../src/app/extension-project';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 jest.mock('../../../src/app/extension-project', () => ({
-    getExtensionProjectData: jest.fn(),
-    resolveNodeModuleGenerator: jest.fn()
+    getExtensionProjectData: jest.fn()
 }));
 
 const getExtensionProjectDataMock = getExtensionProjectData as jest.Mock;
-const resolveNodeModuleGeneratorMock = resolveNodeModuleGenerator as jest.Mock;
 
 describe('Sub-generator helpers', () => {
     const wizard = {} as unknown as AppWizard;
@@ -72,7 +70,7 @@ describe('Sub-generator helpers', () => {
             });
 
             expect(() => addFlpGen({} as any, composeWith, logger, wizard)).toThrow(
-                "Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: Failed to compose"
+                "Could not call '@sap/fiori:adp-flp-config' sub-generator: Failed to compose"
             );
 
             expect(logger.error).toHaveBeenCalledWith(error);
@@ -146,12 +144,11 @@ describe('Sub-generator helpers', () => {
             const fakePath = 'ext-generator';
 
             getExtensionProjectDataMock.mockResolvedValue(fakeData);
-            resolveNodeModuleGeneratorMock.mockReturnValue(fakePath);
 
             await addExtProjectGen(answers, composeWith, logger);
 
             expect(composeWith).toHaveBeenCalledWith(
-                fakePath,
+                '@bas-dev/extensibility-sub',
                 expect.objectContaining({
                     arguments: [JSON.stringify(fakeData)]
                 })

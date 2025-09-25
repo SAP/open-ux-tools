@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-table-massedit-md",
+  "title": "sap.fe.macros.table.MassEdit",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.table.MassEdit.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "table",
+    "MassEdit"
+  ],
+  "headers": [
+    "sap.fe.macros.table.MassEdit"
+  ],
+  "content": "# sap.fe.macros.table.MassEdit\n\n<p>Definition of the mass edit to be used inside the table.</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/table/MassEdit\n\n",
+  "excerpt": "sap.fe.macros.table.MassEdit <p>Definition of the mass edit to be used inside the table.</p> Type: class Module: sap/fe/macros/table/MassEdit",
+  "wordCount": 18,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}
