@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.11
+
+### Patch Changes
+
+-   d553f8e: Binding Context Type Choices Should Be Alphabetically Ordered
+
 ## 0.38.10
 
 ### Patch Changes
