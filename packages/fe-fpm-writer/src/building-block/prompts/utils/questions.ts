@@ -181,7 +181,7 @@ export function getEntityPrompt(
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     const { project } = context;
-    const { filterEntityProperties, pageContextEntitySet } = context.options ?? {};
+    const { pageContextEntitySet } = context.options ?? {};
     const { guiOptions } = properties;
     return {
         ...properties,
@@ -190,7 +190,6 @@ export function getEntityPrompt(
         choices: project
             ? async (answers?: Answers) => {
                   const entitySets = await loadEntitySets(context);
-
                   // List all entity sets when no page context is defined
                   if (!pageContextEntitySet) {
                       return transformChoices(entitySets.map((entitySet) => entitySet.name));
@@ -199,12 +198,7 @@ export function getEntityPrompt(
                   const bindingContextType =
                       answers?.buildingBlockData?.metaPath.bindingContextType ?? bindingContextAbsolute;
 
-                  const options = getEntitySetOptions(
-                      entitySets,
-                      pageContextEntitySet,
-                      bindingContextType,
-                      filterEntityProperties
-                  );
+                  const options = getEntitySetOptions(entitySets, pageContextEntitySet, bindingContextType);
                   // If no options, fallback to all entity sets
                   const resolvedOptions = options.length > 0 ? options : entitySets;
                   return transformChoices(resolvedOptions.map((opt) => opt.name));

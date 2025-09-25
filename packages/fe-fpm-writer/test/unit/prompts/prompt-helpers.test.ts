@@ -40,11 +40,6 @@ describe('getEntitySetOptions', () => {
         ]);
     });
 
-    it('filters out navigation properties listed in filterEntityProperties', () => {
-        const result = getEntitySetOptions(entitySets, 'MainSet', bindingContextRelative, ['NavA']);
-        expect(result).toEqual([{ name: 'NavC', isCollection: false, targetTypeName: 'NavCType' }]);
-    });
-
     it('returns empty array if no non-collection navigation properties exist', () => {
         const entitySetsNoNav = [
             {
@@ -138,5 +133,10 @@ describe('resolveEntitySetTargets', () => {
     it('returns empty array if entity set does not exist', () => {
         const result = resolveEntitySetTargets(entitySets, 'UnknownSet', undefined, 'UnknownSet');
         expect(result).toEqual([]);
+    });
+
+    it('returns properties for selected entity set when page context is undefined', () => {
+        const result = resolveEntitySetTargets(entitySets, undefined, undefined, 'MainSet');
+        expect(result).toEqual([{ name: 'PropA' }, { name: 'PropB' }]);
     });
 });

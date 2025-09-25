@@ -29,11 +29,9 @@ export interface Prompts<T extends Answers = Answers> {
 /**
  * Options for prompt context.
  * - `pageContextEntitySet`: The entity set representing the page context (e.g., for an object page).
- * - `filterEntityProperties`: List of property names to exclude.
  */
 export interface PromptContextOptions {
     pageContextEntitySet?: string;
-    filterEntityProperties?: string[];
 }
 
 export interface PromptContext {

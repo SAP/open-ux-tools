@@ -33,34 +33,28 @@ export async function loadEntitySets(context: PromptContext): Promise<EntitySet[
  * @param entitySets - All entity sets in the project
  * @param pageContextEntitySet - The entity set representing the page context (e.g., for an object page).
  * @param bindingContextType - absolute or relative
- * @param filterEntityProperties - Optional list of properties to exclude
  * @returns EntitySet or NavigationProperty objects
  */
 export function getEntitySetOptions(
     entitySets: EntitySet[],
-    pageContextEntitySet: string,
-    bindingContextType?: string,
-    filterEntityProperties?: string[]
+    pageContextEntitySet?: string,
+    bindingContextType?: string
 ): (EntitySet | NavigationProperty)[] {
     const contextEntitySet = entitySets.find((entitySet) => entitySet.name === pageContextEntitySet);
-
     // List all entity sets if no matching entity set found for the page context
     if (!contextEntitySet) {
         return entitySets;
     }
 
     // If the binding context is relative, returns all non-collection navigation properties,
-    // optionally excluding those specified in filterEntityProperties.
     if (bindingContextType === bindingContextRelative) {
         let navigationProperties =
             contextEntitySet?.entityType?.navigationProperties?.filter((navProp) => navProp.isCollection === false) ??
             [];
 
-        if (filterEntityProperties && filterEntityProperties.length > 0) {
-            navigationProperties = navigationProperties.filter(
-                (navProp) => !filterEntityProperties.includes(navProp.name)
-            );
-        }
+        navigationProperties = navigationProperties.filter(
+            (navProp) => !['DraftAdministrativeData', 'SiblingEntity'].includes(navProp.name)
+        );
         return navigationProperties;
     }
 
@@ -79,11 +73,12 @@ export function getEntitySetOptions(
  */
 export function resolveEntitySetTargets(
     entitySets: EntitySet[],
-    pageContextEntitySet: string,
+    pageContextEntitySet?: string,
     bindingContextType?: string,
     selectedContext?: string
 ): Property[] {
-    const entitySet = entitySets.find((es) => es.name === pageContextEntitySet);
+    const contextName = pageContextEntitySet ? pageContextEntitySet : selectedContext;
+    const entitySet = entitySets.find((es) => es.name === contextName);
 
     // Return an empty list if no context (entity set or navigation property) has been selected yet by the user
     if (!selectedContext) {
