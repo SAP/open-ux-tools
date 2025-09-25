@@ -5,9 +5,11 @@ The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://s
 ## Configuration Options
 | Option       | Default Value | Description |
 | ------------ | ------------- | ----------- |
-| `ui5`        | `object`      | List of mount paths and target urls that should be handled by the proxy. If not provided then `/resources` and `/test-resources` are proxied to `https://ui5.sap.com` |
-| `version`    | `undefined`   | The UI5 version. If this property is not defined, then the `minUI5Version` from the `manifest.json` will be used |
-| `secure`     | true          | Defines if SSL certs should be verified |
+| `path`        | `/resources`, `/test-resources`       | Path that is to be proxied |
+| `url`        | `https://ui5.sap.com`      | URL pointing to the resources |
+| `pathReplace`        | `undefined` | If provided then the path will be replaced with this value before forwarding |
+| `version`    | `undefined` | The UI5 version. If this property is not defined, then the `minUI5Version` from the `manifest.json` will be used |
+| `secure`     | true      | Defines if SSL certs should be verified |
 | `debug`      | false         | Enables debug output |
 | `proxy`      | `undefined`   | Use for adding corporate proxy configuration |
 | `directLoad` | false         | Defines whether the UI5 sources should be loaded directly from UI5 CDN |
@@ -40,7 +42,7 @@ server:
         url: https://ui5.sap.com
 ```
 
-Alternatively you can use the following syntax if all paths should be proxied to the same url.
+Alternatively you can use the following syntax if all paths should be proxied to the same URL.
 
 ```Yaml
 server:
@@ -54,7 +56,24 @@ server:
         - /test-resources
         url: https://ui5.sap.com
 ```
-**NOTE: You can't mix both syntaxes!**
+
+Use the following syntax for proxying different UI5 requests to different URLs
+
+```Yaml
+server:
+  customMiddleware:
+  - name: fiori-tools-proxy
+    afterMiddleware: compression
+    configuration:
+      ui5:
+        paths:
+          - path: /resources
+            url: https://ui5.sap.com
+          - path: /test-resources
+            src: https://ui5.sap.com
+        version: '1.100.1'
+```
+**NOTE: You can't mix the syntaxes!**
 
 ### Loading a specific UI5 version
 To load a specific a UI5 version in your application you can use the `version` parameter, e.g.
