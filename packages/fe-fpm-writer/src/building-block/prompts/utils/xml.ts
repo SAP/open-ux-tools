@@ -126,9 +126,25 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
  * Finds the prefix associated with a given namespace URI in the root element's attributes.
  * Handles both default namespaces (xmlns="...") and prefixed namespaces (xmlns:prefix="...").
  *
- * @param root - The root XML element to search for namespace declarations.
- * @param namespaceUri - The namespace URI to look for.
- * @returns The namespace prefix if found ('' for default namespace, or the prefix string), otherwise null.
+ * @example
+ * // Default namespace (no prefix)
+ * // <core:FragmentDefinition xmlns="sap.fe.macros">
+ * // findNamespacePrefix(root, 'sap.fe.macros') // returns ''
+ * @example
+ * // Prefixed namespace
+ * // <core:FragmentDefinition xmlns:rte="sap.fe.macros.richtexteditor">
+ * // findNamespacePrefix(root, 'sap.fe.macros') // returns 'rte'
+ * @example
+ * // Default namespace in mvc:View
+ * // <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+ * // findNamespacePrefix(root, 'sap.m') // returns ''
+ * @example
+ * // Prefixed namespace in mvc:View
+ * // <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+ * // findNamespacePrefix(root, 'sap.fe.macros') // returns 'macros'
+ * @param {HTMLElement} root - The root XML element to search for namespace declarations.
+ * @param {string} namespaceUri - The namespace URI to look for.
+ * @returns {string|null} The namespace prefix if found ('' for default namespace, or the prefix string), otherwise null.
  */
 function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | null {
     // Check all namespace attributes for a matching URI
@@ -136,12 +152,15 @@ function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | 
         const attr = root.attributes[i];
         if (attr.value === namespaceUri) {
             if (attr.name === 'xmlns') {
-                return ''; // Default namespace
+                // Default namespace (no prefix)
+                return '';
             } else if (attr.name.startsWith('xmlns:')) {
-                return attr.name.split(':')[1]; // Prefixed namespace
+                // Return prefix
+                return attr.name.split(':')[1];
             }
         }
     }
+    // Namespace not found
     return null;
 }
 
@@ -167,7 +186,7 @@ export function getOrAddNamespace(
         return existingPrefix;
     }
 
-    // If not present, add with preferred prefix
+    // If not present, add with prefix
     root.setAttributeNS('http://www.w3.org/2000/xmlns/', prefix === '' ? 'xmlns' : `xmlns:${prefix}`, namespaceUri);
     return prefix;
 }
