@@ -480,6 +480,23 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(t('error.manifestCouldNotBeValidated'));
         });
 
+        it('application prompt validate should return string when  application does NOT support adaptation and the project is cloud', async () => {
+            const error = new Error(t('error.appDoesNotSupportManifest'));
+            getManifestSpy.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
+            configPrompter['isCloudProject'] = true;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            const errorMessage = error.message;
+            expect(errorMessage).toBeTruthy();
+            expect(result).toEqual(errorMessage);
+            expect(configPrompter['appValidationErrorMessage']).toBe(errorMessage);
+        });
+
         it('application prompt validate should return string when manifest flexEnabled is false', async () => {
             getManifestSpy.mockResolvedValue({ 'sap.ui5': { flexEnabled: false } });
             const prompts = configPrompter.getPrompts();
