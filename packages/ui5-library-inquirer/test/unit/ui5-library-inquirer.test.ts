@@ -123,7 +123,7 @@ describe('API test', () => {
               "libraryName": "testName",
               "namespace": "testNS",
               "targetFolder": "some/test/folder",
-              "ui5Version": "1.76.0",
+              "ui5Version": "1.118.0",
             }
         `);
         expect(getUI5VersionsSpy).toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe('API test', () => {
               "libraryName": "testName",
               "namespace": "testNS",
               "targetFolder": "some/test/folder",
-              "ui5Version": "1.76.0",
+              "ui5Version": "1.118.0",
             }
         `);
         expect(getUI5VersionsSpy).toHaveBeenCalled();
@@ -221,7 +221,7 @@ describe('API test', () => {
               "libraryName": "testName",
               "namespace": "testNS",
               "targetFolder": "some/test/folder",
-              "ui5Version": "1.76.0",
+              "ui5Version": "1.118.0",
             }
         `);
         expect(getUI5VersionsSpy).toHaveBeenCalled();
@@ -263,62 +263,31 @@ describe('Version Resolution Tests', () => {
     });
 
     describe('findNearestNpmVersion', () => {
-        it('should return exact match when version exists in npm', async () => {
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
+        it('should use getUI5Versions to resolve npm version', async () => {
+            const mockResolvedVersion = { version: '1.118.0' };
+            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([mockResolvedVersion]);
+
+            const result = await findNearestNpmVersion('1.118.0');
+            expect(result).toBe('1.118.0');
+            expect(ui5Info.getUI5Versions).toHaveBeenCalledWith({
+                onlyVersionNumbers: true,
+                onlyNpmVersion: true,
+                ui5SelectedVersion: '1.118.0'
+            });
+        });
+
+        it('should return selected version when getUI5Versions fails', async () => {
+            jest.spyOn(ui5Info, 'getUI5Versions').mockRejectedValue(new Error('Network error'));
 
             const result = await findNearestNpmVersion('1.118.0');
             expect(result).toBe('1.118.0');
         });
 
-        it('should return nearest lower version when exact match not found', async () => {
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
-
-            const result = await findNearestNpmVersion('1.118.5');
-            expect(result).toBe('1.118.0');
-        });
-
-        it('should return lowest version when selected version is lower than all available', async () => {
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
-
-            const result = await findNearestNpmVersion('1.115.0');
-            expect(result).toBe('1.116.0');
-        });
-
-        it('should return nearest lower version when selected version is higher than all available', async () => {
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
-
-            const result = await findNearestNpmVersion('1.125.0');
-            expect(result).toBe('1.120.0');
-        });
-
-        it('should filter out invalid version strings', async () => {
-            const mixedVersions = ['1.116.0', 'latest', '1.118.0', 'snapshot', '1.120.0'];
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mixedVersions);
-
-            const result = await findNearestNpmVersion('1.119.0');
-            expect(result).toBe('1.118.0');
-        });
-
-        it('should return selected version when npm command fails', async () => {
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockRejectedValue(new Error('npm command failed'));
+        it('should return selected version when no npm versions found', async () => {
+            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([]);
 
             const result = await findNearestNpmVersion('1.118.0');
             expect(result).toBe('1.118.0');
-        });
-
-        it('should return selected version when no valid npm versions found', async () => {
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(['latest', 'snapshot']);
-
-            const result = await findNearestNpmVersion('1.118.0');
-            expect(result).toBe('1.118.0');
-        });
-
-        it('should handle complex version comparisons correctly', async () => {
-            const complexVersions = ['1.116.5', '1.117.2', '1.118.0', '1.118.1', '1.119.0'];
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(complexVersions);
-
-            const result = await findNearestNpmVersion('1.118.3');
-            expect(result).toBe('1.118.1');
         });
     });
 

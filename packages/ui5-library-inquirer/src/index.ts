@@ -1,5 +1,4 @@
-import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import { executeNpmUI5VersionsCmd } from '@sap-ux/ui5-info/dist/commands';
+import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
@@ -7,69 +6,23 @@ import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
- * Simple version comparison for finding the nearest version.
- *
- * @param a - The first version string to compare
- * @param b - The second version string to compare
- * @returns A negative number if a < b, positive if a > b, or 0 if equal
- */
-function compareVersions(a: string, b: string): number {
-    const aParts = a.split('.').map(Number);
-    const bParts = b.split('.').map(Number);
-    const maxLength = Math.max(aParts.length, bParts.length);
-
-    for (let i = 0; i < maxLength; i++) {
-        const aPart = aParts[i] || 0;
-        const bPart = bParts[i] || 0;
-
-        if (aPart < bPart) {
-            return -1;
-        }
-        if (aPart > bPart) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-/**
- * Find the nearest available npm version to the selected UI5 version.
+ * Find the nearest available npm version to the selected UI5 version using getUI5Versions.
  *
  * @param selectedVersion - The UI5 version selected by the user
  * @returns Promise that resolves to the nearest available npm version
  */
 async function findNearestNpmVersion(selectedVersion: string): Promise<string> {
     try {
-        const npmVersions = await executeNpmUI5VersionsCmd();
+        // Get the (latest) version available from npm, instead of UI5 versions service in case of unpublished versions
+        const npmVersion = (
+            await getUI5Versions({
+                onlyVersionNumbers: true,
+                onlyNpmVersion: true,
+                ui5SelectedVersion: selectedVersion ?? latestVersionString
+            })
+        )[0]?.version;
 
-        // Remove any non-version strings and sort versions (strict semver matching)
-        const validVersions = npmVersions.filter((v) => /^\d+\.\d+\.\d+$/.test(v)).sort(compareVersions);
-
-        if (validVersions.length === 0) {
-            return selectedVersion; // Fallback to selected version if no npm versions found
-        }
-
-        // Find exact match first
-        if (validVersions.includes(selectedVersion)) {
-            return selectedVersion;
-        }
-
-        // Find the nearest lower version (closest but not higher)
-        let nearestVersion = validVersions[0]; // Start with the lowest version as fallback
-
-        for (const version of validVersions) {
-            const comparison = compareVersions(version, selectedVersion);
-
-            // If this version is less than or equal to selected version
-            if (comparison <= 0) {
-                // Check if it's closer than our current nearest version
-                if (compareVersions(version, nearestVersion) > 0) {
-                    nearestVersion = version;
-                }
-            }
-        }
-
-        return nearestVersion;
+        return npmVersion || selectedVersion;
     } catch (error) {
         // If npm command fails, return the selected version as fallback
         return selectedVersion;
