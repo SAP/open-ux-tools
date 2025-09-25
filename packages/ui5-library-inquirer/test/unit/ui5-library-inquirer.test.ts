@@ -292,9 +292,8 @@ describe('Version Resolution Tests', () => {
     });
 
     describe('getPrompts with resolved version', () => {
-        it('should pass resolved version to getQuestions when resolvedUi5Version is provided', async () => {
+        it('should pass original resolvedUi5Version to getQuestions when provided', async () => {
             jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(mockNpmVersions);
             const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
 
             await getPrompts({ resolvedUi5Version: '1.118.5' });
@@ -302,19 +301,17 @@ describe('Version Resolution Tests', () => {
             expect(getQuestionsSpy).toHaveBeenCalledWith(
                 ui5Vers,
                 expect.objectContaining({
-                    resolvedUi5Version: '1.118.0' // Should be resolved to nearest npm version
+                    resolvedUi5Version: '1.118.5' // Original version passed through, resolution happens later in prompt()
                 })
             );
         });
 
-        it('should not call findNearestNpmVersion when no resolvedUi5Version is provided', async () => {
+        it('should pass undefined resolvedUi5Version when not provided', async () => {
             jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            const executeNpmSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd');
             const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
 
             await getPrompts({});
 
-            expect(executeNpmSpy).not.toHaveBeenCalled();
             expect(getQuestionsSpy).toHaveBeenCalledWith(
                 ui5Vers,
                 expect.objectContaining({

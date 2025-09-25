@@ -42,18 +42,11 @@ async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Ques
     };
     const ui5Versions = await getUI5Versions(filterOptions);
 
-    let resolvedUi5Version: string | undefined;
-
-    // If a version was previously selected, find the nearest npm version
-    if (promptOptions?.resolvedUi5Version) {
-        resolvedUi5Version = await findNearestNpmVersion(promptOptions.resolvedUi5Version);
-    }
-
     const ui5LibPromptInputs: UI5LibraryPromptOptions = {
         targetFolder: promptOptions?.targetFolder,
         includeSeparators: promptOptions?.includeSeparators,
         useAutocomplete: promptOptions?.useAutocomplete,
-        resolvedUi5Version
+        resolvedUi5Version: promptOptions?.resolvedUi5Version
     };
     return getQuestions(ui5Versions, ui5LibPromptInputs);
 }
