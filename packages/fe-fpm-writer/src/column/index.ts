@@ -25,7 +25,7 @@ import { BuildingBlockType } from '../building-block/types';
  * @returns {string} The constructed building block view path
  * @throws {Error} When path extraction fails or validation errors occur
  */
-function extractBuildingBlockViewPath(columnPath: string, buildingBlockView: string, appId: string): string {
+export function extractBuildingBlockViewPath(columnPath: string, buildingBlockView: string, appId: string): string {
     // Extract webapp path and folder name
     const webappPath = columnPath.split('/ext')[0];
     const webappFolder = basename(webappPath);
