@@ -20,6 +20,7 @@ import type {
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
+import { logger } from './utils/logger';
 
 type ToolArgs =
     | DocSearchInput
@@ -61,7 +62,7 @@ export class FioriFunctionalityServer {
      * Logs MCP errors and handles the SIGINT signal for graceful shutdown.
      */
     private setupErrorHandling(): void {
-        this.server.onerror = (error) => console.error('[MCP Error]', error);
+        this.server.onerror = (error) => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
             await this.server.close();
             process.exit(0);
@@ -166,6 +167,6 @@ export class FioriFunctionalityServer {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         await this.setupTelemetry();
-        console.error('Fiori Functionality MCP Server running on stdio');
+        logger.info('Fiori Functionality MCP Server running on stdio');
     }
 }

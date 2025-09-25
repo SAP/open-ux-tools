@@ -1,7 +1,7 @@
 import type { Connection, Table } from '@lancedb/lancedb';
 import { connect } from '@lancedb/lancedb';
 import type { VectorSearchResult } from './types/vector';
-import { logger } from './utils/logger';
+import { logger } from '../../utils/logger';
 import { resolveEmbeddingsPath } from '../../utils/embeddings-path';
 import fs from 'fs/promises';
 import path from 'path';
@@ -165,7 +165,7 @@ export class SimpleVectorService {
                 distance: result._distance || 0
             }));
         } catch (error) {
-            logger.error('Semantic search failed:', error);
+            logger.error(`Semantic search failed: ${error}`);
             throw new Error(`Semantic search failed: ${error}`);
         }
     }
@@ -274,7 +274,7 @@ export class SimpleVectorService {
 
             return similarDocs;
         } catch (error) {
-            logger.error('Find similar documents failed:', error);
+            logger.error(`Find similar documents failed: ${error}`);
             return [];
         }
     }
@@ -329,7 +329,7 @@ export class SimpleVectorService {
                 distance: 0
             }));
         } catch (error) {
-            logger.error('Get documents by category failed:', error);
+            logger.error(`Get documents by category failed: ${error}`);
             return [];
         }
     }
