@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-defining-controls-deprecated-91f1539-md",
+  "title": "Defining Controls \\(deprecated\\)",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/defining-controls-deprecated-91f1539.md",
+  "lastModified": "2025-09-01T18:17:10.508Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Defining",
+    "Controls",
+    "deprecated"
+  ],
+  "headers": [
+    "Defining Controls \\(deprecated\\)"
+  ],
+  "content": "<!-- loio91f1539c6f4d1014b6dd926db0e91070 -->\n\n# Defining Controls \\(deprecated\\)\n\nFor declarative support, define the controls in your HTML document as HTML tags.\n\n> ### Caution:  \n> Deprecated as of UI5 version 1.120, replaced by [XML View](xml-view-91f2928.md).\n\nFor this, use the following data attribute that defines the SAPUI5 control that should be rendered in the HTML tag by using the HTML tag as its UI area:\n\n```\ndata-sap-ui-type=\"sap.m.Button\"\n```\n\nRendering a button in the body of an HTML document without setting any property, association, event, or aggregation looks as follows:\n\n```html\n\n<body>\n  <div data-sap-ui-type=\"sap.m.Button\"></div>\n</body>\n```\n\n> ### Note:  \n> Make sure that you close the tags properly. HTML5 does not support self-closing tags.\n\n> ### Note:  \n> All attributes used to define properties, associations, events, or aggregations are data attributes except for attributes that exist in HTML, for example `id` or `class`. Data attributes are prefixed with `data-*`, for example `data-text`.\n\n",
+  "excerpt": "<!-- loio91f1539c6f4d1014b6dd926db0e91070 --> Defining Controls \\(deprecated\\) For declarative support, define the controls in your HTML document as HTML tags. > Caution:   > Deprecated as of UI5 vers...",
+  "wordCount": 150,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

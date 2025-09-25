@@ -39,6 +39,10 @@
                         "uri": "file://metadata.xml",
                         "range": "[(16,16)..(25,18)]"
                     },
+                    "facets": {
+                        "isNullable": false,
+                        "maxLength": 5
+                    },
                     "content": [],
                     "targetKinds": ["Property"]
                 },
@@ -54,6 +58,9 @@
                     "location": {
                         "uri": "file://metadata.xml",
                         "range": "[(26,16)..(33,18)]"
+                    },
+                    "facets": {
+                        "maxLength": 40
                     },
                     "content": [],
                     "targetKinds": ["Property"]
@@ -87,6 +94,9 @@
                         "uri": "file://metadata.xml",
                         "range": "[(35,16)..(42,18)]"
                     },
+                    "facets": {
+                        "maxLength": 3
+                    },
                     "content": [],
                     "targetKinds": ["Property"]
                 },
@@ -102,6 +112,9 @@
                     "location": {
                         "uri": "file://metadata.xml",
                         "range": "[(43,16)..(50,18)]"
+                    },
+                    "facets": {
+                        "maxLength": 3
                     },
                     "content": [],
                     "targetKinds": ["Property"]
@@ -123,8 +136,8 @@
                     "targetKinds": ["Property"]
                 }
             ],
-            "keys": ["Currency"],
-            "targetKinds": ["EntityType"]
+            "targetKinds": ["EntityType"],
+            "keys": ["Currency"]
         },
         {
             "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Z2SEPMRA_C_PD_PRODUCT_CDS_Entities",

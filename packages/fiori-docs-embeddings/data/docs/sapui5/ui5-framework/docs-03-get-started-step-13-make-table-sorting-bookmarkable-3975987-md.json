@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-03-get-started-step-13-make-table-sorting-bookmarkable-3975987-md",
+  "title": "Step 13: Make Table Sorting Bookmarkable",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-13-make-table-sorting-bookmarkable-3975987.md",
+  "lastModified": "2025-09-01T18:17:10.453Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Make",
+    "Table",
+    "Sorting",
+    "Bookmarkable"
+  ],
+  "headers": [
+    "Step 13: Make Table Sorting Bookmarkable",
+    "Preview",
+    "Coding",
+    "webapp/controller/employee/overview/EmployeeOverviewContent.controller.js"
+  ],
+  "content": "<!-- loio39759878ae4f48dcad0cf34da1d299f0 -->\n\n# Step 13: Make Table Sorting Bookmarkable\n\nIn this step, we will create a button at the top of the table which will change the sorting of the table. When the current sorting state of the table is changed, the sorting state will be reflected in the URL. This illustrates how to make the table sorting bookmarkable.\n\n\n\n## Preview\n\n  \n  \n**Bookmarkable search and sorting**\n\n![](images/Tutorial_Navigation_and_Routing_Step_13_7ec54ef.png \"Bookmarkable search and sorting\")\n\n\n\n## Coding\n\nYou can view and download all files in the *Samples* in the Demo Kit at [Routing and Navigation - Step 13](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.navigation/sample/sap.ui.core.tutorial.navigation.13).\n\n\n\n## webapp/controller/employee/overview/EmployeeOverviewContent.controller.js\n\n```js\nsap.ui.define([\n\t\"sap/ui/demo/nav/controller/BaseController\",\n\t\"sap/ui/model/Filter\",\n\t\"sap/ui/model/FilterOperator\",\n\t\"sap/ui/model/Sorter\",\n\t\"sap/m/ViewSettingsDialog\",\n\t\"sap/m/ViewSettingsItem\"\n], function(\n\tBaseController,\n\tFilter,\n\tFilterOperator,\n\tSorter,\n\tViewSettingsDialog,\n\tViewSettingsItem\n) {\n\t\"use strict\";\n\treturn BaseController.extend(\"sap.ui.demo.nav.controller.employee.overview.EmployeeOverviewContent\", {\n\t\tonInit: function () {\n\t\t\t...\n\t\t},\n\t\t_onRouteMatched: function (oEvent) {\n\t\t\t// save the current query state\n\t\t\tthis._oRouterArgs = oEvent.getParameter(\"arguments\");\n\t\t\tthis._oRouterArgs[\"?query\"] = this._oRouterArgs[\"?query\"] || {};\n\t\t\tvar oQueryParameter = this._oRouterArgs[\"?query\"];\n\n\t\t\t// search/filter via URL hash\n\t\t\tthis._applySearchFilter(oQueryParameter.search);\n\n\t\t\t// sorting via URL hash\n\t\t\tthis._applySorter(oQueryParameter.sortField, oQueryParameter.sortDescending);\n\t\t\t\n\t\t},\n\t\t...\n\t\t_initViewSettingsDialog: function () {\n\t\t\tvar oRouter = this.getRouter();\n\t\t\tthis._oVSD = new ViewSettingsDialog(\"vsd\", {\n\t\t\t\tconfirm: function (oEvent) {\n\t\t\t\t\tvar oSortItem = oEvent.getParameter(\"sortItem\");\n\t\t\t\t\tthis._oRouterArgs[\"?query\"].sortField = oSortItem.getKey();\n\t\t\t\t\tthis._oRouterArgs[\"?query\"].sortDescending = oEvent.getParameter(\"sortDescending\");\n\t\t\t\t\toRouter.navTo(\"employeeOverview\", this._oRouterArgs, true /*without history*/);\n\t\t\t\t}.bind(this) \n\t\t\t});\n\t\t\t...\n\t\t},\n\t\t...\n\t});\n});\n```\n\nWe enhance the `EmployeeOverviewContent` controller further to add support for bookmarking the table's sorting options. We expect two query parameters `sortField` and `sortDescending` from the URL for configuring the sorting of the table. In the matched handler of the route `employeeOverview`, we store the query parameter in the `oQueryParameter` variable and add an additional call to `this._applySorter(oQueryParameter.sortField, oQueryParameter.sortDescending)` . This triggers the sorting action based on the two query parameters `sortField` and `sortDescending` from the URL.\n\nNext we change the `confirm` event handlers of our `ViewSettingsDialog`. The `confirm` handler updates the current router arguments with the parameters from the event accordingly. Then we call `oRouter.navTo(\"employeeOverview\", this._oRouterArgs, true)` with the updated router arguments to persist the new sorting parameters in the URL. Both the previous arguments \\(i.e. `search`\\) and the new arguments for the sorting will then be handled by the matched event handler for the `employeeOverview` route.\n\nCongratulations! Even the sorting options of the table can now be bookmarked. Try to access the following pages:\n\n-   `webapp/index.html#/employees/overview?sortField=EmployeeID&sortDescending=true`\n\n-   `webapp/index.html#/employees/overview?search=an&sortField=EmployeeID&sortDescending=true`\n\n\nWhen changing the table's sorting options, you will see that the hash updates accordingly.\n\n",
+  "excerpt": "<!-- loio39759878ae4f48dcad0cf34da1d299f0 --> Step 13: Make Table Sorting Bookmarkable In this step, we will create a button at the top of the table which will change the sorting of the table. When th...",
+  "wordCount": 386,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

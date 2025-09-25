@@ -114,6 +114,9 @@
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(11,16)..(17,18)]"
                     },
+                    "facets": {
+                        "isNullable": false
+                    },
                     "content": [],
                     "targetKinds": ["Property"]
                 },
@@ -129,6 +132,10 @@
                     "location": {
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(18,16)..(18,98)]"
+                    },
+                    "facets": {
+                        "isNullable": false,
+                        "maxLength": 15
                     },
                     "content": [],
                     "targetKinds": ["Property"]
@@ -166,8 +173,8 @@
                     "targetKinds": ["Property"]
                 }
             ],
-            "keys": ["CategoryID"],
-            "targetKinds": ["EntityType"]
+            "targetKinds": ["EntityType"],
+            "keys": ["CategoryID"]
         },
         {
             "path": "ODataWebExperimental.Northwind.Model.NorthwindEntities",

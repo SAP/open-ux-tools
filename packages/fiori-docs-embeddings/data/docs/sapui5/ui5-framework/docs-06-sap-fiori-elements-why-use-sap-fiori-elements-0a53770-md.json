@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-why-use-sap-fiori-elements-0a53770-md",
+  "title": "Why Use SAP Fiori Elements?",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/why-use-sap-fiori-elements-0a53770.md",
+  "lastModified": "2025-09-01T18:17:10.663Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Why",
+    "Use",
+    "SAP",
+    "Fiori",
+    "Elements"
+  ],
+  "headers": [
+    "Why Use SAP Fiori Elements?"
+  ],
+  "content": "<!-- loio0a5377076f4e4ccba055a9072befadbd -->\n\n# Why Use SAP Fiori Elements?\n\nHere's why – in a nutshell.\n\n\n\n\n<table>\n<tr>\n<td valign=\"top\">\n\n![](images/StopWatch_f6dd642.png)\n\n</td>\n<td valign=\"top\">\n\n**Developer Productivity**\n\n-   Focus on **business logic** and back-end services\n-   Write **less UI code**\n-   **Reduce** development and maintenance **costs**\n\n\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n![](images/Data_Consistency_ba4b763.png)\n\n</td>\n<td valign=\"top\">\n\n**UX Consistency**\n\n-   Comply with the **latest SAP Fiori design** specification\n-   Deliver a **centrally managed** user experience\n-   Include **uniform** layout, navigation, search, filtering, and more\n\n\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n![](images/GrothUpArrows_5d9c969.png)\n\n</td>\n<td valign=\"top\">\n\n**Enterprise Readiness**\n\n-   Deliver **high-quality** SAPUI5 applications to end users\n-   Ensure **stable, optimized** UI code out of the box\n-   Include **standard enterprise features** \\(accessibility, mobile, translation support, and more\\)\n\n\n\n</td>\n</tr>\n</table>\n\n> ### Note:  \n> The initial effort for creating an app using SAP Fiori elements might be higher than creating a freestyle SAPUI5 app. However, you will be richly rewarded for this effort after you've created more apps this way because your apps will benefit from using the framework and the included features.\n\n",
+  "excerpt": "<!-- loio0a5377076f4e4ccba055a9072befadbd --> Why Use SAP Fiori Elements? Here's why – in a nutshell. <table> <tr> <td valign=\"top\"> ! </td> <td valign=\"top\"> Developer Productivity -   Focus on busin...",
+  "wordCount": 177,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

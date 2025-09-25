@@ -1,7 +1,7 @@
 import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../src/utils/i18n';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from '../../../src/app/extension-project';
+import { getExtensionProjectData } from '../../../src/app/extension-project';
 
 const configAnswers = {
     system: 'SystemA',
@@ -69,28 +69,5 @@ describe('getExtensionProjectData', () => {
         await expect(getExtensionProjectData(configAnswers, attributeAnswers, mockSystemLookup as any)).rejects.toThrow(
             t('error.destinationInfoMissing')
         );
-    });
-});
-
-describe('resolveNodeModuleGenerator', () => {
-    const originalNodePath = process.env.NODE_PATH;
-
-    afterEach(() => {
-        process.env.NODE_PATH = originalNodePath;
-        jest.restoreAllMocks();
-    });
-
-    it('should return undefined if generator module cannot be resolved from any path', () => {
-        process.env.NODE_PATH = '/invalid/path1:/invalid/path2';
-
-        const result = resolveNodeModuleGenerator();
-        expect(result).toBeUndefined();
-    });
-
-    it('should return undefined if NODE_PATH is not defined', () => {
-        delete process.env.NODE_PATH;
-
-        const result = resolveNodeModuleGenerator();
-        expect(result).toBeUndefined();
     });
 });

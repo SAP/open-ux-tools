@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-15-nested-views-typescript-9bbbfaa-md",
+  "title": "Step 15: Nested Views \\(TypeScript\\)",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-15-nested-views-typescript-9bbbfaa.md",
+  "lastModified": "2025-09-01T18:17:10.455Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Nested",
+    "Views",
+    "TypeScript"
+  ],
+  "headers": [
+    "Step 15: Nested Views \\(TypeScript\\)",
+    "Preview",
+    "Coding",
+    "webapp/controller/HelloPanel.controller.ts \\(New\\)",
+    "webapp/view/HelloPanel.view.xml \\(New\\)",
+    "webapp/view/App.view.xml",
+    "webapp/controller/App.controller.ts"
+  ],
+  "content": "<!-- loio9bbbfaa828a14fee8ca9ac31464cc073 -->\n\n# Step 15: Nested Views \\(TypeScript\\)\n\nOur panel content is getting more and more complex and now it is time to move the panel content to a separate view. With that approach, the application structure is much easier to understand, and the individual parts of the app can be reused.\n\n\n\n## Preview\n\n  \n  \n**The panel content is now refactored to a separate view \\(No visual changes to last step\\)**\n\n![The graphic has an explanatory text.](images/UI5_Walkthrough_Step_15_f3724d2.png \"The panel content is now refactored to a separate view (No visual changes to last\n               step)\")\n\n\n\n<a name=\"loio9bbbfaa828a14fee8ca9ac31464cc073__section_rjd_vt2_syb\"/>\n\n## Coding\n\nYou can view all files at [OpenUI5 TypeScript Walkthrough - Step 15: Nested Views](https://github.com/sap-samples/ui5-typescript-walkthrough/tree/main/steps/15) and [download the solution as a zip file](https://sap-samples.github.io/ui5-typescript-walkthrough/ui5-typescript-walkthrough-step-15.zip).\n\n\n\n<a name=\"loio9bbbfaa828a14fee8ca9ac31464cc073__section_xkd_njy_nzb\"/>\n\n## webapp/controller/HelloPanel.controller.ts \\(New\\)\n\nIn our `webapp/controller` folder we create a new `HelloPanel.controller.ts` file and move the `onShowHello` method from the app controller to it, so we get a reusable asset.\n\n```js\nimport Controller from \"sap/ui/core/mvc/Controller\";\nimport MessageToast from \"sap/m/MessageToast\";\nimport JSONModel from \"sap/ui/model/json/JSONModel\";\nimport ResourceModel from \"sap/ui/model/resource/ResourceModel\";\nimport ResourceBundle from \"sap/base/i18n/ResourceBundle\";\n\n/**\n * @namespace ui5.walkthrough.controller\n */\nexport default class HelloPanel extends Controller {\n    \n    onShowHello(): void {\n        // read msg from i18n model\n        // functions with generic return values require casting \n        const resourceBundle = (this.getView()?.getModel(\"i18n\") as ResourceModel)?.getResourceBundle() as ResourceBundle;\n        const recipient = (this.getView()?.getModel() as JSONModel)?.getProperty(\"/recipient/name\");\n        const msg = resourceBundle.getText(\"helloMsg\", [recipient]) || \"no text defined\";\n        // show message\n        MessageToast.show(msg);\n    }\n};\n```\n\n\n\n<a name=\"loio9bbbfaa828a14fee8ca9ac31464cc073__section_hfz_fky_nzb\"/>\n\n## webapp/view/HelloPanel.view.xml \\(New\\)\n\nWe create a new `HelloPanel.view.xml` file in our `webapp/view` folder and move the whole panel from the app view to it. We also reference the controller we just created for the view by setting it to the `controllerName` attribute of the XML view.\n\n```xml\n<mvc:View\n   controllerName=\"ui5.walkthrough.controller.HelloPanel\"\n   xmlns=\"sap.m\"\n   xmlns:mvc=\"sap.ui.core.mvc\">\n   <Panel\n      headerText=\"{i18n>helloPanelTitle}\"\n      class=\"sapUiResponsiveMargin\"\n      width=\"auto\">\n      <content>\n         <Button\n            text=\"{i18n>showHelloButtonText}\"\n            press=\".onShowHello\"\n            class=\"myCustomButton\"/>\n         <Input\n            value=\"{/recipient/name}\"\n            valueLiveUpdate=\"true\"\n            width=\"60%\"/>\n         <FormattedText\n            htmlText=\"Hello {/recipient/name}\"\n            class=\"sapUiSmallMargin sapThemeHighlight-asColor myCustomText\"/>\n      </content>\n   </Panel>\n</mvc:View>\n```\n\n\n\n<a name=\"loio9bbbfaa828a14fee8ca9ac31464cc073__section_sjd_vt2_syb\"/>\n\n## webapp/view/App.view.xml\n\nIn the app view, we remove the panel control and its content and put the `XMLView` control into the content of the page instead. We add the `viewName` attribute with the value `ui5.walkthrough.view.HelloPanel` to reference the new view that now contains the panel.\n\n```xml\n<mvc:View\n\tcontrollerName=\"ui5.walkthrough.controller.App\"\n\txmlns=\"sap.m\"\n\txmlns:mvc=\"sap.ui.core.mvc\"\n\tdisplayBlock=\"true\">\n\t<Shell>\n\t\t<App class=\"myAppDemoWT\">\n\t\t\t<pages>\n\t\t\t\t<Page title=\"{i18n>homePageTitle}\">\n\t\t\t\t\t<content>\n\t\t\t\t\t\t<mvc:XMLView viewName=\"ui5.walkthrough.view.HelloPanel\"/>\n\t\t\t\t\t</content>\n\t\t\t\t</Page>\n\t\t\t</pages>\n\t\t</App>\n\t</Shell>\n</mvc:View>\n```\n\n\n\n## webapp/controller/App.controller.ts\n\nWe remove the `onShowHello` method from the app controller, as this is not needed anymore.\n\n```js\nimport Controller from \"sap/ui/core/mvc/Controller\";\n\n/**\n * @namespace ui5.walkthrough.controller\n */\nexport default class App extends Controller {\n};\n```\n\nWe have now moved everything out of the app view and controller. The app controller remains an empty stub for now, we will use it later to add more functionality.\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.core.mvc.XMLView`](https://ui5.sap.com/#/api/sap.ui.core.mvc.XMLView%23controlProperties)\n\n",
+  "excerpt": "<!-- loio9bbbfaa828a14fee8ca9ac31464cc073 --> Step 15: Nested Views \\(TypeScript\\) Our panel content is getting more and more complex and now it is time to move the panel content to a separate view. W...",
+  "wordCount": 448,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

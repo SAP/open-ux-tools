@@ -1,6 +1,8 @@
 import { findProjectRoot, createApplicationAccess, getProject, DirName } from '@sap-ux/project-access';
 import { join } from 'path';
+import * as zod from 'zod';
 import type { Appdetails } from '../types';
+import { logger } from '../utils/logger';
 
 /**
  * Resolves the application details from a given path.
@@ -21,7 +23,7 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
                 applicationAccess
             };
         } catch (e) {
-            console.log(`Application was not found by given path. Error: ${e}`);
+            logger.warn(`Application was not found by given path. Error: ${e}`);
             // Fallback - project without app
             const root = await findProjectRoot(path);
             const project = await getProject(root);
@@ -33,7 +35,7 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
             }
         }
     } catch (e) {
-        console.log(`Project was not found by given path. Error: ${e}`);
+        logger.warn(`Project was not found by given path. Error: ${e}`);
         return undefined;
     }
 
@@ -67,4 +69,18 @@ export const getDefaultExtensionFolder = (directory: string): string | undefined
         }
     }
     return subFolder;
+};
+
+/**
+ * Converts a Zod schema into a JSON Schema object.
+ * Additionally function removes the `$schema` property (if present),
+ * since it is unnecessary for mcp server.
+ *
+ * @param schema - A Zod schema instance to be converted.
+ * @returns A JSON Schema object representing the given Zod schema.
+ */
+export const convertToSchema = (schema: zod.ZodType): zod.core.JSONSchema.JSONSchema => {
+    const jsonSchema = zod.toJSONSchema(schema);
+    delete jsonSchema.$schema;
+    return jsonSchema;
 };

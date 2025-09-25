@@ -1,16 +1,24 @@
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { ConfigAnswers, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
+import {
+    FlexLayer,
+    SourceManifest,
+    getBaseAppInbounds,
+    getConfiguredProvider,
+    isAppSupported,
+    loadApps
+} from '@sap-ux/adp-tooling';
 import type { AxiosError } from '@sap-ux/axios-extension';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { ConfigAnswers, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
-import { FlexLayer, SourceManifest, getConfiguredProvider, isAppSupported, loadApps } from '@sap-ux/adp-tooling';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 
-import { initI18n, t } from '../../../src/utils/i18n';
-import { configPromptNames } from '../../../src/app/types';
-import { ConfigPrompter } from '../../../src/app/questions/configuration';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { ConfigPrompter } from '../../../src/app/questions/configuration';
+import { configPromptNames } from '../../../src/app/types';
+import { initI18n, t } from '../../../src/utils/i18n';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
@@ -40,7 +48,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
         latest: { version: '1.134.1', support: 'Maintained', lts: false },
         '1.133.0': { version: '1.133.0', support: 'Maintained', lts: false }
     } as UI5Version),
-    isAppSupported: jest.fn()
+    isAppSupported: jest.fn(),
+    getBaseAppInbounds: jest.fn()
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -91,6 +100,7 @@ const isAppSupportedMock = isAppSupported as jest.Mock;
 const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
+const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
@@ -370,6 +380,53 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.hasSyncViews).toEqual(false);
         });
 
+        it('cloud application prompt validate should return true if base app inbounds are loaded', async () => {
+            const baseAppInbounds: ManifestNamespace.Inbound = {
+                'inbound-a': {
+                    semanticObject: 'so-a',
+                    action: 'action-a'
+                },
+                'inbound-b': {
+                    semanticObject: 'so-b',
+                    action: 'action-b'
+                }
+            };
+            configPrompter['isCloudProject'] = true;
+            const provider = {} as unknown as AbapServiceProvider;
+            configPrompter['abapProvider'] = provider;
+            getBaseAppInboundsMock.mockResolvedValue(baseAppInbounds);
+
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            const app = dummyApps[0];
+            const result = await appPrompt?.validate?.(app, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.isCloud).toBe(true);
+            expect(configPrompter.baseAppInbounds).toEqual(baseAppInbounds);
+
+            expect(getBaseAppInboundsMock).toHaveBeenCalledWith(app.id, provider);
+        });
+
+        it('cloud application prompt validate should return error message if base app inbounds api call fails', async () => {
+            const baseAppInboundsError = new Error('Failed to load app inbounds.');
+            configPrompter['isCloudProject'] = true;
+            const provider = {} as unknown as AbapServiceProvider;
+            configPrompter['abapProvider'] = provider;
+            getBaseAppInboundsMock.mockRejectedValue(baseAppInboundsError);
+
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            const app = dummyApps[0];
+            const result = await appPrompt?.validate?.(app, dummyAnswers);
+
+            expect(result).toEqual(t('error.fetchBaseInboundsFailed', { error: baseAppInboundsError.message }));
+            expect(configPrompter.isCloud).toBe(true);
+            expect(configPrompter.baseAppInbounds).toBeUndefined();
+
+            expect(getBaseAppInboundsMock).toHaveBeenCalledWith(app.id, provider);
+        });
+
         it('application prompt validate should return string when manifest fetching fails in VS Code', async () => {
             const error = new Error(t('error.appDoesNotSupportManifest'));
             getManifestSpy.mockRejectedValue(error);
@@ -421,6 +478,22 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
 
             expect(result).toEqual(t('error.manifestCouldNotBeValidated'));
+        });
+
+        it('application prompt validate should return string when  application does NOT support adaptation and the project is cloud', async () => {
+            const error = new Error(t('error.appDoesNotSupportManifest'));
+            getManifestSpy.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
+            configPrompter['isCloudProject'] = true;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            const errorMessage = error.message;
+            expect(errorMessage).toBeTruthy();
+            expect(result).toEqual(errorMessage);
         });
 
         it('application prompt validate should return string when manifest flexEnabled is false', async () => {
@@ -508,7 +581,9 @@ describe('ConfigPrompter Integration Tests', () => {
 
     describe('Confirm Extension Project Prompt', () => {
         it('confirm extension prompt validate should return true', () => {
-            const prompts = configPrompter.getPrompts();
+            const prompts = configPrompter.getPrompts({
+                shouldCreateExtProject: { isExtensibilityExtInstalled: true }
+            });
             const confirmPrompt = prompts.find((p) => p.name === configPromptNames.shouldCreateExtProject);
             expect(confirmPrompt).toBeDefined();
 

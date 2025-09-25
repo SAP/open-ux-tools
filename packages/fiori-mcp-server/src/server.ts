@@ -4,19 +4,30 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
-import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
+import {
+    docSearch,
+    listFioriApps,
+    listFunctionalities,
+    getFunctionalityDetails,
+    executeFunctionality,
+    tools
+} from './tools';
+import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
+    DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
+import { logger } from './utils/logger';
 
 type ToolArgs =
+    | DocSearchInput
     | ListFioriAppsInput
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
-    | ExecuteFunctionalitiesInput
+    | ExecuteFunctionalityInput
     | Record<string, unknown>;
 
 /**
@@ -51,11 +62,18 @@ export class FioriFunctionalityServer {
      * Logs MCP errors and handles the SIGINT signal for graceful shutdown.
      */
     private setupErrorHandling(): void {
-        this.server.onerror = (error) => console.error('[MCP Error]', error);
+        this.server.onerror = (error) => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
             await this.server.close();
             process.exit(0);
         });
+    }
+
+    /**
+     * Sets up telemetry.
+     */
+    private async setupTelemetry(): Promise<void> {
+        await TelemetryHelper.initTelemetrySettings();
     }
 
     /**
@@ -74,24 +92,36 @@ export class FioriFunctionalityServer {
 
             try {
                 let result;
+                TelemetryHelper.markToolStartTime();
+                const telemetryProperties: TelemetryData = {
+                    tool: name,
+                    functionalityId: (args as any)?.functionalityId
+                };
+
                 switch (name) {
-                    case 'list-fiori-apps':
+                    case 'search_docs':
+                        result = await docSearch(args as DocSearchInput);
+                        return this.convertResultToCallToolResult(result.results);
+                    case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
-                        return this.convertResultToCallToolResult(result);
-                    case 'list-functionality':
+                        break;
+                    case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
-                        return this.convertResultToCallToolResult(result);
-                    case 'get-functionality-details':
+                        break;
+                    case 'get_functionality_details':
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
-                        return this.convertResultToCallToolResult(result);
-                    case 'execute-functionality':
-                        result = await executeFunctionality(args as ExecuteFunctionalitiesInput);
-                        return this.convertResultToCallToolResult(result);
+                        break;
+                    case 'execute_functionality':
+                        result = await executeFunctionality(args as ExecuteFunctionalityInput);
+                        break;
                     default:
+                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
+                await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
+                return this.convertResultToCallToolResult(result);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {
@@ -136,6 +166,7 @@ export class FioriFunctionalityServer {
     async run(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        console.error('Fiori Functionality MCP Server running on stdio');
+        await this.setupTelemetry();
+        logger.info('Fiori Functionality MCP Server running on stdio');
     }
 }

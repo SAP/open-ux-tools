@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-05-developing-apps-information-for-translators-17d242d-md",
+  "title": "Information for Translators",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/information-for-translators-17d242d.md",
+  "lastModified": "2025-09-01T18:17:10.561Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Information",
+    "for",
+    "Translators"
+  ],
+  "headers": [
+    "Information for Translators"
+  ],
+  "content": "<!-- loio17d242da9f0a4b36a37d6d49acf4fe5f -->\n\n# Information for Translators\n\nThe following information is relevant for translators.\n\n-   Texts can be translated in transaction SE63. For more information, see [Transaction SE63](https://help.sap.com/docs/ABAP_PLATFORM_NEW/74453a577ffe4e628ab0aa8dd84e1d1b/46e52cb0bf0e30c1e10000000a11466f.html?version=latest) \n-   The texts are treated as:\n    -   `Short texts` with translation object type `A5` \\(User Interface Texts\\) → `FIOS`\\(Fiori Properties Short Texts\\).\n\n        ![](images/Short_text_LR_3c37d18.png)\n\n    -   `Other texts` with translation object type `A5` \\(User Interface Texts\\) -\\> `FIOL` \\(Fiori Properties Long Texts\\). This includes texts that are longer than 196 characters and/or contain xhtml markup.\n\n        ![](images/Other_texts_LR_7a15f54.png)\n\n\n-   The translation object name is formed the following way:\n\n    `<UI5 ABAP Repository Name> <File Id>`\n\n    The repository name is padded with spaces up to 30 chars. The file ID is the hash of the filename of the default properties file.\n\n-   The text key of each text element consists of the text type and a hash of the text name.\n-   The texts are stored as texts of the BSP page of the default properties file. However, they are not visible in the BSP page editor in the ABAP Workbench. They are stored in the following database tables:\n\n\n    <table>\n    <tr>\n    <th valign=\"top\">\n\n    Database Table\n    \n    </th>\n    <th valign=\"top\">\n\n    What Does it Contain?\n    \n    </th>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `O2PAGDIR` \\(File Table\\)\n    \n    </td>\n    <td valign=\"top\">\n    \n    -   Hashed file name of the default properties file \\(part of the translation object name\\)\n    -   Repository name, default file name\n\n\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `O2PAGPROP` \\(Text Key table\\)\n    \n    </td>\n    <td valign=\"top\">\n    \n    -   Text name\n    -   Unique text GUID\n    -   Text type\n    -   Additional context information\n    -   Translation object name GUID \\(from the properties file\\)\n    -   Repository name, default file name, text GUID\n\n\n    \n    </td>\n    </tr>\n    <tr>\n    <td valign=\"top\">\n    \n    `O2PAGPROPT` \\(language-dependent short text table\\)\n    \n    </td>\n    <td valign=\"top\">\n    \n    -   Source and translated text shorter than 255 characters\n    -   Keys: Repository name, default file name, text GUID as in table `O2PAGPROP`, and language key\n\n\n    \n    </td>\n    </tr>\n    </table>\n    \n\n",
+  "excerpt": "<!-- loio17d242da9f0a4b36a37d6d49acf4fe5f --> Information for Translators The following information is relevant for translators. -   Texts can be translated in transaction SE63. For more information, ...",
+  "wordCount": 311,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
