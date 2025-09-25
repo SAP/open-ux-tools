@@ -512,7 +512,7 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isAppStudio() && isKnownUnsupported) {
+        if (isAppStudio() && isKnownUnsupported && !this.isCloud) {
             this.logger.error(validationResult);
             this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
