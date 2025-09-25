@@ -71,7 +71,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
             const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
             throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);
         }
-        handleRichTextEditorBlock(xmlDocument);
+        getOrAddNamespace(xmlDocument, 'sap.fe.macros.richtexteditor', 'richtexteditor');
     }
 
     fs = updateViewFile(
@@ -98,17 +98,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
-}
-
-/**
- * Adds the richtexteditor namespace to the XML fragment if it is missing.
- *
- * @param xmlDocument - The parsed XML document representing the fragment.
- */
-export function handleRichTextEditorBlock(xmlDocument: Document): void {
-    const rtePrefix = getOrAddNamespace(xmlDocument, BuildingBlockType.RichTextEditor);
-    const fragmentDef = xmlDocument.documentElement;
-    fragmentDef.setAttribute(`xmlns:${rtePrefix}`, 'sap.fe.macros.richtexteditor');
 }
 
 /**
@@ -255,7 +244,7 @@ function getTemplateContent<T extends BuildingBlock>(
     return render(
         fs.read(templateFilePath),
         {
-            macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument) : 'macros',
+            macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
             data: buildingBlockData
         },
         {}

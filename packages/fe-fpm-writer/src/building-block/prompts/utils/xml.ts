@@ -1,6 +1,5 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
-import { BuildingBlockType } from '../../types';
 
 /**
  * Method validates if passed id is available.
@@ -124,33 +123,51 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
 }
 
 /**
+ * Finds the prefix associated with a given namespace URI in the root element's attributes.
+ * Handles both default namespaces (xmlns="...") and prefixed namespaces (xmlns:prefix="...").
+ *
+ * @param root - The root XML element to search for namespace declarations.
+ * @param namespaceUri - The namespace URI to look for.
+ * @returns The namespace prefix if found ('' for default namespace, or the prefix string), otherwise null.
+ */
+function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | null {
+    // Check all namespace attributes for a matching URI
+    for (let i = 0; i < root.attributes.length; i++) {
+        const attr = root.attributes[i];
+        if (attr.value === namespaceUri) {
+            if (attr.name === 'xmlns') {
+                return ''; // Default namespace
+            } else if (attr.name.startsWith('xmlns:')) {
+                return attr.name.split(':')[1]; // Prefixed namespace
+            }
+        }
+    }
+    return null;
+}
+
+/**
  * Ensures that a given XML namespace URI is defined in the document and returns its prefix.
+ * Handles both default and prefixed namespaces.
  *
  * @param ui5XmlDocument - The XML document
- * @param type - The type of namespace ('macros', 'richtexteditor', 'page')
- * @returns The prefix bound to the namespace URI (existing or newly added)
+ * @param namespaceUri - The namespace URI to check/add (e.g. 'sap.fe.macros', 'sap.fe.macros.richtexteditor')
+ * @param prefix - The preferred prefix to use if adding (e.g. 'macros', 'richtexteditor')
+ * @returns The prefix bound to the namespace URI ('' for default, or the prefix)
  */
 export function getOrAddNamespace(
     ui5XmlDocument: Document,
-    type: BuildingBlockType.RichTextEditor | BuildingBlockType.Page = BuildingBlockType.Page
+    namespaceUri: string = 'sap.fe.macros',
+    prefix: string = 'macros'
 ): string {
-    type NamespaceType = BuildingBlockType.RichTextEditor | BuildingBlockType.Page;
-    const namespaceConfig: Record<NamespaceType, { uri: string; prefix: string }> = {
-        [BuildingBlockType.RichTextEditor]: { uri: 'sap.fe.macros.richtexteditor', prefix: 'richtexteditor' },
-        [BuildingBlockType.Page]: { uri: 'sap.fe.macros', prefix: 'macros' }
-    };
-    const { uri: namespaceUri, prefix: defaultPrefix } = namespaceConfig[type];
     const root = ui5XmlDocument.documentElement;
 
     // Check all namespace attributes for a matching URI
-    for (const attr of Array.from(root.attributes)) {
-        if (attr.name.startsWith('xmlns:') && attr.value === namespaceUri) {
-            return attr.name.split(':')[1]; // Return existing prefix
-        }
+    const existingPrefix = findNamespacePrefix(root, namespaceUri);
+    if (existingPrefix !== null) {
+        return existingPrefix;
     }
 
-    // Otherwise, add a new namespace binding with the default prefix
-    root.setAttributeNS('http://www.w3.org/2000/xmlns/', `xmlns:${defaultPrefix}`, namespaceUri);
-
-    return defaultPrefix;
+    // If not present, add with preferred prefix
+    root.setAttributeNS('http://www.w3.org/2000/xmlns/', prefix === '' ? 'xmlns' : `xmlns:${prefix}`, namespaceUri);
+    return prefix;
 }

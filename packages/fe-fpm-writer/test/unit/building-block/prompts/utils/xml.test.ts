@@ -97,7 +97,7 @@ describe('utils - xml', () => {
     });
 });
 
-describe('getOrAddMacrosNamespace', () => {
+describe('getOrAddNamespace', () => {
     function createFragmentXmlDoc(attrs: Record<string, string> = {}) {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
@@ -116,23 +116,23 @@ describe('getOrAddMacrosNamespace', () => {
 
     it('returns existing prefix for macros namespace in mvc:View', () => {
         const xmlDoc = createViewXmlDoc({ 'xmlns:macros': 'sap.fe.macros' });
-        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.Page)).toBe('macros');
+        expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('macros');
     });
 
     it('returns existing prefix for richtexteditor namespace in FragmentDefinition', () => {
         const xmlDoc = createFragmentXmlDoc({ 'xmlns:rte': 'sap.fe.macros.richtexteditor' });
-        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.RichTextEditor)).toBe('rte');
+        expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros.richtexteditor', 'richtexteditor')).toBe('rte');
     });
 
     it('adds macros namespace if missing and returns default prefix in mvc:View', () => {
         const xmlDoc = createViewXmlDoc();
-        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.Page)).toBe('macros');
+        expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('macros');
         expect(xmlDoc.documentElement.getAttribute('xmlns:macros')).toBe('sap.fe.macros');
     });
 
     it('adds richtexteditor namespace if missing and returns default prefix in FragmentDefinition', () => {
         const xmlDoc = createFragmentXmlDoc();
-        expect(getOrAddNamespace(xmlDoc, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
+        expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros.richtexteditor', 'richtexteditor')).toBe('richtexteditor');
         expect(xmlDoc.documentElement.getAttribute('xmlns:richtexteditor')).toBe('sap.fe.macros.richtexteditor');
     });
 
@@ -141,16 +141,40 @@ describe('getOrAddMacrosNamespace', () => {
             'xmlns:macros': 'sap.fe.macros',
             'xmlns:richtexteditor': 'sap.fe.macros.richtexteditor'
         });
-        expect(getOrAddNamespace(xmlDocView, BuildingBlockType.Page)).toBe('macros');
-        expect(getOrAddNamespace(xmlDocView, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
+        expect(getOrAddNamespace(xmlDocView, 'sap.fe.macros', 'macros')).toBe('macros');
+        expect(getOrAddNamespace(xmlDocView, 'sap.fe.macros.richtexteditor', 'richtexteditor')).toBe('richtexteditor');
         expect(xmlDocView.documentElement.attributes.length).toBeGreaterThanOrEqual(2);
 
         const xmlDocFragment = createFragmentXmlDoc({
             'xmlns:macros': 'sap.fe.macros',
             'xmlns:richtexteditor': 'sap.fe.macros.richtexteditor'
         });
-        expect(getOrAddNamespace(xmlDocFragment, BuildingBlockType.Page)).toBe('macros');
-        expect(getOrAddNamespace(xmlDocFragment, BuildingBlockType.RichTextEditor)).toBe('richtexteditor');
+        expect(getOrAddNamespace(xmlDocFragment, 'sap.fe.macros', 'macros')).toBe('macros');
+        expect(getOrAddNamespace(xmlDocFragment, 'sap.fe.macros.richtexteditor', 'richtexteditor')).toBe(
+            'richtexteditor'
+        );
         expect(xmlDocFragment.documentElement.attributes.length).toBe(2);
+    });
+
+    it('returns empty string as prefix when macros namespace is defined as default namespace in FragmentDefinition', () => {
+        const xml = `<core:FragmentDefinition xmlns="sap.fe.macros">
+            <RichTextEditorWithMetadata metaPath="/Travel/Status" id="RichTextEditor">
+            </RichTextEditorWithMetadata>
+        </core:FragmentDefinition>`;
+        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
+        expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
+    });
+
+    it('returns empty string as prefix when macros namespace is defined as default namespace in mvc:View', () => {
+        const xml = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.fe.macros"
+            xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main">
+            <Page title="Main">
+                <content />
+            </Page>
+        </mvc:View>`;
+        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
+        expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
 });
