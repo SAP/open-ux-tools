@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.32.1
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+
+## 1.32.0
+
+### Minor Changes
+
+-   f9b4afe: Enhanced the Project type with the capCustomPaths property to store information about custom paths in CAP projects. These custom paths should be considered during performance optimization checks.
+
 ## 1.31.0
 
 ### Minor Changes

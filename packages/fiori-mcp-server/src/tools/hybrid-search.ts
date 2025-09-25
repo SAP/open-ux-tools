@@ -1,5 +1,6 @@
 import { SimpleDocumentIndexer } from './services/indexer-simple';
 import type { SearchResult } from './services/types/index';
+import { logger } from '../utils/logger';
 
 /**
  *
@@ -98,7 +99,7 @@ export async function docSearch(params: DocSearchInput): Promise<SearchResponseD
         return results;
     } catch (error) {
         // Fallback when embeddings data is not available
-        console.warn('Embeddings data not available, providing limited search capability:', error);
+        logger.warn(`Embeddings data not available, providing limited search capability: ${error}`);
 
         return {
             query,

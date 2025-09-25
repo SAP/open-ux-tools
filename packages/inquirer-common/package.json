@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/inquirer-common",
     "description": "Commonly used shared functionality and types to support inquirer modules.",
-    "version": "0.7.42",
+    "version": "0.7.45",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -40,7 +40,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "axios": "1.11.0",
+        "axios": "1.12.2",
         "chalk": "4.1.2",
         "figures": "3.2.0",
         "fuzzy": "0.1.3",

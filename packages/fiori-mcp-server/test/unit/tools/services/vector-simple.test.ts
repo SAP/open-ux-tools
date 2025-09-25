@@ -3,13 +3,13 @@ import path from 'path';
 import { connect } from '@lancedb/lancedb';
 import type { EmbeddingMetadata } from '../../../../src/tools/services/vector-simple';
 import { SimpleVectorService } from '../../../../src/tools/services/vector-simple';
-import { logger } from '../../../../src/tools/services/utils/logger';
+import { logger } from '../../../../src/utils/logger';
 import { resolveEmbeddingsPath } from '../../../../src/utils/embeddings-path';
 
 // Mock dependencies
 jest.mock('fs/promises');
 jest.mock('@lancedb/lancedb');
-jest.mock('../../../../src/tools/services/utils/logger');
+jest.mock('../../../../src/utils/logger');
 jest.mock('../../../../src/utils/embeddings-path');
 
 const mockFs = fs as jest.Mocked<typeof fs>;
@@ -41,13 +41,11 @@ describe('SimpleVectorService', () => {
         category: 'guides',
         path: 'guides/test.md',
         chunk_index: 0,
-        metadata: {
-            tags: ['test', 'guide'],
-            headers: ['Introduction'],
-            lastModified: '2023-01-01T00:00:00.000Z',
-            wordCount: 100,
-            excerpt: 'A test document'
-        },
+        tags_json: '["test", "guide"]',
+        headers_json: '["Introduction"]',
+        lastModified: '2023-01-01T00:00:00.000Z',
+        wordCount: 100,
+        excerpt: 'A test document',
         _distance: 0.1
     };
 
@@ -72,6 +70,30 @@ describe('SimpleVectorService', () => {
 
         vectorService = new SimpleVectorService();
     });
+
+    // Helper function to setup standard initialization mocks
+    const setupInitializationMocks = () => {
+        mockResolveEmbeddingsPath.mockResolvedValue({
+            dataPath: '/test/data',
+            embeddingsPath: '/test/embeddings',
+            searchPath: '/test/search',
+            docsPath: '/test/docs',
+            isExternalPackage: false,
+            isAvailable: true
+        });
+
+        // Mock table index file
+        const mockTableIndex = {
+            tables: ['documents_000'],
+            totalTables: 1,
+            maxVectorsPerTable: 5000,
+            totalVectors: 5000
+        };
+
+        mockFs.readFile
+            .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
+            .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
+    };
 
     afterAll(async () => {
         // Ensure all connections are closed to prevent Jest open handles
@@ -107,14 +129,26 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            // Mock table index file
+            const mockTableIndex = {
+                tables: ['documents_000', 'documents_001'],
+                totalTables: 2,
+                maxVectorsPerTable: 5000,
+                totalVectors: 10000
+            };
+
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
+                .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
 
             await vectorService.initialize();
 
             expect(mockResolveEmbeddingsPath).toHaveBeenCalled();
             expect(mockFs.readFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'metadata.json'), 'utf-8');
+            expect(mockFs.readFile).toHaveBeenCalledWith(path.join(embeddingsPath, 'table_index.json'), 'utf-8');
             expect(mockConnect).toHaveBeenCalledWith(embeddingsPath);
-            expect(mockConnection.openTable).toHaveBeenCalledWith('documents');
+            expect(mockConnection.openTable).toHaveBeenCalledWith('documents_000');
+            expect(mockConnection.openTable).toHaveBeenCalledWith('documents_001');
             expect(mockLogger.log).toHaveBeenCalledWith('Loading vector database from pre-built embeddings...');
             expect(mockLogger.log).toHaveBeenCalledWith(`Using embeddings path: ${embeddingsPath} (external: true)`);
             expect(mockLogger.log).toHaveBeenCalledWith('✓ Vector database loaded and ready');
@@ -185,18 +219,19 @@ describe('SimpleVectorService', () => {
                 isAvailable: true
             });
 
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json succeeds
+                .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
+
             mockConnection.openTable.mockRejectedValue(new Error('Table not found'));
 
             await expect(vectorService.initialize()).rejects.toThrow(
-                'Failed to load vector database: Error: Table not found'
+                'Failed to load vector database: Error: No tables found: Error: Table not found'
             );
             expect(vectorService.isInitialized()).toBe(false);
         });
-    });
 
-    describe('semanticSearch', () => {
-        beforeEach(async () => {
+        it('should fallback to single table when table index is not available', async () => {
             mockResolveEmbeddingsPath.mockResolvedValue({
                 dataPath: '/test/data',
                 embeddingsPath: '/test/embeddings',
@@ -205,7 +240,25 @@ describe('SimpleVectorService', () => {
                 isExternalPackage: false,
                 isAvailable: true
             });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json succeeds
+                .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
+
+            // Mock successful fallback to single table
+            mockConnection.openTable.mockResolvedValue(mockTable);
+
+            await vectorService.initialize();
+
+            expect(mockFs.readFile).toHaveBeenCalledTimes(2);
+            expect(mockConnection.openTable).toHaveBeenCalledWith('documents');
+            expect(vectorService.isInitialized()).toBe(true);
+        });
+    });
+
+    describe('semanticSearch', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -226,7 +279,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.semanticSearch(queryVector, 5);
 
             expect(mockTable.vectorSearch).toHaveBeenCalledWith(queryVector);
-            expect(mockTable.limit).toHaveBeenCalledWith(5);
+            expect(mockTable.limit).toHaveBeenCalledWith(10); // 5 * 2 for multiple tables
             expect(results).toHaveLength(1);
             expect(results[0]).toEqual({
                 document: {
@@ -265,7 +318,7 @@ describe('SimpleVectorService', () => {
 
             await vectorService.semanticSearch(queryVector);
 
-            expect(mockTable.limit).toHaveBeenCalledWith(10);
+            expect(mockTable.limit).toHaveBeenCalledWith(20); // 10 * 2 for multiple tables
         });
 
         it('should handle search errors', async () => {
@@ -276,7 +329,7 @@ describe('SimpleVectorService', () => {
             await expect(vectorService.semanticSearch(queryVector)).rejects.toThrow(
                 'Semantic search failed: Error: Search failed'
             );
-            expect(mockLogger.error).toHaveBeenCalledWith('Semantic search failed:', searchError);
+            expect(mockLogger.error).toHaveBeenCalledWith(`Semantic search failed: ${searchError}`);
         });
 
         it('should handle results without distance property', async () => {
@@ -295,15 +348,7 @@ describe('SimpleVectorService', () => {
 
     describe('findSimilarToText', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -319,15 +364,7 @@ describe('SimpleVectorService', () => {
 
     describe('findSimilarToDocument', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -392,7 +429,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.findSimilarToDocument('doc1');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith('Find similar documents failed:', searchError);
+            expect(mockLogger.error).toHaveBeenCalledWith(`Find similar documents failed: ${searchError}`);
         });
 
         it('should use default limit when not specified', async () => {
@@ -407,15 +444,7 @@ describe('SimpleVectorService', () => {
 
     describe('getDocumentsByCategory', () => {
         beforeEach(async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -446,7 +475,7 @@ describe('SimpleVectorService', () => {
 
             await vectorService.getDocumentsByCategory('guides', 10);
 
-            expect(mockTable.limit).toHaveBeenCalledWith(10);
+            expect(mockTable.limit).toHaveBeenCalledWith(20); // Math.ceil(10/1) + 10 = 20
         });
 
         it('should not apply limit when not provided', async () => {
@@ -464,7 +493,7 @@ describe('SimpleVectorService', () => {
             const results = await vectorService.getDocumentsByCategory('guides');
 
             expect(results).toEqual([]);
-            expect(mockLogger.error).toHaveBeenCalledWith('Get documents by category failed:', searchError);
+            expect(mockLogger.error).toHaveBeenCalledWith(`Get documents by category failed: ${searchError}`);
         });
     });
 
@@ -475,15 +504,7 @@ describe('SimpleVectorService', () => {
         });
 
         it('should return metadata when initialized', async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
 
             const result = vectorService.getMetadata();
@@ -496,9 +517,9 @@ describe('SimpleVectorService', () => {
             expect(vectorService.isInitialized()).toBe(false);
         });
 
-        it('should return false when only table is set', async () => {
+        it('should return false when only tables is set', async () => {
             // Simulate partial initialization
-            vectorService['table'] = mockTable;
+            vectorService['tables'] = [mockTable];
             expect(vectorService.isInitialized()).toBe(false);
         });
 
@@ -509,23 +530,171 @@ describe('SimpleVectorService', () => {
         });
 
         it('should return true when fully initialized', async () => {
-            mockResolveEmbeddingsPath.mockResolvedValue({
-                dataPath: '/test/data',
-                embeddingsPath: '/test/embeddings',
-                searchPath: '/test/search',
-                docsPath: '/test/docs',
-                isExternalPackage: false,
-                isAvailable: true
-            });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+            setupInitializationMocks();
             await vectorService.initialize();
 
             expect(vectorService.isInitialized()).toBe(true);
         });
     });
 
-    describe('close', () => {
+    describe('parseJsonField', () => {
         beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should parse valid JSON strings correctly', async () => {
+            // Create a mock result with valid JSON
+            const mockResults = [
+                {
+                    ...mockVectorDocument,
+                    tags_json: '["tag1", "tag2"]',
+                    headers_json: '["header1", "header2"]'
+                }
+            ];
+            mockTable.toArray.mockResolvedValue(mockResults);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
+
+            expect(results[0].document.metadata.tags).toEqual(['tag1', 'tag2']);
+            expect(results[0].document.metadata.headers).toEqual(['header1', 'header2']);
+        });
+
+        it('should handle invalid JSON gracefully', async () => {
+            // Create a mock result with invalid JSON
+            const mockResults = [
+                {
+                    ...mockVectorDocument,
+                    tags_json: 'invalid json {',
+                    headers_json: 'also invalid ['
+                }
+            ];
+            mockTable.toArray.mockResolvedValue(mockResults);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
+
+            // Should return empty arrays when JSON parsing fails
+            expect(results[0].document.metadata.tags).toEqual([]);
+            expect(results[0].document.metadata.headers).toEqual([]);
+        });
+
+        it('should handle empty strings correctly', async () => {
+            // Create a mock result with empty JSON strings
+            const mockResults = [
+                {
+                    ...mockVectorDocument,
+                    tags_json: '',
+                    headers_json: null
+                }
+            ];
+            mockTable.toArray.mockResolvedValue(mockResults);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
+
+            // Should return empty arrays for empty/null strings
+            expect(results[0].document.metadata.tags).toEqual([]);
+            expect(results[0].document.metadata.headers).toEqual([]);
+        });
+    });
+
+    describe('findSimilarToDocument edge cases', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should handle multiple documents with different scores and sort correctly', async () => {
+            const referenceDoc = { ...mockVectorDocument, document_id: 'doc1', vector: [0.1, 0.2, 0.3] };
+
+            // Create multiple similar documents with different scores
+            const doc2 = { ...mockVectorDocument, document_id: 'doc2', _distance: 0.5 }; // score: 0.5
+            const doc3 = { ...mockVectorDocument, document_id: 'doc3', _distance: 0.1 }; // score: 0.9 (best)
+            const doc4 = { ...mockVectorDocument, document_id: 'doc4', _distance: 0.3 }; // score: 0.7
+
+            mockTable.toArray
+                .mockResolvedValueOnce([referenceDoc]) // Reference document
+                .mockResolvedValueOnce([doc2, doc3, doc4]); // Similar documents in unsorted order
+
+            const results = await vectorService.findSimilarToDocument('doc1', 3);
+
+            expect(results).toHaveLength(3);
+            // Should be sorted by score (descending): doc3 (0.9), doc4 (0.7), doc2 (0.5)
+            expect(results[0].document.id).toBe('doc3');
+            expect(results[0].score).toBe(0.9);
+            expect(results[1].document.id).toBe('doc4');
+            expect(results[1].score).toBe(0.7);
+            expect(results[2].document.id).toBe('doc2');
+            expect(results[2].score).toBe(0.5);
+        });
+
+        it('should handle empty results when no similar documents found in any table', async () => {
+            const referenceDoc = { ...mockVectorDocument, document_id: 'doc1', vector: [0.1, 0.2, 0.3] };
+
+            mockTable.toArray
+                .mockResolvedValueOnce([referenceDoc]) // Reference document found
+                .mockResolvedValueOnce([]); // No similar documents found
+
+            const results = await vectorService.findSimilarToDocument('doc1', 5);
+
+            expect(results).toHaveLength(0);
+        });
+    });
+
+    describe('semantic search edge cases', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should handle results with undefined distance values', async () => {
+            const resultWithoutDistance = {
+                ...mockVectorDocument,
+                _distance: undefined // Test undefined distance
+            };
+            mockTable.toArray.mockResolvedValue([resultWithoutDistance]);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
+
+            expect(results[0].score).toBe(1); // 1 - 0 (default)
+            expect(results[0].distance).toBe(0);
+        });
+
+        it('should sort results correctly when distances are the same', async () => {
+            const result1 = { ...mockVectorDocument, document_id: 'doc1', _distance: 0.5 };
+            const result2 = { ...mockVectorDocument, document_id: 'doc2', _distance: 0.5 };
+            const result3 = { ...mockVectorDocument, document_id: 'doc3', _distance: 0.3 };
+
+            mockTable.toArray.mockResolvedValue([result1, result2, result3]);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3], 3);
+
+            // Should be sorted by distance (ascending): doc3 (0.3), then doc1 and doc2 (0.5 each)
+            expect(results[0].document.id).toBe('doc3');
+            expect(results[0].distance).toBe(0.3);
+            expect(results[1].distance).toBe(0.5);
+            expect(results[2].distance).toBe(0.5);
+        });
+    });
+
+    describe('getDocumentsByCategory edge cases', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should handle metadata with missing totalVectors in fallback mode', async () => {
+            // This test covers the fallback logic where totalVectors might be undefined
+            const metadataWithoutTotal = {
+                version: '1.0.0',
+                createdAt: '2023-01-01T00:00:00.000Z',
+                model: 'test-model',
+                dimensions: 384,
+                totalDocuments: 100,
+                chunkSize: 512,
+                chunkOverlap: 50
+                // totalVectors is missing
+            };
+
             mockResolveEmbeddingsPath.mockResolvedValue({
                 dataPath: '/test/data',
                 embeddingsPath: '/test/embeddings',
@@ -534,7 +703,245 @@ describe('SimpleVectorService', () => {
                 isExternalPackage: false,
                 isAvailable: true
             });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(metadataWithoutTotal)) // metadata.json without totalVectors
+                .mockRejectedValueOnce(new Error('Table index not found')); // table_index.json fails
+
+            // Mock successful fallback to single table
+            mockConnection.openTable.mockResolvedValue(mockTable);
+
+            await vectorService.initialize();
+
+            expect(vectorService.isInitialized()).toBe(true);
+            // Should handle missing totalVectors gracefully with || 0
+        });
+
+        it('should handle no limit provided with multiple tables', async () => {
+            // Setup multiple tables for this test
+            const additionalTable = {
+                search: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                limit: jest.fn(),
+                toArray: jest.fn().mockResolvedValue([])
+            } as any;
+
+            // Mock having multiple tables
+            vectorService['tables'] = [mockTable, additionalTable];
+
+            await vectorService.getDocumentsByCategory('guides'); // No limit provided
+
+            // When no limit is provided, limit should not be called
+            expect(mockTable.limit).not.toHaveBeenCalled();
+            expect(additionalTable.limit).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('semantic search with category filtering', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should handle category filter in multiple table scenario', async () => {
+            // Setup multiple tables for this test
+            const additionalTable = {
+                vectorSearch: jest.fn().mockReturnThis(),
+                limit: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                toArray: jest.fn().mockResolvedValue([])
+            } as any;
+
+            // Make sure both tables return the chain correctly
+            mockTable.toArray.mockResolvedValue([mockVectorDocument]);
+            additionalTable.toArray.mockResolvedValue([]);
+
+            // Mock having multiple tables
+            vectorService['tables'] = [mockTable, additionalTable];
+
+            const queryVector = [0.1, 0.2, 0.3];
+            await vectorService.semanticSearch(queryVector, 5, 'guides');
+
+            // Verify category filter was applied to both tables
+            expect(mockTable.where).toHaveBeenCalledWith('category = "guides"');
+            expect(additionalTable.where).toHaveBeenCalledWith('category = "guides"');
+        });
+
+        it('should handle semantic search without category filter', async () => {
+            const queryVector = [0.1, 0.2, 0.3];
+            mockTable.toArray.mockResolvedValue([mockVectorDocument]);
+
+            await vectorService.semanticSearch(queryVector, 5); // No category filter
+
+            // Verify no where clause was applied when no category filter
+            expect(mockTable.where).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('findSimilarToDocument with multiple tables', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should search across multiple tables for reference document', async () => {
+            // Setup multiple tables
+            const table1 = {
+                search: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                limit: jest.fn().mockReturnThis(),
+                toArray: jest.fn().mockResolvedValue([]), // No reference doc in table1
+                vectorSearch: jest.fn().mockReturnThis()
+            } as any;
+
+            const table2 = {
+                search: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                limit: jest.fn().mockReturnThis(),
+                toArray: jest
+                    .fn()
+                    .mockResolvedValue([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }]), // Reference doc found in table2
+                vectorSearch: jest.fn().mockReturnThis()
+            } as any;
+
+            // Mock having multiple tables
+            vectorService['tables'] = [table1, table2];
+
+            // Mock the vector search results for both tables
+            table1.toArray.mockResolvedValueOnce([]).mockResolvedValueOnce([]); // No ref doc, no similar docs
+            table2.toArray
+                .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] }])
+                .mockResolvedValueOnce([{ ...mockVectorDocument, document_id: 'similar-doc', _distance: 0.2 }]); // Ref doc found, similar docs found
+
+            const results = await vectorService.findSimilarToDocument('ref-doc', 5);
+
+            // Should search all tables for reference document
+            expect(table1.search).toHaveBeenCalledWith('');
+            expect(table2.search).toHaveBeenCalledWith('');
+
+            // Should find similar documents after finding reference
+            expect(results).toHaveLength(1);
+            expect(results[0].document.id).toBe('similar-doc');
+        });
+    });
+
+    describe('edge cases for better branch coverage', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
+            await vectorService.initialize();
+        });
+
+        it('should handle documents with same score but different document IDs', async () => {
+            const doc1 = { ...mockVectorDocument, document_id: 'doc1', _distance: 0.5 };
+            const doc2 = { ...mockVectorDocument, document_id: 'doc1', _distance: 0.3 }; // Same doc, better score
+            const doc3 = { ...mockVectorDocument, document_id: 'doc2', _distance: 0.4 };
+
+            const referenceDoc = { ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] };
+
+            mockTable.toArray
+                .mockResolvedValueOnce([referenceDoc]) // Reference document
+                .mockResolvedValueOnce([doc1, doc2, doc3]); // Similar documents with duplicates
+
+            const results = await vectorService.findSimilarToDocument('ref-doc', 5);
+
+            // Should only have 2 unique documents, with the best score for doc1
+            expect(results).toHaveLength(2);
+            expect(results[0].document.id).toBe('doc1');
+            expect(results[0].score).toBe(0.7); // 1 - 0.3 (better distance)
+            expect(results[1].document.id).toBe('doc2');
+            expect(results[1].score).toBe(0.6); // 1 - 0.4
+        });
+
+        it('should handle getDocumentsByCategory with no limit and single result', async () => {
+            mockTable.toArray.mockResolvedValue([mockVectorDocument]);
+
+            const results = await vectorService.getDocumentsByCategory('guides');
+
+            expect(results).toHaveLength(1);
+            expect(results[0].document.category).toBe('guides');
+            expect(results[0].score).toBe(1.0); // No distance for category queries
+        });
+
+        it('should handle semantic search with multiple chunks of same document', async () => {
+            const chunk1 = { ...mockVectorDocument, document_id: 'doc1', chunk_index: 0, _distance: 0.1 };
+            const chunk2 = { ...mockVectorDocument, document_id: 'doc1', chunk_index: 1, _distance: 0.2 };
+            const chunk3 = { ...mockVectorDocument, document_id: 'doc2', chunk_index: 0, _distance: 0.15 };
+
+            mockTable.toArray.mockResolvedValue([chunk1, chunk2, chunk3]);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3], 10);
+
+            // Should return all chunks sorted by distance
+            expect(results).toHaveLength(3);
+            expect(results[0].document.id).toBe('doc1'); // chunk_index: 0, distance: 0.1
+            expect(results[0].document.chunk_index).toBe(0);
+            expect(results[1].document.id).toBe('doc2'); // chunk_index: 0, distance: 0.15
+            expect(results[2].document.id).toBe('doc1'); // chunk_index: 1, distance: 0.2
+        });
+
+        it('should handle parseJsonField returning null values correctly', async () => {
+            // Test the || [] fallback in parseJsonField usage
+            const resultWithNullJson = {
+                ...mockVectorDocument,
+                tags_json: null, // This will cause parseJsonField to return null
+                headers_json: null
+            };
+            mockTable.toArray.mockResolvedValue([resultWithNullJson]);
+
+            const results = await vectorService.getDocumentsByCategory('guides');
+
+            // Should handle null parseJsonField results with || [] fallback
+            expect(results[0].document.metadata.tags).toEqual([]);
+            expect(results[0].document.metadata.headers).toEqual([]);
+        });
+
+        it('should handle documentScores map logic correctly in findSimilarToDocument', async () => {
+            const referenceDoc = { ...mockVectorDocument, document_id: 'ref-doc', vector: [0.1, 0.2, 0.3] };
+
+            // Create scenario where map has and doesn't have document IDs
+            const existingDoc = { ...mockVectorDocument, document_id: 'existing-doc', _distance: 0.5 }; // score: 0.5
+            const newDoc = { ...mockVectorDocument, document_id: 'new-doc', _distance: 0.3 }; // score: 0.7
+            const betterExistingDoc = { ...mockVectorDocument, document_id: 'existing-doc', _distance: 0.2 }; // score: 0.8
+
+            mockTable.toArray
+                .mockResolvedValueOnce([referenceDoc]) // Reference document
+                .mockResolvedValueOnce([existingDoc, newDoc, betterExistingDoc]); // Results with duplicates
+
+            const results = await vectorService.findSimilarToDocument('ref-doc', 5);
+
+            // Should handle both !documentScores.has(docId) and documentScores.get(docId).score < score branches
+            expect(results).toHaveLength(2);
+            expect(results[0].document.id).toBe('existing-doc');
+            expect(results[0].score).toBe(0.8); // Best score for existing-doc
+            expect(results[1].document.id).toBe('new-doc');
+            expect(results[1].score).toBe(0.7);
+        });
+
+        it('should handle edge cases in conditionals', async () => {
+            // Test edge cases for conditional branches that may not be covered
+            const mockResult = {
+                ...mockVectorDocument,
+                _distance: null as any, // Test null distance
+                tags_json: 'invalid', // This will trigger catch block
+                headers_json: '' // Empty string
+            };
+
+            mockTable.toArray.mockResolvedValue([mockResult]);
+
+            const results = await vectorService.semanticSearch([0.1, 0.2, 0.3]);
+
+            // Should handle null distance gracefully
+            expect(results[0].distance).toBe(0);
+            expect(results[0].score).toBe(1);
+            // Should handle invalid JSON and empty strings gracefully
+            expect(results[0].document.metadata.tags).toEqual([]);
+            expect(results[0].document.metadata.headers).toEqual([]);
+        });
+    });
+
+    describe('close', () => {
+        beforeEach(async () => {
+            setupInitializationMocks();
             await vectorService.initialize();
         });
 
@@ -554,6 +961,7 @@ describe('SimpleVectorService', () => {
         it('should allow reinitialization after close', async () => {
             await vectorService.close();
 
+            // Setup fresh mocks for reinitialization
             mockResolveEmbeddingsPath.mockResolvedValue({
                 dataPath: '/test/data',
                 embeddingsPath: '/test/embeddings',
@@ -562,7 +970,17 @@ describe('SimpleVectorService', () => {
                 isExternalPackage: false,
                 isAvailable: true
             });
-            mockFs.readFile.mockResolvedValue(JSON.stringify(mockMetadata));
+
+            const mockTableIndex = {
+                tables: ['documents_000'],
+                totalTables: 1,
+                maxVectorsPerTable: 5000,
+                totalVectors: 5000
+            };
+
+            mockFs.readFile
+                .mockResolvedValueOnce(JSON.stringify(mockMetadata)) // metadata.json
+                .mockResolvedValueOnce(JSON.stringify(mockTableIndex)); // table_index.json
 
             await vectorService.initialize();
 

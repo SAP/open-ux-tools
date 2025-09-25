@@ -1,5 +1,34 @@
 # @sap-ux/preview-middleware
 
+## 0.23.14
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/system-access@0.6.18
+
+## 0.23.13
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/adp-tooling@0.15.30
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-access@1.32.1
+
+## 0.23.12
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/adp-tooling@0.15.29
+    -   @sap-ux/system-access@0.6.16
+
 ## 0.23.11
 
 ### Patch Changes
