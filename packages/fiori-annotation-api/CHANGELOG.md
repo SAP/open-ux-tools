@@ -1,5 +1,23 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.0
+
+### Minor Changes
+
+-   aa8bb7a: feat: Add missing referential constraint data to navigation property metadata elements.
+    feat: Add type facets with constraints to metadata elements.
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/xml-odata-annotation-converter@0.4.0
+    -   @sap-ux/odata-annotation-core-types@0.5.0
+    -   @sap-ux/cds-odata-annotation-converter@0.6.10
+    -   @sap-ux/odata-annotation-core@0.2.8
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.15
+    -   @sap-ux/cds-annotation-parser@0.2.18
+
 ## 0.6.23
 
 ### Patch Changes

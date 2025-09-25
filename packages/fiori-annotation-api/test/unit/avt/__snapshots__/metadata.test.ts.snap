@@ -1225,7 +1225,14 @@ Object {
           "isCollection": false,
           "name": "category",
           "partner": "",
-          "referentialConstraint": Array [],
+          "referentialConstraint": Array [
+            Object {
+              "sourceProperty": "category_code",
+              "sourceTypeName": "IncidentService.Incidents",
+              "targetProperty": "code",
+              "targetTypeName": "IncidentService.Category",
+            },
+          ],
           "targetTypeName": "IncidentService.Category",
         },
       ],
@@ -1611,7 +1618,14 @@ Object {
           "isCollection": false,
           "name": "category",
           "partner": "",
-          "referentialConstraint": Array [],
+          "referentialConstraint": Array [
+            Object {
+              "sourceProperty": "category_code",
+              "sourceTypeName": "IncidentService.Incidents",
+              "targetProperty": "code",
+              "targetTypeName": "IncidentService.Category",
+            },
+          ],
           "targetTypeName": "IncidentService.Category",
         },
       ],

@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.18.33
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+
 ## 0.18.32
 
 ### Patch Changes
