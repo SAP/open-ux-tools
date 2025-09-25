@@ -23,8 +23,8 @@ async function findNearestNpmVersion(selectedVersion: string): Promise<string> {
         )[0]?.version;
 
         return npmVersion || selectedVersion;
-    } catch (error) {
-        // If npm command fails, return the selected version as fallback
+    } catch {
+        // If npm version lookup fails, silently fall back to the selected version
         return selectedVersion;
     }
 }
@@ -90,11 +90,7 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     return answers;
 }
 
-export {
-    getPrompts,
-    prompt,
-    findNearestNpmVersion,
-    type UI5LibraryPromptOptions,
-    type UI5LibraryAnswers,
-    type InquirerAdapter
-};
+export { getPrompts, prompt, findNearestNpmVersion };
+
+export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
+export type { InquirerAdapter } from '@sap-ux/inquirer-common';
