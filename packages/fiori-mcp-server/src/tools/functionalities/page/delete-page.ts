@@ -1,4 +1,3 @@
-import * as zod from 'zod';
 import type {
     ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
@@ -10,7 +9,7 @@ import { Application } from './application';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
 import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
 import { DELETE_PAGE } from '../../../constant';
-import { buildPageDeletionSchema, type PageDeletionInput } from './schema';
+import { buildPageDeletionSchema } from './schema';
 
 export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: DELETE_PAGE,

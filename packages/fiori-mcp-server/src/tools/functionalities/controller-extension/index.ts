@@ -1,6 +1,5 @@
 import { CustomExtensionType, DirName } from '@sap/ux-specification/dist/types/src';
 import type { ControllerExtensionPageType } from '@sap/ux-specification/dist/types/src';
-import * as zod from 'zod';
 import { SapuxFtfsFileIO } from '../../../page-editor-api';
 import type {
     ExecuteFunctionalityInput,
@@ -12,11 +11,7 @@ import type {
 import { convertToSchema, getDefaultExtensionFolder, resolveApplication, validateWithSchema } from '../../utils';
 import { join } from 'path';
 import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant';
-import {
-    buildControllerExtensionSchema,
-    ControllerExtensionCreationInput,
-    ControllerExtensionCreationSchema
-} from './schema';
+import { buildControllerExtensionSchema, ControllerExtensionCreationSchema } from './schema';
 
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,

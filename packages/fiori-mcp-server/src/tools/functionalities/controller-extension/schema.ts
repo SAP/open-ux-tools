@@ -1,5 +1,5 @@
 import * as zod from 'zod';
-import { SapuxFtfsFileIO } from '../../../page-editor-api';
+import type { SapuxFtfsFileIO } from '../../../page-editor-api';
 
 /**
  * Schema for creating a controller extension.

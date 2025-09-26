@@ -1,4 +1,4 @@
-import {  LATEST_UI5_VERSION } from '../../../constant';
+import { LATEST_UI5_VERSION } from '../../../constant';
 import * as z from 'zod';
 
 export const GeneratorConfigSchemaCAP = z.object({

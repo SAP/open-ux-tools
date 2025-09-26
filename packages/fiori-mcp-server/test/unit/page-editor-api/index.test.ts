@@ -20,7 +20,6 @@ import visualFiltersConfig from './test-data/config/VisualFilters.json';
 import visualFiltersAnnotations from './test-data/annotations/VisualFilters.json';
 import customPageSchema from './test-data/schema/CustomPage.json';
 import customPageConfig from './test-data/config/CustomPage.json';
-import { JSONSchema4 } from 'json-schema';
 
 describe('getTree', () => {
     beforeEach(async () => {});

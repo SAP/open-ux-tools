@@ -1,9 +1,9 @@
-import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput, Parameter } from '../types';
+import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput } from '../types';
 import { PageEditorApi, findByPath } from '../page-editor-api';
-import type { TreeNode, PropertyPath, TreeNodeProperty } from '../page-editor-api';
+import type { TreeNode, PropertyPath } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
 import { resolveApplication } from './utils';
-import { JSONSchema4 } from 'json-schema';
+import type { JSONSchema4 } from 'json-schema';
 
 /**
  * Retrieves functionality details based on the provided input parameters.
@@ -158,8 +158,9 @@ function resolveRefs(schema: JSONSchema4, fullSchema: JSONSchema4, seen = new Se
         seen.add(ref);
 
         // Merge the referenced schema with any extra props from the current schema (besides $ref)
-        const { $ref, ...rest } = schema;
-        return resolveRefs({ ...defSchema, ...rest }, fullSchema, seen);
+        const schemaWithoutRef = { ...schema };
+        delete schemaWithoutRef.$ref;
+        return resolveRefs({ ...defSchema, ...schemaWithoutRef }, fullSchema, seen);
     }
 
     // Recursively resolve inside properties, items, etc.

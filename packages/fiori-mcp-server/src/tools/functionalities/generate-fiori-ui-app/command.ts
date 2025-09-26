@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
-import { GENERATE_FIORI_UI_APP_ID, LATEST_UI5_VERSION } from '../../../constant';
+import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
 import * as z from 'zod';
 import packageJson from '../../../../package.json';

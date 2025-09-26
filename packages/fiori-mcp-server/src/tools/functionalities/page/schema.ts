@@ -1,6 +1,7 @@
 import * as zod from 'zod';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import { AllowedNavigationOptions, PAGE_VIEW_NAME_PATTERN, PageDef } from './types';
+import { PAGE_VIEW_NAME_PATTERN } from './types';
+import type { AllowedNavigationOptions, PageDef } from './types';
 
 /**
  * Enum of allowed page types.
@@ -10,8 +11,7 @@ const PageTypeEnum = zod.enum([PageTypeV4.ListReport, PageTypeV4.ObjectPage, Pag
 /**
  * Schema factory for the very first page creation.
  *
- * @param page - The parent page ID.
- * @param navigations - Allowed navigation options for the parent page.
+ * @param entities - Allowed entity options for new page.
  * @returns A Zod schema for the very first page creation.
  */
 const firstPageSchema = (entities: AllowedNavigationOptions[]) =>

@@ -1,4 +1,3 @@
-import * as z from 'zod';
 import { command } from './command';
 import { GeneratorConfigSchemaCAP } from './schema';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
