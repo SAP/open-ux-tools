@@ -3,6 +3,7 @@ import { join } from 'path';
 import * as zod from 'zod';
 import type { Appdetails } from '../types';
 import { logger } from '../utils/logger';
+import type { JSONSchema4 } from 'json-schema';
 
 /**
  * Resolves the application details from a given path.
@@ -72,6 +73,72 @@ export const getDefaultExtensionFolder = (directory: string): string | undefined
 };
 
 /**
+ * Recursively resolves `$ref` references in a JSON Schem.
+ * When a `$ref` is found, the referenced definition is merged with the current schema fragment (with `$ref` removed).
+ *
+ * @param schema The schema fragment/segment to resolve. May contain `$ref`.
+ * @param fullSchema The full schema object containing `definitions` used for resolving references.
+ * @param seen A set of `$ref` strings that have already been processed (used internally).
+ * @returns A new schema object with `$ref`s resolved and merged into the fragment.
+ */
+export const resolveRefs = (schema: JSONSchema4, fullSchema: JSONSchema4, seen = new Set()): JSONSchema4 => {
+    if (!schema || typeof schema !== 'object') {
+        return schema;
+    }
+
+    // If schema has $ref - resolve it
+    if (schema.$ref && schema.$ref.startsWith('#/definitions/')) {
+        const ref = schema.$ref;
+        const defName = ref.replace('#/definitions/', '');
+        const defSchema = fullSchema.definitions?.[defName] ?? null;
+
+        if (defSchema) {
+            if (seen.has(ref)) {
+                // Prevent infinite recursion (cyclic refs)
+                return { ...defSchema };
+            }
+            seen.add(ref);
+
+            // Merge the referenced schema with any extra props from the current schema (besides $ref)
+            const schemaWithoutRef = { ...schema };
+            delete schemaWithoutRef.$ref;
+            return resolveRefs({ ...defSchema, ...schemaWithoutRef }, fullSchema, seen);
+        }
+    }
+
+    // Recursively resolve inside properties, items, etc.
+    const resolved: JSONSchema4 = { ...schema };
+
+    if (resolved.properties) {
+        resolved.properties = Object.fromEntries(
+            Object.entries(resolved.properties).map(([k, v]) => [k, resolveRefs(v as JSONSchema4, fullSchema, seen)])
+        );
+    }
+
+    if (resolved.items) {
+        if (Array.isArray(resolved.items)) {
+            resolved.items = resolved.items.map((item) => resolveRefs(item as JSONSchema4, fullSchema, seen));
+        } else {
+            resolved.items = resolveRefs(resolved.items as JSONSchema4, fullSchema, seen);
+        }
+    }
+
+    if (resolved.allOf) {
+        resolved.allOf = resolved.allOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+    }
+
+    if (resolved.anyOf) {
+        resolved.anyOf = resolved.anyOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+    }
+
+    if (resolved.oneOf) {
+        resolved.oneOf = resolved.oneOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+    }
+
+    return resolved;
+};
+
+/**
  * Converts a Zod schema into a JSON Schema object.
  * Additionally function removes the `$schema` property (if present),
  * since it is unnecessary for mcp server.
@@ -85,7 +152,14 @@ export const convertToSchema = (schema: zod.ZodType): zod.core.JSONSchema.JSONSc
     return jsonSchema;
 };
 
-export function validateWithSchema<T extends zod.ZodTypeAny>(schema: T, data: unknown): zod.infer<T> {
+/**
+ * Validates input data against a given Zod schema.
+ *
+ * @param schema - The Zod schema used to validate the input data.
+ * @param data - The input data to be validated.
+ * @returns The validated data.
+ */
+export const validateWithSchema = <T extends zod.ZodTypeAny>(schema: T, data: unknown): zod.infer<T> => {
     try {
         return schema.parse(data);
     } catch (error) {
@@ -94,4 +168,4 @@ export function validateWithSchema<T extends zod.ZodTypeAny>(schema: T, data: un
         }
         throw new Error('Unknown error. Recheck input parameters.');
     }
-}
+};

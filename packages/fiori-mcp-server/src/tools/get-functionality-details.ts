@@ -2,8 +2,7 @@ import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDet
 import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { resolveApplication } from './utils';
-import type { JSONSchema4 } from 'json-schema';
+import { resolveApplication, resolveRefs } from './utils';
 
 /**
  * Retrieves functionality details based on the provided input parameters.
@@ -128,69 +127,4 @@ export function resolveFunctionality(functionalityId: FunctionalityId): {
     }
 
     return { pageName, propertyPath };
-}
-
-// We should prepare schema which merges references into passed schema fragment/segment
-function resolveRefs(schema: JSONSchema4, fullSchema: JSONSchema4, seen = new Set()): JSONSchema4 {
-    if (!schema || typeof schema !== 'object') {
-        return schema;
-    }
-
-    // If schema has $ref, resolve it
-    if (schema.$ref) {
-        const ref = schema.$ref;
-
-        if (!ref.startsWith('#/definitions/')) {
-            throw new Error(`Only local definitions are supported, got: ${ref}`);
-        }
-
-        const defName = ref.replace('#/definitions/', '');
-        const defSchema = (fullSchema.definitions?.[defName] ?? null) as JSONSchema4 | null;
-
-        if (!defSchema) {
-            throw new Error(`Definition '${defName}' not found in fullSchema`);
-        }
-
-        if (seen.has(ref)) {
-            // Prevent infinite recursion (cyclic refs)
-            return { ...defSchema };
-        }
-        seen.add(ref);
-
-        // Merge the referenced schema with any extra props from the current schema (besides $ref)
-        const schemaWithoutRef = { ...schema };
-        delete schemaWithoutRef.$ref;
-        return resolveRefs({ ...defSchema, ...schemaWithoutRef }, fullSchema, seen);
-    }
-
-    // Recursively resolve inside properties, items, etc.
-    const resolved: JSONSchema4 = { ...schema };
-
-    if (resolved.properties) {
-        resolved.properties = Object.fromEntries(
-            Object.entries(resolved.properties).map(([k, v]) => [k, resolveRefs(v as JSONSchema4, fullSchema, seen)])
-        );
-    }
-
-    if (resolved.items) {
-        if (Array.isArray(resolved.items)) {
-            resolved.items = resolved.items.map((item) => resolveRefs(item as JSONSchema4, fullSchema, seen));
-        } else {
-            resolved.items = resolveRefs(resolved.items as JSONSchema4, fullSchema, seen);
-        }
-    }
-
-    if (resolved.allOf) {
-        resolved.allOf = resolved.allOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
-    }
-
-    if (resolved.anyOf) {
-        resolved.anyOf = resolved.anyOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
-    }
-
-    if (resolved.oneOf) {
-        resolved.oneOf = resolved.oneOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
-    }
-
-    return resolved;
 }
