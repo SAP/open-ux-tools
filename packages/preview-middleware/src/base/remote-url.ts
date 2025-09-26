@@ -24,6 +24,9 @@ export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
 
         if (remoteUrl) {
             logger.info(`Remote URL: ${remoteUrl}`);
+            if (process.platform === 'win32') {
+                logger.warn(`Windows users: Ensure Windows Firewall allows inbound connections on the port.\n1. Open Windows Firewall with Advanced Security (wf.msc)\n2. Create new Inbound Rule for the port (default: 8080)\n3. Allow TCP connections on the specified port`);
+            }
             logger.info('Scan the QR code below with your mobile device to access the preview:');
             await generateQRCode(remoteUrl);
         }
