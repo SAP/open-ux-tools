@@ -127,12 +127,6 @@ export async function validateProjectPath(projectPath: string, logger: ToolsLogg
         return validationResult;
     }
 
-    try {
-        fs.realpathSync(projectPath, 'utf-8');
-    } catch (e) {
-        return t('error.projectDoesNotExist');
-    }
-
     if (!fs.existsSync(projectPath)) {
         return t('error.projectDoesNotExist');
     }
@@ -141,14 +135,13 @@ export async function validateProjectPath(projectPath: string, logger: ToolsLogg
         return t('error.projectDoesNotExistMta');
     }
 
-    let services: string[];
     try {
-        services = await getMtaServices(projectPath, logger);
-    } catch (err) {
-        services = [];
-    }
-
-    if (services.length < 1) {
+        const services = await getMtaServices(projectPath, logger);
+        if (services.length < 1) {
+            return t('error.noAdaptableBusinessServiceFoundInMta');
+        }
+    } catch (e) {
+        logger?.error(`Failed to get MTA services: ${e.message}`);
         return t('error.noAdaptableBusinessServiceFoundInMta');
     }
 
