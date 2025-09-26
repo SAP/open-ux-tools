@@ -1,5 +1,6 @@
 import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
+import { ToolsLogger } from '@sap-ux/logger';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
 import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
@@ -23,8 +24,13 @@ async function findNearestNpmVersion(selectedVersion: string): Promise<string> {
         )[0]?.version;
 
         return npmVersion || selectedVersion;
-    } catch {
-        // If npm version lookup fails, silently fall back to the selected version
+    } catch (error) {
+        // Log the failure and fall back to the selected version
+        new ToolsLogger().warn(
+            `Failed to resolve npm version for UI5 version '${selectedVersion}'. Error: ${
+                error instanceof Error ? error.message : String(error)
+            }. Using selected version as fallback.`
+        );
         return selectedVersion;
     }
 }
