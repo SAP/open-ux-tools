@@ -90,7 +90,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
       "hint": "Provide a transport request for your application.",
       "mandatory": true,
     },
-    "message": [Function],
+    "message": "Transport Request",
     "name": "transportManual",
     "type": "input",
     "validate": [Function],
