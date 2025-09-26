@@ -513,6 +513,11 @@ export class Application {
         });
     }
 
+    /**
+     * Retrieves the available navigation options for each page and available entities for very first page creation.
+     *
+     * @returns A promise that resolves to an object containing navigations and entities.
+     */
     public async getCreationNavigationOptions(): Promise<{
         navigations: { [key: string]: AllowedNavigationOptions[] };
         entities?: AllowedNavigationOptions[];
