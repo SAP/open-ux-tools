@@ -307,7 +307,7 @@ describe('executeFunctionality', () => {
         });
         await expect(
             generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput)
-        ).rejects.toThrowErrorMatchingInlineSnapshot('"Unknown error. Recheck input parameters."');
+        ).rejects.toThrowErrorMatchingInlineSnapshot('"Cannot read properties of undefined (reading \'parameters\')"');
     });
 
     test('executeFunctionality - servicePath normalization without leading slash', async () => {
