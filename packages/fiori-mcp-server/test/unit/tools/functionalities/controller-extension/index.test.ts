@@ -160,6 +160,88 @@ describe('create-controller-extension', () => {
             );
         });
 
+        test('create controller extension - validate "pageType", invalid floorplan', async () => {
+            memFsdumpMock.mockReturnValue({});
+            mockSpecificationImport(importProjectMock);
+            await expect(
+                createControllerExtensionHandlers.executeFunctionality({
+                    appPath: appPath,
+                    functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        pageType: 'CustomPage',
+                        controllerName: 'dummy'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"ListReport\\",
+                            \\"ObjectPage\\"
+                        ],
+                        \\"path\\": [
+                            \\"pageType\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"ListReport\\\\\\"|\\\\\\"ObjectPage\\\\\\"\\"
+                    }
+                ]"
+            `);
+        });
+
+        test('create controller extension - validate "controllerName", missing value', async () => {
+            memFsdumpMock.mockReturnValue({});
+            mockSpecificationImport(importProjectMock);
+            await expect(
+                createControllerExtensionHandlers.executeFunctionality({
+                    appPath: appPath,
+                    functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        pageType: 'ListReport'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"expected\\": \\"string\\",
+                        \\"code\\": \\"invalid_type\\",
+                        \\"path\\": [
+                            \\"controllerName\\"
+                        ],
+                        \\"message\\": \\"Invalid input: expected string, received undefined\\"
+                    }
+                ]"
+            `);
+        });
+
+        test('create controller extension - validate "controllerName", invalid extension name', async () => {
+            memFsdumpMock.mockReturnValue({});
+            mockSpecificationImport(importProjectMock);
+            await expect(
+                createControllerExtensionHandlers.executeFunctionality({
+                    appPath: appPath,
+                    functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        pageType: 'ListReport',
+                        controllerName: '1_nvalidName'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"origin\\": \\"string\\",
+                        \\"code\\": \\"invalid_format\\",
+                        \\"format\\": \\"regex\\",
+                        \\"pattern\\": \\"/^[A-Za-z][A-Za-z0-9_-]*$/\\",
+                        \\"path\\": [
+                            \\"controllerName\\"
+                        ],
+                        \\"message\\": \\"Invalid string: must match pattern /^[A-Za-z][A-Za-z0-9_-]*$/\\"
+                    }
+                ]"
+            `);
+        });
+
         test('create controller extension - no changes', async () => {
             memFsdumpMock.mockReturnValue({});
             mockSpecificationImport(importProjectMock);

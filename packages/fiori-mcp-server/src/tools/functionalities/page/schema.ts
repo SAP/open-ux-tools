@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import { PAGE_VIEW_NAME_PATTERN } from './types';
 import type { AllowedNavigationOptions, PageDef } from './types';
+import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant';
 
 /**
  * Enum of allowed page types.
@@ -46,7 +46,7 @@ const childPageSchema = (page: string, navigations: AllowedNavigationOptions[]) 
         ),
         pageViewName: zod
             .string()
-            .regex(PAGE_VIEW_NAME_PATTERN)
+            .regex(EXTENSION_FILE_NAME_PATTERN)
             .optional()
             .describe(
                 `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`

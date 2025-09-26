@@ -1,5 +1,6 @@
 import * as zod from 'zod';
 import type { SapuxFtfsFileIO } from '../../../page-editor-api';
+import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant';
 
 /**
  * Schema for creating a controller extension.
@@ -10,7 +11,7 @@ export const ControllerExtensionCreationSchema: zod.ZodObject<{
     pageId?: zod.ZodOptional<zod.ZodEnum>;
 }> = zod.object({
     pageType: zod.enum(['ListReport', 'ObjectPage']).describe('Type of page').default('ListReport'),
-    controllerName: zod.string().describe('Name of new controller extension file')
+    controllerName: zod.string().regex(EXTENSION_FILE_NAME_PATTERN).describe('Name of new controller extension file')
 });
 
 /**
