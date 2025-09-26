@@ -232,7 +232,7 @@ export default class extends Generator {
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
         this.systemLookup = new SystemLookup(this.logger);
 
-        this.cfInstalled = await isCfInstalled();
+        this.cfInstalled = await isCfInstalled(this.logger);
         this.cfConfig = loadCfConfig(this.logger);
         this.isCfLoggedIn = await isLoggedInCf(this.cfConfig, this.logger);
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);

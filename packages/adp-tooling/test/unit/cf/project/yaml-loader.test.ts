@@ -61,7 +61,7 @@ describe('YAML Loader Functions', () => {
                 throw new Error('YAML parsing error');
             });
 
-            expect(() => getYamlContent(filePath)).toThrow(`Error parsing file ${filePath}`);
+            expect(() => getYamlContent(filePath)).toThrow(`Error parsing file ${filePath}: YAML parsing error`);
             expect(mockExistsSync).toHaveBeenCalledWith(filePath);
             expect(mockReadFileSync).toHaveBeenCalledWith(filePath, 'utf-8');
             expect(mockYamlLoad).toHaveBeenCalledWith(fileContent);

@@ -2,6 +2,8 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 import { eFilters } from '@sap/cf-tools/out/src/types';
 
+import type { ToolsLogger } from '@sap-ux/logger';
+
 import { t } from '../../i18n';
 import type { CfCredentials } from '../../types';
 
@@ -22,15 +24,20 @@ export async function getAuthToken(): Promise<string> {
 
 /**
  * Checks if Cloud Foundry is installed.
+ *
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<boolean>} True if CF is installed, false otherwise.
  */
-export async function checkForCf(): Promise<void> {
+export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
     try {
         const response = await CFToolsCli.Cli.execute(['version'], ENV);
         if (response.exitCode !== 0) {
             throw new Error(response.stderr);
         }
+        return true;
     } catch (e) {
-        throw new Error(t('error.cfNotInstalled', { error: e.message }));
+        logger.error(t('error.cfNotInstalled', { error: e.message }));
+        return false;
     }
 }
 

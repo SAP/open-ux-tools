@@ -22,6 +22,15 @@ const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
 const SAP_APPLICATION_CONTENT = 'com.sap.application.content';
 
+interface AdjustMtaYamlParams {
+    projectPath: string;
+    moduleName: string;
+    appRouterType: AppRouterType;
+    businessSolutionName: string;
+    businessService: string;
+    spaceGuid: string;
+}
+
 /**
  * Checks if the selected path is a MTA project.
  *
@@ -394,23 +403,13 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
 /**
  * Adjusts the MTA YAML.
  *
- * @param {string} projectPath - The project path.
- * @param {string} moduleName - The module name.
- * @param {AppRouterType} appRouterType - The app router type.
- * @param {string} businessSolutionName - The business solution name.
- * @param {string} businessService - The business service.
- * @param {string} spaceGuid - The space GUID.
+ * @param {AdjustMtaYamlParams} params - The parameters.
  * @param {Editor} memFs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
  */
 export async function adjustMtaYaml(
-    projectPath: string,
-    moduleName: string,
-    appRouterType: AppRouterType,
-    businessSolutionName: string,
-    businessService: string,
-    spaceGuid: string,
+    { projectPath, moduleName, appRouterType, businessSolutionName, businessService, spaceGuid }: AdjustMtaYamlParams,
     memFs: Editor,
     logger?: ToolsLogger
 ): Promise<void> {

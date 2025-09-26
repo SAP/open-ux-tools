@@ -1,22 +1,20 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
+import { getAuthToken } from '../../../../src/cf/services/cli';
 import type { CfConfig, Organization } from '../../../../src/types';
-import { getAuthToken, checkForCf } from '../../../../src/cf/services/cli';
-import { isCfInstalled, isExternalLoginEnabled, isLoggedInCf } from '../../../../src/cf/core/auth';
+import { isExternalLoginEnabled, isLoggedInCf } from '../../../../src/cf/core/auth';
 
 jest.mock('@sap/cf-tools/out/src/cf-local', () => ({
     cfGetAvailableOrgs: jest.fn()
 }));
 
 jest.mock('../../../../src/cf/services/cli', () => ({
-    getAuthToken: jest.fn(),
-    checkForCf: jest.fn()
+    getAuthToken: jest.fn()
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockCFLocal = require('@sap/cf-tools/out/src/cf-local');
 const mockGetAuthToken = getAuthToken as jest.MockedFunction<typeof getAuthToken>;
-const mockCheckForCf = checkForCf as jest.MockedFunction<typeof checkForCf>;
 
 const mockCfConfig: CfConfig = {
     org: {
@@ -50,27 +48,6 @@ describe('CF Core Auth', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    describe('isCfInstalled', () => {
-        test('should return true when CF is installed', async () => {
-            mockCheckForCf.mockResolvedValue(undefined);
-
-            const result = await isCfInstalled();
-
-            expect(result).toBe(true);
-            expect(mockCheckForCf).toHaveBeenCalledTimes(1);
-        });
-
-        test('should return false when CF is not installed', async () => {
-            const error = new Error('CF CLI not found');
-            mockCheckForCf.mockRejectedValue(error);
-
-            const result = await isCfInstalled();
-
-            expect(result).toBe(false);
-            expect(mockCheckForCf).toHaveBeenCalledTimes(1);
-        });
     });
 
     describe('isExternalLoginEnabled', () => {

@@ -299,12 +299,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                AppRouterType.STANDALONE,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: AppRouterType.STANDALONE,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );
@@ -329,12 +331,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                AppRouterType.MANAGED,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );
@@ -364,12 +368,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                null as any,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: null as unknown as AppRouterType,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );
@@ -397,12 +403,14 @@ describe('YAML Project Functions', () => {
 
             await expect(
                 adjustMtaYaml(
-                    projectPath,
-                    moduleName,
-                    AppRouterType.STANDALONE,
-                    businessSolutionName,
-                    businessService,
-                    spaceGuid,
+                    {
+                        projectPath,
+                        moduleName,
+                        appRouterType: AppRouterType.STANDALONE,
+                        businessSolutionName,
+                        businessService,
+                        spaceGuid
+                    },
                     mockMemFs,
                     mockLogger
                 )
@@ -443,12 +451,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                AppRouterType.MANAGED,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );
@@ -496,12 +506,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                AppRouterType.MANAGED,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );
@@ -553,12 +565,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                AppRouterType.MANAGED,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );
@@ -610,12 +624,14 @@ describe('YAML Project Functions', () => {
             mockCreateServices.mockResolvedValue(undefined);
 
             await adjustMtaYaml(
-                projectPath,
-                moduleName,
-                AppRouterType.MANAGED,
-                businessSolutionName,
-                businessService,
-                spaceGuid,
+                {
+                    projectPath,
+                    moduleName,
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    spaceGuid
+                },
                 mockMemFs,
                 mockLogger
             );

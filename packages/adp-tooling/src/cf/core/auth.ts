@@ -2,23 +2,8 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getAuthToken, checkForCf } from '../services/cli';
+import { getAuthToken } from '../services/cli';
 import type { CfConfig, Organization } from '../../types';
-
-/**
- * Check if CF is installed.
- *
- * @returns {Promise<boolean>} True if CF is installed, false otherwise.
- */
-export async function isCfInstalled(): Promise<boolean> {
-    try {
-        await checkForCf();
-    } catch (e) {
-        return false;
-    }
-
-    return true;
-}
 
 /**
  * Check if the external login is enabled.

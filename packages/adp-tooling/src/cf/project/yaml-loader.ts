@@ -20,7 +20,7 @@ export function getYamlContent<T = MtaYaml>(filePath: string): T {
         parsed = yaml.load(content) as T;
         return parsed;
     } catch (e) {
-        throw new Error(`Error parsing file ${filePath}`);
+        throw new Error(`Error parsing file ${filePath}: ${e.message}`);
     }
 }
 

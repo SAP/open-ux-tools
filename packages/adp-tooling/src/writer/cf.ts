@@ -33,12 +33,14 @@ export async function generateCf(
     const { app, cf, ui5 } = fullConfig;
 
     await adjustMtaYaml(
-        basePath,
-        app.id,
-        cf.approuter,
-        cf.businessSolutionName ?? '',
-        cf.businessService,
-        cf.space.GUID,
+        {
+            projectPath: basePath,
+            moduleName: app.id,
+            appRouterType: cf.approuter,
+            businessSolutionName: cf.businessSolutionName ?? '',
+            businessService: cf.businessService,
+            spaceGuid: cf.space.GUID
+        },
         fs,
         logger
     );

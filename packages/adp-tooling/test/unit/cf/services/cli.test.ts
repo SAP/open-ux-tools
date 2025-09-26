@@ -2,9 +2,11 @@ import * as CFLocal from '@sap/cf-tools/out/src/cf-local';
 import * as CFToolsCli from '@sap/cf-tools/out/src/cli';
 import { eFilters } from '@sap/cf-tools/out/src/types';
 
+import type { ToolsLogger } from '@sap-ux/logger';
+
 import {
     getAuthToken,
-    checkForCf,
+    isCfInstalled,
     cFLogout,
     getServiceKeys,
     createServiceKey,
@@ -66,8 +68,12 @@ describe('CF Services CLI', () => {
         });
     });
 
-    describe('checkForCf', () => {
-        test('should not throw when CF is installed', async () => {
+    describe('isCfInstalled', () => {
+        const mockLogger = {
+            error: jest.fn()
+        } as unknown as ToolsLogger;
+
+        test('should return true when CF is installed', async () => {
             const mockResponse = {
                 exitCode: 0,
                 stdout: 'cf version 8.0.0',
@@ -75,11 +81,14 @@ describe('CF Services CLI', () => {
             };
             mockCFToolsCliExecute.mockResolvedValue(mockResponse);
 
-            await expect(checkForCf()).resolves.not.toThrow();
+            const result = await isCfInstalled(mockLogger);
+
+            expect(result).toBe(true);
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
+            expect(mockLogger.error).not.toHaveBeenCalled();
         });
 
-        test('should throw error when CF version command fails', async () => {
+        test('should return false and log error when CF version command fails', async () => {
             const mockResponse = {
                 exitCode: 1,
                 stdout: '',
@@ -87,15 +96,21 @@ describe('CF Services CLI', () => {
             };
             mockCFToolsCliExecute.mockResolvedValue(mockResponse);
 
-            await expect(checkForCf()).rejects.toThrow(t('error.cfNotInstalled', { error: mockResponse.stderr }));
+            const result = await isCfInstalled(mockLogger);
+
+            expect(result).toBe(false);
+            expect(mockLogger.error).toHaveBeenCalledWith(t('error.cfNotInstalled', { error: mockResponse.stderr }));
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
         });
 
-        test('should throw error when CF version command throws exception', async () => {
+        test('should return false and log error when CF version command throws exception', async () => {
             const error = new Error('Network error');
             mockCFToolsCliExecute.mockRejectedValue(error);
 
-            await expect(checkForCf()).rejects.toThrow(t('error.cfNotInstalled', { error: error.message }));
+            const result = await isCfInstalled(mockLogger);
+
+            expect(result).toBe(false);
+            expect(mockLogger.error).toHaveBeenCalledWith(t('error.cfNotInstalled', { error: error.message }));
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
         });
     });
