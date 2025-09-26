@@ -163,7 +163,7 @@ describe('getCfConfig', () => {
         expect(result.cf.approuter).toBe(AppRouterType.MANAGED);
         expect(result.options?.addStandaloneApprouter).toBe(false);
         expect(result.app.id).toBe('base-app-id');
-        expect(result.project.folder).toBe('/test/project/test-project');
+        expect(result.project.folder).toBe(join('/test/project', 'test-project'));
     });
 
     test('should throw error when baseApp is missing', () => {

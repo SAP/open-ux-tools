@@ -14,6 +14,7 @@ import { AppRouterType } from '../../../../src/types';
 import type { MtaYaml, CfUI5Yaml } from '../../../../src/types';
 import { createServices } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
+import { join } from 'path';
 
 jest.mock('fs', () => ({
     existsSync: jest.fn()
@@ -46,7 +47,7 @@ describe('YAML Project Functions', () => {
 
     describe('isMtaProject', () => {
         const selectedPath = '/test/project';
-        const mtaYamlPath = '/test/project/mta.yaml';
+        const mtaYamlPath = join(selectedPath, 'mta.yaml');
 
         test('should return true when mta.yaml exists', () => {
             mockExistsSync.mockReturnValue(true);
@@ -195,7 +196,7 @@ describe('YAML Project Functions', () => {
 
     describe('getAppParamsFromUI5Yaml', () => {
         const projectPath = '/test/project';
-        const ui5YamlPath = '/test/project/ui5.yaml';
+        const ui5YamlPath = join(projectPath, 'ui5.yaml');
 
         test('should return app params from UI5 YAML', () => {
             const mockUI5Yaml: CfUI5Yaml = {
@@ -284,7 +285,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should adjust MTA YAML for standalone approuter', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -314,7 +315,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should adjust MTA YAML for managed approuter', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -344,7 +345,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should auto-detect approuter type when not provided', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -409,7 +410,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should handle existing approuter module for managed approuter', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -458,7 +459,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should add required modules and move FLP module to last position', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -523,7 +524,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should not modify FLP modules with wrong service-key name', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -579,7 +580,7 @@ describe('YAML Project Functions', () => {
         });
 
         test('should not add duplicate modules when they already exist', async () => {
-            const mtaYamlPath = '/test/project/mta.yaml';
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
             const mockYamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
