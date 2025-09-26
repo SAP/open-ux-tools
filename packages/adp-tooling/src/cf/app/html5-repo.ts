@@ -75,7 +75,15 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             logger
         );
         if (!serviceKeys?.credentials?.length) {
-            await createService(spaceGuid, 'app-runtime', HTML5_APPS_REPO_RUNTIME, logger, ['html5-apps-repo-rt']);
+            await createService(
+                spaceGuid,
+                'app-runtime',
+                HTML5_APPS_REPO_RUNTIME,
+                ['html5-apps-repo-rt'],
+                undefined,
+                undefined,
+                logger
+            );
             serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
             if (!serviceKeys?.credentials?.length) {
                 logger.debug(t('error.noUaaCredentialsFoundForHtml5Repo'));

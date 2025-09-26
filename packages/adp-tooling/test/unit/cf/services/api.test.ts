@@ -319,7 +319,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(spaceGuid, plan, serviceInstanceName, mockLogger, [], null, serviceOffering);
+            await createService(spaceGuid, plan, serviceInstanceName, [], serviceOffering, undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
@@ -338,7 +338,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(spaceGuid, plan, serviceInstanceName, mockLogger, [], null, serviceOffering);
+            await createService(spaceGuid, plan, serviceInstanceName, [], serviceOffering, undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
@@ -366,7 +366,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(spaceGuid, plan, serviceInstanceName, mockLogger, tags);
+            await createService(spaceGuid, plan, serviceInstanceName, tags, undefined, undefined, mockLogger);
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
@@ -384,7 +384,7 @@ describe('CF Services API', () => {
             mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
 
             await expect(
-                createService(spaceGuid, plan, serviceInstanceName, mockLogger, [], null, 'test-offering')
+                createService(spaceGuid, plan, serviceInstanceName, [], 'test-offering', undefined, mockLogger)
             ).rejects.toThrow(
                 t('error.failedToCreateServiceInstance', {
                     serviceInstanceName: serviceInstanceName,
@@ -405,11 +405,10 @@ describe('CF Services API', () => {
                     spaceGuid,
                     plan,
                     serviceInstanceName,
-                    mockLogger,
                     [],
-                    securityFilePath,
                     serviceOffering,
-                    xsSecurityProjectName
+                    { filePath: securityFilePath, xsappname: xsSecurityProjectName },
+                    mockLogger
                 )
             ).rejects.toThrow(t('error.xsSecurityJsonCouldNotBeParsed'));
 

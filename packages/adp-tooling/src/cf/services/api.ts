@@ -145,23 +145,27 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
  * @param {string} spaceGuid - The space GUID.
  * @param {string} plan - The plan.
  * @param {string} serviceInstanceName - The service instance name.
- * @param {ToolsLogger} logger - The logger.
  * @param {string[]} tags - The tags.
- * @param {string | null} securityFilePath - The security file path.
- * @param {string | null} serviceName - The service name.
- * @param {string} [xsSecurityProjectName] - The project name for XS security.
+ * @param {string} [serviceName] - The service name.
+ * @param {object} [security] - Security configuration.
+ * @param {string | null} security.filePath - The security file path.
+ * @param {string} [security.xsappname] - The XS app name.
+ * @param {ToolsLogger} [logger] - The logger.
  */
 export async function createService(
     spaceGuid: string,
     plan: string,
     serviceInstanceName: string,
-    logger?: ToolsLogger,
     tags: string[] = [],
-    securityFilePath: string | null = null,
-    serviceName: string | undefined = undefined,
-    xsSecurityProjectName?: string
+    serviceName: string | undefined,
+    security?: {
+        filePath: string | null;
+        xsappname?: string;
+    },
+    logger?: ToolsLogger
 ): Promise<void> {
     try {
+        const { filePath, xsappname } = security ?? {};
         if (!serviceName) {
             const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
@@ -176,13 +180,13 @@ export async function createService(
         );
 
         const commandParameters: string[] = ['create-service', serviceName ?? '', plan, serviceInstanceName];
-        if (securityFilePath) {
+        if (filePath) {
             let xsSecurity = null;
             try {
                 const filePath = path.resolve(__dirname, '../../../templates/cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
                 xsSecurity = JSON.parse(xsContent) as unknown as { xsappname?: string };
-                xsSecurity.xsappname = xsSecurityProjectName;
+                xsSecurity.xsappname = xsappname;
             } catch (err) {
                 logger?.error(`Failed to parse xs-security.json file: ${err}`);
                 throw new Error(t('error.xsSecurityJsonCouldNotBeParsed'));
@@ -229,22 +233,20 @@ export async function createServices(
                     spaceGuid,
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
-                    logger,
                     [],
-                    xsSecurityPath,
                     resource.parameters.service,
-                    xsSecurityProjectName
+                    { filePath: xsSecurityPath, xsappname: xsSecurityProjectName },
+                    logger
                 );
             } else {
                 await createService(
                     spaceGuid,
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
-                    logger,
                     [],
-                    '',
                     resource.parameters.service,
-                    xsSecurityProjectName
+                    { filePath: null, xsappname: xsSecurityProjectName },
+                    logger
                 );
             }
         }

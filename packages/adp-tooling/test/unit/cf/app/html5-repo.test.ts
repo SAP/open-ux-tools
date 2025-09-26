@@ -182,8 +182,10 @@ describe('HTML5 Repository', () => {
                 'test-space-guid',
                 'app-runtime',
                 'html5-apps-repo-runtime',
-                mockLogger,
-                ['html5-apps-repo-rt']
+                ['html5-apps-repo-rt'],
+                undefined,
+                undefined,
+                mockLogger
             );
             expect(mockGetServiceInstanceKeys).toHaveBeenCalledTimes(2);
         });
