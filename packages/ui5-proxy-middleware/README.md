@@ -3,16 +3,17 @@
 The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for loading the UI5 sources in your application. It can be used either with the `ui5 serve` or the `fiori run` commands.
 
 ## Configuration Options
-| Option       | Default Value | Description |
-| ------------ | ------------- | ----------- |
-| `path`        | `/resources`, `/test-resources`       | Path that is to be proxied |
-| `url`        | `https://ui5.sap.com`      | URL pointing to the resources |
-| `pathReplace`        | `undefined` | If provided then the path will be replaced with this value before forwarding |
-| `version`    | `undefined` | The UI5 version. If this property is not defined, then the `minUI5Version` from the `manifest.json` will be used |
-| `secure`     | true      | Defines if SSL certs should be verified |
-| `debug`      | false         | Enables debug output |
-| `proxy`      | `undefined`   | Use for adding corporate proxy configuration |
-| `directLoad` | false         | Defines whether the UI5 sources should be loaded directly from UI5 CDN |
+| Option       | Value Type    | Requirement Type | Default Value | Description |
+| ------------ | ------------- |------------- | ----------- |----------- |
+| `ui5`        | object  | optional | ---       | Configuration object for the UI5 proxy middleware |
+| `ui5.path`   |  string | optional | `/resources`, `/test-resources`       | Path that is to be proxied |
+| `ui5.url`     | string  | optional |`https://ui5.sap.com`      | URL pointing to the resources |
+| `ui5.pathReplace`| string  | optional | `undefined` | If provided then the path will be replaced with this value before forwarding |
+| `ui5.version`    | string  | optional |`undefined` | The UI5 version. If this property is not defined, then the `minUI5Version` from the `manifest.json` will be used |
+| `secure`     | boolean  | optional | true      | Defines if SSL certs should be verified |
+| `debug`      | boolean  | optional | false         | Enables debug output |
+| `proxy`      |  string | optional | `undefined`   | Use for adding corporate proxy configuration |
+| `directLoad` |  boolean | optional | false         | Defines whether the UI5 sources should be loaded directly from UI5 CDN |
 
 ## Usage
 In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application. All requests to `/resources` and `/test-resources` will be proxied to the latest UI5 version at https://ui5.sap.com.
@@ -76,7 +77,7 @@ server:
 **NOTE: You can't mix the syntaxes!**
 
 ### Loading a specific UI5 version
-To load a specific a UI5 version in your application you can use the `version` parameter, e.g.
+To load a specific UI5 version in your application you can use the `version` parameter, e.g.
 
 ```Yaml
 server:
@@ -109,6 +110,23 @@ server:
       - path: /test-resources
         url: https://ui5.sap.com
       directLoad: true
+```
+
+### Loading UI5 sources from a different Host
+If you want to load UI5 sources from a different host, then you can set the property `pathReplace` to point to the desired resources. If provided then the `path` will be replaced with this value before forwarding.
+
+**NOTE: using `pathReplace` will not consider a specified UI5 version.**
+
+```Yaml
+server:
+  customMiddleware:
+  - name: ui5-proxy-middleware
+    afterMiddleware: compression
+    configuration:
+      ui5:
+      - path: /resources          
+        url: https://ec1.dest
+        pathReplace: /sap/public/ui5/resources    
 ```
 
 ### Adding corporate proxy configuration
