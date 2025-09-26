@@ -569,7 +569,7 @@ export default class extends Generator {
             publicVersions
         });
 
-        await generateCf(projectPath, cfConfig, this.fs);
+        await generateCf(projectPath, cfConfig, this.logger, this.fs);
     }
 
     /**

@@ -1,4 +1,5 @@
-import { existsSync, writeFile } from 'fs';
+import { existsSync } from 'fs';
+import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -15,8 +16,7 @@ import { createServices } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
 
 jest.mock('fs', () => ({
-    existsSync: jest.fn(),
-    writeFile: jest.fn()
+    existsSync: jest.fn()
 }));
 
 jest.mock('../../../../src/cf/services/api', () => ({
@@ -28,7 +28,6 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
     getYamlContent: jest.fn()
 }));
 
-const mockWriteFile = writeFile as jest.MockedFunction<typeof writeFile>;
 const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
 const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
@@ -36,13 +35,10 @@ const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.Mock
     typeof getProjectNameForXsSecurity
 >;
 
-const writeCallback = (...args: any[]) => {
-    const callback = args[args.length - 1] as (error: Error | null) => void;
-    callback(null);
-};
-
 describe('YAML Project Functions', () => {
-    const mockLogger = {} as unknown as ToolsLogger;
+    const mockLogger = {
+        debug: jest.fn()
+    } as unknown as ToolsLogger;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -273,8 +269,14 @@ describe('YAML Project Functions', () => {
         const businessService = 'test-service';
         const spaceGuid = 'test-space-guid';
 
+        // Mock mem-fs editor
+        let mockMemFs: jest.MockedObject<Editor>;
+
         beforeEach(() => {
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
+            mockMemFs = {
+                write: jest.fn()
+            } as jest.MockedObject<Editor>;
         });
 
         afterEach(() => {
@@ -294,7 +296,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation(writeCallback);
 
             await adjustMtaYaml(
                 projectPath,
@@ -303,12 +304,13 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
 
         test('should adjust MTA YAML for managed approuter', async () => {
@@ -324,7 +326,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation(writeCallback);
 
             await adjustMtaYaml(
                 projectPath,
@@ -333,12 +334,13 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
 
         test('should auto-detect approuter type when not provided', async () => {
@@ -359,7 +361,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation(writeCallback);
 
             await adjustMtaYaml(
                 projectPath,
@@ -368,12 +369,13 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
 
         test('should throw error when file write fails', async () => {
@@ -388,9 +390,8 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation((...args: any[]) => {
-                const callback = args[args.length - 1] as (error: Error | null) => void;
-                callback(new Error('Write failed'));
+            mockMemFs.write.mockImplementation(() => {
+                throw new Error('Write failed');
             });
 
             await expect(
@@ -401,9 +402,10 @@ describe('YAML Project Functions', () => {
                     businessSolutionName,
                     businessService,
                     spaceGuid,
+                    mockMemFs,
                     mockLogger
                 )
-            ).rejects.toThrow('Cannot save mta.yaml file.');
+            ).rejects.toThrow('Write failed');
         });
 
         test('should handle existing approuter module for managed approuter', async () => {
@@ -438,7 +440,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation(writeCallback);
 
             await adjustMtaYaml(
                 projectPath,
@@ -447,12 +448,13 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
 
         test('should add required modules and move FLP module to last position', async () => {
@@ -491,10 +493,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation((...args: any[]) => {
-                const callback = args[args.length - 1] as (error: Error | null) => void;
-                callback(null);
-            });
 
             await adjustMtaYaml(
                 projectPath,
@@ -503,6 +501,7 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
@@ -520,7 +519,7 @@ describe('YAML Project Functions', () => {
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
 
         test('should not modify FLP modules with wrong service-key name', async () => {
@@ -551,7 +550,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation(writeCallback);
 
             await adjustMtaYaml(
                 projectPath,
@@ -560,6 +558,7 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
@@ -576,7 +575,7 @@ describe('YAML Project Functions', () => {
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
 
         test('should not add duplicate modules when they already exist', async () => {
@@ -608,7 +607,6 @@ describe('YAML Project Functions', () => {
             mockGetYamlContent.mockReturnValue(mockYamlContent);
             mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
             mockCreateServices.mockResolvedValue(undefined);
-            mockWriteFile.mockImplementation(writeCallback);
 
             await adjustMtaYaml(
                 projectPath,
@@ -617,6 +615,7 @@ describe('YAML Project Functions', () => {
                 businessSolutionName,
                 businessService,
                 spaceGuid,
+                mockMemFs,
                 mockLogger
             );
 
@@ -636,7 +635,7 @@ describe('YAML Project Functions', () => {
 
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
-            expect(mockWriteFile).toHaveBeenCalledWith(mtaYamlPath, expect.any(String), 'utf-8', expect.any(Function));
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
         });
     });
 });

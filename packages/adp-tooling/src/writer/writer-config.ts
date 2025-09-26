@@ -25,6 +25,7 @@ import {
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
 import { AppRouterType, FlexLayer } from '../types';
+import { t } from '../i18n';
 
 export interface ConfigOptions {
     /**
@@ -176,7 +177,7 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
     const baseApp = params.cfServicesAnswers.baseApp;
 
     if (!baseApp) {
-        throw new Error('Base app is required for CF project generation');
+        throw new Error(t('errors.baseAppRequired'));
     }
 
     const ui5Version = getLatestVersion(params.publicVersions);

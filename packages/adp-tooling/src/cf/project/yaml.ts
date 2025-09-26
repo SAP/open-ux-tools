@@ -1,6 +1,7 @@
 import fs from 'fs';
 import * as path from 'path';
 import yaml from 'js-yaml';
+import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -399,6 +400,7 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  * @param {string} businessSolutionName - The business solution name.
  * @param {string} businessService - The business service.
  * @param {string} spaceGuid - The space GUID.
+ * @param {Editor} memFs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
  */
@@ -409,6 +411,7 @@ export async function adjustMtaYaml(
     businessSolutionName: string,
     businessService: string,
     spaceGuid: string,
+    memFs: Editor,
     logger?: ToolsLogger
 ): Promise<void> {
     const timestamp = Date.now().toString();
@@ -447,9 +450,7 @@ export async function adjustMtaYaml(
     await createServices(projectPath, yamlContent, initialServices, timestamp, spaceGuid, logger);
 
     const updatedYamlContent = yaml.dump(yamlContent);
-    return fs.writeFile(mtaYamlPath, updatedYamlContent, 'utf-8', (error) => {
-        if (error) {
-            throw new Error('Cannot save mta.yaml file.');
-        }
-    });
+
+    memFs.write(mtaYamlPath, updatedYamlContent);
+    logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);
 }

@@ -1,6 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
+import { type ToolsLogger } from '@sap-ux/logger';
+
 import { adjustMtaYaml } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
@@ -13,24 +15,32 @@ import { type CfAdpWriterConfig, type FlexLayer, type Content } from '../types';
  *
  * @param {string} basePath - The base path.
  * @param {CfAdpWriterConfig} config - The CF writer configuration.
+ * @param {ToolsLogger} logger - The logger.
  * @param {Editor} fs - The memfs editor instance.
  * @returns {Promise<Editor>} The updated memfs editor instance.
  */
-export async function generateCf(basePath: string, config: CfAdpWriterConfig, fs?: Editor): Promise<Editor> {
+export async function generateCf(
+    basePath: string,
+    config: CfAdpWriterConfig,
+    logger?: ToolsLogger,
+    fs?: Editor
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
 
     const fullConfig = setDefaultsCF(config);
-
     const { app, cf, ui5 } = fullConfig;
+
     await adjustMtaYaml(
         basePath,
         app.id,
         cf.approuter,
         cf.businessSolutionName ?? '',
         cf.businessService,
-        cf.space.GUID
+        cf.space.GUID,
+        fs,
+        logger
     );
 
     if (fullConfig.app.i18nModels) {
