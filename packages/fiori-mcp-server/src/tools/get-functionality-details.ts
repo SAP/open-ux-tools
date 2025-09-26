@@ -55,8 +55,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
     let details: GetFunctionalityDetailsOutput | undefined;
     if (property) {
         // Property was found by path
-        const schema = property.schema ?? {};
-        const parameters = resolveRefs(schema, rootSchema);
+        const parameters = resolveRefs(property.schema, rootSchema);
         details = {
             functionalityId: 'change-property',
             name: 'Change property',
@@ -70,8 +69,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
         };
     } else if (node?.path.length) {
         // Node was found by path - list node properties
-        const schema = node.schema ?? {};
-        const parameters = resolveRefs(schema, rootSchema);
+        const parameters = resolveRefs(node.schema, rootSchema);
         details = {
             functionalityId: 'change-property',
             name: 'Change property',

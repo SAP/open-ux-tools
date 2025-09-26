@@ -1,6 +1,8 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
-import { resolveApplication } from '../../../src/tools/utils';
+import { resolveApplication, resolveRefs } from '../../../src/tools/utils';
 import { join } from 'path';
+import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
+import type { JSONSchema4 } from 'json-schema';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -94,5 +96,216 @@ describe('resolveApplication', () => {
         });
         const application = await resolveApplication(appPath);
         expect(application).toEqual(undefined);
+    });
+});
+
+describe('resolveRefs', () => {
+    test('Empty schema', async () => {
+        expect(resolveRefs({}, listReportSchema as JSONSchema4)).toEqual({});
+    });
+
+    test('No schema', async () => {
+        expect(resolveRefs(null, listReportSchema as JSONSchema4)).toEqual({});
+    });
+
+    test('Wrong format', async () => {
+        expect(resolveRefs('{}' as unknown as JSONSchema4, listReportSchema as JSONSchema4)).toEqual({});
+    });
+
+    test('Schema without ref', async () => {
+        const schemaSegment: JSONSchema4 = {
+            description: 'Test 1',
+            type: 'string'
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual(schemaSegment);
+    });
+
+    test('Schema with properties and without ref', async () => {
+        const schemaSegment: JSONSchema4 = {
+            type: 'object',
+            description: 'Dummy',
+            properties: {
+                test: {
+                    description: 'Test 1',
+                    type: 'string'
+                },
+                test2: {
+                    description: 'Test 2',
+                    type: 'string'
+                }
+            }
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual(schemaSegment);
+    });
+
+    test('$ref on root level', async () => {
+        const schemaSegment: JSONSchema4 = {
+            '$ref': '#/definitions/ActionPlacement',
+            'description': 'Define the placement.'
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual({
+            description: 'Define the placement.',
+            enum: ['After', 'Before'],
+            type: 'string'
+        });
+    });
+
+    test('Avoid recursion', async () => {
+        const schemaSegment: JSONSchema4 = {
+            '$ref': '#/definitions/ActionPlacement'
+        };
+        const result = resolveRefs(schemaSegment, {
+            ...listReportSchema,
+            definitions: {
+                ActionPlacement: {
+                    '$ref': '#/definitions/ActionPlacement',
+                    'description': 'Define the placement.'
+                }
+            }
+        } as JSONSchema4);
+        expect(result).toEqual({
+            'description': 'Define the placement.',
+            '$ref': '#/definitions/ActionPlacement'
+        });
+    });
+
+    test('Handle "items" as object', async () => {
+        const schemaSegment: JSONSchema4 = {
+            type: 'object',
+            properties: {
+                paths: {
+                    description: 'Dummy description',
+                    type: 'array',
+                    items: {
+                        '$ref': '#/definitions/AnnotationPathAsObject'
+                    }
+                }
+            }
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual({
+            'properties': {
+                'paths': {
+                    'description': 'Dummy description',
+                    'items': {
+                        'additionalProperties': false,
+                        'properties': {
+                            'annotationPath': {
+                                'type': 'string'
+                            }
+                        },
+                        'required': ['annotationPath'],
+                        'type': 'object'
+                    },
+                    'type': 'array'
+                }
+            },
+            'type': 'object'
+        });
+    });
+
+    test('Handle "items" as array', async () => {
+        const schemaSegment: JSONSchema4 = {
+            type: 'object',
+            properties: {
+                paths: {
+                    description: 'Dummy description',
+                    type: 'array',
+                    items: [
+                        {
+                            '$ref': '#/definitions/AnnotationPathAsObject'
+                        },
+                        {
+                            '$ref': '#/definitions/SelectionMode'
+                        }
+                    ]
+                }
+            }
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual({
+            'properties': {
+                'paths': {
+                    'description': 'Dummy description',
+                    'items': [
+                        {
+                            'additionalProperties': false,
+                            'properties': {
+                                'annotationPath': {
+                                    'type': 'string'
+                                }
+                            },
+                            'required': ['annotationPath'],
+                            'type': 'object'
+                        },
+                        {
+                            'enum': ['Auto', 'Multi', 'None', 'Single'],
+                            'type': 'string'
+                        }
+                    ],
+                    'type': 'array'
+                }
+            },
+            'type': 'object'
+        });
+    });
+
+    test('Handle "additionalProperties" as object', async () => {
+        const schemaSegment: JSONSchema4 = {
+            'type': 'object',
+            'additionalProperties': {
+                '$ref': '#/definitions/AnnotationPathAsObject'
+            }
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual({
+            'additionalProperties': {
+                'additionalProperties': false,
+                'properties': {
+                    'annotationPath': {
+                        'type': 'string'
+                    }
+                },
+                'required': ['annotationPath'],
+                'type': 'object'
+            },
+            'type': 'object'
+        });
+    });
+
+    const variationsUnions = ['anyOf', 'oneOf', 'allOf'];
+    test.each(variationsUnions)('Handle "%s" as array', async (variation: string) => {
+        const schemaSegment: JSONSchema4 = {
+            [variation]: [
+                {
+                    '$ref': '#/definitions/AnnotationPathAsObject'
+                },
+                {
+                    '$ref': '#/definitions/SelectionMode'
+                }
+            ]
+        };
+        const result = resolveRefs(schemaSegment, listReportSchema as JSONSchema4);
+        expect(result).toEqual({
+            [variation]: [
+                {
+                    'additionalProperties': false,
+                    'properties': {
+                        'annotationPath': {
+                            'type': 'string'
+                        }
+                    },
+                    'required': ['annotationPath'],
+                    'type': 'object'
+                },
+                {
+                    'enum': ['Auto', 'Multi', 'None', 'Single'],
+                    'type': 'string'
+                }
+            ]
+        });
     });
 });

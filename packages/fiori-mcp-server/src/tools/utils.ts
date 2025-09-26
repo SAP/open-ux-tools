@@ -81,9 +81,9 @@ export const getDefaultExtensionFolder = (directory: string): string | undefined
  * @param seen A set of `$ref` strings that have already been processed (used internally).
  * @returns A new schema object with `$ref`s resolved and merged into the fragment.
  */
-export const resolveRefs = (schema: JSONSchema4, fullSchema: JSONSchema4, seen = new Set()): JSONSchema4 => {
+export const resolveRefs = (schema: JSONSchema4 | null, fullSchema: JSONSchema4, seen = new Set()): JSONSchema4 => {
     if (!schema || typeof schema !== 'object') {
-        return schema;
+        return {};
     }
 
     // If schema has $ref - resolve it
@@ -111,28 +111,32 @@ export const resolveRefs = (schema: JSONSchema4, fullSchema: JSONSchema4, seen =
 
     if (resolved.properties) {
         resolved.properties = Object.fromEntries(
-            Object.entries(resolved.properties).map(([k, v]) => [k, resolveRefs(v as JSONSchema4, fullSchema, seen)])
+            Object.entries(resolved.properties).map(([k, v]) => [k, resolveRefs(v, fullSchema, seen)])
         );
     }
 
     if (resolved.items) {
         if (Array.isArray(resolved.items)) {
-            resolved.items = resolved.items.map((item) => resolveRefs(item as JSONSchema4, fullSchema, seen));
+            resolved.items = resolved.items.map((item) => resolveRefs(item, fullSchema, seen));
         } else {
-            resolved.items = resolveRefs(resolved.items as JSONSchema4, fullSchema, seen);
+            resolved.items = resolveRefs(resolved.items, fullSchema, seen);
         }
     }
 
     if (resolved.allOf) {
-        resolved.allOf = resolved.allOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+        resolved.allOf = resolved.allOf.map((s) => resolveRefs(s, fullSchema, seen));
     }
 
     if (resolved.anyOf) {
-        resolved.anyOf = resolved.anyOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+        resolved.anyOf = resolved.anyOf.map((s) => resolveRefs(s, fullSchema, seen));
     }
 
     if (resolved.oneOf) {
-        resolved.oneOf = resolved.oneOf.map((s) => resolveRefs(s as JSONSchema4, fullSchema, seen));
+        resolved.oneOf = resolved.oneOf.map((s) => resolveRefs(s, fullSchema, seen));
+    }
+
+    if (typeof resolved.additionalProperties === 'object') {
+        resolved.additionalProperties = resolveRefs(resolved.additionalProperties, fullSchema, seen);
     }
 
     return resolved;
