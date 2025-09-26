@@ -88,6 +88,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "guiOptions": {
       "breadcrumb": "Transport Request",
       "hint": "Provide a transport request for your application.",
+      "mandatory": true,
     },
     "message": [Function],
     "name": "transportManual",
