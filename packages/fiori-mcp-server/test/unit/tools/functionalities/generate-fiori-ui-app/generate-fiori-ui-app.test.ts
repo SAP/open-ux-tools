@@ -305,9 +305,17 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        await expect(
-            generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput)
-        ).rejects.toThrowErrorMatchingInlineSnapshot('"Cannot read properties of undefined (reading \'parameters\')"');
+        await expect(generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput))
+            .rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Missing required fields in parameters. [
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                }
+            ]"
+        `);
     });
 
     test('executeFunctionality - servicePath normalization without leading slash', async () => {
