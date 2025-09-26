@@ -183,9 +183,6 @@ function resolveParameterValue(
  */
 function findParameterById(functionality: GetFunctionalityDetailsOutput, id?: string | number): Parameter | undefined {
     const { parameters } = functionality;
-    if ('name' in parameters && parameters.name === id) {
-        return parameters;
-    }
     if (id && 'properties' in parameters && parameters.properties?.[id]) {
         return parameters.properties[id] as Parameter;
     }

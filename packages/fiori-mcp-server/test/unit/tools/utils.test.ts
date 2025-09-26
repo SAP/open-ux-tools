@@ -1,5 +1,11 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
-import { convertToSchema, resolveApplication, resolveRefs, validateWithSchema } from '../../../src/tools/utils';
+import {
+    convertToSchema,
+    prepatePropertySchema,
+    resolveApplication,
+    resolveRefs,
+    validateWithSchema
+} from '../../../src/tools/utils';
 import { join } from 'path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
 import * as zod from 'zod';
@@ -370,5 +376,47 @@ describe('validateWithSchema', () => {
         expect(() => validateWithSchema(tempSchema, { name: 'dummy' })).toThrowErrorMatchingInlineSnapshot(
             `"Unknown error. Recheck input parameters."`
         );
+    });
+});
+
+describe('prepatePropertySchema', () => {
+    test('simple property', () => {
+        expect(
+            prepatePropertySchema('dummy', {
+                type: 'string'
+            })
+        ).toEqual({
+            type: 'object',
+            properties: {
+                dummy: {
+                    type: 'string'
+                }
+            }
+        });
+    });
+
+    test('Object based property', () => {
+        expect(
+            prepatePropertySchema('dummy', {
+                type: 'object',
+                properties: {
+                    'childProperty': {
+                        type: 'string'
+                    }
+                }
+            })
+        ).toEqual({
+            type: 'object',
+            properties: {
+                dummy: {
+                    type: 'object',
+                    properties: {
+                        childProperty: {
+                            type: 'string'
+                        }
+                    }
+                }
+            }
+        });
     });
 });

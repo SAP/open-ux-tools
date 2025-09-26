@@ -2,7 +2,7 @@ import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDet
 import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { resolveApplication, resolveRefs } from './utils';
+import { prepatePropertySchema, resolveApplication, resolveRefs } from './utils';
 
 /**
  * Retrieves functionality details based on the provided input parameters.
@@ -30,7 +30,7 @@ export async function getFunctionalityDetails(
     }
     const { pageName, propertyPath } = resolveFunctionality(functionalityId);
     const page = await getDetails(appPath, pageName);
-    const details = page ? getPropertyDetails(page, propertyPath) : undefined;
+    const details = page ? getPropertyDetails(functionalityId, page, propertyPath) : undefined;
     if (!details) {
         throw new Error('functionalityId was not resolved');
     }
@@ -45,41 +45,40 @@ export async function getFunctionalityDetails(
 /**
  * Retrieves property details from a page tree node based on the provided property path.
  *
+ * @param functionalityId - The ID of the functionality to resolve, either as a string or an array of strings.
  * @param page - The root TreeNode of the page.
  * @param propertyPath - The path to the desired property.
  * @returns The functionality details output for the specified property, or undefined if not found.
  */
-function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunctionalityDetailsOutput | undefined {
+function getPropertyDetails(
+    functionalityId: FunctionalityId,
+    page: TreeNode,
+    propertyPath: PropertyPath
+): GetFunctionalityDetailsOutput | undefined {
     const { property, node } = findByPath([page], propertyPath) ?? {};
     const rootSchema = page?.schema ?? {};
     let details: GetFunctionalityDetailsOutput | undefined;
     if (property) {
         // Property was found by path
-        const parameters = resolveRefs(property.schema, rootSchema);
+        const schema = resolveRefs(property.schema, rootSchema);
         details = {
-            functionalityId: 'change-property',
+            functionalityId,
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
-            parameters: {
-                ...parameters,
-                name: property.name
-            }
+            parameters: prepatePropertySchema(property.name, schema)
         };
     } else if (node?.path.length) {
         // Node was found by path - list node properties
-        const parameters = resolveRefs(node.schema, rootSchema);
+        const schema = resolveRefs(node.schema, rootSchema);
         details = {
-            functionalityId: 'change-property',
+            functionalityId,
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
-            parameters: {
-                ...parameters,
-                name: node.path[node.path.length - 1]
-            }
+            parameters: prepatePropertySchema(node.path[node.path.length - 1].toString(), schema)
         };
     }
     return details;

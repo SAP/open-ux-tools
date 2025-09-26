@@ -141,6 +141,22 @@ export const resolveRefs = (schema: JSONSchema4 | null, fullSchema: JSONSchema4,
 };
 
 /**
+ * Prepares a JSON Schema object with a single named property.
+ *
+ * @param {string} name - The name of the property to include in the schema.
+ * @param {JSONSchema4} propertySchema - The JSON Schema definition for the property.
+ * @returns {JSONSchema4} A JSON Schema object of type "object" containing the given property.
+ */
+export const prepatePropertySchema = (name: string, propertySchema: JSONSchema4): JSONSchema4 => {
+    return {
+        type: 'object',
+        properties: {
+            [name]: propertySchema
+        }
+    };
+};
+
+/**
  * Converts a Zod schema into a JSON Schema object.
  * Additionally function removes the `$schema` property (if present),
  * since it is unnecessary for mcp server.
