@@ -5,10 +5,10 @@ import { dirname, join } from 'path';
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
-import * as z from 'zod';
 import packageJson from '../../../../package.json';
 import { logger } from '../../../utils/logger';
 import { GeneratorConfigSchemaCAP, type GeneratorConfigCAP } from './schema';
+import { validateWithSchema } from '../../utils';
 
 // Extended type generators API use
 const PREDEFINED_GENERATOR_VALUES = {
@@ -33,15 +33,7 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    let generatorConfigCAP: GeneratorConfigCAP | undefined;
-    try {
-        generatorConfigCAP = GeneratorConfigSchemaCAP.parse(params.parameters);
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new Error(`Missing required fields in parameters. ${JSON.stringify(error.issues, null, 4)}`);
-        }
-        throw new Error('Unknown error. Recheck input parameters.');
-    }
+    let generatorConfigCAP: GeneratorConfigCAP = validateWithSchema(GeneratorConfigSchemaCAP, params.parameters);
     const generatorConfig: GeneratorConfigCAPWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
         ...generatorConfigCAP,

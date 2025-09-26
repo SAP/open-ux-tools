@@ -1,7 +1,8 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
-import { resolveApplication, resolveRefs } from '../../../src/tools/utils';
+import { convertToSchema, resolveApplication, resolveRefs, validateWithSchema } from '../../../src/tools/utils';
 import { join } from 'path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
+import * as zod from 'zod';
 import type { JSONSchema4 } from 'json-schema';
 
 jest.mock('@sap-ux/project-access', () => ({
@@ -100,19 +101,19 @@ describe('resolveApplication', () => {
 });
 
 describe('resolveRefs', () => {
-    test('Empty schema', async () => {
+    test('Empty schema', () => {
         expect(resolveRefs({}, listReportSchema as JSONSchema4)).toEqual({});
     });
 
-    test('No schema', async () => {
+    test('No schema', () => {
         expect(resolveRefs(null, listReportSchema as JSONSchema4)).toEqual({});
     });
 
-    test('Wrong format', async () => {
+    test('Wrong format', () => {
         expect(resolveRefs('{}' as unknown as JSONSchema4, listReportSchema as JSONSchema4)).toEqual({});
     });
 
-    test('Schema without ref', async () => {
+    test('Schema without ref', () => {
         const schemaSegment: JSONSchema4 = {
             description: 'Test 1',
             type: 'string'
@@ -121,7 +122,7 @@ describe('resolveRefs', () => {
         expect(result).toEqual(schemaSegment);
     });
 
-    test('Schema with properties and without ref', async () => {
+    test('Schema with properties and without ref', () => {
         const schemaSegment: JSONSchema4 = {
             type: 'object',
             description: 'Dummy',
@@ -140,7 +141,7 @@ describe('resolveRefs', () => {
         expect(result).toEqual(schemaSegment);
     });
 
-    test('$ref on root level', async () => {
+    test('$ref on root level', () => {
         const schemaSegment: JSONSchema4 = {
             '$ref': '#/definitions/ActionPlacement',
             'description': 'Define the placement.'
@@ -153,7 +154,7 @@ describe('resolveRefs', () => {
         });
     });
 
-    test('Avoid recursion', async () => {
+    test('Avoid recursion', () => {
         const schemaSegment: JSONSchema4 = {
             '$ref': '#/definitions/ActionPlacement'
         };
@@ -172,7 +173,7 @@ describe('resolveRefs', () => {
         });
     });
 
-    test('Handle "items" as object', async () => {
+    test('Handle "items" as object', () => {
         const schemaSegment: JSONSchema4 = {
             type: 'object',
             properties: {
@@ -207,7 +208,7 @@ describe('resolveRefs', () => {
         });
     });
 
-    test('Handle "items" as array', async () => {
+    test('Handle "items" as array', () => {
         const schemaSegment: JSONSchema4 = {
             type: 'object',
             properties: {
@@ -253,7 +254,7 @@ describe('resolveRefs', () => {
         });
     });
 
-    test('Handle "additionalProperties" as object', async () => {
+    test('Handle "additionalProperties" as object', () => {
         const schemaSegment: JSONSchema4 = {
             'type': 'object',
             'additionalProperties': {
@@ -277,7 +278,7 @@ describe('resolveRefs', () => {
     });
 
     const variationsUnions = ['anyOf', 'oneOf', 'allOf'];
-    test.each(variationsUnions)('Handle "%s" as array', async (variation: string) => {
+    test.each(variationsUnions)('Handle "%s" as array', (variation: string) => {
         const schemaSegment: JSONSchema4 = {
             [variation]: [
                 {
@@ -307,5 +308,57 @@ describe('resolveRefs', () => {
                 }
             ]
         });
+    });
+});
+
+describe('convertToSchema', () => {
+    test('Convert zod schema to json schema', () => {
+        expect(
+            convertToSchema(
+                zod.object({
+                    name: zod.string().describe('Name of something'),
+                    visible: zod.boolean().describe('Visibility of something')
+                })
+            )
+        ).toEqual({
+            'additionalProperties': false,
+            'properties': {
+                'name': {
+                    'description': 'Name of something',
+                    'type': 'string'
+                },
+                'visible': {
+                    'description': 'Visibility of something',
+                    'type': 'boolean'
+                }
+            },
+            'required': ['name', 'visible'],
+            'type': 'object'
+        });
+    });
+});
+
+describe('validateWithSchema', () => {
+    const schema = zod.object({
+        name: zod.string().describe('Name of something'),
+        visible: zod.boolean().describe('Visibility of something')
+    });
+    test('Valid data', () => {
+        expect(validateWithSchema(schema, { name: 'dummy', visible: true })).toEqual({ name: 'dummy', visible: true });
+    });
+
+    test('Invalid data', () => {
+        expect(() => validateWithSchema(schema, { name: 'dummy' })).toThrowErrorMatchingInlineSnapshot(`
+            "Missing required fields in parameters. [
+                {
+                    \\"expected\\": \\"boolean\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [
+                        \\"visible\\"
+                    ],
+                    \\"message\\": \\"Invalid input: expected boolean, received undefined\\"
+                }
+            ]"
+        `);
     });
 });
