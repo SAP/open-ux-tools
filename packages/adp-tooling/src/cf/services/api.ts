@@ -83,16 +83,13 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
         // Public cloud - use mTLS enabled domain with "cert" prefix
         const region = endpointParts[1];
         url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+    } else if (endpointParts?.[4]?.endsWith('.cn')) {
+        // China has a special URL pattern
+        const parts = endpointParts[4].split('.');
+        parts.splice(2, 0, 'apps');
+        url = `${fdcUrl}sapui5flex${parts.join('.')}`;
     } else {
-        // Private cloud or other environments
-        if (endpointParts?.[4]?.endsWith('.cn')) {
-            // China has a special URL pattern
-            const parts = endpointParts[4].split('.');
-            parts.splice(2, 0, 'apps');
-            url = `${fdcUrl}sapui5flex${parts.join('.')}`;
-        } else {
-            url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
-        }
+        url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
     }
 
     // Add authorization token for non-BAS environments or private cloud
