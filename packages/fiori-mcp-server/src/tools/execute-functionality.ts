@@ -186,7 +186,7 @@ function findParameterById(functionality: GetFunctionalityDetailsOutput, id?: st
     if ('name' in parameters && parameters.name === id) {
         return parameters;
     }
-    if (id && 'properties' in parameters && parameters.properties && parameters.properties?.[id]) {
+    if (id && 'properties' in parameters && parameters.properties?.[id]) {
         return parameters.properties[id] as Parameter;
     }
 }

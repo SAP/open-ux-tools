@@ -87,7 +87,7 @@ export const resolveRefs = (schema: JSONSchema4, fullSchema: JSONSchema4, seen =
     }
 
     // If schema has $ref - resolve it
-    if (schema.$ref && schema.$ref.startsWith('#/definitions/')) {
+    if (schema.$ref?.startsWith('#/definitions/')) {
         const ref = schema.$ref;
         const defName = ref.replace('#/definitions/', '');
         const defSchema = fullSchema.definitions?.[defName] ?? null;
