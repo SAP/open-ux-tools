@@ -14,7 +14,12 @@ import autocomplete from 'inquirer-autocomplete-prompt';
  */
 async function findNearestNpmVersion(selectedVersion: string): Promise<string> {
     try {
-        // Get the (latest) version available from npm, instead of UI5 versions service in case of unpublished versions
+        // Query npm registry for @sapui5/distribution-metadata package to find the best available version.
+        // This approach ensures we get versions that are actually published to npm, which is required for
+        // ui5.yaml framework configuration, rather than versions only available on the UI5 CDN.
+        // - onlyNpmVersion: queries npm registry via 'npm show @sapui5/distribution-metadata versions'
+        // - onlyVersionNumbers: filters out non-semantic versions like 'snapshot-1.120' or 'Latest'
+        // - ui5SelectedVersion: prioritizes the user's selected version if available in npm
         const npmVersion = (
             await getUI5Versions({
                 onlyVersionNumbers: true,
