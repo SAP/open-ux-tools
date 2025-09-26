@@ -47,7 +47,7 @@
         "axios": "1.12.2",
         "axios-logger": "2.8.0",
         "circular-reference-remover": "2.1.0",
-        "fast-xml-parser": "4.4.1",
+        "fast-xml-parser": "4.5.3",
         "i18next": "25.3.0",
         "inquirer-autocomplete-prompt": "2.0.1",
         "os-name": "4.0.1"
