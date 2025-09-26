@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.4.5
+
+### Patch Changes
+
+-   2e86e1e: fix: In Cloud ADP project with selected unsupported application we should stop the ADP generator.
+
 ## 0.4.4
 
 ### Patch Changes
