@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import rimraf from 'rimraf';
+import { rimraf } from 'rimraf'
 import os from 'os';
 import path from 'path';
 

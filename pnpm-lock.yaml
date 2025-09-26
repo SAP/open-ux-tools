@@ -2717,6 +2717,10 @@ importers:
         version: 1.0.4
 
   packages/jest-runner-puppeteer:
+    dependencies:
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
     devDependencies:
       chalk:
         specifier: 4.1.2
@@ -2730,9 +2734,6 @@ importers:
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
-      rimraf:
-        specifier: 5.0.5
-        version: 5.0.5
       which:
         specifier: 2.0.2
         version: 2.0.2
@@ -22571,7 +22572,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       glob: 10.4.5
-    dev: true
 
   /rollup-plugin-inject@3.0.2:
     resolution: {integrity: sha512-ptg9PQwzs3orn4jkgXJ74bfs5vYz1NCZlSQMBUA0wKcGp5i5pA1AO3fOUEte8enhGUC+iapTCzEWw2jEFFUO/w==}
