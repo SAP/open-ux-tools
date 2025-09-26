@@ -77,9 +77,9 @@ Add these rules to your existing global or project-specific [`AGENTS.md`](https:
 ## [Available Tools](#available-tools)
 
 #### `search_docs`
-Searches Fiori Elements, Annotations, UI5, Fiori tools documentation for the given query.
-Note: the results are based on the most recent indexed version of UI5 documentation
+Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for the given query.
 
+Note: the results are based on the most recent indexed version of UI5 documentation
 
 #### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
