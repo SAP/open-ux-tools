@@ -1,14 +1,25 @@
+<%
+    const attrs = [
+        `name="${data.buttonGroup.name}"`,
+        `buttons="${data.buttonGroup.buttons}"`,
+        `visible="${data.buttonGroup.visible}"`
+    ];
+    if (typeof data.buttonGroup.priority !== 'undefined') {
+        attrs.push(`priority="${data.buttonGroup.priority}"`);
+    }
+    if (typeof data.buttonGroup.customToolbarPriority !== 'undefined') {
+        attrs.push(`customToolbarPriority="${data.buttonGroup.customToolbarPriority}"`);
+    }
+    if (typeof data.buttonGroup.row !== 'undefined') {
+        attrs.push(`row="${data.buttonGroup.row}"`);
+    }
+%>
 <<%- macrosNamespace %>:RichTextEditorWithMetadata
     metaPath="<%- data.metaPath %>"
     id="<%- data.id %>">
     <<%- macrosNamespace %>:buttonGroups>
         <richtexteditor:ButtonGroup
-            name="<%- data.buttonGroup.name %>"
-            buttons="<%- data.buttonGroup.buttons %>"
-            visible="<%- data.buttonGroup.visible %>"
-            <% if (typeof data.buttonGroup.priority !== 'undefined') { %>priority="<%- data.buttonGroup.priority %>" <% } %>
-            <% if (typeof data.buttonGroup.customToolbarPriority !== 'undefined') { %>customToolbarPriority="<%- data.buttonGroup.customToolbarPriority %>" <% } %>
-            <% if (typeof data.buttonGroup.row !== 'undefined') { %>row="<%- data.buttonGroup.row %>" <% } %>
-        />
+<% attrs.forEach(attr => { %>            <%- attr %>
+<% }); %>        />
     </<%- macrosNamespace %>:buttonGroups>
 </<%- macrosNamespace %>:RichTextEditorWithMetadata>
