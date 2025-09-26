@@ -156,7 +156,7 @@ export async function createService(
     spaceGuid: string,
     plan: string,
     serviceInstanceName: string,
-    tags: string[] = [],
+    tags: string[],
     serviceName: string | undefined,
     security?: {
         filePath: string | null;
