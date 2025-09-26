@@ -1,0 +1,30 @@
+{
+	"name": "<%= module.toLowerCase() %>",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
+		"zip": "cd dist && npx bestzip ../<%= module %>.zip *",
+		"clean": "npx rimraf <%= module %>.zip dist",
+		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup"
+	},
+	"repository": {
+		"type": "git",
+		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
+	},
+	"ui5": {
+		"dependencies": [
+			"@sap/ui5-builder-webide-extension",
+			"@ui5/task-adaptation"
+		]
+	},
+	"devDependencies": {
+		"@sap/ui5-builder-webide-extension": "1.0.x",
+		"@sapui5/ts-types": "^1.85.1",
+		"@ui5/cli": "^3.0.0",
+		"@ui5/task-adaptation": "^1.0.x",
+		"bestzip": "2.1.4",
+		"rimraf": "3.0.2"
+	}
+}
