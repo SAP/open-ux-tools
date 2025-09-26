@@ -1,6 +1,6 @@
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { getTree } from '../../../src/page-editor-api/parser';
-import type { PageAnnotations, TreeNode } from '../../../src/page-editor-api/parser';
+import type { PageAnnotations, TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/parser';
 import applicationSchema from './test-data/schema/App.json';
 import applicationConfig from './test-data/config/App.json';
 import listReportSchema from './test-data/schema/ListReport.json';
@@ -25,9 +25,17 @@ import { JSONSchema4 } from 'json-schema';
 describe('getTree', () => {
     beforeEach(async () => {});
 
-    const cleanupSchema = (data: TreeNode) => {
-        data.schema = undefined as unknown as JSONSchema4;
-    };
+    function cleanupSchema(obj: TreeNode | TreeNodeProperty): void {
+        if (obj && typeof obj === 'object' && 'schema' in obj) {
+            delete (obj as unknown as { schema?: object }).schema;
+            if ('children' in obj) {
+                obj.children.forEach(cleanupSchema);
+            }
+            if ('properties' in obj) {
+                obj.properties?.forEach(cleanupSchema);
+            }
+        }
+    }
 
     test('getTree - Application', async () => {
         const data = getTree(JSON.stringify(applicationSchema), applicationConfig, PageTypeV4.ListReport);
