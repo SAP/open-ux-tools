@@ -71,8 +71,8 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
         : await inquirer.prompt(ui5LibPrompts);
 
     // If a UI5 version was selected, resolve it to the nearest available npm version
-    // Flow is: 
-    // 1. User selects version from ui5 CDN supported versions 
+    // Flow is:
+    // 1. User selects version from ui5 CDN supported versions
     // 2. Selected version is used to get the nearest ui5 version from npm as ui5.yaml is using framework rather than ui5 cdn.
     if (answers.ui5Version) {
         const resolvedVersion = await findNearestNpmVersion(answers.ui5Version);
