@@ -1,6 +1,6 @@
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import { getPrompts, prompt, findNearestNpmVersion } from '../../src/index';
+import { getPrompts, prompt, resolveUI5VersionToNpm } from '../../src/index';
 import type { UI5LibraryAnswers } from '../../src/types';
 import { initI18n } from '../../src/i18n';
 import * as ui5LibInqApi from '../../src/index';
@@ -262,12 +262,12 @@ describe('Version Resolution Tests', () => {
         jest.restoreAllMocks();
     });
 
-    describe('findNearestNpmVersion', () => {
+    describe('resolveUI5VersionToNpm', () => {
         it('should use getUI5Versions to resolve npm version', async () => {
             const mockResolvedVersion = { version: '1.118.0' };
             jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([mockResolvedVersion]);
 
-            const result = await findNearestNpmVersion('1.118.0');
+            const result = await resolveUI5VersionToNpm('1.118.0');
             expect(result).toBe('1.118.0');
             expect(ui5Info.getUI5Versions).toHaveBeenCalledWith({
                 onlyVersionNumbers: true,
@@ -279,14 +279,14 @@ describe('Version Resolution Tests', () => {
         it('should return selected version when getUI5Versions fails', async () => {
             jest.spyOn(ui5Info, 'getUI5Versions').mockRejectedValue(new Error('Network error'));
 
-            const result = await findNearestNpmVersion('1.118.0');
+            const result = await resolveUI5VersionToNpm('1.118.0');
             expect(result).toBe('1.118.0');
         });
 
         it('should return selected version when no npm versions found', async () => {
             jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([]);
 
-            const result = await findNearestNpmVersion('1.118.0');
+            const result = await resolveUI5VersionToNpm('1.118.0');
             expect(result).toBe('1.118.0');
         });
     });

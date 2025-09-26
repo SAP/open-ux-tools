@@ -7,12 +7,12 @@ import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
- * Find the nearest available npm version to the selected UI5 version using getUI5Versions.
+ * Resolves a UI5 version to its corresponding npm-published version from @sapui5/distribution-metadata.
  *
  * @param selectedVersion - The UI5 version selected by the user
- * @returns Promise that resolves to the nearest available npm version
+ * @returns Promise that resolves to the corresponding npm-published UI5 version
  */
-async function findNearestNpmVersion(selectedVersion: string): Promise<string> {
+async function resolveUI5VersionToNpm(selectedVersion: string): Promise<string> {
     try {
         // Query npm registry for @sapui5/distribution-metadata package to find the best available version.
         // This approach ensures we get versions that are actually published to npm, which is required for
@@ -86,7 +86,7 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     // 1. User selects version from ui5 CDN supported versions
     // 2. Selected version is used to get the nearest ui5 version from npm as ui5.yaml is using framework rather than ui5 cdn.
     if (answers.ui5Version) {
-        const resolvedVersion = await findNearestNpmVersion(answers.ui5Version);
+        const resolvedVersion = await resolveUI5VersionToNpm(answers.ui5Version);
 
         // Update the answer with the resolved version if different
         if (resolvedVersion !== answers.ui5Version) {
@@ -97,7 +97,7 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     return answers;
 }
 
-export { getPrompts, prompt, findNearestNpmVersion };
+export { getPrompts, prompt, resolveUI5VersionToNpm };
 
 export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';
