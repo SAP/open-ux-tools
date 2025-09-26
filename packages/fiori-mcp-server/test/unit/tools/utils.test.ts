@@ -361,4 +361,14 @@ describe('validateWithSchema', () => {
             ]"
         `);
     });
+
+    test('Unknown error', () => {
+        const tempSchema = zod.object({});
+        jest.spyOn(tempSchema, 'parse').mockImplementation(() => {
+            throw new Error('Dummy');
+        });
+        expect(() => validateWithSchema(tempSchema, { name: 'dummy' })).toThrowErrorMatchingInlineSnapshot(
+            `"Unknown error. Recheck input parameters."`
+        );
+    });
 });
