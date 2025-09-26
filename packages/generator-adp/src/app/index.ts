@@ -19,10 +19,7 @@ import {
     isLoggedInCf,
     isMtaProject,
     loadApps,
-    loadCfConfig,
-    type AttributesAnswers,
-    type ConfigAnswers,
-    type UI5Version
+    loadCfConfig
 } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
@@ -34,8 +31,8 @@ import {
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { CfConfig, CfServicesAnswers } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { EventName } from '../telemetryEvents';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';

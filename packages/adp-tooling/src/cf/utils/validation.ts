@@ -5,8 +5,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
 import type { CfCredentials, XsApp, XsAppRoute } from '../../types';
-import { getApplicationType } from '../../source/manifest';
-import { isSupportedAppTypeForAdp } from '../../source/manifest';
+import { getApplicationType, isSupportedAppTypeForAdp } from '../../source/manifest';
 
 /**
  * Normalize the xs-app route regex.

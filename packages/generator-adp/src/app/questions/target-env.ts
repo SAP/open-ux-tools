@@ -7,10 +7,10 @@ import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n';
-import type { ProjectLocationAnswers } from '../types';
+import { TargetEnv } from '../types';
 import { getTargetEnvAdditionalMessages } from './helper/additional-messages';
 import { validateEnvironment, validateProjectPath } from './helper/validators';
-import { TargetEnv, type TargetEnvAnswers, type TargetEnvQuestion } from '../types';
+import type { ProjectLocationAnswers, TargetEnvAnswers, TargetEnvQuestion } from '../types';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };
 

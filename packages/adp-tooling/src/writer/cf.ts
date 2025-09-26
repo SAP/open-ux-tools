@@ -6,9 +6,9 @@ import { type ToolsLogger } from '@sap-ux/logger';
 import { adjustMtaYaml } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
+import type { CfAdpWriterConfig, Content } from '../types';
 import { getCfVariant, writeCfTemplates } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { type CfAdpWriterConfig, type FlexLayer, type Content } from '../types';
 
 /**
  * Writes the CF adp-project template to the mem-fs-editor instance.
@@ -70,8 +70,7 @@ function setDefaultsCF(config: CfAdpWriterConfig): CfAdpWriterConfig {
             ...config.app,
             appType: config.app.appType ?? getApplicationType(config.app.manifest),
             i18nModels: config.app.i18nModels ?? getI18nModels(config.app.manifest, config.app.layer, config.app.id),
-            i18nDescription:
-                config.app.i18nDescription ?? getI18nDescription(config.app.layer as FlexLayer, config.app.title)
+            i18nDescription: config.app.i18nDescription ?? getI18nDescription(config.app.layer, config.app.title)
         },
         options: {
             addStandaloneApprouter: false,

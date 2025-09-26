@@ -3,7 +3,9 @@ import type {
     CFServicesQuestion,
     CfServicesPromptOptions,
     AppRouterType,
-    CfConfig
+    CfConfig,
+    CFApp,
+    ServiceKeys
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -16,13 +18,13 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getMtaProjectName
+    getMtaProjectName,
+    getBusinessServiceKeys
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { getBusinessServiceKeys, type CFApp, type ServiceKeys } from '@sap-ux/adp-tooling';
 
 import { t } from '../../utils/i18n';
 import { validateBusinessSolutionName } from './helper/validators';
@@ -50,10 +52,6 @@ export class CFServicesPrompter {
      */
     private businessServices: string[] = [];
     /**
-     * The name of the cached business service.
-     */
-    private cachedServiceName: string | undefined;
-    /**
      * The keys of the business service.
      */
     private businessServiceKeys: ServiceKeys | null = null;
@@ -61,10 +59,6 @@ export class CFServicesPrompter {
      * The base apps available.
      */
     private apps: CFApp[] = [];
-    /**
-     * The error message when choosing a base app.
-     */
-    private baseAppOnChoiceError: string | null = null;
     /**
      * The service instance GUID.
      */
