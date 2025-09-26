@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
 ## 0.38.11
 
 ### Patch Changes

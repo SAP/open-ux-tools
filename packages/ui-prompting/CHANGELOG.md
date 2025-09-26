@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.5.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
 ## 0.4.2
 
 ### Patch Changes
