@@ -212,11 +212,11 @@ const ns1 = {
         'richTextEditor': {
             'id': {
                 'message': 'Building Block ID',
-                'validation': 'An ID is required to generate the Rich Text Editor building block'
+                'validation': 'An ID is required to generate the Rich Text Editor building block.'
             },
             'viewOrFragmentPath': {
-                'message': 'view or fragment File',
-                'validation': 'A View or Fragment is required to generate the Rich Text Editor building block.'
+                'message': 'View or Fragment File',
+                'validation': 'A view or fragment is required to generate the Rich Text Editor building block.'
             },
             'bindingContextType': 'Binding Context',
             'valueSource': 'Value Source',
