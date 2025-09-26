@@ -34,6 +34,8 @@ export function getPackagePrompts(
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string | IValidationLink;
     let morePackageResultsMsg = '';
+    let prevAnswers: AbapDeployConfigAnswersInternal | undefined;
+    let prevAutocompleteValidationResult: boolean | string | undefined;
     PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
@@ -90,6 +92,7 @@ export function getPackagePrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
+                // Always validate for manual input, even if only description changed
                 await validatePackage(input, answers, options.packageManual, options.ui5AbapRepo, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
@@ -128,17 +131,35 @@ export function getPackagePrompts(
                 input: string | ListChoiceOptions,
                 answers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
+                // Compare current answers with previous answers
+                if (prevAnswers != null) {
+                    const keys = Object.keys(answers) as (keyof AbapDeployConfigAnswersInternal)[];
+                    const onlyDescriptionChanged =
+                        keys.every((key) => key === 'description' || prevAnswers![key] === answers[key]) &&
+                        prevAnswers!.description !== answers.description;
+                    if (onlyDescriptionChanged) {
+                        // Return previous validation result if available
+                        prevAnswers = { ...answers };
+                        if (prevAutocompleteValidationResult !== undefined) {
+                            return prevAutocompleteValidationResult;
+                        }
+                        // Fallback: run validation if no cached result
+                    }
+                }
                 // Autocomplete can the entire choice object as the answer, so we need to extract the value
                 const pkgValue: string = (input as ListChoiceOptions)?.value
                     ? (input as ListChoiceOptions).value
                     : input;
-                return await validatePackage(
+                const validationResult = await validatePackage(
                     pkgValue,
                     answers,
                     options.packageAutocomplete,
                     options.ui5AbapRepo,
                     options.backendTarget
                 );
+                prevAnswers = { ...answers };
+                prevAutocompleteValidationResult = validationResult;
+                return validationResult;
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];

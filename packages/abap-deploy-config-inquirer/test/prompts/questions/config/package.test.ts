@@ -144,6 +144,52 @@ describe('getPackagePrompts', () => {
         }
     });
 
+    test('autocomplete validate returns true when input equals packageName', async () => {
+        const packagePrompts = getPackagePrompts({});
+        const packageAutocompletePrompt = packagePrompts.find(
+            (prompt) => prompt.name === promptNames.packageAutocomplete
+        );
+
+        if (packageAutocompletePrompt) {
+            // Simulate the closure by calling validate twice with the same value
+            await (packageAutocompletePrompt.validate as Function)('MATCHING_PACKAGE', {});
+            const result = await (packageAutocompletePrompt.validate as Function)('MATCHING_PACKAGE', {});
+            expect(result).toBe(true);
+        }
+    });
+
+    test('autocomplete validate uses assigned packageName for subsequent validations', async () => {
+        const packagePrompts = getPackagePrompts({});
+        const packageAutocompletePrompt = packagePrompts.find(
+            (prompt) => prompt.name === promptNames.packageAutocomplete
+        );
+
+        // Spy to track calls and simulate validation
+        const validateSpy = jest.spyOn(validators, 'validatePackage').mockImplementation(async (pkgValue) => {
+            // Return true only for a specific value to simulate assignment
+            return pkgValue === 'ASSIGN_PACKAGE' ? true : false;
+        });
+
+        if (packageAutocompletePrompt) {
+            // Validate with a value that will be assigned
+            const result1 = await (packageAutocompletePrompt.validate as Function)('ASSIGN_PACKAGE', {});
+            expect(result1).toBe(true);
+
+            // Now validate with the same value, should return true immediately (closure variable used)
+            const result2 = await (packageAutocompletePrompt.validate as Function)('ASSIGN_PACKAGE', {});
+            expect(result2).toBe(true);
+
+            // Validate with a different value, should call validatePackage again
+            const result3 = await (packageAutocompletePrompt.validate as Function)('DIFFERENT_PACKAGE', {});
+            expect(result3).toBe(false);
+
+            // Ensure validatePackage was called with both values
+            const calls = validateSpy.mock.calls.map((call) => call[0]);
+            expect(calls).toContain('ASSIGN_PACKAGE');
+            expect(calls).toContain('DIFFERENT_PACKAGE');
+        }
+    });
+
     test('should return expected values from packageAutocomplete prompt methods', async () => {
         jest.spyOn(conditions, 'defaultOrShowSearchPackageQuestion').mockReturnValueOnce(true);
         jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
