@@ -8,7 +8,7 @@ import {
     filterCompressedHtmlFiles,
     proxyErrorHandler,
     updateProxyEnv,
-    getPathReplace
+    getPathRewrite
 } from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'url';
@@ -36,7 +36,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         onProxyReq: (proxyReq: ClientRequest, _req: IncomingMessage, res: ServerResponse): void => {
             proxyRequestHandler(proxyReq, res, etag, logger);
         },
-        pathRewrite: getPathReplace(config, ui5Ver),
+        pathRewrite: getPathRewrite(config, ui5Ver),
         onProxyRes: (proxyRes: IncomingMessage): void => {
             proxyResponseHandler(proxyRes, etag);
         },

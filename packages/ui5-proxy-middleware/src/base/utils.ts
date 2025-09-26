@@ -358,13 +358,11 @@ export function directLoadProxy(
  * @param ui5Ver UI5 version string
  * @returns a path rewrite
  */
-export function getPathReplace(config: ProxyConfig, ui5Ver: string): Options['pathRewrite'] {
+export function getPathRewrite(config: ProxyConfig, ui5Ver: string): Options['pathRewrite'] {
     if (config.pathReplace) {
         // Remove trailing slash from pathReplace if present
-        const base = config.pathReplace.replace(/\/$/, '');
-        return {
-            [config.path]: `${base}${config.path}`
-        };
+        const sanitizedPathReplace = config.pathReplace?.replace(/\/$/, '');
+        return (path: string) => path.replace(config.path, sanitizedPathReplace);
     }
     return { [config.path]: ui5Ver + config.path };
 }

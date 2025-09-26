@@ -10,7 +10,7 @@ import {
     sendResponse,
     proxyErrorHandler,
     updateProxyEnv,
-    getPathReplace
+    getPathRewrite
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import fs from 'fs';
@@ -556,19 +556,19 @@ describe('utils', () => {
                 version: '1.120.0'
             };
             const ui5Ver = '/1.120.0';
-            const rewrite = getPathReplace(config, ui5Ver);
+            const rewrite = getPathRewrite(config, ui5Ver);
             expect(rewrite).toEqual({ '/mypath': '/1.120.0/mypath' });
         });
 
         test('custom pathRewrite', () => {
             const config = {
-                pathReplace: 'this/path/should/rewrite/',
+                pathReplace: 'this/path/should/rewrite/mypath',
                 path: '/mypath',
                 url: 'https://example.example'
             };
             const ui5Ver = '';
-            const rewrite = getPathReplace(config, ui5Ver);
-            expect(rewrite).toEqual({ '/mypath': 'this/path/should/rewrite/mypath' });
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/mypath')).toEqual('this/path/should/rewrite/mypath');
         });
 
         test('handle pathRewrite with trailing slash', () => {
@@ -577,7 +577,7 @@ describe('utils', () => {
                 url: 'https://example.example'
             };
             const ui5Ver = '';
-            const rewrite = getPathReplace(config, ui5Ver);
+            const rewrite = getPathRewrite(config, ui5Ver);
             expect(rewrite).toEqual({ '/resources': '/resources' });
         });
     });

@@ -2,7 +2,6 @@ import { ui5Proxy } from '../../src';
 import * as hpm from 'http-proxy-middleware';
 import * as utils from '../../src/base/utils';
 import { ToolsLogger } from '@sap-ux/logger';
-import { PathRewriters } from '../../../backend-proxy-middleware/src/base/proxy';
 
 describe('proxy', () => {
     const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
@@ -176,9 +175,7 @@ describe('proxy', () => {
         };
         ui5Proxy(config);
         const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
-        expect(proxyConfig?.pathRewrite).toEqual({
-            '/mypath': 'this/path/should/rewrite/mypath'
-        });
+        expect(typeof proxyConfig?.pathRewrite).toBe('function');
     });
 
     test('ui5Proxy: host is not excluded from proxy', async () => {
