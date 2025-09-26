@@ -91,14 +91,12 @@ export const resolveRefs = (schema: JSONSchema4 | null, fullSchema: JSONSchema4,
         const ref = schema.$ref;
         const defName = ref.replace('#/definitions/', '');
         const defSchema = fullSchema.definitions?.[defName] ?? null;
-
+        if (seen.has(ref)) {
+            // Prevent infinite recursion (cyclic refs)
+            return { ...defSchema };
+        }
+        seen.add(ref);
         if (defSchema) {
-            if (seen.has(ref)) {
-                // Prevent infinite recursion (cyclic refs)
-                return { ...defSchema };
-            }
-            seen.add(ref);
-
             // Merge the referenced schema with any extra props from the current schema (besides $ref)
             const schemaWithoutRef = { ...schema };
             delete schemaWithoutRef.$ref;
