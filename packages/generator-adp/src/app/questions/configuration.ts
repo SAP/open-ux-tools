@@ -340,7 +340,8 @@ export class ConfigPrompter {
                 hint: t('prompts.passwordTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
-            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
+            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
         };
     }
 
