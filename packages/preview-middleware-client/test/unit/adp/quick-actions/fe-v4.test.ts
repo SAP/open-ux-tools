@@ -212,7 +212,10 @@ describe('FE V4 quick actions', () => {
                 });
             }
             test('not available on UI5 version prior 1.130', async () => {
-                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.129' });
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.129.0' }]
+                });
                 await setupContext();
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
@@ -225,7 +228,10 @@ describe('FE V4 quick actions', () => {
             });
 
             test('available since UI5 version 1.130', async () => {
-                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130.1' });
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.130.1' }]
+                });
                 await setupContext();
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
