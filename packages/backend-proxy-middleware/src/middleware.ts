@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
+import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
+import type { BackendMiddlewareConfig, MiddlewareParameters } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 
 /**
@@ -20,11 +21,12 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
             proxy = proxy.replace(proxy.slice(forwardSlashIndex + 2, atIndex), '***:***');
         }
     }
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return proxy || 'none';
 }
 
 /**
- * UI5 middleware allowing to to proxy backends.
+ * UI5 middleware allowing to proxy backends.
  *
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
@@ -32,15 +34,18 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  */
 module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
+        logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info,
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
 
     await initI18n();
     dotenv.config();
+    const router = express.Router();
 
     const backend = options.configuration.backend;
     const configOptions = options.configuration.options ?? {};
     configOptions.secure = configOptions.secure !== undefined ? !!configOptions.secure : true;
+    configOptions.logger = options.configuration?.debug ? logger : undefined;
 
     try {
         const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions, logger);
@@ -49,16 +54,12 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
             `Starting backend-proxy-middleware using following configuration:\nbackend: ${JSON.stringify({
                 ...backend,
                 proxy: formatProxyForLogging(backend.proxy)
-            })}\noptions: ${JSON.stringify(configOptions)}'`
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            })}\noptions: ${JSON.stringify(({ logger, ...rest } = configOptions) => rest)}'\nlog: '${
+                options.configuration?.debug ? 'debug' : 'info'
+            }'`
         );
-
-        return (req, res, next) => {
-            if (req.path.startsWith(backend.path)) {
-                proxyFn(req, res, next);
-            } else {
-                next();
-            }
-        };
+        return router.use(backend.path, proxyFn);
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
         logger.error(message);
