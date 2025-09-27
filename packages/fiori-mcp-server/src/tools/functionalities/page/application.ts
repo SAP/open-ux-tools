@@ -1,33 +1,16 @@
 import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
-import type {
-    ExecuteFunctionalityOutput,
-    GetFunctionalityDetailsInput,
-    GetFunctionalityDetailsOutput
-} from '../../../types';
+import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types';
 import { getService } from './serviceStore';
 import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
-import { MissingNavigationReason, PAGE_VIEW_NAME_PATTERN } from './types';
+import { MissingNavigationReason } from './types';
 import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
 import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification/dist/types/src';
 import { getDefaultExtensionFolder } from '../../utils';
-
-export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
-    functionalityId: ADD_PAGE,
-    name: 'Add new page to application by updating manifest.json',
-    description: 'Create new fiori elements page like ListReport, ObjectPage, CustomPage',
-    parameters: []
-};
-export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
-    functionalityId: DELETE_PAGE,
-    name: 'Delete page from application by updating manifest.json',
-    description: 'Remove existing fiori elements page from the application',
-    parameters: []
-};
 
 /**
  * Represents an application instance with its metadata, access configuration and functionality details.
@@ -69,23 +52,13 @@ export class Application {
     }
 
     /**
-     * Gets the name of an allowed navigation option.
-     *
-     * @param navigation - The allowed navigation option.
-     * @returns The name of the navigation option.
-     */
-    private getAllowedNavigationsName(navigation: AllowedNavigationOptions) {
-        return navigation.name;
-    }
-
-    /**
      * Generates a string representation of all allowed navigation options.
      *
      * @param navigations - An array of allowed navigation options.
      * @returns A comma-separated string of navigation names.
      */
     private getAllowedNavigationsOutput(navigations: AllowedNavigationOptions[]): string {
-        return navigations.map((navigation) => this.getAllowedNavigationsName(navigation)).join(', ');
+        return navigations.map((navigation) => navigation.name).join(', ');
     }
 
     /**
@@ -539,84 +512,37 @@ export class Application {
             };
         });
     }
-    /**
-     * Retrieves creation options for a new page.
-     *
-     * @returns A promise that resolves to GetFunctionalityDetailsOutput containing creation options.
-     */
-    public async getCreationOptions(): Promise<GetFunctionalityDetailsOutput> {
-        ADD_PAGE_FUNCTIONALITY.parameters = [];
 
+    /**
+     * Retrieves the available navigation options for each page and available entities for very first page creation.
+     *
+     * @returns A promise that resolves to an object containing navigations and entities.
+     */
+    public async getCreationNavigationOptions(): Promise<{
+        navigations: { [key: string]: AllowedNavigationOptions[] };
+        entities?: AllowedNavigationOptions[];
+    }> {
+        const options: {
+            navigations: { [key: string]: AllowedNavigationOptions[] };
+            entities?: AllowedNavigationOptions[];
+        } = {
+            navigations: {}
+        };
         const pages = this.getPages();
         if (pages.length) {
-            // Validate navigation
-            const navigationsMap: { [key: string]: string } = {};
             let refreshNavigations = true;
             for (const page of pages) {
-                const navigations = await this.getAllowedNavigations(page, refreshNavigations);
-                navigationsMap[page.pageId] = this.getAllowedNavigationsOutput(navigations);
+                options.navigations[page.pageId] = await this.getAllowedNavigations(page, refreshNavigations);
                 // Pass with refresh only once
                 refreshNavigations = false;
             }
-            ADD_PAGE_FUNCTIONALITY.parameters = [
-                {
-                    id: 'parentPage',
-                    type: 'string',
-                    description: `Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options`,
-                    options: Object.keys(navigationsMap),
-                    required: true,
-                    examples: ['parentPage: ' + Object.keys(navigationsMap)[0]]
-                },
-                {
-                    id: 'pageNavigation',
-                    type: 'string',
-                    description: `Page navigation option for parent page. First try to extract navigation option from user input in a format defined in example, if not possible suggest content defined in options`,
-                    options: Object.keys(navigationsMap).map(
-                        (item) => `for ${item}: available navigation(s) is/are one of: ${navigationsMap[item]}`
-                    ),
-                    examples: ['pageNavigation: ' + Object.values(navigationsMap)[0].split(',')[0]],
-                    required: true
-                },
-                {
-                    id: 'pageType',
-                    type: 'string',
-                    description: `Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.`,
-                    options: [PageTypeV4.ListReport, PageTypeV4.ObjectPage, PageTypeV4.CustomPage],
-                    examples: ['pageType: ' + PageTypeV4.ObjectPage],
-                    required: true
-                },
-                {
-                    id: 'pageViewName',
-                    type: 'string',
-                    description: `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`,
-                    pattern: PAGE_VIEW_NAME_PATTERN.toString(),
-                    required: true
-                }
-            ];
-            return ADD_PAGE_FUNCTIONALITY;
+        } else {
+            options.entities = await this.getAllowedNavigations();
         }
-        // Creation of very first page
-        const entities = await this.getAllowedNavigations();
-        ADD_PAGE_FUNCTIONALITY.parameters = [
-            {
-                id: 'entitySet',
-                type: 'string',
-                description: `Entity set for the new page. First try to extract entity from user input in a format defined in example, if not possible suggest content defined in options.`,
-                options: entities.map((entity) => this.getAllowedNavigationsName(entity)),
-                examples: ['entitySet: ' + entities.map((entity) => this.getAllowedNavigationsName(entity))[0]],
-                required: true
-            },
-            {
-                id: 'pageType',
-                type: 'string',
-                description: `Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.`,
-                options: Object.keys(PageTypeV4),
-                examples: ['pageType: ' + Object.keys(PageTypeV4)[0]],
-                required: true
-            }
-        ];
-        return ADD_PAGE_FUNCTIONALITY;
+
+        return options;
     }
+
     /**
      * Creates a new page in the application.
      *
@@ -664,25 +590,6 @@ export class Application {
             changes,
             timestamp: new Date().toISOString()
         };
-    }
-
-    /**
-     * Retrieves options for deleting a page.
-     *
-     * @returns A promise that resolves to GetFunctionalityDetailsOutput containing delete options.
-     */
-    public async getDeleteOptions(): Promise<GetFunctionalityDetailsOutput> {
-        DELETE_PAGE_FUNCTIONALITY.parameters = [];
-        const pages = this.getPages();
-        DELETE_PAGE_FUNCTIONALITY.parameters.push({
-            id: 'pageId',
-            type: 'string',
-            description: `Page id to be deleted. First try to extract page id from user input in a format defined in example, if not possible suggest content defined in options`,
-            options: pages.map((page) => page.pageId),
-            examples: ['pageId: ' + pages.map((page) => page.pageId)[0]],
-            required: true
-        });
-        return DELETE_PAGE_FUNCTIONALITY;
     }
 
     /**

@@ -186,264 +186,102 @@ Object {
       "type": "string",
     },
     "parameters": Object {
-      "items": Object {
-        "additionalProperties": false,
+      "additionalProperties": Object {},
+      "properties": Object {
+        "description": Object {
+          "type": "string",
+        },
         "properties": Object {
-          "currentValue": Object {},
-          "defaultValue": Object {},
-          "description": Object {
-            "type": "string",
-          },
-          "examples": Object {
-            "items": Object {
-              "type": "string",
-            },
-            "type": "array",
-          },
-          "id": Object {
-            "type": "string",
-          },
-          "name": Object {
-            "type": "string",
-          },
-          "options": Object {
-            "items": Object {
-              "anyOf": Array [
-                Object {
-                  "type": "string",
-                },
-                Object {
-                  "type": "number",
-                },
-                Object {
-                  "type": "boolean",
-                },
-                Object {
-                  "type": "null",
-                },
-              ],
-            },
-            "type": "array",
-          },
-          "parameters": Object {
-            "items": Object {
-              "additionalProperties": false,
-              "properties": Object {
-                "currentValue": Object {},
-                "defaultValue": Object {},
-                "description": Object {
-                  "type": "string",
-                },
-                "examples": Object {
-                  "items": Object {
+          "additionalProperties": Object {
+            "anyOf": Array [
+              Object {
+                "additionalProperties": Object {},
+                "properties": Object {
+                  "description": Object {
                     "type": "string",
                   },
-                  "type": "array",
-                },
-                "id": Object {
-                  "type": "string",
-                },
-                "name": Object {
-                  "type": "string",
-                },
-                "options": Object {
-                  "items": Object {
+                  "properties": Object {},
+                  "type": Object {
                     "anyOf": Array [
                       Object {
+                        "enum": Array [
+                          "object",
+                          "array",
+                          "string",
+                          "number",
+                          "boolean",
+                          "null",
+                          "integer",
+                          "any",
+                        ],
                         "type": "string",
                       },
                       Object {
-                        "type": "number",
-                      },
-                      Object {
-                        "type": "boolean",
-                      },
-                      Object {
-                        "type": "null",
-                      },
-                    ],
-                  },
-                  "type": "array",
-                },
-                "parameters": Object {
-                  "items": Object {
-                    "additionalProperties": false,
-                    "properties": Object {
-                      "currentValue": Object {},
-                      "defaultValue": Object {},
-                      "description": Object {
-                        "type": "string",
-                      },
-                      "examples": Object {
                         "items": Object {
+                          "enum": Array [
+                            "object",
+                            "array",
+                            "string",
+                            "number",
+                            "boolean",
+                            "null",
+                            "integer",
+                            "any",
+                          ],
                           "type": "string",
                         },
                         "type": "array",
                       },
-                      "id": Object {
-                        "type": "string",
-                      },
-                      "name": Object {
-                        "type": "string",
-                      },
-                      "options": Object {
-                        "items": Object {
-                          "anyOf": Array [
-                            Object {
-                              "type": "string",
-                            },
-                            Object {
-                              "type": "number",
-                            },
-                            Object {
-                              "type": "boolean",
-                            },
-                            Object {
-                              "type": "null",
-                            },
-                          ],
-                        },
-                        "type": "array",
-                      },
-                      "parameters": Object {
-                        "items": Object {
-                          "additionalProperties": false,
-                          "properties": Object {
-                            "currentValue": Object {},
-                            "defaultValue": Object {},
-                            "description": Object {
-                              "type": "string",
-                            },
-                            "examples": Object {
-                              "items": Object {
-                                "type": "string",
-                              },
-                              "type": "array",
-                            },
-                            "id": Object {
-                              "type": "string",
-                            },
-                            "name": Object {
-                              "type": "string",
-                            },
-                            "options": Object {
-                              "items": Object {
-                                "anyOf": Array [
-                                  Object {
-                                    "type": "string",
-                                  },
-                                  Object {
-                                    "type": "number",
-                                  },
-                                  Object {
-                                    "type": "boolean",
-                                  },
-                                  Object {
-                                    "type": "null",
-                                  },
-                                ],
-                              },
-                              "type": "array",
-                            },
-                            "pattern": Object {
-                              "type": "string",
-                            },
-                            "required": Object {
-                              "type": "boolean",
-                            },
-                            "type": Object {
-                              "enum": Array [
-                                "string",
-                                "number",
-                                "boolean",
-                                "array",
-                                "object",
-                              ],
-                              "type": "string",
-                            },
-                          },
-                          "required": Array [
-                            "id",
-                            "type",
-                          ],
-                          "type": "object",
-                        },
-                        "type": "array",
-                      },
-                      "pattern": Object {
-                        "type": "string",
-                      },
-                      "required": Object {
-                        "type": "boolean",
-                      },
-                      "type": Object {
-                        "enum": Array [
-                          "string",
-                          "number",
-                          "boolean",
-                          "array",
-                          "object",
-                        ],
-                        "type": "string",
-                      },
-                    },
-                    "required": Array [
-                      "id",
-                      "type",
                     ],
-                    "type": "object",
                   },
-                  "type": "array",
                 },
-                "pattern": Object {
-                  "type": "string",
-                },
-                "required": Object {
-                  "type": "boolean",
-                },
-                "type": Object {
-                  "enum": Array [
-                    "string",
-                    "number",
-                    "boolean",
-                    "array",
-                    "object",
-                  ],
-                  "type": "string",
-                },
+                "type": "object",
               },
-              "required": Array [
-                "id",
-                "type",
-              ],
-              "type": "object",
-            },
-            "type": "array",
-          },
-          "pattern": Object {
-            "type": "string",
-          },
-          "required": Object {
-            "type": "boolean",
-          },
-          "type": Object {
-            "enum": Array [
-              "string",
-              "number",
-              "boolean",
-              "array",
-              "object",
+              Object {
+                "type": "boolean",
+              },
             ],
+          },
+          "propertyNames": Object {
             "type": "string",
           },
+          "type": "object",
         },
-        "required": Array [
-          "id",
-          "type",
-        ],
-        "type": "object",
+        "type": Object {
+          "anyOf": Array [
+            Object {
+              "enum": Array [
+                "object",
+                "array",
+                "string",
+                "number",
+                "boolean",
+                "null",
+                "integer",
+                "any",
+              ],
+              "type": "string",
+            },
+            Object {
+              "items": Object {
+                "enum": Array [
+                  "object",
+                  "array",
+                  "string",
+                  "number",
+                  "boolean",
+                  "null",
+                  "integer",
+                  "any",
+                ],
+                "type": "string",
+              },
+              "type": "array",
+            },
+          ],
+        },
       },
-      "type": "array",
+      "type": "object",
     },
     "prerequisites": Object {
       "items": Object {
