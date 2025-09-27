@@ -68,7 +68,8 @@ export function getQuestions(
             },
             choices: () => ui5VersionChoices,
             source: (prevAnswers: Answers, input: string) =>
-                searchChoices(input, ui5VersionChoices as ListChoiceOptions[])
+                searchChoices(input, ui5VersionChoices as ListChoiceOptions[]),
+            default: options?.resolvedUi5Version
         } as ListQuestion<UI5LibraryAnswers> | AutocompleteQuestionOptions<UI5LibraryAnswers>,
         {
             type: 'confirm',
