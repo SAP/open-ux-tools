@@ -73,7 +73,7 @@ export const getDefaultExtensionFolder = (directory: string): string | undefined
 };
 
 /**
- * Recursively resolves `$ref` references in a JSON Schem.
+ * Recursively resolves `$ref` references in a JSON Schema.
  * When a `$ref` is found, the referenced definition is merged with the current schema fragment (with `$ref` removed).
  *
  * @param schema The schema fragment/segment to resolve. May contain `$ref`.
