@@ -342,7 +342,17 @@ describe('add-page', () => {
                         pageType: 'CustomPage'
                     }
                 })
-            ).rejects.toThrow('Missing value for parameter "pageViewName"');
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"custom\\",
+                        \\"path\\": [
+                            \\"pageViewName\\"
+                        ],
+                        \\"message\\": \\"A pageViewName must be provided when using PageTypeV4.CustomPage\\"
+                    }
+                ]"
+            `);
         });
 
         test('case 8: validate incorrect "pageViewName"', async () => {

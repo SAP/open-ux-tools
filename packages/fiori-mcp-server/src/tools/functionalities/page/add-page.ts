@@ -85,11 +85,6 @@ async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<
         'pageNavigation' in addPageParameters ? addPageParameters.pageNavigation.toString() : undefined;
     const viewName =
         'pageViewName' in addPageParameters && addPageParameters.pageViewName ? addPageParameters.pageViewName : '';
-
-    if (pageType === PageTypeV4.CustomPage && !viewName) {
-        throw new Error('Missing value for parameter "pageViewName"');
-    }
-
     return application.createPage({
         pageType: pageType,
         parent: parentPage,

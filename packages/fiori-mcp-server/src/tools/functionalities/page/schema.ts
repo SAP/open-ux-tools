@@ -34,24 +34,29 @@ const firstPageSchema = (entities: AllowedNavigationOptions[]) =>
  * @returns A Zod schema for validating child page creation input.
  */
 const childPageSchema = (page: string, navigations: AllowedNavigationOptions[]) =>
-    zod.object({
-        parentPage: zod
-            .literal(page)
-            .describe(
-                'Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options'
+    zod
+        .object({
+            parentPage: zod
+                .literal(page)
+                .describe(
+                    'Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options'
+                ),
+            pageNavigation: zod.enum(navigations.map((n) => n.name)),
+            pageType: PageTypeEnum.describe(
+                `Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.`
             ),
-        pageNavigation: zod.enum(navigations.map((n) => n.name)),
-        pageType: PageTypeEnum.describe(
-            `Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.`
-        ),
-        pageViewName: zod
-            .string()
-            .regex(EXTENSION_FILE_NAME_PATTERN)
-            .optional()
-            .describe(
-                `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`
-            )
-    });
+            pageViewName: zod
+                .string()
+                .regex(EXTENSION_FILE_NAME_PATTERN)
+                .optional()
+                .describe(
+                    `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`
+                )
+        })
+        .refine((data) => !(data.pageType === PageTypeV4.CustomPage && !data.pageViewName), {
+            path: ['pageViewName'],
+            message: 'A pageViewName must be provided when using PageTypeV4.CustomPage'
+        });
 
 /**
  * Builds a Zod schema for page creation input.
