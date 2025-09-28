@@ -9,7 +9,7 @@ Object {
     "additionalProperties": false,
     "properties": Object {
       "entitySet": Object {
-        "description": "Entity set for the new page. First try to extract entity from user input in a format defined in example, if not possible suggest content defined in options.",
+        "description": "Entity set for the new page. First try to extract entity from user input, if not possible suggest content defined in options.",
         "enum": Array [
           "Travels",
           "Expenses",
@@ -19,7 +19,7 @@ Object {
         "type": "string",
       },
       "pageType": Object {
-        "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
+        "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
         "enum": Array [
           "ListReport",
           "ObjectPage",
@@ -57,7 +57,7 @@ Object {
             "type": "string",
           },
           "pageType": Object {
-            "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
+            "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
             "enum": Array [
               "ListReport",
               "ObjectPage",
@@ -72,7 +72,7 @@ Object {
           },
           "parentPage": Object {
             "const": "TravelsList",
-            "description": "Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options",
+            "description": "Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options",
             "type": "string",
           },
         },
@@ -93,7 +93,7 @@ Object {
             "type": "string",
           },
           "pageType": Object {
-            "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
+            "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
             "enum": Array [
               "ListReport",
               "ObjectPage",
@@ -108,7 +108,7 @@ Object {
           },
           "parentPage": Object {
             "const": "TravelsObjectPage",
-            "description": "Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options",
+            "description": "Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options",
             "type": "string",
           },
         },
@@ -133,13 +133,10 @@ Object {
     "additionalProperties": false,
     "properties": Object {
       "pageId": Object {
-        "description": "Page id to be deleted. First try to extract page id from user input in a format defined in example, if not possible suggest content defined in options",
+        "description": "Page id to be deleted. First try to extract page id from user input, if not possible suggest content defined in options",
         "enum": Array [
           "TravelsList",
           "TravelsObjectPage",
-        ],
-        "examples": Array [
-          "pageId: TravelsList",
         ],
         "type": "string",
       },

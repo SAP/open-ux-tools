@@ -17,12 +17,12 @@ const PageTypeEnum = zod.enum([PageTypeV4.ListReport, PageTypeV4.ObjectPage, Pag
 const firstPageSchema = (entities: AllowedNavigationOptions[]) =>
     zod.object({
         pageType: PageTypeEnum.describe(
-            `Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.`
+            `Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.`
         ),
         entitySet: zod
             .enum(entities.map((entity) => entity.name))
             .describe(
-                `Entity set for the new page. First try to extract entity from user input in a format defined in example, if not possible suggest content defined in options.`
+                `Entity set for the new page. First try to extract entity from user input, if not possible suggest content defined in options.`
             )
     });
 
@@ -38,11 +38,11 @@ const childPageSchema = (page: string, navigations: AllowedNavigationOptions[]) 
         parentPage: zod
             .literal(page)
             .describe(
-                'Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options'
+                'Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options'
             ),
         pageNavigation: zod.enum(navigations.map((n) => n.name)),
         pageType: PageTypeEnum.describe(
-            `Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.`
+            `Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.`
         ),
         pageViewName: zod
             .string()
@@ -86,11 +86,8 @@ export function buildPageDeletionSchema(pages: PageDef[] = []) {
     return zod.object({
         pageId: zod
             .enum(pageIds)
-            .meta({
-                examples: ['pageId: ' + pageIds[0]]
-            })
             .describe(
-                'Page id to be deleted. First try to extract page id from user input in a format defined in example, if not possible suggest content defined in options'
+                'Page id to be deleted. First try to extract page id from user input, if not possible suggest content defined in options'
             )
     });
 }
