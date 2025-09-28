@@ -56,7 +56,7 @@ export const GeneratorConfigSchemaCAP = z.object({
         mainEntity: z.object({
             entityName: z
                 .string()
-                .describe("The name of the main entity, e.g. 'SalesOrder'")
+                .describe('The name of the main entity')
                 .meta({
                     examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"]
                 })

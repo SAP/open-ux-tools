@@ -26,7 +26,7 @@ Object {
             "additionalProperties": false,
             "properties": Object {
               "entityName": Object {
-                "description": "The name of the main entity, e.g. 'SalesOrder'",
+                "description": "The name of the main entity",
                 "examples": Array [
                   "'SalesOrder'",
                   "'PurchaseOrderHeader'",
