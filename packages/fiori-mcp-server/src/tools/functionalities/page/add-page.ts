@@ -9,7 +9,6 @@ import { Application } from './application';
 import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
 import { ADD_PAGE } from '../../../constant';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { buildPageCreationSchema } from './schema';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
