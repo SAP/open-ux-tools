@@ -3,6 +3,7 @@ import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
 import { prepatePropertySchema, resolveApplication, resolveRefs } from './utils';
+import type { JSONSchema4 } from 'json-schema';
 
 /**
  * Retrieves functionality details based on the provided input parameters.
@@ -57,31 +58,27 @@ function getPropertyDetails(
 ): GetFunctionalityDetailsOutput | undefined {
     const { property, node } = findByPath([page], propertyPath) ?? {};
     const rootSchema = page?.schema ?? {};
-    let details: GetFunctionalityDetailsOutput | undefined;
+    let schema: JSONSchema4 | undefined;
+    let name = '';
     if (property) {
         // Property was found by path
-        const schema = resolveRefs(property.schema, rootSchema);
-        details = {
-            functionalityId,
-            name: 'Change property',
-            // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
-            // As workaround - I am using approach with null as currently there is no use case where null is real value.
-            description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
-            parameters: prepatePropertySchema(property.name, schema)
-        };
+        schema = property.schema;
+        name = property.name;
     } else if (node?.path.length) {
         // Node was found by path - list node properties
-        const schema = resolveRefs(node.schema, rootSchema);
-        details = {
-            functionalityId,
-            name: 'Change property',
-            // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
-            // As workaround - I am using approach with null as currently there is no use case where null is real value.
-            description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
-            parameters: prepatePropertySchema(node.path[node.path.length - 1].toString(), schema)
-        };
+        schema = node.schema;
+        name = node.path[node.path.length - 1].toString();
     }
-    return details;
+    return schema
+        ? {
+              functionalityId,
+              name: 'Change property',
+              // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
+              // As workaround - I am using approach with null as currently there is no use case where null is real value.
+              description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
+              parameters: prepatePropertySchema(name, resolveRefs(schema, rootSchema))
+          }
+        : undefined;
 }
 
 /**
