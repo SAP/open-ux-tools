@@ -37,8 +37,8 @@ export function getFlpPages(showTileSettingsPage: boolean, projectName: string):
     ];
     if (showTileSettingsPage) {
         pages.unshift({
-            name: t('yuiNavSteps.tileSettingsName', { projectName }),
-            description: ''
+            name: t('yuiNavSteps.tileSettingsName'),
+            description: t('yuiNavSteps.tileSettingsDescr', { projectName })
         });
     }
 
@@ -110,10 +110,14 @@ export function updateWizardSteps(
 
         // Page already there → move it
         if (existingIdx !== -1) {
+            // Update step description
+            const existingStep = pages[existingIdx];
+            existingStep.description = step.description;
+
             if (existingIdx === targetIdx) {
                 return;
             }
-            const [existingStep] = pages.splice(existingIdx, 1);
+            pages.splice(existingIdx, 1);
             prompts.splice(targetIdx > existingIdx ? targetIdx - 1 : targetIdx, 0, [existingStep]);
             return;
         }
