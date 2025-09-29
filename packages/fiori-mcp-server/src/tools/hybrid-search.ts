@@ -1,5 +1,6 @@
 import { SimpleVectorService } from './services/vector-simple';
 import { TextEmbeddingService } from './services/text-embedding';
+import { logger } from '../utils/logger';
 
 export type DocSearchInput = {
     query: string;
@@ -49,7 +50,7 @@ export type DocSearchOutput = {
 export async function docSearch(
     params: DocSearchInput,
     resultAsString: boolean = false
-): Promise<SearchResponseData | String> {
+): Promise<SearchResponseData | string> {
     const { query, maxResults } = params;
 
     try {
@@ -67,13 +68,13 @@ export async function docSearch(
         const searchResults = await vectorService.semanticSearch(queryVector, maxResults ?? 10);
         if (resultAsString) {
             let resultString = '';
-            searchResults.forEach((result, index) => {
+            for (const [index, result] of searchResults.entries()) {
                 resultString += `Result ${index + 1}:\n\n`;
                 // resultString += `[Score: ${result.score.toFixed(4)}] - ${result.document.title} (${result.document.path})\n`;
                 // resultString += `Content:\n`;
                 resultString += `${result.document.content}\n`;
                 resultString += '---\n\n';
-            });
+            }
             return resultString;
         } else {
             // Convert vector search results to the expected format
@@ -99,7 +100,7 @@ export async function docSearch(
         // Fallback when embeddings data is not available
         // Log warning about embeddings not being available
         // console.warn('Embeddings data not available, providing limited search capability:', error);
-
+        logger.warn(`Embeddings data not available, providing limited search capability: ${error}`);
         return {
             query,
             searchType: 'limited_fallback',
