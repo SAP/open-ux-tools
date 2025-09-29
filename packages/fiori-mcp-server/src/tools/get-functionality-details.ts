@@ -59,17 +59,17 @@ function getPropertyDetails(
     const { property, node } = findByPath([page], propertyPath) ?? {};
     const rootSchema = page?.schema ?? {};
     let schema: JSONSchema4 | undefined;
-    let name = '';
+    let name: string | undefined = '';
     if (property) {
         // Property was found by path
         schema = property.schema;
         name = property.name;
-    } else if (node?.path.length) {
+    } else if (node) {
         // Node was found by path - list node properties
         schema = node.schema;
-        name = node.path.at(-1)?.toString() ?? '';
+        name = node.path.at(-1)?.toString();
     }
-    return schema
+    return schema && name !== undefined
         ? {
               functionalityId,
               name: 'Change property',
