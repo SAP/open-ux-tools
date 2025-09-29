@@ -67,7 +67,8 @@ function getPropertyDetails(
     } else if (node?.path.length) {
         // Node was found by path - list node properties
         schema = node.schema;
-        name = node.path[node.path.length - 1].toString();
+        // Safe: path length > 0 ensures at least one segment
+        name = node.path.at(-1)!.toString();
     }
     return schema
         ? {
