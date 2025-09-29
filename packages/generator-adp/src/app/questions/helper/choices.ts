@@ -35,7 +35,7 @@ export const getApplicationChoices = (apps: SourceApplication[]): Choice[] => {
  */
 export const getCFAppChoices = (apps: CFApp[]): { name: string; value: CFApp }[] => {
     return apps.map((result: CFApp) => ({
-        name: formatDiscovery(result) ?? `${result.title} (${result.appId}, ${result.appVersion})`,
+        name: formatDiscovery(result),
         value: result
     }));
 };
