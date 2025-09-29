@@ -40,6 +40,7 @@ import { pathFromUri } from './utils';
 import { ChangeConverter } from './change-converter';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
+import { logger } from './logger';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (
@@ -305,6 +306,7 @@ export class FioriAnnotationService {
         }
 
         const newContent: Record<string, string> = {};
+        logger.log(`Applying changes:\n${JSON.stringify(this.changes, undefined, 2)}`);
         const annotationFileChanges = this.convertChanges(this.changes);
         const workspaceEdit = await this.adapter.getWorkspaceEdit(annotationFileChanges);
         const changes = workspaceEdit.changes ?? {};

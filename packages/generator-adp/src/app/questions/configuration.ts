@@ -340,7 +340,8 @@ export class ConfigPrompter {
                 hint: t('prompts.passwordTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
-            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
+            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
         };
     }
 
@@ -512,7 +513,7 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isAppStudio() && isKnownUnsupported) {
+        if (isAppStudio() && isKnownUnsupported && !this.isCloud) {
             this.logger.error(validationResult);
             this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;

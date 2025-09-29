@@ -646,6 +646,7 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
 async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
     const isAbapCloud = PromptState?.abapDeployConfig?.isAbapCloud;
     if (isAbapCloud === false && input === DEFAULT_PACKAGE_ABAP) {
+		LoggerHelper.logger.debug(`System is OnPremise, skipping package "${input}" type validation`);
         return true;
     }
     const packageType = isAbapCloud ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
@@ -663,9 +664,9 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
         return true;
     }
 
-    const isValidPackageType = types?.length === 1 && types[0] === packageType;
+    const isValidPackageType = types?.length === 1 && types[0] === AdaptationProjectType.CLOUD_READY;
 
-    return isValidPackageType ? true : errorMsg;
+    return isValidPackageType ? true : t('errors.validators.invalidCloudPackage');
 }
 
 /**
