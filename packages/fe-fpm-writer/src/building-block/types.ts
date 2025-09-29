@@ -1,3 +1,5 @@
+import type { integer } from '../../../text-document-utils/src';
+
 /**
  * Building block type.
  *
@@ -8,7 +10,8 @@ export enum BuildingBlockType {
     Chart = 'chart',
     Field = 'field',
     Page = 'page',
-    Table = 'table'
+    Table = 'table',
+    RichTextEditor = 'rich-text-editor'
 }
 
 /**
@@ -18,13 +21,15 @@ export enum BuildingBlockType {
  * relative - gets annotation path qualifiers in navigation path 1 level deep.
  */
 export type BindingContextType = 'absolute' | 'relative';
+export const bindingContextAbsolute: BindingContextType = 'absolute';
+export const bindingContextRelative: BindingContextType = 'relative';
 
 /**
  * Represents a building block metaPath object.
  */
 export interface BuildingBlockMetaPath {
     entitySet: string;
-    qualifier: string;
+    qualifier?: string;
     bindingContextType?: BindingContextType;
     /**
      * Always generate absolute paths.
@@ -404,6 +409,54 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+}
+
+/**
+ * Building block used to create a rich text editor based on the metadata provided by OData V4.
+ * MetaPath construction example: metaPath="/EntitySet/targetProperty"
+ *
+ * @example
+ *  <macros:RichTextEditorWithMetadata metaPath="_Agency/AgencyID" id="RichTextEditor2">
+ *       <macros:buttonGroups>
+ *          <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic,underline"/>
+ *      </macros:buttonGroups>
+ *  </macros:RichTextEditorWithMetadata>
+ * @extends {BuildingBlock}
+ */
+export interface RichTextEditor extends BuildingBlock {
+    /**
+     * Property used to construct the metaPath for Rich Text Editor, e.g. "/EntitySet/targetProperty".
+     */
+    targetProperty?: string;
+    /**
+     * Button group configuration for the Rich Text Editor.
+     */
+    buttonGroup?: {
+        /**
+         * The name of the button group.
+         */
+        name: string;
+        /**
+         * The buttons to be displayed in the group.
+         */
+        buttons: string;
+        /**
+         * Whether the group is visible.
+         */
+        visible: boolean;
+        /**
+         * The priority of the group.
+         */
+        priority: integer;
+        /**
+         * The priority of the group in the custom toolbar.
+         */
+        customToolbarPriority?: integer;
+        /**
+         * Row number in which the button group should be.
+         */
+        row?: integer;
+    };
 }
 
 /**
