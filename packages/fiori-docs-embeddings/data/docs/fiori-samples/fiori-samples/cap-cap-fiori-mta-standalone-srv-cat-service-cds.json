@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-srv-cat-service-cds",
+  "title": "cat service",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-mta-standalone/srv/cat-service.cds",
+  "lastModified": "2025-09-29T10:06:39.520Z",
+  "tags": [
+    "fiori-samples",
+    "cds",
+    "cat",
+    "service"
+  ],
+  "headers": [],
+  "content": "# cat-service.cds\n\n```cds\nusing my.bookshop as my from '../db/data-model';\n\nservice CatalogService {\n    @readonly entity Books as projection on my.Books;\n}\n\nannotate CatalogService.Books with @(\n    UI : { \n        SelectionFields  : [\n            title\n        ],\n        LineItem  : [\n            { Value : ID },\n            { Value : title }, \n            { Value : stock }                                   \n        ],\n     }\n){\n    ID @( title: 'ID' );    \n    title @( title: 'Title' );\n    stock @( title: 'Stock' );\n};\n```",
+  "excerpt": "cat-service.cds",
+  "wordCount": 70,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

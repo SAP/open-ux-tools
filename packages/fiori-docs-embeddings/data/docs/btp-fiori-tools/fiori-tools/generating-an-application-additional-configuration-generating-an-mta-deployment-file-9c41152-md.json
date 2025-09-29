@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-generating-an-application-additional-configuration-generating-an-mta-deployment-file-9c41152-md",
+  "title": "Generating an MTA Deployment File",
+  "category": "fiori-tools",
+  "path": "Generating-an-Application/Additional-Configuration/generating-an-mta-deployment-file-9c41152.md",
+  "lastModified": "2025-09-29T10:06:38.700Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "generating",
+    "mta",
+    "deployment",
+    "file",
+    "9c41152"
+  ],
+  "headers": [
+    "Generating an MTA Deployment File"
+  ],
+  "content": "<!-- loio9c41152c5b8d4a658d7ef9f318b28917 -->\n\n# Generating an MTA Deployment File\n\nIn the MTA deployment scenario, developers can generate an app router configuration, that contains the `mta.yaml` file, and then add multiple generated SAP Fiori apps to the app router configuration project. To do so, open the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and execute the `Fiori: Open CF Application Router Generator` command.\n\n![](images/Application_Router_Generator_c4b6125.png)\n\nThe user can manage the source code of the app router configuration and multiple SAP Fiori elements projects under a single root directory.\n\nThe app router configuration project has the following structure:\n\n-   `router` - The folder that contains the app router configuration.\n\n    > ### Note:  \n    > This folder can have a different name, such as `configurable`.\n\n-   `.gitignore` - The file that contains the list of files to be ignored by source control.\n-   `mta.yaml` - The file that contains the MTA configuration.\n-   `package-lock.json` - The file is generated automatically for any operations where npm modifies either the `node_modules` tree or `package.json` file and describes the exact tree that was generated.\n-   `package.json` - The file that contains specifics of `npm package.json`.\n\nOnce the app router configuration project is generated, one or more SAP Fiori apps can be generated inside its root directory by using the SAP Fiori application generator.\n\n> ### Note:  \n> There are the following router types: managed, Application Frontend service, and standalone. For more information, see [SAP Tech Bytes: FAQ Managed Approuter vs. Standalone Approuter](https://blogs.sap.com/2021/05/17/sap-tech-bytes-faq-managed-approuter-vs.-standalone-approuter/) or [Developing HTML5 Applications in the Cloud Foundry Environment](https://help.sap.com/products/BTP/65de2977205c403bbc107264b8eccf4b/11d77aa154f64c2e83cc9652a78bb985.html).\n\n",
+  "excerpt": "<!-- loio9c41152c5b8d4a658d7ef9f318b28917 --> Generating an MTA Deployment File In the MTA deployment scenario, developers can generate an app router configuration, that contains the mta.yaml file, an...",
+  "wordCount": 255,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

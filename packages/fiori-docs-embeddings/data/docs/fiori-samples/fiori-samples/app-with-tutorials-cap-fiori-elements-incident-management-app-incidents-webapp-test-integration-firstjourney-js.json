@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-webapp-test-integration-firstjourney-js",
+  "title": "FirstJourney",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/test/integration/FirstJourney.js",
+  "lastModified": "2025-09-29T10:06:39.454Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "FirstJourney"
+  ],
+  "headers": [],
+  "content": "# FirstJourney.js\n\n```javascript\nsap.ui.define([\n    \"sap/ui/test/opaQunit\"\n], function (opaTest) {\n    \"use strict\";\n\n    var Journey = {\n        run: function() {\n            QUnit.module(\"First journey\");\n\n            opaTest(\"Start application\", function (Given, When, Then) {\n                Given.iStartMyApp();\n\n                Then.onTheIncidentsList.iSeeThisPage();\n\n            });\n\n\n            opaTest(\"Navigate to ObjectPage\", function (Given, When, Then) {\n                // Note: this test will fail if the ListReport page doesn't show any data\n                When.onTheIncidentsList.onFilterBar().iExecuteSearch();\n                Then.onTheIncidentsList.onTable().iCheckRows();\n\n                When.onTheIncidentsList.onTable().iPressRow(0);\n                Then.onTheIncidentsObjectPage.iSeeThisPage();\n\n            });\n\n            opaTest(\"Teardown\", function (Given, When, Then) { \n                // Cleanup\n                Given.iTearDownMyApp();\n            });\n        }\n    }\n\n    return Journey;\n});\n```",
+  "excerpt": "FirstJourney.js",
+  "wordCount": 73,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

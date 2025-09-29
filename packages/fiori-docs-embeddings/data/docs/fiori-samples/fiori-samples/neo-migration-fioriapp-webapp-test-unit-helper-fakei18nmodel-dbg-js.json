@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-unit-helper-fakei18nmodel-dbg-js",
+  "title": "FakeI18nModel dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/fioriapp/webapp/test/unit/helper/FakeI18nModel-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.530Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "FakeI18nModel",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# FakeI18nModel-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/model/Model\"\n], function (Model) {\n\t\"use strict\";\n\n\n\treturn Model.extend(\"test.unit.helper.FakeI18nModel\", {\n\n\t\tconstructor : function (mTexts) {\n\t\t\tModel.call(this);\n\t\t\tthis.mTexts = mTexts || {};\n\t\t},\n\n\t\tgetResourceBundle : function () {\n\t\t\treturn {\n\t\t\t\tgetText : function (sTextName) {\n\t\t\t\t\treturn this.mTexts[sTextName];\n\t\t\t\t}.bind(this)\n\t\t\t};\n\t\t}\n\n\t});\n\n});\n```",
+  "excerpt": "FakeI18nModel-dbg.js",
+  "wordCount": 46,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

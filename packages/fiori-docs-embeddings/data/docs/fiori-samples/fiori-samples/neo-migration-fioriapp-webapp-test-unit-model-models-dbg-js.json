@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-unit-model-models-dbg-js",
+  "title": "models dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/fioriapp/webapp/test/unit/model/models-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.530Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "models",
+    "dbg"
+  ],
+  "headers": [
+    "isPhoneTestCase",
+    "isTouchTestCase"
+  ],
+  "content": "# models-dbg.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"mycompany/myapp/MyWorklistApp/model/models\",\n\t\"sap/ui/Device\"\n], function (models, Device) {\n\t\"use strict\";\n\n\tQUnit.module(\"createDeviceModel\", {\n\t\tafterEach : function () {\n\t\t\tthis.oDeviceModel.destroy();\n\t\t}\n\t});\n\n\tfunction isPhoneTestCase(assert, bIsPhone) {\n\t\t// Arrange\n\t\tthis.stub(sap.ui.Device, \"system\", { phone : bIsPhone });\n\n\t\t// System under test\n\t\tthis.oDeviceModel = models.createDeviceModel();\n\n\t\t// Assert\n\t\tassert.strictEqual(this.oDeviceModel.getData().system.phone, bIsPhone, \"IsPhone property is correct\");\n\t}\n\n\tQUnit.test(\"Should initialize a device model for desktop\", function (assert) {\n\t\tisPhoneTestCase.call(this, assert, false);\n\t});\n\n\tQUnit.test(\"Should initialize a device model for phone\", function (assert) {\n\t\tisPhoneTestCase.call(this, assert, true);\n\t});\n\n\tfunction isTouchTestCase(assert, bIsTouch) {\n\t\t// Arrange\n\t\tthis.stub(Device, \"support\", { touch : bIsTouch });\n\n\t\t// System under test\n\t\tthis.oDeviceModel = models.createDeviceModel();\n\n\t\t// Assert\n\t\tassert.strictEqual(this.oDeviceModel.getData().support.touch, bIsTouch, \"IsTouch property is correct\");\n\t}\n\n\tQUnit.test(\"Should initialize a device model for non touch devices\", function (assert) {\n\t\tisTouchTestCase.call(this, assert, false);\n\t});\n\n\tQUnit.test(\"Should initialize a device model for touch devices\", function (assert) {\n\t\tisTouchTestCase.call(this, assert, true);\n\t});\n\n\tQUnit.test(\"The binding mode of the device model should be one way\", function (assert) {\n\n\t\t// System under test\n\t\tthis.oDeviceModel = models.createDeviceModel();\n\n\t\t// Assert\n\t\tassert.strictEqual(this.oDeviceModel.getDefaultBindingMode(), \"OneWay\", \"Binding mode is correct\");\n\t});\n\n});\n\n```",
+  "excerpt": "models-dbg.js",
+  "wordCount": 174,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

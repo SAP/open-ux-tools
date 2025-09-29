@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-project-functions-environment-check-75390cf-md",
+  "title": "Environment Check",
+  "category": "fiori-tools",
+  "path": "Project-Functions/environment-check-75390cf.md",
+  "lastModified": "2025-09-29T10:06:38.712Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "environment",
+    "check",
+    "75390cf"
+  ],
+  "headers": [
+    "Environment Check",
+    "Destination Checks: SAP Business Application Studio",
+    "Gather Environment Information: SAP Business Application Studio and Visual Studio Code"
+  ],
+  "content": "<!-- loio75390cf5d81e43aea5db231ef4225268 -->\n\n# Environment Check\n\n\n\n<a name=\"loio75390cf5d81e43aea5db231ef4225268__section_fgy_xgy_dvb\"/>\n\n## Destination Checks: SAP Business Application Studio \n\nSAP Fiori tools environment check creates a report that you can use to troubleshoot common destination-related issues.\n\nTo use SAP Fiori tools environment check, perform the following steps:\n\n1.  Open the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and execute the `Fiori: Open Environment Check` command.\n2.  Click *Create destination*.\n3.  Select a destination from the dropdown.\n4.  If prompted, enter your credentials.\n5.  To view the results, click *View the results*.\n6.  To view the results and save them to a `.zip` file that you can send to SAP Product Support, click *View and Save results*.\n\nThe SAP Fiori tools environment check report has the following sections:\n\n-   **Environment** provides the Dev Space type, Node version, and other information about the environment.\n-   **Destination Details** provides destination parameters and other information about the destination.\n-   **All Destination Details** lists all the destinations and their properties available to the user in the current subaccount.\n-   **Messages** provides raw log messages of the chosen destination which can be useful for SAP Product Support.\n\n\n\n<a name=\"loio75390cf5d81e43aea5db231ef4225268__section_nkk_cvy_dvb\"/>\n\n## Gather Environment Information: SAP Business Application Studio and Visual Studio Code\n\nSAP Fiori tools environment check can also check and create reports on the development environment in SAP Business Application Studio or Visual Studio Code \\(VS Code\\). This report provides the SAP Fiori application generator version, a list of `npm` packages, and other information about your development environment.\n\nTo gather environment information, perform the following steps:\n\n1.  Open the Command Palette in Visual Studio Code \\([CMD\\]/[CTRL\\] + [Shift\\] + [P\\]\\) and execute the `Fiori: Open Environment Check`command.\n2.  Click *Gather environment information*.\n3.  To view the results, click *View and Copy results*. The environment check details will be copied to your clipboard for easy access.\n4.  To view the results and save them to a `.zip` file that you can send to SAP Product Support, click *View and Save results*.\n\n",
+  "excerpt": "<!-- loio75390cf5d81e43aea5db231ef4225268 --> Environment Check <a name=\"loio75390cf5d81e43aea5db231ef4225268__section_fgy_xgy_dvb\"/> Destination Checks: SAP Business Application Studio  SAP Fiori too...",
+  "wordCount": 332,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

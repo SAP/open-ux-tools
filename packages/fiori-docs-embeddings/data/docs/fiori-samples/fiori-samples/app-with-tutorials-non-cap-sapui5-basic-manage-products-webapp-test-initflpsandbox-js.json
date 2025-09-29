@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-test-initflpsandbox-js",
+  "title": "initFlpSandbox",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/test/initFlpSandbox.js",
+  "lastModified": "2025-09-29T10:06:39.513Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "initFlpSandbox"
+  ],
+  "headers": [],
+  "content": "# initFlpSandbox.js\n\n```javascript\nsap.ui.define([\n\t\"./flpSandbox\",\n\t\"sap/ui/fl/FakeLrepConnectorLocalStorage\",\n\t\"sap/m/MessageBox\"\n], function (flpSandbox, FakeLrepConnectorLocalStorage, MessageBox) {\n\t\"use strict\";\n\n\tflpSandbox.init().then(function () {\n\t\tFakeLrepConnectorLocalStorage.enableFakeConnector();\n\t}, function (oError) {\n\t\tMessageBox.error(oError.message);\n\t});\n});\n```",
+  "excerpt": "initFlpSandbox.js",
+  "wordCount": 27,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

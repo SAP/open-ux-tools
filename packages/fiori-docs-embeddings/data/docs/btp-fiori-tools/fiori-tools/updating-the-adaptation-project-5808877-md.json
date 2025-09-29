@@ -1,0 +1,27 @@
+{
+  "id": "btp-fiori-tools-updating-the-adaptation-project-5808877-md",
+  "title": "Updating the Adaptation Project",
+  "category": "fiori-tools",
+  "path": "updating-the-adaptation-project-5808877.md",
+  "lastModified": "2025-09-29T10:06:38.725Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "updating",
+    "the",
+    "adaptation",
+    "project",
+    "5808877"
+  ],
+  "headers": [
+    "Updating the Adaptation Project",
+    "Prerequisites",
+    "Procedure"
+  ],
+  "content": "<!-- loio580887790be14634a44f620127dbeb5e -->\n\n# Updating the Adaptation Project\n\nLearn how to update an adaptation project to redeploy your changes.\n\n\n\n<a name=\"loio580887790be14634a44f620127dbeb5e__prereq_hd2_g2g_wtb\"/>\n\n## Prerequisites\n\nYou have already deployed your adaptation project to an on-premise system following the procedure described in [Deploy the Adaptation Project to the ABAP Repository](https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/deploy-adaptation-project?locale=en-US).\n\n\n\n## Procedure\n\n1.  Right-click on the main folder, the `webapp` folder, or the`manifest.appdescr_variant` file and click *Open Deployment Wizard*.\n\n2.  Choose which system you want to deploy the project to. The system that you have used to create the project is selected by default.\n\n3.  If the project that you have selected has been already deployed to that system, you will be asked what action would you like to perform: *Update* or *Undeploy*. Click*Update*.\n\n4.  Click *Next* to start the deployment process.\n\n\n",
+  "excerpt": "<!-- loio580887790be14634a44f620127dbeb5e --> Updating the Adaptation Project Learn how to update an adaptation project to redeploy your changes. <a name=\"loio580887790be14634a44f620127dbeb5e__prereq_...",
+  "wordCount": 130,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

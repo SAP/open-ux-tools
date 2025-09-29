@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-setting-the-criticality-for-actions-12f2ba2-md",
+  "title": "Setting the Criticality for Actions",
+  "category": "fiori-elements-framework",
+  "path": "setting-the-criticality-for-actions-12f2ba2.md",
+  "lastModified": "2025-09-29T10:06:38.857Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "setting",
+    "the",
+    "criticality",
+    "for",
+    "actions",
+    "12f2ba2"
+  ],
+  "headers": [
+    "Setting the Criticality for Actions"
+  ],
+  "content": "<!-- loio12f2ba26f0d74853a0707597844c2961 -->\n\n# Setting the Criticality for Actions\n\nYou can add criticality to an action button via annotations.\n\nWhen you set the criticality to an action, the corresponding action button renders a semantic action button \\(positive semantic and negative semantic\\).\n\nCriticality of a data field \\(`UI.DataFieldForAction`\\) can be achieved by setting a value or status for the `Criticality` property in the annotation.\n\nActions that are a part of table rows \\(inline\\), an object page header, and an object page footer support `Criticality`.\n\n![](images/Criticality_for_Actions_e60c298.png)\n\n\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Record Type=\"UI.DataFieldForAction\"> \n>     <PropertyValue Property=\"Determining\" Bool=\"true\"/> \n>     <PropertyValue Property=\"Label\" String=\"Positive (Dummy)\"/> \n>     <PropertyValue Property=\"Action\" String=\"com.c_salesordermanage_sd_aggregate.DummyBoundAction\"/> \n>     <PropertyValue Property=\"Criticality\" EnumMember=\"UI.CriticalityType/Positive\"/> \n> </Record> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.<lineItem/fieldGroup>: [  \n>   {\n>     label: 'Positive (Dummy)',\n>     dataAction: 'PUSHDOWN:com.c_salesordermanage_sd_aggregate.DummyBoundAction',\n>     type: #FOR_ACTION\n>   }\n> ]  \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> {\n>     $Type : 'UI.DataFieldForAction',\n>     Determining : true,\n>     Label : 'Positive (Dummy)',\n>     Action : 'com.c_salesordermanage_sd_aggregate.DummyBoundAction',\n>     Criticality : #Positive\n> }\n> ```\n\nTwo supported values for `Criticality` are:\n\n**Criticality: Supported Values**\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nValue\n\n</th>\n<th valign=\"top\">\n\nOutcome\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nUI.CriticalityType/Positive or 3\n\n</td>\n<td valign=\"top\">\n\nPositive/Green status \\(Completed/Available/On Track/Acceptable\\)\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nUI.CriticalityType/Negative or 1\n\n</td>\n<td valign=\"top\">\n\nNegative/Red status \\(Attention/Overload/Alert\\)\n\n</td>\n</tr>\n</table>\n\n> ### Note:  \n> -   `Criticality` is currently supported only for `DataFieldForAction`.\n> \n> -   When an action is marked as critical, the previously emphasized buttons \\(SAVE, EDIT or APPLY\\) no longer appear emphasized.\n> \n> -   Emphasized buttons and semantic buttons \\(critical actions\\) cannot occur together on one page, as there can only be a single primary action \\(so either the emphasized or the semantic button\\).\n> \n> -   In SAP Fiori elements for OData V4, the object page header currently only allows you to place a critical action as the left-most action.\n\n",
+  "excerpt": "<!-- loio12f2ba26f0d74853a0707597844c2961 --> Setting the Criticality for Actions You can add criticality to an action button via annotations. When you set the criticality to an action, the correspond...",
+  "wordCount": 335,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

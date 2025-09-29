@@ -100,8 +100,8 @@ export class FioriFunctionalityServer {
 
                 switch (name) {
                     case 'search_docs':
-                        result = await docSearch(args as DocSearchInput);
-                        return this.convertResultToCallToolResult(result.results);
+                        result = await docSearch(args as DocSearchInput, true);
+                        break;
                     case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
@@ -142,7 +142,20 @@ export class FioriFunctionalityServer {
      * @param result - The result to be converted.
      * @returns The converted result in CallToolResult format.
      */
-    private convertResultToCallToolResult<T extends object>(result: T | string): CallToolResult {
+    private convertResultToCallToolResult<T extends object | String>(result: T | string | String): CallToolResult {
+        // Handle string results - return them as plain text content
+        if (typeof result === 'string' || result instanceof String) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: result.toString()
+                    }
+                ]
+            };
+        }
+
+        // Handle object results - return as JSON with structured content
         const convertedResult: CallToolResult = {
             content: [
                 {

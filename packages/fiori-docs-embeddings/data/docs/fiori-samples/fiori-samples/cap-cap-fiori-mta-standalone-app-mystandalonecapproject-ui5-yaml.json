@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-app-mystandalonecapproject-ui5-yaml",
+  "title": "ui5",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-mta-standalone/app/mystandalonecapproject/ui5.yaml",
+  "lastModified": "2025-09-29T10:06:39.519Z",
+  "tags": [
+    "fiori-samples",
+    "yaml",
+    "ui5"
+  ],
+  "headers": [],
+  "content": "# ui5.yaml\n\n```yaml\nspecVersion: \"2.5\"\nmetadata:\n  name: mystandalonecapproject\ntype: application\n\n```",
+  "excerpt": "ui5.yaml",
+  "wordCount": 11,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-pages-common-js",
+  "title": "Common",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/pages/Common.js",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "Common"
+  ],
+  "headers": [],
+  "content": "# Common.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/Opa5\"],function(e){\"use strict\";return e.extend(\"mycompany.myapp.MyWorklistApp.test.integration.pages.Common\",{createAWaitForAnEntitySet:function(e){return{success:function(){var t;var r=this.getMockServer().then(function(r){t=r.getEntitySetData(e.entitySet)});this.iWaitForPromise(r);return this.waitFor({success:function(){e.success.call(this,t)}})}}},theUnitNumbersShouldHaveTwoDecimals:function(t,r,n,i){var s=/^-?\\d+\\.\\d{2}$/;return this.waitFor({controlType:t,viewName:r,success:function(t){e.assert.ok(t.every(function(e){return s.test(e.getNumber())}),n)},errorMessage:i})},getMockServer:function(){return new Promise(function(t){e.getWindow().sap.ui.require([\"mycompany/myapp/MyWorklistApp/localService/mockserver\"],function(e){t(e.getMockServer())})})}})});\n```",
+  "excerpt": "Common.js",
+  "wordCount": 15,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

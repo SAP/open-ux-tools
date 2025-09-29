@@ -1,0 +1,22 @@
+{
+  "id": "fiori-showcase-app-listreport-objectpage-webapp-ext-controller-rootentityopextension-controller-ts",
+  "title": "RootEntityOPExtension.controller",
+  "category": "fiori-features",
+  "path": "app/listreport-objectpage/webapp/ext/controller/RootEntityOPExtension.controller.ts",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "ts",
+    "RootEntityOPExtension",
+    "controller"
+  ],
+  "headers": [
+    "RootEntityOPExtension"
+  ],
+  "content": "# RootEntityOPExtension.controller.ts\n\n```typescript\nimport ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';\nimport { Button$PressEvent } from 'sap/m/Button';\nimport MessageBox from 'sap/m/MessageBox';\nimport Controller from 'sap/ui/core/mvc/Controller';\nimport ControllerExtension, { Overrides } from 'sap/ui/core/mvc/ControllerExtension';\nimport Context from 'sap/ui/model/odata/v4/Context';\nimport ODataContextBinding from 'sap/ui/model/odata/v4/ODataContextBinding';\nimport ODataModel from 'sap/ui/model/odata/v4/ODataModel';\n\n/**\n * @namespace sap.fe.showcase.lrop.ext.controller\n */\nexport default class RootEntityOPExtension extends ControllerExtension<ExtensionAPI> {\n    messageBox() {\n        MessageBox.alert(\"Button pressed\");\n    }\n    enabled() {\n        return true;\n    }\n    enabledForSingleSelect(_: ODataContextBinding, aSelectedContexts: [Context]) {\n        if (aSelectedContexts && aSelectedContexts.length === 1) {\n            return true;\n        }\n        return false;\n    }\n\n    toggleSideContent(_: ODataContextBinding) {\n        this.base.getExtensionAPI().showSideContent(\"customSectionQualifier\");\n    }\n    toggleSideContentItem1(_: ODataContextBinding) {\n        this.base.getExtensionAPI().showSideContent(\"childEntities1Section\");\n    }\n\n    //Search-Term: #EditFlowAPI\n    onChangeCriticality(oEvent: Button$PressEvent) {\n        const sActionName = \"LROPODataService.changeCriticality\";\n        \n        this.base.getExtensionAPI().getEditFlow().invokeAction(sActionName, {\n            contexts: oEvent.getSource().getBindingContext()! as Context,\n            model: oEvent.getSource().getModel() as ODataModel,\n            label: 'Confirm',\t\n            invocationGrouping: \"ChangeSet\" \n        }); //SAP Fiori elements EditFlow API\n    }\n}\n\n```",
+  "excerpt": "RootEntityOPExtension.controller.ts",
+  "wordCount": 122,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

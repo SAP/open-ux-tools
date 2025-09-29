@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-developing-an-application-contact-column-dc5931d-md",
+  "title": "Contact Column",
+  "category": "fiori-tools",
+  "path": "Developing-an-Application/contact-column-dc5931d.md",
+  "lastModified": "2025-09-29T10:06:38.687Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "contact",
+    "column",
+    "dc5931d"
+  ],
+  "headers": [
+    "Contact Column",
+    "Adding a Contact Column",
+    "Moving a Contact Column",
+    "Deleting a Contact Column"
+  ],
+  "content": "<!-- loiodc5931d0541040ab9e6126b9108b4154 -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Contact Column\n\nA contact column can be added to a table that is part of a list report or in an object page section.\n\n![Contact Column](images/FIORI_TOOLS_CONTACT_COLUMN_0e0431c.png)\n\n\n\n<a name=\"loiodc5931d0541040ab9e6126b9108b4154__section_rl2_nmz_g5b\"/>\n\n## Adding a Contact Column\n\nTo add a contact column to a table to a section, perform the following steps:\n\n1.  In the *Page Editor*, under the *Columns* node, click the :heavy_plus_sign: \\(*Add*\\) icon. Then, click *Add Contact Column* .\n2.  Select *Contacts* using the tree control.\n3.  Click *Add*. A new `Communication.Contact` annotation is created with the Contact Name label by default. You can change the default label in the *Property Panel*.\n\nA contact column has the following additional properties:\n\n-   [Label](appendix-457f2e9.md#loiod44832d99bdf4f73ba14cdbb16dc9301)\n-   [Importance](appendix-457f2e9.md#loio7fe32a215209419da6d6c19da0f69ccb)\n-   [Hidden](appendix-457f2e9.md#loiof7ad71792a0044d6b6172f078827bdc0)\n-   [Contact](appendix-457f2e9.md#loio82d94533569741e5888536d49052198c)\n\n\n\n<a name=\"loiodc5931d0541040ab9e6126b9108b4154__section_jpx_rfv_h5b\"/>\n\n## Moving a Contact Column\n\nTo move a column within a table, use one of the following options:\n\n-   **Drag and Drop**\n\n    Hover over the table column outline, press and hold the mouse button while moving the mouse pointer to the different position within the table. Release the mouse button at the desired position. Eligible positions are highlighted in green.\n\n    With drag and drop, you can move multiple columns at once by pressing [CTRL\\] + [\\+\\]  .\n\n-   **Arrow Icons**\n\n    Click the <span class=\"SAP-icons-V5\"></span>\\(*Move Up*\\) or <span class=\"SAP-icons-V5\"></span> \\(*Move Down*\\) icon next to the column name. This option only moves one column at a time.\n\n\n\n\n<a name=\"loiodc5931d0541040ab9e6126b9108b4154__section_oz3_kgv_h5b\"/>\n\n## Deleting a Contact Column\n\nTo delete a column, perform the following steps:\n\n1.  Navigate to a column.\n2.  Click the :wastebasket: \\(*Delete*\\) icon to open the *Delete Confirmation* popup window.\n3.  Click *Delete* to confirm the action.\n\n",
+  "excerpt": "<!-- loiodc5931d0541040ab9e6126b9108b4154 --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Contact Column A contact column can be added to a table that is part of a list report...",
+  "wordCount": 273,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

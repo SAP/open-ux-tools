@@ -1,0 +1,30 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-webapp-localservice-data-inventory-json",
+  "title": "Inventory",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/webapp/localService/data/Inventory.json",
+  "lastModified": "2025-09-29T10:06:39.406Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "Inventory"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "content": "# Inventory.json\n\n```json\n[\n  {\n    \"ID\": \"0\",\n    \"Month\": 10,\n    \"MonthName\": \"October\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 24\n  },\n  {\n    \"ID\": \"1\",\n    \"Month\": 10,\n    \"MonthName\": \"October\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 10\n  },\n  {\n    \"ID\": \"2\",\n    \"Month\": 10,\n    \"MonthName\": \"October\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 40\n  },\n  {\n    \"ID\": \"3\",\n    \"Month\": 9,\n    \"MonthName\": \"September\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 18\n  },\n  {\n    \"ID\": \"4\",\n    \"Month\": 9,\n    \"MonthName\": \"September\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 25\n  },\n  {\n    \"ID\": \"5\",\n    \"Month\": 9,\n    \"MonthName\": \"September\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 80\n  },\n  {\n    \"ID\": \"6\",\n    \"Month\": 8,\n    \"MonthName\": \"August\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 41\n  },\n  {\n    \"ID\": \"7\",\n    \"Month\": 8,\n    \"MonthName\": \"August\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 30\n  },\n  {\n    \"ID\": \"8\",\n    \"Month\": 8,\n    \"MonthName\": \"August\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 10\n  },\n  {\n    \"ID\": \"9\",\n    \"Month\": 7,\n    \"MonthName\": \"July\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 5\n  },\n  {\n    \"ID\": \"10\",\n    \"Month\": 7,\n    \"MonthName\": \"July\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 25\n  },\n  {\n    \"ID\": \"11\",\n    \"Month\": 7,\n    \"MonthName\": \"July\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 20\n  },\n  {\n    \"ID\": \"12\",\n    \"Month\": 11,\n    \"MonthName\": \"November\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 8\n  },\n  {\n    \"ID\": \"13\",\n    \"Month\": 11,\n    \"MonthName\": \"November\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 9\n  },\n  {\n    \"ID\": \"14\",\n    \"Month\": 11,\n    \"MonthName\": \"November\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 20\n  }\n]\n```",
+  "excerpt": "Inventory.json",
+  "wordCount": 226,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

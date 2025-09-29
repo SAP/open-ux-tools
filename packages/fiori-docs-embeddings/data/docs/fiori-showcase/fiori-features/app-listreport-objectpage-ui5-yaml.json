@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-listreport-objectpage-ui5-yaml",
+  "title": "ui5",
+  "category": "fiori-features",
+  "path": "app/listreport-objectpage/ui5.yaml",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "yaml",
+    "ui5"
+  ],
+  "headers": [],
+  "content": "# ui5.yaml\n\n```yaml\n# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json\n\nspecVersion: '4.0'\nmetadata:\n  name: sap.fe.showcase.lrop\ntype: application\nserver:\n  customMiddleware:\n    - name: fiori-tools-proxy\n      afterMiddleware: compression\n      configuration:\n        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted\n        ui5:\n          path:\n            - /resources\n            - /test-resources\n          url: https://sapui5.hana.ondemand.com\n    - name: fiori-tools-appreload\n      afterMiddleware: compression\n      configuration:\n        port: 35729\n        path: webapp\n        delay: 300\n    - name: ui5-tooling-transpile-middleware\n      afterMiddleware: compression\n      configuration:\n        debug: true\n        transformModulesToUI5:\n          overridesToOverride: true\n        excludePatterns:\n          - /Component-preload.js\nbuilder:\n  customTasks:\n    - name: ui5-tooling-transpile-task\n      afterTask: replaceVersion\n      configuration:\n        debug: true\n        transformModulesToUI5:\n          overridesToOverride: true\n\n```",
+  "excerpt": "ui5.yaml",
+  "wordCount": 87,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

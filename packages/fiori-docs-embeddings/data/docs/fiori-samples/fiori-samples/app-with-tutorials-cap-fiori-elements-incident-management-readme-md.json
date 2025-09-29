@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-readme-md",
+  "title": "Description",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/README.md",
+  "lastModified": "2025-09-29T10:06:39.453Z",
+  "tags": [
+    "fiori-samples",
+    "md",
+    "README"
+  ],
+  "headers": [
+    "Description",
+    "Requirements",
+    "Download and Installation"
+  ],
+  "content": "## Description \n\nThis is a sample app to manage incidents. This app is based on SAP Fiori elements list report object for OData V4. \n\nTo learn how to build this app, check out [this](https://developers.sap.com/group.fiori-tools-odata-v4-incident.html) tutorial.\n\n## Requirements\n\nThis app is intended as a sample app that can be previewed using SAP Fiori tools in SAP Business Application Studio or Visual Studio Code. Refer to [documentation](https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html) for help on how to get started with SAP Fiori tools. \n\n## Download and Installation\n\n1. After cloning the repository, open `fiori-elements-incidents-management` folder as the root of the workspace\n2. At the root of the workspace, type `npm install` in the terminal\n3. Click on \"SAP Fiori\" on the left activiity bar\n4. Right click on the project and select `Preview Application`\n\n\n",
+  "excerpt": "Description  This is a sample app to manage incidents. This app is based on SAP Fiori elements list report object for OData V4.  To learn how to build this app, check out this tutorial. Requirements T...",
+  "wordCount": 128,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

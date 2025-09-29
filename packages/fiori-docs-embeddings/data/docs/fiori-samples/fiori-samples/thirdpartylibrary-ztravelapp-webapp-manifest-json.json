@@ -1,0 +1,25 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-manifest-json",
+  "title": "manifest",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/manifest.json",
+  "lastModified": "2025-09-29T10:06:39.534Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "manifest"
+  ],
+  "headers": [
+    "_version",
+    "sap.app",
+    "sap.ui",
+    "sap.ui5",
+    "sap.cloud"
+  ],
+  "content": "# manifest.json\n\n```json\n{\n  \"_version\": \"1.53.0\",\n  \"sap.app\": {\n    \"id\": \"ztest.docapp1.ztravel\",\n    \"type\": \"application\",\n    \"i18n\": \"i18n/i18n.properties\",\n    \"applicationVersion\": {\n      \"version\": \"0.0.1\"\n    },\n    \"title\": \"{{appTitle}}\",\n    \"description\": \"{{appDescription}}\",\n    \"resources\": \"resources.json\",\n    \"sourceTemplate\": {\n      \"id\": \"@sap/generator-fiori:basic\",\n      \"version\": \"1.11.4\",\n      \"toolsId\": \"cd9fe588-0172-40cb-9bad-5f13ee44bfe7\"\n    },\n    \"dataSources\": {\n      \"mainService\": {\n        \"uri\": \"/V2/Northwind/Northwind.svc/\",\n        \"type\": \"OData\",\n        \"settings\": {\n          \"annotations\": [],\n          \"localUri\": \"localService/metadata.xml\",\n          \"odataVersion\": \"2.0\"\n        }\n      }\n    }\n  },\n  \"sap.ui\": {\n    \"technology\": \"UI5\",\n    \"icons\": {\n      \"icon\": \"\",\n      \"favIcon\": \"\",\n      \"phone\": \"\",\n      \"phone@2\": \"\",\n      \"tablet\": \"\",\n      \"tablet@2\": \"\"\n    },\n    \"deviceTypes\": {\n      \"desktop\": true,\n      \"tablet\": true,\n      \"phone\": true\n    }\n  },\n  \"sap.ui5\": {\n    \"flexEnabled\": true,\n    \"dependencies\": {\n      \"minUI5Version\": \"1.114.7\",\n      \"libs\": {\n        \"sap.m\": {},\n        \"sap.ui.core\": {},\n        \"sap.f\": {},\n        \"sap.suite.ui.generic.template\": {},\n        \"sap.ui.comp\": {},\n        \"sap.ui.generic.app\": {},\n        \"sap.ui.table\": {},\n        \"sap.ushell\": {}\n      }\n    },\n    \"contentDensities\": {\n      \"compact\": true,\n      \"cozy\": true\n    },\n    \"models\": {\n      \"i18n\": {\n        \"type\": \"sap.ui.model.resource.ResourceModel\",\n        \"settings\": {\n          \"bundleName\": \"ztest.docapp1.ztravel.i18n.i18n\"\n        }\n      },\n      \"\": {\n        \"dataSource\": \"mainService\",\n        \"preload\": true,\n        \"settings\": {}\n      }\n    },\n    \"resources\": {\n      \"css\": [\n        {\n          \"uri\": \"css/style.css\"\n        }\n      ]\n    },\n    \"routing\": {\n      \"config\": {\n        \"routerClass\": \"sap.m.routing.Router\",\n        \"viewType\": \"XML\",\n        \"async\": true,\n        \"viewPath\": \"ztest.docapp1.ztravel.view\",\n        \"controlAggregation\": \"pages\",\n        \"controlId\": \"app\",\n        \"clearControlAggregation\": false\n      },\n      \"routes\": [\n        {\n          \"name\": \"RouteView1\",\n          \"pattern\": \":?query:\",\n          \"target\": [\n            \"TargetView1\"\n          ]\n        }\n      ],\n      \"targets\": {\n        \"TargetView1\": {\n          \"viewType\": \"XML\",\n          \"transition\": \"slide\",\n          \"clearControlAggregation\": false,\n          \"viewId\": \"View1\",\n          \"viewName\": \"View1\"\n        }\n      }\n    },\n    \"rootView\": {\n      \"viewName\": \"ztest.docapp1.ztravel.view.App\",\n      \"type\": \"XML\",\n      \"async\": true,\n      \"id\": \"App\"\n    }\n  },\n  \"sap.cloud\": {\n    \"public\": true,\n    \"service\": \"manageproductsneo2911c\"\n  }\n}\n```",
+  "excerpt": "manifest.json",
+  "wordCount": 220,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

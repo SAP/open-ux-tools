@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-model-models-dbg-js",
+  "title": "models dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/model/models-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "models",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# models-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/model/json/JSONModel\",\n\t\"sap/ui/Device\"\n], function (JSONModel, Device) {\n\t\"use strict\";\n\n\treturn {\n\n\t\tcreateDeviceModel : function () {\n\t\t\tvar oModel = new JSONModel(Device);\n\t\t\toModel.setDefaultBindingMode(\"OneWay\");\n\t\t\treturn oModel;\n\t\t},\n\n\t\tcreateCommentsModel: function() {\n\t\t\treturn new JSONModel({ productComments : [] });\n\t\t}\n\n\t};\n\n});\n```",
+  "excerpt": "models-dbg.js",
+  "wordCount": 43,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

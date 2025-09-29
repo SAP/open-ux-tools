@@ -1,46 +1,5 @@
-import { SimpleDocumentIndexer } from './services/indexer-simple';
-import type { SearchResult } from './services/types/index';
-import { logger } from '../utils/logger';
-
-/**
- *
- */
-export class DocSearchService {
-    private readonly indexer: SimpleDocumentIndexer;
-
-    /**
-     *
-     * @param indexer
-     */
-    constructor(indexer: SimpleDocumentIndexer) {
-        this.indexer = indexer;
-    }
-
-    /**
-     * Performs hybrid search combining different search strategies.
-     *
-     * @param query The search query string
-     * @param maxResults Maximum number of results to return
-     * @returns Promise resolving to search results
-     */
-    async performDocSearch(query: string, maxResults: number = 10): Promise<SearchResponseData> {
-        const results = await this.indexer.docSearch(query, maxResults);
-        return {
-            query: query,
-            searchType: 'hybrid',
-            results: results.map((r: SearchResult) => ({
-                title: r.document.title,
-                category: r.document.category,
-                path: r.document.path,
-                score: r.score,
-                matches: r.matches,
-                excerpt: r.document.excerpt,
-                uri: `sap-fiori://docs/${r.document.category}/${r.document.id}`
-            })),
-            total: results.length
-        };
-    }
-}
+import { SimpleVectorService } from './services/vector-simple';
+import { TextEmbeddingService } from './services/text-embedding';
 
 export type DocSearchInput = {
     query: string;
@@ -54,6 +13,7 @@ export interface SearchResultItem {
     score: number;
     matches: string[];
     excerpt?: string;
+    content?: string;
     uri: string;
 }
 
@@ -83,23 +43,62 @@ export type DocSearchOutput = {
  * Performs hybrid search with given parameters.
  *
  * @param params The search input parameters
+ * @param resultAsString Whether to return results as string format
  * @returns Promise resolving to hybrid search results
  */
-export async function docSearch(params: DocSearchInput): Promise<SearchResponseData> {
+export async function docSearch(
+    params: DocSearchInput,
+    resultAsString: boolean = false
+): Promise<SearchResponseData | String> {
     const { query, maxResults } = params;
 
     try {
-        // Create indexer and search service
-        const indexer = new SimpleDocumentIndexer();
-        const searchService = new DocSearchService(indexer);
+        // Initialize services
+        const vectorService = new SimpleVectorService();
+        const embeddingService = new TextEmbeddingService();
 
-        // Perform the hybrid search logic here
-        const results = await searchService.performDocSearch(query, maxResults);
+        await vectorService.initialize();
+        await embeddingService.initialize();
 
-        return results;
+        // Convert text query to embedding vector
+        const queryVector = await embeddingService.generateEmbedding(query);
+
+        // Perform semantic search with the query vector
+        const searchResults = await vectorService.semanticSearch(queryVector, maxResults ?? 10);
+        if (resultAsString) {
+            let resultString = '';
+            searchResults.forEach((result, index) => {
+                resultString += `Result ${index + 1}:\n\n`;
+                // resultString += `[Score: ${result.score.toFixed(4)}] - ${result.document.title} (${result.document.path})\n`;
+                // resultString += `Content:\n`;
+                resultString += `${result.document.content}\n`;
+                resultString += '---\n\n';
+            });
+            return resultString;
+        } else {
+            // Convert vector search results to the expected format
+            return {
+                query,
+                searchType: 'hybrid',
+                results: searchResults.map((result) => ({
+                    title: result.document.title,
+                    category: result.document.category,
+                    path: result.document.path,
+                    score: result.score,
+                    matches: [], // Vector search doesn't provide specific text matches
+                    // excerpt: result.document.metadata?.excerpt ?? result.document.content.substring(0, 200) + '...',
+                    // excerpt: result.document.metadata?.excerpt ?? result.document.content,
+                    excerpt: result.document.metadata?.excerpt,
+                    content: result.document.content,
+                    uri: `sap-fiori://docs/${result.document.category}/${result.document.id}`
+                })),
+                total: searchResults.length
+            };
+        }
     } catch (error) {
         // Fallback when embeddings data is not available
-        logger.warn(`Embeddings data not available, providing limited search capability: ${error}`);
+        // Log warning about embeddings not being available
+        // console.warn('Embeddings data not available, providing limited search capability:', error);
 
         return {
             query,

@@ -1,0 +1,23 @@
+{
+  "id": "btp-fiori-tools-generating-an-application-sapui5-freestyle-template-properties-c2a3c82-md",
+  "title": "Template Properties",
+  "category": "fiori-tools",
+  "path": "Generating-an-Application/SAPUI5-Freestyle/template-properties-c2a3c82.md",
+  "lastModified": "2025-09-29T10:06:38.703Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "template",
+    "properties",
+    "c2a3c82"
+  ],
+  "headers": [
+    "Template Properties"
+  ],
+  "content": "<!-- loioc2a3c82e603c4e46b007627f5ec93aad -->\n\n# Template Properties\n\nOnce the data source is supplied, you can customize the application by providing the *View name*. This is a unique name selected for the SAPUI5 view to be created.\n\n![](images/ViewNamePropertyGenAppFreestyle_f78f30e.png)\n\n",
+  "excerpt": "<!-- loioc2a3c82e603c4e46b007627f5ec93aad --> Template Properties Once the data source is supplied, you can customize the application by providing the View name. This is a unique name selected for the...",
+  "wordCount": 37,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

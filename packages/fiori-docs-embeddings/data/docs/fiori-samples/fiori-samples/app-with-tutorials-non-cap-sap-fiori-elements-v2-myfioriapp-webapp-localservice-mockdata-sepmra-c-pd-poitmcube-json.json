@@ -1,0 +1,31 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-localservice-mockdata-sepmra-c-pd-poitmcube-json",
+  "title": "SEPMRA C PD PoItmCube",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/localService/mockdata/SEPMRA_C_PD_PoItmCube.json",
+  "lastModified": "2025-09-29T10:06:39.456Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "SEPMRA",
+    "PoItmCube"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "content": "# SEPMRA_C_PD_PoItmCube.json\n\n```json\n[\n  {\n    \"Product\": \"HT-1119\",\n    \"OrgUnitName\": \"MARKETING\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1110\",\n    \"OrgUnitName\": \"MARKETING\",\n    \"PoItmQuantity\": \"7.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1023\",\n    \"OrgUnitName\": \"MARKETING\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1073\",\n    \"OrgUnitName\": \"SALES-EMEA\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-6121\",\n    \"OrgUnitName\": \"SALES-EMEA\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-9998\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"6.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1040\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"7.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1117\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"6.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1501\",\n    \"OrgUnitName\": \"IT-SECURITY\",\n    \"PoItmQuantity\": \"6.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1056\",\n    \"OrgUnitName\": \"IT-SECURITY\",\n    \"PoItmQuantity\": \"5.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-9991\",\n    \"OrgUnitName\": \"IT-SECURITY\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1042\",\n    \"OrgUnitName\": \"SALESOP\",\n    \"PoItmQuantity\": \"3.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1120\",\n    \"OrgUnitName\": \"SALESOP\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-9996\",\n    \"OrgUnitName\": \"SALESOP\",\n    \"PoItmQuantity\": \"2.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1116\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"7.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-9999\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"8.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1037\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1252\",\n    \"OrgUnitName\": \"PURCHASE\",\n    \"PoItmQuantity\": \"3.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-6130\",\n    \"OrgUnitName\": \"PURCHASE\",\n    \"PoItmQuantity\": \"3.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1061\",\n    \"OrgUnitName\": \"PURCHASE\",\n    \"PoItmQuantity\": \"2.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1501\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"3.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1056\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"5.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-9991\",\n    \"OrgUnitName\": \"STRATDEV\",\n    \"PoItmQuantity\": \"1.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1011\",\n    \"OrgUnitName\": \"HARDWPROD\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1603\",\n    \"OrgUnitName\": \"HARDWPROD\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  },\n  {\n    \"Product\": \"HT-1104\",\n    \"OrgUnitName\": \"HARDWPROD\",\n    \"PoItmQuantity\": \"4.000\",\n    \"QuantityUnit\": \"EA\"\n  }\n]\n```",
+  "excerpt": "SEPMRA_C_PD_PoItmCube.json",
+  "wordCount": 266,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

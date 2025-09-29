@@ -1,0 +1,21 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-model-models-js",
+  "title": "models",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/model/models.js",
+  "lastModified": "2025-09-29T10:06:39.534Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "models"
+  ],
+  "headers": [
+    "models"
+  ],
+  "content": "# models.js\n\n```javascript\nsap.ui.define([\n    \"sap/ui/model/json/JSONModel\",\n    \"sap/ui/Device\"\n], \n    /**\n     * provide app-view type models (as in the first \"V\" in MVVC)\n     * \n     * @param {typeof sap.ui.model.json.JSONModel} JSONModel\n     * @param {typeof sap.ui.Device} Device\n     * \n     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on\n     */\n    function (JSONModel, Device) {\n        \"use strict\";\n\n        return {\n            createDeviceModel: function () {\n                var oModel = new JSONModel(Device);\n                oModel.setDefaultBindingMode(\"OneWay\");\n                return oModel;\n        }\n    };\n});\n```",
+  "excerpt": "models.js",
+  "wordCount": 74,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

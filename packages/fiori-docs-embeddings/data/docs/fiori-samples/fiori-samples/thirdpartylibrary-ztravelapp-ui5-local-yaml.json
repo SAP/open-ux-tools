@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-ui5-local-yaml",
+  "title": "ui5 local",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/ui5-local.yaml",
+  "lastModified": "2025-09-29T10:06:39.533Z",
+  "tags": [
+    "fiori-samples",
+    "yaml",
+    "ui5",
+    "local"
+  ],
+  "headers": [],
+  "content": "# ui5-local.yaml\n\n```yaml\n# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json\n\nspecVersion: \"3.1\"\nmetadata:\n  name: ztest.docapp1.ztravel\ntype: application\nframework:\n  name: SAPUI5\n  version: 1.114.7\n  libraries:\n    - name: sap.m\n    - name: sap.ui.core\n    - name: sap.f\n    - name: sap.suite.ui.generic.template\n    - name: sap.ui.comp\n    - name: sap.ui.generic.app\n    - name: sap.ui.table\n    - name: sap.ushell\n    - name: themelib_sap_horizon\nserver:\n  customMiddleware:\n    - name: fiori-tools-appreload\n      afterMiddleware: compression\n      configuration:\n        port: 35729\n        path: webapp\n        delay: 300\n    - name: fiori-tools-proxy\n      afterMiddleware: compression\n      configuration:\n        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted\n        backend:\n          - path: /V2/Northwind/Northwind.svc\n            url: https://services.odata.org\n            destination: northwind\n    - name: sap-fe-mockserver\n      beforeMiddleware: csp\n      configuration:\n        mountPath: /\n        services:\n          - urlPath: /northwind/V2/Northwind/Northwind.svc/\n            metadataPath: ./webapp/localService/metadata.xml\n            mockdataPath: ./webapp/localService/data\n            generateMockData: true\n        annotations: []\n    - name: fiori-tools-preview\n      afterMiddleware: fiori-tools-appreload\n      configuration:\n        component: ztest.docapp1.ztravel\n        ui5Theme: sap_horizon\n\n```",
+  "excerpt": "ui5-local.yaml",
+  "wordCount": 123,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

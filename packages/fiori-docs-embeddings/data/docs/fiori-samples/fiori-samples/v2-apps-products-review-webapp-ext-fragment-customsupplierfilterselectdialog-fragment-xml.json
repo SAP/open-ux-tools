@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-v2-apps-products-review-webapp-ext-fragment-customsupplierfilterselectdialog-fragment-xml",
+  "title": "CustomSupplierFilterSelectDialog.fragment",
+  "category": "fiori-samples",
+  "path": "V2/apps/products-review/webapp/ext/fragment/CustomSupplierFilterSelectDialog.fragment.xml",
+  "lastModified": "2025-09-29T10:06:39.363Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "CustomSupplierFilterSelectDialog",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# CustomSupplierFilterSelectDialog.fragment.xml\n\n```xml\n<core:FragmentDefinition xmlns:core=\"sap.ui.core\" xmlns=\"sap.m\">\n\t<TableSelectDialog title=\"{i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product>xtit.SelectSupplier}\" multiSelect=\"true\"\n\t\trememberSelections=\"false\" cancel=\"onHandleCustomSupplierTableSelectDialogCancel\" confirm=\"onHandleCustomSupplierTableSelectDialogClose\"\n\t\tsearch=\"onHandleCustomSupplierDialogSearch\" id=\"selectedSuppliers\"\n\t\titems=\"{ path : '/SEPMRA_C_PD_Supplier', sorter : { path : 'CompanyName', descending : false, group: false } }\"\n\t\tnoDataText=\"{i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product>ymsg.NoSupplierFound}\">\n\t\t<ColumnListItem id=\"name\">\n\t\t\t<cells>\n\t\t\t\t<ObjectIdentifier text=\"{CompanyName}\"/>\n\t\t\t</cells>\n\t\t</ColumnListItem>\n\t\t<columns>\n\t\t\t<Column id=\"supplier\"></Column>\n\t\t</columns>\n\t</TableSelectDialog>\n</core:FragmentDefinition>\n```",
+  "excerpt": "CustomSupplierFilterSelectDialog.fragment.xml",
+  "wordCount": 46,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

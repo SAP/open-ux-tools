@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-webapp-ext-fragment-customsectiongantt-fragment-xml",
+  "title": "CustomSectionGantt.fragment",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/ext/fragment/CustomSectionGantt.fragment.xml",
+  "lastModified": "2025-09-29T10:06:39.454Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "CustomSectionGantt",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# CustomSectionGantt.fragment.xml\n\n```xml\n<core:FragmentDefinition \nxmlns:core=\"sap.ui.core\" \nxmlns=\"sap.gantt.simple\" \nxmlns:ui=\"sap.ui.table\"\nxmlns:m=\"sap.m\"\n>\n\t<GanttChartContainer id=\"container\" enableTimeScrollSync=\"true\" width=\"100%\" height=\"16rem\" core:require=\"{handler: 'sap/fe/demo/incidents/ext/fragment/CustomSectionGantt'}\">\n\t\t<toolbar>\n\t\t\t<ContainerToolbar stepCountOfSlider=\"6\" showSettingButton=\"false\" >\n\t\t\t</ContainerToolbar>\n\t\t</toolbar>\t\n\t<GanttChartWithTable id=\"gantt\" selectionPanelSize=\"25%\">\n\n\t\t<table>\n\t\t\t<ui:Table\n\t\t\t\tselectionMode=\"None\"\n\t\t\t\tminAutoRowCount=\"1\"\n\t\t\t\tvisibleRowCount=\"5\"\n\t\t\t\tselectionBehavior=\"RowSelector\"\n\t\t\t\trows=\"{\n\t\t\t\t\tpath: 'incidentProcessTimeline'\n\t\t\t\t}\">\n\t\t\t\t<ui:columns>\n\t\t\t\t\t<ui:Column>\n\t\t\t\t\t\t<m:Text text=\"Process Step\"/>\n\t\t\t\t\t\t<ui:template>\n\t\t\t\t\t\t\t<m:Label text=\"{text}\"/>\n\t\t\t\t\t\t</ui:template>\n\t\t\t\t\t</ui:Column>\n\t\t\t\t</ui:columns>\n\t\t\t\t<ui:rowSettingsTemplate>\n\t\t\t\t\t<GanttRowSettings rowId=\"{id}\">\n\t\t\t\t\t\t<shapes1>\n\t\t\t\t\t\t\t<BaseConditionalShape activeShape=\"0\">\n\t\t\t\t\t\t\t\t<shapes>\n\t\t\t\t\t\t\t\t\t<BaseChevron time=\"{path: 'startTime', formatter: 'handler.fnTimeConverter'}\"\n\t\t\t\t\t\t\t\t\t\t\t\t   endTime=\"{path: 'endTime', formatter: 'handler.fnTimeConverter'}\"\n\t\t\t\t\t\t\t\t\t\t\t\t   fill=\"@sapUiChartPaletteQualitativeHue6\"/>\n\t\t\t\t\t\t\t\t</shapes>\n\t\t\t\t\t\t\t</BaseConditionalShape>\n\t\t\t\t\t\t</shapes1>\n\t\t\t\t\t</GanttRowSettings>\n\t\t\t\t</ui:rowSettingsTemplate>\n\t\t\t</ui:Table>\n\t\t</table>\n\t</GanttChartWithTable>\n\t</GanttChartContainer>\n</core:FragmentDefinition>\n```",
+  "excerpt": "CustomSectionGantt.fragment.xml",
+  "wordCount": 75,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

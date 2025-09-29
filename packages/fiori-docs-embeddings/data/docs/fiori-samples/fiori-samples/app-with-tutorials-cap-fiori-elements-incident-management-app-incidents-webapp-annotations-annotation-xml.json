@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-webapp-annotations-annotation-xml",
+  "title": "annotation",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/annotations/annotation.xml",
+  "lastModified": "2025-09-29T10:06:39.454Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "annotation"
+  ],
+  "headers": [],
+  "content": "# annotation.xml\n\n```xml\n<edmx:Edmx xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\" Version=\"4.0\">\n    <edmx:Reference Uri=\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\">\n        <edmx:Include Namespace=\"com.sap.vocabularies.Common.v1\" Alias=\"Common\"/>\n    </edmx:Reference>\n    <edmx:Reference Uri=\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\">\n        <edmx:Include Namespace=\"com.sap.vocabularies.UI.v1\" Alias=\"UI\"/>\n    </edmx:Reference>\n    <edmx:Reference Uri=\"https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml\">\n        <edmx:Include Namespace=\"com.sap.vocabularies.Communication.v1\" Alias=\"Communication\"/>\n    </edmx:Reference>\n    <edmx:Reference Uri=\"/incident/$metadata\">\n        <edmx:Include Namespace=\"IncidentService\"/>\n    </edmx:Reference>\n    <edmx:DataServices>\n        <Schema xmlns=\"http://docs.oasis-open.org/odata/ns/edm\" Namespace=\"local\">\n        </Schema>\n    </edmx:DataServices>\n</edmx:Edmx>\n```",
+  "excerpt": "annotation.xml",
+  "wordCount": 37,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

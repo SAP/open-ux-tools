@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-webapp-test-integration-opa-qunit-js",
+  "title": "Opa.qunit",
+  "category": "fiori-samples",
+  "path": "V4/apps/salesorder/webapp/test/integration/Opa.qunit.js",
+  "lastModified": "2025-09-29T10:06:39.453Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "Opa",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# Opa.qunit.js\n\n```javascript\nsap.ui.require(\n    [\n        'sap/fe/test/JourneyRunner',\n        'salesorder/test/integration/pages/MainListReport' ,\n        'salesorder/test/integration/pages/MainObjectPage',\n        'salesorder/test/integration/OpaJourney'\n    ],\n    function(JourneyRunner, MainListReport, MainObjectPage, Journey) {\n        'use strict';\n        var JourneyRunner = new JourneyRunner({\n            // start index.html in web folder\n            launchUrl: sap.ui.require.toUrl('salesorder') + '/index.html'\n        });\n\n        JourneyRunner.run(\n            {\n                pages: { onTheMainPage: MainListReport, onTheDetailPage: MainObjectPage }\n            },\n            Journey.run\n        );\n    }\n);\n```",
+  "excerpt": "Opa.qunit.js",
+  "wordCount": 49,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

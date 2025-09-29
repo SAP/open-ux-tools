@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-controller-app-controller-js",
+  "title": "App.controller",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/controller/App.controller.js",
+  "lastModified": "2025-09-29T10:06:39.530Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "App",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# App.controller.js\n\n```javascript\nsap.ui.define([\"./BaseController\",\"sap/ui/model/json/JSONModel\"],function(e,t){\"use strict\";return e.extend(\"ns.manageproductsneo.controller.App\",{onInit:function(){var e,n,o=this.getView().getBusyIndicatorDelay();e=new t({busy:true,delay:0});this.setModel(e,\"appView\");n=function(){e.setProperty(\"/busy\",false);e.setProperty(\"/delay\",o)};this.getOwnerComponent().getModel().metadataLoaded().then(n);this.getOwnerComponent().getModel().attachMetadataFailed(n);this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass())}})});\n```",
+  "excerpt": "App.controller.js",
+  "wordCount": 9,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

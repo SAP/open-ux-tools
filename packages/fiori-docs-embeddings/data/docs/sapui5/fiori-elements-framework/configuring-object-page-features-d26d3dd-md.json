@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-configuring-object-page-features-d26d3dd-md",
+  "title": "Configuring Object Page Features",
+  "category": "fiori-elements-framework",
+  "path": "configuring-object-page-features-d26d3dd.md",
+  "lastModified": "2025-09-29T10:06:38.787Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "configuring",
+    "object",
+    "page",
+    "features",
+    "d26d3dd"
+  ],
+  "headers": [
+    "Configuring Object Page Features"
+  ],
+  "content": "<!-- loiod26d3dd85f43441192e9c8b210746bf1 -->\n\n# Configuring Object Page Features\n\nYou can use annotations to set up various elements on the object page, such as the header and sections.\n\n**Related Information**  \n\n\n[Prefilling Fields Using the `DefaultValuesFunction`](prefilling-fields-using-the-defaultvaluesfunction-5ada91c.md \"When creating a new entity or when prefilling action parameters, you can provide default values using a DefaultValuesFunction.\")\n\n",
+  "excerpt": "<!-- loiod26d3dd85f43441192e9c8b210746bf1 --> Configuring Object Page Features You can use annotations to set up various elements on the object page, such as the header and sections. Related Informati...",
+  "wordCount": 53,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

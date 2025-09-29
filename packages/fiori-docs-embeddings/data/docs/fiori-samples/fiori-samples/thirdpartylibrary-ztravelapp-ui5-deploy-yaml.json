@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-ui5-deploy-yaml",
+  "title": "ui5 deploy",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/ui5-deploy.yaml",
+  "lastModified": "2025-09-29T10:06:39.533Z",
+  "tags": [
+    "fiori-samples",
+    "yaml",
+    "ui5",
+    "deploy"
+  ],
+  "headers": [],
+  "content": "# ui5-deploy.yaml\n\n```yaml\n# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json\nspecVersion: \"2.4\"\nmetadata:\n  name: ztest.docapp1.ztravel\ntype: application\nresources:\n  configuration:\n    propertiesFileSourceEncoding: UTF-8\nbuilder:\n  resources:\n    excludes:\n      - \"/test/**\"\n      - \"/localService/**\"\n  customTasks:\n    - name: webide-extension-task-updateManifestJson\n      afterTask: replaceVersion\n      configuration:\n        appFolder: webapp\n        destDir: dist\n    - name: ui5-task-zipper\n      afterTask: generateCachebusterInfo\n      configuration:\n        archiveName: ztestdocapp1ztravel\n        additionalFiles:\n          - xs-app.json\n    - name: ui5-tooling-modules-task\n      afterTask: replaceVersion\n      configuration:\n        addToNamespace: true\n\n```",
+  "excerpt": "ui5-deploy.yaml",
+  "wordCount": 55,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

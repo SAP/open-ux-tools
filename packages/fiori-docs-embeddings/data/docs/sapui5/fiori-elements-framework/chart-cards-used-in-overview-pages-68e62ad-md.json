@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-chart-cards-used-in-overview-pages-68e62ad-md",
+  "title": "Chart Cards Used in Overview Pages",
+  "category": "fiori-elements-framework",
+  "path": "chart-cards-used-in-overview-pages-68e62ad.md",
+  "lastModified": "2025-09-29T10:06:38.779Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "chart",
+    "cards",
+    "used",
+    "overview",
+    "pages",
+    "68e62ad"
+  ],
+  "headers": [
+    "Chart Cards Used in Overview Pages"
+  ],
+  "content": "<!-- loio68e62adedfd44cd48cb6ebc418c8d95a -->\n\n# Chart Cards Used in Overview Pages\n\nThis section describes the analytical chart cards you can use in overview pages.\n\n\n\n> ### Note:  \n> Analytical cards don't have a fixed height. The height is adjusted automatically to accommodate the data points and legends. Legends are created automatically based on the defined measures and dimensions.\n\n",
+  "excerpt": "<!-- loio68e62adedfd44cd48cb6ebc418c8d95a --> Chart Cards Used in Overview Pages This section describes the analytical chart cards you can use in overview pages. > Note:   > Analytical cards don't hav...",
+  "wordCount": 58,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

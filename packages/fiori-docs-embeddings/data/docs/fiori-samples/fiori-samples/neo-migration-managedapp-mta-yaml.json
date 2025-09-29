@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-mta-yaml",
+  "title": "mta",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/mta.yaml",
+  "lastModified": "2025-09-29T10:06:39.532Z",
+  "tags": [
+    "fiori-samples",
+    "yaml",
+    "mta"
+  ],
+  "headers": [],
+  "content": "# mta.yaml\n\n```yaml\n_schema-version: \"3.2\"\nID: managedapp\ndescription: Fiori elements app\nversion: 0.0.1\nmodules:\n- name: managedapp-dest-content\n  type: com.sap.application.content\n  requires:\n  - name: managedapp-destination-service\n    parameters:\n      content-target: true\n  - name: managedapp-repo-host\n    parameters:\n      service-key:\n        name: managedapp-repo-host-key\n  - name: managedapp-uaa\n    parameters:\n      service-key:\n        name: managedapp-uaa-key\n  parameters:\n    content:\n      instance:\n        destinations:\n        - Name: managedapp_repo_host\n          ServiceInstanceName: managedapp-html5-srv\n          ServiceKeyName: managedapp-repo-host-key\n          sap.cloud.service: managedapp\n        - Authentication: OAuth2UserTokenExchange\n          Name: managedapp_uaa\n          ServiceInstanceName: managedapp-xsuaa-srv\n          ServiceKeyName: managedapp-uaa-key\n          sap.cloud.service: managedapp\n        existing_destinations_policy: update\n  build-parameters:\n    no-source: true\n- name: managedapp-app-content\n  type: com.sap.application.content\n  path: .\n  requires:\n  - name: managedapp-repo-host\n    parameters:\n      content-target: true\n  build-parameters:\n    build-result: resources\n    requires:\n    - artifacts:\n      - manageproductsneo2911c.zip\n      name: manageproductsneo2911c\n      target-path: resources/\n- name: manageproductsneo2911c\n  type: html5\n  path: fioriapp\n  build-parameters:\n    build-result: dist\n    builder: custom\n    commands:\n    - npm install\n    - npm run build:cf\n    supported-platforms: []\nresources:\n- name: managedapp-uaa\n  type: org.cloudfoundry.managed-service\n  parameters:\n    path: ./xs-security.json\n    service: xsuaa\n    service-name: managedapp-xsuaa-srv\n    service-plan: application\n- name: managedapp-destination-service\n  type: org.cloudfoundry.managed-service\n  parameters:\n    config:\n      HTML5Runtime_enabled: true\n      init_data:\n        instance:\n          destinations:\n          - Authentication: NoAuthentication\n            Name: ui5\n            ProxyType: Internet\n            Type: HTTP\n            URL: https://ui5.sap.com\n          existing_destinations_policy: update\n      version: 1.0.0\n    service: destination\n    service-name: managedapp-destination-service\n    service-plan: lite\n- name: managedapp-repo-host\n  type: org.cloudfoundry.managed-service\n  parameters:\n    service: html5-apps-repo\n    service-name: managedapp-html5-srv\n    service-plan: app-host\nparameters:\n  deploy_mode: html5-repo\n\n```",
+  "excerpt": "mta.yaml",
+  "wordCount": 181,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

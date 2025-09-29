@@ -1,0 +1,33 @@
+{
+  "id": "sapui5-rebinding-a-table-with-each-instance-change-on-an-object-page-a6946a8-md",
+  "title": "Rebinding a Table with Each Instance Change on an Object Page",
+  "category": "fiori-elements-framework",
+  "path": "rebinding-a-table-with-each-instance-change-on-an-object-page-a6946a8.md",
+  "lastModified": "2025-09-29T10:06:38.852Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "rebinding",
+    "table",
+    "with",
+    "each",
+    "instance",
+    "change",
+    "object",
+    "page",
+    "a6946a8"
+  ],
+  "headers": [
+    "Rebinding a Table with Each Instance Change on an Object Page",
+    "Context",
+    "Procedure",
+    "Results",
+    "Example"
+  ],
+  "content": "<!-- loioa6946a8d5ec0432ea7d1771df6a6474e -->\n\n# Rebinding a Table with Each Instance Change on an Object Page\n\nYou can rebind a table on each instance change in an object page.\n\n\n\n## Context\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V2.\n\nA table in an object page rebinds itself only the first time when the table initializes. When you switch your object page instances, the table only refreshes but does not rebind.\n\nFollow the below steps to rebind a table on each instance change in an object page:\n\n\n\n## Procedure\n\n1.  In the manifest file, identify the ID of the subsection in which the table is located, for example `subsection1`. Add the following properties under the `section` settings of your object page in the manifest file:\n\n    ```\n    \n    \"loadingBehavior\":{\n    \t\"waitForHeaderData\":true,\n    \t\"waitForViewportEnter\":true/false\n    }\n    ```\n\n    In these settings, it is mandatory to set `waitForHeaderData` to `true`. Otherwise, multiple batch calls will be triggered for the same table. You can make settings for `waitForViewportEnter` based on your preference. For more information, see [Defining the Loading Behavior of Object Page Subsections](defining-the-loading-behavior-of-object-page-subsections-6b84249.md).\n\n2.  In the extension file, add the `attachPageDataLoaded` event. For example, `this.oController.extensionAPI.attachPageDataLoaded(this.rebindSalesorderItemTable.bind(this));`.\n\n3.  In the `pageDataLoaded` event handler, rebind the table that has a specific ID by using the extension API. For example, `this.oController.extensionAPI.rebind(salesOrderItemTableId);`.\n\n\n\n\n<a name=\"loioa6946a8d5ec0432ea7d1771df6a6474e__result_vgv_qx3_xlb\"/>\n\n## Results\n\nWith the above steps, the table rebinds every time the object page instance is switched.\n\n\n\n## Example\n\n> ### Sample Code:  \n> ```\n> \n> /* Controller Implementation (CI) for the Sales Order object page */\n> sap.ui.define([\"sap/ui/base/Object\", \"sap/m/MessageBox\", \"sap/ui/model/Filter\", \"sap/ui/model/FilterOperator\"\n> ], function(BaseObject, MessageBox, Filter, FilterOperator) {\n>     \"use strict\";\n> \n>     var salesOrderItemTableId = \"STTASOWD20::sap.suite.ui.generic.template.ObjectPage.view.Details::C_STTA_SalesOrder_WD_20--SalesOrderItemsID::Table\";\n> \n>     return BaseObject.extend(\"STTASOWD20.ext.controller.CISalesOrder\", {\n>         \n>         onInit: function(oController){\n>             this.oController = oController;\n>             // Example to show attachpageDataLoaded event consumption.\n>              this.oController.extensionAPI.attachPageDataLoaded(this.rebindSalesorderItemTable.bind(this));\n> \n>         },\n>         rebindSalesorderItemTable: function() {\n>             // Example to show how to rebind a particular table, each time when binding context changes. For example switching from\n>             // display to edit or edit to display mode or whenever changing the object page instance.\n>             // To achieve this efficiently first of all go to the manifest and do following setting under \"sections\" of your object page\n>             // \"loadingBehavior\":{\n>             //  \"waitForHeaderData\":true,\n>             //  \"waitForViewportEnter\":true\n>             // }\n>             // then attach a page data loaded event as we have registered above in on init\n>             // oApi.attachPageDataLoaded(this.rebindSalesorderItemTable.bind(this));\n>             // Now below lines will do the rest of the job\n>             // rebind the table having specific id.\n>             this.oController.extensionAPI.rebind(salesOrderItemTableId);\n>         },\n>         onBeforeRebindTableExtension: function (oEvent) {\n>             // Filter a specific table based on table id, because this method is called before\n>             // rebinding of every table.\n>             if(oEvent.getSource().getId()=== salesOrderItemTableId) {\n>                 // You can add additional filters, remove some, add sort order etc here in the following way\n> \n>                 // var filter = new Filter(\"so_item_pos\", FilterOperator.GE, \"1\");\n>                 // oEvent.mParameters.bindingParams.filters.push(filter);\n>             }\n>             \n>         },\n> \n>     });\n> });\n> \n> ```\n\n**Related Information**  \n\n\n[Defining the Loading Behavior of Object Page Subsections](defining-the-loading-behavior-of-object-page-subsections-6b84249.md \"You can define the loading behavior of subsections in an object page in the manifest settings.\")\n\n",
+  "excerpt": "<!-- loioa6946a8d5ec0432ea7d1771df6a6474e --> Rebinding a Table with Each Instance Change on an Object Page You can rebind a table on each instance change in an object page. Context > Note:   > This t...",
+  "wordCount": 526,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

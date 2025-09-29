@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-tsconfig-json",
+  "title": "tsconfig",
+  "category": "fiori-features",
+  "path": "tsconfig.json",
+  "lastModified": "2025-09-29T10:06:39.219Z",
+  "tags": [
+    "fiori-features",
+    "json",
+    "tsconfig"
+  ],
+  "headers": [],
+  "content": "{\n    \"compilerOptions\": {\n        \"target\": \"ES2022\",\n        \"module\": \"nodenext\",\n        \"rootDir\": \"./\",\n        \"baseUrl\": \"./\",\n        \"allowJs\": true,\n        \"esModuleInterop\": true,\n        \"inlineSources\": true,\n        \"inlineSourceMap\": true,\n        \"moduleResolution\": \"nodenext\",\n        \"paths\": {\n            \"#cds-models/*\": [\n                \"./@cds-models/*\"\n            ]\n        },\n        \"types\": [\n            \"node\",\n            \"@cap-js/cds-types\",\n        ],\n    },\n    \"include\": [\n        \"./srv/**/*\",\n    ]\n}",
+  "excerpt": "{     \"compilerOptions\": {         \"target\": \"ES2022\",         \"module\": \"nodenext\",         \"rootDir\": \"./\",         \"baseUrl\": \"./\",         \"allowJs\": true,         \"esModuleInterop\": true,        ...",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

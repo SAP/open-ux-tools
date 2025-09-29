@@ -1,0 +1,29 @@
+{
+  "id": "btp-fiori-tools-project-functions-reuse-library-support-6e99fbb-md",
+  "title": "Reuse Library Support",
+  "category": "fiori-tools",
+  "path": "Project-Functions/reuse-library-support-6e99fbb.md",
+  "lastModified": "2025-09-29T10:06:38.714Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "reuse",
+    "library",
+    "support",
+    "6e99fbb"
+  ],
+  "headers": [
+    "Reuse Library Support",
+    "Creating a Reusable Library",
+    "Adding Reference to Reuse a Library",
+    "Prerequisites",
+    "Steps",
+    "Deploying a Reuse Library Project Using SAP Fiori Tools"
+  ],
+  "content": "<!-- loio6e99fbb264eb4911a8e01ae5882bc52e -->\n\n# Reuse Library Support\n\nA library to be used in your project has to reside in your workspace, in either SAP Business Application Studio or Visual Studio Code \\(VS Code\\). With SAP Fiori tools, you can reuse a library or component in your SAP Fiori apps by adding a reference to another project.\n\n\n\n<a name=\"loio6e99fbb264eb4911a8e01ae5882bc52e__section_q44_n5k_wxb\"/>\n\n## Creating a Reusable Library\n\nTo create a new reusable library that can be referenced in your SAP Fiori application, do the following steps:\n\n1.  Open the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and execute the `Fiori: Open Reusable Library Generator` command.\n2.  Provide your library module name and namespace, and choose a minimum version of SAPUI5.\n3.  From the *Library Folder Path* drop-down list, choose the directory for the new reusable library. The library folder generated consists of the namespace and module name.\n4.  You can optionally choose to generate your library with OData service.\n\n\n\n<a name=\"loio6e99fbb264eb4911a8e01ae5882bc52e__section_lvq_qfg_3qb\"/>\n\n## Adding Reference to Reuse a Library\n\n\n\n### Prerequisites\n\n1.  A reuse library project is cloned or imported into your workspace.\n2.  An SAP Fiori project is already in your workspace.\n\n\n\n### Steps\n\nTo add a reference for reusing an SAP Fiori library, perform the following steps:\n\n1.  Open the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and execute the `Fiori: Add Reference to SAP Fiori Reusable Libraries` command.\n2.  From the *Project Folder Path* drop-down list, select the SAP Fiori project that exists in your current workspace.\n3.  Select *Reusable Library Source* as a workspace.\n4.  Select reusable libraries or components from the list.\n5.  Click *Finish*.\n\nWhen you click *Finish*, the following files get updated with a reference to the selected reuse library:\n\n-   `ui5.yaml`\n-   `ui5-local.yaml`\n-   `manifest.json`\n\n\n\n<a name=\"loio6e99fbb264eb4911a8e01ae5882bc52e__section_a4h_r1v_j5b\"/>\n\n## Deploying a Reuse Library Project Using SAP Fiori Tools\n\nDeploying a Reuse Library Project using SAP Fiori tools.\n\n1.  Add a Reuse Library project to your workspace.\n2.  In the resulting migration pop-up window, click on *Start Migration*.\n3.  From the list, select the project that you would like to migrate.\n4.  Now, click on *Start Migration*.\n5.  Once the dependencies are installed, you're ready to use SAP Fiori tools to deploy to an ABAP environment.\n6.  To generate the deployment configuration, see [Generate Deployment Configuration ABAP](../Deploying-an-Application/generate-deployment-configuration-abap-c06b9cb.md).\n7.  To deploy the project to ABAP environment, see [Deployment to ABAP](../Deploying-an-Application/deployment-of-application-607014e.md#loio607014e278d941fda4440f92f4a324a6__abap).\n\n",
+  "excerpt": "<!-- loio6e99fbb264eb4911a8e01ae5882bc52e --> Reuse Library Support A library to be used in your project has to reside in your workspace, in either SAP Business Application Studio or Visual Studio Cod...",
+  "wordCount": 393,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

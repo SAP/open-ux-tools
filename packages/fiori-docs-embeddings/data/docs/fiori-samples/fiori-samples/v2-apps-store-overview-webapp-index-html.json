@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-webapp-index-html",
+  "title": "index",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/webapp/index.html",
+  "lastModified": "2025-09-29T10:06:39.405Z",
+  "tags": [
+    "fiori-samples",
+    "html",
+    "index"
+  ],
+  "headers": [],
+  "content": "# index.html\n\n```html\n<!DOCTYPE HTML>\n<html>\n<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->\n<head>\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n\t<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"/>\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t<title>Store Overview</title>\n\t<!-- Bootstrap the unified shell in sandbox mode for standalone usage.\n\n         The renderer is specified in the global Unified Shell configuration object \"sap-ushell-config\".\n\n         The fiori2 renderer will render the shell header allowing, for instance,\n         testing of additional application setting buttons.\n\n         The navigation target resolution service is configured in a way that the empty URL hash is\n         resolved to our own application.\n\n         This example uses relative path references for the SAPUI5 resources and test-resources;\n         it might be necessary to adapt them depending on the target runtime platform.\n         The sandbox platform is restricted to development or demo use cases and must NOT be used\n         for productive scenarios.\n    -->\n\t<script type=\"text/javascript\">\n\t\twindow[\"sap-ushell-config\"] = {\n\t\t\tdefaultRenderer : \"fiori2\",\n\t\t\trenderers: {\n\t\t\t\tfiori2: {\n\t\t\t\t\tcomponentData: {\n\t\t\t\t\t\tconfig: {\n\t\t\t\t\t\t\tsearch: \"hidden\"\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t},\n\t        bootstrapPlugins: {\n\t            \"RuntimeAuthoringPlugin\": {\n\t                component: \"sap.ushell.plugins.rta\",\n\t                config: {\n\t                    validateAppVersion: false\n\t                }\n\t            }\n\t\t\t},\n\t\t\tapplications: {\n\t\t\t\t\"Store-overview\": {\n\t\t\t\t\t\"additionalInformation\": \"SAPUI5.Component=sap.teched.teched-ovp\",\n\t\t\t\t\t\"title\": \"Store Overview\",\n\t\t\t\t\t\"applicationType\": \"URL\",\n\t\t\t\t\t\"url\": \"./\"\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\t</script>\n\t<script src=\"https://sapui5.hana.ondemand.com/test-resources/sap/ushell/bootstrap/sandbox.js\" id=\"sap-ushell-bootstrap\"></script>\n\t<!-- Bootstrap the UI5 core library -->\n\t<script id=\"sap-ui-bootstrap\"\n\t\t\tsrc=\"https://sapui5.hana.ondemand.com/resources/sap-ui-core.js\"\n\t\t\tdata-sap-ui-libs=\"sap.m, sap.ushell\"\n\t\t\tdata-sap-ui-theme=\"sap_fiori_3\"\n\t\t\tdata-sap-ui-compatVersion=\"edge\"\n\t\t\tdata-sap-ui-resourceroots='{\"sap.teched.teched-ovp\": \"./\"}'\n\t\t\tdata-sap-ui-frameOptions='allow'> // NON-SECURE setting for testing environment\n\t</script>\n\t<script type=\"text/javascript\">\n\t\tsap.ui.getCore().attachInit(function() {\n\t\t\tsap.ushell.Container.createRenderer().placeAt(\"content\");\n\t\t});\n\t</script>\n\t<style>\n\t\t.sapOvpDashboardLayoutItem .sapUiComponentContainer, .sapOvpCardContentContainer {\n\t\t\tbackground-color: transparent !important;\n\t\t}\n\t\t#mainView--ovpLayout--card04 {\n\t\t\theight: auto !important;\n\t\t}\n\t</style>\n</head>\n<!-- UI Content -->\n<body class=\"sapUiBody\" id=\"content\">\n</body>\n</html>\n```",
+  "excerpt": "index.html",
+  "wordCount": 250,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

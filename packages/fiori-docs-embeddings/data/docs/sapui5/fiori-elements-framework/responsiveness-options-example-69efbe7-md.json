@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-responsiveness-options-example-69efbe7-md",
+  "title": "Responsiveness Options: Example",
+  "category": "fiori-elements-framework",
+  "path": "responsiveness-options-example-69efbe7.md",
+  "lastModified": "2025-09-29T10:06:38.853Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "responsiveness",
+    "options",
+    "example",
+    "69efbe7"
+  ],
+  "headers": [
+    "Responsiveness Options: Example"
+  ],
+  "content": "<!-- loio69efbe747fc44c0fa445b24ed369cb1e -->\n\n# Responsiveness Options: Example\n\nWhen using SAP Fiori elements, you can make use of specific responsiveness options. For example, in pages that have toolbars \\(such as list report tables, object page tables, and smart chart toolbars\\), the system evaluates the `com.sap.vocabularies.UI.v1.Importance` for each field:\n\n-   Fields of high importance are rendered on a mobile phone.\n\n-   Fields of high or medium importance are shown on the tablet.\n\n-   Fields of high, medium, or low importance are shown on the desktop.\n\n\n",
+  "excerpt": "<!-- loio69efbe747fc44c0fa445b24ed369cb1e --> Responsiveness Options: Example When using SAP Fiori elements, you can make use of specific responsiveness options. For example, in pages that have toolba...",
+  "wordCount": 84,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

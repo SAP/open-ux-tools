@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-getting-started-with-sap-fiori-tools-abap-development-tools-integration-20da2fd-md",
+  "title": "ABAP Development Tools Integration",
+  "category": "fiori-tools",
+  "path": "Getting-Started-with-SAP-Fiori-Tools/abap-development-tools-integration-20da2fd.md",
+  "lastModified": "2025-09-29T10:06:38.704Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "abap",
+    "development",
+    "tools",
+    "integration",
+    "20da2fd"
+  ],
+  "headers": [
+    "ABAP Development Tools Integration"
+  ],
+  "content": "<!-- loio20da2fd6cec64fc38d6d50641a4cf8d5 -->\n\n# ABAP Development Tools Integration\n\nYou can launch the SAP Fiori Generator directly when working with ABAP Development Tools \\(ADT\\) in Eclipse. You can either launch the Application Generator from SAP Fiori tools in SAP Business Application Studio in your browser, or directly launch Visual Studio Code \\(VS Code\\) locally if that is your preferred integrated development environment \\(IDE\\).\n\nFirst, you configure the integration between ADT and SAP Fiori tools. This is a one-time setup within ADT for each system you want to integrate. Proceed as follows:\n\n1.  Choose the system you want to integrate, right-click it and select *Properties*. Then click *ABAP Development* \\> *IDE Configuration*.\n\n2.  Select the *Configure the target IDE* checkbox and choose to launch either SAP Business Application Studio or VS Code.\n\n\nAfter the configuration, a new button is displayed alongside the service details in ADT. *Create Fiori Project* allows you to launch your IDE environment and automatically start the SAP Fiori Generator with these system details.\n\nWhen you launch the SAP Fiori Generator, the data source selection step is skipped since you’ve already selected your data source in ADT, and the main entity for your template is pre-selected with the entity you chose in ADT.\n\nAlternatively, if you have used the Quick Fiori Application generator in ADT to already deploy an application with the selected service, then you can click *Create Fiori Project* to launch SAP Fiori tools and download the deployed application into your workspace. After it is downloaded, the application is updated to support the capabilities of SAP Fiori tools.\n\nFinally, executing the `Fiori: Download ADT Deployed App from SAPUI5 ABAP Repository` command in your IDE environment allows you to directly download an application that was deployed from ADT, without needing to launch ADT. Choose your desired system from the dropdown and you are presented with a list of SAP Fiori applications that were deployed from ADT.\n\n> ### Note:  \n> For the integration with VS Code, please ensure you have saved your ABAP system with the same system URL that is used by ADT. To check, click *SAP Fiori* \\(![Wrench/Pencil icon](images/SAP_Fiori_tools_Wrench_Pencil_9d6b0f8.png)\\) on the activity toolbar from the left side, then click *SAP Systems*. If the saved system cannot be matched after launching from ADT, you can choose any of the existing systems you have already saved. If you already have any SAP Fiori projects in your workspace that use the same system and main entity, you'll get the option to choose an existing matching SAP Fiori project or to create a new one with the SAP Fiori Generator.\n\n",
+  "excerpt": "<!-- loio20da2fd6cec64fc38d6d50641a4cf8d5 --> ABAP Development Tools Integration You can launch the SAP Fiori Generator directly when working with ABAP Development Tools \\(ADT\\) in Eclipse. You can ei...",
+  "wordCount": 431,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

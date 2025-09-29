@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-ui5-yaml",
+  "title": "ui5",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/ui5.yaml",
+  "lastModified": "2025-09-29T10:06:39.405Z",
+  "tags": [
+    "fiori-samples",
+    "yaml",
+    "ui5"
+  ],
+  "headers": [],
+  "content": "# ui5.yaml\n\n```yaml\nspecVersion: '1.0'\nmetadata:\n  name: ovp-mock-server-test\ntype: application\ndebug: true\nserver:\n  customMiddleware:\n  - name: sap-fe-mockserver\n    mountPath: /\n    afterMiddleware: compression\n    configuration:\n      annotations:\n        localPath: './webapp/localService/annotations.xml'\n        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'\n      service:\n          urlBasePath: '/sap/opu/odata/sap'\n          name: 'GWSAMPLE_BASIC'\n          metadataXmlPath: './webapp/localService/metadata.xml'\n          serviceXmlPath: './webapp/localService/service.xml'\n          mockdataRootPath: './webapp/localService/data'\n```",
+  "excerpt": "ui5.yaml",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

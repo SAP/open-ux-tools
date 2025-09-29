@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-controller-view1-controller-js",
+  "title": "View1.controller",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/controller/View1.controller.js",
+  "lastModified": "2025-09-29T10:06:39.533Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "View1",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# View1.controller.js\n\n```javascript\nsap.ui.define(\n  [\"sap/ui/core/mvc/Controller\", \"xml-js\"],\n  /**\n   * @param {typeof sap.ui.core.mvc.Controller} Controller\n   */\n  function (Controller, xmljs) {\n    \"use strict\";\n    const xml =\n      '<?xml version=\"1.0\" encoding=\"utf-8\"?>' +\n      '<note importance=\"high\" logged=\"true\">' +\n      \"    <title>Happy</title>\" +\n      \"    <todo>Work</todo>\" +\n      \"    <todo>Play</todo>\" +\n      \"</note>\";\n\n    const xmlToJson = JSON.parse(\n      xmljs.xml2json(xml, {\n        compact: true,\n        spaces: 4,\n      })\n    );\n    console.log(`>>>> xmlToJson ${JSON.stringify(xmlToJson)}`);\n\n    return Controller.extend(\"ztest.docapp1.ztravel.controller.View1\", {\n      onInit: function () {},\n    });\n  }\n);\n\n```",
+  "excerpt": "View1.controller.js",
+  "wordCount": 66,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

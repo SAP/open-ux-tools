@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-mta-yaml",
+  "title": "mta",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/mta.yaml",
+  "lastModified": "2025-09-29T10:06:39.533Z",
+  "tags": [
+    "fiori-samples",
+    "yaml",
+    "mta"
+  ],
+  "headers": [],
+  "content": "# mta.yaml\n\n```yaml\n_schema-version: \"3.2\"\nID: reuselibtravelapp\nversion: 0.0.1\nmodules:\n- name: reuselibtravelapp-destination-content\n  type: com.sap.application.content\n  requires:\n  - name: reuselibtravelapp-destination-service\n    parameters:\n      content-target: true\n  - name: reuselibtravelapp-repo-host\n    parameters:\n      service-key:\n        name: reuselibtravelapp-repo-host-key\n  - name: reuselibtravelapp-uaa\n    parameters:\n      service-key:\n        name: reuselibtravelapp-uaa-key\n  parameters:\n    content:\n      instance:\n        destinations:\n        - Name: reuselibtravelapp_html_repo_host\n          ServiceInstanceName: reuselibtravelapp-html5-srv\n          ServiceKeyName: reuselibtravelapp-repo-host-key\n          sap.cloud.service: reuselibtravelapp\n        - Authentication: OAuth2UserTokenExchange\n          Name: reuselibtravelapp_uaa\n          ServiceInstanceName: reuselibtravelapp-xsuaa-srv\n          ServiceKeyName: reuselibtravelapp-uaa-key\n          sap.cloud.service: reuselibtravelapp\n        existing_destinations_policy: ignore\n  build-parameters:\n    no-source: true\n- name: reuselibtravelapp-app-content\n  type: com.sap.application.content\n  path: .\n  requires:\n  - name: reuselibtravelapp-repo-host\n    parameters:\n      content-target: true\n  build-parameters:\n    build-result: resources\n    requires:\n    - artifacts:\n      - reuselibtravelapp.zip\n      name: reuselibtravelapp\n      target-path: resources/\n- name: reuselibtravelapp\n  type: html5\n  path: .\n  build-parameters:\n    build-result: dist\n    builder: custom\n    commands:\n    - npm install\n    - npm run build:cf\n    supported-platforms: []\nresources:\n- name: reuselibtravelapp-destination-service\n  type: org.cloudfoundry.managed-service\n  parameters:\n    config:\n      HTML5Runtime_enabled: true\n      init_data:\n        instance:\n          destinations:\n          - Authentication: NoAuthentication\n            Name: ui5\n            ProxyType: Internet\n            Type: HTTP\n            URL: https://ui5.sap.com\n          existing_destinations_policy: update\n      version: 1.0.0\n    service: destination\n    service-name: reuselibtravelapp-destination-service\n    service-plan: lite\n- name: reuselibtravelapp-uaa\n  type: org.cloudfoundry.managed-service\n  parameters:\n    path: ./xs-security.json\n    service: xsuaa\n    service-name: reuselibtravelapp-xsuaa-srv\n    service-plan: application\n- name: reuselibtravelapp-repo-host\n  type: org.cloudfoundry.managed-service\n  parameters:\n    service: html5-apps-repo\n    service-name: reuselibtravelapp-html5-srv\n    service-plan: app-host\nparameters:\n  deploy_mode: html5-repo\n  enable-parallel-deployments: true\n\n```",
+  "excerpt": "mta.yaml",
+  "wordCount": 179,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

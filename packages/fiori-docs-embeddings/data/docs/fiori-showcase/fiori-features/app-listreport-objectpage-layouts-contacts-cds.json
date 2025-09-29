@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-listreport-objectpage-layouts-contacts-cds",
+  "title": "layouts contacts",
+  "category": "fiori-features",
+  "path": "app/listreport-objectpage/layouts_contacts.cds",
+  "lastModified": "2025-09-29T10:06:39.212Z",
+  "tags": [
+    "fiori-features",
+    "cds",
+    "layouts",
+    "contacts"
+  ],
+  "headers": [],
+  "content": "# layouts_contacts.cds\n\n```cds\nusing LROPODataService as srv from '../../srv/list-report-srv';\n\n// Communication\n// Search-Term: #Contact\nannotate srv.Contacts with @(\n    Communication.Contact : {\n        fn   : name, //full name\n        kind : #org,\n        tel  : [{\n            uri         : phone,\n            type        : #preferred\n        }],\n        adr  : [{\n            building    : building,\n            country     : country.name,\n            street      : street,\n            locality    : city,\n            code        : postCode,\n            type        : #preferred\n        }],\n    },\n    //Search-Term: #AddressFacet\n    Communication.Address : {\n        building    : building,\n        street      : street,\n        locality    : city,\n        code        : postCode,\n        country     : country.name,\n        label       : addressLabel,\n        type        : #preferred,\n    }\n);\n```",
+  "excerpt": "layouts_contacts.cds",
+  "wordCount": 91,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

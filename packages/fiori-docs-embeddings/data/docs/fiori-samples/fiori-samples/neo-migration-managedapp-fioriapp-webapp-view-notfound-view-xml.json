@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-view-notfound-view-xml",
+  "title": "NotFound.view",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/view/NotFound.view.xml",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "NotFound",
+    "view"
+  ],
+  "headers": [],
+  "content": "# NotFound.view.xml\n\n```xml\n<mvc:View\n\tcontrollerName=\"ns.manageproductsneo.controller.NotFound\"\n\txmlns=\"sap.m\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\n\t<MessagePage\n\t\ttitle=\"{i18n>notFoundTitle}\"\n\t\ttext=\"{i18n>notFoundText}\"\n\t\ticon=\"sap-icon://document\"\n\t\tid=\"page\"\n\t\tdescription=\"\">\n\t\t<customDescription>\n\t\t\t<Link id=\"link\" text=\"{i18n>backToWorklist}\" press=\".onLinkPressed\" />\n\t\t</customDescription>\n\t</MessagePage>\n\n</mvc:View>\n```",
+  "excerpt": "NotFound.view.xml",
+  "wordCount": 23,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-configuring-the-object-page-header-title-and-description-333f850-md",
+  "title": "Configuring the Object Page Header Title and Description",
+  "category": "fiori-elements-framework",
+  "path": "configuring-the-object-page-header-title-and-description-333f850.md",
+  "lastModified": "2025-09-29T10:06:38.790Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "configuring",
+    "the",
+    "object",
+    "page",
+    "header",
+    "title",
+    "and",
+    "description",
+    "333f850"
+  ],
+  "headers": [
+    "Configuring the Object Page Header Title and Description"
+  ],
+  "content": "<!-- loio333f85086c2e43039f6773be15f3ed50 -->\n\n# Configuring the Object Page Header Title and Description\n\nYou can use annotations to adapt the object page header title and description.\n\n\n\n  \n  \n**Object Page Header: Title and Description**\n\n![](images/Object_Page_Title_and_Subtitle_0430d3e.png \"Object Page Header: Title and Description \")\n\nTo define or change the object page header title and description, adapt the OData annotations:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotations Target=\"STTA_PROD_MAN.STTA_C_MP_ProductType\">\n>     <Annotation Term=\"UI.HeaderInfo\">\n>         <Record>\n>             <PropertyValue Property=\"Title\">\n>                 <Record Type=\"UI.DataField\">\n>                     <PropertyValue Property=\"Value\" Path=\"to_ProductTextInOriginalLang/Name\"/>\n>                 </Record>\n>             </PropertyValue>\n>             <PropertyValue Property=\"Description\">\n>                 <Record Type=\"UI.DataField\">\n>                      <PropertyValue Property=\"Value\" Path=\"ProductForEdit\"/>\n>                 </Record>\n>             </PropertyValue>\n>         </Record>\n>     </Annotation>\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.headerInfo: {\n>   title: {\n>     value: '_PRODUCTTEXTINORIGINALLANG.NAME',\n>     type: #STANDARD\n>   },\n>   description: {\n>     value: 'PRODUCTFOREDIT',\n>     type: #STANDARD\n>   }\n> }\n> annotate view STTA_C_MP_PRODUCT with {\n> \n> }\n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> annotate STTA_PROD_MAN.STTA_C_MP_ProductType with @(\n>   UI.HeaderInfo : {\n>     Title : {\n>         $Type : 'UI.DataField',\n>         Value : to_ProductTextInOriginalLang.Name\n>     },\n>     Description : {\n>         $Type : 'UI.DataField',\n>         Value : ProductForEdit\n>     }\n>   }\n> );\n> ```\n\n**Related Information**  \n\n\n[Changing Default Titles of New and Unnamed Objects](changing-default-titles-of-new-and-unnamed-objects-63946c0.md \"When an end user creates new items in a list report or object page table, SAP Fiori elements provides a default title. Application developers are recommended to replace it with an application-specific title.\")\n\n",
+  "excerpt": "<!-- loio333f85086c2e43039f6773be15f3ed50 --> Configuring the Object Page Header Title and Description You can use annotations to adapt the object page header title and description.       Object Page ...",
+  "wordCount": 258,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

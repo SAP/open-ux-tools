@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-custom-view-switch-ecd9f10-md",
+  "title": "Custom View Switch",
+  "category": "fiori-elements-framework",
+  "path": "custom-view-switch-ecd9f10.md",
+  "lastModified": "2025-09-29T10:06:38.797Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "custom",
+    "view",
+    "switch",
+    "ecd9f10"
+  ],
+  "headers": [
+    "Custom View Switch",
+    "Procedure"
+  ],
+  "content": "<!-- loioecd9f108b99f45c8bec911181b763c69 -->\n\n# Custom View Switch\n\nExtend view switch so it reacts based on filter conditions or custom configuration.\n\n\n\n## Procedure\n\nTo define the custom view switch:\n\n1.  Create a controller extension \\(example, `customViewswitch.controller.js` file\\) and define the `onBeforeRebindPageExtension` function with these input parameters:\n\n    -   `aCards` \\[Type: Array\\]: List of all visible cards\n\n    -   `oSelectionvariant` \\[Type: Object\\]: Object containing filter values\n\n\n2.  Define `setTabIndex()` method to pass *<Cardid\\>* and *<TabIndex\\>* as parameters. For example, var`oTabIndexList = {\"card1\" : 2, \"card2\": 1};`\n\n    > ### Note:  \n    > The *<TabIndex\\>* starts with the value one and should not be greater than the length of tabs.\n\n    Configure the key value according to your filter values and pass the `oTabIndexList` object to `this.setTabIndex(oTabIndexList)` as shown here:\n\n    > ### Sample Code:  \n    > Breakout function\n    > \n    > ```\n    > /*\n    > * Breakout function for dynamic view switch\n    > * */\n    > onBeforeRebindPageExtension: function (aCards, oSelectionVariant) {\n    >     var oTabIndexList = {};\n    >     var oFilterList = this._getFilterList(oSelectionVariant); //Sample logic\n    >     var oTabIndexList = {};\n    >     if (aCards && aCards.length > 0) {\n    >         for (var i = 0; i < aCards.length; i++) {\n    >             if (aCards[i].id == \"card012\") {\n    >                 if (oFilterList && oFilterList.hasOwnProperty(\"SupplierName\")) {\n    >                     if (oFilterList.SupplierName == \"SAP\") {\n    >                         oTabIndexList[\"card012\"] = 1; \n    >                     } else if (oFilterList.SupplierName == \"Talpa\") {\n    >                         oTabIndexList[\"card012\"] = 2;\n    >                     }\n    >                 }\n    >             }\n    >         }\n    >     }//End of sample logic\t\n    > \n    >     this.setTabIndex(oTabIndexList); //Pass updated oTabIndexList object here\n    > }\n    > \n    > ```\n\n    > ### Sample Code:  \n    > Supporting function\n    > \n    > ```\n    > //get all filters with values\n    > _getFilterList: function (oSelectionVariant) {\n    >     var oFilterList = {};\n    >     if (oSelectionVariant && oSelectionVariant.Parameters && oSelectionVariant.Parameters.length > 0) {\n    >         for (var i = 0; i < oSelectionVariant.Parameters.length; i++) {\n    >             oFilterList[oSelectionVariant.Parameters[i].PropertyName] = oSelectionVariant.Parameters[i].PropertyValue;\n    >         }\n    >     }\n    >     if (oSelectionVariant && oSelectionVariant.SelectOptions && oSelectionVariant.SelectOptions.length > 0) {\n    >         for (var j = 0; j < oSelectionVariant.SelectOptions.length; j++) {\n    >             var aRanges = oSelectionVariant.SelectOptions[j].Ranges;\n    >             for (var k = 0; k < aRanges.length; k++) {\n    >                 if (aRanges[k].Option == \"EQ\" && aRanges[k].Low !== \"\") {\n    >                     oFilterList[oSelectionVariant.SelectOptions[j].PropertyName] = aRanges[k].Low;\n    >                 }\n    >             }\n    >         }\n    >     }\n    >     return oFilterList;\n    > },\n    > \n    > ```\n\n3.  Configure the controller extension in the descriptor file.\n\n    ```\n    \"extends\": {\n                \"extensions\": {\n                    \"sap.ui.controllerExtensions\": {\n                        \"sap.ovp.app.Main\": {\n                            \"controllerName\": \"sap.ovp.demo.ext.customController\"\n                        }\n                    }\n                }\n         }\n    \n    ```\n\n\n",
+  "excerpt": "<!-- loioecd9f108b99f45c8bec911181b763c69 --> Custom View Switch Extend view switch so it reacts based on filter conditions or custom configuration. Procedure To define the custom view switch: 1.  Cre...",
+  "wordCount": 395,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

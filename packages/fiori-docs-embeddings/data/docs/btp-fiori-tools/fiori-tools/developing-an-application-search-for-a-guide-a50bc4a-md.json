@@ -1,0 +1,28 @@
+{
+  "id": "btp-fiori-tools-developing-an-application-search-for-a-guide-a50bc4a-md",
+  "title": "Search for a Guide",
+  "category": "fiori-tools",
+  "path": "Developing-an-Application/search-for-a-guide-a50bc4a.md",
+  "lastModified": "2025-09-29T10:06:38.697Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "search",
+    "for",
+    "guide",
+    "a50bc4a"
+  ],
+  "headers": [
+    "Search for a Guide",
+    "Group by",
+    "View",
+    "Filter",
+    "Search guides"
+  ],
+  "content": "<!-- loioa50bc4a67c9e4caebfff4e1ad158796c -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Search for a Guide\n\nYou can find the list of available guides in guided development. Click on a guide to see a description and sample preview. To launch the guide, click *Start Guide*.\n\nEach guide has categories, tags, and other attributes. A category reflects the OData version, template, and annotations type, the guide is relevant for. A tag is a type of metadata assigned to a piece of information in an guide. Both categories and tags make searching for guides easier.\n\n\n\n<a name=\"loioa50bc4a67c9e4caebfff4e1ad158796c__section_hdm_wzp_jpb\"/>\n\n## Group by\n\nThe *Group by* dropdown defines how the guides are grouped based on their categories.\n\n-   *Page Type* refers to the page or template type. Some features can be applied to different page types, and such guides are displayed under all the categories they are relevant for.\n\n    When a guide available for multiple page types is selected, only the guide relevant to the page type of the current project is highlighted.\n\n-   *OData Version* refers to the OData service version for which the guide steps are relevant. If the selected guide is not currently available for a given OData version, a warning message appears.\n\n    > ### Tip:  \n    > Some guides are available for both OData V2 and OData V4 versions but the instructions can differ.\n\n-   *Application Artifacts* refers to the type of change the guide describes. The options are Manifest Change, Flex Change, and Annotations.\n\nAnnotations-specific guides are further grouped into three categories: XML Annotation, CAP CDS Annotation, and ABAP CDS Annotation.\n\n> ### Tip:  \n> Some guides are available for multiple annotation types but the parameters and code snippets differ.\n\n\n\n<a name=\"loioa50bc4a67c9e4caebfff4e1ad158796c__section_o4h_yzp_jpb\"/>\n\n## View\n\nBy default, only the guides that are relevant to the current project are displayed. This ensures that code inserted into your project is appropriate for the project's template, OData version, and SAPUI5 version.\n\nUsing the *View* filter, you can see all the guides available in guided development.\n\nTo use the *View* filter, perform the following steps:\n\n1.  Select a project from the *Project* dropdown.\n2.  In the *View* dropdown, choose from the following options:\n    -   *All Guides* - displays the list of all the guides in guided development.\n\n        > ### Note:  \n        > When *All Guides* is selected, the updated list of guides appears with the <span class=\"SAP-icons-V5\"></span> \\(*Information*\\) icon and message:\n        > \n        > `Not all guides are applicable to [project name]. Click here to see all project guides.`\n        > \n        > Click the provided link to switch to the *Project Guides* list.\n\n        The guides that aren’t relevant to the current project are indicated by a warning symbol next to the guide title. After you open the guide, the following warning message appears:\n\n        `This guide isn’t compatible with the current project and will not work as intended.`\n\n    -   *Project Guides* - displays only the guides that apply to the current project.\n\n3.  Click the guide applicable to your project and follow its steps to modify your application.\n\n\n\n<a name=\"loioa50bc4a67c9e4caebfff4e1ad158796c__section_anm_b1q_jpb\"/>\n\n## Filter\n\nThe <span class=\"SAP-icons-V5\"></span> \\(*Filter*\\) icon allows you to select one or more predefined tags assigned to the guides. The guide list is then narrowed down to show only those guides that have all the selected tags.\n\n\n\n<a name=\"loioa50bc4a67c9e4caebfff4e1ad158796c__section_qp1_c1q_jpb\"/>\n\n## Search guides\n\nThe *Search guides* field allows you to search for a specific term, which includes titles, descriptions, annotation terms, and information links, to filter the list of guides. For example, if you want to find all the guides that are relevant to the `UI.LineItem` annotation, you can type in the search term and narrow it down to the list of guides using this annotation term. The search works as you type, so each successive character entered filters the list further.\n\n",
+  "excerpt": "<!-- loioa50bc4a67c9e4caebfff4e1ad158796c --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Search for a Guide You can find the list of available guides in guided development. C...",
+  "wordCount": 619,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

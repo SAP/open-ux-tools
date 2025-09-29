@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-test-integration-navigationjourney-js",
+  "title": "NavigationJourney",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/test/integration/NavigationJourney.js",
+  "lastModified": "2025-09-29T10:06:39.514Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "NavigationJourney"
+  ],
+  "headers": [],
+  "content": "# NavigationJourney.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"sap/ui/test/opaQunit\",\n\t\"./pages/App\",\n\t\"./pages/View1\"\n], function (opaTest) {\n\t\"use strict\";\n\n\tQUnit.module(\"Navigation Journey\");\n\n\topaTest(\"Should see the initial page of the app\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iStartMyApp();\n\n\t\t// Assertions\n\t\tThen.onTheAppPage.iShouldSeeTheApp();\n      \tThen.onTheViewPage.iShouldSeeThePageView();\n\n\t\t//Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n});\n\n```",
+  "excerpt": "NavigationJourney.js",
+  "wordCount": 42,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

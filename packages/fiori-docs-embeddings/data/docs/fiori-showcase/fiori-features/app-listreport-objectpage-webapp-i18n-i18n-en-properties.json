@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-listreport-objectpage-webapp-i18n-i18n-en-properties",
+  "title": "i18n en",
+  "category": "fiori-features",
+  "path": "app/listreport-objectpage/webapp/i18n/i18n_en.properties",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "properties",
+    "i18n"
+  ],
+  "headers": [],
+  "content": "# i18n_en.properties\n\n```properties\n# This is the resource bundle for featureShowcase\n\n#Texts for manifest.json\n\n#XTIT: Application name\nappTitle=SAP Fiori elements feature showcase\n\n#YDES: Application description\nappDescription=A SAP Fiori application.\n\nappSubTitle=Custom variant name\n\nlocation=Location\nintegerValue=Integer value\nfield=Field\n\ncustomSubSection=custom subsection\nCustomSection=custom section\n\n```",
+  "excerpt": "i18n_en.properties",
+  "wordCount": 41,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

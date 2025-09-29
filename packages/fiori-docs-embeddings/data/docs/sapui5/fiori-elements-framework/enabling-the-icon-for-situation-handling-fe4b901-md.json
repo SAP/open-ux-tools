@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-enabling-the-icon-for-situation-handling-fe4b901-md",
+  "title": "Enabling the Icon for Situation Handling",
+  "category": "fiori-elements-framework",
+  "path": "enabling-the-icon-for-situation-handling-fe4b901.md",
+  "lastModified": "2025-09-29T10:06:38.818Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "enabling",
+    "the",
+    "icon",
+    "for",
+    "situation",
+    "handling",
+    "fe4b901"
+  ],
+  "headers": [
+    "Enabling the Icon for Situation Handling"
+  ],
+  "content": "<!-- loiofe4b9013feb04bbfae94f1040a796781 -->\n\n# Enabling the Icon for Situation Handling\n\nYou can enable the icon to indicate an existing situation in the list report and the object page.\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V4.\n\nSAP Fiori elements for OData V4 automatically displays an icon for Situation Handling in the list report and the object page if your service contains the corresponding annotation. You must ensure that exactly one navigation property exists whose target entity type is annotated with the following:\n\n> ### Sample Code:  \n> ```\n> <Annotation Term=\"com.sap.vocabularies.Common.v1.SAPObjectNodeType\">\n>      <Record>\n>           <PropertyValue Property=\"Name\" String=\"BusinessSituation\" />\n>      </Record>\n> </Annotation>\n> ```\n\nThe following screenshot shows an example from a list report:\n\n![](images/Situation_Handling_in_a_List_Report_8cbabf0.png)\n\nThe following screenshot shows an example from an object page:\n\n![](images/Situation_Handling_on_an_Object_Page_3268202.png)\n\nIn applications using the situation handling framework, the business situations icon is displayed in a separate column in grid tables.\n\n",
+  "excerpt": "<!-- loiofe4b9013feb04bbfae94f1040a796781 --> Enabling the Icon for Situation Handling You can enable the icon to indicate an existing situation in the list report and the object page. > Note:   > Thi...",
+  "wordCount": 156,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

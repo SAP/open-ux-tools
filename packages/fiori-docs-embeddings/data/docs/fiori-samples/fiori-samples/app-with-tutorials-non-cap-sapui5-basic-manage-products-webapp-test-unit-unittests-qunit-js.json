@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-test-unit-unittests-qunit-js",
+  "title": "unitTests.qunit",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/test/unit/unitTests.qunit.js",
+  "lastModified": "2025-09-29T10:06:39.514Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "unitTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# unitTests.qunit.js\n\n```javascript\n/* global QUnit */\nQUnit.config.autostart = false;\n\nsap.ui.getCore().attachInit(function () {\n\t\"use strict\";\n\n\tsap.ui.require([\n\t\t\"sapbtp/sapui5/test/unit/AllTests\"\n\t], function () {\n\t\tQUnit.start();\n\t});\n});\n\n```",
+  "excerpt": "unitTests.qunit.js",
+  "wordCount": 25,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "sapui5-extension-point-for-reacting-when-properties-are-updated-in-the-back-end-ee31761-md",
+  "title": "Extension Point for Reacting When Properties Are Updated in the Back End",
+  "category": "fiori-elements-framework",
+  "path": "extension-point-for-reacting-when-properties-are-updated-in-the-back-end-ee31761.md",
+  "lastModified": "2025-09-29T10:06:38.823Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "extension",
+    "point",
+    "for",
+    "reacting",
+    "when",
+    "properties",
+    "are",
+    "updated",
+    "the",
+    "back",
+    "end",
+    "ee31761"
+  ],
+  "headers": [
+    "Extension Point for Reacting When Properties Are Updated in the Back End"
+  ],
+  "content": "<!-- loioee31761b27034a90bbb37c9463fbdd56 -->\n\n# Extension Point for Reacting When Properties Are Updated in the Back End\n\nYou can add custom coding to react when properties are updated in the back end.\n\n> ### Note:  \n> This topic is only applicable to SAP Fiori elements for OData V4.\n\nYou can use the `watchProperty` method of the `extensionAPI` to define a callback when selected properties are changed.\n\n1:n navigation properties are not supported.\n\nYou can use the following parameters for the callback function:\n\n-   `newValue`: the new value of the property\n-   `oldValue`: the previous value of the property\n-   `isInitial`: set to `true` if the property is retrieved from the back end for the first time\n-   `context`: the page context\n\nCall the `watchProperty` method within the controller extension of your page, as shown in the following sample code:\n\n> ### Sample Code:  \n> ```js\n> sap.ui.define(\n>     [\"sap/ui/core/mvc/ControllerExtension\", \"sap/ui/core/message/Message\", \"sap/ui/core/message/MessageType\"],\n>     function (ControllerExtension, Message, MessageType) {\n>         \"use strict\";\n> \n>         return ControllerExtension.extend(\"watchProperties-basic.ext.OPExtend\", {\n>             override: {\n>                 onInit: function () {\n>                     this.base.getExtensionAPI().watchProperty(\"isHotCountry\", (newValue, oldValue, isInitial, context) => {\n>                         if (newValue === true) {\n>                             const messages = [\n>                                 new Message({\n>                                     message: \"Employee is in a hot country\",\n>                                     type: MessageType.Information\n>                                 })\n>                             ];\n>                             this.base.getExtensionAPI().showMessages(messages);\n>                         } else {\n>                             this.base.getExtensionAPI().hideMessage();\n>                         }\n>                     });\n>                 }\n>             }\n>         });\n>     }\n> );\n> \n> ```\n\nIn the example above, a message is displayed when the property `isHotCountry` is set to `true`.\n\n",
+  "excerpt": "<!-- loioee31761b27034a90bbb37c9463fbdd56 --> Extension Point for Reacting When Properties Are Updated in the Back End You can add custom coding to react when properties are updated in the back end. >...",
+  "wordCount": 251,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

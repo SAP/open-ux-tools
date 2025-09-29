@@ -1,0 +1,25 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-package-json",
+  "title": "mta-project",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/package.json",
+  "lastModified": "2025-09-29T10:06:39.532Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "package"
+  ],
+  "headers": [
+    "name",
+    "version",
+    "description",
+    "scripts",
+    "devDependencies"
+  ],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"mta-project\",\n  \"version\": \"0.0.1\",\n  \"description\": \"Build and deployment scripts\",\n  \"scripts\": {\n    \"clean\": \"rimraf resources mta_archives mta-op*\",\n    \"build\": \"rimraf resources mta_archives && mbt build --mtar archive\",\n    \"deploy\": \"cf deploy mta_archives/archive.mtar --retries 1\",\n    \"undeploy\": \"cf undeploy managedapp --delete-services --delete-service-keys --delete-service-brokers\"\n  },\n  \"devDependencies\": {\n    \"mbt\": \"^1.2.29\",\n    \"rimraf\": \"^5.0.5\"\n  }\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 52,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

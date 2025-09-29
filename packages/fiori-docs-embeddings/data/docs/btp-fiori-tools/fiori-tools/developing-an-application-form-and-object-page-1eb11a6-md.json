@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-developing-an-application-form-and-object-page-1eb11a6-md",
+  "title": "Form and Object Page",
+  "category": "fiori-tools",
+  "path": "Developing-an-Application/form-and-object-page-1eb11a6.md",
+  "lastModified": "2025-09-29T10:06:38.691Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "form",
+    "and",
+    "object",
+    "page",
+    "1eb11a6"
+  ],
+  "headers": [
+    "Form and Object Page"
+  ],
+  "content": "<!-- loio1eb11a698b1343069e4ebe5fe57538b9 -->\n\n# Form and Object Page\n\nThe following links give you general information about the *Form and Object Page*:\n\n-   [Fiori Design Guidelines](https://experience.sap.com/fiori-design-web/object-page/).\n-   [Developing Low-Code Business Application](https://help.sap.com/viewer/6a5fc562f6e2402aa84b0416614a05fc/Dev/en-US/4d00865158bd4bbb8f170f59f690cdb2.html).\n\nThe supported elements of the *Form and Object Page* are:\n\n-   [Header](header-a05d7fc.md#loioa05d7fc1bbbf42a0ade9fb50f6b58b56)\n-   [Form Section](form-section-4102b3d.md)\n-   [Table Section](table-section-fc59378.md)\n-   [Identification Section](identification-section-b83f501.md)\n-   [Group Section](group-section-1894c47.md)\n-   [Footer](footer-1b391bd.md)\n\n",
+  "excerpt": "<!-- loio1eb11a698b1343069e4ebe5fe57538b9 --> Form and Object Page The following links give you general information about the Form and Object Page: -   Fiori Design Guidelines. -   Developing Low-Code...",
+  "wordCount": 57,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

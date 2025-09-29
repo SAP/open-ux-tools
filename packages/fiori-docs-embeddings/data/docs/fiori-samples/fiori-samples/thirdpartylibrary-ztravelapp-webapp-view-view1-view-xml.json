@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-view-view1-view-xml",
+  "title": "View1.view",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/view/View1.view.xml",
+  "lastModified": "2025-09-29T10:06:39.534Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "View1",
+    "view"
+  ],
+  "headers": [],
+  "content": "# View1.view.xml\n\n```xml\n<mvc:View controllerName=\"ztest.docapp1.ztravel.controller.View1\"\n    xmlns:mvc=\"sap.ui.core.mvc\" displayBlock=\"true\"\n    xmlns=\"sap.m\">\n    <Page id=\"page\" title=\"{i18n>title}\">\n        <content />\n    </Page>\n</mvc:View>\n\n```",
+  "excerpt": "View1.view.xml",
+  "wordCount": 16,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "fiori-showcase-app-worklist-tsconfig-json",
+  "title": "tsconfig",
+  "category": "fiori-features",
+  "path": "app/worklist/tsconfig.json",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "json",
+    "tsconfig"
+  ],
+  "headers": [
+    "compilerOptions",
+    "include",
+    "exclude"
+  ],
+  "content": "# tsconfig.json\n\n```json\n{\n  \"compilerOptions\": {\n    \"target\": \"es2022\",\n    \"module\": \"es2022\",\n    \"skipLibCheck\": true,\n    \"allowJs\": true,\n    \"strict\": true,\n    \"strictPropertyInitialization\": false,\n    \"moduleResolution\": \"node\",\n    \"rootDir\": \"../../\",\n    \"outDir\": \"./dist\",\n    \"baseUrl\": \"./\",\n    \"paths\": {\n      \"sap/fe/showcase/worklist/*\": [\n        \"./webapp/*\"\n      ],\n      \"#cds-models/*\": [\n        \"../../@cds-models/*/index.ts\"\n      ]\n    },\n    \"typeRoots\": [\n      \"./node_modules/@types\",\n      \"./node_modules/@sapui5/types\",\n      \"../../node_modules/@types\",\n      \"../../node_modules/@sapui5/types\"\n    ]\n  },\n  \"include\": [\n    \"./webapp/**/*\",\n    \"../ControllerExtension.d.ts\"\n  ],\n  \"exclude\": [\n    \"node_modules/**\"\n  ]\n}\n```",
+  "excerpt": "tsconfig.json",
+  "wordCount": 56,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

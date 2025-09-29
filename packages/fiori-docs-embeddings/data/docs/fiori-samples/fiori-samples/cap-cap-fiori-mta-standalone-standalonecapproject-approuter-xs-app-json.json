@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-standalonecapproject-approuter-xs-app-json",
+  "title": "xs app",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-mta-standalone/standalonecapproject-approuter/xs-app.json",
+  "lastModified": "2025-09-29T10:06:39.520Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "app"
+  ],
+  "headers": [
+    "authenticationMethod",
+    "routes",
+    "welcomeFile"
+  ],
+  "content": "# xs-app.json\n\n```json\n{\n  \"authenticationMethod\": \"none\",\n  \"routes\": [],\n  \"welcomeFile\": \"/mystandalonecapproject\"\n}\n```",
+  "excerpt": "xs-app.json",
+  "wordCount": 12,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

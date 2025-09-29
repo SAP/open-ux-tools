@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-controller-app-controller-js",
+  "title": "App.controller",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/controller/App.controller.js",
+  "lastModified": "2025-09-29T10:06:39.513Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "App",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# App.controller.js\n\n```javascript\nsap.ui.define(\n    [\n        \"sap/ui/core/mvc/Controller\"\n    ],\n    function(BaseController) {\n      \"use strict\";\n  \n      return BaseController.extend(\"sap.btp.sapui5.controller.App\", {\n        onInit() {\n        }\n      });\n    }\n  );\n  \n```",
+  "excerpt": "App.controller.js",
+  "wordCount": 21,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

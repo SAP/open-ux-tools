@@ -1,0 +1,27 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-localservice-mockdata-suppliers-json",
+  "title": "Suppliers",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/localService/mockdata/Suppliers.json",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "Suppliers"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+  ],
+  "content": "# Suppliers.json\n\n```json\n[\n  {\n    \"SupplierID\": 1,\n    \"CompanyName\": \"New Orleans Cajun Delights\",\n    \"ContactName\": \"Shelley Burke\",\n    \"ContactTitle\": \"Order Administrator\",\n    \"Address\": \"P.O. Box 78934\",\n    \"City\": \"New Orleans\",\n    \"Region\": \"LA\",\n    \"PostalCode\": \"70117\",\n    \"Country\": \"USA\"\n  },\n  {\n    \"SupplierID\": 2,\n    \"CompanyName\": \"Exotic Liquids\",\n    \"ContactName\": \"Charlotte Cooper\",\n    \"ContactTitle\": \"Purchasing Manager\",\n    \"Address\": \"49 Gilbert St.\",\n    \"City\": \"London\",\n    \"Region\": \"UK\",\n    \"PostalCode\": \"EC1 4SD\",\n    \"Country\": \"UK\"\n  },\n  {\n    \"SupplierID\": 3,\n    \"CompanyName\": \"Grandma Kelly's Homestead\",\n    \"ContactName\": \"Regina Murphy\",\n    \"ContactTitle\": \"Sales Representative\",\n    \"Address\": \"707 Oxford Rd.\",\n    \"City\": \"Ann Arbor\",\n    \"Region\": \"MI\",\n    \"PostalCode\": \"48104\",\n    \"Country\": \"USA\"\n  },\n  {\n    \"SupplierID\": 4,\n    \"CompanyName\": \"For�ts d'�rables\",\n    \"ContactName\": \"Chantal Goulet\",\n    \"ContactTitle\": \"Accounting Manager\",\n    \"Address\": \"148 rue Chasseur\",\n    \"City\": \"Ste-Hyacinthe\",\n    \"Region\": \"Qu�bec\",\n    \"PostalCode\": \"J2S 7S8\",\n    \"Country\": \"Canada\"\n  },\n  {\n    \"SupplierID\": 5,\n    \"CompanyName\": \"Plutzer Lebensmittelgro�m�rkte AG\",\n    \"ContactName\": \"Martin Bein\",\n    \"ContactTitle\": \"International Marketing Mgr.\",\n    \"Address\": \"Bogenallee 51\",\n    \"City\": \"Frankfurt\",\n    \"Region\": \"DE\",\n    \"PostalCode\": \"60439\",\n    \"Country\": \"Germany\"\n  },\n  {\n    \"SupplierID\": 6,\n    \"CompanyName\": \"Lyngbysild\",\n    \"ContactName\": \"Niels Petersen\",\n    \"ContactTitle\": \"Sales Manager\",\n    \"Address\": \"Lyngbysild Fiskebakken 10\",\n    \"City\": \"Lyngby\",\n    \"Region\": \"NL\",\n    \"PostalCode\": \"2800\",\n    \"Country\": \"Denmark\"\n  },\n  {\n    \"SupplierID\": 7,\n    \"CompanyName\": \"Formaggi Fortini s.r.l.\",\n    \"ContactName\": \"Elio Rossi\",\n    \"ContactTitle\": \"Sales Representative\",\n    \"Address\": \"Viale Dante, 75\",\n    \"City\": \"Ravenna\",\n    \"Region\": \"IL\",\n    \"PostalCode\": \"48100\",\n    \"Country\": \"Italy\"\n  }\n]\n```",
+  "excerpt": "Suppliers.json",
+  "wordCount": 189,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

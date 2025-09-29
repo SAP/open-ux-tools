@@ -1,0 +1,22 @@
+{
+  "id": "btp-fiori-tools-getting-started-with-sap-fiori-tools-telemetry-837c231-md",
+  "title": "Telemetry",
+  "category": "fiori-tools",
+  "path": "Getting-Started-with-SAP-Fiori-Tools/telemetry-837c231.md",
+  "lastModified": "2025-09-29T10:06:38.707Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "telemetry",
+    "837c231"
+  ],
+  "headers": [
+    "Telemetry"
+  ],
+  "content": "<!-- loio837c23115bff43b4a245e9f01b0e80f7 -->\n\n# Telemetry\n\nYou can enable and disable the collection of analytics for SAP Fiori tools. If enabled, non-personally identifiable information is used to help understand how you use the product to improve SAP Fiori tools.\n\nTo enable or disable telemetry:\n\n-   Open the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and execute the `Fiori: Change Telemetry Settings` command.\n\n",
+  "excerpt": "<!-- loio837c23115bff43b4a245e9f01b0e80f7 --> Telemetry You can enable and disable the collection of analytics for SAP Fiori tools. If enabled, non-personally identifiable information is used to help ...",
+  "wordCount": 63,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

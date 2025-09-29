@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-developing-an-application-basic-columns-5f8c75b-md",
+  "title": "Basic Columns",
+  "category": "fiori-tools",
+  "path": "Developing-an-Application/basic-columns-5f8c75b.md",
+  "lastModified": "2025-09-29T10:06:38.684Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "basic",
+    "columns",
+    "5f8c75b"
+  ],
+  "headers": [
+    "Basic Columns",
+    "Adding a Basic Column",
+    "Moving a Basic Column",
+    "Deleting a Basic Column"
+  ],
+  "content": "<!-- loio5f8c75b2b4f3468aa85e9658825389de -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Basic Columns\n\nA basic column is used for the standard representation of the value type. For example, it shows string values as text and numeric values as numbers. You can add multiple basic columns at a time by selecting more than one value in the *Columns* field. To find the desired value, you can filter the list of available options by typing in a few characters of the value name.\n\n![](images/Basic_Column_8c30f41.png)\n\n\n\n<a name=\"loio5f8c75b2b4f3468aa85e9658825389de__section_rnc_z5y_35b\"/>\n\n## Adding a Basic Column\n\nTo add a basic column to a table in a section, perform the following steps in the *Page Editor*:\n\n1.  Click the :heavy_plus_sign: \\(*Add*\\) icon next to the *Columns* node.\n2.  Click *Add Basic Columns*.\n3.  Select columns in the *Columns* dropdown.\n4.  Click *Add*.\n\n    > ### Note:  \n    > You cannot add the column based on the same value twice into the table.\n\n\nBasic columns contain the following properties:\n\n-   [Label](appendix-457f2e9.md#loiod44832d99bdf4f73ba14cdbb16dc9301)\n-   [Importance](appendix-457f2e9.md#loio7fe32a215209419da6d6c19da0f69ccb)\n-   [Hidden](appendix-457f2e9.md#loiof7ad71792a0044d6b6172f078827bdc0)\n-   [External ID](appendix-457f2e9.md#loio13f6d7fd6c6c4f60908cefa7d4260e49)\n-   [Text](appendix-457f2e9.md#loio5d1cc16e80ce48de8a47f2835a42cc47) \\(for all value types except Boolean\\)\n-   [Text Arrangement](appendix-457f2e9.md#loioecd5568919bf43c5a04dd6b5e8e173f6) \\(for all value types except Boolean\\)\n-   [Display Type](appendix-457f2e9.md#loio6544398b07024f4faff4bad25949b64d) \\(for string values\\)\n-   [Restrictions](appendix-457f2e9.md#loio58fec66ebb1f48fbbd3092d3a1b27fda)\n-   [Criticality](appendix-457f2e9.md#loio19d82b5d8bc940738afcb49b51a48bed) \\(for string and numeric values\\)\n-   [Criticality Representation](appendix-457f2e9.md#loiof2b7486cb4644441979d818802b79940) \\(for string and numeric values\\)\n-   [Display as Image](appendix-457f2e9.md#loio344568c1e4014621905d78857cf66401)\n-   [Measures and Currencies](appendix-457f2e9.md#loio8ad2438ea4ed4a52ab530ff104530f98) \\(for numeric values\\)\n-   [Semantic Object Name](appendix-457f2e9.md#loio90e03983431d4bfd927b51593a937955)\n-   [Semantic Object Property Mapping](appendix-457f2e9.md#loio7726cb0d97194461973e3ec176c8a888)\n\n> ### Tip:  \n> You can see a subset of these properties for a basic column depending on the value type and draft enablement.\n\n\n\n<a name=\"loio5f8c75b2b4f3468aa85e9658825389de__section_pxb_cry_35b\"/>\n\n## Moving a Basic Column\n\nTo move a column within a table, use one of the following options:\n\n-   **Drag and Drop**\n\n    Hover over the table column outline, press and hold the mouse button while moving the mouse pointer to the different position within the table. Release the mouse button at the desired position. Eligible positions are highlighted in green.\n\n    With drag and drop, you can move multiple columns at once by pressing [CTRL\\] + [\\+\\]  .\n\n-   **Arrow Icons**\n\n    Click the <span class=\"SAP-icons-V5\"></span>\\(*Move Up*\\) or <span class=\"SAP-icons-V5\"></span> \\(*Move Down*\\) icon next to the column name. This option only moves one column at a time.\n\n\n\n\n<a name=\"loio5f8c75b2b4f3468aa85e9658825389de__section_adr_ksy_35b\"/>\n\n## Deleting a Basic Column\n\nTo delete a column, perform the following steps:\n\n1.  Navigate to a column.\n2.  Click the :wastebasket: \\(*Delete*\\) icon to open the *Delete Confirmation* popup window.\n3.  Click *Delete* to confirm the action.\n\n",
+  "excerpt": "<!-- loio5f8c75b2b4f3468aa85e9658825389de --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Basic Columns A basic column is used for the standard representation of the value typ...",
+  "wordCount": 396,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

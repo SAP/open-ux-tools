@@ -1,0 +1,35 @@
+{
+  "id": "sapui5-creating-cards-for-the-insights-cards-section-of-my-home-in-sap-s-4hana-cloud-public-edit-9b13559-md",
+  "title": "Creating Cards for the Insights Cards Section of **My Home** in SAP S/4HANA Cloud Public Edition and **My Home** in SAP S/4HANA",
+  "category": "fiori-elements-framework",
+  "path": "creating-cards-for-the-insights-cards-section-of-my-home-in-sap-s-4hana-cloud-public-edit-9b13559.md",
+  "lastModified": "2025-09-29T10:06:38.795Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "creating",
+    "cards",
+    "for",
+    "the",
+    "insights",
+    "section",
+    "home",
+    "sap",
+    "4hana",
+    "cloud",
+    "public",
+    "edit",
+    "9b13559"
+  ],
+  "headers": [
+    "Creating Cards for the Insights Cards Section of **My Home** in SAP S/4HANA Cloud Public Edition and **My Home** in SAP S/4HANA",
+    "Additional Features in SAP Fiori Elements for OData V2",
+    "Additional Features in SAP Fiori Elements for OData V4"
+  ],
+  "content": "<!-- loio9b13559ef978405a99e8b624a87daf31 -->\n\n# Creating Cards for the Insights Cards Section of **My Home** in SAP S/4HANA Cloud Public Edition and **My Home** in SAP S/4HANA\n\nAn option for tables in the list report or charts in the analytical list page allows end users to create cards that can be added to the *Insights* section of **My Home** in SAP S/4HANA Cloud Public Edition and **My Home** in SAP S/4HANA.\n\n**Prerequisites**\n\nThe administrator must enable **My Home** in SAP S/4HANA Cloud Public Edition and **My Home** in SAP S/4HANA to create and add cards.\n\nOnce **My Home** in SAP S/4HANA Cloud Public Edition and **My Home** in SAP S/4HANA is enabled, the *Add Card to Insights* option automatically appears in the overflow toolbar of the table in list report applications and the overflow toolbar of the chart in analytical list page applications.\n\n  \n  \n**Add Card to Insights Option in the Table Toolbar of List Report**\n\n![](images/Add_Cards_to_Insights_New_fe526c6.png \"Add Card to Insights Option in the Table Toolbar of List Report \")\n\n  \n  \n**Add Card to Insights Option in the Chart Toolbar of Analytical List Page**\n\n![](images/Add_Cards_to_Insights_ALP_401e0b0.png \"Add Card to Insights Option in the Chart Toolbar of Analytical List Page\")\n\n> ### Note:  \n> The card creation dialog shows only those columns that are supported for a card. The card supports single-valued `DataField` based columns. It also supports columns with field values displayed as links such as `DataFieldWithUrl`, semantic links, and `DataField` with `QuickViewFacets`. In addition, SAP Fiori elements for OData V4 also supports `DataFieldWithIntentBasedNavigation` and `DataFieldWithNavigationPath` columns.\n> \n> The columns that are not supported by the card creation dialog include:\n> \n> -   Image\n> \n> -   Multi-valued based columns\n> \n> -   `FieldGroup` based columns\n> \n> -   Columns with inline action\n> \n> -   Columns with navigation button\n> \n> -   `DataFieldForAnnotation` based columns \\(for contact or address fields\\)\n> \n> -   Custom columns\n\nApplication developers can hide the *Add Card to Insights* option from the overflow toolbar by configuring specific settings in the `manifest.json` file. For more information, see the version-specific sections of this topic.\n\n\n\n<a name=\"loio9b13559ef978405a99e8b624a87daf31__section_kbf_fb2_jxb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V2\n\nUsing the `manifest.json`, list report applications can choose to hide this feature by setting the `addCardtoInsightsHidden` property within `tableSettings` to `true`, as displayed in the following sample code:\n\n> ### Sample Code:  \n> ```\n> \"sap.ui.generic.app\": {\n>     \"pages\": [{\n>         \"entitySet\": \"Zfarvd_Bs_Hd_Bo\",\n>         \"component\": {\n>             \"name\": \"sap.suite.ui.generic.template.ListReport\",\n>             \"list\": true,\n>             \"settings\": {\n>                 \"tableSettings\": { \n>                     \"addCardtoInsightsHidden\": \"true\" //default value false\n>                 }\n>             }\n>         }\n>     }]\n> }\n> ```\n\nSimilarly, using the `manifest.json`, analytical list page applications can choose to hide this feature by setting the `addCardtoInsightsHidden` property within `chartSettings` to `true`, as displayed in the following sample code:\n\n> ### Sample Code:  \n> ```\n> \"sap.ui.generic.app\": {\n>     \"pages\": [{\n>         \"entitySet\": \"Zfarvd_Bs_Hd_Bo\",\n>         \"component\": {\n>             \"name\": \"sap.suite.ui.generic.template.AnalyticalListPage\",\n>             \"list\": true,\n>             \"settings\": {\n>                 \"chartSettings\": { \n>                     \"addCardtoInsightsHidden\": \"true\" //default value false\n>                 }\n>             }\n>         }\n>     }]\n> }\n> ```\n\n\n\n<a name=\"loio9b13559ef978405a99e8b624a87daf31__section_zbk_2qx_3xb\"/>\n\n## Additional Features in SAP Fiori Elements for OData V4\n\n> ### Note:  \n> The card creation feature only supports single view scenarios and single entity-multi view scenarios with responsive tables in list report applications.\n\nTo hide the *Add Card to Insights* option in the table toolbar, add the following settings into the `manifest.json` file:\n\n> ### Sample Code:  \n> ```\n> \"controlConfiguration\": {\n>      \"@com.sap.vocabularies.UI.v1.LineItem\": {\n>          \"tableSettings\": {\n>              \"type\": \"ResponsiveTable\",\n>              \"enableAddCardToInsights\": false\n>          }\n>      }\n> }\n> ```\n\nTo hide the *Add Card to Insights* option in the chart toolbar, add the following settings into the `manifest.json` file:\n\n> ### Sample Code:  \n> ```\n> \"controlConfiguration\": {\n>     \"@com.sap.vocabularies.UI.v1.Chart\": {\n>         enableAddCardToInsights: false\n>     }\n> }\n> ```\n\n> ### Restriction:  \n> -   When creating an integration card from the list report table, the following changes aren't retained when navigating back from the card:\n> \n>     -   The filter fields or table columns that were removed\n> \n>     -   Changes in the position of filter fields or table columns\n> \n> \n> -   Cards don't have the same formatting for unit of measure fields as seen in the list report table.\n\n**Related Information**  \n\n\n[**My Home** in SAP S/4HANA Cloud Public Edition ](https://help.sap.com/docs/SAP_S4HANA_CLOUD/4fc8d03390c342da8a60f8ee387bca1a/8a60279e8d2041b5ad8d3455fab0f3ef.html)\n\n[**My Home** in SAP S/4HANA](https://help.sap.com/docs/ABAP_PLATFORM_NEW/a7b390faab1140c087b8926571e942b7/8a60279e8d2041b5ad8d3455fab0f3ef.html)\n\n",
+  "excerpt": "<!-- loio9b13559ef978405a99e8b624a87daf31 --> Creating Cards for the Insights Cards Section of My Home in SAP S/4HANA Cloud Public Edition and My Home in SAP S/4HANA An option for tables in the list r...",
+  "wordCount": 728,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

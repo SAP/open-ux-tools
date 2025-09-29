@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-v2-apps-products-review-webapp-ext-fragment-customfilter-fragment-xml",
+  "title": "CustomFilter.fragment",
+  "category": "fiori-samples",
+  "path": "V2/apps/products-review/webapp/ext/fragment/CustomFilter.fragment.xml",
+  "lastModified": "2025-09-29T10:06:39.363Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "CustomFilter",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# CustomFilter.fragment.xml\n\n```xml\n<core:FragmentDefinition xmlns=\"sap.m\" xmlns:smartfilterbar=\"sap.ui.comp.smartfilterbar\" xmlns:core=\"sap.ui.core\">\n\t<!-- Supplier Filter-->\n\t<smartfilterbar:ControlConfiguration groupId=\"_BASIC\" index=\"6\" key=\"Supplier\" label=\"{/#SEPMRA_C_PD_ProductType/Supplier/@sap:label}\"\n\t\tvisibleInAdvancedArea=\"true\">\n\t\t<smartfilterbar:customControl>\n\t\t\t<MultiInput enableMultiLineMode=\"true\" id=\"Supplier-multiinput\" valueHelpRequest=\"onCustomSupplierDialogOpen\" tokenUpdate=\"onTokenUpdate\"/>\n\t\t</smartfilterbar:customControl>\n\t</smartfilterbar:ControlConfiguration>\n\t<!-- Rating Filter-->\n\t<smartfilterbar:ControlConfiguration key=\"to_CollaborativeReview/AverageRatingValue\" index=\"7\"\n\t\tlabel=\"{/#SEPMRA_C_PD_ReviewType/AverageRatingValue/@sap:label}\" visibleInAdvancedArea=\"true\" groupId=\"_BASIC\">\n\t\t<smartfilterbar:customControl>\n\t\t\t<RatingIndicator value=\"0\" enabled=\"true\"></RatingIndicator>\n\t\t</smartfilterbar:customControl>\n\t</smartfilterbar:ControlConfiguration>\n</core:FragmentDefinition>\n```",
+  "excerpt": "CustomFilter.fragment.xml",
+  "wordCount": 41,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-custom-messages-b75910f-md",
+  "title": "Custom Messages",
+  "category": "fiori-elements-framework",
+  "path": "custom-messages-b75910f.md",
+  "lastModified": "2025-09-29T10:06:38.796Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "custom",
+    "messages",
+    "b75910f"
+  ],
+  "headers": [
+    "Custom Messages"
+  ],
+  "content": "<!-- loiob75910f6d7eb48a58d83267be2c71385 -->\n\n# Custom Messages\n\nYou can customize messages for success, success with no data, and error scenarios. Also, you can add an icon for success scenarios.For error scenarios, default icon is displayed.\n\n\n\nTo configure custom messages, define `getCustomMessage` in your extension controller file.\n\n```\ngetCustomMessage: function (oResponse, sCardId) {\n if (sCardId == \"card001\") {\n  if (oResponse && oResponse.getParameters() && oResponse.getParameters().success) {\n    return {\n       sMessage: \"My Custom Message for No Data\", //message in case of success and no data\n       sIcon: \"sap-icon://message-information\"    //icon in case of success and no data\n     }\n  } else {\n    return {\n       sMessage: \"My Custom Message for Error\" //message in case of error\n           }\n         }\n  }\n},\n```\n\n",
+  "excerpt": "<!-- loiob75910f6d7eb48a58d83267be2c71385 --> Custom Messages You can customize messages for success, success with no data, and error scenarios. Also, you can add an icon for success scenarios.For err...",
+  "wordCount": 113,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

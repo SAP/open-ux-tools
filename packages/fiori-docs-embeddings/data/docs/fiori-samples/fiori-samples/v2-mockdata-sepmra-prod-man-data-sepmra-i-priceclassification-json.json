@@ -1,0 +1,25 @@
+{
+  "id": "fiori-samples-v2-mockdata-sepmra-prod-man-data-sepmra-i-priceclassification-json",
+  "title": "SEPMRA I PriceClassification",
+  "category": "fiori-samples",
+  "path": "V2/mockData/SEPMRA_PROD_MAN/data/SEPMRA_I_PriceClassification.json",
+  "lastModified": "2025-09-29T10:06:39.451Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "SEPMRA",
+    "PriceClassification"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "content": "# SEPMRA_I_PriceClassification.json\n\n```json\n[\n  {\n    \"PriceClassification\": \"1\",\n    \"PriceClassification_Text\": \"Price: < 100\"\n  },\n  {\n    \"PriceClassification\": \"2\",\n    \"PriceClassification_Text\": \"Price: between 100 and 500\"\n  },\n  {\n    \"PriceClassification\": \"3\",\n    \"PriceClassification_Text\": \"Price: between 500 and 1000\"\n  },\n  {\n    \"PriceClassification\": \"4\",\n    \"PriceClassification_Text\": \"Price: over 1000\"\n  }\n]\n```",
+  "excerpt": "SEPMRA_I_PriceClassification.json",
+  "wordCount": 42,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-influencing-the-request-dynamically-2cc6c03-md",
+  "title": "Influencing the Request Dynamically",
+  "category": "fiori-elements-framework",
+  "path": "influencing-the-request-dynamically-2cc6c03.md",
+  "lastModified": "2025-09-29T10:06:38.836Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "influencing",
+    "the",
+    "request",
+    "dynamically",
+    "2cc6c03"
+  ],
+  "headers": [
+    "Influencing the Request Dynamically"
+  ],
+  "content": "<!-- loio2cc6c03336954133beea3bd3dcac60db -->\n\n# Influencing the Request Dynamically\n\nYou can retrieve and add table configuration before a table rebind.\n\n> ### Note:  \n> This topic is only applicable to SAP Fiori elements for OData V4.\n\nBefore a table rebind, you can retrieve the sorters and filters applied to the table as well as the complete binding information. You can also add sorters, filters, and additional properties using the methods on the [`CollectionBindingInfo`](https://ui5.sap.com/#/api/sap.fe.macros.CollectionBindingInfo%23overview) object.\n\nTo do so, first add the `beforeRebindTable` key to the table settings in `manifest.json`.\n\n> ### Sample Code:  \n> `manifest.json`\n> \n> ```json\n> \"controlConfiguration\": {\n>     _Child/@com.sap.vocabularies.UI.v1.LineItem: {\n>         \"tableSettings\": {\n>             \"beforeRebindTable\": \".extension.sap.fe.core.fpmExplorer.OPExtend.onTableRefresh\"\n>         }\n>     }\n> }\n> ```\n\nThen, configure the controller extension for the object page.\n\n> ### Sample Code:  \n> `manifest.json`\n> \n> ```\n> \"sap.ui5\": {\n>     \"extends\": {\n>         \"extensions\": {\n>             \"sap.ui.controllerExtensions\": {\n>                 \"sap.fe.templates.ObjectPage.ObjectPageController\": {\n>                     \"controllerName\": \"sap.fe.core.fpmExplorer.OPExtend\"\n>                 }\n>             }\n>         }\n>     }\n> }\n> \n> ```\n\nFinally, implement the `beforeRebindTable` extension in your controller extension.\n\n> ### Sample Code:  \n> `manifest.json`\n> \n> ```json\n> sap.ui.define(\n>     [\"sap/ui/core/mvc/ControllerExtension\", \"sap/ui/model/Filter\", \"sap/ui/model/FilterOperator\"],\n>     function (ControllerExtension, Filter, FilterOperator) {\n>         \"use strict\";\n> \n>         return ControllerExtension.extend(\"sap.fe.core.fpmExplorer.OPExtend\", {\n>             onTableRefresh: function (event) {\n>                 var collectionBindingInfoAPI = event.getParameters(\"collectionBindingInfo\");\n> \n>                 //Add a filter\n>                 var filter = new Filter({\n>                     path: \"BooleanProperty\",\n>                     operator: FilterOperator.EQ,\n>                     value1: false\n>                 });\n>                 collectionBindingInfoAPI.addFilter(filter);\n> \n>                 //Add a sorter\n>                 var sorter = new Sorter(\"ID\", true);\n>                 collectionBindingInfoAPI.addSorter(sorter);\n> \n>                 //Request an additional property to the request\n>                 collectionBindingInfoAPI.addSelect([\"TagStatus\"]);                                             }\n>             });\n>     }\n> );\n> \n> ```\n\nCheck out our live examples in the flexible programming model explorer:\n\n-   [Table Extensibility](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/controllerExtensions/tableExtensibility)\n\n-   [Table - Custom Columns / Actions](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/buildingBlocks/table/tableCustoms)\n\n\n> ### Note:  \n> The same extension point is also available when using the `Table` building block. For more information, see [The Table Building Block](the-table-building-block-3801656.md).\n\n",
+  "excerpt": "<!-- loio2cc6c03336954133beea3bd3dcac60db --> Influencing the Request Dynamically You can retrieve and add table configuration before a table rebind. > Note:   > This topic is only applicable to SAP F...",
+  "wordCount": 319,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

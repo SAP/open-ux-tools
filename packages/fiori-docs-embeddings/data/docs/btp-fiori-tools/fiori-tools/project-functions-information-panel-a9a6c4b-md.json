@@ -1,0 +1,23 @@
+{
+  "id": "btp-fiori-tools-project-functions-information-panel-a9a6c4b-md",
+  "title": "Information Panel",
+  "category": "fiori-tools",
+  "path": "Project-Functions/information-panel-a9a6c4b.md",
+  "lastModified": "2025-09-29T10:06:38.712Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "information",
+    "panel",
+    "a9a6c4b"
+  ],
+  "headers": [
+    "Information Panel"
+  ],
+  "content": "<!-- loioa9a6c4b4cecf4ecdb9f76bf7abe06c48 -->\n\n# Information Panel\n\nVersion 1.11.4 of SAP Fiori tools introduces an information panel that gives you access to the release notes, useful links to learn about SAP Fiori elements developments, links to tutorials, and information about how to get support as a customer.\n\nPerform the following steps to access the information panel:\n\n1.  On the activity toolbar from the left side, click *SAP Fiori* \\(![Wrench/Pencil icon](../Getting-Started-with-SAP-Fiori-Tools/images/SAP_Fiori_tools_Wrench_Pencil_9d6b0f8.png)\\).\n\n2.  Expand the information panel.\n\n\n",
+  "excerpt": "<!-- loioa9a6c4b4cecf4ecdb9f76bf7abe06c48 --> Information Panel Version 1.11.4 of SAP Fiori tools introduces an information panel that gives you access to the release notes, useful links to learn abou...",
+  "wordCount": 75,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v2-apps-products-review-webapp-index-html",
+  "title": "index",
+  "category": "fiori-samples",
+  "path": "V2/apps/products-review/webapp/index.html",
+  "lastModified": "2025-09-29T10:06:39.364Z",
+  "tags": [
+    "fiori-samples",
+    "html",
+    "index"
+  ],
+  "headers": [],
+  "content": "# index.html\n\n```html\n<!DOCTYPE HTML>\n<html>\n<head>\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n\t<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"/>\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t<title>Manage Products</title>\n\n\t<!-- Bootstrap the unified shell in sandbox mode for standalone usage.\n\n         The renderer is specified in the global Unified Shell configuration object \"sap-ushell-config\".\n\n         The fiori2 renderer will render the shell header allowing, for instance,\n         testing of additional application setting buttons.\n\n         The navigation target resolution service is configured in a way that the empty URL hash is\n         resolved to our own application.\n\n         This example uses relative path references for the SAPUI5 resources and test-resources;\n         it might be necessary to adapt them depending on the target runtime platform.\n         The sandbox platform is restricted to development or demo use cases and must NOT be used\n         for productive scenarios. \n    -->\n\t<script type=\"text/javascript\">\n\t\twindow[\"sap-ushell-config\"] = {\n\t\t\tdefaultRenderer : \"fiori2\",\n\t\t\trenderers: {\n\t\t\t\tfiori2: {\n\t\t\t\t\tcomponentData: {\n\t\t\t\t\t\tconfig: {\n\t\t\t\t\t\t\tsearch: \"hidden\"\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t},\n\t\t\tapplications: {\n\t\t\t\t\"Product-display\": {\n\t\t\t\t\tadditionalInformation: \"SAPUI5.Component=nw.epm.refapps.st.prod.manage\",\n\t\t\t\t\tapplicationType: \"URL\",\n\t\t\t\t\turl: \"./\",\n\t\t\t\t\ttitle: \"Manage Products\",\n\t\t\t\t\tdescription: \"EPM Reference Smart Template App &#x27;Manage Products&#x27;\"\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\t</script>\n\n\t<script src=\"https://sapui5.hana.ondemand.com/test-resources/sap/ushell/bootstrap/sandbox.js\" id=\"sap-ushell-bootstrap\"></script>\n\n\t<!-- Bootstrap the UI5 core library -->\n\t<script id=\"sap-ui-bootstrap\"\n\t\t\tsrc=\"https://sapui5.hana.ondemand.com/resources/sap-ui-core.js\"\n\t\t\tdata-sap-ui-libs=\"sap.m, sap.ushell, sap.collaboration\"\n\t\t\tdata-sap-ui-theme=\"sap_fiori_3\"\n\t\t\tdata-sap-ui-language=\"en\"\n\t\t\tdata-sap-ui-compatVersion=\"edge\"\n\t\t\tdata-sap-ui-resourceroots='{\"nw.epm.refapps.st.prod.manage\": \"../\"}'\n\t\t\tdata-sap-ui-frameOptions='allow'> \t// NON-SECURE setting for testing environment\n\t</script>\n\n\t<script type=\"text/javascript\">\n\t\tsap.ui.getCore().attachInit(function() {\n\t\t\t// initialize the ushell sandbox component\n\t\t\tsap.ushell.Container.createRenderer().placeAt(\"content\");\n\t\t});\n\t</script>\n\n</head>\n\n<!-- UI Content -->\n<body class=\"sapUiBody\" id=\"content\">\n</body>\n</html>\n```",
+  "excerpt": "index.html",
+  "wordCount": 227,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

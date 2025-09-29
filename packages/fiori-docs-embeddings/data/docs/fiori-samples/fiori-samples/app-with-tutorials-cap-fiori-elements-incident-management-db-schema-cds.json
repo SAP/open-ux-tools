@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-db-schema-cds",
+  "title": "schema",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/db/schema.cds",
+  "lastModified": "2025-09-29T10:06:39.454Z",
+  "tags": [
+    "fiori-samples",
+    "cds",
+    "schema"
+  ],
+  "headers": [],
+  "content": "# schema.cds\n\n```cds\nnamespace scp.cloud;\n\nusing {\n  managed,\n  cuid,\n  sap.common\n} from '@sap/cds/common';\n\ntype Url : String;\n\ntype TechnicalBooleanFlag : Boolean @(\n    UI.Hidden,\n    Core.Computed\n);\n\ntype TechnicalFieldControlFlag : Integer @(\n    UI.Hidden,\n    Core.Computed\n);\n\ntype Criticality : Integer @(\n    UI.Hidden,\n    Core.Computed\n);\n\ntype Identifier : String(100)@(title : 'Identifier');\n@cds.autoexpose\nabstract entity identified : cuid {\n    identifier : Identifier not null;\n}\n\n//Bolded display of first table column values can be achieved by defining annotations Common.SemanticKey and\n//Common.TextArrangment for the entities key and referring to a 'human-readable' identifier to be displayed instead.\n\nannotate identified with @(\n    Common.SemanticKey : [identifier],\n    UI.Identification  : [{Value : identifier}]\n) {\n\n    ID         @Common : {\n        Text            : identifier,\n        TextArrangement : #TextOnly\n        \n    };\n}\n\nentity Incidents : managed, identified {\n  title                   : String(50)                        @title : '{i18n>Title}';\n  category                : Association to one Category       @title : '{i18n>Category}';\n  priority                : Association to one Priority       @title : '{i18n>Priority}';\n  incidentStatus          : Association to one IncidentStatus @title : '{i18n>IncidentStatus}';\n  description             : String(1000)                      @title : '{i18n>IncidentDescription}';\n  assignedIndividual      : Association to one Individual;\n  incidentFlow            : Association to many IncidentFlow\n                              on incidentFlow.incident = $self;\n  incidentProcessTimeline : Association to many IncidentProcessTimeline\n                              on incidentProcessTimeline.incident = $self;\n  isDraft                 : TechnicalBooleanFlag not null default false;\n  identifierFieldControl  : TechnicalFieldControlFlag not null default 7; // 7 = #Mandatory;\n}\n\nentity IncidentFlow : managed {\n  key id             : UUID;\n      processStep    : String(30)@title : '{i18n>ProcessStep}';\n      stepStatus     : String(10)@title : '{i18n>ProcessStepStatus}';\n      criticality    : Integer;\n      stepStartDate  : Date      @title : '{i18n>StepStartDate}';\n      stepEndDate    : Date      @title : '{i18n>StepEndDate}';\n      @assert.integrity :                 false\n      incident      : Association to Incidents;\n}\n\nentity IncidentProcessTimeline : managed {\n  key id             : UUID;\n      text           : String;\n      type           : String;\n      startTime      : DateTime;\n      endTime        : DateTime;\n      @assert.integrity : false\n      incident  : Association to Incidents;\n}\n\nentity Individual : managed{\n  Key ID : UUID;\n      fullName          : String    @title : 'First Name';\n      emailAddress      : String    @title : 'Email Address';\n      @assert.integrity : false\n      Incidents         : Association to many Incidents \n                            on Incidents.assignedIndividual = $self;\n}\n\nentity IncidentsCodeList : common.CodeList {\n  key code : String(20);\n}\n\nentity Category : IncidentsCodeList {}\n\nentity Priority : IncidentsCodeList {\n  criticality : Criticality not null default 3;\n}\n\nentity IncidentStatus : IncidentsCodeList {}\n\n```",
+  "excerpt": "schema.cds",
+  "wordCount": 349,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

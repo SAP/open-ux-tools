@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-defining-filter-facets-89f63ef-md",
+  "title": "Defining Filter Facets",
+  "category": "fiori-elements-framework",
+  "path": "defining-filter-facets-89f63ef.md",
+  "lastModified": "2025-09-29T10:06:38.800Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "defining",
+    "filter",
+    "facets",
+    "89f63ef"
+  ],
+  "headers": [
+    "Defining Filter Facets"
+  ],
+  "content": "<!-- loio89f63ef59d4440958a27b636c500ffbc -->\n\n# Defining Filter Facets\n\nYou can use `FilterFacets` annotations to display filter groups in filter bars.\n\nBelow is an example of a `FilterFacets` annotation on the target entity type:\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```\n> <Annotations Target=\"STTA_PROD_MAN.STTA_C_MP_SupplierType\">\n>    <Annotation Term=\"UI.FilterFacets\">\n>       <Collection>\n>             <Record Type=\"UI.ReferenceFacet\">\n>                 <PropertyValue Property=\"Target\" AnnotationPath=\"@UI.FieldGroup#MyFilterGroup\"/>\n>             </Record>\n>       </Collection>\n>    </Annotation>\n> </Annotations>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> annotate view STTA_C_MP_SUPPLIERTYPE with {\n> @UI.Facet: [\n>   {\n>     targetQualifier: 'MyFilterGroup',\n>     type: #FIELDGROUP_REFERENCE,\n>     purpose: #FILTER\n>   }\n> ]\n> Supplier; \n> }\n> \n> ```\n\n> ### Sample Code:  \n> CAPCDS Annotation\n> \n> ```\n> @UI.FilterFacets                                    : [\n>     {\n>         $Type             : 'UI.ReferenceFacet',   \n>         Target            : '_SoldToParty/@UI.FieldGroup#MyFilterGroup'\n>     }\n> ]\n> \n> ```\n\nOnly the filter fields defined as part of the `UI.SelectionFields` annotation and the mandatory filters appear by default in the filter bar. The other filter fields appear only in the *Adapt Filters* dialog and are grouped via the following logic:\n\n\n\n**Basic Group**\n\nAll filter fields listed as part of the `UI.SelectionFields` annotation are part of this group. In addition, all filter fields that are part of the `UI.FieldGroup` annotation with qualifier `\"_BASIC\"` under the `FilterFacets` structure, as shown above, are part of this group.\n\n> ### Restriction:  \n> This feature is only available in SAP Fiori elements for OData V2.\n\n\n\n**Field Group**\n\nFilter fields listed under a `FieldGroup` annotation, as shown above, but are not part of `UI.SelectionFields` belong to this group.\n\n\n\n**Entity Type Name Group**\n\nFilter fields that are not part of the `UI.SelectionField` or the `FieldGroup` annotation are grouped together in a group with the name `<EntityTypeName>`.. If there are multiple `entityTypes`, multiple `entityTypeName` groups are created.\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```\n> <Annotation Term=\"UI.FieldGroup\" Qualifier=\"Group_Name\">\n>     <Record>\n>         <PropertyValue Property=\"Data\">\n>             <Collection>\n>                 <Record Type=\"UI.DataField\">\n>                     <PropertyValue Property=\"Value\" Path=\"Name\"/>\n>                 </Record>\n>             </Collection>\n>         </PropertyValue>\n>         <PropertyValue Property=\"Label\" String=\"Group Name\"/>\n>     </Record>\n> </Annotation>\n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> @UI.fieldGroup: [{ qualifier: 'Group Name', groupLabel: 'Group Name' }]\n> PROPERTY_NAME;\n> ```\n\n> ### Sample Code:  \n> CAPCDS Annotation\n> \n> ```\n> UI.FieldGroup #GroupName : {\n>     Data : [\n>         {\n>             $Type : 'UI.DataField',\n>             Value : PropertyName\n>         }\n>     ],\n>     Label : 'Group Name'\n> }\n> ```\n\n",
+  "excerpt": "<!-- loio89f63ef59d4440958a27b636c500ffbc --> Defining Filter Facets You can use FilterFacets annotations to display filter groups in filter bars. Below is an example of a FilterFacets annotation on t...",
+  "wordCount": 413,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-worklist-annotations-cds",
+  "title": "annotations",
+  "category": "fiori-features",
+  "path": "app/worklist/annotations.cds",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "cds",
+    "annotations"
+  ],
+  "headers": [],
+  "content": "# annotations.cds\n\n```cds\nusing WorkListODataService as srv from '../../srv/worklist-srv';\nannotate srv.ChildEntities2 with @(\n    UI.LineItem : [\n        {\n            Value : stringProperty,\n        },\n        {\n            Value : integerProperty,\n        },\n        {\n            Value : decimalProperty,\n        },\n        {\n            Value : country_code,\n        },\n    ],\n    // Search-Term: #DefaultSortFilter\n    UI.SelectionPresentationVariant #DefaultFilter : {\n        SelectionVariant    : {\n            SelectOptions   : [\n                {\n                    PropertyName    : integerProperty,\n                    Ranges          : [\n                        {\n                            Sign    : #I,\n                            Option  : #GE,\n                            Low     : 0,\n                        },\n                    ],\n                },\n            ],\n        },\n        PresentationVariant : {\n            SortOrder       : [\n                {\n                    Property : country_code,\n                },\n            ],\n            Visualizations  : ['@UI.LineItem'],\n        },\n    },\n);\n\n```",
+  "excerpt": "annotations.cds",
+  "wordCount": 91,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

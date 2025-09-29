@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-v2-apps-products-review-webapp-i18n-objectpage-sepmra-c-pd-product-i18n-en-us-saptrc-properties",
+  "title": "i18n en US saptrc",
+  "category": "fiori-samples",
+  "path": "V2/apps/products-review/webapp/i18n/ObjectPage/SEPMRA_C_PD_Product/i18n_en_US_saptrc.properties",
+  "lastModified": "2025-09-29T10:06:39.364Z",
+  "tags": [
+    "fiori-samples",
+    "properties",
+    "i18n",
+    "saptrc"
+  ],
+  "headers": [],
+  "content": "# i18n_en_US_saptrc.properties\n\n```properties\n\n#specific keys+text combination that overwrite template keys+text\n#scan the original i18n of the template component for the keys\n#you can find it by starting the application in the WebIDE with a run configuration that has unchecked 'open with frame'\n#and modify the URL in the browser to /resources/sap/suite/ui/generic/template/<template component name>/i18n/i18n.properties\n#<EXISTING_KEY>=<new text for the key>\n\n# XTIT,30: title of the page in ListReport.view.xml, this may be replaced by the application\nPAGEHEADER=iYvi0xLgmPzE0k+rg3WoOA_Manage Products\n\n#XMSG,200: used in expired lock dialog (pop-up). Parameter: {0}= user name. \"object\" to be redefined.\nDRAFT_LOCK_EXPIRED=a0+AYJrVJwPc/blZO39f+g_Another user edited this product without saving the changes\\:\\n\\n {0} \\n\\n If you take over, any changes will be lost.\n#XMSG,200: used in a dialog pop-up; there is a draft document but the user navigates to the active document. Parameters: {1}= object Key {2}= changed at (date/time). \"object\" to be redefined.\nDRAFT_FOUND_RESUME=v1tQFEr6+tiuLHzpzwHMPg_We saved a draft of your changes to product {1} on {2}.\\n\\nDo you want to resume editing or discard the changes?\n#XFLD,30: used in message toast after saving. \"object\" to be redefined.\nOBJECT_SAVED=sZKqcWEC1LogcqXswqubIw_Product saved\n#XFLD,30: used in message toast after object creation. \"object\" to be redefined.\nOBJECT_CREATED=i8UN2npoHRD8u/LBfVgn3A_Product created\n\n#XBUT,50: used in a message box after pressing the delete button. Parameter: {1}= object title, {2}= object subtitle. \"object\" to be redefined.\nDELETE_WITH_OBJECTINFO=8eBUtr0UllhLjH323YGMeA_Delete product {1},  {2}?\n#XTIT, 50: used as page title for a new object. \"object\" to be redefined.\nNEW_OBJECT=fE/CCy6gvT/7WebaogR9ag_New product\n\n#YMSG, 200: Message box text for draft locked by other user. Parameter: {1}= user name. \"object\" to be redefined.\nST_GENERIC_DRAFT_LOCKED_BY_USER=rV5a4yPS9MYRJyUG1xPFFg_Another user edited this product without saving the changes\\: \\n{1} \\nIf you take over, any changes will be lost.\n\n#XMSG: Message box text for draft discarded. \"object\" to be redefined.\nST_GENERIC_OBJECT_DELETED=xRvuNPhGOIXsu+B/Q35U0g_The product has been deleted.\n\n#YMSG,70: used in pop-over showing draft admin data. Parameter: {0}= user name. \"object\" to be redefined.\nST_GENERIC_LOCKED_OBJECT_POPOVER_TEXT=AhT8X8c2vsZQPLeNXMrv8Q_This product is being edited by {0}.\n#YMSG,70: used in pop-over showing draft admin data. Parameter: {0}= user name. \"object\" to be redefined.\nST_GENERIC_UNSAVED_OBJECT_POPOVER_TEXT=1pjI0IoaNbEgLWIZoKo5Rw_This product has unsaved changes by {0}.\n\n```",
+  "excerpt": "i18n_en_US_saptrc.properties",
+  "wordCount": 332,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

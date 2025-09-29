@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-srv-incidentservice-cds",
+  "title": "incidentservice",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/srv/incidentservice.cds",
+  "lastModified": "2025-09-29T10:06:39.455Z",
+  "tags": [
+    "fiori-samples",
+    "cds",
+    "incidentservice"
+  ],
+  "headers": [],
+  "content": "# incidentservice.cds\n\n```cds\nusing scp.cloud from '../db/schema';\n\nservice IncidentService {\n\n    @odata.draft.enabled\n    entity Incidents               as projection on cloud.Incidents;\n\n    @readonly\n    entity IncidentFlow            as projection on cloud.IncidentFlow;\n\n    @readonly\n    entity IncidentProcessTimeline as projection on cloud.IncidentProcessTimeline;\n\n    @readonly\n    entity Individual              as projection on cloud.Individual;\n\n    @readonly\n    entity Category                as projection on cloud.Category;\n\n    @readonly\n    entity Priority                as projection on cloud.Priority;\n\n}\n\n```",
+  "excerpt": "incidentservice.cds",
+  "wordCount": 54,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

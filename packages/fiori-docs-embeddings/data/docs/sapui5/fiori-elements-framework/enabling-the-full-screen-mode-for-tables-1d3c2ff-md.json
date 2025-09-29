@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-enabling-the-full-screen-mode-for-tables-1d3c2ff-md",
+  "title": "Enabling the Full-Screen Mode for Tables",
+  "category": "fiori-elements-framework",
+  "path": "enabling-the-full-screen-mode-for-tables-1d3c2ff.md",
+  "lastModified": "2025-09-29T10:06:38.817Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "enabling",
+    "the",
+    "full",
+    "screen",
+    "mode",
+    "for",
+    "tables",
+    "1d3c2ff"
+  ],
+  "headers": [
+    "Enabling the Full-Screen Mode for Tables"
+  ],
+  "content": "<!-- loio1d3c2ff9fb1e4807ad2cc28f8c65e56b -->\n\n# Enabling the Full-Screen Mode for Tables\n\nWhen application developers enable the full-screen mode for tables, a button on the table toolbar is displayed that allows users to open the table in full-screen mode. This provides more space for displaying and working with table entries.\n\n> ### Note:  \n> This topic is only applicable to SAP Fiori elements for OData V4.\n\nMake the settings in the `manifest.json` as follows:\n\n> ### Sample Code:  \n> ```\n> \"SalesOrderManageObjectPage\": {\n>     \"options\": {\n>         \"settings\": {\n>             \"controlConfiguration\": {\n>                 \"_Item/@com.sap.vocabularies.UI.v1.LineItem\": {\n>                     \"tableSettings\": {\n>                         \"enableFullScreen\": true\n>                     }\n>                 }\n>             }\n>         }\n>     }\n> }\n> ```\n\n> ### Note:  \n> -   This setting is not available for the list report. If it is configured for a list report, the setting will be ignored during templating.\n> \n> -   On mobile phones, full-screen mode is enabled by default.\n\nThe full-screen button is added to the left of the personalization button:\n\n![](images/Full-Screen_Button_for_Tables_543c2fd.png)\n\nWhen you click the button, the table is displayed in full-screen mode, and the icon of the button changes accordingly to allow users to leave full-screen mode when clicking the button again.\n\nIn addition, a *Close* button is displayed at the bottom of the dialog:\n\n![](images/Close_Full-Screen_Mode_for_Tables_0d13370.png)\n\n",
+  "excerpt": "<!-- loio1d3c2ff9fb1e4807ad2cc28f8c65e56b --> Enabling the Full-Screen Mode for Tables When application developers enable the full-screen mode for tables, a button on the table toolbar is displayed th...",
+  "wordCount": 214,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

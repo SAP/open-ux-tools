@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-pages-browser-js",
+  "title": "Browser",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/pages/Browser.js",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "Browser"
+  ],
+  "headers": [],
+  "content": "# Browser.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/Opa5\",\"./Common\"],function(t,s){\"use strict\";t.createPageObjects({onTheBrowser:{baseClass:s,actions:{iPressOnTheBackwardsButton:function(){return this.waitFor({success:function(){t.getWindow().history.back()}})},iPressOnTheForwardsButton:function(){return this.waitFor({success:function(){t.getWindow().history.forward()}})},iChangeTheHashToSomethingInvalid:function(){return this.waitFor({success:function(){t.getHashChanger().setHash(\"somethingInvalid\")}})},iChangeTheHashToTheRememberedItem:function(){return this.waitFor({success:function(){var s=this.getContext().currentItem.id;t.getHashChanger().setHash(\"Products/\"+s)}})}},assertions:{}}})});\n```",
+  "excerpt": "Browser.js",
+  "wordCount": 11,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

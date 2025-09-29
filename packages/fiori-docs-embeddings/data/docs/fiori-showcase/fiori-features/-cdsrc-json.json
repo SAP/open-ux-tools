@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase--cdsrc-json",
+  "title": ".cdsrc",
+  "category": "fiori-features",
+  "path": ".cdsrc.json",
+  "lastModified": "2025-09-29T10:06:39.207Z",
+  "tags": [
+    "fiori-features",
+    "json",
+    "cdsrc"
+  ],
+  "headers": [],
+  "content": "# .cdsrc.json\n\n```json\n{}\n```",
+  "excerpt": ".cdsrc.json",
+  "wordCount": 5,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

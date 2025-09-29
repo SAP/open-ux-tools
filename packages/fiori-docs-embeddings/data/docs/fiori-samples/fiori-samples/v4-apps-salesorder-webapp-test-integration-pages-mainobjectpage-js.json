@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-webapp-test-integration-pages-mainobjectpage-js",
+  "title": "MainObjectPage",
+  "category": "fiori-samples",
+  "path": "V4/apps/salesorder/webapp/test/integration/pages/MainObjectPage.js",
+  "lastModified": "2025-09-29T10:06:39.453Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "MainObjectPage"
+  ],
+  "headers": [],
+  "content": "# MainObjectPage.js\n\n```javascript\nsap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {\n    'use strict';\n\n    // OPTIONAL\n    var AdditionalCustomObjectPageDefinition = {\n        actions: {},\n        assertions: {}\n    };\n\n    return new ObjectPage(\n        {\n            appId: 'salesorder', // MANDATORY: Compare sap.app.id in manifest.json\n            componentId: 'SalesOrderObjectPage', // MANDATORY: Compare sap.ui5.routing.targets.id in manifest.json\n            entitySet: 'SalesOrder' // MANDATORY: Compare entityset in manifest.json\n        },\n        AdditionalCustomObjectPageDefinition\n    );\n});\n```",
+  "excerpt": "MainObjectPage.js",
+  "wordCount": 52,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

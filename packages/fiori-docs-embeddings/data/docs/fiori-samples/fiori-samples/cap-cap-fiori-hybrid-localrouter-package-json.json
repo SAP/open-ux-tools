@@ -1,0 +1,24 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-hybrid-localrouter-package-json",
+  "title": "approuter",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-hybrid/localrouter/package.json",
+  "lastModified": "2025-09-29T10:06:39.517Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "package"
+  ],
+  "headers": [
+    "name",
+    "dependencies",
+    "engines",
+    "scripts"
+  ],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"approuter\",\n  \"dependencies\": {\n    \"@sap/approuter\": \"^14.0.0\"\n  },\n  \"engines\": {\n    \"node\": \"^18.0.0\"\n  },\n  \"scripts\": {\n    \"start\": \"node node_modules/@sap/approuter/approuter.js\"\n  }\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

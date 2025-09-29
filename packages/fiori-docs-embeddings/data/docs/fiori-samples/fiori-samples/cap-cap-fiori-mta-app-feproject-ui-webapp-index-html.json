@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-app-feproject-ui-webapp-index-html",
+  "title": "index",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-mta/app/feproject-ui/webapp/index.html",
+  "lastModified": "2025-09-29T10:06:39.518Z",
+  "tags": [
+    "fiori-samples",
+    "html",
+    "index"
+  ],
+  "headers": [],
+  "content": "# index.html\n\n```html\n<!DOCTYPE html>\n<html>\n    <head>\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n        <meta charset=\"UTF-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n        <title>{{appTitle}}</title>\n\n        <script>\n            window['sap-ushell-config'] = {\n                defaultRenderer: 'fiori2',\n                applications: {\n                    'fe-lrop-v4': {\n                        title: 'App Title',\n                        description: 'A Fiori application.',\n                        additionalInformation: 'SAPUI5.Component=cap.tutorial.feprojectui',\n                        applicationType: 'URL',\n                        url: './',\n                        navigationMode: 'embedded'\n                    }\n                }\n            };\n        </script>\n\n        <script src=\"https://ui5.sap.com/test-resources/sap/ushell/bootstrap/sandbox.js\"></script>\n        <script\n            src=\"https://ui5.sap.com/resources/sap-ui-core.js\"\n            data-sap-ui-libs=\"sap.m, sap.ushell, sap.fe.templates\"\n            data-sap-ui-compatVersion=\"edge\"\n            data-sap-ui-theme=\"sap_fiori_3\"\n            data-sap-ui-frameOptions=\"allow\"\n            data-sap-ui-bindingSyntax=\"complex\"\n        ></script>\n        <script>\n            sap.ui.getCore().attachInit(function() {\n                sap.ushell.Container.createRenderer().placeAt('content');\n            });\n        </script>\n    </head>\n    <body class=\"sapUiBody\" id=\"content\"></body>\n</html>\n\n```",
+  "excerpt": "index.html",
+  "wordCount": 73,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

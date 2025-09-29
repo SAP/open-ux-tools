@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-previewing-an-adaptation-project-64cc15b-md",
+  "title": "Previewing an Adaptation Project",
+  "category": "fiori-tools",
+  "path": "previewing-an-adaptation-project-64cc15b.md",
+  "lastModified": "2025-09-29T10:06:38.723Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "previewing",
+    "adaptation",
+    "project",
+    "64cc15b"
+  ],
+  "headers": [
+    "Previewing an Adaptation Project",
+    "Context"
+  ],
+  "content": "<!-- loio64cc15b92a194df29d5f6dcf8277a799 -->\n\n# Previewing an Adaptation Project\n\nYou can preview the adaptation project in a new browser tab.\n\n\n\n## Context\n\nExpand the `webapp` folder from your workspace, right-click the `manifest.appdescr_variant` file, and click *Open Preview*. A prompt will appear asking you to allow popup windows because the preview opens in a separate browser tab. Click *Allow*.\n\n\\(Optional\\) Depending on your authentication model, you might be asked to enter credentials for the system you are trying to reach. If this is the case, provide your credentials.\n\nThe adaptation project preview opens in a separate browser tab. You can navigate, load data, and test functionality.\n\n",
+  "excerpt": "<!-- loio64cc15b92a194df29d5f6dcf8277a799 --> Previewing an Adaptation Project You can preview the adaptation project in a new browser tab. Context Expand the webapp folder from your workspace, right-...",
+  "wordCount": 105,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

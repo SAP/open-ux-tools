@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-app-mystandalonecapproject-webapp-i18n-i18n-properties",
+  "title": "i18n",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-mta-standalone/app/mystandalonecapproject/webapp/i18n/i18n.properties",
+  "lastModified": "2025-09-29T10:06:39.519Z",
+  "tags": [
+    "fiori-samples",
+    "properties",
+    "i18n"
+  ],
+  "headers": [],
+  "content": "# i18n.properties\n\n```properties\n# This is the resource bundle for mystandalonecapproject\n\n#Texts for manifest.json\n\n#XTIT: Application name\nappTitle=App Title\n\n#YDES: Application description\nappDescription=A Fiori application.\n\nflpTitle=The Title of my Standalone App\n\nflpSubtitle=\n\n```",
+  "excerpt": "i18n.properties",
+  "wordCount": 33,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

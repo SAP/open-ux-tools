@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-pages-view1-dbg-js",
+  "title": "View1 dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/pages/View1-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "View1",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# View1-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/test/Opa5\"\n], function (Opa5) {\n\t\"use strict\";\n\tvar sViewName = \"View1\";\n\tOpa5.createPageObjects({\n\t\tonTheAppPage: {\n\n\t\t\tactions: {},\n\n\t\t\tassertions: {\n\n\t\t\t\tiShouldSeeTheApp: function () {\n\t\t\t\t\treturn this.waitFor({\n\t\t\t\t\t\tid: \"app\",\n\t\t\t\t\t\tviewName: sViewName,\n\t\t\t\t\t\tsuccess: function () {\n\t\t\t\t\t\t\tOpa5.assert.ok(true, \"The View1 view is displayed\");\n\t\t\t\t\t\t},\n\t\t\t\t\t\terrorMessage: \"Did not find the View1 view\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t});\n\n});\n```",
+  "excerpt": "View1-dbg.js",
+  "wordCount": 57,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-support-for-terminologies-5f224ec-md",
+  "title": "Support for Terminologies",
+  "category": "fiori-elements-framework",
+  "path": "support-for-terminologies-5f224ec.md",
+  "lastModified": "2025-09-29T10:06:38.862Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "support",
+    "for",
+    "terminologies",
+    "5f224ec"
+  ],
+  "headers": [
+    "Support for Terminologies"
+  ],
+  "content": "<!-- loio5f224ec48bdb4fcdaa1796ea82b296da -->\n\n# Support for Terminologies\n\nBy defining terminologies together with additional resource bundles, an application can easily be switched from one scenario or industry to another.\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V4.\n\nTo use the concept of terminologies provided by SAPUI5, the \"model\" definition in the app descriptor must first be enhanced with the terminologies:\n\n> ### Sample Code:  \n> ```\n> \"models\": {\n>     \"i18n\": {\n>         \"type\": \"sap.ui.model.resource.ResourceModel\",\n>         \"settings\": {\n>             \"bundleUrl\": \"i18n/i18n.properties\",\n>             \"supportedLocales\": [\"en\", \"de\"],\n>             \"fallbackLocale\": \"en\",\n>             \"terminologies\": {\n>                 \"travel\": {\n>                     \"bundleUrl\": \"i18n/terminologies/travel/i18n.terminologies.travel.properties\",\n>                     \"bundleUrlRelativeTo\": \"manifest\",\n>                     \"supportedLocales\": [\"en\", \"de\"]\n>                 }\n>             }\n>         }\n>     },\n>     ...\n>     ...\n>     ...\n> }\n> ```\n\nIn the sample above, the resource model `i18n` is enhanced with a `travel` terminology.\n\n> ### Note:  \n> Enhancing resource models does not make them available to SAP Fiori elements, so you must add this model to the `enhanceI18n` setting of the SAP Fiori elements template.\n\n> ### Sample Code:  \n> ```\n> \"targets\": {\n>     \"LineItemsList\": {\n>         \"type\": \"Component\",\n>         \"id\": \"LineItemsList\",\n>         \"name\": \"sap.fe.templates.ListReport\",\n>         \"options\": {\n>             \"settings\": {\n>                 \"contextPath\": \"/LineItems\",\n>                 \"enhanceI18n\": [\"i18n/ManageItemsListReport.properties\", \"i18n\"],\n>                 \"variantManagement\": \"Page\",\n>                 \"initialLoad\": true,\n>                 \"navigation\": {\n>                     \"LineItems\": {\n>                         \"detail\": {\n>                             \"route\": \"LineItemsObjectPage\"\n>                         }\n>                     }\n>                 }\n>         }\n>     }\n> }\n> ```\n\nIn the preceding sample code, the list report is enhanced with an `i18n` bundle \\(`i18n/ManageItemsListReport.properties`\\) and a resource model \\(`i18n`\\) to which a terminology has already been added.\n\n> ### Note:  \n> -   `enhanceI18n` can take any combination of resource files and resource models. In the example above, a resource file `i18n/ManageItemsListReport.properties` and a resource model `i18n` are provided, but you can add further files and models.\n> \n> -   `enhanceI18n` can also take models without terminology. In this case, even if a terminology is activated, it does not affect the UI.\n> \n> -   When you enhance the SAP Fiori elements template texts via `enhanceI8n`, the last enhancement wins. In the example above, the template first looks for the keys in the `i18n` model, because it is the last enhancement \\(that is, the last element in the array\\). If the text is not found, the template looks in `i18n/ManageItemsListReport.properties`. If the text is still not found, the template falls back to the default texts.\n\nFor more information about the concept of terminologies, refer to [Terminologies](../04_Essentials/terminologies-eba8d25.md).\n\n",
+  "excerpt": "<!-- loio5f224ec48bdb4fcdaa1796ea82b296da --> Support for Terminologies By defining terminologies together with additional resource bundles, an application can easily be switched from one scenario or ...",
+  "wordCount": 419,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

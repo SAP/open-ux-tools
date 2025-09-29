@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-defining-determining-actions-in-list-reports-d719982-md",
+  "title": "Defining Determining Actions in List Reports",
+  "category": "fiori-elements-framework",
+  "path": "defining-determining-actions-in-list-reports-d719982.md",
+  "lastModified": "2025-09-29T10:06:38.800Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "defining",
+    "determining",
+    "actions",
+    "list",
+    "reports",
+    "d719982"
+  ],
+  "headers": [
+    "Defining Determining Actions in List Reports"
+  ],
+  "content": "<!-- loiod71998265d714004a815e55b2dde5f5d -->\n\n# Defining Determining Actions in List Reports\n\nYou can add a determining action button to the footer of the list report view.\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V2.\n\n> ### Recommendation:  \n> Please note that this feature is deprecated. SAP Fiori elements supports this feature only for compatibility reasons. We recommend that you avoid using determining actions in list reports.\n\nDetermining actions are used to trigger actions directly using the context of the table in the list report.\n\nThere are two types of determining actions:\n\n-   Actions that trigger a back-end call through the OData service \\(`Function`, `FunctionImport`, `Action`, or `ActionImport`\\), represented by the complex type `DataFieldForAction`\n\n-   Actions that trigger intent-based navigation, represented by the complex type `DataFieldForIntentBasedNavigation`\n\n\nTo add a determining action to the footer of the list report, use the annotation term `UI.LineItem` and set the `Determining` property to `true` for the complex type. This is displayed as shown below:\n\n![](images/Determining_Action_in_List_Report_5adb885.png)\n\nThe following code sample shows an example of how to create your annotations for the determining actions in the list report:\n\n> ### Sample Code:  \n> ```\n> \n> <Annotation Term=\"UI.LineItem\">\n>    <Collection>\n>       <Record Type=\"UI.DataFieldForAction\">\n>          <PropertyValue Property=\"Label\" String=\"Copy with new Supplier\"/>\n>          <PropertyValue Property=\"Action\"\n>            String=\"STTA_PROD_MAN.STTA_PROD_MAN_Entities/\n>             STTA_C_MP_ProductCopywithparams\"/>\n>          <PropertyValue Property=\"InvocationGrouping\"   \n>             EnumMember=\"UI.OperationGroupingType/Isolated\"/>\n>       </Record>\n>       <Record Type=\"UI.DataFieldForAction\">\n>          <PropertyValue Property=\"Label\" String=\"Copy\"/>\n>          <PropertyValue Property=\"Action\"\n>             String=\"STTA_PROD_MAN.STTA_PROD_MAN_Entities/STTA_C_MP_ProductCopy\"/>\n>          <PropertyValue Property=\"Determining\" Bool=\"true\"/>\n>          <PropertyValue Property=\"InvocationGrouping\"   \n>             EnumMember=\"UI.OperationGroupingType/Isolated\"/>\n>       </Record>\n>       <Record Type=\"UI.DataFieldForIntentBasedNavigation\">\n>          <PropertyValue Property=\"Label\" String=\"Manage Products (ST)\"/>\n>          <PropertyValue Property=\"SemanticObject\" String=\"EPMProduct\"/>\n>          <PropertyValue Property=\"Action\" String=\"manage_st\"/>\n>          <PropertyValue Property=\"Determining\" Bool=\"true\"/>\n>       </Record>\n>    </Collection>\n> </Annotation>\n> ```\n\n> ### Note:  \n> The `UI.LineItem` vocabulary term is used to define the columns for the smart table.\n\nIn the example above for the first record type, the `DataFieldForAction` complex type does not contain the `Determining` property. Therefore, the action button will appear in the smart table toolbar.\n\nWith the last two record types, the `DataFieldForAction` and `DataFieldForIntentBasedNavigation`, complex types are used and contain the `Determining` property, which is set to `true`. This means the action buttons will appear in the footer.\n\n",
+  "excerpt": "<!-- loiod71998265d714004a815e55b2dde5f5d --> Defining Determining Actions in List Reports You can add a determining action button to the footer of the list report view. > Note:   > This topic is curr...",
+  "wordCount": 360,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

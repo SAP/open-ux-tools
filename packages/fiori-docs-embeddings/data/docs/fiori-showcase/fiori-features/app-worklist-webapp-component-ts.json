@@ -1,0 +1,21 @@
+{
+  "id": "fiori-showcase-app-worklist-webapp-component-ts",
+  "title": "Component",
+  "category": "fiori-features",
+  "path": "app/worklist/webapp/Component.ts",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "ts",
+    "Component"
+  ],
+  "headers": [
+    "Component"
+  ],
+  "content": "# Component.ts\n\n```typescript\nimport AppComponent from 'sap/fe/core/AppComponent';\n\n/**\n * @namespace sap.fe.showcase.worklist\n */\nexport default class Component extends AppComponent {\n  public static metadata = {\n    manifest: 'json',\n  };\n}\n\n```",
+  "excerpt": "Component.ts",
+  "wordCount": 29,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

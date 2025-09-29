@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-initmockserver-dbg-js",
+  "title": "initMockServer dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/initMockServer-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "initMockServer",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# initMockServer-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"mycompany/myapp/MyWorklistApp/localService/mockserver\",\n\t\"sap/m/MessageBox\"\n], function (mockserver, MessageBox) {\n\t\"use strict\";\n\n\tvar aMockservers = [];\n\n\t// initialize the mock server\n\taMockservers.push(mockserver.init());\n\n\tPromise.all(aMockservers).catch(function (oError) {\n\t\tMessageBox.error(oError.message);\n\t}).finally(function () {\n\t\t// initialize the embedded component on the HTML page\n\t\tsap.ui.require([\"sap/ui/core/ComponentSupport\"]);\n\t});\n\n});\n```",
+  "excerpt": "initMockServer-dbg.js",
+  "wordCount": 43,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

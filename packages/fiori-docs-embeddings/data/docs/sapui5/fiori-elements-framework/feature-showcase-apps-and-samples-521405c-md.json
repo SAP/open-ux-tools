@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-feature-showcase-apps-and-samples-521405c-md",
+  "title": "Feature Showcase Apps and Samples",
+  "category": "fiori-elements-framework",
+  "path": "feature-showcase-apps-and-samples-521405c.md",
+  "lastModified": "2025-09-29T10:06:38.828Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "feature",
+    "showcase",
+    "apps",
+    "and",
+    "samples",
+    "521405c"
+  ],
+  "headers": [
+    "Feature Showcase Apps and Samples"
+  ],
+  "content": "<!-- loio521405cc719e4e699a25366461a516cb -->\n\n# Feature Showcase Apps and Samples\n\nWe've put together some sample apps to demonstrate and document a broad variety of features of SAP Fiori elements for OData V4. Learn how to implement them and test them yourself!\n\n\n\nWhether you're a newbie or an experienced developer who just wants to look up how a certain feature is implemented – we'll help you get started.\n\nWe've created the following SAP Fiori elements for OData V4 feature showcase apps:\n\n-   [Feature showcase based on CAP](https://github.com/SAP-samples/fiori-elements-feature-showcase#readme)\n-   [Feature showcase based on RAP](https://github.com/SAP-samples/abap-platform-fiori-feature-showcase#readme)\n\nWe've created the following sample apps:\n\n-   [CAP SFLIGHT](https://github.com/SAP-samples/cap-sflight#readme)\n\n-   [RAP SFLIGHT](https://github.com/SAP-samples/abap-platform-refscen-flight)\n\n\nYou can also check out our live examples in the [Flexible Programming Model](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/overview/introduction).\n\n",
+  "excerpt": "<!-- loio521405cc719e4e699a25366461a516cb --> Feature Showcase Apps and Samples We've put together some sample apps to demonstrate and document a broad variety of features of SAP Fiori elements for OD...",
+  "wordCount": 117,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

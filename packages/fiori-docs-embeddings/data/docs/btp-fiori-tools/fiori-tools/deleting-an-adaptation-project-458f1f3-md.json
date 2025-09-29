@@ -1,0 +1,32 @@
+{
+  "id": "btp-fiori-tools-deleting-an-adaptation-project-458f1f3-md",
+  "title": "Deleting an Adaptation Project",
+  "category": "fiori-tools",
+  "path": "deleting-an-adaptation-project-458f1f3.md",
+  "lastModified": "2025-09-29T10:06:38.718Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "deleting",
+    "adaptation",
+    "project",
+    "458f1f3"
+  ],
+  "headers": [
+    "Deleting an Adaptation Project",
+    "Context",
+    "Using the deployment tool",
+    "Prerequisites",
+    "Procedure",
+    "Using ABAP report",
+    "Prerequisites",
+    "Procedure",
+    "Results"
+  ],
+  "content": "<!-- loio458f1f3280a04df3805849f1c29ac5c5 -->\n\n# Deleting an Adaptation Project\n\nLearn how to delete an adaptation project.\n\n\n\n<a name=\"loio458f1f3280a04df3805849f1c29ac5c5__context_yzq_v4p_qlb\"/>\n\n## Context\n\n> ### Caution:  \n> If a key user has created app variants based on the app variant you have just deleted, these will also be deleted.\n\nThere are three methods to delete an adaptation project: using the deployment tool, using the Command Line Interface \\(CLI\\), or using an ABAP report.\n\n<a name=\"task_ubv_13p_wtb\"/>\n\n<!-- task\\_ubv\\_13p\\_wtb -->\n\n## Using the deployment tool\n\n\n\n<a name=\"task_ubv_13p_wtb__prereq_y5l_m3p_wtb\"/>\n\n## Prerequisites\n\nYou have deployed an app variant, which have you created using an adaptation project, to your ABAP system.\n\nYou have the `SAP_UI_FLEX_DEVELOPER` role assigned.\n\n\n\n<a name=\"task_ubv_13p_wtb__steps_msy_x3p_wtb\"/>\n\n## Procedure\n\n1.  Right-click on the main folder, the `webapp` folder, or the `manifest.appdescr_variant` file and click *Open Deployment Wizard*.\n\n2.  Choose the system you want to undeploy the project from. The system you have used to create the project will be selected by default. Click *Next* to continue.\n\n3.  Click *Undeploy* and click *Finish* to start the undeployment.\n\n\n<a name=\"task_ecy_r3p_wtb\"/>\n\n<!-- task\\_ecy\\_r3p\\_wtb -->\n\n## Using ABAP report\n\n\n\n<a name=\"task_ecy_r3p_wtb__prereq_elw_kf3_3vb\"/>\n\n## Prerequisites\n\nYou have deployed an app variant, which you created using an adaptation project, to your ABAP system.\n\nТhe minimum required version of the software component is `SAP_UI 7.55`.\n\n\n\n<a name=\"task_ecy_r3p_wtb__steps_ak2_z3p_wtb\"/>\n\n## Procedure\n\n1.  In your project folder, open the `manifest.appdescr_variant` file in your adaptation project and copy the value of the `id` element.\n\n2.  In the back-end system, start transaction `SE38` and execute report `/UI5/DEL_ADAPTATION_PROJECT`.\n\n3.  Paste the copied `ID` of the app variant that you want to delete or use the [F4\\] help to find it.\n\n4.  Click *Execute* \\([F8\\]\\).\n\n5.  If prompted, select or create a transport request.\n\n6.  In the overview of the files that will be deleted, click *Execute* \\([Shift\\] + [F1\\]  \\) again.\n\n\n\n\n<a name=\"task_ecy_r3p_wtb__result_pkn_srb_fdc\"/>\n\n## Results\n\nThe app variant is deleted from all systems as soon as you release the transport request.\n\n",
+  "excerpt": "<!-- loio458f1f3280a04df3805849f1c29ac5c5 --> Deleting an Adaptation Project Learn how to delete an adaptation project. <a name=\"loio458f1f3280a04df3805849f1c29ac5c5__context_yzq_v4p_qlb\"/> Context > ...",
+  "wordCount": 320,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

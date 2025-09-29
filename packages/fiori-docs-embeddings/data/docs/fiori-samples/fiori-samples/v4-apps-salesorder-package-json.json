@@ -1,0 +1,30 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-package-json",
+  "title": "salesorder",
+  "category": "fiori-samples",
+  "path": "V4/apps/salesorder/package.json",
+  "lastModified": "2025-09-29T10:06:39.452Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "package"
+  ],
+  "headers": [
+    "name",
+    "version",
+    "private",
+    "description",
+    "keywords",
+    "main",
+    "dependencies",
+    "devDependencies",
+    "scripts",
+    "ui5"
+  ],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"salesorder\",\n  \"version\": \"0.0.1\",\n  \"private\": true,\n  \"description\": \"\",\n  \"keywords\": [\n    \"ui5\",\n    \"openui5\",\n    \"sapui5\"\n  ],\n  \"main\": \"webapp/index.html\",\n  \"dependencies\": {},\n  \"devDependencies\": {\n    \"@ui5/cli\": \"^3.3.4\",\n    \"@sap/ux-ui5-tooling\": \"1\",\n    \"@sap/ux-specification\": \"UI5-1.84\",\n    \"eslint\": \"7.32.0\",\n    \"@sap/eslint-plugin-ui5-jsdocs\": \"2.0.5\",\n    \"@sapui5/ts-types\": \"1.92.2\",\n    \"eslint-plugin-fiori-custom\": \"2.2.1\",\n    \"@babel/eslint-parser\": \"7.14.7\",\n    \"@sap-ux/ui5-middleware-fe-mockserver\": \"2.1.25\"\n  },\n  \"scripts\": {\n    \"start\": \"fiori run --open \\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#salesorder-tile\\\"\",\n    \"start-local\": \"fiori run --config ./ui5-local.yaml --open \\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#salesorder-tile\\\"\",\n    \"build\": \"ui5 build --config=ui5.yaml --clean-dest --dest dist\",\n    \"lint\": \"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\",\n    \"deploy\": \"fiori verify\",\n    \"deploy-config\": \"fiori add deploy-config\",\n    \"start-noflp\": \"fiori run --open \\\"index.html?sap-ui-xx-viewCache=false\\\"\",\n    \"start-mock\": \"fiori run --config ./ui5-mock.yaml --open \\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#salesorder-tile\\\"\",\n    \"start-variants-management\": \"fiori run --open \\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\"\",\n    \"int-tests\": \"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\"\n  },\n  \"ui5\": {\n    \"dependencies\": [\n      \"@sap/ux-ui5-tooling\",\n      \"@sap-ux/ui5-middleware-fe-mockserver\"\n    ]\n  },\n  \"sapux\": true,\n  \"sapuxLayer\": \"CUSTOMER_BASE\"\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 115,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

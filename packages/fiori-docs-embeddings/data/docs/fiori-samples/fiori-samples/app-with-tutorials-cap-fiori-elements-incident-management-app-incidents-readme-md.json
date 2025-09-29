@@ -1,0 +1,24 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-readme-md",
+  "title": "Application Details",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/README.md",
+  "lastModified": "2025-09-29T10:06:39.454Z",
+  "tags": [
+    "fiori-samples",
+    "md",
+    "README"
+  ],
+  "headers": [
+    "Application Details",
+    "incidents",
+    "Starting the generated app",
+    "Pre-requisites:"
+  ],
+  "content": "## Application Details\n|               |\n| ------------- |\n|**Generation Date and Time**<br>Fri Dec 09 2024 13:43:41 GMT+0000 (Coordinated Universal Time)|\n|**App Generator**<br>@sap/generator-fiori-elements|\n|**App Generator Version**<br>1.8.3|\n|**Generation Platform**<br>SAP Business Application Studio|\n|**Template Used**<br>List Report Page V4|\n|**Service Type**<br>Local Cap|\n|**Service URL**<br>http://localhost:4004/incident/\n|**Module Name**<br>incidents|\n|**Application Title**<br>Incidents Management|\n|**Namespace**<br>sap.fe.demo|\n|**UI5 Theme**<br>sap_horizon|\n|**UI5 Version**<br>1.108.0|\n|**Enable Code Assist Libraries**<br>False|\n|**Enable TypeScript**<br>False|\n|**Add Eslint configuration**<br>False|\n|**Main Entity**<br>Incidents|\n|**Navigation Entity**<br>None|\n\n## incidents\n\nSAP Fiori Elements\n\n### Starting the generated app\n\n-   This app has been generated using the SAP Fiori tools - Application Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:\n\nhttp://localhost:4004/incidents/webapp/index.html\n\n- It is also possible to run the application using mock data that reflects the OData Service URL supplied during application generation.  In order to run the application with Mock Data, run the following from the generated app root folder:\n\n```\n    npm run start-mock\n```\n\n#### Pre-requisites:\n\n1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)\n\n\n",
+  "excerpt": "Application Details |               | | ------------- | |Generation Date and Time<br>Fri Dec 09 2024 13:43:41 GMT+0000 (Coordinated Universal Time)| |App Generator<br>@sap/generator-fiori-elements| |A...",
+  "wordCount": 180,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

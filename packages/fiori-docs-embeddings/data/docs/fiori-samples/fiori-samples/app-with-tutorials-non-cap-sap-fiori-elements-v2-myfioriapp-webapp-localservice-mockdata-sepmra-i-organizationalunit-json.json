@@ -1,0 +1,31 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-localservice-mockdata-sepmra-i-organizationalunit-json",
+  "title": "SEPMRA I OrganizationalUnit",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/localService/mockdata/SEPMRA_I_OrganizationalUnit.json",
+  "lastModified": "2025-09-29T10:06:39.512Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "SEPMRA",
+    "OrganizationalUnit"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "content": "# SEPMRA_I_OrganizationalUnit.json\n\n```json\n[\n  {\n    \"OrganizationalUnit\": \"700000000\",\n    \"OrganizationalUnitName\": \"SALES-NA\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000001\",\n    \"OrganizationalUnitName\": \"MARKETING\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000002\",\n    \"OrganizationalUnitName\": \"IT-SECURITY\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000003\",\n    \"OrganizationalUnitName\": \"SALESOP\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000004\",\n    \"OrganizationalUnitName\": \"GLOBALIT\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000005\",\n    \"OrganizationalUnitName\": \"FINADM\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000006\",\n    \"OrganizationalUnitName\": \"HR\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000007\",\n    \"OrganizationalUnitName\": \"SUPPORT\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000008\",\n    \"OrganizationalUnitName\": \"SALES-EMEA\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000009\",\n    \"OrganizationalUnitName\": \"HARDWPROD\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000010\",\n    \"OrganizationalUnitName\": \"STRATDEV\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000011\",\n    \"OrganizationalUnitName\": \"CEO\"\n  },\n  {\n    \"OrganizationalUnit\": \"700000012\",\n    \"OrganizationalUnitName\": \"PURCHASE\"\n  }\n]\n```",
+  "excerpt": "SEPMRA_I_OrganizationalUnit.json",
+  "wordCount": 84,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

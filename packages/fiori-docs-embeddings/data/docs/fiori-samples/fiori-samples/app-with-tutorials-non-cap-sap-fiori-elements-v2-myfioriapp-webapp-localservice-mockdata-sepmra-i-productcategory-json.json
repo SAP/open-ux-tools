@@ -1,0 +1,31 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-localservice-mockdata-sepmra-i-productcategory-json",
+  "title": "SEPMRA I ProductCategory",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/localService/mockdata/SEPMRA_I_ProductCategory.json",
+  "lastModified": "2025-09-29T10:06:39.512Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "SEPMRA",
+    "ProductCategory"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "content": "# SEPMRA_I_ProductCategory.json\n\n```json\n[\n  {\n    \"ProductCategory\": \"Notebooks\",\n    \"MainProductCategory\": \"Computer Systems\"\n  },\n  {\n    \"ProductCategory\": \"PDAs & Organizers\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Flat Screen Monitors\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Laser Printers\",\n    \"MainProductCategory\": \"Printers & Scanners\"\n  },\n  {\n    \"ProductCategory\": \"Ink Jet Printers\",\n    \"MainProductCategory\": \"Printers & Scanners\"\n  },\n  {\n    \"ProductCategory\": \"Multifunction Printers\",\n    \"MainProductCategory\": \"Printers & Scanners\"\n  },\n  {\n    \"ProductCategory\": \"Mice\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Keyboards\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Mousepads\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Computer System Accessories\",\n    \"MainProductCategory\": \"Computer Systems\"\n  },\n  {\n    \"ProductCategory\": \"Graphic Cards\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Scanners\",\n    \"MainProductCategory\": \"Printers & Scanners\"\n  },\n  {\n    \"ProductCategory\": \"Speakers\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"Software\",\n    \"MainProductCategory\": \"Software\"\n  },\n  {\n    \"ProductCategory\": \"Telecommunications\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"PCs\",\n    \"MainProductCategory\": \"Computer Systems\"\n  },\n  {\n    \"ProductCategory\": \"Servers\",\n    \"MainProductCategory\": \"Computer Systems\"\n  },\n  {\n    \"ProductCategory\": \"Flat Screen TVs\",\n    \"MainProductCategory\": \"TV, Video & HiFi\"\n  },\n  {\n    \"ProductCategory\": \"Headsets\",\n    \"MainProductCategory\": \"Computer Components\"\n  },\n  {\n    \"ProductCategory\": \"MP3 Players\",\n    \"MainProductCategory\": \"TV, Video & HiFi\"\n  },\n  {\n    \"ProductCategory\": \"Portable Players\",\n    \"MainProductCategory\": \"TV, Video & HiFi\"\n  },\n  {\n    \"ProductCategory\": \"Projectors\",\n    \"MainProductCategory\": \"TV, Video & HiFi\"\n  },\n  {\n    \"ProductCategory\": \"Tablets\",\n    \"MainProductCategory\": \"Smartphones & Tablets\"\n  },\n  {\n    \"ProductCategory\": \"Smartphones\",\n    \"MainProductCategory\": \"Smartphones & Tablets\"\n  },\n  {\n    \"ProductCategory\": \"Accessories\",\n    \"MainProductCategory\": \"Smartphones & Tablets\"\n  },\n  {\n    \"ProductCategory\": \"Camcorders\",\n    \"MainProductCategory\": \"TV, Video & HiFi\"\n  }\n]\n```",
+  "excerpt": "SEPMRA_I_ProductCategory.json",
+  "wordCount": 219,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

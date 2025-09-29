@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v2-apps-products-review-webapp-i18n-i18n-properties",
+  "title": "i18n",
+  "category": "fiori-samples",
+  "path": "V2/apps/products-review/webapp/i18n/i18n.properties",
+  "lastModified": "2025-09-29T10:06:39.364Z",
+  "tags": [
+    "fiori-samples",
+    "properties",
+    "i18n"
+  ],
+  "headers": [],
+  "content": "# i18n.properties\n\n```properties\n# Manage Products - general \n# __ldi.translation.uuid=dae33f10-2095-11e5-867f-0800200c9a66\n\n#Texts for manifest.json\n\n#XTIT: Application name\nappTitle=Manage Products\n#YDES: Application description\nappDescription=SAP Fiori Ref. App\n#XTIT: Storage Bin reuse component title\nstorageBinTitle=Inventory Information\n#XTIT: Notes reuse component title\nnotesTitle=Notes\n```",
+  "excerpt": "i18n.properties",
+  "wordCount": 40,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

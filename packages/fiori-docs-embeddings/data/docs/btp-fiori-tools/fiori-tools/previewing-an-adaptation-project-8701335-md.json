@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-previewing-an-adaptation-project-8701335-md",
+  "title": "Previewing an Adaptation Project",
+  "category": "fiori-tools",
+  "path": "previewing-an-adaptation-project-8701335.md",
+  "lastModified": "2025-09-29T10:06:38.723Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "previewing",
+    "adaptation",
+    "project",
+    "8701335"
+  ],
+  "headers": [
+    "Previewing an Adaptation Project",
+    "Context",
+    "Procedure"
+  ],
+  "content": "<!-- loio8701335d5dbd4d09babfabb5e9f752d7 -->\n\n# Previewing an Adaptation Project\n\nLearn how to preview an adaption project.\n\n\n\n## Context\n\nRight click on the project main folder, the `webapp` folder, or the `manifest.appdescr_variant` file and click *Preview Application*.\n\n\n\n<a name=\"loio8701335d5dbd4d09babfabb5e9f752d7__steps_pgc_l4v_2dc\"/>\n\n## Procedure\n\n1.  Right click on the project main folder, the `webapp` folder, or the `manifest.appdescr_variant` file and click *Preview Application*.\n\n2.  Click *start*. Your adaptation project will load in a separate browser tab. You can navigate, load data, and test your newly added functionality.\n\n\n",
+  "excerpt": "<!-- loio8701335d5dbd4d09babfabb5e9f752d7 --> Previewing an Adaptation Project Learn how to preview an adaption project. Context Right click on the project main folder, the webapp folder, or the manif...",
+  "wordCount": 83,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

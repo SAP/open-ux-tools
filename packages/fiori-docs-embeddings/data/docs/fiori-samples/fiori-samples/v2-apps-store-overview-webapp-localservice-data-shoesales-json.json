@@ -1,0 +1,30 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-webapp-localservice-data-shoesales-json",
+  "title": "ShoeSales",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/webapp/localService/data/ShoeSales.json",
+  "lastModified": "2025-09-29T10:06:39.406Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "ShoeSales"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "content": "# ShoeSales.json\n\n```json\n[\n  {\n    \"ID\": \"0\",\n    \"Type\": \"Fast &Furious\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 48\n  },\n  {\n    \"ID\": \"1\",\n    \"Type\": \"Fast &Furious\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 20\n  },\n  {\n    \"ID\": \"2\",\n    \"Type\": \"Fast &Furious\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 80\n  },\n  {\n    \"ID\": \"3\",\n    \"Type\": \"Fitness Explorer\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 36\n  },\n  {\n    \"ID\": \"4\",\n    \"Type\": \"Fitness Explorer\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 50\n  },\n  {\n    \"ID\": \"5\",\n    \"Type\": \"Fitness Explorer\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 160\n  },\n  {\n    \"ID\": \"6\",\n    \"Type\": \"Frequent Short-Distance\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 82\n  },\n  {\n    \"ID\": \"7\",\n    \"Type\": \"Frequent Short-Distance\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 60\n  },\n  {\n    \"ID\": \"8\",\n    \"Type\": \"Frequent Short-Distance\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 20\n  },\n  {\n    \"ID\": \"9\",\n    \"Type\": \"Run Lover\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 10\n  },\n  {\n    \"ID\": \"10\",\n    \"Type\": \"Run Lover\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 50\n  },\n  {\n    \"ID\": \"11\",\n    \"Type\": \"Run Lover\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 40\n  },\n  {\n    \"ID\": \"12\",\n    \"Type\": \"Beginning Runner\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 16\n  },\n  {\n    \"ID\": \"13\",\n    \"Type\": \"Beginning Runner\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 18\n  },\n  {\n    \"ID\": \"14\",\n    \"Type\": \"Beginning Runner\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 40\n  },\n  {\n    \"ID\": \"15\",\n    \"Type\": \"Run Sensei\",\n    \"Shoe\": 1,\n    \"ShoeName\": \"Runner XT\",\n    \"Count\": 16\n  },\n  {\n    \"ID\": \"16\",\n    \"Type\": \"Run Sensei\",\n    \"Shoe\": 2,\n    \"ShoeName\": \"TrailRun\",\n    \"Count\": 18\n  },\n  {\n    \"ID\": \"16\",\n    \"Type\": \"Run Sensei\",\n    \"Shoe\": 3,\n    \"ShoeName\": \"FastPace Street\",\n    \"Count\": 40\n  }\n]\n```",
+  "excerpt": "ShoeSales.json",
+  "wordCount": 252,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

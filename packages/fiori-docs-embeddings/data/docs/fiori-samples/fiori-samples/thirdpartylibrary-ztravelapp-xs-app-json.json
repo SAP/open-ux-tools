@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-xs-app-json",
+  "title": "xs app",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/xs-app.json",
+  "lastModified": "2025-09-29T10:06:39.534Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "app"
+  ],
+  "headers": [
+    "welcomeFile",
+    "authenticationMethod",
+    "routes"
+  ],
+  "content": "# xs-app.json\n\n```json\n{\n  \"welcomeFile\": \"/index.html\",\n  \"authenticationMethod\": \"route\",\n  \"routes\": [\n    {\n      \"source\": \"^/northwind/(.*)$\",\n      \"target\": \"/$1\",\n      \"destination\": \"northwind\",\n      \"authenticationType\": \"xsuaa\",\n      \"csrfProtection\": false\n    },\n    {\n      \"source\": \"^/resources/(.*)$\",\n      \"target\": \"/resources/$1\",\n      \"authenticationType\": \"none\",\n      \"destination\": \"ui5\"\n    },\n    {\n      \"source\": \"^/test-resources/(.*)$\",\n      \"target\": \"/test-resources/$1\",\n      \"authenticationType\": \"none\",\n      \"destination\": \"ui5\"\n    },\n    {\n      \"source\": \"^(.*)$\",\n      \"target\": \"$1\",\n      \"service\": \"html5-apps-repo-rt\",\n      \"authenticationType\": \"xsuaa\"\n    }\n  ]\n}\n```",
+  "excerpt": "xs-app.json",
+  "wordCount": 55,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "fiori-samples-misc-headless-readme-md",
+  "title": "Running SAP Fiori Tools Headless Generator",
+  "category": "fiori-samples",
+  "path": "misc/headless/README.md",
+  "lastModified": "2025-09-29T10:06:39.523Z",
+  "tags": [
+    "fiori-samples",
+    "md",
+    "README"
+  ],
+  "headers": [
+    "Running SAP Fiori Tools Headless Generator",
+    "Overview",
+    "Options",
+    "License"
+  ],
+  "content": "# Running SAP Fiori Tools Headless Generator\n\n## Overview\n\nEnables running a JSON configuration with predefined properties to support headless mode, allowing users to pass a complete payload to the generator with all mandatory values included.\n\n## Options\n\n1. Running [CAP headless](cap/README.md) generator, to append a SAP Fiori UI application with a managed approuter configuration to a CAP project\n1. Running [headless](fioriui/README.md) generator to generate a SAP Fiori UI application with a managed approuter configuration\n\n### License\nCopyright (c) 2009-2025 SAP SE or an SAP affiliate company. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](../../LICENSES/Apache-2.0.txt) file.\n\n\n",
+  "excerpt": "Running SAP Fiori Tools Headless Generator Overview Enables running a JSON configuration with predefined properties to support headless mode, allowing users to pass a complete payload to the generator...",
+  "wordCount": 107,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-unit-model-formatter-dbg-js",
+  "title": "formatter dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/fioriapp/webapp/test/unit/model/formatter-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.530Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "formatter",
+    "dbg"
+  ],
+  "headers": [
+    "numberUnitValueTestCase"
+  ],
+  "content": "# formatter-dbg.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"mycompany/myapp/MyWorklistApp/model/formatter\"\n], function (formatter) {\n\t\"use strict\";\n\n\tQUnit.module(\"Number unit\");\n\n\tfunction numberUnitValueTestCase(assert, sValue, fExpectedNumber) {\n\t\t// Act\n\t\tvar fNumber = formatter.numberUnit(sValue);\n\n\t\t// Assert\n\t\tassert.strictEqual(fNumber, fExpectedNumber, \"The rounding was correct\");\n\t}\n\n\tQUnit.test(\"Should round down a 3 digit number\", function (assert) {\n\t\tnumberUnitValueTestCase.call(this, assert, \"3.123\", \"3.12\");\n\t});\n\n\tQUnit.test(\"Should round up a 3 digit number\", function (assert) {\n\t\tnumberUnitValueTestCase.call(this, assert, \"3.128\", \"3.13\");\n\t});\n\n\tQUnit.test(\"Should round a negative number\", function (assert) {\n\t\tnumberUnitValueTestCase.call(this, assert, \"-3\", \"-3.00\");\n\t});\n\n\tQUnit.test(\"Should round an empty string\", function (assert) {\n\t\tnumberUnitValueTestCase.call(this, assert, \"\", \"\");\n\t});\n\n\tQUnit.test(\"Should round a zero\", function (assert) {\n\t\tnumberUnitValueTestCase.call(this, assert, \"0\", \"0.00\");\n\t});\n\n});\n\n```",
+  "excerpt": "formatter-dbg.js",
+  "wordCount": 105,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

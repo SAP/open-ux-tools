@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-v2-apps-products-review-webapp-i18n-i18n-en-us-saptrc-properties",
+  "title": "i18n en US saptrc",
+  "category": "fiori-samples",
+  "path": "V2/apps/products-review/webapp/i18n/i18n_en_US_saptrc.properties",
+  "lastModified": "2025-09-29T10:06:39.364Z",
+  "tags": [
+    "fiori-samples",
+    "properties",
+    "i18n",
+    "saptrc"
+  ],
+  "headers": [],
+  "content": "# i18n_en_US_saptrc.properties\n\n```properties\n\n#Texts for manifest.json\n\n#XTIT: Application name\nappTitle=1yIhjm4zPmErLJTgsnHhZA_Manage Products\n#YDES: Application description\nappDescription=nkO0Lz0HtrU3qDBYUGi9ZA_SAP Fiori Ref. App\n#XTIT: Storage Bin reuse component title\nstorageBinTitle=yGRrxClm1DREkfnYJxgzmw_Inventory Information\n#XTIT: Notes reuse component title\nnotesTitle=UHcvtceoNa44t6N2Cl7QRw_Notes\n\n```",
+  "excerpt": "i18n_en_US_saptrc.properties",
+  "wordCount": 33,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

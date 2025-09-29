@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-unit-helper-fakei18nmodel-js",
+  "title": "FakeI18nModel",
+  "category": "fiori-samples",
+  "path": "neo-migration/fioriapp/webapp/test/unit/helper/FakeI18nModel.js",
+  "lastModified": "2025-09-29T10:06:39.530Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "FakeI18nModel"
+  ],
+  "headers": [],
+  "content": "# FakeI18nModel.js\n\n```javascript\nsap.ui.define([\"sap/ui/model/Model\"],function(t){\"use strict\";return t.extend(\"test.unit.helper.FakeI18nModel\",{constructor:function(e){t.call(this);this.mTexts=e||{}},getResourceBundle:function(){return{getText:function(t){return this.mTexts[t]}.bind(this)}}})});\n```",
+  "excerpt": "FakeI18nModel.js",
+  "wordCount": 8,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

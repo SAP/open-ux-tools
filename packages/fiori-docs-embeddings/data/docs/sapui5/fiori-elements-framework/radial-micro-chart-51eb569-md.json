@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-radial-micro-chart-51eb569-md",
+  "title": "Radial Micro Chart",
+  "category": "fiori-elements-framework",
+  "path": "radial-micro-chart-51eb569.md",
+  "lastModified": "2025-09-29T10:06:38.851Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "radial",
+    "micro",
+    "chart",
+    "51eb569"
+  ],
+  "headers": [
+    "Radial Micro Chart",
+    "`UI.Chart` Annotation",
+    "`UI.DataPoint` Annotation"
+  ],
+  "content": "<!-- loio51eb56989df94267a75ebeff24093a5e -->\n\n# Radial Micro Chart\n\nRadial micro charts displays a single percentage value.\n\nThe chart consists of a colored radial bar with a percentage value inside.\n\n![](images/Radial_Micro_Chart_551f7f3.png)\n\n> ### Note:  \n> For more information about this chart type, see [Samples](https://ui5.sap.com/1.82.5/#/entity/sap.suite.ui.microchart.RadialMicroChart).\n\n\n\n<a name=\"loio51eb56989df94267a75ebeff24093a5e__section_cfx_s3q_qmb\"/>\n\n## `UI.Chart` Annotation\n\nThe `UI.Chart Title` property is used for the title. The `UI.Chart Description` property is used for the subtitle.\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotation Term=\"UI.Chart\" Qualifier=\"SpecificationWidthRadialChart\">\n>     <Record Type=\"UI.ChartDefinitionType\">\n>         <PropertyValue Property=\"Title\" String=\"Product Width Specification\"/>\n>         <PropertyValue Property=\"Description\" String=\"No navigation with qualifier\"/>\n>         <PropertyValue Property=\"ChartType\" EnumMember=\"UI.ChartType/Donut\"/>\n>         <PropertyValue Property=\"Measures\">\n>             <Collection>\n>                 <PropertyPath>Width</PropertyPath>\n>             </Collection>\n>         </PropertyValue>\n>         <PropertyValue Property=\"MeasureAttributes\">\n>             <Collection>\n>                 <Record Type=\"UI.ChartMeasureAttributeType\">\n>                     <PropertyValue Property=\"Measure\" PropertyPath=\"Width\"/>\n>                     <PropertyValue Property=\"Role\" EnumMember=\"UI.ChartMeasureRoleType/Axis1\"/>\n>                     <PropertyValue Property=\"DataPoint\" AnnotationPath=\"@UI.DataPoint#Width\"/>\n>                 </Record>\n>             </Collection>\n>         </PropertyValue>\n>     </Record>\n> </Annotation>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.Chart: [\n>   {\n>     title: 'Product Width Specification',\n>     description: 'No navigation with qualifier',\n>     chartType: #DONUT,\n>     measures: [\n>       'WIDTH'\n>     ],\n>     measureAttributes: [\n>       {\n>         measure: 'Width',\n>         role: #AXIS_1,\n>         asDataPoint: true\n>       }\n>     ],\n>     qualifier: 'SpecificationWidthRadialChart'\n>   }\n> ]\n> annotate view STTA_C_MP_PRODUCT with {\n> \n> }\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> UI.Chart #SpecificationWidthRadialChart : {\n>     $Type : 'UI.ChartDefinitionType',\n>     Title : 'Product Width Specification',\n>     Description : 'No navigation with qualifier',\n>     ChartType : #Donut,\n>     Measures : [\n>         Width\n>     ],\n>     MeasureAttributes : [\n>         {\n>             $Type : 'UI.ChartMeasureAttributeType',\n>             Measure : Width,\n>             Role : #Axis1,\n>             DataPoint : '@UI.DataPoint#Width'\n>         }\n>     ]\n> }\n> \n> ```\n\n\n\n<a name=\"loio51eb56989df94267a75ebeff24093a5e__section_w1x_s3q_qmb\"/>\n\n## `UI.DataPoint` Annotation\n\n> ### Sample Code:  \n> XML Annotation\n> \n> ```xml\n> <Annotation Term=\"UI.DataPoint\" Qualifier=\"Width\">\n>     <Record>\n>         <PropertyValue Property=\"Value\" Path=\"Width\"/>\n>         <PropertyValue Property=\"TargetValue\" Path=\"Weight\"/>\n>         <PropertyValue Property=\"Criticality\" Path=\"criticalityValue\"/>\n>     </Record>\n> </Annotation>\n> \n> ```\n\n> ### Sample Code:  \n> ABAP CDS Annotation\n> \n> ```\n> \n> @UI.dataPoint: {\n>   criticality: 'criticalityValue'\n> }\n> Width;\n> \n> ```\n\n> ### Sample Code:  \n> CAP CDS Annotation\n> \n> ```\n> \n> UI.DataPoint #Width : {\n>     Value : Width,\n>     TargetValue : Weight,\n>     Criticality : criticalityValue\n> }\n> \n> \n> \n> ```\n\n> ### Note:  \n> The radial micro chart displays percentage values. This means that the unit of measure label is invalid and not rendered.\n\nFor semantic coloring, both the `Criticality` and `CriticalityCalculation` annotations are supported. However, the `Criticality` annotation overrides the `CriticalityCalculation` annotation.\n\nThe following annotations are mandatory and must be used in the radial micro chart:\n\n-   `UI.Chart` → `ChartType`: `\"Donut\"`\n\n-   `UI.Chart` → `Measures`\n\n-   `UI.Chart` → `MeasureAttributes` → `DataPoint`\n\n-   `UI.DataPoint` → `Value`\n\n-   In case the `CriticalityCalculation` annotation is used for semantic coloring, then:\n\n    -   `UI.DataPoint` → `CriticalityCalculation`\n\n    -   `UI.DataPoint` → `CriticalityCalculation/ImprovementDirection`\n\n\n\n",
+  "excerpt": "<!-- loio51eb56989df94267a75ebeff24093a5e --> Radial Micro Chart Radial micro charts displays a single percentage value. The chart consists of a colored radial bar with a percentage value inside. ! > ...",
+  "wordCount": 493,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-listreport-objectpage-webapp-i18n-customi18n-properties",
+  "title": "customI18N",
+  "category": "fiori-features",
+  "path": "app/listreport-objectpage/webapp/i18n/customI18N.properties",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "properties",
+    "customI18N"
+  ],
+  "headers": [],
+  "content": "# customI18N.properties\n\n```properties\n## Search-Term: \"enhanceI18n\"\nC_COMMON_ACTION_PARAMETER_DIALOG_CANCEL=Custom cancel text\nC_OPERATIONS_ACTION_CONFIRM_MESSAGE|RootEntities|criticalAction=Custom text for the critical action message\nC_TRANSACTION_HELPER_OBJECT_PAGE_CONFIRM_DELETE_WITH_OBJECTTITLE_SINGULAR|RootEntities=Custom text for the delete RootEntities message\n```",
+  "excerpt": "customI18N.properties",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

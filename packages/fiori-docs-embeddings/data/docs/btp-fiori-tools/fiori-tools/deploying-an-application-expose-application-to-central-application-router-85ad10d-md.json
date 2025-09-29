@@ -1,0 +1,31 @@
+{
+  "id": "btp-fiori-tools-deploying-an-application-expose-application-to-central-application-router-85ad10d-md",
+  "title": "Expose Application to Central Application Router",
+  "category": "fiori-tools",
+  "path": "Deploying-an-Application/expose-application-to-central-application-router-85ad10d.md",
+  "lastModified": "2025-09-29T10:06:38.673Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "expose",
+    "application",
+    "central",
+    "router",
+    "85ad10d"
+  ],
+  "headers": [
+    "Expose Application to Central Application Router",
+    "Prepare Authentication Service",
+    "Expose Authentication Service",
+    "Prepare HTML5 Repository Service",
+    "Expose HTML5 Repository Service",
+    "Test Application",
+    "Enable Integration into cFLP"
+  ],
+  "content": "<!-- loio85ad10dea43a41918f72574614bbc203 -->\n\n# Expose Application to Central Application Router\n\nExposing an application to the central application router supposes the creation of subaccount level destinations requiring the organization manager authorizations.\n\nOpen the [SAP Business Technology Platform Cockpit](https://account.int.sap.eu2.hana.ondemand.com/cockpit#/globalaccount/2fcd6ac6-b8e0-40e8-aa71-a357aa99585e/subaccount/f57f211e-2733-4cc6-b645-74f02d034a58)\n\n\n\n<a name=\"loio85ad10dea43a41918f72574614bbc203__section_btn_ctx_n4b\"/>\n\n## Prepare Authentication Service\n\n1.  Open *Service Instances*.\n\n    ![](images/FIORI_TOOLS_SERVICE_INSTANCE_280d554.png)\n\n2.  Select *Authorization & Trust Management*.\n3.  Search for your XSUAA service such as type `test-<something_unique>`.\n4.  Click `>` on the right side of the row containing your service.\n5.  If there is no service key, create a new one \\(click three dots in the upper right corner\\).\n6.  Copy the name of a service key.\n\n\n\n<a name=\"loio85ad10dea43a41918f72574614bbc203__section_gpd_w5x_n4b\"/>\n\n## Expose Authentication Service\n\n1.  Open *Connectivity* \\> *Destinations*.\n\n    ![](images/FIORI_TOOLS_DESTINATION_8ce6980.png)\n\n2.  Click *New Destination*\n3.  Select *Service Instance*\n4.  *Service Instance*: Select the XSUAA service created with your **mta**. For example, `test-<something_unique>-uaa`\n5.  *Name*: Give it a meaningful name. For example, `test-<something_unique>-uaa`\n6.  Click *Next*.\n7.  Click *New Property* and add `ServiceKeyName` and paste the name copied before. For example, `test-<something_unique>-uaa-service-key` \n8.  Click *New Property* and add `sap.cloud.service: test-<something_unique>` \n9.  Click *Save*.\n\n\n\n<a name=\"loio85ad10dea43a41918f72574614bbc203__section_gf3_swx_n4b\"/>\n\n## Prepare HTML5 Repository Service\n\n1.  Open *Instances and Subscriptions*.\n\n    ![](images/FIORI_TOOLS_SERVICE_INSTANCE_280d554.png)\n\n2.  Select *HTML5 Application Repository*\n3.  Search for your service. For example, `type test-<something_unique>`\n4.  Click on the `>` on the right side in the row with the service with `Plan app-host`\n5.  If there is no service key, create one \\(click on three dots in the upper right corner\\)\n6.  Copy the name of a service. For example, `keyCopy`.\n\n\n\n<a name=\"loio85ad10dea43a41918f72574614bbc203__section_xxn_zzx_n4b\"/>\n\n## Expose HTML5 Repository Service\n\n1.  Open *Connectivity* \\> *Destinations*.\n\n    ![](images/FIORI_TOOLS_DESTINATION_8ce6980.png)\n\n2.  Click *New Destination*\n3.  Select *Service Instance*\n4.  *Service Instance*: Select the HTML5 Repository service created with your mta. For example, `test-<something_unique>-html5-repo-host`\n5.  *Name*: Give it a meaningful name. For example,`test-<something_unique>-html5-repo-host`\n6.  Click *Next*.\n7.  Click *New Property* and add `ServiceKeyName` and paste the name you copied before. For example, `test-<something_unique>-deployer-<something_unique>-html5-repo-host-credentials` \n8.  Change the suggested property: `sap.cloud.service` to `test-<something_unique>` \\(same as for xsuaa service destination\\)\n9.  Click *Save*.\n\n\n\n<a name=\"loio85ad10dea43a41918f72574614bbc203__section_z2h_1vy_n4b\"/>\n\n## Test Application\n\n1.  Open *HTML5 Application*.\n\n    ![](images/FIORI_TOOLS_HTML5_1862c54.png)\n\n2.  Search for your app. For example, `test-<something_unique>`.\n3.  Click on your application. For example, `test<something_unique>ztravel`.\n\n\n\n<a name=\"loio85ad10dea43a41918f72574614bbc203__section_ynm_nvy_n4b\"/>\n\n## Enable Integration into cFLP\n\nOpen the *manifest.json* file of your application and add the parameter below to the root node:\n\n```\n\"sap.cloud\": {\n    \"public\": true,\n    \"service\": \"test-<something_unique>\"\n  }\n```\n\nRebuild and deploy your mta project.\n\n> ### Note:  \n> If you do not execute the steps above, then you will be able to configure the application to work in cFLP but it will fail with an error when it is loaded.\n\n",
+  "excerpt": "<!-- loio85ad10dea43a41918f72574614bbc203 --> Expose Application to Central Application Router Exposing an application to the central application router supposes the creation of subaccount level desti...",
+  "wordCount": 434,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

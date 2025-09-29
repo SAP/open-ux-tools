@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-the-richtexteditor-building-block-7bd2767-md",
+  "title": "The `RichTextEditor` Building Block",
+  "category": "fiori-elements-framework",
+  "path": "the-richtexteditor-building-block-7bd2767.md",
+  "lastModified": "2025-09-29T10:06:38.866Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "the",
+    "richtexteditor",
+    "building",
+    "block",
+    "7bd2767"
+  ],
+  "headers": [
+    "The `RichTextEditor` Building Block",
+    "API"
+  ],
+  "content": "<!-- loio7bd2767a8f74423ca5fbdf84f1341782 -->\n\n# The `RichTextEditor` Building Block\n\nUse the `RichTextEditor` building block to add a control that allows users to view a formatted text in display mode and edit it directly in edit mode.\n\nThe building block is based on the rich text editor used in SAPUI5, allowing you to define the button groups and plugins the same way as you would in that control. See the following sample code:\n\n> ### Sample Code:  \n> `RichTextEditor` Building Block\n> \n> ```\n> <macros:RichTextEditor value=\"{custom>/myFormattedValue}\" id=\"myRichTextEditor\" required=\"true\">\n> \t<macros:buttonGroups>\n> \t\t<richtexteditor:ButtonGroup\n> \t\t\tname=\"font-style\"\n> \t\t\tvisible=\"true\"\n> \t\t\tpriority=\"10\"\n> \t\t\tcustomToolbarPriority=\"10\"\n> \t\t\tbuttons=\"bold,italic\"\n> \t\t/>\n> \t\t<richtexteditor:ButtonGroup\n> \t\t\tname=\"styleselect\"\n> \t\t\tvisible=\"true\"\n> \t\t\tpriority=\"10\"\n> \t\t\tcustomToolbarPriority=\"10\"\n> \t\t\tbuttons=\"styleselect\"\n> \t\t/>\n> \t\t<richtexteditor:ButtonGroup name=\"table\" visible=\"true\" priority=\"10\" customToolbarPriority=\"10\" buttons=\"table\" />\n> \t</macros:buttonGroups>\n> \t<macros:plugins>\n> \t\t<richtexteditor:Plugin name=\"autoresize\" />\n> \t</macros:plugins>\n> </macros:RichTextEditor>\n> ```\n\nCheck out our live example in the flexible programming model explorer at [RichTextEditor](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/buildingBlocks/rte).\n\n\n\n<a name=\"loio7bd2767a8f74423ca5fbdf84f1341782__section_ht5_nls_j5b\"/>\n\n## API\n\nFor information about the `RichTextEditor` API, see the [API Reference](https://ui5.sap.com/#/api/sap.fe.macros.RichTextEditor).\n\n",
+  "excerpt": "<!-- loio7bd2767a8f74423ca5fbdf84f1341782 --> The RichTextEditor Building Block Use the RichTextEditor building block to add a control that allows users to view a formatted text in display mode and ed...",
+  "wordCount": 167,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

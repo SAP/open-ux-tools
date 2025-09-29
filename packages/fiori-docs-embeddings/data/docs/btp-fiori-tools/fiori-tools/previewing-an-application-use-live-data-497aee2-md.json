@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-previewing-an-application-use-live-data-497aee2-md",
+  "title": "Use Live Data",
+  "category": "fiori-tools",
+  "path": "Previewing-an-Application/use-live-data-497aee2.md",
+  "lastModified": "2025-09-29T10:06:38.710Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "use",
+    "live",
+    "data",
+    "497aee2"
+  ],
+  "headers": [
+    "Use Live Data",
+    "Visual Studio Code",
+    "SAP Business Application Studio"
+  ],
+  "content": "<!-- loio497aee2de4584822a7e936310b704743 -->\n\n# Use Live Data\n\nStart the application using the `npm start` command. Then, the application runs on `localhost:8080` and connects to an OData service endpoint. The preview of the application opens automatically in a new browser tab. If the OData endpoint requires authentication, the browser prompts you to enter your credentials.\n\n\n\n<a name=\"loio497aee2de4584822a7e936310b704743__section_axy_wg5_t4b\"/>\n\n## Visual Studio Code\n\n1.  In VS Code, open the terminal.\n\n    > ### Note:  \n    > To open the terminal in VS Code, perform the following steps:\n    > \n    > -   Use the [CTRL\\] + [\\`\\]  keyboard shortcut with the backtick character.\n    > -   Navigate to the *View* \\> *Terminal* menu command.\n    > -   From the *Command Palette* \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\), execute the `View: Toggle Integrate Terminal` command.\n\n2.  Ensure you are in the root directory of your project.\n3.  In the terminal pane, type `npm start` and press *Enter*.\n\n    The preview of your application starts automatically.\n\n\n> ### Note:  \n> If port 8080 is already in use, the system selects the next available port to start the application.\n\n\n\n<a name=\"loio497aee2de4584822a7e936310b704743__section_vyt_zg5_t4b\"/>\n\n## SAP Business Application Studio\n\n1.  In SAP Business Application Studio, open the terminal.\n\n    > ### Note:  \n    > To open the terminal in SAP Business Application Studio, perform the following steps:\n    > \n    > -   Select *Terminal* \\> *New Terminal* from the menu bar.\n\n2.  Ensure you are in the root directory of your project.\n3.  In the terminal pane, type `npm start` and press *Enter*.\n\n    The preview of your application starts automatically.\n\n\n",
+  "excerpt": "<!-- loio497aee2de4584822a7e936310b704743 --> Use Live Data Start the application using the npm start command. Then, the application runs on localhost:8080 and connects to an OData service endpoint. T...",
+  "wordCount": 251,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-pages-shareoptions-js",
+  "title": "shareOptions",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/pages/shareOptions.js",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "shareOptions"
+  ],
+  "headers": [],
+  "content": "# shareOptions.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/Opa5\",\"sap/ui/test/actions/Press\",\"sap/ui/test/matchers/PropertyStrictEquals\"],function(e,t,n){\"use strict\";return{createActions:function(e){return{iPressOnTheShareButton:function(){return this.waitFor({controlType:\"sap.m.Button\",viewName:e,matchers:new n({name:\"icon\",value:\"sap-icon://action\"}),actions:new t,errorMessage:\"Did not find the share button\"})}}},createAssertions:function(t){return{iShouldSeeTheShareEmailButton:function(){return this.waitFor({viewName:t,id:\"shareEmail-button\",matchers:new n({name:\"icon\",value:\"sap-icon://email\"}),success:function(){e.assert.ok(true,\"The E-Mail button is visible\")},errorMessage:\"The E-Mail button was not found\"})}}}}});\n```",
+  "excerpt": "shareOptions.js",
+  "wordCount": 25,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

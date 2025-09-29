@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-controller-object-controller-js",
+  "title": "Object.controller",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/controller/Object.controller.js",
+  "lastModified": "2025-09-29T10:06:39.530Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "Object",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# Object.controller.js\n\n```javascript\nsap.ui.define([\"./BaseController\",\"sap/ui/model/json/JSONModel\",\"sap/ui/core/routing/History\",\"../model/formatter\",\"sap/ui/core/format/DateFormat\",\"sap/ui/model/Filter\",\"sap/ui/model/FilterOperator\"],function(e,t,n,o,a,i,r){\"use strict\";return e.extend(\"ns.manageproductsneo.controller.Object\",{formatter:o,onInit:function(){var e,n=new t({busy:true,delay:0});this.getRouter().getRoute(\"object\").attachPatternMatched(this._onObjectMatched,this);e=this.getView().getBusyIndicatorDelay();this.setModel(n,\"objectView\");this.getOwnerComponent().getModel().metadataLoaded().then(function(){n.setProperty(\"/delay\",e)})},onNavBack:function(){var e=n.getInstance().getPreviousHash();if(e!==undefined){history.go(-1)}else{this.getRouter().navTo(\"worklist\",{},true)}},_onObjectMatched:function(e){var t=e.getParameter(\"arguments\").objectId;this.getModel().metadataLoaded().then(function(){var e=this.getModel().createKey(\"Products\",{ProductID:t});this._bindView(\"/\"+e)}.bind(this))},_bindView:function(e){var t=this.getModel(\"objectView\"),n=this.getModel();this.getView().bindElement({path:e,events:{change:this._onBindingChange.bind(this),dataRequested:function(){n.metadataLoaded().then(function(){t.setProperty(\"/busy\",true)})},dataReceived:function(){t.setProperty(\"/busy\",false)}}})},_onBindingChange:function(){var e=this.getView(),t=this.getModel(\"objectView\"),n=e.getElementBinding();if(!n.getBoundContext()){this.getRouter().getTargets().display(\"objectNotFound\");return}var o=this.getResourceBundle(),a=e.getBindingContext().getObject(),s=a.ProductID,d=a.ProductName;t.setProperty(\"/busy\",false);t.setProperty(\"/shareSendEmailSubject\",o.getText(\"shareSendEmailObjectSubject\",[s]));t.setProperty(\"/shareSendEmailMessage\",o.getText(\"shareSendEmailObjectMessage\",[d,s,location.href]));var u=this.byId(\"idCommentsList\");var c=u.getBinding(\"items\");c.filter(new i(\"productID\",r.EQ,s))},onPost:function(e){var t=a.getDateTimeInstance({style:\"medium\"});var n=t.format(new Date);var o=this.getView().getBindingContext().getObject();var i=e.getParameter(\"value\");var r={productID:o.ProductID,type:\"Comment\",date:n,comment:i};var s=this.getModel(\"productFeedback\");var d=s.getData().productComments;d.push(r);s.setData({productComments:d})}})});\n```",
+  "excerpt": "Object.controller.js",
+  "wordCount": 26,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

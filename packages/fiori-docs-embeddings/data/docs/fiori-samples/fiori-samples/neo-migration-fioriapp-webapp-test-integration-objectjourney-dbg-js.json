@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-integration-objectjourney-dbg-js",
+  "title": "ObjectJourney dbg",
+  "category": "fiori-samples",
+  "path": "neo-migration/fioriapp/webapp/test/integration/ObjectJourney-dbg.js",
+  "lastModified": "2025-09-29T10:06:39.528Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "ObjectJourney",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# ObjectJourney-dbg.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"sap/ui/test/opaQunit\",\n\t\"./pages/Worklist\",\n\t\"./pages/Browser\",\n\t\"./pages/Object\",\n\t\"./pages/App\"\n], function (opaTest) {\n\t\"use strict\";\n\n\tQUnit.module(\"Object\");\n\n\topaTest(\"Should remember the first item\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iStartMyApp();\n\n\t\t//Actions\n\t\tWhen.onTheWorklistPage.iRememberTheItemAtPosition(1);\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTitleShouldDisplayTheTotalAmountOfItems();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n\n\topaTest(\"Should start the app with remembered item\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iRestartTheAppWithTheRememberedItem({\n\t\t\tdelay: 1000\n\t\t});\n\n\t\t// Assertions\n\t\tThen.onTheObjectPage.iShouldSeeTheObjectViewsBusyIndicator().\n\t\tand.theObjectViewsBusyIndicatorDelayIsRestored().\n\t\tand.iShouldSeeTheRememberedObject().\n\t\tand.theObjectViewShouldContainOnlyFormattedUnitNumbers();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\n\t});\n\n});\n\n```",
+  "excerpt": "ObjectJourney-dbg.js",
+  "wordCount": 70,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

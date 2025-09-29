@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-webapp-i18n-i18n-properties",
+  "title": "i18n",
+  "category": "fiori-samples",
+  "path": "V4/apps/salesorder/webapp/i18n/i18n.properties",
+  "lastModified": "2025-09-29T10:06:39.452Z",
+  "tags": [
+    "fiori-samples",
+    "properties",
+    "i18n"
+  ],
+  "headers": [],
+  "content": "# i18n.properties\n\n```properties\n# This is the resource bundle for salesorder\n\n#Texts for manifest.json\n\n#XTIT: Application name\nappTitle=Sales Order\n\n#YDES: Application description\nappDescription=\n\nflpTitle=Sales Order\n\nflpSubtitle=\n\n```",
+  "excerpt": "i18n.properties",
+  "wordCount": 27,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

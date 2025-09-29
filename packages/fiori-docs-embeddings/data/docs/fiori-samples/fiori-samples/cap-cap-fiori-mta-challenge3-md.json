@@ -1,0 +1,21 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-challenge3-md",
+  "title": "Support SAP Launchpad Service",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-mta/challenge3.md",
+  "lastModified": "2025-09-29T10:06:39.518Z",
+  "tags": [
+    "fiori-samples",
+    "md",
+    "challenge3"
+  ],
+  "headers": [
+    "Support SAP Launchpad Service"
+  ],
+  "content": "## Support SAP Launchpad Service\n- From the root of your CAP project, change into Fiori Elements application directory \n```bash\ncd managedAppCAPProject/app/feproject-ui\n```\n- Run the following command to configure FLP;\n```bash\n  npx -p @sap/ux-ui5-tooling fiori add flp-config\n```\n- The following questions will be asked, please use values representing your application;\n\n_Remember, semantic object represents a business entity such as a customer, a sales order, or a product._\n```bash\nSemantic Object -> MyFEApplication\nAction -> display\nTitle -> List Report Object Page\nSubtitle - Fiori Application \n ```\n- Change 1 - `crossNavigation` node will be added to your `manifest.json` file;\n```json\n\"crossNavigation\": {\n            \"inbounds\": {\n                \"cap-tutorial-feprojectui-inbound\": {\n                    \"signature\": {\n                        \"parameters\": {},\n                        \"additionalParameters\": \"allowed\"\n                    },\n                    \"semanticObject\": \"MyFEApplication\",\n                    \"action\": \"display\",\n                    \"title\": \"{{flpTitle}}\",\n                    \"subTitle\": \"{{flpSubtitle}}\",\n                    \"icon\": \"\"\n                }\n            }\n        }\n```\n- Change 2 - Additional `i18n.properties` will also be appended;\n```json\nflpTitle=List Report Object Page\n\nflpSubtitle=\n```\n- Rebuild and redeploy your application to Cloud Foundry\n- Ensure you have subscribed and configured [Launchpad Service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html) on your SAP BTP subaccount\n- Next, you will need to create a [Launchpad Site](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-create-sitelaunchpad.html) to consume your new Fiori Elements application ",
+  "excerpt": "Support SAP Launchpad Service - From the root of your CAP project, change into Fiori Elements application directory  `bash cd managedAppCAPProject/app/feproject-ui ` - Run the following command to con...",
+  "wordCount": 187,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

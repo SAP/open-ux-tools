@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-webapp-test-integration-opatests-qunit-html",
+  "title": "opaTests.qunit",
+  "category": "fiori-samples",
+  "path": "V4/apps/salesorder/webapp/test/integration/opaTests.qunit.html",
+  "lastModified": "2025-09-29T10:06:39.453Z",
+  "tags": [
+    "fiori-samples",
+    "html",
+    "opaTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# opaTests.qunit.html\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <title>{{appTitle}}</title>\n    <meta charset=\"UTF-8\">\n\n    <script id=\"sap-ui-bootstrap\"\n        src=\"../../resources/sap-ui-core.js\"\n        data-sap-ui-theme='sap_fiori_3'\n        data-sap-ui-resourceroots='{\n          \"salesorder\": \"../../\",\n          \"salesorder.test\": \"../\"\n        }'\n        data-sap-ui-animation=\"false\"\n        data-sap-ui-compatVersion=\"edge\"\n        data-sap-ui-async=\"true\">\n    </script>\n\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"../../resources/sap/ui/thirdparty/qunit-2.css\">\n\n    <script src=\"../../resources/sap/ui/thirdparty/qunit-2.js\"></script>\n    <script src=\"../../resources/sap/ui/qunit/qunit-junit.js\"></script>\n    <script src=\"Opa.qunit.js\"></script>\n  </head>\n\n  <body>\n    <div id=\"qunit\"></div>\n    <div id=\"qunit-fixture\"></div>\n  </body>\n</html>\n```",
+  "excerpt": "opaTests.qunit.html",
+  "wordCount": 44,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

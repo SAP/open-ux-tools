@@ -1,0 +1,26 @@
+{
+  "id": "btp-fiori-tools-previewing-an-application-use-local-sources-6d3a210-md",
+  "title": "Use Local Sources",
+  "category": "fiori-tools",
+  "path": "Previewing-an-Application/use-local-sources-6d3a210.md",
+  "lastModified": "2025-09-29T10:06:38.711Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "use",
+    "local",
+    "sources",
+    "6d3a210"
+  ],
+  "headers": [
+    "Use Local Sources",
+    "Visual Studio Code",
+    "SAP Business Application Studio"
+  ],
+  "content": "<!-- loio6d3a21087ba74ce1a5ba475d9ef4fbd4 -->\n\n# Use Local Sources\n\nStart the application using the `npm run start-local` command. Then, the application runs on `localhost:8080` and uses a mock server to reflect the OData endpoint. A local copy of the SAPUI5 library is downloaded from `npmjs`, if necessary. You can modify the version by updating the `ui5-local.yaml` file in the project folder. This way, you can use the application without connection to a back end.\n\n\n\n<a name=\"loio6d3a21087ba74ce1a5ba475d9ef4fbd4__section_r5s_m5t_r4b\"/>\n\n## Visual Studio Code\n\n1.  In VS Code, open the terminal.\n\n    > ### Note:  \n    > To open the terminal VS Code:\n    > \n    > -   Use the [CTRL\\] + [\\`\\]  keyboard shortcut with the backtick character.\n    > -   Use the *View* \\> *Terminal* menu command.\n    > -   From the *Command Palette* \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\), execute the `View: Toggle Integrate Terminal` command.\n\n2.  Ensure you are in the root directory of your project.\n3.  In the terminal pane, type `npm run start-local` and press *Enter*.\n\n    The preview of your application starts automatically.\n\n    > ### Note:  \n    > The automatic download is only supported with SAPUI5 versions 1.76 and higher.\n\n\n\n\n<a name=\"loio6d3a21087ba74ce1a5ba475d9ef4fbd4__section_jf3_55t_r4b\"/>\n\n## SAP Business Application Studio\n\n1.  In SAP Business Application Studio, open the terminal.\n\n    > ### Note:  \n    > To open the terminal in SAP Business Application Studio:\n    > \n    > -   Select *Terminal* \\> *New Terminal* from the menu bar.\n\n2.  Ensure you are in the root directory of your project.\n3.  In the terminal pane, type `npm start-local` and press *Enter*.\n\n    The preview of your application starts automatically.\n\n    > ### Note:  \n    > The automatic download is only supported with SAPUI5 versions 1.76 and higher.\n\n\n",
+  "excerpt": "<!-- loio6d3a21087ba74ce1a5ba475d9ef4fbd4 --> Use Local Sources Start the application using the npm run start-local command. Then, the application runs on localhost:8080 and uses a mock server to refl...",
+  "wordCount": 270,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

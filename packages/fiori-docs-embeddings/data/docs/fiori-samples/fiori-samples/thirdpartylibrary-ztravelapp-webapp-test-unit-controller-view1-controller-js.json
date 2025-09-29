@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-webapp-test-unit-controller-view1-controller-js",
+  "title": "View1.controller",
+  "category": "fiori-samples",
+  "path": "thirdpartylibrary/ztravelapp/webapp/test/unit/controller/View1.controller.js",
+  "lastModified": "2025-09-29T10:06:39.534Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "View1",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# View1.controller.js\n\n```javascript\n/*global QUnit*/\n\nsap.ui.define([\n\t\"ztestdocapp1/ztravel/controller/View1.controller\"\n], function (Controller) {\n\t\"use strict\";\n\n\tQUnit.module(\"View1 Controller\");\n\n\tQUnit.test(\"I should test the View1 controller\", function (assert) {\n\t\tvar oAppController = new Controller();\n\t\toAppController.onInit();\n\t\tassert.ok(oAppController);\n\t});\n\n});\n\n```",
+  "excerpt": "View1.controller.js",
+  "wordCount": 34,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

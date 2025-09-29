@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-stacked-column-chart-card-c54b815-md",
+  "title": "Stacked Column Chart Card",
+  "category": "fiori-elements-framework",
+  "path": "stacked-column-chart-card-c54b815.md",
+  "lastModified": "2025-09-29T10:06:38.861Z",
+  "tags": [
+    "fiori-elements-framework",
+    "md",
+    "stacked",
+    "column",
+    "chart",
+    "card",
+    "c54b815"
+  ],
+  "headers": [
+    "Stacked Column Chart Card"
+  ],
+  "content": "<!-- loioc54b815a908f423695d0e080d3830b7f -->\n\n# Stacked Column Chart Card\n\nA stacked column chart is similar to a column chart; however, all measures, irrespective of role, are stacked on top of each other\n\nThere should be at least one dimension with the assigned **category** role and all dimensions with this role are added to the **axis** category \\(x-axis\\). All dimensions with the **series** role are also stacked. We recommend either stacking based on dimensions or measures, but not mixing both in a single chart card.\n\n> ### Note:  \n> The column stack card can have an optional dimension with role series. Assign a dimension with the **series** role for the property containing the semantic values.\n\nThe stacked column chart supports a color palette for semantic coloring.\n\n  \n  \n**Example of a Stacked Column Chart**\n\n![](../01_Whats-New/images/WhatsNew_138_OVP_StackedColumn_751363a.png \"Example of a Stacked Column Chart\")\n\n",
+  "excerpt": "<!-- loioc54b815a908f423695d0e080d3830b7f --> Stacked Column Chart Card A stacked column chart is similar to a column chart; however, all measures, irrespective of role, are stacked on top of each oth...",
+  "wordCount": 138,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

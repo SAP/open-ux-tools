@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-webapp-component-js",
+  "title": "Component",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/webapp/Component.js",
+  "lastModified": "2025-09-29T10:06:39.405Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "Component"
+  ],
+  "headers": [],
+  "content": "# Component.js\n\n```javascript\nsap.ui.define([\"sap/ovp/app/Component\"], function (Component) {\n\t\"use strict\";\n\t/**\n\t * @fileOverview Application component to display information on entities from the GWSAMPLE_BASIC\n\t *   OData service.\n\t * @version @version@\n\t */\n\treturn Component.extend(\"sap.teched.teched-ovp.Component\", {\n\t\tmetadata: {\n\t\t\tmanifest: \"json\"\n\t\t}\n\t});\n});\n```",
+  "excerpt": "Component.js",
+  "wordCount": 40,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-package-json",
+  "title": "@sap/ux-test-app-ovp",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/package.json",
+  "lastModified": "2025-09-29T10:06:39.405Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "package"
+  ],
+  "headers": [
+    "name",
+    "description",
+    "private",
+    "version",
+    "devDependencies",
+    "optionalDependencies",
+    "ui5",
+    "scripts",
+    "dependencies"
+  ],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"@sap/ux-test-app-ovp\",\n  \"description\": \"Fiori elements OVP app\",\n  \"private\": true,\n  \"version\": \"0.0.1\",\n  \"devDependencies\": {\n    \"@openui5/themelib_sap_fiori_3\": \"1.65.1\",\n    \"@sap-ux/ui5-middleware-fe-mockserver\": \"2.1.25\",\n    \"@sap/ux-ui5-tooling\": \"1.7.0\",\n    \"@ui5/cli\": \"^3.3.4\"\n  },\n  \"optionalDependencies\": {\n    \"fsevents\": \"2.3.2\"\n  },\n  \"ui5\": {\n    \"dependencies\": [\n      \"@sap-ux/ui5-middleware-fe-mockserver\",\n      \"@sap/ux-ui5-tooling\",\n      \"@ui5/logger\"\n    ]\n  },\n  \"scripts\": {\n    \"start\": \"ui5 serve\",\n    \"preview\": \"ui5 serve -o index.html\",\n    \"build\": \"ui5 build\"\n  },\n  \"dependencies\": {\n    \"@ui5/logger\": \"^2.0.0\"\n  }\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 61,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

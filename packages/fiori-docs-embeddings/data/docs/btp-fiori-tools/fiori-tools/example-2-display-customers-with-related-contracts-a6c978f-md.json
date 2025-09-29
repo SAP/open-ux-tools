@@ -1,0 +1,27 @@
+{
+  "id": "btp-fiori-tools-example-2-display-customers-with-related-contracts-a6c978f-md",
+  "title": "Example 2: Display Customers with Related Contracts",
+  "category": "fiori-tools",
+  "path": "example-2-display-customers-with-related-contracts-a6c978f.md",
+  "lastModified": "2025-09-29T10:06:38.719Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "example",
+    "display",
+    "customers",
+    "with",
+    "related",
+    "contracts",
+    "a6c978f"
+  ],
+  "headers": [
+    "Example 2: Display Customers with Related Contracts"
+  ],
+  "content": "<!-- loioa6c978f734de4574a2291a971f447179 -->\n\n# Example 2: Display Customers with Related Contracts\n\n> ### Sample Code:  \n> ```\n> I want to create an SAP Fiori application that shows my customers with their contracts. \n> Each customer has the following attributes:\n> \n> 1. Name\n> 2. Identification Number\n> 3. Address\n> 4. Contract Information\n> A contract is referencing a customer. One customer can have multiple contracts. Attributes of a contract include:\n> 5. Contract ID: A unique identifier for the contract\n> 6. Customer: Information about the customer involved\n> 7. Contract Type: The type of contract (sales, service, employment)\n> 8. Start Date: The date on which the contract becomes valid\n> 9. End Date: The date on which the contract expires (if applicable)\n> 10. Status: The current status of the contract (draft, active, expired, terminated, etc.)\n> \n> When starting the CAP application I first want to see a list of customers.\n> \n> When selecting a specific row in that list, I want to see to a page with details of that customer.\n> \n> It should show the following sections:\n> - section \"Customer Info\" displaying the attributes of the selected customer\n> - section \"Contracts\" showing a list of all contracts for this customer\n> \n> When selecting a specific row in the contracts list, I want to see a page with details of that contract. This page should show two sections:\n> - section \"Contract Info\" containing:\n>   - contract ID\n>   - Customer Name\n>   - Contract Type\n>   - Status\n> - section \"Validity\" containing\n>   - Start Date\n>   - End Date\n> ```\n\n",
+  "excerpt": "<!-- loioa6c978f734de4574a2291a971f447179 --> Example 2: Display Customers with Related Contracts > Sample Code:   > ` > I want to create an SAP Fiori application that shows my customers with their co...",
+  "wordCount": 277,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

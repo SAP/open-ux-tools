@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-unit-unittests-qunit-html",
+  "title": "unitTests.qunit",
+  "category": "fiori-samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/unit/unitTests.qunit.html",
+  "lastModified": "2025-09-29T10:06:39.531Z",
+  "tags": [
+    "fiori-samples",
+    "html",
+    "unitTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# unitTests.qunit.html\n\n```html\n<!DOCTYPE html>\n<html>\n<head>\n\t<meta charset=\"utf-8\">\n\t<title>Unit tests for Manage Products</title>\n\n\t<script id=\"sap-ui-bootstrap\"\n\t\tsrc=\"../../../../../../../../../../resources/sap-ui-core.js\"\n\t\tdata-sap-ui-resourceroots='{\n\t\t\t\"mycompany.myapp.MyWorklistApp\": \"../../\"\n\t\t}'\n\t\tdata-sap-ui-async=\"true\">\n\t</script>\n\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../../../../../../../../../../resources/sap/ui/thirdparty/qunit-2.css\">\n\n\t<script src=\"../../../../../../../../../../resources/sap/ui/thirdparty/qunit-2.js\"></script>\n\t<script src=\"../../../../../../../../../../resources/sap/ui/qunit/qunit-junit.js\"></script>\n\t<script src=\"../../../../../../../../../../resources/sap/ui/qunit/qunit-coverage.js\"></script>\n\t<script src=\"../../../../../../../../../../resources/sap/ui/thirdparty/sinon.js\"></script>\n\t<script src=\"../../../../../../../../../../resources/sap/ui/thirdparty/sinon-qunit.js\"></script>\n\n\t<script src=\"unitTests.qunit.js\"></script>\n</head>\n<body>\n\t<div id=\"qunit\"></div>\n\t<div id=\"qunit-fixture\"></div>\n</body>\n</html>\n```",
+  "excerpt": "unitTests.qunit.html",
+  "wordCount": 48,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

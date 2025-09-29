@@ -1,0 +1,30 @@
+{
+  "id": "fiori-samples-v2-apps-store-overview-webapp-localservice-data-globalparameters-json",
+  "title": "GlobalParameters",
+  "category": "fiori-samples",
+  "path": "V2/apps/store-overview/webapp/localService/data/GlobalParameters.json",
+  "lastModified": "2025-09-29T10:06:39.406Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "GlobalParameters"
+  ],
+  "headers": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "content": "# GlobalParameters.json\n\n```json\n[\n  {\n    \"P_DisplayCurrency\": \"EUR\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%201')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%201')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"INR\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%202')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%202')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"USD\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%203')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%203')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"GBP\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%204')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%204')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"JPY\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%205')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%205')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"AUD\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%206')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%206')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"CAD\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%207')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%207')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"CHF\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%208')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%208')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"CNY\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%209')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%209')/Results\"\n      }\n    }\n  },\n  {\n    \"P_DisplayCurrency\": \"SEK\",\n    \"__metadata\": {\n      \"uri\": \"GlobalParameters('P_DisplayCurrency%2010')\",\n      \"type\": \"GWSAMPLE_BASIC.GlobalParameters\"\n    },\n    \"Results\": {\n      \"__deferred\": {\n        \"uri\": \"GlobalParameters('P_DisplayCurrency%2010')/Results\"\n      }\n    }\n  }\n]\n```",
+  "excerpt": "GlobalParameters.json",
+  "wordCount": 196,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -4,5 +4,5 @@ dist/**/*
 .env
 data/embeddings/**/*
 bundle/data/embeddings/**/*
-
+data/git_repos/**/*
 *.tgz

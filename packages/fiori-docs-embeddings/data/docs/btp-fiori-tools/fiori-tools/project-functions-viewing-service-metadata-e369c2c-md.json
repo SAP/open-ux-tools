@@ -1,0 +1,27 @@
+{
+  "id": "btp-fiori-tools-project-functions-viewing-service-metadata-e369c2c-md",
+  "title": "Viewing Service Metadata",
+  "category": "fiori-tools",
+  "path": "Project-Functions/viewing-service-metadata-e369c2c.md",
+  "lastModified": "2025-09-29T10:06:38.714Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "viewing",
+    "service",
+    "metadata",
+    "e369c2c"
+  ],
+  "headers": [
+    "Viewing Service Metadata",
+    "Launch the Service Modeler",
+    "Use the Service Modeler for a Service",
+    "Search for Entities, Properties, or Annotations"
+  ],
+  "content": "<!-- loioe369c2c20c03458a92b24b9dcbcb470f -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Viewing Service Metadata\n\nThe SAP Fiori tools - Service Modeler extension supports the visualization of the OData V2/V4 Service Model based on the `.xml/.edmx` files and CAP CDS services.\n\nYou can perform the following operations with the service modeler:\n\n-   Easily browse complex services and view the entity sets, entities, and properties of a service.\n-   View annotations associated with the entity and properties\n-   Manage services required for SAP Fiori elements applications, such as adding new services to a project or syncing services that already exist to ensure they are up to date.\n-   Manage local annotation files associated to the different OData services of a SAP Fiori elements project.\n\n\n\n<a name=\"loioe369c2c20c03458a92b24b9dcbcb470f__section_uph_2rk_xlb\"/>\n\n## Launch the Service Modeler\n\nYou can launch the Service Modeler in several ways:\n\n-   **Use the Command Palette**\n\n    -   Open the Command Palette \\([CMD/CTRL\\] + [Shift\\] + [P\\] \\) and execute the `SAP Fiori tools: Service Modeler: Open Service Modeler command`.\n    -   Select the SAP Fiori elements project from your workspace.\n\n        > ### Note:  \n        > If the project contains multiple services, you need to specify the service that you want to visualize.\n\n\n-   **Use the Folder Context Menu**\n\n    If you already have an SAP Fiori elements project in your current workspace, you can right-click any folder within your project and *Override Annotations*.\n\n-   **From the Text Editor**\n\n    If your `metadata.xml file` is open in the text editor, click the <span class=\"SAP-icons-V5\"></span> \\(*Annotations*\\) icon.\n\n\n\n\n<a name=\"loioe369c2c20c03458a92b24b9dcbcb470f__section_e45_xjy_wlb\"/>\n\n## Use the Service Modeler for a Service\n\n**Visualize a Service**\n\nThe Service Modeler displays the entities and properties of a service in a list format. You can expand the entity node to view all the associated properties for that entity. You can expand the sections for *Complex Types* and *Entity Containers* to see the associated properties and entity sets. The namespace is hidden from the metadata by default. You can click the :gear: \\(*Settings*\\) icon to toggle it on.\n\nProperties that are the primary key of the entity or projection are identified by a :key: \\(*Key*\\) icon.\n\nEntities or properties that have annotations associated with them are identified by an <span class=\"SAP-icons-V5\"></span> \\(*Annotations*\\) icon. You can filter them to only view the metadata targets that have annotations.\n\nYou can select a specific node to see the related annotations in the side panel. The annotation panel lists the annotation files and the associated annotations for the entities and the properties in the main list.\n\n![](images/Fiori_Tools_Service_Modeler_-_Toggle_Namespace_2864d9a.png)\n\n\n\n### Search for Entities, Properties, or Annotations\n\nThe search functionality is available in the Service Modeler toolbar.\n\nWhen you enter a phrase in the search input field, results matching the input term are filtered on the screen. If the search matches an entity name, then all the child properties are also displayed and the associated data is filtered in the annotation side panel.\n\nIf the search term matches an annotation term, all the associated data is filtered in the list.\n\n![](images/Screenshot_Service_Modeler_Country_search_2b1e728.png)\n\n",
+  "excerpt": "<!-- loioe369c2c20c03458a92b24b9dcbcb470f --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Viewing Service Metadata The SAP Fiori tools - Service Modeler extension supports the...",
+  "wordCount": 494,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

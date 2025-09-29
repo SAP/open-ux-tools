@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-view-list-view-xml",
+  "title": "List.view",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/view/List.view.xml",
+  "lastModified": "2025-09-29T10:06:39.514Z",
+  "tags": [
+    "fiori-samples",
+    "xml",
+    "List",
+    "view"
+  ],
+  "headers": [],
+  "content": "# List.view.xml\n\n```xml\n<mvc:View controllerName=\"sap.btp.sapui5.controller.List\" xmlns:mvc=\"sap.ui.core.mvc\" displayBlock=\"true\" xmlns=\"sap.m\">\n\t<Page id=\"listPage\" title=\"{i18n>ListTitle}\" >\n\t\t<subHeader>\n\t\t\t<Bar id=\"_IDGenBar1\">\n\t\t\t\t<contentLeft>\n\t\t\t\t\t<SearchField id=\"_IDGenSearchField1\" search=\"handleSearch\"/>\n\t\t\t\t</contentLeft>\n\t\t\t</Bar>\n\t\t</subHeader>\n\t\t<List id=\"list\" items=\"{/Products}\">\n\t\t\t<ObjectListItem id=\"_IDGenObjectListItem1\" type=\"Navigation\" press=\"handleListItemPress\" title=\"{ProductName}\" number=\"{= ((${UnitPrice} * 100) / 100).toFixed(2) }\" numberUnit=\"{i18n>Currency}\">\n\t\t\t\t<attributes>\n\t\t\t\t\t<ObjectAttribute id=\"_IDGenObjectAttribute1\" text=\"{QuantityPerUnit}\"/>\n\t\t\t\t</attributes>\n\t\t\t\t<firstStatus>\n\t\t\t\t\t<ObjectStatus id=\"_IDGenObjectStatus1\" text=\"{= ${Discontinued} ? ${i18n>Discontinued} : ${i18n>Available} }\" state=\"{= ${Discontinued}? 'Error' : 'Success' }\"/>\n\t\t\t\t</firstStatus>\n\t\t\t</ObjectListItem>\n\t\t</List>\n  </Page>\n</mvc:View>\n\n```",
+  "excerpt": "List.view.xml",
+  "wordCount": 65,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

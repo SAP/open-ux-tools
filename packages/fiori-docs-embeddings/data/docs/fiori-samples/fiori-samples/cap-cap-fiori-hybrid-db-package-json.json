@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-hybrid-db-package-json",
+  "title": "deploy",
+  "category": "fiori-samples",
+  "path": "cap/cap-fiori-hybrid/db/package.json",
+  "lastModified": "2025-09-29T10:06:39.516Z",
+  "tags": [
+    "fiori-samples",
+    "json",
+    "package"
+  ],
+  "headers": [
+    "name",
+    "dependencies",
+    "scripts"
+  ],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"deploy\",\n  \"dependencies\": {\n    \"@sap/hdi-deploy\": \"^4.8.0\"\n  },\n  \"scripts\": {\n    \"start\": \"node node_modules/@sap/hdi-deploy/deploy.js\"\n  }\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 19,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

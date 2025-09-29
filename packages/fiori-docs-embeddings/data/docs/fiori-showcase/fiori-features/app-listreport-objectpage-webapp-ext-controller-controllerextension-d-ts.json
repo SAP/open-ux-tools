@@ -1,0 +1,22 @@
+{
+  "id": "fiori-showcase-app-listreport-objectpage-webapp-ext-controller-controllerextension-d-ts",
+  "title": "ControllerExtension.d",
+  "category": "fiori-features",
+  "path": "app/listreport-objectpage/webapp/ext/controller/ControllerExtension.d.ts",
+  "lastModified": "2025-09-29T10:06:39.213Z",
+  "tags": [
+    "fiori-features",
+    "ts",
+    "ControllerExtension"
+  ],
+  "headers": [
+    "ControllerExtension",
+    "Overrides"
+  ],
+  "content": "# ControllerExtension.d.ts\n\n```typescript\n/**\n * Helper to be able to define how to get the page specific extension API when writing a controller extension.\n */\ndeclare module 'sap/ui/core/mvc/ControllerExtension' {\n  import View from 'sap/ui/core/mvc/View';\n  import AppComponent from 'sap/fe/core/AppComponent';\n  import Controller from 'sap/ui/core/mvc/Controller';\n  import EditFlow from 'sap/fe/core/controllerextensions/EditFlow';\n  import IntentBasedNavigation from 'sap/fe/core/controllerextensions/IntentBasedNavigation';\n  import MessageHandler from 'sap/fe/core/controllerextensions/MessageHandler';\n  import Paginator from 'sap/fe/core/controllerextensions/Paginator';\n  import Recommendations from 'sap/fe/core/controllerextensions/Recommendations';\n  import Routing from 'sap/fe/core/controllerextensions/Routing';\n  import Share from 'sap/fe/core/controllerextensions/Share';\n  import ViewState from 'sap/fe/core/controllerextensions/ViewState';\n  import CoreElement from 'sap/ui/core/Element';\n\n  export default class ControllerExtension<ExtensionAPI> {\n    base: {\n      getExtensionAPI(): ExtensionAPI;\n      getView(): View;\n      getAppComponent(): AppComponent;\n      byId(id: string): CoreElement\n    };\n  }\n\n  export type Overrides<GenericController extends Controller = Controller> = {\n    editFlow?: Partial<EditFlow>;\n    intentBasedNavigation?: Partial<IntentBasedNavigation>;\n    messageHandler?: Partial<MessageHandler>;\n    paginator?: Partial<Paginator>;\n    recommendations?: Partial<Recommendations>;\n    routing?: Partial<Routing>;\n    share?: Partial<Share>;\n    viewState?: Partial<ViewState>;\n  } & Partial<GenericController>;\n}\n\n```",
+  "excerpt": "ControllerExtension.d.ts",
+  "wordCount": 125,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

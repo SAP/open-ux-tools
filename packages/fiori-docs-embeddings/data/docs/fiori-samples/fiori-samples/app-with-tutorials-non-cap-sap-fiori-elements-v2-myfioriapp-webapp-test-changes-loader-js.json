@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-test-changes-loader-js",
+  "title": "changes loader",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/test/changes_loader.js",
+  "lastModified": "2025-09-29T10:06:39.512Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "changes",
+    "loader"
+  ],
+  "headers": [],
+  "content": "# changes_loader.js\n\n```javascript\n//Loads and extends the openui5 FileListBaseConnector\n\nconst parsedUI5Version = sap.ui.version.split('.');\n\n//For UI5 version >= 1.80, the location of the FileListBaseConnector is different\nconst connectorPath =\n    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80\n        ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'\n        : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';\n\nsap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {\n    return merge({}, FileListBaseConnector, {\n        getFileList: function() {\n            return new Promise(function(resolve, reject) {\n                // If no changes found, maybe because the app was executed without doing a build.\n                // Check for changes folder and load the changes, if any.\n                $.ajax({\n                    url: '/changes/',\n                    type: 'GET',\n                    cache: false\n                })\n                    .then(function(sChangesFolderContent) {\n                        var regex = /(\\/changes\\/[^\"]*\\.[a-zA-Z]*)/g;\n                        var result = regex.exec(sChangesFolderContent);\n                        var aChanges = [];\n                        while (result !== null) {\n                            aChanges.push(result[1]);\n                            result = regex.exec(sChangesFolderContent);\n                        }\n                        resolve(aChanges);\n                    })\n                    .fail(function(obj) {\n                        // No changes folder, then just resolve\n                        resolve();\n                    });\n            });\n        }\n    });\n});\n\n```",
+  "excerpt": "changes_loader.js",
+  "wordCount": 134,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

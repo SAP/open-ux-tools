@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-test-integration-pages-app-js",
+  "title": "App",
+  "category": "fiori-samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/test/integration/pages/App.js",
+  "lastModified": "2025-09-29T10:06:39.514Z",
+  "tags": [
+    "fiori-samples",
+    "js",
+    "App"
+  ],
+  "headers": [],
+  "content": "# App.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/test/Opa5\"\n], function (Opa5) {\n\t\"use strict\";\n\tvar sViewName = \"App\";\n\t\n\tOpa5.createPageObjects({\n\t\tonTheAppPage: {\n\n\t\t\tactions: {},\n\n\t\t\tassertions: {\n\n\t\t\t\tiShouldSeeTheApp: function () {\n\t\t\t\t\treturn this.waitFor({\n\t\t\t\t\t\tid: \"app\",\n\t\t\t\t\t\tviewName: sViewName,\n\t\t\t\t\t\tsuccess: function () {\n\t\t\t\t\t\t\tOpa5.assert.ok(true, \"The \" + sViewName + \" view is displayed\");\n\t\t\t\t\t\t},\n\t\t\t\t\t\terrorMessage: \"Did not find the \" + sViewName + \" view\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t});\n\n});\n\n```",
+  "excerpt": "App.js",
+  "wordCount": 65,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}
