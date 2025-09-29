@@ -190,6 +190,9 @@ async function globalSetup(): Promise<void> {
                                 },
                                 {
                                     name: 'sap.ui.generic.app'
+                                },
+                                {
+                                    name: 'sap.fe.templates'
                                 }
                             ]
                         },
