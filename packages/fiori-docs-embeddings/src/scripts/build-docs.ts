@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 import { default as matter } from 'gray-matter';
 
 // Create promisified version of spawn for async/await
@@ -102,8 +102,8 @@ interface MatterResult {
  * Multi-source documentation builder for fetching and processing documentation from various sources.
  */
 class MultiSourceDocumentationBuilder {
-    private config: BuildConfig;
-    private requestCount: number;
+    private readonly config: BuildConfig;
+    private readonly requestCount: number;
     private readonly documents: Map<string, ParsedDocument>;
     private readonly categories: Map<string, string[]>;
     private readonly sourceResults: Map<string, SourceResult>;
