@@ -1741,11 +1741,6 @@ Object {
   "initialAnswers": Object {
     "buildingBlockData": Object {
       "buildingBlockType": "rich-text-editor",
-      "buttonGroup": Object {
-        "buttons": "bold,italic,underline",
-        "name": "font-style",
-        "visible": true,
-      },
     },
   },
   "questions": Array [
@@ -1833,52 +1828,6 @@ Object {
       "message": "Aggregation Path",
       "name": "aggregationPath",
       "type": "list",
-    },
-    Object {
-      "default": "font-style",
-      "message": "Button Group Name",
-      "name": "buildingBlockData.buttonGroup.name",
-      "type": "input",
-    },
-    Object {
-      "default": "bold,italic,underline",
-      "message": "Buttons",
-      "name": "buildingBlockData.buttonGroup.buttons",
-      "type": "input",
-    },
-    Object {
-      "choices": Array [
-        Object {
-          "name": "False",
-          "value": false,
-        },
-        Object {
-          "name": "True",
-          "value": true,
-        },
-      ],
-      "default": true,
-      "guiOptions": Object {
-        "selectType": "static",
-      },
-      "message": "Visible",
-      "name": "buildingBlockData.buttonGroup.visible",
-      "type": "list",
-    },
-    Object {
-      "message": "Priority",
-      "name": "buildingBlockData.buttonGroup.priority",
-      "type": "input",
-    },
-    Object {
-      "message": "Custom Toolbar Priority",
-      "name": "buildingBlockData.buttonGroup.customToolbarPriority",
-      "type": "input",
-    },
-    Object {
-      "message": "Row",
-      "name": "buildingBlockData.buttonGroup.row",
-      "type": "input",
     },
   ],
 }
