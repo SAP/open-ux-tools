@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.23
+
+### Patch Changes
+
+-   fe5fd09: Show asterisk for the Transport Request textbox.
+
 ## 1.6.22
 
 ### Patch Changes

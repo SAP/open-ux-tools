@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.1
+
+### Patch Changes
+
+-   321b09e: fix: annoation merging for CAP CDS projects.
+
 ## 0.7.0
 
 ### Minor Changes
