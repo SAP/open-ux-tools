@@ -48,11 +48,11 @@ describe('getReentranceTicket()', () => {
         });
         expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining(REDIRECT_URL));
         // default SCENARIO is FTO1 if none provided via env variable
-        // expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('FTO1'));
+        expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining('FTO1'));
         expect(result).toEqual({ reentranceTicket: 'some_ticket', backend: expect.any(Object) });
     });
 
-    it.skip('Sets scenario from env variable', async () => {
+    it('Sets scenario from env variable', async () => {
         process.env.FIORI_TOOLS_SCENARIO = 'MYSCENARIO';
         await getReentranceTicket({
             backendUrl: serverOrigin,

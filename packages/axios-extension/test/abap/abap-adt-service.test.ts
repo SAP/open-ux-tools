@@ -18,7 +18,6 @@ import * as auth from '../../src/auth';
 import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
 import fs from 'fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { Uaa } from '../../src/auth/uaa';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import { UiServiceGenerator } from '../../src/abap/adt-catalog/generators/ui-service-generator';
@@ -350,8 +349,8 @@ describe('Transport checks', () => {
     });
 });
 
-describe.only('Use existing connection session', () => {
-    const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+describe('Use existing connection session', () => {
+    // const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
     const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
     const existingCookieConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         baseURL: server,
@@ -376,11 +375,8 @@ describe.only('Use existing connection session', () => {
 
     beforeEach(() => {
         nock.cleanAll();
-        attachUaaAuthInterceptorSpy.mockRestore();
+        //attachUaaAuthInterceptorSpy.mockRestore();
         attachReentranceTicketAuthInterceptorSpy.mockRestore();
-
-        Uaa.prototype.getAccessToken = jest.fn();
-        Uaa.prototype.getAccessTokenWithClientCredentials = jest.fn();
     });
 
     afterAll(() => {
@@ -403,10 +399,10 @@ describe.only('Use existing connection session', () => {
 
         const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudStandalone as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
-        expect(await provider.isAbapCloud()).toBe(false);
-        expect(attachUaaAuthInterceptorSpy).toHaveBeenCalledTimes(0);
-        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0);
+        expect(await provider.isAbapCloud()).toBe(true);
+        expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
+/*         expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0); */
     });
 
     test('abap service provider for cloud (embedded steampunk)', async () => {
@@ -421,36 +417,41 @@ describe.only('Use existing connection session', () => {
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
     });
 
-    test.only('abap service provider for cloud - require authentication', async () => {
+    test('abap service provider for cloud - require authentication', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)
             .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'))
-            .get('/system')
+            .get('/sap/bc/adt/core/http/systeminformation')
             .reply(200, {
                 userFullName: 'User FullName',
                 userName: 'userName01',
                 client: '100',
                 systemID: 'ABC01',
-                language: 'EN',
+                language: 'EN'
             } as SystemInfo);
 
         const config = cloneDeep(existingCookieConfigForAbapOnCloudEmbeddedSteampunk);
         const provider = createForAbapOnCloud(config as any);
         expect(await provider.isAbapCloud()).toBe(true);
-        expect(await provider.user()).toBe('emailTest');
+        expect(await provider.user()).toBe('userName01');
+        // Cookies with session already set so not expected to add an auth interceptor
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
-        //expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(3);
-        //expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0);
-    }, 60000);
+    });
 
     test('abap service provider for cloud - with authentication provided', async () => {
         nock(server)
             .post('/oauth/token')
             .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
-            .get('/userinfo')
-            .reply(200, { email: 'email', name: 'name' });
+            .get('/sap/bc/adt/core/http/systeminformation')
+            .reply(200, {
+                userFullName: 'User FullName',
+                userName: 'userName01',
+                client: '100',
+                systemID: 'ABC01',
+                language: 'EN'
+            } as SystemInfo);;
 
         const configForAbapOnCloudWithAuthentication = cloneDeep(existingCookieConfigForAbapOnCloudStandalone);
         configForAbapOnCloudWithAuthentication.service = {
@@ -465,21 +466,9 @@ describe.only('Use existing connection session', () => {
         } as ServiceInfo;
         const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication);
         expect(await provider.isAbapCloud()).toBe(false);
-        expect(await provider.user()).toBe('email');
-        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(2);
-    });
-
-    it.each([
-        { remove: 'clientid', errorStr: 'Client ID missing' },
-        { remove: 'clientsecret', errorStr: 'Client Secret missing' },
-        { remove: 'url', errorStr: 'UAA URL missing' }
-    ])('Fail with error: $errorStr', ({ remove, errorStr }) => {
-        const cloneObj = cloneDeep(existingCookieConfigForAbapOnCloudStandalone);
-        delete (cloneObj.service.uaa as any)[remove];
-        expect(() => {
-            createForAbapOnCloud(cloneObj as any);
-        }).toThrow(errorStr);
+        expect(await provider.user()).toBe('userName01');
+/*         expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(2); */
     });
 });
 

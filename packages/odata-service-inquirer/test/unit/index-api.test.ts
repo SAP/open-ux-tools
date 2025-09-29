@@ -1,11 +1,13 @@
 import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { getPrompts, getSystemSelectionQuestions } from '../../src/index';
+import { getPrompts, getSystemSelectionQuestions, OdataServicePromptOptions, OdataVersion, promptNames } from '../../src/index';
 import * as prompts from '../../src/prompts';
 import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
 import { type BackendSystem } from '@sap-ux/store';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { Answers } from 'inquirer';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
@@ -53,7 +55,23 @@ describe('API tests', () => {
                 validate: () => (PromptState.odataService.metadata = 'metadata contents')
             }
         ]);
-        const { prompts: questions, answers } = await getPrompts(undefined, undefined, true, undefined, true);
+
+        const prompOptions: OdataServicePromptOptions = {
+            [promptNames.serviceUrl]: {
+                requiredOdataVersion: OdataVersion.v4,
+                showCollaborativeDraftWarning: false,
+                additionalMessages: (input: any) => {
+                    if (input === 'X' ) {
+                        return {
+                            message: 'X may mark the spot',
+                            severity: Severity.information
+                        }
+                    }
+                }
+            }
+        }
+
+        const { prompts: questions, answers } = await getPrompts(prompOptions);
 
         expect(questions).toHaveLength(1);
         // execute the validate function as it would be done by inquirer

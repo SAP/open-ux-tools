@@ -56,7 +56,7 @@ describe('connection', () => {
         let spyOnRequestEject;
 
         beforeEach(() => {
-            testProvider = new ServiceProvider();
+            testProvider = new ServiceProvider({});
             testProvider.defaults = { headers: { common: {} } as HeadersDefaults };
             attachConnectionHandler(testProvider);
 

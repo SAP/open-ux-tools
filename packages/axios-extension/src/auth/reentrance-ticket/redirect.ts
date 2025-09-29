@@ -55,8 +55,10 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
             const reentranceTicket = reqUrl.searchParams.get('reentrance-ticket')?.toString();
             if (reentranceTicket) {
                 logger.debug('Got reentrance ticket: ' + reentranceTicket);
-                res.writeHead(200, { 'Content-Type': 'text/html' });
-                res.end(Buffer.from(redirectSuccessHtml(backend.logoffUrl())));
+                backend.logoffUrl().then((url) => {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(Buffer.from(redirectSuccessHtml(url)));
+                });
                 server.close();
                 // return the backend for convienience
                 resolve({ reentranceTicket, backend });

@@ -155,7 +155,13 @@ export enum AbapCloudEnvironment {
 /** Cloud Foundry OAuth 2.0 options */
 export interface CFAOauthOptions {
     service: ServiceInfo;
+    /**
+     * @deprecated No longer used as Service Key (UAA) connectivity has been replaced with reentrance ticket based sessions
+     */
     refreshToken?: string;
+    /**
+     * @deprecated  No longer used as Service Key (UAA) connectivity has been replaced with reentrance ticket based sessions
+     */
     refreshTokenChangedCb?: RefreshTokenChanged;
 }
 

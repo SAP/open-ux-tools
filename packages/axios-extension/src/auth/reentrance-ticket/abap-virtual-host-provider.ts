@@ -1,6 +1,12 @@
-import type { Logger } from '@sap-ux/logger';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import axios from 'axios';
 
+type RelatedUrls = {
+    relatedUrls: {
+        API: string;
+        UI: string;
+    };
+};
 /**
  * Makes requests to determine the virtual host names for UI and API access.
  */
@@ -8,7 +14,8 @@ export class ABAPVirtualHostProvider {
     private apiURL: URL;
     private uiURL: URL;
     private systemURL: URL;
-    private logger: Logger;
+    private relatedUrls: RelatedUrls;
+    private logger: Logger = new ToolsLogger();
 
     /**
      *
@@ -17,7 +24,9 @@ export class ABAPVirtualHostProvider {
      */
     constructor(backendUrl: string, logger?: Logger) {
         this.systemURL = new URL(backendUrl);
-        this.logger = logger;
+        if (logger) {
+            this.logger = logger;
+        }
     }
 
     /**
@@ -25,20 +34,23 @@ export class ABAPVirtualHostProvider {
      *
      * @returns An object containing the related URLs for API and UI access.
      */
-    private async getVirtualHosts(): Promise<{ relatedUrls: { API: string; UI: string } }> {
-        this.logger.debug(`Requesting virtual hosts from: ${this.systemURL}`);
-        const url = new URL('/sap/public/bc/icf/virtualhost', this.systemURL.origin);
-        const response = await axios.get(url.href, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
+    private async getVirtualHosts(): Promise<RelatedUrls> {
+        if (!this.relatedUrls) {
+            this.logger.debug(`Requesting virtual hosts from: ${this.systemURL}`);
+            const url = new URL('/sap/public/bc/icf/virtualhost', this.systemURL.origin);
+            const response = await axios.get(url.href, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            });
 
-        if (response.status !== 200) {
-            this.logger.debug(`Failed to fetch virtual hosts: from: ${url}. Error: ${response.statusText}`);
-            throw new Error(`Failed to fetch virtual hosts: ${response.statusText}`);
+            if (response.status !== 200) {
+                this.logger.debug(`Failed to fetch virtual hosts: from: ${url}. Error: ${response.statusText}`);
+                throw new Error(`Failed to fetch virtual hosts: ${response.statusText}`);
+            }
+            this.relatedUrls = response.data;
         }
-        return response.data;
+        return this.relatedUrls;
     }
 
     /**
@@ -70,7 +82,7 @@ export class ABAPVirtualHostProvider {
      *
      * @returns logoff URL
      */
-    logoffUrl(): string {
-        return this.uiHostname() + '/sap/public/bc/icf/logoff';
+    async logoffUrl(): Promise<string> {
+        return await this.uiHostname() + '/sap/public/bc/icf/logoff';
     }
 }

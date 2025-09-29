@@ -289,7 +289,7 @@ export default class extends DeploymentGenerator {
         if (this.abort || this.answers.overwrite === false) {
             return;
         }
-        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isS4HC);
+        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isAbapCloud);
         await generateAbapDeployConfig(
             this.destinationPath(),
             {
