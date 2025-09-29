@@ -24,7 +24,7 @@ import { updateProxyEnv } from './config';
 import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 import { getProxyForUrl } from 'proxy-from-env';
-import type { Socket } from 'net';
+import type { Socket } from 'node:net';
 import type { Request } from 'express';
 import type connect from 'connect';
 
@@ -177,7 +177,9 @@ export const PathRewriters = {
         if (functions.length > 0) {
             return (path: string, req: IncomingMessage) => {
                 let newPath = path;
-                functions.forEach((func) => (newPath = func(newPath, req as EnhancedIncomingMessage)));
+                for (const func of functions) {
+                    newPath = func(newPath, req as EnhancedIncomingMessage);
+                }
                 if (newPath !== path) {
                     log.info(`Rewrite path ${path} > ${newPath}`);
                 } else {

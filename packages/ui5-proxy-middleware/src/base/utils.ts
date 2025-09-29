@@ -15,7 +15,7 @@ import {
 import type { Url } from 'url';
 import { t } from '../i18n';
 import type { ReaderCollection } from '@ui5/fs';
-import type { Socket } from 'net';
+import type { Socket } from 'node:net';
 
 /**
  * Handler for the proxy response event.

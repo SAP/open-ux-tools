@@ -4,7 +4,7 @@ import i18n from 'i18next';
 import prompts from 'prompts';
 import type { Logger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 import type { Request } from 'express';
 
 /**

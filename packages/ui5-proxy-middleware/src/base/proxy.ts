@@ -13,7 +13,7 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'url';
 import { getProxyForUrl } from 'proxy-from-env';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import type { Socket } from 'net';
+import type { Socket } from 'node:net';
 
 /**
  * Function for proxying UI5 sources.
