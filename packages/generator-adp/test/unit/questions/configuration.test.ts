@@ -19,6 +19,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
 import { configPromptNames } from '../../../src/app/types';
 import { initI18n, t } from '../../../src/utils/i18n';
+import { getSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
@@ -26,7 +27,8 @@ jest.mock('../../../src/app/questions/helper/conditions', () => ({
 }));
 
 jest.mock('../../../src/app/questions/helper/additional-messages.ts', () => ({
-    getAppAdditionalMessages: jest.fn().mockResolvedValue(undefined)
+    getAppAdditionalMessages: jest.fn().mockResolvedValue(undefined),
+    getSystemAdditionalMessages: jest.fn()
 }));
 
 jest.mock('../../../src/app/questions/helper/validators.ts', () => ({
@@ -101,6 +103,7 @@ const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
+const getSystemAdditionalMessagesMock = getSystemAdditionalMessages as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
@@ -356,6 +359,18 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toEqual(`Authentication error: ${axiosError.message}`);
         });
+
+        it('password prompt additionalMessages should return undefined if value is passed', async () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            const systemAdditionalMessage = 'System additional message';
+            getSystemAdditionalMessagesMock.mockResolvedValue(systemAdditionalMessage);
+
+            const result = await passwordPrompt?.additionalMessages?.(dummyApps[0]);
+
+            expect(result).toEqual(systemAdditionalMessage);
+        });
     });
 
     describe('Application Prompt', () => {
@@ -478,6 +493,22 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
 
             expect(result).toEqual(t('error.manifestCouldNotBeValidated'));
+        });
+
+        it('application prompt validate should return string when  application does NOT support adaptation and the project is cloud', async () => {
+            const error = new Error(t('error.appDoesNotSupportManifest'));
+            getManifestSpy.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
+            configPrompter['isCloudProject'] = true;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            const errorMessage = error.message;
+            expect(errorMessage).toBeTruthy();
+            expect(result).toEqual(errorMessage);
         });
 
         it('application prompt validate should return string when manifest flexEnabled is false', async () => {

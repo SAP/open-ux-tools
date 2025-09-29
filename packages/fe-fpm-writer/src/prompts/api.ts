@@ -9,6 +9,7 @@ import type {
     PromptListChoices,
     PromptQuestion,
     PromptContext,
+    PromptContextOptions,
     CodeSnippet,
     PromptsType
 } from './types';
@@ -36,13 +37,15 @@ export class PromptsAPI {
      * @param fs the file system object for reading files
      * @param project
      * @param appId app id in CAP project
+     * @param options additional prompt context options.
      */
-    constructor(fs: Editor, project: Project | undefined, appId = '') {
+    constructor(fs: Editor, project: Project | undefined, appId = '', options?: PromptContextOptions) {
         this.context = {
             fs,
             project: project,
             appId: appId,
-            appPath: project ? join(project.root, appId) : ''
+            appPath: project ? join(project.root, appId) : '',
+            options
         };
     }
 
@@ -52,15 +55,21 @@ export class PromptsAPI {
      * @param projectPath project path
      * @param appId app id in CAP project
      * @param fs the file system object for reading files
+     * @param options additional prompt context options.
      * @returns Instance of prompt api.
      */
-    public static async init(projectPath: string, appId?: string, fs?: Editor): Promise<PromptsAPI> {
+    public static async init(
+        projectPath: string,
+        appId?: string,
+        fs?: Editor,
+        options?: PromptContextOptions
+    ): Promise<PromptsAPI> {
         if (!fs) {
             fs = create(createStorage());
         }
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
-        return new PromptsAPI(fs, project, appId);
+        return new PromptsAPI(fs, project, appId, options);
     }
 
     /**

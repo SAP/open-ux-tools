@@ -1157,3 +1157,21 @@ exports[`Building Blocks generate building block, no fs 1`] = `
     </Page>
 </mvc:View>"
 `;
+
+exports[`Building Blocks generates Rich Text Editor building block with absolute binding context: generate-rich-text-editor-block 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <Text text=\\"Custom section\\"/>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/testEntitySet/testProperty\\" id=\\"testRichTextEditor\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks throws error for Rich Text Editor building block if UI5 version is below 1.117.0: generate-rich-text-editor-block 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <Text text=\\"Custom section\\"/>
+        <macros:RichTextEditorWithMetadata metaPath=\\"_testNavigation/testProperty\\" id=\\"testRichTextEditor\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;

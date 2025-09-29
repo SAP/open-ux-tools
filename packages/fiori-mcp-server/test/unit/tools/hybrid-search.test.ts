@@ -1,11 +1,14 @@
 import type { DocSearchInput } from '../../../src/tools/hybrid-search';
 import { DocSearchService, docSearch } from '../../../src/tools/hybrid-search';
 import { SimpleDocumentIndexer } from '../../../src/tools/services/indexer-simple';
+import { logger } from '../../../src/utils/logger';
 
-// Mock the SimpleDocumentIndexer
+// Mock the SimpleDocumentIndexer and logger
 jest.mock('../../../src/tools/services/indexer-simple');
+jest.mock('../../../src/utils/logger');
 
 const mockIndexer = SimpleDocumentIndexer as jest.MockedClass<typeof SimpleDocumentIndexer>;
+const mockLogger = logger as jest.Mocked<typeof logger>;
 
 describe('hybrid-search', () => {
     let indexerInstance: jest.Mocked<SimpleDocumentIndexer>;
@@ -127,8 +130,8 @@ describe('hybrid-search', () => {
 
     describe('docSearch function', () => {
         beforeEach(() => {
-            // Mock console.warn to avoid test output noise
-            jest.spyOn(console, 'warn').mockImplementation(() => {});
+            // Clear logger mock calls
+            jest.clearAllMocks();
         });
 
         afterEach(() => {
@@ -192,9 +195,8 @@ describe('hybrid-search', () => {
             expect(result.suggestion).toContain('npm install -g @sap-ux/fiori-docs-embeddings');
             expect(result.results).toEqual([]);
             expect(result.total).toBe(0);
-            expect(console.warn).toHaveBeenCalledWith(
-                'Embeddings data not available, providing limited search capability:',
-                expect.any(Error)
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining('Embeddings data not available, providing limited search capability:')
             );
         });
 
