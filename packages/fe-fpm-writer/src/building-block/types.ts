@@ -1,5 +1,3 @@
-import type { integer } from '../../../text-document-utils/src';
-
 /**
  * Building block type.
  *
@@ -428,35 +426,6 @@ export interface RichTextEditor extends BuildingBlock {
      * Property used to construct the metaPath for Rich Text Editor, e.g. "/EntitySet/targetProperty".
      */
     targetProperty?: string;
-    /**
-     * Button group configuration for the Rich Text Editor.
-     */
-    buttonGroup?: {
-        /**
-         * The name of the button group.
-         */
-        name: string;
-        /**
-         * The buttons to be displayed in the group.
-         */
-        buttons: string;
-        /**
-         * Whether the group is visible.
-         */
-        visible: boolean;
-        /**
-         * The priority of the group.
-         */
-        priority: integer;
-        /**
-         * The priority of the group in the custom toolbar.
-         */
-        customToolbarPriority?: integer;
-        /**
-         * Row number in which the button group should be.
-         */
-        row?: integer;
-    };
 }
 
 /**

@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.2
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
 ## 0.39.1
 
 ### Patch Changes
