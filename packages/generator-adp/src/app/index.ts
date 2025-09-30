@@ -168,7 +168,7 @@ export default class extends Generator {
     /**
      * Indicates if the extension is installed.
      */
-    private isExtensionInstalled: boolean;
+    private readonly isExtensionInstalled: boolean;
     /**
      * Indicates if CF is installed.
      */
