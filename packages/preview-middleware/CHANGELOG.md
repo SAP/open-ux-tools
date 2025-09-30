@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 0.23.15
+
+### Patch Changes
+
+-   a22b24e: enhance logging for remote connection of windows users
+
+## 0.23.14
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/system-access@0.6.18
+
 ## 0.23.13
 
 ### Patch Changes

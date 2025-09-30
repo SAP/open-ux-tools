@@ -1,5 +1,29 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.23
+
+### Patch Changes
+
+-   fe5fd09: Show asterisk for the Transport Request textbox.
+
+## 1.6.22
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/inquirer-common@0.7.45
+    -   @sap-ux/nodejs-utils@0.2.5
+    -   @sap-ux/system-access@0.6.18
+
+## 1.6.21
+
+### Patch Changes
+
+-   bfdbaca: fix: Deploy Config generator should not validate the package for OnPremise systems for ADP
+
 ## 1.6.20
 
 ### Patch Changes
