@@ -5,7 +5,6 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { ToolsLogger, type Logger, UI5ToolingTransport } from '@sap-ux/logger';
-import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import {
     isAppStudio,
