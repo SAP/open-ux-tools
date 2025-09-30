@@ -1,10 +1,12 @@
-export enum ProxyValidationStatus {
-    NO_PROXY = 'no-proxy',
-    MATCH = 'match',
-    MISMATCH = 'mismatch',
-    ENV_ONLY = 'env-only',
-    PARAM_ONLY = 'param-only'
-}
+export const ProxyValidationStatus = {
+    NO_PROXY: 'no-proxy',
+    MATCH: 'match',
+    MISMATCH: 'mismatch',
+    ENV_ONLY: 'env-only',
+    PARAM_ONLY: 'param-only'
+} as const;
+
+export type ProxyValidationStatus = (typeof ProxyValidationStatus)[keyof typeof ProxyValidationStatus];
 
 export interface ProxyValidationResult {
     isValid: boolean;
