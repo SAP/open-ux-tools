@@ -1,5 +1,24 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.2
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.39.1
+
+### Patch Changes
+
+-   Updated dependencies [321b09e]
+    -   @sap-ux/fiori-annotation-api@0.7.1
+
+## 0.39.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
 ## 0.38.11
 
 ### Patch Changes
