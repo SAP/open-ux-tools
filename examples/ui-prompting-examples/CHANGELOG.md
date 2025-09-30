@@ -1,5 +1,22 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.4.1
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.4.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+### Patch Changes
+
+-   Updated dependencies [1276258]
+    -   @sap-ux/ui-prompting@0.5.0
+
 ## 0.3.3
 
 ### Patch Changes

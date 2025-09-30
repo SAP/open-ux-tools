@@ -46,6 +46,11 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getRichTextEditorBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.RichTextEditor);
+        expect(questionnair).toMatchSnapshot();
+    });
+
     test('get prompts for invalid propmts type', async () => {
         const questionnair = await promptsAPI.getPrompts('notValid' as PromptsType);
         expect(questionnair).toStrictEqual({ questions: [] });

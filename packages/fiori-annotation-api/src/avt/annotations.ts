@@ -145,21 +145,29 @@ export function convertAnnotationFile(
 // annotations -> multiple elements with matching Target/Term/Qualifier combination, but partial values
 // records -> multiple PropertyValue elements with the same name, but partial values
 // all of these values are flattened
+// There should not be duplicate values (last encountered will be used)
 
 function mergeAnnotation(
     mergeMap: Record<string, string>,
     targetPath: string,
     sourcePath: string,
-    target: RawAnnotation,
-    source: RawAnnotation
+    target: AnnotationWithOrigin,
+    source: AnnotationWithOrigin
 ): void {
     mergeAnnotationAnnotations(mergeMap, targetPath, sourcePath, target, source);
-    if (target.record && source.record) {
-        mergeRecord(mergeMap, targetPath, sourcePath, target.record, source.record, true);
-    } else if (target.value && source.value) {
+    if (source.record) {
+        if (target.record) {
+            mergeRecord(mergeMap, targetPath, sourcePath, target.record, source.record, true);
+        } else {
+            target.record = source.record;
+            target.origin = source.origin;
+        }
+    } else if (source.value) {
         target.value = source.value;
-    } else if (target.collection && source.collection) {
+        target.origin = source.origin;
+    } else if (source.collection) {
         target.collection = source.collection;
+        target.collectionOrigins = source.collectionOrigins;
     }
 }
 
@@ -354,9 +362,11 @@ function convertAnnotation(
 
     const value = convertExpression(namespaceMap, currentNamespace, annotationElement, options);
     const annotation: AnnotationWithOrigin = {
-        term: fqTerm ?? termAttributeValue,
-        value
+        term: fqTerm ?? termAttributeValue
     };
+    if (value) {
+        annotation.value = value;
+    }
     if (options?.addOrigins) {
         annotation.origin = annotationElement.range;
     }

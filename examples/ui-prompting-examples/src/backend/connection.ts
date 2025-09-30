@@ -3,7 +3,8 @@ import type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
     TablePromptsAnswer,
-    PagePromptsAnswer
+    PagePromptsAnswer,
+    RichTextEditorPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
@@ -16,6 +17,7 @@ import {
     SET_TABLE_QUESTIONS,
     SET_PAGE_QUESTIONS,
     SET_CHART_QUESTIONS,
+    SET_RICH_TEXT_EDITOR_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
     PromptsType,
     GET_CHOICES,
@@ -171,6 +173,14 @@ async function handleAction(action: Actions): Promise<void> {
                         questions,
                         groups,
                         initialAnswers: initialAnswers as Partial<FilterBarPromptsAnswer>
+                    };
+                } else if (action.value === PromptsType.RichTextEditor) {
+                    // Post processing
+                    responseAction = {
+                        type: SET_RICH_TEXT_EDITOR_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<RichTextEditorPromptsAnswer>
                     };
                 }
                 if (responseAction) {
