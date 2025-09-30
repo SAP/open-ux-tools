@@ -112,7 +112,8 @@ export default {
                                 'myAbsolutePathFromServiceCdsFile/'
                             ],
                             description:
-                                'The odata endpoint as provided by the cds mcp. If the parameter is not provided, the agent should ask the user for it.',
+                                'The odata endpoint as provided by the cds mcp. If the parameter is not provided, the agent should ask the user for it.' +
+                                'Some service endpoints require authentication - in that case, the agent should ask the user for the necessary credentials.',
                             required: true
                         },
                         {

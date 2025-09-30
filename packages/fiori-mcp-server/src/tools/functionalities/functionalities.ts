@@ -10,16 +10,13 @@ import {
 } from '../../constant';
 
 import generateFioriUIodataApp from './generate-fiori-ui-odata-app';
-import fetchSystems from './fetch-systems';
 
 export const FUNCTIONALITIES_DETAILS = [
     ADD_PAGE_FUNCTIONALITY,
     GENERATE_FIORI_UI_APP,
     DELETE_PAGE_FUNCTIONALITY,
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
-    generateFioriUIodataApp.details,
-    fetchSystems.details
-    // fetchServices.details
+    generateFioriUIodataApp.details
 ];
 
 export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new Map([
@@ -27,7 +24,5 @@ export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new 
     [DELETE_PAGE, deletePageHandlers],
     [GENERATE_FIORI_UI_APP_ID, generateFioriUIAppHandlers],
     [CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID, createControllerExtensionHandlers],
-    [generateFioriUIodataApp.id, generateFioriUIodataApp.handlers],
-    [fetchSystems.id, fetchSystems.handlers]
-    // fetchServices.handlers
+    [generateFioriUIodataApp.id, generateFioriUIodataApp.handlers]
 ]);

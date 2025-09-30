@@ -35,7 +35,7 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "start": "npx -y supergateway --port 9881 --sessionTimeout 30000 --stdio \"node ./dist/index.js\"",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
+        "inspector": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector node dist/index.js"
     },
     "files": [
         "LICENSE",
