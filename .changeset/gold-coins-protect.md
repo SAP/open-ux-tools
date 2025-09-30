@@ -1,5 +1,4 @@
 ---
-'@sap-ux/ui5-library-sub-generator': minor
 '@sap-ux/ui5-library-inquirer': minor
 ---
 
