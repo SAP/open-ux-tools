@@ -1,44 +1,10 @@
-import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import { ToolsLogger } from '@sap-ux/logger';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
 import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
+import { resolveUI5VersionToNpm } from './utils';
 import autocomplete from 'inquirer-autocomplete-prompt';
-
-/**
- * Resolves a UI5 version to its corresponding npm-published version from @sapui5/distribution-metadata.
- *
- * @param selectedVersion - The UI5 version selected by the user
- * @returns Promise that resolves to the corresponding npm-published UI5 version
- */
-async function resolveUI5VersionToNpm(selectedVersion: string): Promise<string> {
-    try {
-        // Query npm registry for @sapui5/distribution-metadata package to find the best available version.
-        // This approach ensures we get versions that are actually published to npm, which is required for
-        // ui5.yaml framework configuration, rather than versions only available on the UI5 CDN.
-        // - onlyNpmVersion: queries npm registry via 'npm show @sapui5/distribution-metadata versions'
-        // - onlyVersionNumbers: filters out non-semantic versions like 'snapshot-1.120' or 'Latest'
-        // - ui5SelectedVersion: prioritizes the user's selected version if available in npm
-        const npmVersion = (
-            await getUI5Versions({
-                onlyVersionNumbers: true,
-                onlyNpmVersion: true,
-                ui5SelectedVersion: selectedVersion ?? latestVersionString
-            })
-        )[0]?.version;
-
-        return npmVersion || selectedVersion;
-    } catch (error) {
-        // Log the failure and fall back to the selected version
-        new ToolsLogger().warn(
-            `Failed to resolve npm version for UI5 version '${selectedVersion}'. Error: ${
-                error instanceof Error ? error.message : String(error)
-            }. Using selected version as fallback.`
-        );
-        return selectedVersion;
-    }
-}
 
 /**
  * Get the inquirer prompts for ui5 library inquirer.
@@ -56,8 +22,7 @@ async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Ques
     const ui5LibPromptInputs: UI5LibraryPromptOptions = {
         targetFolder: promptOptions?.targetFolder,
         includeSeparators: promptOptions?.includeSeparators,
-        useAutocomplete: promptOptions?.useAutocomplete,
-        resolvedUi5Version: promptOptions?.resolvedUi5Version
+        useAutocomplete: promptOptions?.useAutocomplete
     };
     return getQuestions(ui5Versions, ui5LibPromptInputs);
 }
@@ -97,7 +62,8 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     return answers;
 }
 
-export { getPrompts, prompt, resolveUI5VersionToNpm };
+export { getPrompts, prompt };
+export { resolveUI5VersionToNpm } from './utils';
 
 export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';

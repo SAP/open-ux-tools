@@ -39,7 +39,6 @@ exports[`API test getPrompts, no prompt options 1`] = `
   },
   {
     "choices": [Function],
-    "default": undefined,
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Represents the minimum version of SAPUI5 that this library requires.",
@@ -101,7 +100,6 @@ exports[`API test getPrompts, prompt options 1`] = `
   },
   {
     "choices": [Function],
-    "default": undefined,
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Represents the minimum version of SAPUI5 that this library requires.",

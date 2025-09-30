@@ -291,36 +291,6 @@ describe('Version Resolution Tests', () => {
         });
     });
 
-    describe('getPrompts with resolved version', () => {
-        it('should pass original resolvedUi5Version to getQuestions when provided', async () => {
-            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
-
-            await getPrompts({ resolvedUi5Version: '1.118.5' });
-
-            expect(getQuestionsSpy).toHaveBeenCalledWith(
-                ui5Vers,
-                expect.objectContaining({
-                    resolvedUi5Version: '1.118.5' // Original version passed through, resolution happens later in prompt()
-                })
-            );
-        });
-
-        it('should pass undefined resolvedUi5Version when not provided', async () => {
-            jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
-            const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue([]);
-
-            await getPrompts({});
-
-            expect(getQuestionsSpy).toHaveBeenCalledWith(
-                ui5Vers,
-                expect.objectContaining({
-                    resolvedUi5Version: undefined
-                })
-            );
-        });
-    });
-
     describe('prompt with version resolution', () => {
         const mockPrompts = [{ name: 'ui5Version', type: 'list' }];
         const mockAnswers: UI5LibraryAnswers = {
