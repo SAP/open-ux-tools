@@ -12,6 +12,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import osName from 'os-name';
 import i18next from 'i18next';
 import { version } from '../../package.json';
+import { logger } from '../utils/logger';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';
@@ -57,7 +58,7 @@ export abstract class TelemetryHelper {
         try {
             await initTelemetrySettings(telemetryOptions);
         } catch (error) {
-            console.error('Error initializing telemetry settings:', error);
+            logger.error(`Error initializing telemetry settings: ${error}`);
         }
     }
 
