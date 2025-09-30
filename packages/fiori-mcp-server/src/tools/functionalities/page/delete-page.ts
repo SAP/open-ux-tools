@@ -1,5 +1,5 @@
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
@@ -7,8 +7,16 @@ import type {
 } from '../../../types';
 import { Application } from './application';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { resolveApplication } from '../../utils';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
 import { DELETE_PAGE } from '../../../constant';
+import { buildPageDeletionSchema } from './schema';
+
+export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
+    functionalityId: DELETE_PAGE,
+    name: 'Delete page from application by updating manifest.json',
+    description: 'Remove existing fiori elements page from the application',
+    parameters: convertToSchema(buildPageDeletionSchema())
+};
 
 /**
  * Retrieves the details of the Delete Page functionality.
@@ -24,7 +32,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
             functionalityId: DELETE_PAGE,
             name: 'Invalid Project Root or Application Path',
             description: `To delete a page, provide a valid project root or application path. "${appPath}" is not valid`,
-            parameters: []
+            parameters: {}
         };
     }
     const { appId, applicationAccess } = appDetails;
@@ -32,7 +40,10 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appData = await ftfsFileIo.readApp();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
-    return application.getDeleteOptions();
+    return {
+        ...DELETE_PAGE_FUNCTIONALITY,
+        parameters: convertToSchema(buildPageDeletionSchema(application.getPages()))
+    };
 }
 
 /**
@@ -41,12 +52,8 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
  * @param params - The input parameters for executing the functionality.
  * @returns A promise resolving to the execution output.
  */
-async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
-    const { pageId } = parameters;
-    if (!pageId || typeof pageId !== 'string') {
-        throw new Error('Missing or invalid parameter "pageId"');
-    }
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
@@ -64,8 +71,10 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     const appData = await ftfsFileIo.readApp();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
+    const deleteSchema = buildPageDeletionSchema(application.getPages());
+    const deletionParameters = validateWithSchema(deleteSchema, parameters);
     return application.deletePage({
-        pageId
+        pageId: deletionParameters.pageId
     });
 }
 
@@ -73,5 +82,3 @@ export const deletePageHandlers: FunctionalityHandlers = {
     getFunctionalityDetails,
     executeFunctionality
 };
-
-export { DELETE_PAGE_FUNCTIONALITY } from './application';

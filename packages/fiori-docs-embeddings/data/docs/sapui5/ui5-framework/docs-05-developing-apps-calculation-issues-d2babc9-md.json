@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-05-developing-apps-calculation-issues-d2babc9-md",
+  "title": "Calculation Issues",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/calculation-issues-d2babc9.md",
+  "lastModified": "2025-09-01T18:17:10.558Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Calculation",
+    "Issues"
+  ],
+  "headers": [
+    "Calculation Issues"
+  ],
+  "content": "<!-- loiod2babc9f76fd432eaade6c348c19f1e9 -->\n\n# Calculation Issues\n\nAny issues during the calculation of the index are written as messages to the application log.\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nMessage Type\n\n</th>\n<th valign=\"top\">\n\nClassification\n\n</th>\n<th valign=\"top\">\n\nWhat's the Issue?\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nError\n\n</td>\n<td valign=\"top\">\n\nVery high\n\n</td>\n<td valign=\"top\">\n\nException because manifest.json file is not valid or cache buster token could not be calculated\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nError\n\n</td>\n<td valign=\"top\">\n\nHigh\n\n</td>\n<td valign=\"top\">\n\nComponent ID occurs or is used more than once\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nWarning\n\n</td>\n<td valign=\"top\">\n\nMedium\n\n</td>\n<td valign=\"top\">\n\nComponent ID is potentially not valid\n\n</td>\n</tr>\n</table>\n\nTo access the application log, choose *View … Logs* in the report `/UI5/APP_INDEX_CALCULATE`. The application log is also persisted in client 000 by default and can be analyzed using transaction `SLG1`.\n\nTechnically, the application log is referenced by the object `/UI5/APPIDX`. This object has the following subobjects:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nSubobject\n\n</th>\n<th valign=\"top\">\n\nWhat Does It Contain?\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nGENERAL\n\n</td>\n<td valign=\"top\">\n\nGeneral information like time and duration of the last calculation of the index, number of single repositories, and number of updated table entries\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nUI5REP\n\n</td>\n<td valign=\"top\">\n\nError messages that occurred when a single repository was processed\n\nThe external ID is the name of the single repository.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nUI5COMP\n\n</td>\n<td valign=\"top\">\n\nComponent-related messages from a consistency check carried out at the end of the calculation of the index\n\nThe consistency check includes the following:\n\n-   Whether the same component ID is contained in more than one repository\n\n-   Whether the component ID is valid\n\n-   Whether a reuse component defined in the dependencies is not contained in the application index\n\n\nThe external ID is the component ID.\n\n</td>\n</tr>\n</table>\n\nThe application log contains only entries of the last run of the report `/UI5/APP_INDEX_CALCULATE` and any older entries are removed automatically. For more information, search for `Analyze Logs` in the documentation for your [SAP NetWeaver](https://help.sap.com/viewer/p/SAP_NETWEAVER) version on the SAP Help Portal.\n\n",
+  "excerpt": "<!-- loiod2babc9f76fd432eaade6c348c19f1e9 --> Calculation Issues Any issues during the calculation of the index are written as messages to the application log. <table> <tr> <th valign=\"top\"> Message T...",
+  "wordCount": 351,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

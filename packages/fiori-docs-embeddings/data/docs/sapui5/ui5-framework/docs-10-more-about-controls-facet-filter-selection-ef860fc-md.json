@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-facet-filter-selection-ef860fc-md",
+  "title": "Facet Filter Selection",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/facet-filter-selection-ef860fc.md",
+  "lastModified": "2025-09-01T18:17:10.689Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Facet",
+    "Filter",
+    "Selection"
+  ],
+  "headers": [
+    "Facet Filter Selection",
+    "Variants"
+  ],
+  "content": "<!-- loioef860fc989764439957c6446ecebd7ec -->\n\n# Facet Filter Selection\n\nThe `FacetFilterList.getSelectedItems()` method returns a copy of each selected facet filter item. You use the method to get the selected filter items when filtering the target data set. Therefore, you should not attempt to modify any of the item's properties.\n\n\n\n## Variants\n\nAn application can support the personalization of settings and allow the user to save the facet filter list selections as well as other properties by means of a variant. For example, you can use `getSelectedKeys` to retrieve an object containing all selected items and use JSON.stringify to marshall and JSON.parse to unmarshall. After unmarshalling, you can use `setSelectedKeys` to apply the selections to the list. The following figure and code snippet give an example.\n\n![](images/SAPUI5_Facet_Filter_Data_Binding_Example_ce923df.png)\n\n```js\n\nsap.ui.require([\n\t\t\t\"sap/m/FacetFilter\",\n\t\t\t\"sap/m/FacetFilterList\",\n\t\t\t\"sap/m/FacetFilterItem\",\n\t\t\t\"sap/ui/model/odata/v2/ODataModel\"\n\t\t], function (FacetFilter, FacetFilterList, FacetFilterItem, ODataModel) {\n\t\t\tvar oDataModel = new ODataModel(\"/uilib-sample/proxy/http/services.odata.org/V3/Northwind/Northwind.svc\");\n\n\t\t\t\t// create the FacetFilterList and bind the filter items\n\t\t\t\tconst oFacetFilterList = new FacetFilterList({\n\t\t\t\t\ttitle : \"Products\",\n\t\t\t\t\tgrowing : true,\n\t\t\t\t\titems : {\n\t\t\t\t\t\tpath : \"/Products\",\n\t\t\t\t\t\ttemplate : new FacetFilterItem({\n\t\t\t\t\t\t\t\ttext : \"{ProductName}\",\n\t\t\t\t\t\t\t\tkey : \"{ProductID}\"\n\t\t\t\t\t\t})\n\t\t\t\t\t},\n\t\t\t\t\tlistOpen : function(oEvent) {\n\n\t\t\t\t\t\tif(!this.hasModel()) {          \n\t\t\t\t\t\t\t\tthis.setModel(oDataModel);\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t});\n\n\t\t\t\t// getSelectionsFromVariant() is an application method to retrieve\n\t\t\t\t// selected keys from the backend. Selections were saved to the variant by persisting \n\t\t\t\t// the result of 'getSelectedKeys' for each list. This is an object \n\t\t\t\t// containing Product keys as properties and Product text as property values, for example:\n\t\t\t\t/*      \n\t\t\t\t{\n\t\t\t\t\t'5' : \"Chef Anton's Gumbo Mix\",\n\t\t\t\t\t'17' : \"Alice Mutton\",\n\t\t\t\t\t'21' : \"Sir Rodney's Scones\"                \n\t\t\t\t}\n\t\t\t\t*/\n\t\t\t\tconst oSelectedKeys = getSelectionsFromVariant(); \n\n\t\t\t\t// Now preselect these items\n\t\t\t\toFacetFilterList.setSelectedKeys(oSelectedKeys);\n\n\t\t\t\tconst oFacetFilter = new FacetFilter({\n\t\t\t\t\tlists : [ oFacetFilterList ]\n\t\t\t\t}); \n\t\t});\n```\n\n",
+  "excerpt": "<!-- loioef860fc989764439957c6446ecebd7ec --> Facet Filter Selection The FacetFilterList.getSelectedItems() method returns a copy of each selected facet filter item. You use the method to get the sele...",
+  "wordCount": 281,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

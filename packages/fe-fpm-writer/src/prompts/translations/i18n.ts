@@ -52,6 +52,9 @@ const ns1 = {
                     'input': 'Please enter a value',
                     'select': 'Please select a value'
                 }
+            },
+            'targetProperty': {
+                'defaultPlaceholder': 'Select a target property'
             }
         },
         'chart': {
@@ -206,6 +209,29 @@ const ns1 = {
             'tableSearchableToggle': 'Table Searchable Toggle',
             'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set'
         },
+        'richTextEditor': {
+            'id': {
+                'message': 'Building Block ID',
+                'validation': 'An ID is required to generate the Rich Text Editor building block.'
+            },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation': 'A view or fragment is required to generate the Rich Text Editor building block.'
+            },
+            'bindingContextType': 'Binding Context',
+            'valueSource': 'Value Source',
+            'entitySet': 'Entity',
+            'targetProperty': 'Target Property',
+            'aggregation': 'Aggregation Path',
+            'buttonGroup': {
+                'name': 'Button Group Name',
+                'buttons': 'Buttons',
+                'visible': 'Visible',
+                'priority': 'Priority',
+                'customToolbarPriority': 'Custom Toolbar Priority',
+                'row': 'Row'
+            }
+        },
         'page': {
             'id': {
                 'message': 'Building Block ID',
@@ -231,6 +257,10 @@ const ns1 = {
     'pageBuildingBlock': {
         'minUi5VersionRequirement':
             'The Page building block feature requires SAPUI5 1.136.0 or higher. The current version is {{ minUI5Version }}, so the Page building block will not be added.'
+    },
+    'richTextEditorBuildingBlock': {
+        'minUi5VersionRequirement':
+            'The Rich Text Editor building block feature requires SAPUI5 1.117.0 or higher. The current version is {{ minUI5Version }}, so the Rich Text Editor building block will not be added.'
     }
 };
 export default ns1;

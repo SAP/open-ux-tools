@@ -1,0 +1,25 @@
+{
+  "id": "btp-fiori-tools-docs-developing-an-application-rating-column-b2ba7b4-md",
+  "title": "Rating Column",
+  "category": "fiori-tools",
+  "path": "docs/Developing-an-Application/rating-column-b2ba7b4.md",
+  "lastModified": "2025-09-01T18:17:10.145Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Rating",
+    "Column"
+  ],
+  "headers": [
+    "Rating Column",
+    "Adding a Rating Column",
+    "Moving Rating Column",
+    "Deleting Rating Column"
+  ],
+  "content": "<!-- loiob2ba7b47f2be4c1cb5fcfaf2df25c19a -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Rating Column\n\nA rating column can be added to a list report table or an object page section.\n\n\n\n<a name=\"loiob2ba7b47f2be4c1cb5fcfaf2df25c19a__section_rnc_z5y_35b\"/>\n\n## Adding a Rating Column\n\nTo add a rating column to a table to a section, perform the following steps:\n\n1.  Click *Add Rating Columns* when clicking the :heavy_plus_sign: \\(*Add*\\) icon in the Columns node in the *Page Editor*.\n2.  Select *Columns* using the tree control.\n3.  Click *Add* and a new `UI.DataPoint` annotation is created with the following values:\n    -   `Value` property is set to the property chosen by the user.\n    -   `TargetValue` property is set to 5.\n    -   `Visualization` property is set to enum value **Rating**.\n\n\nThe rating column has the following additional properties:\n\n-   [Label](appendix-457f2e9.md#loiod44832d99bdf4f73ba14cdbb16dc9301)\n-   [Importance](appendix-457f2e9.md#loio7fe32a215209419da6d6c19da0f69ccb)\n-   [Hidden](appendix-457f2e9.md#loiof7ad71792a0044d6b6172f078827bdc0)\n-   [Target Value](appendix-457f2e9.md#loioa9654b0fd63443d9b2727d1a497f84b6)\n-   [Tooltip Source](appendix-457f2e9.md#loiof0bc466aae5b42e697c89506026050af)\n\n\n\n<a name=\"loiob2ba7b47f2be4c1cb5fcfaf2df25c19a__section_zpp_qry_35b\"/>\n\n## Moving Rating Column\n\nTo move a column within a table, use one of the following options:\n\n-   **Drag and Drop**\n\n    Hover over the table column outline, press and hold the mouse button while moving the mouse pointer to the different position within the table. Release the mouse button at the desired position. Eligible positions are highlighted in green.\n\n    With drag and drop, you can move multiple columns at once by pressing [CTRL\\] + [\\+\\]  .\n\n-   **Arrow Icons**\n\n    Click the <span class=\"SAP-icons-V5\"></span>\\(*Move Up*\\) or <span class=\"SAP-icons-V5\"></span> \\(*Move Down*\\) icon next to the column name. This option only moves one column at a time.\n\n\n\n\n<a name=\"loiob2ba7b47f2be4c1cb5fcfaf2df25c19a__section_mvt_5sy_35b\"/>\n\n## Deleting Rating Column\n\n1.  Navigate to a column.\n2.  Click the :wastebasket: \\(*Delete*\\) icon to open the *Delete Confirmation* popup window.\n3.  Click *Delete* to confirm the action.\n\n",
+  "excerpt": "<!-- loiob2ba7b47f2be4c1cb5fcfaf2df25c19a --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Rating Column A rating column can be added to a list report table or an object page s...",
+  "wordCount": 274,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

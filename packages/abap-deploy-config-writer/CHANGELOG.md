@@ -1,5 +1,51 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.17
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.18
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-access@1.32.1
+
+## 0.2.15
+
+### Patch Changes
+
+-   c15aa4f: fix: Wrong npm deploy scripts are created for ADP onPremise projects
+
+## 0.2.14
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/system-access@0.6.16
+
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/system-access@0.6.16
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/system-access@0.6.16
+
 ## 0.2.11
 
 ### Patch Changes

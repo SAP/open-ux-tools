@@ -1,0 +1,22 @@
+{
+  "id": "btp-fiori-tools-docs-project-functions-application-information-c3e0989-md",
+  "title": "Application Information",
+  "category": "fiori-tools",
+  "path": "docs/Project-Functions/application-information-c3e0989.md",
+  "lastModified": "2025-09-01T18:17:10.162Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Application",
+    "Information"
+  ],
+  "headers": [
+    "Application Information"
+  ],
+  "content": "<!-- loioc3e0989caf6743a88a52df603f62a52a -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Application Information\n\nWhen your SAP Fiori elements project is generated, an **Application Information** page will launch automatically. The page consists of four sections:\n\n-   **Project Detail** provides information about the project, such as project type, SAPUI5 version, back end, and pages that are part of the application. Click the <span class=\"SAP-icons-V5\"></span> \\(*Page*\\) icon to launch [Configure Page Elements](../Developing-an-Application/configure-page-elements-047507c.md).\n\n-   **Status** provides a summary of the project dependencies with links to fix any issues.\n-   **What you can do** provides quick links to the SAP Fiori tools commands that are relevant to the project.\n-   **What you can learn** links to various help topics including how to contact support.\n\nYou can relaunch the **Application Information** page at any time by executing the `Fiori: Open Application Info` command. In addition, you can also run [Project Validation](project-validation-6f3c737.md) at any time after generating your project.\n\n",
+  "excerpt": "<!-- loioc3e0989caf6743a88a52df603f62a52a --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Application Information When your SAP Fiori elements project is generated, an Applica...",
+  "wordCount": 150,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-03-get-started-step-6-table-personalization-1953149-md",
+  "title": "Step 6: Table Personalization",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-6-table-personalization-1953149.md",
+  "lastModified": "2025-09-01T18:17:10.480Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Table",
+    "Personalization"
+  ],
+  "headers": [
+    "Step 6: Table Personalization",
+    "Preview",
+    "Coding",
+    "Personalization.view.xml"
+  ],
+  "content": "<!-- loio19531496ec144fa1bc4adab5bc08527c -->\n\n# Step 6: Table Personalization\n\nTable personalization offers you a dedicated dialog to specify which columns in the table are visible and in which order, how the data is sorted, whether grouping of the data is active, and whether table entries are filtered.\n\nThe settings in the dialog can also be persisted as you will see in the next step. In this step, we will use the same setup as in step 5 except that we enable table personalization in the `view.xml`.\n\n\n\n## Preview\n\nStarting from the main UI, we can enter the different personalization possibilities by pressing the *Settings* icon in the upper right-hand corner of the toolbar:\n\n  \n  \n**Table Personalization**\n\n![](images/Smart_Controls_Tutorial_Step_06a_1623d1b.png \"Table Personalization\")\n\nAfter doing this, you see a popup with four different tabs:\n\n  \n  \n**Settings Dialog: Column Visibility and Order**\n\n![](images/Step6_popup1_new_33103eb.png \"Settings Dialog: Column Visibility and Order\")\n\n  \n  \n**Settings Dialog: Sorting**\n\n![](images/Step6_popup2_3a399e1.png \"Settings Dialog: Sorting\")\n\n  \n  \n**Settings Dialog: Filtering**\n\n![](images/Step6_popup3_2f682a9.png \"Settings Dialog: Filtering\")\n\n  \n  \n**Settings Dialog: Grouping**\n\n![](images/Step6_popup4_eb8fab9.png \"Settings Dialog: Grouping\")\n\n  \n  \n**Resulting View with Personalization Applied**\n\n![](images/Smart_Controls_Tutorial_Step_06f_d018195.png \"Resulting View with Personalization Applied\")\n\n\n\n## Coding\n\nYou can view and download all files in the *Samples* in the Demo Kit at [Smart Controls - Step 6 - Table Personalization](https://ui5.sap.com/#/entity/sap.ui.comp.tutorial.smartControls/sample/sap.ui.comp.tutorial.smartControls.06).\n\nAs mentioned above, we use the same content as in the previous step, so we refrain from any code listings except for the `view.xml`. We should mention, however, that fields that are not specifically marked as `sap:sortable=\"false\"`, `sap:filterable=\"false\"` or `sap:groupable=\"false\"` in the metadata will all be sortable, filterable, or groupable, respectively, and thus be available in the tabs of the personalization dialog.\n\n\n\n## Personalization.view.xml\n\n```xml\n<mvc:View \n\txmlns=\"sap.m\"\n\txmlns:mvc=\"sap.ui.core.mvc\"\n\tcontrollerName=\"sap.ui.demo.smartControls.Personalization\"\n\txmlns:smartFilterBar=\"sap.ui.comp.smartfilterbar\"\n\txmlns:smartTable=\"sap.ui.comp.smarttable\">\n\t<smartFilterBar:SmartFilterBar \n\t\tid=\"smartFilterBar\"\n\t\tentitySet=\"Products\">\n\t\t<smartFilterBar:controlConfiguration>\n\t\t\t<smartFilterBar:ControlConfiguration\n\t\t\t\tkey=\"Category\" visibleInAdvancedArea=\"true\"\n\t\t\t\tpreventInitialDataFetchInValueHelpDialog=\"false\">\n\t\t\t</smartFilterBar:ControlConfiguration>\n\t\t</smartFilterBar:controlConfiguration>\n\t</smartFilterBar:SmartFilterBar>\n\t<smartTable:SmartTable \n\t\tid=\"smartTable_ResponsiveTable\"\n\t\tsmartFilterId=\"smartFilterBar\" \n\t\ttableType=\"ResponsiveTable\" \n\t\teditable=\"false\"\n\t\tentitySet=\"Products\" \n\t\tuseVariantManagement=\"false\"\n\t\tuseTablePersonalisation=\"true\" \n\t\theader=\"Products\" \n\t\tshowRowCount=\"true\"\n\t\tenableExport=\"false\" \n\t\tenableAutoBinding=\"true\">\n\t</smartTable:SmartTable>\n</mvc:View>\n```\n\nTo enable table personalization, we set `useTablePersonalisation` to `true`. As will become clear in the next section, you would typically use the table personalization together with view management since you can then also persist any changes done to the table.\n\n**Related Information**  \n\n\n[Personalization Dialog](../10_More_About_Controls/personalization-dialog-a3c3c5e.md \"The sap.m.p13n.Popup control in the sap.m.p13n namespace provides a dialog or popover for personalizing content, for example, of a table, such as selecting columns and adapting their order.\")\n\n",
+  "excerpt": "<!-- loio19531496ec144fa1bc4adab5bc08527c --> Step 6: Table Personalization Table personalization offers you a dedicated dialog to specify which columns in the table are visible and in which order, ho...",
+  "wordCount": 368,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

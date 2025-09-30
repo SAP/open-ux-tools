@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-07-apf-the-analysis-path-display-07db7d5-md",
+  "title": "The Analysis Path Display",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-analysis-path-display-07db7d5.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Analysis",
+    "Path",
+    "Display"
+  ],
+  "headers": [
+    "The Analysis Path Display"
+  ],
+  "content": "<!-- loio07db7d53b5c19456e10000000a423f68 -->\n\n# The Analysis Path Display\n\nThe analysis path display is the UI area where thumbnails of all analysis steps of the current analysis path are displayed. In addition, actions such as editing analysis paths or saving them are performed in the analysis path display. It consists of the following subcomponents:\n\n-   Analysis path title\n\n    Contains the name of the analysis path and the icon to open the actions menu.\n\n    Once an analysis path has been saved, the name of the saved path is displayed. Unsaved changes are indicated by an asterisk in front of the path name.\n\n    The actions menu offers the following options:\n\n    -   *New*\n\n    -   *Open*\n\n    -   *Save*\n\n    -   *Save As*\n\n    -   *Delete*\n\n    -   *Print*\n\n\n-   Analysis path carousel\n\n    Contains the thumbnails and titles of the analysis steps. More precisely, the carousel renders previews of the analysis step instances that are displayed in the representation container. It also provides the capabilities for adding, rearranging, and deleting analysis steps.\n\n\nThe analysis path controller manages the analysis path with its analysis steps. It provides the APIs to add, delete, and rearrange analysis steps, propagate filters, invalidate path, and recalculation of filters.\n\n",
+  "excerpt": "<!-- loio07db7d53b5c19456e10000000a423f68 --> The Analysis Path Display The analysis path display is the UI area where thumbnails of all analysis steps of the current analysis path are displayed. In a...",
+  "wordCount": 195,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

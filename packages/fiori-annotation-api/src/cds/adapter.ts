@@ -200,13 +200,13 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         if (relevantErrors.length > 0) {
             // if model has compiler errors
             for (const [relativePath, compilerMessage] of relevantErrors) {
-                console.log(`Compile errors in: ${relativePath}`);
+                logger.log(`Compile errors in: ${relativePath}`);
                 for (const [fileUri, content] of fileCache) {
                     if (fileUri.endsWith(relativePath)) {
-                        console.log(content);
+                        logger.log(content);
                     }
                 }
-                console.log(JSON.stringify(compilerMessage, undefined, 2));
+                logger.log(JSON.stringify(compilerMessage, undefined, 2));
             }
             return compileErrors;
         }

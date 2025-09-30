@@ -62,7 +62,7 @@ describe('bsp', () => {
             expect(options.router).toBeDefined();
             expect(
                 (options.router as Function)({
-                    path: '/my/bsp/manifest.appdescr',
+                    url: '/my/bsp/manifest.appdescr',
                     protocol: 'http',
                     headers: {
                         host: 'local.example'

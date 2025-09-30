@@ -30,6 +30,10 @@ let importProjectMock = jest.fn();
 const memFsDumpMock = jest.fn();
 const commitMock = jest.fn();
 const exportConfigMock = jest.fn();
+const generateCustomExtensionMock = jest.fn().mockResolvedValue({
+    commit: commitMock,
+    dump: memFsDumpMock
+});
 beforeEach(() => {
     memFsDumpMock.mockReturnValue({
         'manifest.json': {}
@@ -47,10 +51,7 @@ beforeEach(() => {
         const mockSpecification = {
             importProject: importProjectMock,
             exportConfig: exportConfigMock.mockReturnValue({ manifest }),
-            generateCustomExtension: jest.fn().mockResolvedValue({
-                commit: commitMock,
-                dump: memFsDumpMock
-            })
+            generateCustomExtension: generateCustomExtensionMock
         };
 
         jest.spyOn(realApplicationAccess, 'getSpecification').mockResolvedValue(mockSpecification);
@@ -76,7 +77,7 @@ describe('add-page', () => {
             expect(result.description).toContain(
                 `To add a new page, provide a valid project root or application path. "${appPath}" is not valid`
             );
-            expect(result.parameters).toHaveLength(0);
+            expect(result.parameters).toEqual({});
             expect(commitMock).not.toHaveBeenCalled();
         });
         test('case 2: empty page', async () => {
@@ -195,18 +196,44 @@ describe('add-page', () => {
         });
 
         test('case 4: Missing pageType', async () => {
-            const appPath = join(__dirname, 'invalid', 'app', 'path');
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
                     functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {}
                 })
-            ).rejects.toThrow('Missing or invalid parameter "pageType"');
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"ListReport\\",
+                            \\"ObjectPage\\",
+                            \\"CustomPage\\"
+                        ],
+                        \\"path\\": [
+                            \\"pageType\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"ListReport\\\\\\"|\\\\\\"ObjectPage\\\\\\"|\\\\\\"CustomPage\\\\\\"\\"
+                    },
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"Travels\\",
+                            \\"Expenses\\",
+                            \\"TravelsStatusCodeList\\",
+                            \\"TravelsStatusCodeList_texts\\"
+                        ],
+                        \\"path\\": [
+                            \\"entitySet\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"Travels\\\\\\"|\\\\\\"Expenses\\\\\\"|\\\\\\"TravelsStatusCodeList\\\\\\"|\\\\\\"TravelsStatusCodeList_texts\\\\\\"\\"
+                    }
+                ]"
+            `);
         });
 
         test('case 5: Invalid pageType', async () => {
-            const appPath = join(__dirname, 'invalid', 'app', 'path');
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
@@ -215,7 +242,152 @@ describe('add-page', () => {
                         pageType: 'Dummy'
                     }
                 })
-            ).rejects.toThrow('Missing or invalid parameter "pageType"');
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"ListReport\\",
+                            \\"ObjectPage\\",
+                            \\"CustomPage\\"
+                        ],
+                        \\"path\\": [
+                            \\"pageType\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"ListReport\\\\\\"|\\\\\\"ObjectPage\\\\\\"|\\\\\\"CustomPage\\\\\\"\\"
+                    },
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"Travels\\",
+                            \\"Expenses\\",
+                            \\"TravelsStatusCodeList\\",
+                            \\"TravelsStatusCodeList_texts\\"
+                        ],
+                        \\"path\\": [
+                            \\"entitySet\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"Travels\\\\\\"|\\\\\\"Expenses\\\\\\"|\\\\\\"TravelsStatusCodeList\\\\\\"|\\\\\\"TravelsStatusCodeList_texts\\\\\\"\\"
+                    }
+                ]"
+            `);
+        });
+
+        test('case 6: add custom page', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            const result = await addPageHandlers.executeFunctionality({
+                appPath,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                parameters: {
+                    parentPage: 'TravelsObjectPage',
+                    pageNavigation: 'Expenses',
+                    pageType: 'CustomPage',
+                    pageViewName: 'Dummy'
+                }
+            });
+            expect(result.appPath).toBe(appPath);
+            expect(result.message).toEqual(
+                `Page with id 'DummyPage' of type 'CustomPage' was created successfully in application '${join(
+                    'app',
+                    'managetravels'
+                )}'`
+            );
+            expect(result.status).toBe('success');
+            expect(result.changes).toHaveLength(1);
+            expect(result.changes[0]).toContain('manifest.json');
+            expect(commitMock).toHaveBeenCalledTimes(1);
+            expect(memFsDumpMock).toHaveBeenCalledTimes(1);
+            expect(generateCustomExtensionMock).toHaveBeenCalledTimes(1);
+            expect(generateCustomExtensionMock).toHaveBeenCalledWith({
+                basePath: appPath,
+                'customExtension': 'CustomPage',
+                'data': {
+                    'contextPath': '/Travels/Expenses',
+                    'entity': 'Expenses',
+                    'folder': join('ext', 'view'),
+                    'id': 'DummyPage',
+                    'minUI5Version': '1.136.0',
+                    'name': 'Dummy',
+                    'navigation': {
+                        'navEntity': 'Expenses',
+                        'navKey': true,
+                        'sourceEntity': 'Travels',
+                        'sourcePage': 'TravelsObjectPage'
+                    }
+                }
+            });
+        });
+
+        test('case 7: add custom page without "pageViewName"', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'CustomPage'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"custom\\",
+                        \\"path\\": [
+                            \\"pageViewName\\"
+                        ],
+                        \\"message\\": \\"A pageViewName must be provided when using PageTypeV4.CustomPage\\"
+                    }
+                ]"
+            `);
+        });
+
+        test('case 8: validate incorrect "pageViewName"', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'CustomPage',
+                        pageViewName: '1Dummy'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"origin\\": \\"string\\",
+                        \\"code\\": \\"invalid_format\\",
+                        \\"format\\": \\"regex\\",
+                        \\"pattern\\": \\"/^[A-Za-z][A-Za-z0-9_-]*$/\\",
+                        \\"path\\": [
+                            \\"pageViewName\\"
+                        ],
+                        \\"message\\": \\"Invalid string: must match pattern /^[A-Za-z][A-Za-z0-9_-]*$/\\"
+                    }
+                ]"
+            `);
         });
     });
 });
@@ -232,7 +404,7 @@ describe('delete-page', () => {
             expect(result.description).toContain(
                 `To delete a page, provide a valid project root or application path. "${appPath}" is not valid`
             );
-            expect(result.parameters).toHaveLength(0);
+            expect(result.parameters).toEqual({});
             expect(commitMock).not.toHaveBeenCalled();
         });
         test('case 2: zero or more pages', async () => {
@@ -279,19 +451,26 @@ describe('delete-page', () => {
                     fileContent
                 }
             ]);
-            const result = await deletePageHandlers.executeFunctionality({
-                appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
-                parameters: {
-                    pageId: 'nothing'
-                }
-            });
-
-            expect(result.appPath).toBe(appPath);
-            expect(result.message).toEqual(
-                `Page with id 'nothing' was not found in application '${join('app', 'managetravels')}'`
-            );
-            expect(result.status).toBe('unchanged');
+            await expect(
+                deletePageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        pageId: 'nothing'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [],
+                        \\"path\\": [
+                            \\"pageId\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\"
+                    }
+                ]"
+            `);
         });
         test('case 3: one or more pages', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
@@ -316,17 +495,43 @@ describe('delete-page', () => {
             expect(exportConfigMock).toHaveBeenCalledTimes(1);
         });
         test('case 4: missing page id', async () => {
-            const appPath = join(__dirname, 'invalid', 'app', 'path');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
                     functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {}
                 })
-            ).rejects.toThrow('Missing or invalid parameter "pageId"');
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"TravelsList\\",
+                            \\"TravelsObjectPage\\"
+                        ],
+                        \\"path\\": [
+                            \\"pageId\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"TravelsList\\\\\\"|\\\\\\"TravelsObjectPage\\\\\\"\\"
+                    }
+                ]"
+            `);
         });
         test('case 5: invalid page id', async () => {
-            const appPath = join(__dirname, 'invalid', 'app', 'path');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
@@ -335,7 +540,53 @@ describe('delete-page', () => {
                         pageId: {}
                     }
                 })
-            ).rejects.toThrow('Missing or invalid parameter "pageId"');
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"TravelsList\\",
+                            \\"TravelsObjectPage\\"
+                        ],
+                        \\"path\\": [
+                            \\"pageId\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"TravelsList\\\\\\"|\\\\\\"TravelsObjectPage\\\\\\"\\"
+                    }
+                ]"
+            `);
+        });
+        test('case 5: unexisting page id', async () => {
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent
+                }
+            ]);
+            await expect(
+                deletePageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        pageId: 'Dummy'
+                    }
+                })
+            ).rejects.toThrowErrorMatchingInlineSnapshot(`
+                "Missing required fields in parameters. [
+                    {
+                        \\"code\\": \\"invalid_value\\",
+                        \\"values\\": [
+                            \\"TravelsList\\",
+                            \\"TravelsObjectPage\\"
+                        ],
+                        \\"path\\": [
+                            \\"pageId\\"
+                        ],
+                        \\"message\\": \\"Invalid option: expected one of \\\\\\"TravelsList\\\\\\"|\\\\\\"TravelsObjectPage\\\\\\"\\"
+                    }
+                ]"
+            `);
         });
     });
 });

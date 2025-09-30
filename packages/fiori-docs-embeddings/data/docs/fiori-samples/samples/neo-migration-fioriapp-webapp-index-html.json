@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-index-html",
+  "title": "index",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/index.html",
+  "lastModified": "2025-09-01T18:17:10.809Z",
+  "tags": [
+    "samples",
+    "html",
+    "index"
+  ],
+  "headers": [],
+  "content": "# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.html\n\n```html\n<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t\t<title>manageproductsneo</title>\n\t\t<script id=\"sap-ui-bootstrap\"\n\t\t\tsrc=\"resources/sap-ui-core.js\"\n\t\t\tdata-sap-ui-theme=\"sap_fiori_3\"\n\t\t\tdata-sap-ui-resourceroots='{\"ns.manageproductsneo\": \"./\"}'\n\t\t\tdata-sap-ui-compatVersion=\"edge\"\n\t\t\tdata-sap-ui-oninit=\"module:sap/ui/core/ComponentSupport\"\n\t\t\tdata-sap-ui-async=\"true\"\n\t\t\tdata-sap-ui-frameOptions=\"trusted\">\n\t\t</script>\n\t</head>\n\t<body class=\"sapUiBody\">\n\t\t<div data-sap-ui-component data-name=\"ns.manageproductsneo\" data-id=\"container\" data-settings='{\"id\" : \"manageproductsneo\"}'></div>\n\t</body>\n</html>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "index.md html index.md html index.md html index.md html index.html",
+  "wordCount": 70,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

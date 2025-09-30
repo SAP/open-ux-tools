@@ -1,0 +1,21 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-customheaderfacet-processflow-fragment-xml",
+  "title": "CustomHeaderFacet ProcessFlow.fragment",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/CustomHeaderFacet-ProcessFlow.fragment.xml",
+  "lastModified": "2025-09-01T18:17:10.727Z",
+  "tags": [
+    "features",
+    "xml",
+    "CustomHeaderFacet",
+    "ProcessFlow",
+    "fragment"
+  ],
+  "headers": [],
+  "content": "# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet ProcessFlow.fragment.md\n\n```xml\n# CustomHeaderFacet-ProcessFlow.fragment.xml\n\n```xml\n<core:FragmentDefinition xmlns:core=\"sap.ui.core\" xmlns=\"sap.m\" xmlns:l=\"sap.ui.layout\" xmlns:commons=\"sap.suite.ui.commons\">\n\t<commons:MicroProcessFlow core:require=\"{handler: 'sap/fe/featureShowcase/mainApp/ext/CustomController'}\">\n\t\t<commons:content>\n\t\t\t<commons:MicroProcessFlowItem state=\"Error\" press=\"handler.itemPressHeader\">\n\t\t\t\t<commons:customData>\n\t\t\t\t\t<core:CustomData key=\"title\" value=\"Shipping\"/>\n\t\t\t\t\t<core:CustomData key=\"icon\" value=\"sap-icon://warning\"/>\n\t\t\t\t\t<core:CustomData key=\"subTitle\" value=\"Overdue in 2 days\"/>\n\t\t\t\t\t<core:CustomData key=\"description\"\n\t\t\t\t\t\t\t\t\t value=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus congue massa, sed euismod lectus tristique at. Praesent ornare arcu lacus, id consectetur ligula vestibulum vel. Nunc at lorem feugiat, malesuada nunc eu, ultrices lorem.\"/>\n\t\t\t\t</commons:customData>\n\t\t\t</commons:MicroProcessFlowItem>\n\t\t\t<commons:MicroProcessFlowItem state=\"Success\" press=\"handler.itemPressHeader\">\n\t\t\t\t<commons:customData>\n\t\t\t\t\t<core:CustomData key=\"title\" value=\"Payment\"/>\n\t\t\t\t\t<core:CustomData key=\"icon\" value=\"sap-icon://accept\"/>\n\t\t\t\t\t<core:CustomData key=\"subTitle\" value=\"Payment successful\"/>\n\t\t\t\t\t<core:CustomData key=\"description\" value=\"Lorem ipsum dolor sit amet.\"/>\n\t\t\t\t</commons:customData>\n\t\t\t</commons:MicroProcessFlowItem>\n\t\t\t<commons:MicroProcessFlowItem state=\"Warning\" press=\"handler.itemPressHeader\">\n\t\t\t\t<commons:customData>\n\t\t\t\t\t<core:CustomData key=\"title\" value=\"Shipping\"/>\n\t\t\t\t\t<core:CustomData key=\"icon\" value=\"sap-icon://warning\"/>\n\t\t\t\t\t<core:CustomData key=\"subTitle\" value=\"Complete in 15 hours\"/>\n\t\t\t\t\t<core:CustomData key=\"description\"\n\t\t\t\t\t\t\t\t\t value=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus congue massa, sed euismod lectus tristique at. Praesent ornare arcu lacus, id consectetur ligula vestibulum vel. Nunc at lorem feugiat, malesuada nunc eu, ultrices lorem.\"/>\n\t\t\t\t</commons:customData>\n\t\t\t</commons:MicroProcessFlowItem>\n\t\t</commons:content>\n\t</commons:MicroProcessFlow>\n</core:FragmentDefinition>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "CustomHeaderFacet ProcessFlow.fragment.md xml CustomHeaderFacet ProcessFlow.fragment.md xml CustomHeaderFacet ProcessFlow.fragment.md xml CustomHeaderFacet ProcessFlow.fragment.md xml CustomHeaderFace...",
+  "wordCount": 189,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

@@ -10,10 +10,22 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../fiori-annotation-api"
     },
     {
+      "path": "../fiori-docs-embeddings"
+    },
+    {
       "path": "../i18n"
+    },
+    {
+      "path": "../logger"
     },
     {
       "path": "../nodejs-utils"
@@ -26,6 +38,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
     },
     {
       "path": "../text-document-utils"

@@ -1,5 +1,75 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.58
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.17
+    -   @sap-ux/cf-deploy-config-writer@0.3.27
+    -   @sap-ux/deploy-config-generator-shared@0.1.37
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/inquirer-common@0.7.45
+
+## 0.2.57
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.36
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.16
+    -   @sap-ux/cf-deploy-config-writer@0.3.26
+    -   @sap-ux/project-access@1.32.1
+
+## 0.2.56
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/cf-deploy-config-writer@0.3.25
+    -   @sap-ux/fiori-generator-shared@0.13.16
+    -   @sap-ux/deploy-config-generator-shared@0.1.35
+    -   @sap-ux/inquirer-common@0.7.43
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.15
+
+## 0.2.55
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/cf-deploy-config-writer@0.3.24
+    -   @sap-ux/fiori-generator-shared@0.13.15
+    -   @sap-ux/deploy-config-generator-shared@0.1.34
+    -   @sap-ux/inquirer-common@0.7.42
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.14
+
+## 0.2.54
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-writer@0.3.23
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/fiori-generator-shared@0.13.14
+-   @sap-ux/inquirer-common@0.7.41
+-   @sap-ux/deploy-config-generator-shared@0.1.33
+-   @sap-ux/cf-deploy-config-inquirer@0.5.13
+
+## 0.2.53
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/deploy-config-generator-shared@0.1.32
+    -   @sap-ux/inquirer-common@0.7.40
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.12
+
 ## 0.2.52
 
 ### Patch Changes

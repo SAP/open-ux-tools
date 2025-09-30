@@ -1,0 +1,23 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-share-md",
+  "title": "sap.fe.macros.share",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.share.md",
+  "lastModified": "2025-09-01T18:17:10.918Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "share"
+  ],
+  "headers": [
+    "sap.fe.macros.share"
+  ],
+  "content": "# sap.fe.macros.share\n\n**Type:** namespace\n\n",
+  "excerpt": "sap.fe.macros.share Type: namespace",
+  "wordCount": 5,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

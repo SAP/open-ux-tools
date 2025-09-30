@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/repo-app-import-sub-generator",
     "description": "Generator to download LROP Fiori applications deployed from an ABAP repository.",
-    "version": "0.3.97",
+    "version": "0.3.113",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -76,6 +76,7 @@
         "@types/lodash": "4.14.202",
         "rimraf": "5.0.5",
         "unionfs": "4.4.0",
+        "yeoman-environment": "3.8.0",
         "yeoman-test": "6.3.0"
     },
     "engines": {

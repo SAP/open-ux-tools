@@ -1,0 +1,31 @@
+{
+  "id": "sapui5-docs-03-get-started-keep-your-views-short-and-simple-b0d7db7-md",
+  "title": "Keep Your Views Short and Simple",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/keep-your-views-short-and-simple-b0d7db7.md",
+  "lastModified": "2025-09-01T18:17:10.444Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Keep",
+    "Your",
+    "Views",
+    "Short",
+    "and",
+    "Simple"
+  ],
+  "headers": [
+    "Keep Your Views Short and Simple",
+    "Use `sap.m` as the Default Namespace",
+    "Remove Clutter From Your Views",
+    "Clean Up Your Aggregation Templates",
+    "Think About View Modularization Early On",
+    "Choose Clever UI Patterns"
+  ],
+  "content": "<!-- loiob0d7db7930f64b9399dc2b4979293873 -->\n\n# Keep Your Views Short and Simple\n\nThe view part of your app reflects what users can see and interact with. You should use a suitable set of UI controls that match your scenario and keep things simple.\n\n\n\n<a name=\"loiob0d7db7930f64b9399dc2b4979293873__section_fsw_51z_yfb\"/>\n\n## Use `sap.m` as the Default Namespace\n\nMost bread-and-butter controls are located in the `sap.m` namespace, which makes it the perfect default namespace. If you want to add other controls and layouts, you can define an additional namespace. For your own namespaces, you should keep the alias short and simple as well. You will typically use it in many places, and a short alias keeps your code tidy.\n\n```xml\n<mvc:View\n\txmlns=\"sap.m\"\n\txmls:l=\"sap.ui.layout\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\t<App>\n\t\t<Page>\n\t\t\t<l:HorizontalLayout>\n\t\t\t...\n```\n\n-   Find out more: [Namespaces in XML Views](../04_Essentials/namespaces-in-xml-views-2421a2c.md)\n\n\n\n\n<a name=\"loiob0d7db7930f64b9399dc2b4979293873__section_ek2_w1t_zfb\"/>\n\n## Remove Clutter From Your Views\n\nIt's easy to save a few bytes and make your code a lot cleaner:\n\n-   Don't define properties that are set to their default values.\n\n-   Remove unused namespace aliases.\n\n-   Omit the `content` or `items` tag for controls that define default aggregations.\n\n-   Use self-closing XML tags for controls that don't define any aggregations.\n\n\n> ### Tip:  \n> Samples may contain more code that you actually need. When you copy code from a sample, it's best to remove all properties that won't be used in your views.\n\n```xml\n<SearchField change=\".onSearch\"/>\n<List items=\"{/Products}\" headerText=\"Search Results\">\n\t<StandardListItem title=\"{Name}\"/>\n</List>\n</Panel>\n```\n\n\n\n<a name=\"loiob0d7db7930f64b9399dc2b4979293873__section_etr_ght_zfb\"/>\n\n## Clean Up Your Aggregation Templates\n\nIf you have bound aggregations, Avoid using complex or nested controls. Remember: The template below will be repeated for every entity in your data. If the template is more complex than necessary, this may lead to performance issues at runtime and slow down your app.\n\n```xml\n<List\n\titems={/Products}>\n\t<StandardListItem\n\t\ttitle=\"{Name}\"\n\t\tdescription=\"{Text}\"/>\n```\n\n-   Learn how: Data Binding Tutorial [Step 12: Aggregation Binding Using Templates](step-12-aggregation-binding-using-templates-97830de.md)\n\n-   Find out more: [Aggregation Handling in XML Views](../04_Essentials/aggregation-handling-in-xml-views-19eabf5.md)\n\n\n\n\n<a name=\"loiob0d7db7930f64b9399dc2b4979293873__section_r4k_bkt_zfb\"/>\n\n## Think About View Modularization Early On\n\nThings may get a little messy as your app is growing with your requirements. Therefore, name your views semantically. If a view is getting too \"heavy\", you should outsource parts of it to a separate view. With XML fragments, you can flexibly reuse parts of your UI elsewhere.\n\n```xml\n<App>\n\t<Page>\n\t\t<mvc:XMLView viewName=\"EmployeList\"/>\n\t</Page>\n</App>\n```\n\n-   Learn how: Walkthrough tutorial [Step 15: Nested Views](step-15-nested-views-df8c9c3.md)\n\n-   Find out more: [Reusing UI Parts: Fragments](../04_Essentials/reusing-ui-parts-fragments-36a5b13.md)\n\n\n\n\n<a name=\"loiob0d7db7930f64b9399dc2b4979293873__section_dnf_hnt_zfb\"/>\n\n## Choose Clever UI Patterns\n\nSAPUI5 offers a huge collection of feature-rich UI controls, often giving you multiple implementation choices.\n\nAim for the simplest possible pattern to implement your use case. For more information, see the [Samples](https://ui5.sap.com/#/controls/), and filter for \"layout\". \n\n",
+  "excerpt": "<!-- loiob0d7db7930f64b9399dc2b4979293873 --> Keep Your Views Short and Simple The view part of your app reflects what users can see and interact with. You should use a suitable set of UI controls tha...",
+  "wordCount": 444,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

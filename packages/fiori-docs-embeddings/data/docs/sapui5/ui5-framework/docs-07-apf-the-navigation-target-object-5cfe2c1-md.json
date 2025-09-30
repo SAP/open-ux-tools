@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-07-apf-the-navigation-target-object-5cfe2c1-md",
+  "title": "The Navigation Target Object",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-navigation-target-object-5cfe2c1.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Navigation",
+    "Target",
+    "Object"
+  ],
+  "headers": [
+    "The Navigation Target Object"
+  ],
+  "content": "<!-- loio5cfe2c19414f42abbc7a9a7363707ac3 -->\n\n# The Navigation Target Object\n\nThe navigation target object defines applications that a user can navigate to from an APF-based application. It has the following format:\n\n> ### Source Code:  \n> ```\n> {\n>   \"type\" : \"navigationTarget\",    // optional\n>   \"id\" : \"<id>\",  \n>   \"semanticObject\" : \"<semantic object>\"    \n>   \"action\" : \"<action>\"\n>   \"isStepSpecific\" : <boolean>\n> }\n> \n> ```\n\nThe properties used in the navigation target object denote the following:\n\n****\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`id` \n\n</td>\n<td valign=\"top\">\n\nUnique ID of type string\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`semanticObject` \n\n</td>\n<td valign=\"top\">\n\nSemantic object as defined in the corresponding target mapping configured in the Fiori launchpad designer.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`action` \n\n</td>\n<td valign=\"top\">\n\nAction as defined in the corresponding target mapping configured in the Fiori launchpad designer.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`isStepSpecific` \n\n</td>\n<td valign=\"top\">\n\nDetermines whether the navigation is assigned to all steps or to specific steps.\n\ntrue = assigned to specific steps\n\nfalse = assigned to all steps\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio5cfe2c19414f42abbc7a9a7363707ac3 --> The Navigation Target Object The navigation target object defines applications that a user can navigate to from an APF-based application. It has the follo...",
+  "wordCount": 185,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

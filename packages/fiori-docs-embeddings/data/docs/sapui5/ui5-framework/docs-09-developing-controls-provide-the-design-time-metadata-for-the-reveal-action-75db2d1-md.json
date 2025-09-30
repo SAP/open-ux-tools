@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-09-developing-controls-provide-the-design-time-metadata-for-the-reveal-action-75db2d1-md",
+  "title": "Provide the Design-Time Metadata for the *Reveal* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/provide-the-design-time-metadata-for-the-reveal-action-75db2d1.md",
+  "lastModified": "2025-09-01T18:17:10.682Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Provide",
+    "the",
+    "Design",
+    "Time",
+    "Metadata",
+    "for",
+    "Reveal",
+    "Action"
+  ],
+  "headers": [
+    "Provide the Design-Time Metadata for the *Reveal* Action",
+    "Example"
+  ],
+  "content": "<!-- loio75db2d1368f145ecae9a058727cfba59 -->\n\n# Provide the Design-Time Metadata for the *Reveal* Action\n\nProvide the design-time metadata and the meta functions needed when the *reveal* action is performed\n\nTo provide the design-time information needed for the *reveal* action, use the JavaScript code file `<control>.designtime.js`, which is located next to the control implementation. If the file is missing, please create it. Make sure that the `designTime` attribute in the metadata of the control includes the `designTime` attribute, which links to the `<control\\>.designtime.js` file.\n\nThe following table shows a hierarchical overview of the properties:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 1\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 2\\)\n\n</th>\n<th valign=\"top\">\n\nProperty\n\n\\(Level 3\\)\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"5\">\n\n`actions: <object>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nDescribes the actions that can be applied to the element.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"4\">\n\n`\"reveal\": <object> | <function>`\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nProvides or computes the design-time metadata specific to the *reveal* action for an element as an object with the following properties.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`changeType: <string>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\nProvides the value of `changeType` from the previous step.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`getLabel: <function>` \\(optional\\)\n\n</td>\n<td valign=\"top\">\n\nAllows you to return the label texts of the control. The default implementation tries `getText()`, and then `getLabelText()`. If it's not available, it tries `getLabel().getText()`, then `getTitle()`, and then `getId()`.\n\n```\nfunction(oControl) {\n    return oControl.getLabelTextInSpecialControlProperty()\n}\n```\n\n\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`changeOnRelevantContainer: <boolean>` \\(optional\\)\n\n</td>\n<td valign=\"top\">\n\nNeeds to be set to `true` if the change handler for the action is implemented on the relevant container.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\" rowspan=\"3\">\n\n`name:<object> | <function>` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nSpecify or calculate a meaningful name for the control, which is understandable to key users. This is needed for the *reveal* action to show the names in the context menu: *Add <name in singular\\>* and *Available <name in plural\\>*.\n\nName your control based on the general UI concept and follow the [SAP Fiori Design Guidelines](https://experience.sap.com/fiori-design/). Example: Key users don't care about the difference between a smart, mobile, or responsive version of a form - they just call it \"form\".\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`singular: <string> | function` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n`i18n` key from library resource bundle or function returning the translated text \\(if library resource bundles aren't used\\).\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`plural: <string>| function` \\(mandatory\\)\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n`i18n` key from library resource bundle or function returning the translated text \\(if library resource bundles aren't used\\).\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`isVisible: <function>`\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\n\\-\\>\n\n</td>\n<td valign=\"top\">\n\nNeeded for elements that aren't derived from `sap.ui.core.Control`. The function returns the visibility of the element.\n\nAs this function can be called before the DOM is ready, don't use functions such as `jQuery.is(\":visible\")`. Use an internal parameter instead.\n\n</td>\n</tr>\n</table>\n\n\n\n<a name=\"loio75db2d1368f145ecae9a058727cfba59__section_thx_1cs_gyb\"/>\n\n## Example\n\n> ### Sample Code:  \n> RadioButton.designtime.js\n> \n> ```\n> sap.ui.define([], function () {\n>     \"use strict\";\n>     return {\n>         actions: {\n>             reveal: {\n>                 changeType: \"unhideControl\"\n>             }\n>         },\n>         name: {\n>             singular: \"RADIOBUTTON_NAME\",\n>             plural: \"RADIOBUTTON_NAME_PLURAL\"\n>         }\n>     };\n> });\n> ```\n\n",
+  "excerpt": "<!-- loio75db2d1368f145ecae9a058727cfba59 --> Provide the Design-Time Metadata for the Reveal Action Provide the design-time metadata and the meta functions needed when the reveal action is performed ...",
+  "wordCount": 563,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

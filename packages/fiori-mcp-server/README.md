@@ -26,6 +26,8 @@ Configure your MCP client to start the server with command `fiori-mcp`. Here is 
 {
   "mcpServers": {
     "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
       "command": "npx",
       "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
     }
@@ -44,6 +46,7 @@ Then, configure your MCP client to start the server with command `fiori-mcp`. He
   "mcpServers": {
     "fiori-mcp": {
       "type": "stdio",
+      "timeout": 600,
       "command": "fiori-mcp"
     }
   }
@@ -69,12 +72,19 @@ The following rules help guide the LLM to use the server correctly:
 - When previewing the SAP Fiori elements application use the most specific script for the app in the `package.json`.
 ```
 
+Add these rules to your existing global or project-specific [`AGENTS.md`](https://agents.md/) (specifics may vary based on respective MCP client).
+
 ## [Available Tools](#available-tools)
 
-#### `list-fiori-apps`
+#### `search_docs`
+Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for the given query.
+
+Note: the results are based on the most recent indexed version of UI5 documentation
+
+#### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
-#### `list-functionalities` (Step 1 of 3)
+#### `list_functionalities` (Step 1 of 3)
 Gets the list of supported functionalities to create a new or modify an existing SAP Fiori application.
 
 The main functionalities are:
@@ -84,10 +94,10 @@ The main functionalities are:
 - Adding and modifying controller extensions
 - Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
 
-#### `get-functionality-details` (Step 2 of 3)
+#### `get_functionality_details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
 
-#### `execute-functionality` (Step 3 of 3)
+#### `execute_functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
 
 ## Code of Conduct

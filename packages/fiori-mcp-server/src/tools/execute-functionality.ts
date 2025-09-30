@@ -1,6 +1,7 @@
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
+    FunctionalityId,
     GetFunctionalityDetailsOutput,
     Parameter
 } from '../types';
@@ -17,7 +18,7 @@ import { resolveApplication } from './utils';
  * @returns A promise that resolves to the execution output
  * @throws Error if required parameters are missing
  */
-export async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+export async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { functionalityId, parameters, appPath } = params;
     if (!functionalityId) {
         throw new Error('functionalityId parameter is required');
@@ -39,10 +40,11 @@ export async function executeFunctionality(params: ExecuteFunctionalitiesInput):
     });
 
     // Validate required parameters
-    const missingParams = functionality.parameters
-        .filter((param) => param.required && !(param.id in parameters))
-        .map((param) => param.name);
-
+    const requiredFields =
+        'required' in functionality.parameters && Array.isArray(functionality.parameters.required)
+            ? functionality.parameters.required
+            : [];
+    const missingParams: string[] = requiredFields.filter((name) => !(name in parameters));
     if (missingParams.length > 0) {
         throw new Error(`Missing required parameters: ${missingParams.join(', ')}`);
     }
@@ -88,7 +90,7 @@ export async function executeFunctionality(params: ExecuteFunctionalitiesInput):
  */
 async function generateChanges(
     functionality: GetFunctionalityDetailsOutput,
-    functionalityId: string | string[],
+    functionalityId: FunctionalityId,
     parametersValue: { [key: string]: unknown },
     appPath: string,
     pageName?: string
@@ -101,34 +103,13 @@ async function generateChanges(
     const { propertyPath } = resolveFunctionality(functionalityId);
     const changedParameterInfo = findParameterById(functionality, propertyPath[propertyPath.length - 1]);
 
-    let changed = false;
-    if (!changedParameterInfo && typeof parametersValue === 'object') {
-        // Parameters most likely in node parameters - edge case
-        for (const parameterValue in parametersValue) {
-            const paramPropertyPath = [...propertyPath, parameterValue];
-            const parameterInfo = findParameterById(functionality, parameterValue);
-            if (parameterInfo) {
-                await editor.changeProperty(
-                    paramPropertyPath,
-                    resolveParameterValue(paramPropertyPath, parametersValue, parameterInfo)
-                );
-                changed = true;
-                if (changes.length === 0) {
-                    changes.push('Modified webapp/manifest.json');
-                }
-            }
-        }
-    }
-
-    if (!changed) {
-        // Common way to change property - AI passes precise property id and parameters
-        await editor.changeProperty(
-            propertyPath,
-            resolveParameterValue(propertyPath, parametersValue, changedParameterInfo)
-        );
-        // problem -> result?.manifestChangeIndicator does not return changed indicator when we change fcl
-        changes.push('Modified webapp/manifest.json');
-    }
+    // Common way to change property - AI passes precise property id and parameters
+    await editor.changeProperty(
+        propertyPath,
+        resolveParameterValue(propertyPath, parametersValue, changedParameterInfo)
+    );
+    // problem -> result?.manifestChangeIndicator does not return changed indicator when we change fcl
+    changes.push('Modified webapp/manifest.json');
 
     return changes;
 }
@@ -201,5 +182,8 @@ function resolveParameterValue(
  * @returns The found Parameter object or undefined if not found
  */
 function findParameterById(functionality: GetFunctionalityDetailsOutput, id?: string | number): Parameter | undefined {
-    return functionality.parameters.find((parameter) => parameter.id === id);
+    const { parameters } = functionality;
+    if (id && 'properties' in parameters && parameters.properties?.[id]) {
+        return parameters.properties[id] as Parameter;
+    }
 }

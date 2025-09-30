@@ -11,7 +11,9 @@ jobs:
             # fail-fast: false # run all matrix build and not stop on the first failure
             matrix:
                 os: [ubuntu-latest, windows-2025, macos-latest]
-                # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-15] # not just the latest version of mac os also amd on Mac
+                # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+                # not just the latest version of mac os also amd on Mac
+                # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-14-large, macos-15, macos-latest-large]
                 node-version: [20.x, 22.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 30
@@ -24,7 +26,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                    - args: [--ignore-scripts]
+                    - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -109,7 +111,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                 run_install: |
-                  - args: [--ignore-scripts]
+                  - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -155,7 +157,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                 run_install: |
-                  - args: [--ignore-scripts]
+                  - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -171,6 +173,13 @@ jobs:
                   node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
+            - name: Replace placeholder with instrumentation key
+              uses: jacobtomlinson/gha-find-replace@v3
+              with:
+                  include: packages/fiori-mcp-server/src/telemetry/index.ts
+                  find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
+                  replace: ${{ secrets.INSTRUMENTATION_KEY }}
+                  regex: false
             - name: Run build
               run: pnpm run build
             - name: Setup npmrc with npmjs.com token

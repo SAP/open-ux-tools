@@ -448,10 +448,10 @@ describe('Test validators', () => {
             expect(result).toBe(true);
         });
 
-        it('should return true for onPremise system with default onPremise package', async () => {
+        it('should return true for onPremise system', async () => {
             PromptState.abapDeployConfig.isS4HC = false;
             const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
-            const result = await validatePackage('$TMP', previousAnswers, {
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(getSystemInfoSpy).not.toHaveBeenCalled();
@@ -556,6 +556,20 @@ describe('Test validators', () => {
                 apiExist: true,
                 systemInfo: {
                     adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
+                    activeLanguages: []
+                }
+            });
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(result).toBe(true);
+        });
+
+        it('should return true when there are more than one project type for a package', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY, AdaptationProjectType.ON_PREMISE],
                     activeLanguages: []
                 }
             });

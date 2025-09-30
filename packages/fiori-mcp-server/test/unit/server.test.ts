@@ -1,5 +1,6 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { FioriFunctionalityServer } from '../../src/server';
+import { TelemetryHelper, unknownTool } from '../../src/telemetry';
 import * as tools from '../../src/tools';
 
 const setRequestHandlerMock = jest.fn();
@@ -16,6 +17,14 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
         })
     };
 });
+
+jest.mock('../../src/telemetry', () => ({
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        markToolStartTime: jest.fn(),
+        sendTelemetry: jest.fn()
+    }
+}));
 
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
@@ -40,15 +49,18 @@ describe('FioriFunctionalityServer', () => {
         const onRequestCB = setRequestHandlerCall[1];
         const result = await onRequestCB();
         expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
-            'list-fiori-apps',
-            'list-functionality',
-            'get-functionality-details',
-            'execute-functionality'
+            'search_docs',
+            'list_fiori_apps',
+            'list_functionality',
+            'get_functionality_details',
+            'execute_functionality'
         ]);
     });
 
     describe('FioriFunctionalityServer', () => {
-        test('list-fiori-apps', async () => {
+        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
+        test('list_fiori_apps', async () => {
             const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
                 applications: [
                     {
@@ -72,7 +84,7 @@ describe('FioriFunctionalityServer', () => {
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
-                    name: 'list-fiori-apps',
+                    name: 'list_fiori_apps',
                     arguments: {
                         searchPath: []
                     }
@@ -104,9 +116,15 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list_fiori_apps',
+                { tool: 'list_fiori_apps', functionalityId: undefined },
+                undefined
+            );
         });
 
-        test('list-functionality', async () => {
+        test('list_functionality', async () => {
             const listFunctionalitiesSpy = jest.spyOn(tools, 'listFunctionalities').mockResolvedValue({
                 applicationPath: 'app1',
                 functionalities: [
@@ -125,7 +143,7 @@ describe('FioriFunctionalityServer', () => {
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
-                    name: 'list-functionality',
+                    name: 'list_functionality',
                     arguments: {
                         appPath: 'app1'
                     }
@@ -152,21 +170,26 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'list_functionality',
+                { tool: 'list_functionality', functionalityId: undefined },
+                'app1'
+            );
         });
 
-        test('get-functionality-details', async () => {
+        test('get_functionality_details', async () => {
             const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
                 functionalityId: 'add-page',
                 description: 'Add page...',
                 name: 'add-page',
-                parameters: []
+                parameters: {}
             });
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
-                    name: 'get-functionality-details',
+                    name: 'get_functionality_details',
                     arguments: {
                         appPath: 'app1',
                         functionalityId: 'add-page'
@@ -179,7 +202,7 @@ describe('FioriFunctionalityServer', () => {
                 description: 'Add page...',
                 functionalityId: 'add-page',
                 name: 'add-page',
-                parameters: []
+                parameters: {}
             });
             expect(result.content).toEqual([
                 {
@@ -187,9 +210,14 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'get_functionality_details',
+                { tool: 'get_functionality_details', functionalityId: 'add-page' },
+                'app1'
+            );
         });
 
-        test('execute-functionality', async () => {
+        test('execute_functionality', async () => {
             const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
                 functionalityId: 'add-page',
                 status: 'ok',
@@ -204,7 +232,7 @@ describe('FioriFunctionalityServer', () => {
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
-                    name: 'execute-functionality',
+                    name: 'execute_functionality',
                     arguments: {
                         appPath: 'app1',
                         functionalityId: 'add-page',
@@ -231,6 +259,11 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute_functionality',
+                { tool: 'execute_functionality', functionalityId: 'add-page' },
+                'app1'
+            );
         });
 
         test('Unknown tool', async () => {
@@ -247,15 +280,23 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
                     type: 'text'
                 }
             ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                unknownTool,
+                {
+                    tool: 'unknown-tool-id',
+                    funtionalityId: undefined
+                },
+                undefined
+            );
         });
     });
 
     describe('Run', () => {
-        test('execute-functionality', async () => {
+        test('execute_functionality', async () => {
             const server = new FioriFunctionalityServer();
             await server.run();
             expect(connectMock).toHaveBeenCalledTimes(1);

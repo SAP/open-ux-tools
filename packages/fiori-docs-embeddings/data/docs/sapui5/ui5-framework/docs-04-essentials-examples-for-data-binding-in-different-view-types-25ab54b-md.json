@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-04-essentials-examples-for-data-binding-in-different-view-types-25ab54b-md",
+  "title": "Examples for Data Binding in Different View Types",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/examples-for-data-binding-in-different-view-types-25ab54b.md",
+  "lastModified": "2025-09-01T18:17:10.515Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Examples",
+    "for",
+    "Data",
+    "Binding",
+    "Different",
+    "View",
+    "Types"
+  ],
+  "headers": [
+    "Examples for Data Binding in Different View Types",
+    "XML View \\(Recommended\\)",
+    "Typed View"
+  ],
+  "content": "<!-- loio25ab54b0113c4914999c43d07d3b71fe -->\n\n# Examples for Data Binding in Different View Types\n\nExamples how complex syntax can be used for calculated fields in XML, HTML, and JS views.\n\n\n\n<a name=\"loio25ab54b0113c4914999c43d07d3b71fe__section_yqd_24p_rcb\"/>\n\n## XML View \\(Recommended\\)\n\n```js\n\n<mvc:View \n    controllerName=\"testdata.complexsyntax\"\n    xmlns:core=\"sap.ui.core\"\n    xmlns:mvc=\"sap.ui.core.mvc\"\n    xmlns=\"sap.m\"\n    core:require=\"{\n        globalFormatter: 'my/globalFormatter',\n        Float: 'sap/ui/model/type/Float'\n    }\">\n    <Label text=\"Hello Mr. {/employees/0/lastName}, {path: '/employees/0/firstName', formatter: '.myFormatter'}\"/>\n    <Table items=\"{/employees}\">\n        <columns>\n            <Column>\n                <Label text=\"Name\"/>\n            </Column>\n            <Column>\n                <Label text=\"Birthday\"/>\n            </Column>\n        </columns>\n        <items>\n            <ColumnListItem>\n                <cells>\n                    <Text text=\"{path: 'gender', formatter: '.myGenderFormatter'} {firstName}, {lastName}\"/>\n                    <Text text=\"{parts: [{path: 'birthday/day'}, {path: 'birthday/month'}, {path: 'birthday/year'}], formatter: 'globalFormatter'}\"/>\n                </cells>\n            </ColumnListItem>\n        </items>\n    </Table>\n    <Label text=\"{path: '/statistics/amount', type: 'Float', formatOptions: {minFractionDigits: 1}}\"/>\n</mvc:View>\n\n```\n\n\n\n<a name=\"loio25ab54b0113c4914999c43d07d3b71fe__section_gqr_g4p_rcb\"/>\n\n## Typed View\n\nA typed view is not a declarative view. It is written in JavaScript and extends the `sap.ui.core.mvc.View` class. The following example shows how the `View` class can be extended to form such a typed view:\n\n```js\nsap.ui.define([\n    \"my/globalFormatter\",\n    \"sap/ui/core/mvc/View\",\n    \"sap/ui/model/type/Float\",\n    \"sap/m/Table\",\n    \"sap/m/Column\",\n    \"sap/m/ColumnListItem\",\n    \"sap/m/Label\",\n    \"sap/m/Text\"\n    ], function(globalFormatter, View, Float, Table, Column, ColumnListItem, Label, Text) {\n    return View.extend(\"testdata.complexsyntax\", {\n      \n        getControllerName() {\n            return \"testdata.complexsyntax\";\n        },\n        getAutoPrefixId() {\n            return true;\n        },\n        createContent(oController) {\n            const oLabelWelcome = new Label({ \n                text: \"Hello Mr. {/employees/0/lastName}, {path: '/employees/0/firstName', formatter: '.myFormatter'}\"\n            }, oController);\n            const oLabelName = new Label({text: \"Name\"});\n            const oLabelBirthday = new Label({text: \"Birthday\"});\n            const oColumnName = new Column({header: oLabelName});\n            const oColumnBirthday = new Column({header: oLabelBirthday});\n            const oTextName = new Text({\n                text: \"{path: 'gender', formatter: '.myGenderFormatter'} {firstName} {lastName}\"\n            }, oController);\n            const oTextBirthday = new Text({\n                text: \"{parts: [{ path: 'birthday/day'}, {path: 'birthday/month'}, {path: 'birthday/year' }], formatter: 'globalFormatter'}\"\n            }, oController);\n            const oColumnListItemTemplate = new ColumnListItem({cells: [oTextName, oTextBirthday]});\n            const oTable = new Table({ \n                columns: [\n                    oColumnName,\n                    oColumnBirthday\n                ],\n                items: {\n                    path: \"/employees\",\n                    template: oColumnListItemTemplate,\n                    templateShareable: false\n                }\n            });\n            \n            const oLabelAmount = new Label({text: {path: '/statistics/amount', type: 'Float'}});\n            \n            return [oLabelWelcome, oTable, oLabelAmount];\n        }\n    });\n});\n```\n\n",
+  "excerpt": "<!-- loio25ab54b0113c4914999c43d07d3b71fe --> Examples for Data Binding in Different View Types Examples how complex syntax can be used for calculated fields in XML, HTML, and JS views. <a name=\"loio2...",
+  "wordCount": 292,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
