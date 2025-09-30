@@ -1,6 +1,6 @@
 import yeomanTest from 'yeoman-test';
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import fsextra from 'fs-extra';
 import RefLibGenerator from '../../src/app';
 import { reuseLibs } from './util/constants';

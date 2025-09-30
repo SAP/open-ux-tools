@@ -1,6 +1,6 @@
 import type { FioriElementsApp, FPMSettings } from '../src';
 import { generate, TemplateType, ValidationError } from '../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { removeSync } from 'fs-extra';
 import {
     testOutputDir,

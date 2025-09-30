@@ -387,7 +387,7 @@ function handleXmlElementDeletions(
     const edits: TextEdit[] = [];
     const openTagRange = transformRange(element.syntax.openBody);
     if (parent.type === 'XMLElement') {
-        const index = parseInt(pointer.split('/').slice(-1)[0], 10);
+        const index = Number.parseInt(pointer.split('/').slice(-1)[0], 10);
         const { previousContentIndex, startContentIndex } = findContentIndices(index, index, content);
 
         const anchor = getStartAnchor(content, parent, previousContentIndex, startContentIndex);
@@ -722,7 +722,7 @@ function createElementRanges(
         const segments = pointer.split('/');
         // remove /subElements/<index> suffix
         const containerPath = segments.slice(0, -2).join('/');
-        const index = parseInt(segments.slice(-1)[0], 10);
+        const index = Number.parseInt(segments.slice(-1)[0], 10);
         const list = acc.get(containerPath);
         if (list) {
             list.push(index);

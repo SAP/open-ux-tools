@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { generateVariantsConfig } from '@sap-ux/app-config-writer';
-import { isAbsolute, join } from 'path';
+import { isAbsolute, join } from 'node:path';
 
 /**
  * Add the "add variants config" command to a passed command.

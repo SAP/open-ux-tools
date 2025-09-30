@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { applyCAPUpdates } from '../../../src/cap-writer';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
 import type { Editor } from 'mem-fs-editor';

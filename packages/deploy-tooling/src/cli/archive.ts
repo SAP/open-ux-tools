@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { readFile } from 'fs';
+import { readFile } from 'node:fs';
 import ZipFile from 'adm-zip';
 import type { CliOptions } from '../types';
 import type { Logger } from '@sap-ux/logger';

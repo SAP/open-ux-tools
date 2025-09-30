@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import path from 'path';
+import path from 'node:path';
 import type { DocumentMeta } from './types/index';
 import { logger } from '../../utils/logger';
 import { resolveEmbeddingsPath } from '../../utils/embeddings-path';

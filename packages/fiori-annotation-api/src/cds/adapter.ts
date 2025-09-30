@@ -1,5 +1,5 @@
-import { fileURLToPath, pathToFileURL } from 'url';
-import { basename, dirname, join, relative, sep } from 'path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { basename, dirname, join, relative, sep } from 'node:path';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -731,7 +731,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             writer.addChange(createInsertEmbeddedAnnotationChange(pointer, change.element, index));
         } else if (change.element.name === Edm.Record) {
             const segment = pointer.split('/');
-            const changeIndex = parseInt(segment.pop() ?? '', 10);
+            const changeIndex = Number.parseInt(segment.pop() ?? '', 10);
             const modifiedPointer = segment.join('/'); //point to annotations
             writer.addChange(createInsertRecordChange(modifiedPointer, change.element, changeIndex));
         }

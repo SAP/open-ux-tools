@@ -24,7 +24,7 @@ import {
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { AuthenticationType } from '@sap-ux/store';
 
 /**

@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
 import type { CloudApp, AdpWriterConfig, CustomConfig, TypesConfig } from '../types';

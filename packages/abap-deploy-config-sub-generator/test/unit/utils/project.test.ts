@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { getWebappPath, FileName } from '@sap-ux/project-access';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';

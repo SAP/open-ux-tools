@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import path from 'path';
+import path from 'node:path';
 import type { FileStoreIndex } from '../../../../src/tools/services/filestore';
 import { FileStoreService } from '../../../../src/tools/services/filestore';
 import type { DocumentMeta } from '../../../../src/tools/services/types/index';

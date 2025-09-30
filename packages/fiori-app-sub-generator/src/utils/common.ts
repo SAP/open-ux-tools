@@ -20,7 +20,7 @@ import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-serv
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types';
 import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types';

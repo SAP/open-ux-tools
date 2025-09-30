@@ -14,7 +14,7 @@ function expandPosition(value: string): Position {
             if (text === 'NaN') {
                 text = '0';
             }
-            return parseInt(text, 10);
+            return Number.parseInt(text, 10);
         });
     return Position.create(line, character);
 }

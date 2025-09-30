@@ -25,8 +25,8 @@ import { CommonAnnotationTerms, CommonAnnotationTypes } from '@sap-ux/vocabulari
 import type { PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { join } from 'path';
-import { pathToFileURL } from 'url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { adaptFilePath } from './utils';
 
 const draftSpecificFields = ['IsActiveEntity', 'HasActiveEntity', 'HasDraftEntity'];

@@ -11,10 +11,10 @@ import type {
     TestConfig
 } from '../types';
 import { render } from 'ejs';
-import { join, posix } from 'path';
+import { join, posix } from 'node:path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';

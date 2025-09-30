@@ -3,7 +3,7 @@
 import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as path from 'node:path';
 import { default as matter } from 'gray-matter';
 
 interface SourceConfig {
@@ -231,7 +231,7 @@ class MultiSourceDocumentationBuilder {
             return false;
         }
 
-        const waitTime = parseInt(resetTime, 10) * 1000 - Date.now();
+        const waitTime = Number.parseInt(resetTime, 10) * 1000 - Date.now();
         const isValidWaitTime = waitTime > 0 && waitTime < 3600000; // Max 1 hour
 
         if (isValidWaitTime) {

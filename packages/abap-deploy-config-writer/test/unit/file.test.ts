@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 import { FileName } from '@sap-ux/project-access';
 

@@ -1,11 +1,11 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import applicationSchema from './page-editor-api/test-data/schema/App.json';
 import applicationConfig from './page-editor-api/test-data/config/App.json';
 import listReportSchema from './page-editor-api/test-data/schema/ListReport.json';
 import listReportConfig from './page-editor-api/test-data/config/ListReport.json';
 import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json';
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'fs';
+import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'node:fs';
 import { execSync } from 'child_process';
 
 const getDataFile = (

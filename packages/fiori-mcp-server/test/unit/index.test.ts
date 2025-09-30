@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 describe('index.ts', () => {
     it('should be able to import the module', () => {

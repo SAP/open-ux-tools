@@ -4,7 +4,7 @@ import { SimpleVectorService } from './vector-simple';
 import { logger } from '../../utils/logger';
 import { resolveEmbeddingsPath } from '../../utils/embeddings-path';
 import fs from 'fs/promises';
-import path from 'path';
+import path from 'node:path';
 /**
  *
  */
