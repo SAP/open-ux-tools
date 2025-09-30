@@ -10,9 +10,6 @@ import { ToolsLogger } from '@sap-ux/logger';
 export async function resolveUI5VersionToNpm(selectedVersion: string): Promise<string> {
     try {
         // Query npm registry for @sapui5/distribution-metadata package to find the best available version.
-        // - onlyNpmVersion: queries npm registry via 'npm show @sapui5/distribution-metadata versions'
-        // - onlyVersionNumbers: filters out non-semantic versions like 'snapshot-1.120' or 'Latest'
-        // - ui5SelectedVersion: prioritizes the user's selected version if available in npm
         const npmVersion = (
             await getUI5Versions({
                 onlyVersionNumbers: true,
