@@ -29,7 +29,7 @@ import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { t } from '../../utils/i18n';
 import { validateBusinessSolutionName } from './helper/validators';
 import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
-import { showBusinessSolutionNameQuestion } from './helper/conditions';
+import { shouldShowBaseAppPrompt, showBusinessSolutionNameQuestion } from './helper/conditions';
 
 /**
  * Prompter for CF services.
@@ -244,7 +244,7 @@ export class CFServicesPrompter {
 
                 return true;
             },
-            when: (answers: CfServicesAnswers) => this.isCfLoggedIn && answers.businessService && !!this.apps.length,
+            when: (answers: CfServicesAnswers) => shouldShowBaseAppPrompt(answers, this.isCfLoggedIn, this.apps),
             guiOptions: {
                 hint: t('prompts.baseAppTooltip'),
                 breadcrumb: true

@@ -14,7 +14,6 @@ import {
     getConfig,
     getConfiguredProvider,
     getYamlContent,
-    isCFEnvironment,
     isCfInstalled,
     isLoggedInCf,
     isMtaProject,
@@ -163,14 +162,6 @@ export default class extends Generator {
      */
     private readonly isMtaYamlFound: boolean;
     /**
-     * Project location.
-     */
-    private projectLocation: string;
-    /**
-     * CF project destination path.
-     */
-    private cfProjectDestinationPath: string;
-    /**
      * CF services answers.
      */
     private cfServicesAnswers: CfServicesAnswers;
@@ -199,8 +190,7 @@ export default class extends Generator {
         this.options = opts;
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
-        // TODO: Remove this once the PR is ready.
-        this.isExtensionInstalled = true; // isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
+        this.isExtensionInstalled = isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
@@ -415,7 +405,7 @@ export default class extends Generator {
             });
         }
 
-        if (isCFEnvironment(projectPath) || this.isCli) {
+        if (this.isCli) {
             return;
         }
 
@@ -440,14 +430,12 @@ export default class extends Generator {
     private async _promptForCfProjectPath(): Promise<void> {
         if (!this.isMtaYamlFound) {
             const pathAnswers = await this.prompt([getProjectPathPrompt(this.logger, this.vscode)]);
-            this.projectLocation = pathAnswers.projectLocation;
-            this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
-            this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
-            this.logger.log(`Project path information: ${this.projectLocation}`);
+            const path = this.destinationRoot(fs.realpathSync(pathAnswers.projectLocation, 'utf-8'));
+            this.logger.log(`Project path information: ${path}`);
         } else {
-            this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
-            getYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
-            this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
+            const path = this.destinationRoot(process.cwd());
+            getYamlContent(join(path, 'mta.yaml'));
+            this.logger.log(`Project path information: ${path}`);
         }
     }
 
@@ -499,8 +487,9 @@ export default class extends Generator {
             addDeployConfig: { hide: true }
         };
 
+        const projectPath = this.destinationPath();
         const attributesQuestions = getPrompts(
-            this.destinationPath(),
+            projectPath,
             {
                 ui5Versions: [],
                 isVersionDetected: false,
@@ -515,7 +504,7 @@ export default class extends Generator {
         this.attributeAnswers = await this.prompt(attributesQuestions);
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
-        const cfServicesQuestions = await this.cfPrompter.getPrompts(this.cfProjectDestinationPath, this.cfConfig);
+        const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
     }
@@ -540,12 +529,6 @@ export default class extends Generator {
      * Generates the ADP project artifacts for the CF environment.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
-        const { baseApp } = this.cfServicesAnswers;
-
-        if (!baseApp) {
-            throw new Error('Base app is required for CF project generation. Please select a base app and try again.');
-        }
-
         const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
 
