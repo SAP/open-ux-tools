@@ -12,7 +12,6 @@ import {
     getSubGenAuthPages
 } from '../../../src/utils/steps';
 import { initI18n, t } from '../../../src/utils/i18n';
-import exp from 'node:constants';
 
 describe('Wizard Steps Utility', () => {
     let prompts: Prompts;
