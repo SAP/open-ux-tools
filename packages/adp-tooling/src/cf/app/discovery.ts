@@ -23,14 +23,14 @@ export function formatDiscovery(app: CFApp): string {
 export function getAppHostIds(credentials: CfCredentials[]): string[] {
     const appHostIds: string[] = [];
 
-    credentials.forEach((credential) => {
+    for (const credential of credentials) {
         const appHostId = credential['html5-apps-repo']?.app_host_id;
         if (appHostId) {
             // There might be multiple appHostIds separated by comma
             const ids = appHostId.split(',').map((item: string) => item.trim());
             appHostIds.push(...ids);
         }
-    });
+    }
 
     return [...new Set(appHostIds)];
 }

@@ -192,8 +192,7 @@ export async function createService(
                 throw new Error(t('error.xsSecurityJsonCouldNotBeParsed'));
             }
 
-            commandParameters.push('-c');
-            commandParameters.push(JSON.stringify(xsSecurity));
+            commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
         await CFToolsCli.Cli.execute(commandParameters);
@@ -223,11 +222,11 @@ export async function createServices(
     spaceGuid: string,
     logger?: ToolsLogger
 ): Promise<void> {
-    const excludeServices = initialServices.concat(['portal', 'html5-apps-repo']);
+    const excludeServices = new Set([...initialServices, 'portal', 'html5-apps-repo']);
     const xsSecurityPath = path.join(projectPath, 'xs-security.json');
     const xsSecurityProjectName = getProjectNameForXsSecurity(yamlContent, timestamp);
     for (const resource of yamlContent.resources ?? []) {
-        if (!excludeServices.includes(resource?.parameters?.service ?? '')) {
+        if (!excludeServices.has(resource?.parameters?.service ?? '')) {
             if (resource?.parameters?.service === 'xsuaa') {
                 await createService(
                     spaceGuid,

@@ -66,13 +66,13 @@ function matchRoutesAndDatasources(
     serviceKeyEndpoints: string[]
 ): string[] {
     const messages: string[] = [];
-    routes.forEach((route: XsAppRoute) => {
+    for (const route of routes) {
         if (route.endpoint && !serviceKeyEndpoints.includes(route.endpoint)) {
             messages.push(`Route endpoint '${route.endpoint}' doesn't match a corresponding OData endpoint`);
         }
-    });
+    }
 
-    Object.keys(dataSources ?? {}).forEach((dataSourceName) => {
+    for (const dataSourceName of Object.keys(dataSources ?? {})) {
         if (
             !routes.some((route: XsAppRoute) =>
                 dataSources?.[dataSourceName].uri?.match(normalizeRouteRegex(route.source))
@@ -80,7 +80,7 @@ function matchRoutesAndDatasources(
         ) {
             messages.push(`Data source '${dataSourceName}' doesn't match a corresponding route in xs-app.json routes`);
         }
-    });
+    }
     return messages;
 }
 

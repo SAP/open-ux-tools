@@ -53,7 +53,7 @@ export function getSAPCloudService(yamlContent: MtaYaml): string {
     const mtaDestination = destinations?.find((destination: MtaDestination) =>
         destination.Name.includes('html_repo_host')
     );
-    const sapCloudService = mtaDestination?.['sap.cloud.service']?.replace(/_/g, '.') ?? '';
+    const sapCloudService = mtaDestination?.['sap.cloud.service']?.replaceAll('_', '.') ?? '';
 
     return sapCloudService;
 }
@@ -120,16 +120,18 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: MtaYaml, projectName: str
         };
         yamlContent.modules?.push(appRouter);
     }
+
     const requires = [
         `${projectName}_html_repo_runtime`,
         `${projectName}_uaa`,
         `portal_resources_${projectName}`
     ].concat(businessService);
-    requires.forEach((name) => {
+
+    for (const name of requires) {
         if (appRouter.requires?.every((existing: { name: string }) => existing.name !== name)) {
             appRouter.requires?.push({ name });
         }
-    });
+    }
 }
 
 /**
@@ -196,14 +198,14 @@ function adjustMtaYamlManagedApprouter(
                                 Name: `${businessSolution}-${projectName}-html_repo_host`,
                                 ServiceInstanceName: `${projectName}-html5_app_host`,
                                 ServiceKeyName: `${projectName}-html_repo_host-key`,
-                                'sap.cloud.service': businessSolution.replace(/_/g, '.')
+                                'sap.cloud.service': businessSolution.replaceAll('_', '.')
                             },
                             {
                                 Name: `${businessSolution}-uaa-${projectName}`,
                                 ServiceInstanceName: `${projectName}-xsuaa`,
                                 ServiceKeyName: `${projectName}_uaa-key`,
                                 Authentication: 'OAuth2UserTokenExchange',
-                                'sap.cloud.service': businessSolution.replace(/_/g, '.')
+                                'sap.cloud.service': businessSolution.replaceAll('_', '.')
                             },
                             {
                                 Name: `${businessService}-service_instance_name`,
@@ -334,11 +336,11 @@ function adjustMtaYamlResources(
         );
     }
 
-    resources.forEach((resource) => {
+    for (const resource of resources) {
         if (yamlContent.resources?.every((existing: MtaResource) => existing.name !== resource.name)) {
             yamlContent.resources?.push(resource);
         }
-    });
+    }
 }
 
 /**
@@ -384,20 +386,23 @@ function addModuleIfNotExists(requires: MtaRequire[], name: string): void {
  * @param {string} businessService - The business service.
  */
 function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, businessService: string): void {
-    yamlContent.modules?.forEach((module, index) => {
-        if (module.type === SAP_APPLICATION_CONTENT && module.requires) {
-            const portalResources = module.requires.find(
-                (require: MtaRequire) => require.name === `portal_resources_${projectName}`
-            );
-            if (portalResources?.parameters?.['service-key']?.name === 'content-deploy-key') {
-                addModuleIfNotExists(module.requires, `${projectName}_html_repo_host`);
-                addModuleIfNotExists(module.requires, `${projectName}_ui_deployer`);
-                addModuleIfNotExists(module.requires, businessService);
-                // move flp module to last position
-                yamlContent.modules?.push(yamlContent.modules.splice(index, 1)[0]);
+    for (const module of yamlContent.modules ?? []) {
+        const moduleIndex = yamlContent.modules?.indexOf(module);
+        if (moduleIndex !== undefined) {
+            if (module.type === SAP_APPLICATION_CONTENT && module.requires) {
+                const portalResources = module.requires.find(
+                    (require: MtaRequire) => require.name === `portal_resources_${projectName}`
+                );
+                if (portalResources?.parameters?.['service-key']?.name === 'content-deploy-key') {
+                    addModuleIfNotExists(module.requires, `${projectName}_html_repo_host`);
+                    addModuleIfNotExists(module.requires, `${projectName}_ui_deployer`);
+                    addModuleIfNotExists(module.requires, businessService);
+                    // Move FLP module to last position
+                    yamlContent.modules?.push(yamlContent.modules.splice(moduleIndex, 1)[0]);
+                }
             }
         }
-    });
+    }
 }
 
 /**

@@ -90,7 +90,7 @@ export function hasApprouter(projectName: string, moduleNames: string[]): boolea
  * @returns {Promise<string[]>} The filtered services.
  */
 async function filterServices(businessServices: BusinessServiceResource[], logger: ToolsLogger): Promise<string[]> {
-    const serviceLabels = businessServices.map((service) => service.label).filter((label) => label);
+    const serviceLabels = businessServices.map((service) => service.label).filter(Boolean);
 
     if (serviceLabels.length === 0) {
         throw new Error(t('error.noBusinessServicesFound'));

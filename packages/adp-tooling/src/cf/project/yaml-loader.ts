@@ -46,5 +46,5 @@ export function getProjectNameForXsSecurity(yamlContent: MtaYaml, timestamp: str
     if (!projectName || !timestamp) {
         return undefined;
     }
-    return `${projectName.toLowerCase().replace(/\./g, '_')}_${timestamp}`;
+    return `${projectName.toLowerCase().replaceAll('.', '_')}_${timestamp}`;
 }
