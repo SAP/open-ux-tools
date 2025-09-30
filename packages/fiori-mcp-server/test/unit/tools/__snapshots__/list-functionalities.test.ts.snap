@@ -16,21 +16,21 @@ Array [
     "functionalityId": "generate-fiori-ui-app",
   },
   Object {
-    "description": "Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
-                Crucially, you must first construct the appGenConfig JSON argument.
-                If not provided - you **MUST** ask the user for the servicePath and host of the OData service they want to use.
-                Then, you **MUST** query the service metadata endpoint to retrieve the list of available entities.
-                (**IMPORTANT**: service metadata endpoint URL must end with \\"$metadata\\". If the provided servicePath does not end with \\"$metadata\\", you **MUST** append it.)
-                Lastly, using the service $metadata response xml, figure out the data model structure, entities, and associations.",
-    "id": "generate-fiori-ui-odata-app",
-  },
-  Object {
     "description": "Remove existing fiori elements page from the application",
     "functionalityId": "delete-page",
   },
   Object {
     "description": "Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.",
     "functionalityId": "create-controller-extension",
+  },
+  Object {
+    "description": "Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
+                Crucially, you must first construct the appGenConfig JSON argument.
+                If not provided - you **MUST** ask the user for the servicePath and host of the OData service they want to use.
+                Then, you **MUST** query the service metadata endpoint to retrieve the list of available entities.
+                (**IMPORTANT**: service metadata endpoint URL must end with \\"$metadata\\". If the provided servicePath does not end with \\"$metadata\\", you **MUST** append it.)
+                Lastly, using the service $metadata response xml, figure out the data model structure, entities, and associations.",
+    "functionalityId": "generate-fiori-ui-odata-app",
   },
   Object {
     "description": "Represents a prefix that is prepended in front of the viewName",
