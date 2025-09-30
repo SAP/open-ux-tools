@@ -70,8 +70,6 @@ export async function docSearch(
             let resultString = '';
             for (const [index, result] of searchResults.entries()) {
                 resultString += `Result ${index + 1}:\n\n`;
-                // resultString += `[Score: ${result.score.toFixed(4)}] - ${result.document.title} (${result.document.path})\n`;
-                // resultString += `Content:\n`;
                 resultString += `${result.document.content}\n`;
                 resultString += '---\n\n';
             }
