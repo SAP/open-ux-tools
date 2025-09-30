@@ -15,6 +15,7 @@ import {
 import type { Url } from 'node:url';
 import { t } from '../i18n';
 import type { ReaderCollection } from '@ui5/fs';
+import type { Socket } from 'node:net';
 
 /**
  * Handler for the proxy response event.
@@ -36,15 +37,8 @@ export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): v
  * @param proxyReq - proxy request object
  * @param res - server response object
  * @param etag - Etag of the cached UI5 sources, normally the UI5 version
- * @param logger - Logger for loging the requests
  */
-export const proxyRequestHandler = (
-    proxyReq: ClientRequest,
-    res: ServerResponse,
-    etag: string,
-    logger: ToolsLogger
-): void => {
-    logger.debug(proxyReq.path);
+export const proxyRequestHandler = (proxyReq: ClientRequest, res: ServerResponse, etag: string): void => {
     if (proxyReq.getHeader('if-none-match') === etag) {
         res.statusCode = 304;
         res.end();
@@ -257,18 +251,21 @@ export function injectUI5Url(originalHtml: string, ui5Configs: ProxyConfig[]): s
  * @param next - the next function, used to forward the request to the next available handler
  * @param ui5Configs - the UI5 configuration of the ui5-proxy-middleware
  * @param rootProject - the root project
+ * @param logger - logger to be used
  */
 export const injectScripts = async (
     req: Request,
     res: Response,
     next: NextFunction,
     ui5Configs: ProxyConfig[],
-    rootProject: ReaderCollection
+    rootProject: ReaderCollection,
+    logger?: ToolsLogger
 ): Promise<void> => {
     try {
         const htmlFileName = getHtmlFile(req.url);
         const files = await rootProject.byGlob(`**/${htmlFileName}`);
         if (files.length === 0) {
+            logger?.warn('No HTML file found for direct load injection.');
             next();
         } else {
             const originalHtml = await files[0].getString();
@@ -313,7 +310,7 @@ export function proxyErrorHandler(
     err: Error & { code?: string },
     req: IncomingMessage & { next?: Function; originalUrl?: string },
     logger: ToolsLogger,
-    _res?: ServerResponse,
+    _res?: ServerResponse | Socket,
     _target?: string | Partial<Url>
 ): void {
     if (err && err.stack?.toLowerCase() !== 'error') {
@@ -342,7 +339,7 @@ export function directLoadProxy(
 ): RequestHandler {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            await injectScripts(req, res, next, ui5Configs, rootProject);
+            await injectScripts(req, res, next, ui5Configs, rootProject, logger);
         } catch (error) {
             logger.error(error);
             next(error);

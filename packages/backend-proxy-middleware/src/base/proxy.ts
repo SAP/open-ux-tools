@@ -4,8 +4,7 @@ import type { RequestHandler, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import type { Logger } from '@sap-ux/logger';
-import { ToolsLogger } from '@sap-ux/logger';
+import { ToolsLogger, type Logger, UI5ToolingTransport } from '@sap-ux/logger';
 import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
@@ -25,6 +24,11 @@ import { updateProxyEnv } from './config';
 import type { Url } from 'node:url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 import { getProxyForUrl } from 'proxy-from-env';
+import type { Socket } from 'node:net';
+import type { Request } from 'express';
+import type connect from 'connect';
+
+export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
 /**
  * Collection of custom event handler for the proxy.
@@ -38,7 +42,7 @@ export const ProxyEventHandlers = {
      * @param _res (not used)
      * @param _options (not used)
      */
-    onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions) {
+    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
@@ -51,7 +55,7 @@ export const ProxyEventHandlers = {
      * @param _req (not used) original request
      * @param _res (not used)
      */
-    onProxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse) {
+    proxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse): void {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
@@ -78,7 +82,7 @@ export function proxyErrorHandler(
     err: Error & { code?: string },
     req: IncomingMessage & { next?: Function; originalUrl?: string },
     logger: ToolsLogger,
-    _res?: ServerResponse,
+    _res?: ServerResponse | Socket,
     _target?: string | Partial<Url>
 ): void {
     if (err && err.stack?.toLowerCase() !== 'error') {
@@ -123,7 +127,7 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
  */
 export const PathRewriters = {
     /**
-     * Generates a rewrite funtion that replace the match string with the prefix in the given string.
+     * Generates a rewrite function that replaces the matched string with the prefix in the given string.
      *
      * @param match part of the path that is to be replaced
      * @param prefix new path that is used as replacement
@@ -157,8 +161,13 @@ export const PathRewriters = {
      * @param log logger instance
      * @returns a path rewrite function
      */
-    getPathRewrite(config: BackendConfig, log: Logger): ((path: string) => string) | undefined {
-        const functions: ((path: string) => string)[] = [];
+    getPathRewrite(config: BackendConfig, log: Logger): (path: string, req: IncomingMessage) => string {
+        const functions: ((path: string, req: EnhancedIncomingMessage) => string)[] = [];
+        functions.push((path, req) => {
+            // ensure that the path starts with the configured path
+            // it might get lost when you nest router instances
+            return req.originalUrl?.includes(path) ? req.originalUrl : path;
+        });
         if (config.pathReplace) {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
@@ -166,9 +175,11 @@ export const PathRewriters = {
             functions.push(PathRewriters.replaceClient(config.client));
         }
         if (functions.length > 0) {
-            return (path: string) => {
+            return (path: string, req: IncomingMessage) => {
                 let newPath = path;
-                functions.forEach((func) => (newPath = func(newPath)));
+                for (const func of functions) {
+                    newPath = func(newPath, req as EnhancedIncomingMessage);
+                }
                 if (newPath !== path) {
                     log.info(`Rewrite path ${path} > ${newPath}`);
                 } else {
@@ -229,7 +240,7 @@ export async function enhanceConfigsForDestination(
                 backend.pathReplace = backend.pathReplace ?? '/';
             }
         } else {
-            throw new Error();
+            throw new Error('Destination not found. Please check your configuration or user role assignment.');
         }
     }
 }
@@ -288,27 +299,29 @@ export async function enhanceConfigForSystem(
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
     options: Options = {},
-    logger: ToolsLogger = new ToolsLogger()
+    logger: ToolsLogger = new ToolsLogger({
+        transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
+    })
 ): Promise<Options> {
     // add required options
     const proxyOptions: Options & { headers: object } = {
         headers: {},
-        ...ProxyEventHandlers,
-        onError: (
-            err: Error & { code?: string },
-            req: IncomingMessage & { next?: Function; originalUrl?: string },
-            res: ServerResponse,
-            target: string | Partial<Url> | undefined
-        ) => {
-            proxyErrorHandler(err, req, logger, res, target);
+        on: {
+            error: (
+                err: Error & { code?: string },
+                req: IncomingMessage & { next?: Function; originalUrl?: string },
+                res: ServerResponse | Socket,
+                target: string | Partial<Url> | undefined
+            ) => {
+                proxyErrorHandler(err, req, logger, res, target);
+            },
+            ...ProxyEventHandlers
         },
-        ...options
+        ...options,
+        changeOrigin: true,
+        target: backend.url,
+        pathRewrite: PathRewriters.getPathRewrite(backend, logger)
     };
-    proxyOptions.changeOrigin = true;
-    proxyOptions.logProvider = () => logger;
-
-    // always set the target to the url provided in yaml
-    proxyOptions.target = backend.url;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
@@ -358,8 +371,6 @@ export async function generateProxyMiddlewareOptions(
         proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
     }
 
-    proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
-
     if (backend.bsp) {
         await addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
     }
@@ -377,12 +388,12 @@ export async function generateProxyMiddlewareOptions(
 
     // update proxy config with values coming from args or ui5.yaml
     updateProxyEnv(backend.proxy);
-    backend.proxy = getProxyForUrl(proxyOptions.target);
+    backend.proxy = getProxyForUrl(proxyOptions.target as string);
     if (backend.proxy) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
-    logger.info(`Backend proxy created for ${proxyOptions.target} ${backend.path ? backend.path : ''}`);
+    logger.info(`Backend proxy created for ${proxyOptions.target}`);
     return proxyOptions;
 }
 

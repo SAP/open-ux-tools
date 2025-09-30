@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.0
+
+### Minor Changes
+
+-   64250ed: migrate to http-proxy-middleware v3
+
 ## 0.9.19
 
 ### Patch Changes
