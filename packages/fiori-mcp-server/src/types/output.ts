@@ -38,8 +38,8 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
     description: zod.string(),
     /** Technical description of the functionality */
     technicalDescription: zod.string().optional(),
-    /** Array of parameters for the functionality */
-    parameters: zod.array(ParameterSchema),
+    /** Schema of input parameters for functionality */
+    parameters: ParameterSchema,
     /** Array of prerequisites for the functionality */
     prerequisites: zod.array(zod.string()).optional(),
     /** Impact of the functionality */
