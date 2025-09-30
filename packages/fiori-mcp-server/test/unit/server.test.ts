@@ -182,7 +182,7 @@ describe('FioriFunctionalityServer', () => {
                 functionalityId: 'add-page',
                 description: 'Add page...',
                 name: 'add-page',
-                parameters: []
+                parameters: {}
             });
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
@@ -202,7 +202,7 @@ describe('FioriFunctionalityServer', () => {
                 description: 'Add page...',
                 functionalityId: 'add-page',
                 name: 'add-page',
-                parameters: []
+                parameters: {}
             });
             expect(result.content).toEqual([
                 {

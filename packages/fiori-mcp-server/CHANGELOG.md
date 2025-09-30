@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.1.6
+
+### Patch Changes
+
+-   f038ab8: Refactored `get-functionality-details` to return parameters as JSON Schema, unified with Zod validation (validateWithSchema) and schema conversion (convertion to JSON Schema).
+
 ## 0.1.5
 
 ### Patch Changes
