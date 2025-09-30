@@ -18,8 +18,6 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    console.log('Starting Fiori UI generation...');
-
     let generatorConfigNonCap;
     try {
         generatorConfigNonCap = GeneratorConfigSchemaNonCAP.parse(params.parameters);
@@ -31,8 +29,6 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
     const generatorConfig = generatorConfigNonCap?.appGenConfig;
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
-
-    console.log('Project path is:' + projectPath);
 
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the non-CAP project folder.');
@@ -51,8 +47,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         await promises.writeFile(outputPath, content, { encoding: 'utf8' });
         const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
 
-        const { stdout, stderr } = await exec(command, { cwd: targetDir });
-        console.log(stdout);
+        const { stderr } = await exec(command, { cwd: targetDir });
         if (stderr) {
             console.error(stderr);
         }
