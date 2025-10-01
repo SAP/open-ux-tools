@@ -1097,7 +1097,6 @@ class MultiSourceDocumentationBuilder {
 
         console.log(`✓ Created master index: ${indexPath}`);
     }
-
 }
 
 // Export the class
