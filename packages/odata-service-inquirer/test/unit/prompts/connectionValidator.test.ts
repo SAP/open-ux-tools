@@ -1,4 +1,5 @@
-import { AbapServiceProvider, ODataServiceInfo, createForAbap } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
 import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
@@ -554,9 +555,7 @@ describe('ConnectionValidator', () => {
         connectValidator = new ConnectionValidator();
         createAbapOnCloudProviderSpy.mockClear();
         // Ensure refresh token is used to create a connection if presented
-        expect(
-            await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)
-        ).toBe(true);
+        expect(await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)).toBe(true);
         expect(createAbapOnCloudProviderSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 environment: 'Standalone',
@@ -566,9 +565,7 @@ describe('ConnectionValidator', () => {
 
         createAbapOnCloudProviderSpy.mockClear();
         // Should not create a new connection if the service url is the same as current valdidate url
-        expect(
-            await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)
-        ).toBe(true);
+        expect(await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)).toBe(true);
         expect(createAbapOnCloudProviderSpy).not.toHaveBeenCalled();
     });
 
@@ -934,9 +931,7 @@ describe('ConnectionValidator', () => {
         connectValidator.setConnectedSystem(cachedConnectedSystem);
 
         connectValResult = await connectValidator.validateServiceInfo(
-            cachedConnectedSystem.backendSystem!.serviceKeys as ServiceInfo,
-            undefined,
-            'refreshToken1234'
+            cachedConnectedSystem.backendSystem!.serviceKeys as ServiceInfo
         );
 
         expect(connectValResult).toEqual(true);

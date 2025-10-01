@@ -69,8 +69,7 @@ export async function connectWithBackendSystem(
         } else if (backendSystem.serviceKeys) {
             connectValResult = await connectionValidator.validateServiceInfo(
                 backendSystem.serviceKeys as ServiceInfo,
-                convertODataVersionType(requiredOdataVersion),
-                backendSystem.refreshToken
+                convertODataVersionType(requiredOdataVersion)
             );
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
             let errorType;

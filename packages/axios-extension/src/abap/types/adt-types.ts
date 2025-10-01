@@ -172,4 +172,4 @@ export type SystemInfo = {
     userFullName: string;
     client: string;
     language: string;
-}
+};

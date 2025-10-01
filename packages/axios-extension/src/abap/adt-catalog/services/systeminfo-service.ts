@@ -1,6 +1,5 @@
+import type { SystemInfo } from 'abap/types';
 import { AdtService } from './adt-service';
-import type { AdtCategory, AtoSettings, SystemInfo } from 'abap/types';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**
  * Retrieve system information using the ADT endpoint

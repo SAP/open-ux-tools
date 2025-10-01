@@ -7,7 +7,7 @@ import * as rt from '../../src/auth/reentrance-ticket';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
-import { ABAPVirtualHostProvider } from '../../src/auth/reentrance-ticket/abap-virtual-host-provider';
+import type { ABAPVirtualHostProvider } from '../../src/auth/reentrance-ticket/abap-virtual-host-provider';
 
 describe('getReentranceTicketAuthInterceptor', () => {
     const getReentranceTicketSpy = jest.spyOn(rt, 'getReentranceTicket');
@@ -30,7 +30,10 @@ describe('getReentranceTicketAuthInterceptor', () => {
         const backendMock = {
             apiHostname: jest.fn().mockReturnValue(API_ORIGIN)
         };
-        getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: 'foo', backend: backendMock as unknown as ABAPVirtualHostProvider});
+        getReentranceTicketSpy.mockResolvedValueOnce({
+            reentranceTicket: 'foo',
+            backend: backendMock as unknown as ABAPVirtualHostProvider
+        });
         const provider = new ServiceProvider({ baseURL: ORIGINAL_ORIGIN });
 
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback: () => 0 });
@@ -77,7 +80,7 @@ describe('attachUaaAuthInterceptor', () => {
     const refreshToken = '~token';
     const callback = jest.fn();
 
-   /*  it('check interceptor request handlers length', () => {
+    /*  it('check interceptor request handlers length', () => {
         expect(Object.keys(provider.interceptors.request['handlers']).length).toEqual(2);
         attachUaaAuthInterceptor(provider, service, refreshToken, callback);
         expect(Object.keys(provider.interceptors.request['handlers']).length).toEqual(3);

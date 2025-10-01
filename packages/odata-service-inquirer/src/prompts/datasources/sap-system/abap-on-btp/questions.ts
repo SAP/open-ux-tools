@@ -5,13 +5,7 @@ import {
     generateABAPCloudDestinationName
 } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import {
-    type FileBrowserQuestion,
-    type ListQuestion,
-    ERROR_TYPE,
-    getCFAbapInstanceChoices,
-    withCondition
-} from '@sap-ux/inquirer-common';
+import { type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
@@ -31,8 +25,6 @@ import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { connectWithDestination } from '../system-selection/prompt-helpers';
-import { validateServiceKey } from '../validators';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -43,9 +35,7 @@ const abapOnBtpPromptNames = {
     'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem'
 } as const;
 
-const SERVICE_KEY_FEATURE_TOGGLE = 'sap.ux.appGenerator.testBetaFeatures.disableBtpServiceKeyAuth';
-
-export type AbapOnBTPType = 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
+export type AbapOnBTPType = 'cloudFoundry' | 'reentranceTicket';
 
 interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
     [abapOnBtpPromptNames.abapOnBtpAuthType]?: AbapOnBTPType;

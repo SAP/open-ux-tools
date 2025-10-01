@@ -490,7 +490,6 @@ export class ConnectionValidator {
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param connectConfig.destination the destination to connect with
-     * @param connectConfig.refreshToken
      * @throws an error if the connection attempt fails, callers should handle the error
      */
     private async createSystemConnection({
@@ -657,8 +656,7 @@ export class ConnectionValidator {
      */
     public async validateServiceInfo(
         serviceInfo: ServiceInfo,
-        odataVersion?: ODataVersion,
-        refreshToken?: string
+        odataVersion?: ODataVersion
     ): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;

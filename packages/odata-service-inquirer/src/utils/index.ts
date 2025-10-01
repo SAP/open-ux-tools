@@ -162,11 +162,13 @@ export function removeCircularFromServiceProvider(serviceProvider: ServiceProvid
  * @param client the client component of of the backend system key
  * @returns the backend system if found or undefined
  */
-export function isBackendSystemKeyExisting(backendSystems: BackendSystem[], url: string, client?: string): BackendSystem | undefined {
+export function isBackendSystemKeyExisting(
+    backendSystems: BackendSystem[],
+    url: string,
+    client?: string
+): BackendSystem | undefined {
     const newBackendSystemId = new BackendSystemKey({ url, client }).getId();
-    return backendSystems.find(
-        (backendSystem) => BackendSystemKey.from(backendSystem).getId() === newBackendSystemId
-    );
+    return backendSystems.find((backendSystem) => BackendSystemKey.from(backendSystem).getId() === newBackendSystemId);
 }
 
 export { PromptState };

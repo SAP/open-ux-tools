@@ -581,12 +581,12 @@ describe('Test system selection prompts', () => {
         );
     });
 
-    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys, RefreshToken)', async () => {
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const validateServiceInfoSpy = jest.spyOn(connectValidator, 'validateServiceInfo');
-        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys, refreshToken: '123refreshToken456' };
+        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys };
         backendSystems.push(backendSystemServiceKeysClone);
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemServiceKeysClone);
@@ -600,8 +600,7 @@ describe('Test system selection prompts', () => {
         ).toBe(true);
         expect(validateServiceInfoSpy).toHaveBeenCalledWith(
             backendSystemServiceKeysClone.serviceKeys,
-            undefined,
-            backendSystemServiceKeysClone.refreshToken
+            undefined
         );
     });
 

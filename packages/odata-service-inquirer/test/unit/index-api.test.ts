@@ -1,7 +1,8 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
-import { getPrompts, getSystemSelectionQuestions, OdataServicePromptOptions, OdataVersion, promptNames } from '../../src/index';
+import type { OdataServicePromptOptions } from '../../src/index';
+import { getPrompts, getSystemSelectionQuestions, OdataVersion, promptNames } from '../../src/index';
 import * as prompts from '../../src/prompts';
 import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
@@ -54,15 +55,15 @@ describe('API tests', () => {
                 requiredOdataVersion: OdataVersion.v4,
                 showCollaborativeDraftWarning: false,
                 additionalMessages: (input: any) => {
-                    if (input === 'X' ) {
+                    if (input === 'X') {
                         return {
                             message: 'X may mark the spot',
                             severity: Severity.information
-                        }
+                        };
                     }
                 }
             }
-        }
+        };
 
         const { prompts: questions, answers } = await getPrompts(prompOptions);
 

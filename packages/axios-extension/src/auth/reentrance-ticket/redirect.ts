@@ -46,7 +46,7 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
     };
 
     const timer = setTimeout(handleTimeout, timeout);
-    server = http.createServer((req, res) => {
+    server = http.createServer((req, res): void => {
         const reqUrl = new URL(req.url, `http://${req.headers.host}`);
         if (reqUrl.pathname === REDIRECT_PATH) {
             if (timer) {
@@ -55,10 +55,13 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
             const reentranceTicket = reqUrl.searchParams.get('reentrance-ticket')?.toString();
             if (reentranceTicket) {
                 logger.debug('Got reentrance ticket: ' + reentranceTicket);
-                backend.logoffUrl().then((url) => {
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                    res.end(Buffer.from(redirectSuccessHtml(url)));
-                });
+                backend
+                    .logoffUrl()
+                    .then((url) => {
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(Buffer.from(redirectSuccessHtml(url)));
+                    })
+                    .catch(() => {});
                 server.close();
                 // return the backend for convienience
                 resolve({ reentranceTicket, backend });

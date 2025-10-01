@@ -47,8 +47,7 @@ function systemAuthTypeToAuthenticationType(
  * @param connectValidator a connection validator instance used to validate the system url
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  * @param requiredOdataVersion The required OData version for the system connection, only catalogs supporting the specifc odata version will be used.
- * @param cachedConnectedSystem
- * @param systemAuthType
+ * @param cachedConnectedSystem An existing connection may be passed which will prevent reauthentication
  * @returns the system url prompt
  */
 export function getSystemUrlQuestion<T extends Answers>(
@@ -81,7 +80,9 @@ export function getSystemUrlQuestion<T extends Answers>(
                 const existingBackend = isBackendSystemKeyExisting(PromptState.backendSystemsCache, url);
                 if (existingBackend) {
                     // Not a cached connection so re-validate as new backend system entry
-                    return t('prompts.validationMessages.backendSystemExistsWarning', { backendName: existingBackend.name });
+                    return t('prompts.validationMessages.backendSystemExistsWarning', {
+                        backendName: existingBackend.name
+                    });
                 }
             }
             const valResult = await connectValidator.validateUrl(url, {

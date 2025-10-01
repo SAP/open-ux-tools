@@ -83,6 +83,6 @@ export class ABAPVirtualHostProvider {
      * @returns logoff URL
      */
     async logoffUrl(): Promise<string> {
-        return await this.uiHostname() + '/sap/public/bc/icf/logoff';
+        return (await this.uiHostname()) + '/sap/public/bc/icf/logoff';
     }
 }
