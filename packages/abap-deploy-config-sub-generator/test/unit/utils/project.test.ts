@@ -59,35 +59,17 @@ describe('getVariantNamespace', () => {
     });
 
     it('should return undefined for S4HC projects', async () => {
-        const result = await getVariantNamespace(mockPath, true, false, mockFs);
+        const result = await getVariantNamespace(mockPath, true, mockFs);
         expect(result).toBeUndefined();
         expect(mockGetWebappPath).not.toHaveBeenCalled();
     });
 
-    it('should return namespace from disk when launchAsSubGen is false', async () => {
-        const mockManifest = { namespace: 'apps/workcenter/appVariants/customer.app.variant' };
-        mockExistsSync.mockReturnValue(true);
-        mockReadFileSync.mockReturnValue(JSON.stringify(mockManifest));
-
-        const result = await getVariantNamespace(mockPath, false, false, mockFs);
-
-        expect(result).toBe(mockManifest.namespace);
-        expect(mockGetWebappPath).toHaveBeenCalledWith(mockPath);
-        expect(mockExistsSync).toHaveBeenCalledWith(mockManifestPath);
-    });
-
-    it('should return undefined when disk file does not exist', async () => {
-        mockExistsSync.mockReturnValue(false);
-        const result = await getVariantNamespace(mockPath, false, false, mockFs);
-        expect(result).toBeUndefined();
-    });
-
-    it('should return namespace from memory when launchAsSubGen is true', async () => {
+    it('should return namespace from memory', async () => {
         const mockManifest = { namespace: 'apps/workcenter/appVariants/customer.app.variant' };
         mockFsExists.mockReturnValue(true);
         mockFsReadJSON.mockReturnValue(mockManifest);
 
-        const result = await getVariantNamespace(mockPath, false, true, mockFs);
+        const result = await getVariantNamespace(mockPath, false, mockFs);
 
         expect(result).toBe(mockManifest.namespace);
         expect(mockGetWebappPath).toHaveBeenCalledWith(mockPath, mockFs);
@@ -96,7 +78,7 @@ describe('getVariantNamespace', () => {
 
     it('should return undefined when memory file does not exist', async () => {
         mockFsExists.mockReturnValue(false);
-        const result = await getVariantNamespace(mockPath, false, true, mockFs);
+        const result = await getVariantNamespace(mockPath, false, mockFs);
         expect(result).toBeUndefined();
     });
 
@@ -105,7 +87,7 @@ describe('getVariantNamespace', () => {
             throw new Error('Memory filesystem error');
         });
 
-        const result = await getVariantNamespace(mockPath, false, true, mockFs);
+        const result = await getVariantNamespace(mockPath, false, mockFs);
 
         expect(result).toBeUndefined();
         expect(DeploymentGenerator.logger.debug).toHaveBeenCalledWith(

@@ -1,7 +1,6 @@
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readFileSync } from 'fs';
 import { t } from './i18n';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 
@@ -24,34 +23,20 @@ export async function indexHtmlExists(fs: Editor, path: string): Promise<boolean
  *
  * @param path - The path to the project.
  * @param isS4HC - Whether the project is Cloud.
- * @param launchAsSubGen - Whether the project is launched as a sub generator.
  * @param fs - The file system editor.
  * @returns The variant namespace.
  */
-export async function getVariantNamespace(
-    path: string,
-    isS4HC: boolean,
-    launchAsSubGen: boolean,
-    fs: Editor
-): Promise<string | undefined> {
+export async function getVariantNamespace(path: string, isS4HC: boolean, fs: Editor): Promise<string | undefined> {
     if (isS4HC) {
         return undefined;
     }
 
     try {
-        if (launchAsSubGen) {
-            const filePath = join(await getWebappPath(path, fs), FileName.ManifestAppDescrVar);
-            // When launched as sub-generator, prioritize memory-based approach
-            if (fs.exists(filePath)) {
-                const descriptor = fs.readJSON(filePath) as unknown as { namespace: string };
-                return descriptor.namespace;
-            }
-        } else {
-            const filePath = join(await getWebappPath(path), FileName.ManifestAppDescrVar);
-            if (existsSync(filePath)) {
-                const descriptor = JSON.parse(readFileSync(filePath, 'utf-8'));
-                return descriptor.namespace;
-            }
+        const filePath = join(await getWebappPath(path, fs), FileName.ManifestAppDescrVar);
+
+        if (fs.exists(filePath)) {
+            const descriptor = fs.readJSON(filePath) as unknown as { namespace: string };
+            return descriptor.namespace;
         }
     } catch (e) {
         DeploymentGenerator.logger?.debug(t('debug.lrepNamespaceNotFound', { error: e.message }));
