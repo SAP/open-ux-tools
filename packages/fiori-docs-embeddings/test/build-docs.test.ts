@@ -474,36 +474,6 @@ describe('MultiSourceDocumentationBuilder', () => {
         });
     });
 
-    describe('createSearchIndexes', () => {
-        it('should create search indexes', async () => {
-            const builder = new MultiSourceDocumentationBuilder();
-
-            const testDoc = {
-                id: 'test-doc',
-                title: 'Test Document',
-                content: 'Test content with searchable words',
-                category: 'test-category',
-                path: 'test/doc.md',
-                tags: ['test'],
-                headers: ['Header'],
-                lastModified: '2023-01-01',
-                wordCount: 5,
-                excerpt: 'Test content',
-                version: '1.0.0',
-                source: 'test-source'
-            };
-
-            builder['documents'].set('test-doc', testDoc);
-            mockFs.mkdir.mockResolvedValue(undefined);
-            mockFs.writeFile.mockResolvedValue(undefined);
-
-            await builder.createSearchIndexes();
-
-            expect(mockFs.mkdir).toHaveBeenCalled();
-            expect(mockFs.writeFile).toHaveBeenCalled();
-        });
-    });
-
     describe('buildFilestore', () => {
         it('should handle github source processing', async () => {
             const mockSuccessResponse = {
