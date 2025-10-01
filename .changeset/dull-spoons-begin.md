@@ -2,5 +2,5 @@
 '@sap-ux/generator-adp': patch
 ---
 
-fix: FLP sub generator contains a page with dynamic title, yeoman wizard is not meant to work with dynamic titles. We change the title to a static text and put the dynamic part in the description.
-The internal page manager we used is patched to update the dynamic page description.
+fix: The FLP sub-generator contains a page with a dynamic title. The Yeoman wizard does not support dynamic titles. We've changed the title to static text and moved the dynamic part to the description.
+The internal page manager is patched to update the dynamic page description.
