@@ -22,7 +22,9 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         this.validatePartialUpdateInput(entity);
         const existingSystem = await this.readOrThrow(key);
         const updatedEntity = this.mergeProperties(entity, existingSystem);
-        return this.write(updatedEntity);
+        return this.write(updatedEntity, {
+            force: true
+        });
     }
 
     private mergeProperties(update: Partial<BackendSystem>, existingSystem: BackendSystem): BackendSystem {
