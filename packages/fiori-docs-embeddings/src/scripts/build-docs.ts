@@ -592,9 +592,6 @@ class MultiSourceDocumentationBuilder {
             // Create master index
             await this.createMasterIndex();
 
-            // Create search indexes
-            await this.createSearchIndexes();
-
             console.log(`\n🎉 Multi-source documentation build completed!`);
             console.log(`📊 Total documents: ${this.documents.size}`);
             console.log(`📁 Categories: ${this.categories.size}`);
@@ -1101,37 +1098,6 @@ class MultiSourceDocumentationBuilder {
         console.log(`✓ Created master index: ${indexPath}`);
     }
 
-    async createSearchIndexes(): Promise<void> {
-        console.log('\n🔍 Creating search indexes...');
-
-        const searchDir = path.join('./data/search');
-        await fs.mkdir(searchDir, { recursive: true });
-
-        // Create keyword index
-        const keywords = new Map<string, string[]>();
-        for (const doc of this.documents.values()) {
-            const allText = [doc.title, ...doc.headers, ...doc.tags, doc.content].join(' ').toLowerCase();
-            const words = allText.match(/\b\w{3,}\b/g) ?? [];
-
-            for (const word of words) {
-                if (!keywords.has(word)) {
-                    keywords.set(word, []);
-                }
-                if (!keywords.get(word)!.includes(doc.id)) {
-                    keywords.get(word)!.push(doc.id);
-                }
-            }
-        }
-
-        const keywordIndex = Object.fromEntries(keywords);
-        await fs.writeFile(path.join(searchDir, 'keywords.json'), JSON.stringify(keywordIndex, null, 2));
-
-        // Create category index
-        const categoryIndex = Object.fromEntries(this.categories);
-        await fs.writeFile(path.join(searchDir, 'categories.json'), JSON.stringify(categoryIndex, null, 2));
-
-        console.log(`✓ Created search indexes`);
-    }
 }
 
 // Export the class

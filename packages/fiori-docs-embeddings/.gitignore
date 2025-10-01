@@ -2,6 +2,7 @@
 node_modules/
 dist/**/*
 .env
+data/docs/**/*
 data/embeddings/**/*
 bundle/data/embeddings/**/*
 data/git_repos/**/*
