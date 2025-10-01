@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.71
+
+### Patch Changes
+
+-   30cf923: fix: "lrep" property is not added when the deploy config is created from within the ADP Generator
+
 ## 0.1.70
 
 ### Patch Changes
