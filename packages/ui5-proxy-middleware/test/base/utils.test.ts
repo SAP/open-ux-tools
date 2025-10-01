@@ -555,7 +555,7 @@ describe('utils', () => {
             };
             const ui5Ver = '/1.120.0';
             const rewrite = getPathRewrite(config, ui5Ver);
-            expect(rewrite).toEqual({ '/mypath': '/1.120.0/mypath' });
+            expect((rewrite as Function)('/mypath')).toEqual('/1.120.0/mypath');
         });
 
         test('custom pathRewrite', () => {
@@ -576,7 +576,7 @@ describe('utils', () => {
             };
             const ui5Ver = '';
             const rewrite = getPathRewrite(config, ui5Ver);
-            expect(rewrite).toEqual({ '/resources': '/resources' });
+            expect((rewrite as Function)('/resources')).toEqual('/resources');
         });
     });
 });

@@ -361,5 +361,5 @@ export function getPathRewrite(config: ProxyConfig, ui5Ver: string): Options['pa
         const sanitizedPathReplace = config.pathReplace?.replace(/\/$/, '');
         return (path: string) => path.replace(config.path, sanitizedPathReplace);
     }
-    return { [config.path]: ui5Ver + config.path };
+    return (path: string) => (path.startsWith(config.path) ? ui5Ver + path : ui5Ver + config.path + path);
 }

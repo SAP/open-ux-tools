@@ -36,7 +36,7 @@ describe('proxy', () => {
                 proxyRes: expect.any(Function),
                 error: expect.any(Function)
             },
-            pathRewrite: expect.any(Object),
+            pathRewrite: expect.any(Function),
             pathFilter: utils.filterCompressedHtmlFiles
         });
         expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
@@ -69,7 +69,7 @@ describe('proxy', () => {
                 proxyRes: expect.any(Function),
                 error: expect.any(Function)
             },
-            pathRewrite: expect.any(Object),
+            pathRewrite: expect.any(Function),
             pathFilter: utils.filterCompressedHtmlFiles
         });
         expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
