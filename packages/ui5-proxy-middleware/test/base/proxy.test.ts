@@ -36,7 +36,7 @@ describe('proxy', () => {
                 proxyRes: expect.any(Function),
                 error: expect.any(Function)
             },
-            pathRewrite: expect.any(Function),
+            pathRewrite: expect.any(Object),
             pathFilter: utils.filterCompressedHtmlFiles
         });
         expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
@@ -69,7 +69,7 @@ describe('proxy', () => {
                 proxyRes: expect.any(Function),
                 error: expect.any(Function)
             },
-            pathRewrite: expect.any(Function),
+            pathRewrite: expect.any(Object),
             pathFilter: utils.filterCompressedHtmlFiles
         });
         expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
@@ -172,7 +172,7 @@ describe('proxy', () => {
             version: '1.0.0'
         };
         ui5Proxy(config);
-        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
         expect(typeof proxyConfig?.pathRewrite).toBe('function');
     });
 
