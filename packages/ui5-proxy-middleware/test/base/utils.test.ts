@@ -9,7 +9,8 @@ import {
     proxyResponseHandler,
     sendResponse,
     proxyErrorHandler,
-    updateProxyEnv
+    updateProxyEnv,
+    getPathRewrite
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import fs from 'fs';
@@ -542,6 +543,50 @@ describe('utils', () => {
             const result = filterCompressedHtmlFiles('my/req/path', req as any);
             expect(result).toBeTruthy();
             expect(req.headers['accept-encoding']).toBeUndefined();
+        });
+    });
+
+    describe('getPathRewrite', () => {
+        test('default rewrite', () => {
+            const config = {
+                path: '/mypath',
+                url: 'https://example.example',
+                version: '1.120.0'
+            };
+            const ui5Ver = '/1.120.0';
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/mypath')).toEqual('/1.120.0/mypath');
+        });
+
+        test('custom pathRewrite', () => {
+            const config = {
+                pathReplace: 'this/path/should/rewrite/mypath',
+                path: '/mypath',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/mypath')).toEqual('this/path/should/rewrite/mypath');
+        });
+
+        test('handle pathRewrite with trailing slash', () => {
+            const config = {
+                path: '/resources',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/resources')).toEqual('/resources');
+        });
+
+        test('handle pathRewrite callback for incomplete path', () => {
+            const config = {
+                path: 'this/path/should/rewrite/mypath/resources',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/chicken.js')).toEqual('this/path/should/rewrite/mypath/resources/chicken.js');
         });
     });
 });
