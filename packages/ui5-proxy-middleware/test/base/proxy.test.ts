@@ -3,39 +3,45 @@ import * as hpm from 'http-proxy-middleware';
 import * as utils from '../../src/base/utils';
 import { ToolsLogger } from '@sap-ux/logger';
 
-describe('proxy', () => {
-    const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
+jest.mock('http-proxy-middleware', () => ({
+    ...jest.requireActual('http-proxy-middleware'),
+    createProxyMiddleware: jest.fn()
+}));
+
+const mockCreateProxyMiddleware = createProxyMiddleware as jest.Mock;
+
+describe('proxy', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, default params', () => {
         const config = {
+            debug: false,
             path: '/mypath',
             url: 'https://example.example',
             version: '1.0.0'
         };
 
         ui5Proxy(config);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.objectContaining({
-                changeOrigin: true,
-                target: 'https://example.example',
-                onProxyReq: expect.any(Function),
-                onProxyRes: expect.any(Function),
-                onError: expect.any(Function),
-                pathRewrite: { '/mypath': '/1.0.0/mypath' }
-            })
-        );
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
-        );
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith({
+            changeOrigin: true,
+            target: 'https://example.example',
+            logger: undefined,
+            on: {
+                proxyReq: expect.any(Function),
+                proxyRes: expect.any(Function),
+                error: expect.any(Function)
+            },
+            pathRewrite: expect.any(Function),
+            pathFilter: utils.filterCompressedHtmlFiles
+        });
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, additional params', () => {
@@ -47,30 +53,28 @@ describe('proxy', () => {
 
         const options: hpm.Options = {
             secure: true,
-            logLevel: 'debug',
+            logger: new ToolsLogger(),
             changeOrigin: false
         };
 
         ui5Proxy(config, options);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.objectContaining({
-                changeOrigin: false,
-                secure: true,
-                logLevel: 'debug',
-                target: 'https://example.example',
-                onProxyReq: expect.any(Function),
-                onProxyRes: expect.any(Function),
-                pathRewrite: { '/mypath': '/mypath' }
-            })
-        );
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
-        );
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith({
+            changeOrigin: false,
+            secure: true,
+            logger: expect.any(ToolsLogger),
+            target: 'https://example.example',
+            on: {
+                proxyReq: expect.any(Function),
+                proxyRes: expect.any(Function),
+                error: expect.any(Function)
+            },
+            pathRewrite: expect.any(Function),
+            pathFilter: utils.filterCompressedHtmlFiles
+        });
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, custom filter function', () => {
@@ -86,14 +90,11 @@ describe('proxy', () => {
         };
 
         ui5Proxy(config, {}, customFilterFn);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(customFilterFn, expect.any(Object));
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            customFilterFn,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
-        );
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(expect.objectContaining({ pathFilter: customFilterFn }));
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
     });
 
     test('ui5Proxy: calling onProxyReq calls proxyRequestHandler', () => {
@@ -105,18 +106,15 @@ describe('proxy', () => {
         };
 
         ui5Proxy(config);
-        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
-        if (typeof proxyConfig?.onProxyReq === 'function') {
-            proxyConfig?.onProxyReq({} as any, {} as any, {} as any, {});
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        if (typeof proxyConfig?.on?.proxyReq === 'function') {
+            proxyConfig?.on?.proxyReq({} as any, {} as any, {} as any, {});
             expect(proxyRequestHandlerSpy).toHaveBeenCalledTimes(1);
-            expect(proxyRequestHandlerSpy).toHaveBeenCalledWith({}, {}, 'W/"1.0.0"', expect.any(ToolsLogger));
+            expect(proxyRequestHandlerSpy).toHaveBeenCalledWith({}, {}, 'W/"1.0.0"');
         }
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
-        );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
     });
 
     test('ui5Proxy: calling onProxyRes calls proxyResponseHandler', () => {
@@ -128,18 +126,18 @@ describe('proxy', () => {
         };
 
         ui5Proxy(config);
-        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
-        if (typeof proxyConfig?.onProxyRes === 'function') {
-            proxyConfig?.onProxyRes({} as any, {} as any, {} as any);
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        if (typeof proxyConfig?.on?.proxyRes === 'function') {
+            proxyConfig?.on?.proxyRes({} as any, {} as any, {} as any);
             expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
         }
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
     });
 
     test('ui5Proxy: calling onError calls proxyErrorHandler', () => {
@@ -151,19 +149,19 @@ describe('proxy', () => {
         };
 
         ui5Proxy(config);
-        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
-        if (typeof proxyConfig?.onError === 'function') {
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        if (typeof proxyConfig?.on?.error === 'function') {
             const err = new Error();
-            proxyConfig?.onError(err as any, {} as any, {} as any);
+            proxyConfig?.on?.error(err as any, {} as any, {} as any);
             expect(proxyErrorHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyErrorHandlerSpy).toHaveBeenCalledWith(err, {}, expect.any(ToolsLogger), {}, undefined);
         }
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
     });
 
     test('ui5Proxy: calling pathRewrite calls getPathRewrite', () => {
@@ -186,13 +184,13 @@ describe('proxy', () => {
             proxy: 'http://proxy.example'
         };
         ui5Proxy(config);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
         delete process.env.npm_config_proxy;
         delete process.env.npm_config_https_proxy;
     });
@@ -207,13 +205,13 @@ describe('proxy', () => {
         };
         process.env.no_proxy = '.example';
         ui5Proxy(config);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
         delete process.env.npm_config_proxy;
         delete process.env.npm_config_https_proxy;
         process.env.no_proxy = noProxyConfig;
@@ -229,13 +227,13 @@ describe('proxy', () => {
         };
         process.env.no_proxy = '.example';
         ui5Proxy(config);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
         delete process.env.npm_config_proxy;
         delete process.env.npm_config_https_proxy;
         process.env.no_proxy = noProxyConfig;
@@ -251,13 +249,13 @@ describe('proxy', () => {
         };
         process.env.no_proxy = '123.156.255.101';
         ui5Proxy(config);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
         delete process.env.npm_config_proxy;
         delete process.env.npm_config_https_proxy;
         process.env.no_proxy = noProxyConfig;
@@ -273,13 +271,13 @@ describe('proxy', () => {
         };
         process.env.no_proxy = '123.156.255.101';
         ui5Proxy(config);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
-            utils.filterCompressedHtmlFiles,
-            expect.not.objectContaining({
-                agent: expect.objectContaining({})
-            })
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledTimes(1);
+        expect(mockCreateProxyMiddleware).toHaveBeenCalledWith(
+            expect.objectContaining({ pathFilter: utils.filterCompressedHtmlFiles })
         );
+        expect(mockCreateProxyMiddleware).not.toHaveBeenCalledWith({
+            agent: expect.objectContaining({})
+        });
         delete process.env.npm_config_proxy;
         delete process.env.npm_config_https_proxy;
         process.env.no_proxy = noProxyConfig;

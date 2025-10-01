@@ -60,9 +60,7 @@ describe('utils', () => {
             const logger = {
                 debug: jest.fn()
             };
-            proxyRequestHandler(proxyReq as any, res as any, etag, logger as any);
-            expect(logger.debug).toHaveBeenCalledTimes(1);
-            expect(logger.debug).toHaveBeenCalledWith('/mypath');
+            proxyRequestHandler(proxyReq as any, res as any, etag);
             expect(res.statusCode).toEqual(304);
             expect(res.end).toHaveBeenCalledTimes(1);
         });
