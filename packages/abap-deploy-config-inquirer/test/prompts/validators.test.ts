@@ -24,13 +24,8 @@ import {
 } from '../../src/prompts/validators';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import {
-    AbapSystemChoice,
-    ClientChoiceValue,
-    PackageInputChoices,
-    TargetSystemType,
-    TransportChoices
-} from '../../src/types';
+import type { AbapSystemChoice } from '../../src/types';
+import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 import * as utils from '../../src/utils';
 import * as validatorUtils from '../../src/validator-utils';
 import { mockDestinations } from '../fixtures/destinations';
