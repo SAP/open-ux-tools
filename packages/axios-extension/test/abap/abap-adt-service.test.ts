@@ -350,7 +350,6 @@ describe('Transport checks', () => {
 });
 
 describe('Use existing connection session', () => {
-    // const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
     const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
     const existingCookieConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         baseURL: server,
@@ -375,7 +374,6 @@ describe('Use existing connection session', () => {
 
     beforeEach(() => {
         nock.cleanAll();
-        //attachUaaAuthInterceptorSpy.mockRestore();
         attachReentranceTicketAuthInterceptorSpy.mockRestore();
     });
 
@@ -401,8 +399,6 @@ describe('Use existing connection session', () => {
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         expect(await provider.isAbapCloud()).toBe(true);
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
-        /*         expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0); */
     });
 
     test('abap service provider for cloud (embedded steampunk)', async () => {
@@ -467,8 +463,6 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication);
         expect(await provider.isAbapCloud()).toBe(false);
         expect(await provider.user()).toBe('userName01');
-        /*         expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(2); */
     });
 });
 
