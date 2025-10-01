@@ -109,7 +109,7 @@ server:
     configuration:
       ui5:
       - path: /resources          
-        url: https://ec1.dest
+        url: https://my.backend.example:1234
         pathReplace: /sap/public/ui5/resources    
 ```
 
