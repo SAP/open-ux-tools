@@ -164,6 +164,18 @@ describe('proxy', () => {
         });
     });
 
+    test('ui5Proxy: calling pathRewrite calls getPathRewrite', () => {
+        const config = {
+            pathReplace: 'this/path/should/rewrite/',
+            path: '/mypath',
+            url: 'https://example.example',
+            version: '1.0.0'
+        };
+        ui5Proxy(config);
+        const proxyConfig = mockCreateProxyMiddleware.mock.calls[0][0];
+        expect(typeof proxyConfig?.pathRewrite).toBe('function');
+    });
+
     test('ui5Proxy: host is not excluded from proxy', async () => {
         const config = {
             path: '/mypath',
