@@ -24,7 +24,13 @@ import {
 } from '../../src/prompts/validators';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
+import {
+    AbapSystemChoice,
+    ClientChoiceValue,
+    PackageInputChoices,
+    TargetSystemType,
+    TransportChoices
+} from '../../src/types';
 import * as utils from '../../src/utils';
 import * as validatorUtils from '../../src/validator-utils';
 import { mockDestinations } from '../fixtures/destinations';
@@ -54,6 +60,12 @@ describe('Test validators', () => {
     beforeAll(async () => {
         await initI18n();
     });
+
+    beforeEach(() => {
+        // reset propmt state for test isolation
+        PromptState.abapDeployConfig = {};
+    });
+
     describe('validateDestinationQuestion', () => {
         it('should return true for valid destination', async () => {
             const result = await validateDestinationQuestion('Dest2', mockDestinations);
@@ -91,19 +103,19 @@ describe('Test validators', () => {
     });
 
     describe('validateTargetSystem', () => {
-        const abapSystemChoices = [
+        const abapSystemChoices: AbapSystemChoice[] = [
             {
                 name: 'Target1',
                 value: 'https://mock.url.target1.com',
                 client: '001',
-                isS4HC: false,
+                isAbapCloud: false,
                 scp: false
             },
             {
                 name: 'Target2',
                 value: 'https://mock.url.target2.com',
                 client: '002',
-                isS4HC: true,
+                isAbapCloud: true,
                 scp: false
             }
         ];
@@ -118,8 +130,7 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
-                destination: undefined,
-                isS4HC: false,
+                isAbapCloud: false,
                 scp: false,
                 targetSystem: 'https://mock.url.target1.com'
             });
@@ -163,8 +174,7 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
-                destination: undefined,
-                isS4HC: true,
+                isAbapCloud: true,
                 scp: true,
                 targetSystem: undefined
             });
@@ -176,11 +186,10 @@ describe('Test validators', () => {
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.notfound.url.target1.com',
-                client: undefined,
-                destination: undefined,
-                isS4HC: false,
+                isAbapCloud: false,
                 scp: false,
-                targetSystem: undefined
+                targetSystem: undefined,
+                client: undefined
             });
         });
 
@@ -307,7 +316,7 @@ describe('Test validators', () => {
             expect(result).toBe(true);
             expect(mockIsAppStudio).toHaveBeenCalled();
             expect(serviceProviderUtils.isAbapCloud).toHaveBeenCalled();
-            expect(PromptState.abapDeployConfig.isS4HC).toBe(true);
+            expect(PromptState.abapDeployConfig.isAbapCloud).toBe(true);
         });
 
         it('should not check system type when shouldCheckSystemType is false', async () => {
@@ -449,7 +458,7 @@ describe('Test validators', () => {
         });
 
         it('should return true for onPremise system', async () => {
-            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.isAbapCloud = false;
             const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
             const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
@@ -480,7 +489,7 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid starting prefix', async () => {
-            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.isAbapCloud = false;
             PromptState.abapDeployConfig.scp = true;
             const result = await validatePackage(
                 'namespace',
@@ -499,7 +508,7 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid ui5Repo starting prefix', async () => {
-            PromptState.abapDeployConfig.isS4HC = true;
+            PromptState.abapDeployConfig.isAbapCloud = true;
             PromptState.abapDeployConfig.scp = false;
             const result = await validatePackage(
                 'ZPACKAGE',
@@ -518,7 +527,7 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
-            PromptState.abapDeployConfig.isS4HC = true;
+            PromptState.abapDeployConfig.isAbapCloud = true;
             PromptState.abapDeployConfig.scp = false;
             const result = await validatePackage(
                 '/NAMESPACE/ZPACKAGE',
@@ -544,7 +553,7 @@ describe('Test validators', () => {
                     activeLanguages: []
                 }
             });
-            PromptState.abapDeployConfig.isS4HC = true;
+            PromptState.abapDeployConfig.isAbapCloud = true;
             const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });

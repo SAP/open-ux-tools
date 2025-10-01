@@ -15,7 +15,7 @@ export class PromptState {
     /**
      * To prevent re-reads from store load the backend systems once.
      */
-    public static backendSystemsCache: BackendSystem[];
+    public static backendSystemsCache: BackendSystem[] = [];
 
     static reset(): void {
         // Reset all values in the odataService object, do not reset the object reference itself as it may be used by external consumers

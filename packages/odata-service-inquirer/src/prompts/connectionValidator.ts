@@ -498,21 +498,19 @@ export class ConnectionValidator {
         url,
         serviceInfo,
         destination,
-        odataVersion,
-        refreshToken
+        odataVersion
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
         serviceInfo?: ServiceInfo;
         destination?: Destination;
         odataVersion?: ODataVersion;
-        refreshToken?: string;
     }): Promise<void> {
         this.resetConnectionState();
         this.resetValidity();
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
-            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
+            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
             this._validatedUrl = getDestinationUrlForAppStudio(destination.Name);
@@ -674,7 +672,7 @@ export class ConnectionValidator {
         }
         try {
             this.systemAuthType = 'serviceKey';
-            await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
+            await this.createSystemConnection({ serviceInfo, odataVersion });
             // Cache the user info
             this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
             this._serviceInfo = serviceInfo;

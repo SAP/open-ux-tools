@@ -48,9 +48,9 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
      *
      * @param providerConfig
      */
-    constructor(providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration>) {
+    constructor(providerConfig?: AxiosRequestConfig & Partial<ProviderConfiguration>) {
         super(providerConfig);
-        if (providerConfig.logger) {
+        if (providerConfig?.logger) {
             this._log = providerConfig.logger;
         }
     }

@@ -8,8 +8,7 @@ import type { BackendSystem } from '@sap-ux/store';
  * @returns the display name for the system
  */
 export function getBackendSystemDisplayName(system: BackendSystem): string {
-    const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    const systemTypeName = getSystemDisplayName(system.name, userDisplayName, system.systemType);
+    const systemTypeName = getSystemDisplayName(system.name, system.userDisplayName, system.systemType);
     return systemTypeName;
 }
 
@@ -22,7 +21,8 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
  * @returns system display name
  */
 export function getSystemDisplayName(systemName: string, displayUsername?: string, systemType?: string): string {
-    return `${systemName}${getSystemTypeLabel(systemType)}${displayUsername}`;
+    const userDisplayName = displayUsername ? ` [${displayUsername}]` : '';
+    return `${systemName}${getSystemTypeLabel(systemType)}${userDisplayName}`;
 }
 
 /**

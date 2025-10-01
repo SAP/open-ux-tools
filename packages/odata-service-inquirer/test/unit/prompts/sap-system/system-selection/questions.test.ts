@@ -30,10 +30,6 @@ jest.mock('../../../../../src/utils', () => ({
     getPromptHostEnvironment: jest.fn()
 }));
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
-}));
-
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',
@@ -172,7 +168,6 @@ describe('Test system selection prompts', () => {
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
         validateUrlResultMock = true;
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
