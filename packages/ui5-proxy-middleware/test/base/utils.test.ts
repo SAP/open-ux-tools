@@ -578,5 +578,15 @@ describe('utils', () => {
             const rewrite = getPathRewrite(config, ui5Ver);
             expect((rewrite as Function)('/resources')).toEqual('/resources');
         });
+
+        test('handle pathRewrite callback for incomplete path', () => {
+            const config = {
+                path: 'this/path/should/rewrite/mypath/resources',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/chicken.js')).toEqual('this/path/should/rewrite/mypath/resources/chicken.js');
+        });
     });
 });
