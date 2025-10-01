@@ -58,22 +58,6 @@ server:
         url: https://ui5.sap.com
 ```
 
-Use the following syntax for proxying different UI5 requests to different URLs
-
-```Yaml
-server:
-  customMiddleware:
-  - name: fiori-tools-proxy
-    afterMiddleware: compression
-    configuration:
-      ui5:
-        paths:
-          - path: /resources
-            url: https://ui5.sap.com
-          - path: /test-resources
-            src: https://ui5.sap.com
-        version: '1.100.1'
-```
 **NOTE: You can't mix the syntaxes!**
 
 ### Loading a specific UI5 version
@@ -115,7 +99,7 @@ server:
 ### Loading UI5 sources from a different Host
 If you want to load UI5 sources from a different host, then you can set the property `pathReplace` to point to the desired resources. If provided then the `path` will be replaced with this value before forwarding.
 
-**NOTE: using `pathReplace` will not consider a specified UI5 version.**
+**NOTE: using `pathReplace` will not consider a specified UI5 version. If a specific UI5 version is needed, then it needs to be part of the `pathReplace`.**
 
 ```Yaml
 server:
