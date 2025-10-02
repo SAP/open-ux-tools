@@ -2,4 +2,4 @@
 '@sap-ux/ui5-library-inquirer': minor
 ---
 
-When the user selects a UI5 option, check the npm registry for @sapui5/distribution-metadata versions and use the nearest available UI5 version when generating.
+Resolve UI5 versions against npm registry and @sapui5/distribution-metadata to ensure dropdown options match published packages.
