@@ -1221,9 +1221,7 @@ describe('MultiSourceDocumentationBuilder', () => {
                     { name: 'subdir', isDirectory: () => true, isFile: () => false },
                     { name: 'file1.md', isDirectory: () => false, isFile: () => true }
                 ] as any)
-                .mockResolvedValueOnce([
-                    { name: 'file2.md', isDirectory: () => false, isFile: () => true }
-                ] as any);
+                .mockResolvedValueOnce([{ name: 'file2.md', isDirectory: () => false, isFile: () => true }] as any);
 
             mockFs.readFile.mockResolvedValue('content');
 
@@ -1240,9 +1238,7 @@ describe('MultiSourceDocumentationBuilder', () => {
                 { name: 'bad.md', isDirectory: () => false, isFile: () => true }
             ] as any);
 
-            mockFs.readFile
-                .mockResolvedValueOnce('good content')
-                .mockRejectedValueOnce(new Error('Permission denied'));
+            mockFs.readFile.mockResolvedValueOnce('good content').mockRejectedValueOnce(new Error('Permission denied'));
 
             const files = await builder.readFilesFromDirectory(basePath);
             expect(files.length).toBeGreaterThanOrEqual(0);
@@ -1399,9 +1395,7 @@ describe('MultiSourceDocumentationBuilder', () => {
                 enabled: true
             };
 
-            await expect(builder.processGitHubSource(source)).rejects.toThrow(
-                'Failed to process GitHub source test:'
-            );
+            await expect(builder.processGitHubSource(source)).rejects.toThrow('Failed to process GitHub source test:');
         });
     });
 
