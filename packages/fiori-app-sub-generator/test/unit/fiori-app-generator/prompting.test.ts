@@ -484,7 +484,7 @@ describe('prompting.ts', () => {
                     ui5Version: {
                         hide: false,
                         includeSeparators: false,
-                        minUI5Version: "1.65.0",
+                        minUI5Version: '1.65.0',
                         onlyNpmVersions: true,
                         useAutocomplete: true
                     }
