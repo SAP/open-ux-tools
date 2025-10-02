@@ -248,8 +248,7 @@ export async function createUI5ApplicationPromptOptions(
             promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
             getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan, entityRelatedConfig),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
-        useAutocomplete: getHostEnvironment() === hostEnvironment.cli,
-        onlyNpmVersions: true // Only show UI5 versions available on npm for framework configuration
+        useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };
 
     const systemVersion = service.host ? await getSapSystemUI5Version(service.host) : undefined;

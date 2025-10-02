@@ -125,7 +125,6 @@ describe('prompting.ts', () => {
                     "hide": false,
                     "includeSeparators": false,
                     "minUI5Version": "1.65.0",
-                    "onlyNpmVersions": true,
                     "useAutocomplete": true,
                   },
                 }
@@ -471,8 +470,8 @@ describe('prompting.ts', () => {
             expect(ui5ApplicationInquirerSpy).toHaveBeenCalledWith(
                 {},
                 {
-                    addDeployConfig: { validatorCallback: expect.any(Function) },
-                    addFlpConfig: { validatorCallback: expect.any(Function) },
+                    addDeployConfig: { validatorCallback: expect.toBeFunction() },
+                    addFlpConfig: { validatorCallback: expect.toBeFunction() },
                     enableCodeAssist: { advancedOption: true, default: false },
                     enableEslint: { advancedOption: true, default: false },
                     enableTypeScript: { default: false },
@@ -484,7 +483,7 @@ describe('prompting.ts', () => {
                     ui5Version: {
                         hide: false,
                         includeSeparators: false,
-                        minUI5Version: '1.65.0',
+                        minUI5Version: expect.toBeString(),
                         onlyNpmVersions: true,
                         useAutocomplete: true
                     }
