@@ -350,6 +350,10 @@ export function directLoadProxy(
 
 /**
  * Create a rewrite based on the provided configuration.
+ * This will either replace the configured path with the provided pathReplace value or
+ * will prepend the UI5 version to the path.
+ * It also ensures that the path from the http-proxy-middleware starts with the
+ * config path in case of nested router instances.
  *
  * @param config proxy configuration
  * @param ui5Ver UI5 version string
