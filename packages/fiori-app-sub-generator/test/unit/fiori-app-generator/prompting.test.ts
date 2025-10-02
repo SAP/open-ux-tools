@@ -484,7 +484,6 @@ describe('prompting.ts', () => {
                         hide: false,
                         includeSeparators: false,
                         minUI5Version: expect.toBeString(),
-                        onlyNpmVersions: true,
                         useAutocomplete: true
                     }
                 },
