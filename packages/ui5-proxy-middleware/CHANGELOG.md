@@ -1,5 +1,17 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.1
+
+### Patch Changes
+
+-   d9acb53: Supports the pathReplace over the ui5-proxy-middleware
+
+## 1.6.0
+
+### Minor Changes
+
+-   64250ed: migrate to http-proxy-middleware v3
+
 ## 1.5.12
 
 ### Patch Changes
