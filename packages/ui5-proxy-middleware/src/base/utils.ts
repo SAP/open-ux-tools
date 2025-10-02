@@ -359,7 +359,10 @@ export function getPathRewrite(config: ProxyConfig, ui5Ver: string): Options['pa
     if (config.pathReplace) {
         // Remove trailing slash from pathReplace if present
         const sanitizedPathReplace = config.pathReplace?.replace(/\/$/, '');
-        return (path: string) => (path.startsWith(config.path) ? path.replace(config.path, sanitizedPathReplace) : sanitizedPathReplace + path);
+        return (path: string) =>
+            path.startsWith(config.path)
+                ? path.replace(config.path, sanitizedPathReplace)
+                : sanitizedPathReplace + path;
     }
     return (path: string) => (path.startsWith(config.path) ? ui5Ver + path : ui5Ver + config.path + path);
 }
