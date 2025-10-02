@@ -1,31 +1,32 @@
-import { getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
+import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { ToolsLogger } from '@sap-ux/logger';
 
 /**
- * Resolves a UI5 version to its corresponding npm-published version from @sapui5/distribution-metadata.
+ * Gets UI5 versions that are available on npm for use in dropdown prompts.
+ * This ensures only versions published to @sapui5/distribution-metadata are shown to users.
  *
- * @param selectedVersion - The UI5 version selected by the user
- * @returns Promise that resolves to the corresponding npm-published UI5 version
+ * @param filterOptions - Optional filter options for UI5 versions
+ * @returns Promise that resolves to array of UI5 versions available on npm
  */
-export async function resolveUI5VersionToNpm(selectedVersion: string): Promise<string> {
+export async function getNpmAvailableUI5Versions(filterOptions?: UI5VersionFilterOptions) {
     try {
-        // Query npm registry for @sapui5/distribution-metadata package to find the best available version.
-        const npmVersion = (
-            await getUI5Versions({
-                onlyVersionNumbers: true,
-                onlyNpmVersion: true,
-                ui5SelectedVersion: selectedVersion ?? latestVersionString
-            })
-        )[0]?.version;
+        // Query npm registry for @sapui5/distribution-metadata package to get only npm-published versions
+        const npmVersions = await getUI5Versions({
+            ...filterOptions,
+            onlyVersionNumbers: true,
+            onlyNpmVersion: true
+        });
 
-        return npmVersion || selectedVersion;
+        return npmVersions;
     } catch (error) {
-        // Log the failure and fall back to the selected version
+        // Log the failure and fall back to standard versions
         new ToolsLogger().warn(
-            `Failed to resolve npm version for UI5 version '${selectedVersion}'. Error: ${
+            `Failed to retrieve npm-available UI5 versions. Error: ${
                 error instanceof Error ? error.message : String(error)
-            }. Using selected version as fallback.`
+            }. Falling back to standard UI5 versions.`
         );
-        return selectedVersion;
+
+        // Fallback to standard UI5 versions if npm query fails
+        return await getUI5Versions(filterOptions || {});
     }
 }

@@ -31,7 +31,9 @@ async function getPrompts(
         useCache: true,
         includeMaintained: true,
         includeDefault: true,
-        minSupportedUI5Version: promptOptions?.ui5Version?.minUI5Version ?? undefined
+        minSupportedUI5Version: promptOptions?.ui5Version?.minUI5Version ?? undefined,
+        onlyVersionNumbers: promptOptions?.ui5Version?.onlyNpmVersions ?? false,
+        onlyNpmVersion: promptOptions?.ui5Version?.onlyNpmVersions ?? false
     };
     const ui5Versions = await getUI5Versions(filterOptions);
 

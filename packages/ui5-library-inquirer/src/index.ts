@@ -1,9 +1,9 @@
-import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
 import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
-import { resolveUI5VersionToNpm } from './utils';
+import { getNpmAvailableUI5Versions } from './utils';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
@@ -17,7 +17,8 @@ async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Ques
         useCache: true,
         includeMaintained: true
     };
-    const ui5Versions = await getUI5Versions(filterOptions);
+    // Get only npm-available UI5 versions to avoid post-selection resolution
+    const ui5Versions = await getNpmAvailableUI5Versions(filterOptions);
 
     const ui5LibPromptInputs: UI5LibraryPromptOptions = {
         targetFolder: promptOptions?.targetFolder,
@@ -45,25 +46,11 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     const answers: UI5LibraryAnswers = adapter
         ? await adapter.prompt(ui5LibPrompts)
         : await inquirer.prompt(ui5LibPrompts);
-
-    // If a UI5 version was selected, resolve it to the nearest available npm version
-    // Flow is:
-    // 1. User selects version from ui5 CDN supported versions
-    // 2. Selected version is used to get the nearest ui5 version from npm as ui5.yaml is using framework rather than ui5 cdn.
-    if (answers.ui5Version) {
-        const resolvedVersion = await resolveUI5VersionToNpm(answers.ui5Version);
-
-        // Update the answer with the resolved version if different
-        if (resolvedVersion !== answers.ui5Version) {
-            answers.ui5Version = resolvedVersion;
-        }
-    }
-
     return answers;
 }
 
 export { getPrompts, prompt };
-export { resolveUI5VersionToNpm } from './utils';
+export { getNpmAvailableUI5Versions } from './utils';
 
 export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';
