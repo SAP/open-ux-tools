@@ -4,13 +4,7 @@ import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep';
 import { addPackageDevDependency, FileName, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import { getDeployConfig, updateBaseConfig } from './config';
-import {
-    addUi5Dependency,
-    getLibraryPath,
-    isTsProject,
-    writeUi5RepositoryFiles,
-    writeUi5RepositoryIgnore
-} from './file';
+import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file';
 import { UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION } from './constants';
 import type { DeployConfigOptions } from './types';
 import type { Editor } from 'mem-fs-editor';
@@ -51,8 +45,7 @@ async function generate(
     const deployConfig = await getDeployConfig(abapConfig, baseConfig);
     fs.write(deployFilePath, deployConfig.toString());
 
-    const includeBuildScript = !abapConfig.lrep || isTsProject(fs, basePath);
-    await updateScripts(basePath, deployConfigFile, fs, includeBuildScript);
+    await updateScripts(basePath, deployConfigFile, fs);
 
     if (isLib) {
         // ui5 repo ignore file
