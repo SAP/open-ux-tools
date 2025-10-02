@@ -45,7 +45,7 @@ async function generate(
     const deployConfig = await getDeployConfig(abapConfig, baseConfig);
     fs.write(deployFilePath, deployConfig.toString());
 
-    await updateScripts(basePath, deployConfigFile, fs);
+    await updateScripts(basePath, deployConfigFile, fs, options);
 
     if (isLib) {
         // ui5 repo ignore file

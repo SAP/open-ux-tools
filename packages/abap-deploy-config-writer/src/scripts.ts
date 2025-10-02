@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 
 import { addPackageDevDependency, updatePackageScript } from '@sap-ux/project-access';
 
-import { isAdpProject } from './file';
+import type { DeployConfigOptions } from './types';
 import { BUILD_SCRIPT, DEPLOY_SCRIPT, RIMRAF, RIMRAF_VERSION, UNDEPLOY_SCRIPT } from './constants';
 
 /**
@@ -11,10 +11,15 @@ import { BUILD_SCRIPT, DEPLOY_SCRIPT, RIMRAF, RIMRAF_VERSION, UNDEPLOY_SCRIPT } 
  * @param {string} basePath - The path to the base directory.
  * @param {string} deployConfigFile - The path to the deploy config file.
  * @param {Editor} fs - The file system editor.
+ * @param {DeployConfigOptions} options - The deploy config options.
  */
-export async function updateScripts(basePath: string, deployConfigFile: string, fs: Editor): Promise<void> {
-    const isAdp = await isAdpProject(fs, basePath);
-    const buildPrefix = isAdp ? '' : `${BUILD_SCRIPT} && `;
+export async function updateScripts(
+    basePath: string,
+    deployConfigFile: string,
+    fs: Editor,
+    options?: DeployConfigOptions
+): Promise<void> {
+    const buildPrefix = options?.addBuildToUndeployScript ?? true ? `${BUILD_SCRIPT} && ` : '';
 
     // deploy script
     const deployScript = `${BUILD_SCRIPT} && ${DEPLOY_SCRIPT} --config ${deployConfigFile}`;
