@@ -26,7 +26,7 @@ export async function getReentranceTicket({
 }): Promise<{ reentranceTicket: string; backend?: ABAPVirtualHostProvider }> {
     const backend = new ABAPVirtualHostProvider(backendUrl, logger);
     const uiHostname = await backend.uiHostname();
-    return new Promise((resolve, reject) => { 
+    return new Promise((resolve, reject) => {
         // Start local server to listen to redirect call, with timeout
         const { server, redirectUrl } = setupRedirectHandling({ resolve, reject, timeout, backend, logger });
         server.listen();
