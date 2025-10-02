@@ -17,6 +17,9 @@ import type { Url } from 'url';
 import { t } from '../i18n';
 import type { ReaderCollection } from '@ui5/fs';
 import type { Socket } from 'node:net';
+import type connect from 'connect';
+
+export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
 /**
  * Handler for the proxy response event.
@@ -359,7 +362,12 @@ export function getPathRewrite(config: ProxyConfig, ui5Ver: string): Options['pa
     if (config.pathReplace) {
         // Remove trailing slash from pathReplace if present
         const sanitizedPathReplace = config.pathReplace?.replace(/\/$/, '');
-        return (path: string) => path.replace(config.path, sanitizedPathReplace);
+        return (path: string, req: EnhancedIncomingMessage) => {
+            // ensure that the path starts with the configured path
+            // it might get lost when you nest router instances
+            const originalUrl = req.originalUrl?.includes(path) ? req.originalUrl : path;
+            return originalUrl.replace(config.path, sanitizedPathReplace);
+        }
     }
     return (path: string) => (path.startsWith(config.path) ? ui5Ver + path : ui5Ver + config.path + path);
 }
