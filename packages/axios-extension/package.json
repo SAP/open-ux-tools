@@ -26,7 +26,9 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
+        "@sap-ux/annotation-converter": "0.10.3",
         "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/edmx-parser": "0.9.1",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "axios": "1.12.2",
@@ -42,6 +44,7 @@
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
+        "@sap-ux/vocabularies-types": "0.13.0",
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.202",
         "nock": "13.4.0",

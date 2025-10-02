@@ -809,9 +809,15 @@ importers:
 
   packages/axios-extension:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.3
+        version: 0.10.3
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -855,6 +861,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202

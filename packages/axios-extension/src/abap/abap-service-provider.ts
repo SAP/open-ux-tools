@@ -1,3 +1,9 @@
+import { join as joinPosix } from 'node:path/posix';
+
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
+
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
@@ -248,6 +254,85 @@ export class AbapServiceProvider extends ServiceProvider {
         generator.setContentType(this.getContentType(config));
         generator.configure(config, packageName || '$TMP');
         return generator;
+    }
+
+    /**
+     * Collects ValueListReferences annotation values from the service metadata and annotation files.
+     *
+     * @param servicePath - The service path to which the value list references belong
+     * @param metadata - The metadata of the service
+     * @param annotations - The annotation files
+     * @returns A list of ValueListReferences found in the metadata and annotations.
+     */
+    public async getValueListReferenceServices(
+        servicePath: string,
+        metadata: ConvertedMetadata | string | undefined,
+        annotations: { Definitions: string; Uri: string }[]
+    ): Promise<Record<string, { data?: string; path: string }[]>> {
+        if (!metadata) {
+            return {};
+        }
+        const files = [
+            { data: metadata, path: servicePath },
+            ...annotations.map((annotationFile) => ({ data: annotationFile.Definitions, path: annotationFile.Uri }))
+        ];
+        const allPromises: Record<string, Promise<string>> = {};
+        const valueListReferences: Record<string, { data?: string; path: string }[]> = {};
+
+        for (const { rootPath, target, values } of this.getValueListReferences(files)) {
+            for (const reference of values) {
+                const externalServicePath = joinPosix(rootPath, reference as string).replace('/$metadata', '');
+                const externalService = this.service(externalServicePath);
+                allPromises[externalServicePath] = externalService.metadata().catch(() => {
+                    // TODO: error handling
+                    return '';
+                });
+                valueListReferences[target] ??= [];
+                valueListReferences[target].push({
+                    path: externalServicePath
+                });
+            }
+        }
+
+        await Promise.allSettled(Object.keys(allPromises));
+        for (const values of Object.values(valueListReferences)) {
+            for (const value of values) {
+                const data = await allPromises[value.path];
+                if (data) {
+                    value.data = data;
+                }
+            }
+        }
+        return valueListReferences;
+    }
+
+    /**
+     * Collects ValueListReferences annotation values from the given metadata and annotation files.
+     *
+     * @param files - Metadata and annotation files to be searched for ValueListReferences.
+     * @returns ValueListReferences found in the files.
+     */
+    private getValueListReferences(
+        files: {
+            data: string | ConvertedMetadata;
+            path: string;
+        }[]
+    ): { target: string; rootPath: string; values: string[] }[] {
+        const references = [];
+        for (const { data, path } of files) {
+            const schema = typeof data === 'string' ? convert(parse(data)) : data;
+            for (const entityType of schema.entityTypes) {
+                for (const property of entityType.entityProperties) {
+                    const target = `${entityType.name}/${property.name}`;
+                    references.push({
+                        rootPath: path,
+                        target,
+                        values: property.annotations.Common?.ValueListReferences ?? []
+                    });
+                }
+            }
+        }
+        return references;
     }
 
     /**
