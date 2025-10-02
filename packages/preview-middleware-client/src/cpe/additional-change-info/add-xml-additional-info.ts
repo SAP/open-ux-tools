@@ -1,5 +1,5 @@
 import FlexChange from 'sap/ui/fl/Change';
-import { getControlById } from '../../utils/core';
+import { getControlById, findViewByControl } from '../../utils/core';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -12,6 +12,7 @@ export type AddXMLAdditionalInfo = {
     templateName?: string;
     targetAggregation?: string;
     controlType?: string;
+    viewName?: string;
 };
 
 export type AddXMLChangeContent = {
@@ -21,14 +22,24 @@ export type AddXMLChangeContent = {
 export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>): AddXMLAdditionalInfo | undefined {
     const selectorId = change.getSelector()?.id ?? '';
     const targetAggregation = change.getContent()?.targetAggregation ?? '';
-    const controlType = getControlById(selectorId)?.getMetadata().getName() ?? '';
+    const targetControl = getControlById(selectorId);
+    const controlType = targetControl?.getMetadata().getName() ?? '';
     const templateName = getFragmentTemplateName(selectorId, targetAggregation);
-    if (templateName) {
-        return { templateName };
-    }
-    if (controlType && targetAggregation) {
-        return { targetAggregation, controlType };
-    }
+    const viewName = targetControl ? (findViewByControl(targetControl)?.getViewName() ?? '') : '';
+
+    // Return additional info if we have either templateName or all required properties
+    if (templateName || (controlType && targetAggregation && viewName)) {
+        const result: AddXMLAdditionalInfo = {};
+        if (templateName) {
+            result.templateName = templateName;
+        }
+        if (controlType && targetAggregation && viewName) {
+            result.targetAggregation = targetAggregation;
+            result.controlType = controlType;
+            result.viewName = viewName;
+        }   
+        return result;
+    } 
     return undefined;
 }
 

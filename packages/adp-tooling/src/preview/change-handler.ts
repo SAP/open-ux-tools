@@ -255,7 +255,13 @@ export function addXmlFragment(
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
             const text = fs.read(fragmentTemplatePath);
-            const template = render(text, templateConfig.getData(change));
+            const changeTemplate = { 
+                ...templateConfig.getData(change),                 
+                viewName: additionalChangeInfo?.viewName,
+                targetAggregation: additionalChangeInfo?.targetAggregation,
+                controlType: additionalChangeInfo?.controlType
+            };
+            const template = render(text, changeTemplate);
             fs.write(fullPath, template);
         } else {
             // use default fragment template
@@ -263,6 +269,7 @@ export function addXmlFragment(
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
             const text = fs.read(fragmentTemplatePath);
             const template = render(text, {
+                viewName: additionalChangeInfo?.viewName,
                 targetAggregation: additionalChangeInfo?.targetAggregation,
                 controlType: additionalChangeInfo?.controlType
             });
