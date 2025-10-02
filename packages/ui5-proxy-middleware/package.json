@@ -49,9 +49,7 @@
         "express": "4.21.2",
         "nock": "13.4.0",
         "supertest": "7.1.4",
-        "yaml": "2.2.2",
-        "connect": "^3.7.0",
-        "@types/connect": "^3.4.38"
+        "yaml": "2.2.2"
     },
     "ui5": {
         "dependencies": []
