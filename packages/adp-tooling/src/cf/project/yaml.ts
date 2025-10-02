@@ -141,13 +141,16 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: MtaYaml, projectName: str
  * @param {string} projectName - The project name.
  * @param {string} businessSolution - The business solution.
  * @param {string} businessService - The business service.
+ * @param {string} timestamp - The timestamp.
  */
 function adjustMtaYamlManagedApprouter(
     yamlContent: MtaYaml,
     projectName: string,
     businessSolution: string,
-    businessService: string
+    businessService: string,
+    timestamp: string
 ): void {
+    const projectNameForXsSecurity = getProjectNameForXsSecurity(yamlContent, timestamp);
     const appRouterName = `${projectName}-destination-content`;
     let appRouter = yamlContent.modules?.find((module: MtaModule) => module.name === appRouterName);
     if (appRouter == null) {
@@ -202,7 +205,7 @@ function adjustMtaYamlManagedApprouter(
                             },
                             {
                                 Name: `${businessSolution}-uaa-${projectName}`,
-                                ServiceInstanceName: `${projectName}-xsuaa`,
+                                ServiceInstanceName: `${projectNameForXsSecurity}-xsuaa`,
                                 ServiceKeyName: `${projectName}_uaa-key`,
                                 Authentication: 'OAuth2UserTokenExchange',
                                 'sap.cloud.service': businessSolution.replaceAll('_', '.')
@@ -443,7 +446,7 @@ export async function adjustMtaYaml(
     if (isStandaloneApprouter) {
         adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessService);
     } else {
-        adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService);
+        adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService, timestamp);
     }
     adjustMtaYamlUDeployer(yamlContent, projectName, moduleName);
     adjustMtaYamlResources(yamlContent, projectName, timestamp, !isStandaloneApprouter);
