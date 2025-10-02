@@ -59,9 +59,7 @@ describe('ui5-application-inquirer API', () => {
             useCache: true,
             includeMaintained: true,
             includeDefault: true,
-            minSupportedUI5Version: undefined,
-            onlyVersionNumbers: false,
-            onlyNpmVersion: false
+            minSupportedUI5Version: undefined
         };
         expect(getUI5VersionsSpy).toHaveBeenCalledWith(filterOptions);
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, undefined, false);

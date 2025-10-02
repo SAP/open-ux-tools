@@ -81,12 +81,6 @@ type UI5VersionPromptOptions = {
      *
      */
     defaultChoice?: UI5VersionChoice;
-    /**
-     * If set to `true`, only UI5 versions available on npm (@sapui5/distribution-metadata) will be shown.
-     * This ensures that only versions that can be used with ui5.yaml framework configuration are offered.
-     * Default is `false`.
-     */
-    onlyNpmVersions?: boolean;
 };
 
 type TargetFolderPromptOptions = {
