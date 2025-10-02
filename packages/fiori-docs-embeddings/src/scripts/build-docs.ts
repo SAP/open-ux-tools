@@ -98,9 +98,32 @@ interface Token {
 }
 
 interface MatterResult {
-    data: Record<string, any>;
+    data: Record<string, unknown>;
     content: string;
 }
+
+interface ApiSymbol {
+    name?: string;
+    kind?: string;
+    description?: string;
+    module?: string;
+    methods?: ApiMethod[];
+    properties?: ApiProperty[];
+}
+
+interface ApiMethod {
+    name: string;
+    description?: string;
+}
+
+interface ApiProperty {
+    name: string;
+    description?: string;
+}
+
+type ApiData = {
+    symbols: ApiSymbol[];
+} & Record<string, unknown>;
 
 /**
  * Multi-source documentation builder for fetching and processing documentation from various sources.
@@ -199,7 +222,8 @@ class MultiSourceDocumentationBuilder {
                     await execCommand('git', ['pull', 'origin', source.branch ?? 'main'], { cwd: repoPath });
                     console.log(`✓ Updated repository: ${repoName}`);
                 } catch (pullError) {
-                    console.warn(`Failed to pull updates for ${repoName}, using existing version:`, pullError.message);
+                    const errorMessage = pullError instanceof Error ? pullError.message : String(pullError);
+                    console.warn(`Failed to pull updates for ${repoName}, using existing version:`, errorMessage);
                 }
             } else {
                 console.log(`🔄 Cloning repository: ${repoUrl}`);
@@ -213,7 +237,8 @@ class MultiSourceDocumentationBuilder {
 
             return repoPath;
         } catch (error) {
-            throw new Error(`Failed to clone/update repository ${repoName}: ${error?.message}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to clone/update repository ${repoName}: ${errorMessage}`);
         }
     }
 
@@ -278,13 +303,15 @@ class MultiSourceDocumentationBuilder {
                             type: 'file',
                             content
                         });
-                    } catch (error: any) {
-                        console.warn(`Failed to read file ${fullEntryPath}:`, error.message);
+                    } catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : String(error);
+                        console.warn(`Failed to read file ${fullEntryPath}:`, errorMessage);
                     }
                 }
             }
         } catch (error) {
-            console.warn(`Failed to read directory ${fullPath}:`, error?.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            console.warn(`Failed to read directory ${fullPath}:`, errorMessage);
         }
 
         return files;
@@ -401,7 +428,8 @@ class MultiSourceDocumentationBuilder {
                 parsed: { data: {}, content }
             };
         } catch (error) {
-            console.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${error.message}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            console.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${errorMessage}`);
             return this.parsePlainTextFile(file);
         }
     }
@@ -499,8 +527,9 @@ class MultiSourceDocumentationBuilder {
      * @returns Array of unique tags
      */
     private generateTags(parsed: MatterResult, category: string, fileExtension: string, fileName: string): string[] {
+        const parsedTags = Array.isArray(parsed.data.tags) ? parsed.data.tags : [];
         const tags = [
-            ...(parsed.data.tags || []),
+            ...parsedTags.map(String),
             category,
             fileExtension.replace('.', ''),
             ...fileName.split(/[\s\-_\.\[\](){}!@#$%^&*+=|\\:";'<>?,/]+/).filter((word) => word.length > 2)
@@ -601,8 +630,9 @@ class MultiSourceDocumentationBuilder {
             console.log(`📁 Categories: ${this.categories.size}`);
             console.log(`🌐 GitHub API requests: ${this.requestCount}`);
             console.log(`🔗 Sources processed: ${this.sourceResults.size}`);
-        } catch (error: any) {
-            console.error('❌ Build failed:', error.message);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            console.error('❌ Build failed:', errorMessage);
             process.exit(1);
         }
     }
@@ -675,10 +705,9 @@ class MultiSourceDocumentationBuilder {
                             counts.success++;
                         } else {
                             const file = batch[index];
-                            console.warn(
-                                `Failed to parse document ${file.path || file.name}:`,
-                                result.reason?.message || result.reason
-                            );
+                            const errorMessage =
+                                result.reason instanceof Error ? result.reason.message : String(result.reason);
+                            console.warn(`Failed to parse document ${file.path || file.name}:`, errorMessage);
                             counts.failure++;
                         }
                         return counts;
@@ -700,10 +729,11 @@ class MultiSourceDocumentationBuilder {
 
             const duration = Date.now() - result.startTime;
             console.log(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
-        } catch (error: any) {
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
             result.success = false;
-            result.message = error.message;
-            console.error(`❌ Failed to process source ${source.id}:`, error.message);
+            result.message = errorMessage;
+            console.error(`❌ Failed to process source ${source.id}:`, errorMessage);
 
             // Continue with other sources instead of failing completely
         }
@@ -734,7 +764,8 @@ class MultiSourceDocumentationBuilder {
 
             return files as FileContent[];
         } catch (error) {
-            throw new Error(`Failed to process GitHub source ${source.id}: ${error?.message}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to process GitHub source ${source.id}: ${errorMessage}`);
         }
     }
 
@@ -775,11 +806,8 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(
-                `Source directory not found, trying fallback structure: ${
-                    error instanceof Error ? error.message : 'Unknown error'
-                }`
-            );
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.warn(`Source directory not found, trying fallback structure: ${errorMessage}`);
             return [];
         }
     }
@@ -814,9 +842,8 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(
-                `Skipping category directory due to error: ${error instanceof Error ? error.message : 'Unknown error'}`
-            );
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.warn(`Skipping category directory due to error: ${errorMessage}`);
             return [];
         }
     }
@@ -840,10 +867,8 @@ class MultiSourceDocumentationBuilder {
                 download_url: 'cached'
             };
         } catch (error) {
-            console.warn(
-                `Failed to load document file ${fileName}:`,
-                error instanceof Error ? error.message : 'Unknown error'
-            );
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.warn(`Failed to load document file ${fileName}:`, errorMessage);
             return null;
         }
     }
@@ -863,10 +888,11 @@ class MultiSourceDocumentationBuilder {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
-            const apiData = await response.json();
+            const apiData = (await response.json()) as ApiData | ApiSymbol[];
             return this.convertApiToDocuments(apiData, source);
-        } catch (error: any) {
-            throw new Error(`Failed to fetch API documentation: ${error.message}`);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to fetch API documentation: ${errorMessage}`);
         }
     }
 
@@ -877,11 +903,11 @@ class MultiSourceDocumentationBuilder {
      * @param source - Source configuration
      * @returns Array of file contents
      */
-    convertApiToDocuments(apiData: any, source: SourceConfig): FileContent[] {
+    convertApiToDocuments(apiData: ApiData | ApiSymbol[], source: SourceConfig): FileContent[] {
         const documents: FileContent[] = [];
 
         // Handle different API structures
-        if (apiData.symbols) {
+        if (!Array.isArray(apiData) && apiData.symbols) {
             // UI5 API format
             for (const symbol of apiData.symbols) {
                 if (symbol.kind === 'class' || symbol.kind === 'namespace') {
@@ -895,7 +921,7 @@ class MultiSourceDocumentationBuilder {
             }
         } else if (Array.isArray(apiData)) {
             // Array of API items
-            apiData.forEach((item: any, index: number) => {
+            apiData.forEach((item: ApiSymbol, index: number) => {
                 documents.push({
                     name: `api-item-${index}.md`,
                     path: `api/item-${index}.md`,
@@ -923,7 +949,7 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item to generate content for
      * @returns Generated documentation content as string
      */
-    generateApiDocContent(apiItem: any): string {
+    generateApiDocContent(apiItem: ApiSymbol | Record<string, unknown>): string {
         if (!apiItem) {
             return this.getDefaultApiDocContent();
         }
@@ -953,7 +979,7 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Header content string
      */
-    private generateApiHeader(apiItem: any): string {
+    private generateApiHeader(apiItem: ApiSymbol | Record<string, unknown>): string {
         let content = '';
 
         if (apiItem.name) {
@@ -973,7 +999,7 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Metadata content string
      */
-    private generateApiMetadata(apiItem: any): string {
+    private generateApiMetadata(apiItem: ApiSymbol | Record<string, unknown>): string {
         let content = '';
 
         if (apiItem.kind) {
@@ -993,8 +1019,8 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Methods content string
      */
-    private generateApiMethods(apiItem: any): string {
-        if (!apiItem.methods) {
+    private generateApiMethods(apiItem: ApiSymbol | Record<string, unknown>): string {
+        if (!('methods' in apiItem) || !Array.isArray(apiItem.methods)) {
             return '';
         }
 
@@ -1016,8 +1042,8 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Properties content string
      */
-    private generateApiProperties(apiItem: any): string {
-        if (!apiItem.properties) {
+    private generateApiProperties(apiItem: ApiSymbol | Record<string, unknown>): string {
+        if (!('properties' in apiItem) || !Array.isArray(apiItem.properties)) {
             return '';
         }
 
@@ -1039,7 +1065,7 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Fallback content string
      */
-    private generateFallbackApiContent(apiItem: any): string {
+    private generateFallbackApiContent(apiItem: ApiSymbol | Record<string, unknown>): string {
         if (typeof apiItem === 'object') {
             return `# API Reference\n\n\`\`\`json\n${JSON.stringify(apiItem, null, 2)}\n\`\`\`\n`;
         }

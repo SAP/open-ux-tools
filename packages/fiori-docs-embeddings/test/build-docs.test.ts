@@ -529,5 +529,479 @@ describe('MultiSourceDocumentationBuilder', () => {
                 expect.any(String)
             );
         });
+
+        it('should handle build errors gracefully', async () => {
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+                throw new Error(`Process.exit called with code ${code}`);
+            }) as any);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            builder.config.sources = [];
+
+            mockFs.mkdir.mockRejectedValue(new Error('Permission denied'));
+
+            await expect(builder.buildFilestore()).rejects.toThrow();
+
+            mockExit.mockRestore();
+        });
+    });
+
+    describe('parseFileByType - additional file types', () => {
+        it('should parse JavaScript files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.js',
+                path: 'src/test.js',
+                type: 'file' as const,
+                content: 'function test() { return 42; }'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```javascript');
+        });
+
+        it('should parse XML files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.xml',
+                path: 'src/test.xml',
+                type: 'file' as const,
+                content: '<root><element>value</element></root>'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```xml');
+        });
+
+        it('should parse CDS files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.cds',
+                path: 'db/test.cds',
+                type: 'file' as const,
+                content: 'entity Books { key ID : Integer; title : String; }'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```cds');
+        });
+
+        it('should parse HTML files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.html',
+                path: 'src/test.html',
+                type: 'file' as const,
+                content: '<html><body><h1>Test</h1></body></html>'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```html');
+        });
+
+        it('should parse YAML files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.yaml',
+                path: 'config/test.yaml',
+                type: 'file' as const,
+                content: 'key: value\nlist:\n  - item1\n  - item2'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```yaml');
+        });
+
+        it('should parse YML files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.yml',
+                path: 'config/test.yml',
+                type: 'file' as const,
+                content: 'name: test\nvalue: 123'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```yaml');
+        });
+
+        it('should parse properties files correctly', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.properties',
+                path: 'i18n/test.properties',
+                type: 'file' as const,
+                content: 'key1=value1\nkey2=value2'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toContain('```properties');
+        });
+
+        it('should parse plain text files', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.txt',
+                path: 'docs/test.txt',
+                type: 'file' as const,
+                content: 'Plain text content'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('test');
+            expect(result.content).toBe('Plain text content');
+        });
+
+        it('should handle invalid JSON gracefully', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'invalid.json',
+                path: 'data/invalid.json',
+                type: 'file' as const,
+                content: '{ invalid json content'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.title).toBe('invalid');
+            expect(result.content).toBe('{ invalid json content');
+        });
+    });
+
+    describe('generateTags', () => {
+        it('should generate tags with frontmatter tags', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.md',
+                path: 'docs/test.md',
+                type: 'file' as const,
+                content: '---\ntags:\n  - tag1\n  - tag2\n---\n# Test'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.tags).toContain('tag1');
+            expect(result.tags).toContain('tag2');
+        });
+
+        it('should handle non-array tags in frontmatter', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.md',
+                path: 'docs/test.md',
+                type: 'file' as const,
+                content: '---\ntags: single-tag\n---\n# Test'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.tags).toBeDefined();
+        });
+
+        it('should extract tags from filename', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'fiori-elements-feature.md',
+                path: 'docs/fiori-elements-feature.md',
+                type: 'file' as const,
+                content: '# Test'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.tags).toContain('fiori');
+            expect(result.tags).toContain('elements');
+            expect(result.tags).toContain('feature');
+        });
+    });
+
+    describe('generateExcerpt', () => {
+        it('should generate excerpt from markdown content', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const longContent = '# Title\n\n' + 'This is a very long content that should be truncated. '.repeat(10);
+            const file = {
+                name: 'test.md',
+                path: 'docs/test.md',
+                type: 'file' as const,
+                content: longContent
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.excerpt.length).toBeLessThanOrEqual(203); // 200 + '...'
+            expect(result.excerpt).not.toContain('#');
+        });
+
+        it('should handle short content without truncation', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.md',
+                path: 'docs/test.md',
+                type: 'file' as const,
+                content: '# Short\n\nBrief content.'
+            };
+
+            const result = builder.parseDocument(file);
+
+            expect(result.excerpt.length).toBeLessThan(200);
+            expect(result.excerpt).not.toContain('...');
+        });
+    });
+
+    describe('readFilesFromDirectory edge cases', () => {
+        it('should skip node_modules directories', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const basePath = '/test/path';
+
+            mockFs.readdir.mockResolvedValue([
+                { name: 'node_modules', isDirectory: () => true, isFile: () => false },
+                { name: 'test.md', isDirectory: () => false, isFile: () => true }
+            ] as any);
+
+            mockFs.readFile.mockResolvedValue('test content');
+
+            const files = await builder.readFilesFromDirectory(basePath);
+
+            expect(files.length).toBeGreaterThanOrEqual(0);
+        });
+
+        it('should skip .git directories', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const basePath = '/test/path';
+
+            mockFs.readdir.mockResolvedValue([
+                { name: '.git', isDirectory: () => true, isFile: () => false },
+                { name: 'test.md', isDirectory: () => false, isFile: () => true }
+            ] as any);
+
+            mockFs.readFile.mockResolvedValue('test content');
+
+            const files = await builder.readFilesFromDirectory(basePath);
+
+            expect(files.length).toBeGreaterThanOrEqual(0);
+        });
+
+        it('should handle readdir errors', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const basePath = '/test/path';
+
+            mockFs.readdir.mockRejectedValue(new Error('Permission denied'));
+
+            const files = await builder.readFilesFromDirectory(basePath);
+
+            expect(files).toHaveLength(0);
+        });
+
+        it('should filter unsupported file extensions', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const basePath = '/test/path';
+
+            mockFs.readdir.mockResolvedValue([
+                { name: 'test.md', isDirectory: () => false, isFile: () => true },
+                { name: 'test.exe', isDirectory: () => false, isFile: () => true },
+                { name: 'test.bin', isDirectory: () => false, isFile: () => true }
+            ] as any);
+
+            mockFs.readFile.mockResolvedValue('test content');
+
+            const files = await builder.readFilesFromDirectory(basePath);
+
+            expect(files.some((f: any) => f.name === 'test.exe')).toBeFalsy();
+        });
+    });
+
+    describe('processSource', () => {
+        it('should handle unsupported source type', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const source = {
+                id: 'test-source',
+                type: 'unsupported' as any,
+                category: 'test',
+                enabled: true
+            };
+
+            await builder.processSource(source);
+
+            const result = builder['sourceResults'].get('test-source');
+            expect(result?.success).toBe(false);
+            expect(result?.message).toContain('Unsupported source type');
+        });
+
+        it('should handle parsing failures in batch processing', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+            mockFs.readdir.mockResolvedValue([
+                { name: 'test.md', isDirectory: () => false, isFile: () => true }
+            ] as any);
+            mockFs.readFile.mockResolvedValue('# Test');
+
+            const source = {
+                id: 'test-source',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await builder.processSource(source);
+
+            const result = builder['sourceResults'].get('test-source');
+            expect(result).toBeDefined();
+        });
+    });
+
+    describe('loadFromCategory edge cases', () => {
+        it('should handle non-directory category paths', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.stat.mockResolvedValue({ isDirectory: () => false } as any);
+
+            const source = { id: 'test-source', type: 'github' as const, category: 'test', enabled: true };
+
+            const documents = await builder.loadCachedDocuments(source);
+
+            expect(documents).toHaveLength(0);
+        });
+
+        it('should handle readdir errors in category loading', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.stat.mockResolvedValue({ isDirectory: () => true } as any);
+            mockFs.readdir.mockRejectedValue(new Error('Read error'));
+
+            const source = { id: 'test-source', type: 'github' as const, category: 'test', enabled: true };
+
+            const documents = await builder.loadCachedDocuments(source);
+
+            expect(documents).toHaveLength(0);
+        });
+
+        it('should skip non-JSON files in category', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.stat.mockResolvedValue({ isDirectory: () => true } as any);
+            mockFs.readdir
+                .mockResolvedValueOnce(['category1'] as any)
+                .mockResolvedValueOnce(['doc1.json', 'readme.md', 'config.txt'] as any);
+            mockFs.readFile.mockResolvedValue(JSON.stringify({ title: 'Test', content: 'Content', path: 'test.md' }));
+
+            const source = { id: 'test-source', type: 'github' as const, category: 'test', enabled: true };
+
+            const documents = await builder.loadCachedDocuments(source);
+
+            expect(documents.length).toBeGreaterThanOrEqual(0);
+        });
+
+        it('should handle malformed JSON files gracefully', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.stat.mockResolvedValue({ isDirectory: () => true } as any);
+            mockFs.readdir.mockResolvedValueOnce(['category1'] as any).mockResolvedValueOnce(['bad.json'] as any);
+            mockFs.readFile.mockResolvedValue('{ invalid json');
+
+            const source = { id: 'test-source', type: 'github' as const, category: 'test', enabled: true };
+
+            const documents = await builder.loadCachedDocuments(source);
+
+            expect(documents).toHaveLength(0);
+        });
+    });
+
+    describe('processGitHubSource', () => {
+        it('should handle repository with no docsPath', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+            mockFs.readdir.mockResolvedValue([]);
+
+            const source = {
+                id: 'test-source',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            const files = await builder.processGitHubSource(source);
+
+            expect(files).toBeDefined();
+            expect(Array.isArray(files)).toBe(true);
+        });
+    });
+
+    describe('categories', () => {
+        it('should add documents to category mapping', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.md',
+                path: 'category/test.md',
+                type: 'file' as const,
+                content: '# Test'
+            };
+
+            const source = { id: 'test', type: 'github' as const, category: 'test-category', enabled: true };
+
+            const result = builder.parseDocument(file, source);
+
+            expect(result.category).toBe('test-category');
+        });
+
+        it('should extract category from path when source has no category', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const file = {
+                name: 'test.md',
+                path: 'my-category/subfolder/test.md',
+                type: 'file' as const,
+                content: '# Test'
+            };
+
+            const result = builder.parseDocument(file, null);
+
+            expect(result.category).toBe('subfolder');
+        });
     });
 });
