@@ -1,7 +1,7 @@
 import { join } from 'path';
 import fg from 'fast-glob';
 import { platform } from 'os';
-import { FileName, type Package, getReuseLibs, getWebappPath } from '@sap-ux/project-access';
+import { FileName, type Package, getReuseLibs } from '@sap-ux/project-access';
 import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_IGNORE, UI5_REPO_TEXT_FILES } from './constants';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
@@ -116,16 +116,4 @@ export async function writeUi5RepositoryIgnore(fs: Editor, path?: string): Promi
             writeUi5RepositoryFile(fs, path, UI5_REPO_IGNORE, '^.*.ts$\n^.*.ts.map$');
         }
     }
-}
-
-/**
- * Checks if the project is a ADP project.
- *
- * @param fs - the memfs editor instance
- * @param basePath - the base path
- * @returns true if the project is a TypeScript project, false otherwise
- */
-export async function isAdpProject(fs: Editor, basePath: string): Promise<boolean> {
-    const webappPath = await getWebappPath(basePath, fs);
-    return fs.exists(join(webappPath, FileName.ManifestAppDescrVar));
 }
