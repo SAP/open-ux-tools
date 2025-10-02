@@ -237,8 +237,7 @@ class MultiSourceDocumentationBuilder {
 
             return repoPath;
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            throw new Error(`Failed to clone/update repository ${repoName}: ${errorMessage}`);
+            throw new Error(`Failed to clone/update repository ${repoName}: ${error.message}`);
         }
     }
 
@@ -304,14 +303,12 @@ class MultiSourceDocumentationBuilder {
                             content
                         });
                     } catch (error) {
-                        const errorMessage = error instanceof Error ? error.message : String(error);
-                        console.warn(`Failed to read file ${fullEntryPath}:`, errorMessage);
+                        console.warn(`Failed to read file ${fullEntryPath}:`, error.message);
                     }
                 }
             }
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.warn(`Failed to read directory ${fullPath}:`, errorMessage);
+            console.warn(`Failed to read directory ${fullPath}:`, error.message);
         }
 
         return files;
@@ -428,8 +425,7 @@ class MultiSourceDocumentationBuilder {
                 parsed: { data: {}, content }
             };
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${errorMessage}`);
+            console.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${error.message}`);
             return this.parsePlainTextFile(file);
         }
     }
@@ -631,8 +627,7 @@ class MultiSourceDocumentationBuilder {
             console.log(`🌐 GitHub API requests: ${this.requestCount}`);
             console.log(`🔗 Sources processed: ${this.sourceResults.size}`);
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('❌ Build failed:', errorMessage);
+            console.error('❌ Build failed:', error.message);
             process.exit(1);
         }
     }
@@ -730,10 +725,9 @@ class MultiSourceDocumentationBuilder {
             const duration = Date.now() - result.startTime;
             console.log(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
             result.success = false;
-            result.message = errorMessage;
-            console.error(`❌ Failed to process source ${source.id}:`, errorMessage);
+            result.message = error.message;
+            console.error(`❌ Failed to process source ${source.id}:`, error.message);
 
             // Continue with other sources instead of failing completely
         }
@@ -764,8 +758,7 @@ class MultiSourceDocumentationBuilder {
 
             return files as FileContent[];
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            throw new Error(`Failed to process GitHub source ${source.id}: ${errorMessage}`);
+            throw new Error(`Failed to process GitHub source ${source.id}: ${error.message}`);
         }
     }
 
@@ -806,8 +799,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            console.warn(`Source directory not found, trying fallback structure: ${errorMessage}`);
+            console.warn(`Source directory not found, trying fallback structure: ${error.message}`);
             return [];
         }
     }
@@ -842,8 +834,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            console.warn(`Skipping category directory due to error: ${errorMessage}`);
+            console.warn(`Skipping category directory due to error: ${error.message}`);
             return [];
         }
     }
@@ -867,8 +858,7 @@ class MultiSourceDocumentationBuilder {
                 download_url: 'cached'
             };
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            console.warn(`Failed to load document file ${fileName}:`, errorMessage);
+            console.warn(`Failed to load document file ${fileName}:`, error.message);
             return null;
         }
     }
@@ -891,8 +881,7 @@ class MultiSourceDocumentationBuilder {
             const apiData = (await response.json()) as ApiData | ApiSymbol[];
             return this.convertApiToDocuments(apiData, source);
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            throw new Error(`Failed to fetch API documentation: ${errorMessage}`);
+            throw new Error(`Failed to fetch API documentation: ${error.message}`);
         }
     }
 

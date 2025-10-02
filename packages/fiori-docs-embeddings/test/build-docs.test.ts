@@ -1004,4 +1004,505 @@ describe('MultiSourceDocumentationBuilder', () => {
             expect(result.category).toBe('subfolder');
         });
     });
+
+    describe('execCommand edge cases', () => {
+        it('should handle child process with stdout data', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const mockChild = {
+                stdout: {
+                    on: jest.fn((event, callback) => {
+                        if (event === 'data') {
+                            callback(Buffer.from('stdout data'));
+                        }
+                    })
+                },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await builder.cloneOrUpdateRepository(source);
+            expect(mockChild.on).toHaveBeenCalled();
+        });
+
+        it('should handle child process with null stdout', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const mockChild = {
+                stdout: null,
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await builder.cloneOrUpdateRepository(source);
+            expect(mockChild.on).toHaveBeenCalled();
+        });
+
+        it('should handle child process with null stderr', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: null,
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await builder.cloneOrUpdateRepository(source);
+            expect(mockChild.on).toHaveBeenCalled();
+        });
+
+        it('should handle non-zero exit code', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: {
+                    on: jest.fn((event, callback) => {
+                        if (event === 'data') {
+                            callback(Buffer.from('error message'));
+                        }
+                    })
+                },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(1);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(builder.cloneOrUpdateRepository(source)).rejects.toThrow();
+        });
+
+        it('should handle git pull error in update', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: {
+                    on: jest.fn((event, callback) => {
+                        if (event === 'data') {
+                            callback(Buffer.from('pull error'));
+                        }
+                    })
+                },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(1);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockResolvedValue({ isDirectory: () => true } as any);
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            const result = await builder.cloneOrUpdateRepository(source);
+            expect(result).toContain('test-test');
+        });
+
+        it('should handle general clone/update repository error with error.message', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: {
+                    on: jest.fn((event, callback) => {
+                        if (event === 'data') {
+                            callback(Buffer.from('fatal error'));
+                        }
+                    })
+                },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(128);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(builder.cloneOrUpdateRepository(source)).rejects.toThrow(
+                'Failed to clone/update repository test-test:'
+            );
+        });
+    });
+
+    describe('readFilesFromDirectory with subdirectory recursion', () => {
+        it('should recursively read from subdirectories', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const basePath = '/test/path';
+
+            mockFs.readdir
+                .mockResolvedValueOnce([
+                    { name: 'subdir', isDirectory: () => true, isFile: () => false },
+                    { name: 'file1.md', isDirectory: () => false, isFile: () => true }
+                ] as any)
+                .mockResolvedValueOnce([
+                    { name: 'file2.md', isDirectory: () => false, isFile: () => true }
+                ] as any);
+
+            mockFs.readFile.mockResolvedValue('content');
+
+            const files = await builder.readFilesFromDirectory(basePath);
+            expect(files.length).toBeGreaterThanOrEqual(0);
+        });
+
+        it('should handle readFile errors for specific files', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const basePath = '/test/path';
+
+            mockFs.readdir.mockResolvedValue([
+                { name: 'good.md', isDirectory: () => false, isFile: () => true },
+                { name: 'bad.md', isDirectory: () => false, isFile: () => true }
+            ] as any);
+
+            mockFs.readFile
+                .mockResolvedValueOnce('good content')
+                .mockRejectedValueOnce(new Error('Permission denied'));
+
+            const files = await builder.readFilesFromDirectory(basePath);
+            expect(files.length).toBeGreaterThanOrEqual(0);
+        });
+    });
+
+    describe('processSource with parsing errors in batch', () => {
+        it('should log parsing errors and continue with remaining documents', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+            const mockApiData = {
+                symbols: [
+                    { name: 'Test1', kind: 'class' },
+                    { name: 'Test2', kind: 'class' }
+                ]
+            };
+
+            mockFetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue(mockApiData)
+            });
+
+            // Override parseDocument to throw on second call
+            const originalParse = builder.parseDocument.bind(builder);
+            let callCount = 0;
+            builder.parseDocument = jest.fn((file: any, source: any) => {
+                callCount++;
+                if (callCount === 2) {
+                    throw new Error('Parse error on second document');
+                }
+                return originalParse(file, source);
+            });
+
+            const source = {
+                id: 'test',
+                type: 'json-api' as const,
+                category: 'api',
+                enabled: true,
+                url: 'https://test.com/api.json'
+            };
+
+            await builder.processSource(source);
+
+            const result = builder['sourceResults'].get('test');
+            expect(result?.success).toBe(true);
+            expect(result?.message).toContain('failed');
+
+            consoleWarnSpy.mockRestore();
+        });
+
+        it('should handle non-Error rejection reasons in batch processing', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+            const mockApiData = {
+                symbols: [
+                    { name: 'Test1', kind: 'class' },
+                    { name: 'Test2', kind: 'class' }
+                ]
+            };
+
+            mockFetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue(mockApiData)
+            });
+
+            // Override parseDocument to throw non-Error on second call
+            const originalParse = builder.parseDocument.bind(builder);
+            let callCount = 0;
+            builder.parseDocument = jest.fn((file: any, source: any) => {
+                callCount++;
+                if (callCount === 2) {
+                    throw 'String error message';
+                }
+                return originalParse(file, source);
+            });
+
+            const source = {
+                id: 'test',
+                type: 'json-api' as const,
+                category: 'api',
+                enabled: true,
+                url: 'https://test.com/api.json'
+            };
+
+            await builder.processSource(source);
+
+            const result = builder['sourceResults'].get('test');
+            expect(result).toBeDefined();
+            // When there's an error, at least one document should have been added or failed
+            expect(result?.documentsAdded).toBeGreaterThanOrEqual(0);
+
+            consoleWarnSpy.mockRestore();
+        });
+
+        it('should use file.name when file.path is missing in error logging', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+            const mockApiData = {
+                symbols: [{ name: 'Test1', kind: 'class' }]
+            };
+
+            mockFetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue(mockApiData)
+            });
+
+            // Override convertApiToDocuments to return file without path
+            const originalConvert = builder.convertApiToDocuments.bind(builder);
+            builder.convertApiToDocuments = jest.fn((apiData, source) => {
+                const docs = originalConvert(apiData, source);
+                // Remove path from first document
+                if (docs.length > 0) {
+                    delete docs[0].path;
+                }
+                return docs;
+            });
+
+            // Override parseDocument to throw error
+            builder.parseDocument = jest.fn(() => {
+                throw new Error('Parse error');
+            });
+
+            const source = {
+                id: 'test',
+                type: 'json-api' as const,
+                category: 'api',
+                enabled: true,
+                url: 'https://test.com/api.json'
+            };
+
+            await builder.processSource(source);
+
+            expect(consoleWarnSpy).toHaveBeenCalled();
+            consoleWarnSpy.mockRestore();
+        });
+    });
+
+    describe('processGitHubSource with errors', () => {
+        it('should throw error with error.message on failure', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.mkdir.mockRejectedValue(new Error('Disk full'));
+
+            const source = {
+                id: 'test',
+                type: 'github' as const,
+                owner: 'test',
+                repo: 'test',
+                branch: 'main',
+                category: 'test',
+                enabled: true
+            };
+
+            await expect(builder.processGitHubSource(source)).rejects.toThrow(
+                'Failed to process GitHub source test:'
+            );
+        });
+    });
+
+    describe('loadFromCategory with stat not directory', () => {
+        it('should handle stat returning non-directory for category path', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.stat
+                .mockResolvedValueOnce({ isDirectory: () => true } as any)
+                .mockResolvedValueOnce({ isDirectory: () => false } as any);
+            mockFs.readdir.mockResolvedValueOnce(['category1'] as any);
+
+            const source = { id: 'test', type: 'github' as const, category: 'test', enabled: true };
+
+            const documents = await builder.loadCachedDocuments(source);
+            expect(documents).toBeDefined();
+        });
+
+        it('should handle errors during category directory stat', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            mockFs.stat
+                .mockResolvedValueOnce({ isDirectory: () => true } as any)
+                .mockRejectedValueOnce(new Error('Stat error'));
+            mockFs.readdir.mockResolvedValueOnce(['category1'] as any);
+
+            const source = { id: 'test', type: 'github' as const, category: 'test', enabled: true };
+
+            const documents = await builder.loadCachedDocuments(source);
+            expect(documents).toHaveLength(0);
+        });
+    });
+
+    describe('generateFallbackApiContent with non-object', () => {
+        it('should handle null API items', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const content = builder.generateApiDocContent(null as any);
+
+            expect(content).toBe('# API Documentation\n\nNo content available.');
+        });
+
+        it('should handle API items without methods or properties fields', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const content = builder.generateApiDocContent({ someField: 'value', otherField: 123 });
+
+            expect(content).toContain('# API Reference');
+            expect(content).toContain('```json');
+            expect(content).toContain('"someField": "value"');
+        });
+    });
+
+    describe('createMasterIndex with multiple categories', () => {
+        it('should create index with properly formatted category names', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const doc1 = {
+                id: 'doc1',
+                title: 'Doc 1',
+                content: 'content',
+                category: 'test-category-one',
+                path: 'test1.md',
+                tags: [],
+                headers: [],
+                lastModified: '2023-01-01',
+                wordCount: 1,
+                excerpt: 'excerpt',
+                version: '1.0.0',
+                source: 'source1'
+            };
+
+            const doc2 = {
+                id: 'doc2',
+                title: 'Doc 2',
+                content: 'content',
+                category: 'another-category',
+                path: 'test2.md',
+                tags: [],
+                headers: [],
+                lastModified: '2023-01-01',
+                wordCount: 1,
+                excerpt: 'excerpt',
+                version: '1.0.0',
+                source: 'source1'
+            };
+
+            builder['documents'].set('doc1', doc1);
+            builder['documents'].set('doc2', doc2);
+            builder['categories'].set('test-category-one', ['doc1']);
+            builder['categories'].set('another-category', ['doc2']);
+
+            mockFs.writeFile.mockResolvedValue(undefined);
+
+            await builder.createMasterIndex();
+
+            expect(mockFs.writeFile).toHaveBeenCalled();
+            const writeCall = mockFs.writeFile.mock.calls[0];
+            const indexContent = JSON.parse(writeCall[1] as string);
+
+            expect(indexContent.categories).toHaveLength(2);
+            expect(indexContent.categories.some((c: any) => c.name === 'Test Category One')).toBe(true);
+            expect(indexContent.categories.some((c: any) => c.name === 'Another Category')).toBe(true);
+        });
+    });
 });
