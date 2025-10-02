@@ -1,4 +1,5 @@
 import { join } from 'path';
+import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync } from 'fs';
 
 import { getWebappPath, FileName } from '@sap-ux/project-access';
@@ -36,6 +37,10 @@ describe('getVariantNamespace', () => {
     const mockWebappPath = '/test/project/webapp';
     const mockManifestPath = join(mockWebappPath, FileName.ManifestAppDescrVar);
 
+    let mockFs: Editor;
+    let mockFsExists: jest.Mock;
+    let mockFsReadJSON: jest.Mock;
+
     beforeAll(async () => {
         await initI18n();
     });
@@ -43,57 +48,50 @@ describe('getVariantNamespace', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockGetWebappPath.mockResolvedValue(mockWebappPath);
+
+        mockFsExists = jest.fn();
+        mockFsReadJSON = jest.fn();
+
+        mockFs = {
+            exists: mockFsExists,
+            readJSON: mockFsReadJSON
+        } as unknown as Editor;
     });
 
     it('should return undefined for S4HC projects', async () => {
-        const result = await getVariantNamespace(mockPath, true);
-
+        const result = await getVariantNamespace(mockPath, true, mockFs);
         expect(result).toBeUndefined();
         expect(mockGetWebappPath).not.toHaveBeenCalled();
-        expect(mockExistsSync).not.toHaveBeenCalled();
     });
 
-    it('should return namespace from manifest.appdescr_variant file', async () => {
-        const mockManifest = {
-            namespace: 'apps/workcenter/appVariants/customer.app.variant'
-        };
+    it('should return namespace from memory', async () => {
+        const mockManifest = { namespace: 'apps/workcenter/appVariants/customer.app.variant' };
+        mockFsExists.mockReturnValue(true);
+        mockFsReadJSON.mockReturnValue(mockManifest);
 
-        mockExistsSync.mockReturnValue(true);
-        mockReadFileSync.mockReturnValue(JSON.stringify(mockManifest));
+        const result = await getVariantNamespace(mockPath, false, mockFs);
 
-        const result = await getVariantNamespace(mockPath, false);
-
-        expect(result).toBe('apps/workcenter/appVariants/customer.app.variant');
-        expect(mockGetWebappPath).toHaveBeenCalledWith(mockPath);
-        expect(mockExistsSync).toHaveBeenCalledWith(mockManifestPath);
-        expect(mockReadFileSync).toHaveBeenCalledWith(mockManifestPath, 'utf-8');
+        expect(result).toBe(mockManifest.namespace);
+        expect(mockGetWebappPath).toHaveBeenCalledWith(mockPath, mockFs);
+        expect(mockFsExists).toHaveBeenCalledWith(mockManifestPath);
     });
 
-    it('should return undefined when manifest file does not exist', async () => {
-        mockExistsSync.mockReturnValue(false);
+    it('should return undefined when memory file does not exist', async () => {
+        mockFsExists.mockReturnValue(false);
+        const result = await getVariantNamespace(mockPath, false, mockFs);
+        expect(result).toBeUndefined();
+    });
 
-        const result = await getVariantNamespace(mockPath, false);
+    it('should handle errors gracefully', async () => {
+        mockFsExists.mockImplementation(() => {
+            throw new Error('Memory filesystem error');
+        });
+
+        const result = await getVariantNamespace(mockPath, false, mockFs);
 
         expect(result).toBeUndefined();
-        expect(mockGetWebappPath).toHaveBeenCalledWith(mockPath);
-        expect(mockExistsSync).toHaveBeenCalledWith(mockManifestPath);
-        expect(mockReadFileSync).not.toHaveBeenCalled();
-    });
-
-    it('should handle JSON parsing errors gracefully', async () => {
-        mockExistsSync.mockReturnValue(true);
-        mockReadFileSync.mockReturnValue('invalid json content');
-
-        const result = await getVariantNamespace(mockPath, false);
-
-        expect(result).toBeUndefined();
-        expect(mockGetWebappPath).toHaveBeenCalledWith(mockPath);
-        expect(mockExistsSync).toHaveBeenCalledWith(mockManifestPath);
-        expect(mockReadFileSync).toHaveBeenCalledWith(mockManifestPath, 'utf-8');
         expect(DeploymentGenerator.logger.debug).toHaveBeenCalledWith(
-            t('debug.lrepNamespaceNotFound', {
-                error: 'Unexpected token \'i\', "invalid json content" is not valid JSON'
-            })
+            t('debug.lrepNamespaceNotFound', { error: 'Memory filesystem error' })
         );
     });
 });
