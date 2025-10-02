@@ -127,7 +127,9 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (this.authenticationRequired) {
+        // If authentication was already prompted it should not be skipped as this leads to issues with Yeoman UI navigation
+        const credentialsPrompted = getFromCache<boolean>(this.appWizard, 'credentialsPrompted', this.logger);
+        if (this.authenticationRequired || credentialsPrompted) {
             await this._promptAuthentication();
         }
         if (this.abort) {
@@ -197,7 +199,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 try {
                     this.provider = await getAbapServiceProvider(this.ui5Yaml, this.toolsLogger, this.credentials);
                     this.inbounds = await getBaseAppInbounds(this.appId, this.provider);
-                    addToCache(this.appWizard, { provider: this.provider }, this.logger);
+                    addToCache(this.appWizard, { provider: this.provider, credentialsPrompted: true }, this.logger);
                 } catch (error) {
                     if (!isAxiosError(error)) {
                         this.logger.error(`Base application inbounds fetching failed: ${error}`);
