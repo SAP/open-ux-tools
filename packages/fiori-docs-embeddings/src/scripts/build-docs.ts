@@ -4,11 +4,15 @@ import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { spawn } from 'node:child_process';
+import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { default as matter } from 'gray-matter';
 
 // Create promisified version of spawn for async/await
-const execCommand = (command: string, args: string[], options: any): Promise<{ stdout: string; stderr: string }> => {
+const execCommand = (
+    command: string,
+    args: string[],
+    options: SpawnOptionsWithoutStdio
+): Promise<{ stdout: string; stderr: string }> => {
     return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
         const child = spawn(command, args, { ...options, stdio: ['pipe', 'pipe', 'pipe'] });
         let stdout = '';
@@ -208,8 +212,8 @@ class MultiSourceDocumentationBuilder {
             }
 
             return repoPath;
-        } catch (error: any) {
-            throw new Error(`Failed to clone/update repository ${repoName}: ${error.message}`);
+        } catch (error) {
+            throw new Error(`Failed to clone/update repository ${repoName}: ${error?.message}`);
         }
     }
 
@@ -279,8 +283,8 @@ class MultiSourceDocumentationBuilder {
                     }
                 }
             }
-        } catch (error: any) {
-            console.warn(`Failed to read directory ${fullPath}:`, error.message);
+        } catch (error) {
+            console.warn(`Failed to read directory ${fullPath}:`, error?.message);
         }
 
         return files;
@@ -729,8 +733,8 @@ class MultiSourceDocumentationBuilder {
             console.log(`✓ Found ${files.length} files in ${source.id}`);
 
             return files as FileContent[];
-        } catch (error: any) {
-            throw new Error(`Failed to process GitHub source ${source.id}: ${error.message}`);
+        } catch (error) {
+            throw new Error(`Failed to process GitHub source ${source.id}: ${error?.message}`);
         }
     }
 

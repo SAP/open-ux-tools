@@ -85,8 +85,6 @@ export async function docSearch(
                     path: result.document.path,
                     score: result.score,
                     matches: [], // Vector search doesn't provide specific text matches
-                    // excerpt: result.document.metadata?.excerpt ?? result.document.content.substring(0, 200) + '...',
-                    // excerpt: result.document.metadata?.excerpt ?? result.document.content,
                     excerpt: result.document.metadata?.excerpt,
                     content: result.document.content,
                     uri: `sap-fiori://docs/${result.document.category}/${result.document.id}`

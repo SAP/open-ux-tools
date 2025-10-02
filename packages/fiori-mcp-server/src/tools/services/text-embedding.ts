@@ -69,6 +69,6 @@ export class TextEmbeddingService {
      * @returns True if initialized, false otherwise
      */
     isInitialized(): boolean {
-        return this.initialized && this.pipeline !== null;
+        return this.initialized;
     }
 }
