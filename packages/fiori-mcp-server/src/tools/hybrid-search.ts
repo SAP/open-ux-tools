@@ -95,7 +95,6 @@ export async function docSearch(
     } catch (error) {
         // Fallback when embeddings data is not available
         // Log warning about embeddings not being available
-        // console.warn('Embeddings data not available, providing limited search capability:', error);
         logger.warn(`Embeddings data not available, providing limited search capability: ${error}`);
         return {
             query,
