@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.15
+
+### Patch Changes
+
+-   a22b24e: enhance logging for remote connection of windows users
+
 ## 0.23.14
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.11
+
+### Patch Changes
+
+-   7f652f3: Update Icons for Page and Building Block
+
 ## 1.26.10
 
 ### Patch Changes
