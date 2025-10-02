@@ -90,10 +90,7 @@ export function getAbapOnBTPSystemQuestions(
                 }
                 return false;
             }
-        )[0]
-    );
-
-    questions.push(
+        )[0],
         ...withCondition(
             [...getCFDiscoverPrompts(connectValidator, undefined, undefined, cachedConnectedSystem)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'

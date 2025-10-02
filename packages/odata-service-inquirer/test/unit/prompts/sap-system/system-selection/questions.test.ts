@@ -598,10 +598,7 @@ describe('Test system selection prompts', () => {
                 system: backendSystemServiceKeysClone
             } as SystemSelectionAnswerType)
         ).toBe(true);
-        expect(validateServiceInfoSpy).toHaveBeenCalledWith(
-            backendSystemServiceKeysClone.serviceKeys,
-            undefined
-        );
+        expect(validateServiceInfoSpy).toHaveBeenCalledWith(backendSystemServiceKeysClone.serviceKeys);
     });
 
     test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {

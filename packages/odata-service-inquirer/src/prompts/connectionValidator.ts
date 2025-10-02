@@ -651,13 +651,9 @@ export class ConnectionValidator {
      *
      * @param serviceInfo the service info containing the UAA details
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
-     * @param refreshToken the refresh token for the Abap on Cloud environment, will be used to avoid re-authentication while the token is valid
      * @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
-    public async validateServiceInfo(
-        serviceInfo: ServiceInfo,
-        odataVersion?: ODataVersion
-    ): Promise<ValidationResult> {
+    public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;
         }

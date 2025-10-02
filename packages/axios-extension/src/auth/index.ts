@@ -1,4 +1,3 @@
-import { ServiceInfo } from '@sap-ux/btp-utils';
 import { AxiosHeaders } from 'axios';
 import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
@@ -6,8 +5,7 @@ import { getReentranceTicket } from './reentrance-ticket';
 
 export * from './connection';
 export * from './error';
-
-export { ServiceInfo };
+export { ServiceInfo } from '@sap-ux/btp-utils';
 
 /**
  * @deprecated Soon to be removed. No longer needed as Service Key based auth support (UAA) has been removed

@@ -2,8 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { Service, ServiceRetrievalOptions } from '.';
 import type { DataProvider } from '../data-provider';
 import { SystemDataProvider } from '../data-provider/backend-system';
-import { BackendSystemKey } from '../entities/backend-system';
-import { BackendSystem } from '../entities/backend-system';
+import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
 import type { ServiceOptions } from '../types';
 

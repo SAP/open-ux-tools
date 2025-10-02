@@ -13,9 +13,9 @@ type RelatedUrls = {
 export class ABAPVirtualHostProvider {
     private apiURL: URL;
     private uiURL: URL;
-    private systemURL: URL;
+    private readonly systemURL: URL;
     private relatedUrls: RelatedUrls;
-    private logger: Logger = new ToolsLogger();
+    private readonly logger: Logger = new ToolsLogger();
 
     /**
      *
