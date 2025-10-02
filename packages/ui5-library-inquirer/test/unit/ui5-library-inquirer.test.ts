@@ -68,8 +68,7 @@ describe('API test', () => {
         expect(getUI5VersionsSpy).toHaveBeenCalledWith({
             useCache: true,
             includeMaintained: true,
-            onlyNpmVersion: true,
-            onlyVersionNumbers: true
+            onlyNpmVersion: true
         });
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, {
             includeSeparators: undefined,
@@ -91,8 +90,7 @@ describe('API test', () => {
         expect(getUI5VersionsSpy).toHaveBeenCalledWith({
             useCache: true,
             includeMaintained: true,
-            onlyNpmVersion: true,
-            onlyVersionNumbers: true
+            onlyNpmVersion: true
         });
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, {
             includeSeparators: true,

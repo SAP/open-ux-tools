@@ -1,9 +1,8 @@
-import { type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
 import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
-import { getNpmAvailableUI5Versions } from './utils';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
@@ -15,10 +14,11 @@ import autocomplete from 'inquirer-autocomplete-prompt';
 async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Question<UI5LibraryAnswers>[]> {
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
-        includeMaintained: true
+        includeMaintained: true,
+        onlyNpmVersion: true
     };
     // Get only npm-available UI5 versions to avoid post-selection resolution
-    const ui5Versions = await getNpmAvailableUI5Versions(filterOptions);
+    const ui5Versions = await getUI5Versions(filterOptions);
 
     const ui5LibPromptInputs: UI5LibraryPromptOptions = {
         targetFolder: promptOptions?.targetFolder,
@@ -50,7 +50,6 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
 }
 
 export { getPrompts, prompt };
-export { getNpmAvailableUI5Versions } from './utils';
 
 export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';
