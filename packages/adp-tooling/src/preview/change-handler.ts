@@ -255,8 +255,8 @@ export function addXmlFragment(
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
             const text = fs.read(fragmentTemplatePath);
-            const changeTemplate = { 
-                ...templateConfig.getData(change),                 
+            const changeTemplate = {
+                ...templateConfig.getData(change),
                 viewName: additionalChangeInfo?.viewName,
                 targetAggregation: additionalChangeInfo?.targetAggregation,
                 controlType: additionalChangeInfo?.controlType
