@@ -7,7 +7,7 @@
         "systemMigrationFailed": "Migrating systems from secure store failed",
         "systemAlreadyExistsInHybridStore": "System with ID: [{{systemId}}] already exists in hybrid store. Not migrating",
         "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]",
-        "backendSystemEntityKeyExists": "'BackendSystem' entity was not written. 'BackendSystem' entity key already exists: {{entityKey}}"
+        "backendSystemEntityKeyExists": "The 'BackendSystem' entity was not written because a 'BackendSystem' entity key already exists: {{entityKey}}."
     },
     "info": {
         "foundRefreshToken": "Found refresh token for {{- systemId}}",
