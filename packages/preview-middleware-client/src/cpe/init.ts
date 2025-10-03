@@ -4,7 +4,8 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import {
     appLoaded,
     enableTelemetry,
-    iconsLoaded
+    iconsLoaded,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../utils/error';
@@ -20,6 +21,9 @@ import { RtaService } from './rta-service';
 import { SelectionService } from './selection';
 import type { ActionHandler, Service } from './types';
 import { getIcons } from './ui5-utils';
+import { ODataHealthChecker } from './odata-health/odata-health-checker';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { isODataServiceHealthy } from './odata-health/odata-health-status';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -58,6 +62,38 @@ export default function init(
         rtaService,
         quickActionService
     ];
+
+    // Do health check to all available oData service instances.
+    const oDataHealthCheckStartTime = Date.now();
+    const oDataHealthChecker = new ODataHealthChecker();
+    oDataHealthChecker
+        .getHealthStatus()
+        .then((healthStatus) =>
+            healthStatus.map((status) => {
+                const isServiceHealthy = isODataServiceHealthy(status);
+                return sendInfoCenterMessage({
+                    title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                    description: isServiceHealthy
+                        ? { key: 'ADP_ODATA_SERVICE_UP_DESCRIPTION', params: [status.serviceUrl] }
+                        : {
+                              key: 'ADP_ODATA_SERVICE_DOWN_DESCRIPTION',
+                              params: [status.serviceUrl, status.errorMessage]
+                          },
+                    type: isServiceHealthy ? MessageBarType.info : MessageBarType.error
+                });
+            })
+        )
+        .catch((error) =>
+            sendInfoCenterMessage({
+                title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                description: getError(error).message,
+                type: MessageBarType.error
+            })
+        )
+        .finally(() => {
+            const oDataHelathCheckDurationInSec = ((Date.now() - oDataHealthCheckStartTime) / 1000).toFixed(2);
+            Log.info(`OData service health check took ${oDataHelathCheckDurationInSec} sec.`);
+        });
 
     try {
         loadDefaultLibraries();
