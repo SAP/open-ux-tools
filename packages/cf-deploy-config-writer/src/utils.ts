@@ -1,5 +1,5 @@
 import { join, normalize, posix } from 'path';
-import { promises as fs, readFileSync } from 'fs';
+import { promises as fs, readFileSync } from 'node:fs';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';

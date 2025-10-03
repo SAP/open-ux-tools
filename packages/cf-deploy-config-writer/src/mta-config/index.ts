@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
