@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Abackend-proxy-middleware"
     },
-    "version": "0.9.17",
+    "version": "0.10.0",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -36,7 +36,7 @@
         "@sap-ux/store": "workspace:*",
         "chalk": "4.1.2",
         "dotenv": "16.3.1",
-        "http-proxy-middleware": "2.0.9",
+        "http-proxy-middleware": "3.0.5",
         "https-proxy-agent": "5.0.1",
         "i18next": "25.3.0",
         "prompts": "2.4.2",
@@ -51,7 +51,9 @@
         "express": "4.21.2",
         "nock": "13.4.0",
         "supertest": "7.1.4",
-        "yaml": "2.2.2"
+        "yaml": "2.2.2",
+        "connect": "^3.7.0",
+        "@types/connect": "^3.4.38"
     },
     "ui5": {
         "dependencies": []

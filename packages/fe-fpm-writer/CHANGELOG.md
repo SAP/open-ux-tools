@@ -1,5 +1,60 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.2
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.39.1
+
+### Patch Changes
+
+-   Updated dependencies [321b09e]
+    -   @sap-ux/fiori-annotation-api@0.7.1
+
+## 0.39.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+## 0.38.11
+
+### Patch Changes
+
+-   d553f8e: Binding Context Type Choices Should Be Alphabetically Ordered
+
+## 0.38.10
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/fiori-annotation-api@0.7.0
+
+## 0.38.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.23
+-   @sap-ux/project-access@1.32.1
+
+## 0.38.8
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/fiori-annotation-api@0.6.22
+
+## 0.38.7
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/fiori-annotation-api@0.6.21
+
 ## 0.38.6
 
 ### Patch Changes

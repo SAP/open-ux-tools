@@ -262,6 +262,47 @@ describe('Select', () => {
                 expect(onChangeFn).toHaveBeenCalled();
                 expect(onChangeFn).toHaveBeenCalledWith('select', '');
             });
+
+            it('renders and associates label from default name prop when no message is provided', async () => {
+                const onChangeFn = jest.fn();
+                render(<Select {...creatableProps} onChange={onChangeFn} />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+
+                // Wait for the label to resolve to "select"
+                const labeledElements = await screen.findAllByLabelText('select');
+                expect(labeledElements.length).toBeGreaterThan(0);
+                const inputElement = labeledElements.find((el) => el.tagName === 'INPUT');
+                expect(inputElement).toBeDefined();
+            });
+
+            it('renders and associates label from message string prop', async () => {
+                const onChangeFn = jest.fn();
+                const msg = 'String Test Message';
+                render(<Select {...creatableProps} onChange={onChangeFn} message={msg} />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+
+                // Wait for the label to resolve to "String Test Message"
+                const labeledElements = await screen.findAllByLabelText('String Test Message');
+                expect(labeledElements.length).toBeGreaterThan(0);
+                const inputElement = labeledElements.find((el) => el.tagName === 'INPUT');
+                expect(inputElement).toBeDefined();
+            });
+
+            it('renders and associates label from async message function', async () => {
+                const onChangeFn = jest.fn();
+                const msg = () => 'Dynamic Test Message';
+                render(<Select {...creatableProps} onChange={onChangeFn} message={msg} />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+
+                // Wait for the label to resolve to "Dynamic Test Message"
+                const labeledElements = await screen.findAllByLabelText('Dynamic Test Message');
+                expect(labeledElements.length).toBeGreaterThan(0);
+                const inputElement = labeledElements.find((el) => el.tagName === 'INPUT');
+                expect(inputElement).toBeDefined();
+            });
         });
 
         describe('No options', () => {

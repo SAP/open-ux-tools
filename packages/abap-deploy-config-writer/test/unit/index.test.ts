@@ -2,6 +2,7 @@ import { join } from 'path';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
+
 import type { DeployConfigOptions } from '../../src/types';
 
 describe('generate', () => {
@@ -47,6 +48,35 @@ describe('generate', () => {
             isAppStudio: true
         },
         {
+            name: 'test-js-adp-variant',
+            config: {
+                ...config,
+                target: {
+                    ...config.target,
+                    destination: 'MOCK_DESTINATION'
+                },
+                lrep: 'MOCK_LREP'
+            },
+            options: {
+                addBuildToUndeployScript: false
+            },
+            isAppStudio: false
+        },
+        {
+            name: 'test-ts-adp-variant',
+            config: {
+                ...config,
+                target: {
+                    ...config.target,
+                    destination: 'MOCK_DESTINATION'
+                }
+            },
+            options: {
+                addBuildToUndeployScript: false
+            },
+            isAppStudio: false
+        },
+        {
             name: 'test.ui5.lib',
             config,
             options: {
@@ -62,7 +92,7 @@ describe('generate', () => {
         }
     ];
 
-    test.each(testConfigs)('Generate deployment configs: $name', async ({ name, options, config, isAppStudio }) => {
+    test.each(testConfigs)('Generate deployment configs: $name', async ({ name, options, config }) => {
         (config.app as BspApp).name = name;
         const testPath = join(outputDir, name);
         fsExtra.mkdirSync(outputDir, { recursive: true });

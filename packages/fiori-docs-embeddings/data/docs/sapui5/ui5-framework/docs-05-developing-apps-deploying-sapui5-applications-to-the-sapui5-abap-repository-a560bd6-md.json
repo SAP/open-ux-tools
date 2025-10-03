@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-05-developing-apps-deploying-sapui5-applications-to-the-sapui5-abap-repository-a560bd6-md",
+  "title": "Deploying SAPUI5 Applications to the SAPUI5 ABAP Repository",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/deploying-sapui5-applications-to-the-sapui5-abap-repository-a560bd6.md",
+  "lastModified": "2025-09-01T18:17:10.559Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Deploying",
+    "SAPUI5",
+    "Applications",
+    "the",
+    "ABAP",
+    "Repository"
+  ],
+  "headers": [
+    "Deploying SAPUI5 Applications to the SAPUI5 ABAP Repository",
+    "Single SAPUI5 App",
+    "Uploading SAPUI5 Apps From an Archive"
+  ],
+  "content": "<!-- loioa560bd6ed4654fd1b338df065d331872 -->\n\n# Deploying SAPUI5 Applications to the SAPUI5 ABAP Repository\n\nFind out which reports to use to deploy your apps to the SAPUI5 ABAP repository.\n\n\n\n## Single SAPUI5 App\n\nTo upload a single SAPUI5 app from your local file system, download a single SAPUI5 app to your local file system, or delete a single SAPUI5 app, use the report `/UI5/UI5_REPOSITORY_LOAD`.\n\nEnter the name of the SAPUI5 app and specify whether you want to update, download, or delete it. You can also specify whether or not the line endings are adjusted automatically during the upload.\n\nFor more information, see the report documentation in your ABAP system.\n\n\n\n## Uploading SAPUI5 Apps From an Archive\n\nPrerequisite: The files to be uploaded are located on an HTTP web server.\n\n-   To upload an SAPUI5 app from a zip or war archive, use the report `/UI5/UI5_REPOSITORY_LOAD_HTTP`.\n-   To upload multiple SAPUI5 apps from a zip or war archive at once, use the report `/UI5/UI5_REPOSITORY_LOAD_HTTPN`.\n\nEnter the relevant parameters and specify whether or not the line endings are adjusted automatically during the upload. You can also provide the parameters in the file `.Ui5RepositoryUploadParameters` located in the archive. Each line represents a parameter. The format is `<parameter name> = <parameter value>`.\n\nIf you use SAP Business Application Studio for developing apps, we recommend that you deploy your app as described here: [Deploy to the SAPUI5 ABAP Repository](https://help.sap.com/viewer/584e0bcbfd4a4aff91c815cefa0bce2d/Cloud/en-US/340cf0109ec6451c88f7a0129990de59.html).\n\nIf you use the `/UI5/UI5_REPOSITORY_LOAD_HTTP` and `/UI5/UI5_REPOSITORY_LOAD_HTTPN` reports to upload your project to the SAPUI5 ABAP repository instead, make sure that you upload only the content of the `webapp` or `dist` folder without the folder itself. This ensures that the`manifest.json` is in the root of the structure in the SAPUI5 ABAP repository and the app index can be loaded.\n\nYou can also specify whether the reports run in delta or in test mode:\n\n-   Delta mode: You only want to upload the files that are new or that have been modified.\n-   Test mode: You want to see a log file displaying what the report is doing.\n\n> ### Note:  \n> If you use the reports, the SAPUI5 application index is updated automatically and any errors are displayed. For more information, see [SAPUI5 Application Index](sapui5-application-index-c5e7098.md).\n\nThe functions of the reports are also available in the RFC-enabled function module `/UI5/REPO_LOAD_FROM_ZIP_URL`. It can be called remotely, for example, from Maven builds. For more information, see the documentation of the reports and of the function module `/UI5/REPO_LOAD_FROM_ZIP_URL`.\n\n",
+  "excerpt": "<!-- loioa560bd6ed4654fd1b338df065d331872 --> Deploying SAPUI5 Applications to the SAPUI5 ABAP Repository Find out which reports to use to deploy your apps to the SAPUI5 ABAP repository. Single SAPUI5...",
+  "wordCount": 407,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

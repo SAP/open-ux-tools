@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-03-get-started-step-1-setting-up-the-initial-app-59b772b-md",
+  "title": "Step 1: Setting Up the Initial App",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-1-setting-up-the-initial-app-59b772b.md",
+  "lastModified": "2025-09-01T18:17:10.449Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Setting",
+    "the",
+    "Initial",
+    "App"
+  ],
+  "headers": [
+    "Step 1: Setting Up the Initial App",
+    "Preview",
+    "Setup"
+  ],
+  "content": "<!-- loio59b772bfac5241b89c16b12395c1116c -->\n\n# Step 1: Setting Up the Initial App\n\nWe start by setting up a basic SAPUI5 app for this tutorial.\n\nThe structure in this step will be used throughout the rest of this tutorial. The basic SAPUI5 app created in this step will be extended in the subsequent steps to illustrate the main `FlexibleColumnLayout` features.\n\n\n\n<a name=\"loio59b772bfac5241b89c16b12395c1116c__section_ed2_4dd_lbb\"/>\n\n## Preview\n\n  \n  \n**The basic SAPUI5 app**\n\n![](images/Basic_UI5_App_Fiori_2_0_Tutorial_613be5a.png \"The basic SAPUI5 app\")\n\n\n\n<a name=\"loio59b772bfac5241b89c16b12395c1116c__section_cnf_d4b_l4b\"/>\n\n## Setup\n\n1.  To set up your project for this tutorial, download the files at [Flexible Column Layout App - Step 1](https://ui5.sap.com/#/entity/sap.f.tutorial.fcl/sample/sap.f.tutorial.fcl.01).\n\n2.  Extract the downloaded `.zip` file at the desired location on your local machine.\n3.  Open a shell in the extracted folder and execute `npm install`.\n4.  Execute `npm start` to start the web server and to open a new browser window hosting `index.html`.\n\nYou should have the same files as displayed in the following figure:\n\n  \n  \n**Folder structure with downloaded files**\n\n![](images/Initial_File_Structure_Fiori_2_0_Tutorial_bc4395b.png \"Folder structure with downloaded files\")\n\n",
+  "excerpt": "<!-- loio59b772bfac5241b89c16b12395c1116c --> Step 1: Setting Up the Initial App We start by setting up a basic SAPUI5 app for this tutorial. The structure in this step will be used throughout the res...",
+  "wordCount": 163,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-registering-change-handlers-for-specific-layers-56f8392-md",
+  "title": "Registering Change Handlers for Specific Layers",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/registering-change-handlers-for-specific-layers-56f8392.md",
+  "lastModified": "2025-09-01T18:17:10.683Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Registering",
+    "Change",
+    "Handlers",
+    "for",
+    "Specific",
+    "Layers"
+  ],
+  "headers": [
+    "Registering Change Handlers for Specific Layers"
+  ],
+  "content": "<!-- loio56f8392f1f7d4af79638df315bf0bcc5 -->\n\n# Registering Change Handlers for Specific Layers\n\nHere's how to enable a change handler for certain layers.\n\nBy default, all change handlers are enabled for key user changes and developer changes, but not for personalization changes. If you want to enable a change handler for personalization, you can change the default permissions.\n\nHere are the default permissions:\n\n> ### Sample Code:  \n> ```\n> oSettings.defaultLayerPermissions = {\n>     \"VENDOR\": true,\n>     \"CUSTOMER_BASE\": true,\n>     \"CUSTOMER\": true,\n>     \"USER\": false\n> };\n> ```\n\nTo change the default layer permissions, you can add a `layer` property to the `changeType` flexibility object, containing the layer names for which you want to change the default values. For example, `CUSTOMER` and `USER` layer default permissions can be changed as shown in the following code sample:\n\n> ### Sample Code:  \n> sample.flexibility.js\n> \n> ```\n> sap.ui.define([], function() {\n>     \"use strict\";\n>  \n>     return {\n>         \"<changeType>\": {\n>             \"changeHandler\": {\n>                 applyChange: function(oChange, oControl, mPropertyBag) {\n>                     ...\n>                 },\n>                 revertChange: function(oChange, oControl, mPropertyBag) {\n>                     ...\n>                 },\n>                 completeChangeContent: function(oChange, mSpecificChangeInfo, mPropertyBag) {\n>                     ...\n>                 }\n>             },\n>             \"layers\": {\n>                 \"CUSTOMER\": false,\n>                 \"USER\": true\n>             }\n>         }\n>     };\n> });\n> ```\n\nTo overwrite these defaults, specify the layers when you register the change handler. For this you have to use a slightly different form. You only have to specify the permissions that are different from the default, as shown in this example:\n\n> ### Sample Code:  \n> library.js\n> \n> ```\n> extensions: {\n>     flChangeHandlers: {\n>         \"sap.uxap.ObjectPageLayout\": {\n>             \"moveControls\": {\n>                 \"changeHandler\": \"default\",\n>                 \"layers\": {\n>                     \"USER\": true // Now also enabled for end user personalization; the other layers are not affected\n>                 }\n>             }\n>         },\n>         \"<some other control>\": {\n>             \"combineButtons\": {\n>                 \"changeHandler\": { ... },\n>                 \"layers\": {\n>                     \"CUSTOMER\": false // Too risky for key user, only allowed for upper (more developer-centric) layers\n>                 }\n>             },\n>             \"unhideControl\": {  // Default layer for this change type\n>                 \"changeHandler\": \"default\"\n>             }\n>         }\n>     }\n> }\n> ...\n> ```\n\n",
+  "excerpt": "<!-- loio56f8392f1f7d4af79638df315bf0bcc5 --> Registering Change Handlers for Specific Layers Here's how to enable a change handler for certain layers. By default, all change handlers are enabled for ...",
+  "wordCount": 364,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

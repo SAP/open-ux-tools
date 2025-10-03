@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 1.1.3
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+
+## 1.1.2
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
 ## 1.1.1
 
 ### Patch Changes

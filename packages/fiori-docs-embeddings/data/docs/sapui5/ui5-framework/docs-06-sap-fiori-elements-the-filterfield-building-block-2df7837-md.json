@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-the-filterfield-building-block-2df7837-md",
+  "title": "The `FilterField` Building Block",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/the-filterfield-building-block-2df7837.md",
+  "lastModified": "2025-09-01T18:17:10.656Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "`FilterField`",
+    "Building",
+    "Block"
+  ],
+  "headers": [
+    "The `FilterField` Building Block",
+    "API"
+  ],
+  "content": "<!-- loio2df783760a8e4540ad19ce5ec3ed91c8 -->\n\n# The `FilterField` Building Block\n\nThe `FilterField` building block allows you to add custom XML fragments as filter fields to a `FilterBar` building block in the following way:\n\n> ### Sample Code:  \n> ```\n> <macros:FilterBar\n>     metaPath=\"@com.sap.vocabularies.UI.v1.SelectionFields#SF1\"\n>     id=\"FilterBar\"\n>     showMessages=\"true\"\n>     search=\".handlers.onSearch\"\n>     filterChanged=\".handlers.onFiltersChanged\"\n> >\n>     <macros:filterFields>\n>         <macros:FilterField key=\"NameProperty\" label=\"Name\">\n>             <core:Fragment fragmentName=\"<ApplicationId.FolderName.NameFilterXMLFileName>\" type=\"XML\" />\n>         </macros:FilterField>\n>         <macros:FilterField key=\"StreetProperty\" label=\"Street\" required=\"true\">\n>             <core:Fragment fragmentName=\"<ApplicationId.FolderName.StreetFilterXMLFileName>\" type=\"XML\" />\n>         </macros:FilterField>\n>     </macros:filterFields>\n> </macros:FilterBar>\n> \n> \n> ```\n\nFor more information about creating your own XML templates for custom filter fields \\(for example `NameFilterXMLFileName.xml`\\), see [Adding Custom Fields to the Filter Bar](adding-custom-fields-to-the-filter-bar-5fb9f57.md).\n\nYou can explore and work with the coding yourself. Check out our live example in the flexible programming model explorer at [Filter Bar - Custom Filters](https://ui5.sap.com/#/api/sap.fe.macros.filterBar.FilterField).\n\n\n\n<a name=\"loio2df783760a8e4540ad19ce5ec3ed91c8__section_l2r_2bs_j5b\"/>\n\n## API\n\nFor information about the `FilterField` API, see the [API Reference](https://ui5.sap.com/#/api/sap.fe.macros.filterBar.FilterField).\n\n",
+  "excerpt": "<!-- loio2df783760a8e4540ad19ce5ec3ed91c8 --> The FilterField Building Block The FilterField building block allows you to add custom XML fragments as filter fields to a FilterBar building block in the...",
+  "wordCount": 149,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

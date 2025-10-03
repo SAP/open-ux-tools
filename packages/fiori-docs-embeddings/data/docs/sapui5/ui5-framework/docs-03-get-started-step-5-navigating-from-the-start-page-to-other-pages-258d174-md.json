@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-03-get-started-step-5-navigating-from-the-start-page-to-other-pages-258d174-md",
+  "title": "Step 5: Navigating from the Start Page to Other Pages",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-5-navigating-from-the-start-page-to-other-pages-258d174.md",
+  "lastModified": "2025-09-01T18:17:10.477Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Navigating",
+    "from",
+    "the",
+    "Start",
+    "Page",
+    "Other",
+    "Pages"
+  ],
+  "headers": [
+    "Step 5: Navigating from the Start Page to Other Pages",
+    "Startpage.view.xml",
+    "Startpage.controller.js"
+  ],
+  "content": "<!-- loio258d1745a0804f9abaffab5cea5beb98 -->\n\n# Step 5: Navigating from the Start Page to Other Pages\n\nIn this step, we will show how to set up navigation using the standard routing pattern.\n\nFirst, please create three empty views and the corresponding controllers:\n\n-   `ProcessFlow.view.xml`\n\n-   `ChartContainer.view.xml`\n\n-   `Reviews.view.xml`\n\n\n\n\n\n\n### Startpage.view.xml\n\nYou can view and download this step in the Demo Kit at [Ice Cream Machine - Step 5 - Navigating from the Start Page to Other Pages](https://ui5.sap.com/#/entity/sap.suite.ui.commons.tutorial.icecream/sample/sap.suite.ui.commons.tutorial.icecream.05).\n\n```xml\n\n<mvc:View\n    ...\n    <Page title=\"{i18n>title}\">\n        <layout:VerticalLayout class=\"sapUiResponsiveMargin\">\n            ...\n            <layout:HorizontalLayout allowWrapping=\"true\">\n                <GenericTile\n                    class=\"sapUiTinyMarginBegin sapUiTinyMarginTop\"\n                    header=\"{i18n>startpagePFTileTitle}\"\n                    subheader=\"{i18n>startpagePFTileSubTitle}\"\n                    press=\".onNavToProcessFlow\">                    \n                    <tileContent>\n                        ...\n                    </tileContent>\n                </GenericTile>\n                    ...\n                <GenericTile\n                    class=\"sapUiTinyMarginBegin sapUiTinyMarginTop\"\n                    header=\"{i18n>startpageUserReviewsTileTitle}\"\n                    press=\".onNavToReviews\">\n                    <tileContent>\n                        ...\n                    </tileContent>\n                </GenericTile>\n                <GenericTile\n                    class=\"sapUiTinyMarginBegin sapUiTinyMarginTop\"\n                    header=\"{i18n>startpageTestResultsTileTitle}\"\n                    subheader=\"{i18n>startpageTestResultsTileSubTitle}\"\n                    press=\".onNavToChartContainer\">                   \n                    <tileContent>\n                        ...\n                    </tileContent>\n                </GenericTile>\n                ...\n            </layout:HorizontalLayout>\n            ...\n        </layout:VerticalLayout>\n    </Page>\n</mvc:View>\n```\n\nWe will add the *press* event to the `GenericTiles` with the *Production Process*, *User Reviews*, and *Quality Control* titles. This is to trigger navigation with a function. The press event function will be implemented in the controller file.\n\n\n\n\n\n### Startpage.controller.js\n\n```js\n\nsap.ui.define([\n    \"sap/ui/core/mvc/Controller\",\n    \"sap/ui/model/json/JSONModel\",\n    \"sap/ui/core/format/NumberFormat\",\n    \"sap/base/strings/formatMessage\"\n], function(Controller, JSONModel, NumberFormat) {\n    \"use strict\";\n\n    return Controller.extend(\"sap.suite.ui.commons.demokit.tutorial.icecream.05.controller.Startpage\", {\n        ...\n        onNavToProcessFlow: function() {\n            this.getRouter().navTo(\"processFlow\");\n        },\n\n        onNavToChartContainer: function() {\n            this.getRouter().navTo(\"chartContainer\");\n        },\n        onNavToReviews: function() {    \n            this.getRouter().navTo(\"reviews\");\n        },\n    \n        getRouter: function() {\n            return this.getOwnerComponent().getRouter();\n        }\n});\n```\n\n`getRouter` returns the router instance of the component.\n\n`onNavToProcessFlow` is called when the user clicks on the first tile. It triggers the navigation to the view with the `ProcessFlow`.\n\n`onNavToChartContainer` is called when the user clicks on the fourth tile. It triggers the navigation to the view with the `ChartContainer`.\n\n`onNavToReviews` is called when the user clicks the third tile. It triggers the navigation to the view with the `Timeline`.\n\n",
+  "excerpt": "<!-- loio258d1745a0804f9abaffab5cea5beb98 --> Step 5: Navigating from the Start Page to Other Pages In this step, we will show how to set up navigation using the standard routing pattern. First, pleas...",
+  "wordCount": 273,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

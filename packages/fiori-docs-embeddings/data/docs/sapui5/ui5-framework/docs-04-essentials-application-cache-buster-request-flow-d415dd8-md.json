@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-application-cache-buster-request-flow-d415dd8-md",
+  "title": "Application Cache Buster: Request Flow",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/application-cache-buster-request-flow-d415dd8.md",
+  "lastModified": "2025-09-01T18:17:10.491Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Application",
+    "Cache",
+    "Buster",
+    "Request",
+    "Flow"
+  ],
+  "headers": [
+    "Application Cache Buster: Request Flow"
+  ],
+  "content": "<!-- loiod415dd8911a645759373dc1a70b93f3d -->\n\n# Application Cache Buster: Request Flow\n\nWhen using the application cache buster, a request order must be observed.\n\nWhen using the Application Cache Buster mechanism, the first request must never be cached because it is being used to fetch the index file. The following list explains the flow:\n\n1.  http://myserver/myapp/sap-ui-cachebuster-info.json ⇒ *NO\\_CACHE* \n2.  http://myserver/myapp/~201106210204~/mvc/MyMVC.view.js ⇒ **CACHE** \n    -   http://myserver/myapp/mvc/MyMVC.view.js ⇒ *internally resolve to this URL* \n\n\n",
+  "excerpt": "<!-- loiod415dd8911a645759373dc1a70b93f3d --> Application Cache Buster: Request Flow When using the application cache buster, a request order must be observed. When using the Application Cache Buster ...",
+  "wordCount": 68,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

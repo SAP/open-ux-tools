@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-07-apf-analytical-configuration-5a467c5-md",
+  "title": "Analytical Configuration",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/analytical-configuration-5a467c5.md",
+  "lastModified": "2025-09-01T18:17:10.664Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Analytical",
+    "Configuration"
+  ],
+  "headers": [
+    "Analytical Configuration",
+    "General Rules"
+  ],
+  "content": "<!-- loio5a467c53595a6655e10000000a423f68 -->\n\n# Analytical Configuration\n\nThe analytical configuration of APF specifies, for example, the available analysis steps, the representations that are used for each step, and the categories in which the analysis steps are displayed. It is written in JavaScript Object Notation \\(JSON\\) format.\n\nSome of the objects used to specify the analytical content must be registered under a unique ID and can be accessed using this ID. The IDs must be unique within the configuration of an APF-based Web application.\n\nThe following table lists the objects used in an analytical configuration:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nObject Type\n\n</th>\n<th valign=\"top\">\n\nUnique ID Required\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`step` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`hierarchicalStep` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`request` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`binding` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`representation` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`representationType` \\(optional\\)\n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`facetFilter` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`smartFilterBarConfiguration` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`navigationTarget` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`category` \n\n</td>\n<td valign=\"top\">\n\nYes\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`label` \n\n</td>\n<td valign=\"top\">\n\nNo\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`thumbnail` \n\n</td>\n<td valign=\"top\">\n\nNo\n\n</td>\n</tr>\n</table>\n\n\n\n## General Rules\n\nThe following rules apply when working with configuration objects in Analysis Path Framework:\n\n-   Value representations in configuration objects must comply with the JSON format.\n\n-   String values must be in double quotes.\n\n-   The *type* property is optional, but it is useful for debugging and comprehensibility.\n\n-   The *id* property is mandatory for those objects that require a unique ID. It must be a unique ID of type string.\n\n-   Depending on the object type, configuration objects can contain various other properties. Changes to a set of properties must be compatible with the original configuration object. You can, for example, add new properties.\n\n    > ### Note:  \n    > Customer modifications may conflict with the SAP namespace and can be overwritten when updates are imported.\n\n\n",
+  "excerpt": "<!-- loio5a467c53595a6655e10000000a423f68 --> Analytical Configuration The analytical configuration of APF specifies, for example, the available analysis steps, the representations that are used for e...",
+  "wordCount": 357,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,5 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+
 import { addUi5Dependency } from '../../src/file';
 
 describe('File utils', () => {

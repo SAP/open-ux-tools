@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-04-essentials-creating-a-qunit-test-7080029-md",
+  "title": "Creating a QUnit Test",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/creating-a-qunit-test-7080029.md",
+  "lastModified": "2025-09-01T18:17:10.503Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Creating",
+    "QUnit",
+    "Test"
+  ],
+  "headers": [
+    "Creating a QUnit Test",
+    "Prerequisites",
+    "Creating a Test Module",
+    "Adding a QUnit Test Module to a Test Suite",
+    "Running a QUnit Test"
+  ],
+  "content": "<!-- loio708002929ea548fd9433954a9275eb5f -->\n\n# Creating a QUnit Test\n\n\n\n\n\n## Prerequisites\n\nAs a prerequisite for creating a test, you need to have created a SAPUI5 application project that contains a test suite. For more information on how to do this, see [Concept and Basic Setup](concept-and-basic-setup-22f50c0.md). After completing this, continue with the steps described in the subsequent sections.\n\n\n\n## Creating a Test Module\n\nCreate a file `MyTest.qunit.js` in the folder `webapp/test/unit`.\n\n> ### Note:  \n> You can use the file template shown in the following example. This code snippet shows a basic QUnit test template.\n\nEach test file normally represents a SAPUI5 module, which is being tested.\n\n```js\n/*global QUnit */\nsap.ui.define([], function() {\n  \"use strict\";\n\n  QUnit.module(\"Module A\"); \n\n  QUnit.test(\"Basic test example\", function(assert) {\n    assert.ok(true, \"this test is fine\"); \n    var value = \"hello1\"; \n    assert.equal(value, \"hello1\", \"We expect value to be 'hello1'\"); \n  });\n\n});\n```\n\nQUnit test files do not include the SAPUI5 bootstrap \\(`sap-ui-core.js`\\). Instead, the test starter ensures that the QUnit tests are loaded within an HTML page.\n\n\n\n<a name=\"loio708002929ea548fd9433954a9275eb5f__section_hp4_xhn_vcc\"/>\n\n## Adding a QUnit Test Module to a Test Suite\n\nIn order to run a QUnit test, the corresponding module needs to be added to a test suite.\n\n```\n\nsap.ui.define(function() {\n\t\"use strict\";\n\n\treturn {\n\n\t\t// ...\n\n\t\ttests: {\n\t\t\t\"unit/MyTest\": {\n\t\t\t\ttitle: \"Unit tests for <NAMESPACE>\"\n\t\t\t},\n\t\t}\n\t};\n});\n```\n\n\n\n<a name=\"loio708002929ea548fd9433954a9275eb5f__section_irf_23n_vcc\"/>\n\n## Running a QUnit Test\n\nOpen the test suite `html` file in your desired browser to run the newly created test module.\n\n**Related Information**  \n\n\n[QUnit Home Page](https://qunitjs.com/)\n\n[Testing Tutorial](../03_Get-Started/testing-tutorial-291c912.md \"In this tutorial we will test application functionality with the testing tools that are delivered with SAPUI5. At different steps of this tutorial you will write tests using QUnit, OPA5, and the OData V2 mock server. Additionally, you will learn about testing strategies, Test Driven Development (TDD), and much more.\")\n\n",
+  "excerpt": "<!-- loio708002929ea548fd9433954a9275eb5f --> Creating a QUnit Test Prerequisites As a prerequisite for creating a test, you need to have created a SAPUI5 application project that contains a test suit...",
+  "wordCount": 301,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

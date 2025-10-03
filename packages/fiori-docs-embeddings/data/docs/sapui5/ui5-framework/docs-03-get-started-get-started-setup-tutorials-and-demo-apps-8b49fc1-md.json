@@ -1,0 +1,32 @@
+{
+  "id": "sapui5-docs-03-get-started-get-started-setup-tutorials-and-demo-apps-8b49fc1-md",
+  "title": "Get Started: Setup, Tutorials, and Demo Apps",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/get-started-setup-tutorials-and-demo-apps-8b49fc1.md",
+  "lastModified": "2025-09-01T18:17:10.444Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Get",
+    "Started",
+    "Setup",
+    "Tutorials",
+    "and",
+    "Demo",
+    "Apps"
+  ],
+  "headers": [
+    "Get Started: Setup, Tutorials, and Demo Apps",
+    "Prerequisites and Setup",
+    "Learning Path",
+    "Downloading Code for a Tutorial Step",
+    "Troubleshooting",
+    "See SAPUI5 in Action - Our Demo Apps"
+  ],
+  "content": "<!-- loio8b49fc198bf04b2d9800fc37fecbb218 -->\n\n# Get Started: Setup, Tutorials, and Demo Apps\n\nSet up your development environment and go through our tutorials. They introduce you to all major development paradigms of SAPUI5 using practical examples in an interactive format. The demo apps show SAPUI5 in action.\n\n\n\n<a name=\"loio8b49fc198bf04b2d9800fc37fecbb218__tutorials_prerequisites\"/>\n\n## Prerequisites and Setup\n\n-   You should be familiar with JavaScript.\n\n-   Set up your [Development Environment](../05_Developing_Apps/development-environment-7bb04e0.md). We recommend UI5 Tooling , but you could also use other development environments.\n\n-   Set up a folder where you would place the application content. We will refer to this folder as the \"app root folder\".\n\n\n\n\n<a name=\"loio8b49fc198bf04b2d9800fc37fecbb218__tutorials_path\"/>\n\n## Learning Path\n\n![](images/Image_Map_SAPUI5_Learning_Map_e32da15.png)\n\n\n\n<a name=\"loio8b49fc198bf04b2d9800fc37fecbb218__tutorials_download\"/>\n\n## Downloading Code for a Tutorial Step\n\nTo download the code from the Demo Kit, follow these steps:\n\n1.  Follow the link in the *Coding* section of the tutorial step or find the code in the *Samples* section of the Demo Kit \\(filter by \"*Tutorial*\" to get a list of the tutorials that are available\\).\n\n2.  Download a `zip` file to your local machine \\(find the *Download* button on the top right\\).\n\n3.  Extract the project folder to a desired location on your local machine.\n\n4.  **If you use UI5 Tooling \\(recommended\\):** At your chosen location, open a new shell and execute `npm install`. After all dependencies have been installed, enter `npm start` to start the development server. \\(**Note:** if they're not already present, you may have to create and adapt some project configuration files first; see the [Walkthrough Tutorial \\(JavaScript\\)](walkthrough-tutorial-javascript-3da5f4b.md) for an example.\\)\n\n5.  Test your project setup by opening one of its HTML pages in your development environment and making sure that the app displays the features exactly as shown in the preview of the step.\n\n\n\n\n<a name=\"loio8b49fc198bf04b2d9800fc37fecbb218__tutorials_troubleshooting\"/>\n\n## Troubleshooting\n\nIf you get stuck, check the [Troubleshooting](../04_Essentials/troubleshooting-615d9e4.md) section under *Essentials*, or refer to the [Troubleshooting tutorial](troubleshooting-tutorial-5661952.md).\n\nIf you can't fix the problem, try downloading the solution of the previews or current step. This should get your project fixed again, just don't forget to check the resource path and the project configuration files again.\n\n\n\n<a name=\"loio8b49fc198bf04b2d9800fc37fecbb218__section_fbp_hjc_tkb\"/>\n\n## See SAPUI5 in Action - Our Demo Apps\n\nIf you want to see some practical examples for SAPUI5 apps, check out our [Demo Apps](https://ui5.sap.com/#/demoapps). These are fully-functional apps that showcase certain floorplans, control libraries, or other SAPUI5 features. You can also download the source code of each demo app to find out how everything works together. Feel free to explore!\n\n**Related Information**  \n\n\n[Demo Apps](demo-apps-a3ab54e.md \"With the Demo Kit, we deliver some demo apps that show you how you can use the various features and controls of SAPUI5.\")\n\n",
+  "excerpt": "<!-- loio8b49fc198bf04b2d9800fc37fecbb218 --> Get Started: Setup, Tutorials, and Demo Apps Set up your development environment and go through our tutorials. They introduce you to all major development...",
+  "wordCount": 434,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
