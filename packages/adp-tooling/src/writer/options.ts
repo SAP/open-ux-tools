@@ -294,9 +294,8 @@ function getInboundChangeContentWithNewInboundID(
     };
 
     if (flpConfiguration.subTitle) {
-        content.inbound[
-            flpConfiguration.inboundId
-        ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
+        content.inbound[flpConfiguration.inboundId].subTitle =
+            `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
     content.inbound[flpConfiguration.inboundId].signature.parameters['sap-appvar-id'] = {

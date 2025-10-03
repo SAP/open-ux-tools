@@ -41,6 +41,11 @@ export function getIndentLevelFromNode(tokens: CompilerToken[], node: AstNode): 
     return Math.floor(indentLevel);
 }
 
+/**
+ *
+ * @param node
+ * @param tokens
+ */
 function getLineStartCharacter(node: AstNode, tokens: CompilerToken[]): number {
     if (!node?.range) {
         return 0;
@@ -63,6 +68,11 @@ function getLineStartCharacter(node: AstNode, tokens: CompilerToken[]): number {
     return token ? tokenColumn(token) : 0;
 }
 
+/**
+ *
+ * @param tokens
+ * @param nodeLine
+ */
 function findFirstTokenOfLine(tokens: CompilerToken[], nodeLine: number): CompilerToken | undefined {
     // use binary search to find a token at the same line
     let left = 0;

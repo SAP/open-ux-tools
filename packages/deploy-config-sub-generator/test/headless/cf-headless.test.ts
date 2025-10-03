@@ -7,7 +7,7 @@ import { readFile, rename } from 'fs/promises';
 import { rimraf } from 'rimraf';
 import { basename, join } from 'path';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { AppConfig, DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     INPUT_APP_DIR_CF,
     INPUT_APP_NAME_BASE,
@@ -23,7 +23,6 @@ import {
 import { runHeadlessGen } from './utils';
 import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
-import type { AppConfig } from '@sap-ux/fiori-generator-shared';
 
 expect.extend({ toMatchFolder });
 
@@ -43,7 +42,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -73,7 +72,7 @@ describe('Test headless generator', () => {
     });
 
     beforeEach(() => {
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     afterEach(() => {

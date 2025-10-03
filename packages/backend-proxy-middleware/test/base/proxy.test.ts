@@ -10,8 +10,9 @@ import {
     type EnhancedIncomingMessage
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
-import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import type { BackendSystem } from '@sap-ux/store';
+import { AuthenticationType } from '@sap-ux/store';
 import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 
 jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
@@ -101,7 +102,9 @@ describe('proxy', () => {
                     originalUrl: '/old/my/bsp/test?sap-client=000'
                 } as EnhancedIncomingMessage)
             ).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe(
+                '/test?sap-client=012'
+            ); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
         });
     });
 
@@ -375,7 +378,6 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
-
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -491,7 +493,7 @@ describe('proxy', () => {
                     ...jest.requireActual('@sap-ux/logger'),
                     ToolsLogger: jest.fn().mockImplementation(() => ({
                         debug: debugSpy,
-                        info: jest.fn(),
+                        info: jest.fn()
                     }))
                 };
             });

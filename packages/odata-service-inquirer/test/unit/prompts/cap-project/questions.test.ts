@@ -1,7 +1,6 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { CapCustomPaths } from '@sap-ux/project-access';
-import { getCapCustomPaths, type CdsVersionInfo } from '@sap-ux/project-access';
+import type { CapCustomPaths, getCapCustomPaths, type CdsVersionInfo } from '@sap-ux/project-access';
 import type { PathLike } from 'fs';
 import * as fsPromises from 'fs/promises';
 import type { ListQuestion } from 'inquirer';

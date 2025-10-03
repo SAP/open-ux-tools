@@ -162,7 +162,7 @@ describe('hybrid-search', () => {
                 () =>
                     ({
                         docSearch: mockDocSearch
-                    } as any)
+                    }) as any
             );
 
             const params: DocSearchInput = {
@@ -207,7 +207,7 @@ describe('hybrid-search', () => {
                 () =>
                     ({
                         docSearch: mockDocSearch
-                    } as any)
+                    }) as any
             );
 
             const params: DocSearchInput = {
@@ -229,7 +229,7 @@ describe('hybrid-search', () => {
                 () =>
                     ({
                         docSearch: mockDocSearch
-                    } as any)
+                    }) as any
             );
 
             const params: DocSearchInput = {

@@ -6,14 +6,12 @@ import {
     extendAdditionalMessages,
     extendValidate,
     extendWithOptions,
-    withCondition
-} from '../../../src/prompts/helpers';
-import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
-import {
+    withCondition,
     hasAggregateTransformationsForEntity,
     filterAggregateTransformations,
     convertEdmxToConvertedMetadata
 } from '../../../src/prompts/helpers';
+import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import * as fs from 'fs';
 import * as path from 'path';
 

@@ -33,7 +33,7 @@ export interface IActionCalloutDetail {
      */
     command?: {
         id: string;
-        params: Object | string;
+        params: object | string;
     };
     /**
      * A http url string, command takes precedence if provided

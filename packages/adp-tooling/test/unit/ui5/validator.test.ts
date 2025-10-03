@@ -3,8 +3,7 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from '../../../src/ui5/format';
 import { validateUI5VersionExists } from '../../../src';
 import { fetchMock } from '../../__mock__/global';
-import { t } from '../../../src/i18n';
-import { initI18n } from '../../../src/i18n';
+import { t, initI18n } from '../../../src/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateEmptyString: jest.fn()

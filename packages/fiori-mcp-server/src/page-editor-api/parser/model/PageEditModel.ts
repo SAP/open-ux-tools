@@ -351,7 +351,7 @@ export class PageEditModel {
         // Validate schema node
         (params: SchemaParseParams): boolean => {
             const { currentNode } = params;
-            // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+
             if (currentNode.hidden) {
                 return false;
             }

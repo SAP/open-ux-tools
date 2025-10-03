@@ -6,7 +6,7 @@ import express from 'express';
 import supertest from 'supertest';
 import nock from 'nock';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
-import {ToolsLogger} from "@sap-ux/logger";
+import { ToolsLogger } from '@sap-ux/logger';
 
 // spy on ui5Proxy and injectScripts to verify calls
 const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
@@ -181,7 +181,7 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ logger: expect.objectContaining({})}),
+                expect.objectContaining({ logger: expect.objectContaining({}) }),
                 undefined,
                 expect.any(ToolsLogger)
             );

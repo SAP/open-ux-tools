@@ -2,8 +2,7 @@ import type { SystemLookup } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../../src/utils/i18n';
-import { validateJsonInput } from '../../../../src/app/questions/helper/validators';
-import { validateExtensibilityExtension } from '../../../../src/app/questions/helper/validators';
+import { validateJsonInput, validateExtensibilityExtension } from '../../../../src/app/questions/helper/validators';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateProjectName: jest.fn(),

@@ -145,7 +145,7 @@ export async function exposePort(port: number, logger?: Logger): Promise<string>
     try {
         const response = await axios.get(`http://localhost:3001/AppStudio/api/getHostByPort?port=${port}`);
         return `${response.data.result}`;
-    } catch (error) {
+    } catch {
         logger?.error(`Port ${port} was not exposed!`);
         return '';
     }

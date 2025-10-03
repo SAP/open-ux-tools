@@ -7,15 +7,13 @@ import {
     isAppSupported,
     loadApps
 } from '@sap-ux/adp-tooling';
-import type { AxiosError } from '@sap-ux/axios-extension';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AxiosError, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ManifestNamespace } from '@sap-ux/project-access';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
 import { configPromptNames } from '../../../src/app/types';
 import { initI18n, t } from '../../../src/utils/i18n';
