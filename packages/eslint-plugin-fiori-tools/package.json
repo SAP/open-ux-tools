@@ -21,8 +21,8 @@
     },
     "dependencies": {
         "@eslint/eslintrc": "^3.3.1",
-        "@eslint/js": "^9.23.0",
-        "eslint-plugin-fiori-custom": "file:/Users/I058153/git/SAPDevelop/eslint-plugin-fiori-custom",
+        "@eslint/js": "^9",
+        "eslint-plugin-fiori-custom": "^2.6.7",
         "yaml": "2.2.2"
     },
     "peerDependencies": {
