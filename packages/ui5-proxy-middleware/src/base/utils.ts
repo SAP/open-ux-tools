@@ -1,4 +1,5 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { Options } from 'http-proxy-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
@@ -345,4 +346,20 @@ export function directLoadProxy(
             next(error);
         }
     };
+}
+
+/**
+ * Create a rewrite based on the provided configuration.
+ *
+ * @param config proxy configuration
+ * @param ui5Ver UI5 version string
+ * @returns a path rewrite
+ */
+export function getPathRewrite(config: ProxyConfig, ui5Ver: string): Options['pathRewrite'] {
+    if (config.pathReplace) {
+        // Remove trailing slash from pathReplace if present
+        const sanitizedPathReplace = config.pathReplace?.replace(/\/$/, '');
+        return (path: string) => path.replace(config.path, sanitizedPathReplace);
+    }
+    return (path: string) => (path.startsWith(config.path) ? ui5Ver + path : ui5Ver + config.path + path);
 }
