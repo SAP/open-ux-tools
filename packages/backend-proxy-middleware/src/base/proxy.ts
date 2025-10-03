@@ -18,8 +18,14 @@ import type { ServiceInfo } from '@sap-ux/btp-utils';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
-import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
-import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
+import type {
+    ApiHubSettings,
+    ApiHubSettingsKey,
+    ApiHubSettingsService,
+    BackendSystem,
+    AuthenticationType
+} from '@sap-ux/store';
+import { BackendSystemKey, getService } from '@sap-ux/store';
 import { updateProxyEnv } from './config';
 import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
@@ -250,16 +256,16 @@ export async function enhanceConfigsForDestination(
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param system backend system information (most likely) read from the store
- * @param oAuthRequired if true then the OAuth flow is triggered to get cookies
+ * @param authType determines the authentication protocol to be used
  * @param tokenChangedCallback function to call if a new refreshToken is available
  */
 export async function enhanceConfigForSystem(
     proxyOptions: Options & { headers: object },
     system: BackendSystem | undefined,
-    oAuthRequired: boolean | undefined,
+    authType: AuthenticationType,
     tokenChangedCallback: (refreshToken?: string) => void
 ): Promise<void> {
-    if (oAuthRequired) {
+    if (authType === 'oauth2') {
         if (system?.serviceKeys) {
             const provider = createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
@@ -270,9 +276,9 @@ export async function enhanceConfigForSystem(
             // sending a request to the backend to get token
             await provider.getAtoInfo();
         } else {
-            throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
+            throw new Error('Cannot connect to ABAP Environment on BTP using OAuth without service keys.');
         }
-    } else if (system?.authenticationType === AuthenticationType.ReentranceTicket) {
+    } else if (system && authType === 'reentranceTicket') {
         const provider = createForAbapOnCloud({
             ignoreCertErrors: proxyOptions.secure === false,
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
@@ -322,7 +328,6 @@ export async function generateProxyMiddlewareOptions(
         target: backend.url,
         pathRewrite: PathRewriters.getPathRewrite(backend, logger)
     };
-
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
         const destBackend = backend as DestinationBackendConfig;
@@ -343,10 +348,13 @@ export async function generateProxyMiddlewareOptions(
                 url: localBackend.url,
                 authenticationType: localBackend.authenticationType
             };
+            // Determine auth type from app config as we may have multiple stored systems with the same url/client using different auth types
+            const authType: AuthenticationType =
+                localBackend.authenticationType ?? (localBackend.scp ? 'oauth2' : 'basic');
             await enhanceConfigForSystem(
                 proxyOptions,
                 system,
-                backend.scp,
+                authType,
                 (refreshToken?: string, accessToken?: string) => {
                     if (refreshToken) {
                         logger.info('Updating refresh token for: ' + localBackend.url);

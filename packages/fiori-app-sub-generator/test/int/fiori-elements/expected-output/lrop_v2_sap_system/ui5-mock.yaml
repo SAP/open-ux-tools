@@ -16,7 +16,7 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - scp: true
+          - authenticationType: reentranceTicket # SAML support for vscode
             path: /sap
             url: https://abap.cloud.host
     - name: fiori-tools-appreload
