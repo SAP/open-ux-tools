@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CustomPage Add library dependency \`sap.fe.core\` 1`] = `
 Object {
@@ -1047,4 +1047,10 @@ Object {
     },
   },
 }
+`;
+
+exports[`CustomPage generateCustomPage: only page, no others should generate a custom page with pageBuildingBlockTitle enabled 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
+</mvc:View>"
 `;

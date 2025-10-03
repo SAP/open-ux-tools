@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-fragments-with-multiple-root-nodes-23b9c77-md",
+  "title": "Fragments with Multiple Root Nodes",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/fragments-with-multiple-root-nodes-23b9c77.md",
+  "lastModified": "2025-09-01T18:17:10.516Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Fragments",
+    "with",
+    "Multiple",
+    "Root",
+    "Nodes"
+  ],
+  "headers": [
+    "Fragments with Multiple Root Nodes"
+  ],
+  "content": "<!-- loio23b9c779c2274213a281c1fc46b4962b -->\n\n# Fragments with Multiple Root Nodes\n\nXML fragments and JS fragments can have more than one root control.\n\nIn JS fragments, the `createContent()` method can optionally return an array of controls:\n\n```js\n// fragment is located in a file named: sap/ui/core/fragmenttest/MultiRootFragment.fragment.js,\nsap.ui.define([\"sap/m/Label\", \"sap/m/Input\", \"sap/m/Button\"], function(Label, Input, Button) {\n    return {\n        createContent: function(oController) {\n            var oLabel = new Label({text:\"These controls are within one multi-root Fragment:\"});\n            var oInput = new Input();\n            var oButton = new Button({text: \"Still in the same Fragment\"});\n            return [ oLabel, oInput, oButton ];\n        }\n    }\n});\n```\n\nAs XML documents need to have exactly one root node, to achieve XML fragments with multiple root nodes, an additional `<FragmentDefinition>` tag needs to be added as root element containing the actual root controls. This `<FragmentDefinition>` tag will not have any representation in HTML at runtime; the children are added directly to wherever this fragment is placed.\n\n```xml\n\n<core:FragmentDefinition xmlns=\"sap.m\" xmlns:core=\"sap.ui.core\">\n    <Label text=\"These controls are within one multi-root Fragment:\" />\n    <Input />\n    <Button text=\"Still in the same Fragment\" />\n</core:FragmentDefinition>\n```\n\n> ### Note:  \n> For HTML fragments this feature is currently not available.\n\n",
+  "excerpt": "<!-- loio23b9c779c2274213a281c1fc46b4962b --> Fragments with Multiple Root Nodes XML fragments and JS fragments can have more than one root control. In JS fragments, the createContent() method can opt...",
+  "wordCount": 187,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

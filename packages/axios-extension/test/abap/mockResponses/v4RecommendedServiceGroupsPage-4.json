@@ -12,7 +12,7 @@
                 "RecommendedServices": [
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWNGW/NOTIFICATION_SRV1",
+                        "ServiceId": "/IWNGW/NOTIFICATION_SRV4",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "Notification Gateway OData V4 Service1",

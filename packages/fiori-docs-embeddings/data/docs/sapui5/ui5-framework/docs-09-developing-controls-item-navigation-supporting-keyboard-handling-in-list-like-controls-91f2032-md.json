@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-09-developing-controls-item-navigation-supporting-keyboard-handling-in-list-like-controls-91f2032-md",
+  "title": "Item Navigation - Supporting Keyboard Handling in List-like Controls",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/item-navigation-supporting-keyboard-handling-in-list-like-controls-91f2032.md",
+  "lastModified": "2025-09-01T18:17:10.679Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Item",
+    "Navigation",
+    "Supporting",
+    "Keyboard",
+    "Handling",
+    "List",
+    "like",
+    "Controls"
+  ],
+  "headers": [
+    "Item Navigation - Supporting Keyboard Handling in List-like Controls"
+  ],
+  "content": "<!-- loio91f203236f4d1014b6dd926db0e91070 -->\n\n# Item Navigation - Supporting Keyboard Handling in List-like Controls\n\nThe helper class `sap.ui.core.delegate.ItemNavigation` supports item navigation in lists.\n\nThe helper class can be used for keyboard events in controls that need the ability to navigate with arrow keys over a one- or two-dimensional list of DOM nodes. The delegate hooks into the browser events for arrow up/down/left/right, page up/down and home/end keys. With a list of DOM nodes provided by the control, it sets the focus to the relevant DOM node in the list while handling the events.\n\nFor item navigation handling, the control has to provide a DOM node that surrounds the DOM nodes of all items and a list of the DOM nodes of the items. When the control is entered, the initial focus should be set on the surrounding DOM node. The `setCycling` method determines whether the focus automatically moves to the top after the end of the list was reached. To use the page up/down keys, a page size must be set via the `setPageSize` method on the delegate.\n\nTo specify a preselected item for the delegate, use the `setSelectedIndex` method. On reentering a control with a selected item, the method sets the focus on the list item that had been selected before the control was ended. If no selected index is given, the method sets the focus on the first item when the control is entered again.\n\nIf item navigation has to trigger a control before a focus is set, the `BeforeFocus` and `AfterFocus` events can be used to do, for example, preparation tasks for the controls visibility.\n\n> ### Note:  \n> Using the item navigation does not prevent you from reacting on the events handled by the delegate in your control.\n\n",
+  "excerpt": "<!-- loio91f203236f4d1014b6dd926db0e91070 --> Item Navigation - Supporting Keyboard Handling in List-like Controls The helper class sap.ui.core.delegate.ItemNavigation supports item navigation in list...",
+  "wordCount": 292,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

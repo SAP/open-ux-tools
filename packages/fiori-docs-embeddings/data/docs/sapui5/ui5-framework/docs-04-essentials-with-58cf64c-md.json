@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-with-58cf64c-md",
+  "title": "with",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/with-58cf64c.md",
+  "lastModified": "2025-09-01T18:17:10.555Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "with"
+  ],
+  "headers": [
+    "with",
+    "\"with\" Template",
+    "\"with\" Template Including Annotation Helper"
+  ],
+  "content": "<!-- loio58cf64cbb951496a99ac94e01a0905b2 -->\n\n# with\n\nThe `<template:with>` instruction can be used to change a variable's value or to add a variable with a new name.\n\nThis changed variable is available only within the scope of the `with` instruction. In the example titled **\"with\" Template**, `\"meta>com.sap.vocabularies.UI.v1.Badge\"` refers to `\"/dataServices/schema/0/entityType/0/com.sap.vocabularies.UI.v1.Badge\"` within `oMetaModel`. `\"badge\"` then becomes a valid model name while processing the content of the `with` instruction, in addition to the existing ones:\n\n-   meta = `oMetaModel, \"/dataServices/schema/0/entityType/0\"`\n\n-   badge = `oMetaModel, \"/dataServices/schema/0/entityType/0/com.sap.vocabularies.UI.v1.Badge\"`\n\n\nIf you omit the \"var\" attribute, the same model name will be reused; for example, \"meta\" in our example, and the `with` instruction changes the binding context locally. A new variable name improves readability.\n\n\n\n## \"with\" Template\n\n```xml\n\n<template:with path=\"meta>com.sap.vocabularies.UI.v1.Badge\" var=\"badge\">\n    <!-- ... -->\n</template:with>\n\n```\n\n\n\nA helper can be called from a `with` instruction. It receives an `sap.ui.model.Context` object identifying the model and path from the instruction's \"path\" property and may return one of the following:\n\n-   A `sap.ui.model.Context` object that is assigned to the variable\n\n-   A non-empty string that is used as a path within the same model and assigned to the variable\n\n-   Undefined, in which case the helper is ignored and the original path is assigned to the variable\n\n-   A thenable \\(usually a Promise\\) resolving with any of the above, if the view is loaded asynchronously.\n\n\nThe helper can analyze the object the path points to and derive a \"resolved path\" from that, such as by normalization or following references. Typically, it only points to a different path, but it can even change the model instance, such as jumping from a data model to its meta model or jumping to a resource model, and so on.\n\nThe example titled **\"with\" Template Including Helper** assumes that \"field\" is an OData meta model with a current binding context that points to a field inside some annotation, such as `\"/dataServices/schema/0/entityType/0/com.sap.vocabularies.UI.v1.Badge/MainInfo\"`. The helper function `sap.ui.model.odata.AnnotationHelper.resolvePath` is used to follow the field value's `path` property. For more information, see [Annotation Helper](annotation-helper-dbec058.md) and [API Reference: `sap.ui.model.odata.AnnotationHelper.resolvePath`](https://ui5.sap.com/#/api/sap.ui.model.odata.AnnotationHelper).\n\nIt returns a path inside the meta model which refers to the corresponding property's meta data, such as `\"/dataServices/schema/<i>/entityType/<j>/property/<k>\"`. This result is in turn assigned by the `with` instruction to the variable named \"target\".\n\n\n\n## \"with\" Template Including Annotation Helper\n\n```xml\n\n<template:with path=\"meta>Value\" helper=\"sap.ui.model.odata.AnnotationHelper.resolvePath\" var=\"target\">\n  <template:if test=\"{= {target>sap:semantics} === 'email'}\" >\n    <core:Icon src=\"sap-icon://email\" />\n  </template:if>\n  <template:if test=\"{= {target>sap:semantics} === 'tel'}\" >\n    <core:Icon src=\"sap-icon://phone\" />\n  </template:if>\n</template:with>\n```\n\n**Related Information**  \n\n\n[Annotation Helper](annotation-helper-dbec058.md \"A collection of methods which help to consume OData Version 4.0 annotations in XML template views.\")\n\n",
+  "excerpt": "<!-- loio58cf64cbb951496a99ac94e01a0905b2 --> with The <template:with> instruction can be used to change a variable's value or to add a variable with a new name. This changed variable is available onl...",
+  "wordCount": 425,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

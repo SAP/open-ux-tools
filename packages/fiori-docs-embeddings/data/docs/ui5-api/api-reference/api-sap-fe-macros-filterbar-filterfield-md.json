@@ -1,0 +1,24 @@
+{
+  "id": "ui5-api-api-sap-fe-macros-filterbar-filterfield-md",
+  "title": "sap.fe.macros.filterBar.FilterField",
+  "category": "api-reference",
+  "path": "api/sap.fe.macros.filterBar.FilterField.md",
+  "lastModified": "2025-09-01T18:17:10.917Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap",
+    "macros",
+    "filterBar",
+    "FilterField"
+  ],
+  "headers": [
+    "sap.fe.macros.filterBar.FilterField"
+  ],
+  "content": "# sap.fe.macros.filterBar.FilterField\n\n<p>Definition of a custom filter to be used inside the FilterBar.<br/>The template for the FilterField has to be provided as the default aggregation<br/>\n<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"test-resources/sap/fe/core/fpmExplorer/index.html#/buildingBlocks/filterBar/filterBarCustoms\">Overview of Building Blocks</a>\n\t\t\t<img src=\"./resources/sap/ui/documentation/sdk/images/link-sap.png\"\n\t\t\ttitle=\"Information published on SAP site\" class=\"sapUISDKExternalLink\"/>\n</p>\n\n**Type:** class\n\n**Module:** sap/fe/macros/filterBar/FilterField\n\n",
+  "excerpt": "sap.fe.macros.filterBar.FilterField <p>Definition of a custom filter to be used inside the FilterBar.<br/>The template for the FilterField has to be provided as the default aggregation<br/> <a target=...",
+  "wordCount": 47,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-controller-notfound-controller-js",
+  "title": "NotFound.controller",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/controller/NotFound.controller.js",
+  "lastModified": "2025-09-01T18:17:10.810Z",
+  "tags": [
+    "samples",
+    "js",
+    "NotFound",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.md\n\n```javascript\n# NotFound.controller.js\n\n```javascript\nsap.ui.define([\"./BaseController\"],function(n){\"use strict\";return n.extend(\"ns.manageproductsneo.controller.NotFound\",{onLinkPressed:function(){this.getRouter().navTo(\"worklist\")}})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "NotFound.controller.md javascript NotFound.controller.md javascript NotFound.controller.md javascript NotFound.controller.md javascript NotFound.controller.js",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

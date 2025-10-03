@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-04-essentials-displaying-a-specific-range-of-records-in-a-control-9b5bdd8-md",
+  "title": "Displaying a Specific Range of Records in a Control",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/displaying-a-specific-range-of-records-in-a-control-9b5bdd8.md",
+  "lastModified": "2025-09-01T18:17:10.513Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Displaying",
+    "Specific",
+    "Range",
+    "Records",
+    "Control"
+  ],
+  "headers": [
+    "Displaying a Specific Range of Records in a Control"
+  ],
+  "content": "<!-- loio9b5bdd8931194e88b22faf8537099073 -->\n\n# Displaying a Specific Range of Records in a Control\n\nIt is possible to display only a specific range of records when using a list binding. The necessary properties can be set in the binding information.\n\n\n\nUse the `length` and `startIndex` properties of the `oBindingInfo` parameter of the [`sap.ui.base.ManagedObject#bindAggregation`](https://ui5.sap.com/#/api/sap.ui.base.ManagedObject/methods/bindAggregation) method if you wish to display only a specific range of your records. Your XML view will then look similar to the following example for a list of notes, for which the resulting table will display the fourth, fifth and sixth note ordered by `Rank` in ascending order.\n\n```xml\n<Table \n    items=\"{\n        path: '/Notes',\n        sorter: { path: 'Rank' },\n        length: 3,\n        startIndex: 3\n}\">\n    <columns>\n        <Column>\n            <Text text=\"Note\" />\n        </Column>\n    </columns>\n    <items>\n        <ColumnListItem>\n            <cells>\n                <Text text=\"{Note}\" />\n            </cells>\n        </ColumnListItem>\n    </items>\n</Table>\n\n```\n\n",
+  "excerpt": "<!-- loio9b5bdd8931194e88b22faf8537099073 --> Displaying a Specific Range of Records in a Control It is possible to display only a specific range of records when using a list binding. The necessary pr...",
+  "wordCount": 134,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

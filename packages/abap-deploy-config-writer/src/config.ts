@@ -72,6 +72,7 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         true,
         ['/test/'],
         config.index,
+        config.lrep,
         comments
     );
 

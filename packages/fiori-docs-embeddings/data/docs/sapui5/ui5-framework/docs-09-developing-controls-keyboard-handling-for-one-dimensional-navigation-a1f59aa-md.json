@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-09-developing-controls-keyboard-handling-for-one-dimensional-navigation-a1f59aa-md",
+  "title": "Keyboard Handling for One-Dimensional Navigation",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/keyboard-handling-for-one-dimensional-navigation-a1f59aa.md",
+  "lastModified": "2025-09-01T18:17:10.679Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Keyboard",
+    "Handling",
+    "for",
+    "One",
+    "Dimensional",
+    "Navigation"
+  ],
+  "headers": [
+    "Keyboard Handling for One-Dimensional Navigation"
+  ],
+  "content": "<!-- loioa1f59aa4a100410d8eb0c3f298da1462 -->\n\n# Keyboard Handling for One-Dimensional Navigation\n\nThe following keys and key combinations are used for navigation in one-dimensional item containers \\(for example, lists and drop-downs\\).\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nKey combination\n\n</th>\n<th valign=\"top\">\n\nBehavior\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Up arrow\\], [Left arrow\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **previous** item.\n\nIf focus is on the first item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Down arrow\\], [Right arrow\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **next** item.\n\nIf focus is on the last item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Page up\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus **up/ left** by page size.\n\n> ### Note:  \n> Page size can be set by the application; default page size is 10 items\n\nIf focus is on the last item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Page down\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus **down/ right** by page size.\n\n> ### Note:  \n> Page size can be set by the application; default page size is 10 items\n\nIf focus is on the first item, do nothing.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[Home\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **first** item.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n[End\\]\n\n</td>\n<td valign=\"top\">\n\nIf focus is on an item, move focus to the **last** item.\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loioa1f59aa4a100410d8eb0c3f298da1462 --> Keyboard Handling for One-Dimensional Navigation The following keys and key combinations are used for navigation in one-dimensional item containers \\(for ...",
+  "wordCount": 250,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

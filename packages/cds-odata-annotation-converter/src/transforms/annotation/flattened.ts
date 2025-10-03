@@ -151,7 +151,9 @@ function convertToExpandedStructure(
             const termQualifiedName = termNameSegment
                 ? `${vocabularyNameOrAlias}.${termNameSegment.value}`
                 : vocabularyNameOrAlias;
-            const termValueRange = createRange(segment.range?.start, termNameSegment.range?.end);
+            const termValueRange = termNameSegment
+                ? createRange(segment.range?.start, termNameSegment.range?.end)
+                : structuredClone(segment.range);
 
             const embeddedAnnotation = createElementNode({
                 name: Edm.Annotation,
@@ -165,7 +167,7 @@ function convertToExpandedStructure(
             expandedStructure.push({
                 kind: 'annotation',
                 name: termQualifiedName,
-                vocabularyObject: getTerm(state.vocabularyService, vocabularyNameOrAlias, termNameSegment.value),
+                vocabularyObject: getTerm(state.vocabularyService, vocabularyNameOrAlias, termNameSegment?.value),
                 element: embeddedAnnotation
             });
             i += 2;

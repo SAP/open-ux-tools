@@ -173,12 +173,10 @@ class MetadataConverter {
      * @param targetKinds
      * @param element
      */
-    private convertEntitySet(targetKinds: string[], element: MetadataElement) {
+    private convertEntitySet(targetKinds: string[], element: MetadataElement): void {
         if (targetKinds.includes('EntitySet') && !targetKinds.includes('ComplexType')) {
             // for CDS no entity container is present: target kind EntitySet can appear at root level
-            if (!element.isCollectionValued) {
-                this.convertSingleton([...targetKinds, 'Singleton'], element);
-            } else {
+            if (element.isCollectionValued) {
                 const entitySet: RawEntitySet = {
                     _type: 'EntitySet',
                     name: element.name,
@@ -187,6 +185,8 @@ class MetadataConverter {
                     fullyQualifiedName: element.path
                 };
                 this.entitySets.push(entitySet);
+            } else {
+                this.convertSingleton([...targetKinds, 'Singleton'], element);
             }
         }
     }
@@ -197,7 +197,7 @@ class MetadataConverter {
      * @param targetKinds
      * @param element
      */
-    private convertSingleton(targetKinds: string[], element: MetadataElement) {
+    private convertSingleton(targetKinds: string[], element: MetadataElement): void {
         if (targetKinds.includes('Singleton')) {
             const singleton: RawSingleton = {
                 _type: 'Singleton',
@@ -241,7 +241,7 @@ class MetadataConverter {
                         isCollection: !!element.isCollectionValued,
                         containsTarget: false,
                         partner: '',
-                        referentialConstraint: []
+                        referentialConstraint: subElement.referentialConstraints ?? []
                     };
                     complexTypeNavProperties.push(navProp);
                 }
@@ -334,7 +334,7 @@ class MetadataConverter {
                 isCollection: !!element.isCollectionValued,
                 containsTarget: false,
                 partner: '',
-                referentialConstraint: []
+                referentialConstraint: element.referentialConstraints ?? []
             };
             navigationProperties.push(property);
         }
@@ -401,6 +401,7 @@ function isReturnParameter(elementTargetKinds: string[], element: MetadataElemen
 
 const aliases: Record<string, string> = {};
 
+const separators = new Set(['@', '/', '(']);
 function unalias(aliasedValue: string): string;
 
 // TODO: check what is this actually doing, aliases are not filled at all.
@@ -413,7 +414,6 @@ function unalias(aliasedValue: string | undefined): string | undefined {
         return aliasedValue;
     }
 
-    const separators = ['@', '/', '('];
     const unaliased: string[] = [];
     let start = 0;
     for (let end = 0, maybeAlias = true; end < aliasedValue.length; end++) {
@@ -424,7 +424,7 @@ function unalias(aliasedValue: string | undefined): string | undefined {
             start = end;
             maybeAlias = false;
         }
-        if (separators.includes(char)) {
+        if (separators.has(char)) {
             unaliased.push(aliasedValue.substring(start, end + 1));
             start = end + 1;
             maybeAlias = true;

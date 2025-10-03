@@ -214,6 +214,19 @@ describe('hybrid store', () => {
                     /* onlysecure */ { prop1: 1 }
                 ]);
             });
+
+            it('returns entities from the filesystem and does not check secure store', async () => {
+                const fsEntities = {
+                    '42': { prop1: 42, prop2: '13' },
+                    '13': { prop1: 1, prop2: 'b' }
+                };
+                mockFilesystemStore.readAll.mockResolvedValueOnce(fsEntities);
+                mockSecureStore.getAll.mockResolvedValueOnce(undefined);
+
+                await expect(
+                    getHybridStore(logger).getAll({ entityName: 'dummy', includeSensitiveData: false })
+                ).resolves.toIncludeSameMembers(Object.values(fsEntities));
+            });
         });
     });
 

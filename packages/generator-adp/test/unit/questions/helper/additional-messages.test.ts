@@ -12,6 +12,11 @@ import { t } from '../../../../src/utils/i18n';
 
 describe('additional-messages', () => {
     describe('getSystemAdditionalMessages', () => {
+        it('should return undefined if flexUISystem is undefined', () => {
+            const result = getSystemAdditionalMessages(undefined, false);
+            expect(result).toBeUndefined();
+        });
+
         it('should return CLOUD_READY info message for cloud project', () => {
             const result = getSystemAdditionalMessages(undefined, true);
             expect(result).toEqual({

@@ -1,0 +1,28 @@
+{
+  "id": "sapui5-docs-03-get-started-step-24-sorting-and-grouping-c4b2a32-md",
+  "title": "Step 24: Sorting and Grouping",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-24-sorting-and-grouping-c4b2a32.md",
+  "lastModified": "2025-09-01T18:17:10.463Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Sorting",
+    "and",
+    "Grouping"
+  ],
+  "headers": [
+    "Step 24: Sorting and Grouping",
+    "Preview",
+    "Coding",
+    "webapp/view/InvoiceList.view.xml",
+    "webapp/view/InvoiceList.view.xml"
+  ],
+  "content": "<!-- loioc4b2a32bb72f483faa173e890e48d812 -->\n\n# Step 24: Sorting and Grouping\n\nTo make our list of invoices even more user-friendly, we sort it alphabetically instead of just showing the order from the data model. Additionally, we introduce groups and add the company that ships the products so that the data is easier to consume.\n\n\n\n## Preview\n\n  \n  \n**The list is now sorted and grouped by the shipping company**\n\n![A list of invoices is displayed](images/UI5_Walkthrough_Step_24_33f71b4.png \"The list is now sorted and grouped by the shipping company\")\n\n\n\n<a name=\"loioc4b2a32bb72f483faa173e890e48d812__section_sxl_41l_syb\"/>\n\n## Coding\n\nYou can view and download all files at [Walkthrough - Step 24](https://ui5.sap.com/#/entity/sap.m.tutorial.walkthrough/sample/sap.m.tutorial.walkthrough.24).\n\n\n\n<a name=\"loioc4b2a32bb72f483faa173e890e48d812__section_txl_41l_syb\"/>\n\n## webapp/view/InvoiceList.view.xml\n\n```xml\n<mvc:View\n   controllerName=\"ui5.walkthrough.controller.InvoiceList\"\n   xmlns=\"sap.m\"\n   xmlns:mvc=\"sap.ui.core.mvc\">\n   <List\n      id=\"invoiceList\"\n      class=\"sapUiResponsiveMargin\"\n      width=\"auto\"\n      items=\"{\n         path : 'invoice>/Invoices',\n         sorter : {\n            path : 'ProductName' \n         }\n      }\" >\n      ...\n   </List>\n</mvc:View>\n```\n\nWe add a declarative sorter to our binding syntax. As usual, we transform the simple binding syntax to the object notation, specify the path to the data, and now add an additional `sorter` property. We specify the data path by which the invoice items should be sorted, and UI5 will take care of the rest. By default, the sorting is ascending, but you could also add a property `descending` with the value `true` inside the sorter property to change the sorting order.\n\nIf we run the app now we can see a list of invoices sorted by the name of the products.\n\n\n\n## webapp/view/InvoiceList.view.xml\n\n```xml\n<mvc:View\n    controllerName=\"ui5.walkthrough.controller.InvoiceList\"\n    xmlns=\"sap.m\"\n    xmlns:mvc=\"sap.ui.core.mvc\">\n    <List\n        id=\"invoiceList\"\n        headerText=\"{i18n>invoiceListTitle}\"\n        class=\"sapUiResponsiveMargin\"\n        width=\"auto\"\n        items=\"{\n            path : 'invoice>/Invoices',\n            sorter : {\n                path : 'ShipperName',\n                group : true\n            }\n\n        }\">\n        ...\n    </List>\n</mvc:View>\n```\n\nWe modify the view and add a different sorter, or better; we change the sorter and set the attribute `group` to true. We also specify the path to the `ShipperName` data field. This groups the invoice items by the shipping company.\n\nAs with the sorter, no further action is required. The list and the data binding features of SAPUI5 will do the trick to display group headers automatically and categorize the items in the groups. We could define a custom group header factory if we wanted by setting the `groupHeaderFactory` property, but the result looks already fine.\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.model.Sorter`](https://ui5.sap.com/#/api/sap.ui.model.Sorter)\n\n[Sample: List - Grouping](https://ui5.sap.com/#/entity/sap.m.List/sample/sap.m.sample.ListGrouping)\n\n",
+  "excerpt": "<!-- loioc4b2a32bb72f483faa173e890e48d812 --> Step 24: Sorting and Grouping To make our list of invoices even more user-friendly, we sort it alphabetically instead of just showing the order from the d...",
+  "wordCount": 368,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -6,7 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import * as crypto from 'crypto';
 import * as path from 'path';
-
+import * as fs from 'fs';
 import {
     addAnnotationFile,
     addXmlFragment,
@@ -147,17 +147,18 @@ describe('change-handler', () => {
             error: jest.fn()
         };
 
-        const path = 'project/path';
+        const projectPath = 'project/path';
         const fragmentName = 'Share';
         const change = {
             content: {
                 fragmentPath: `${fragmentName}.fragment.xml`
             }
         } as unknown as AddXMLChange;
+        const fragmentTemplatePath = path.join(__dirname, '../../../templates/rta/fragment.xml');
+        const realTemplateContent = fs.readFileSync(fragmentTemplatePath, 'utf-8');
 
         beforeEach(() => {
             mockFs.exists.mockClear();
-            mockFs.copy.mockClear();
             mockFs.read.mockClear();
             mockFs.write.mockClear();
             mockLogger.info.mockClear();
@@ -166,27 +167,49 @@ describe('change-handler', () => {
 
         it('should create the XML fragment and log information if it does not exist', () => {
             mockFs.exists.mockReturnValue(false);
+            mockFs.read.mockReturnValue(realTemplateContent);
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+            addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                targetAggregation: 'content',
+                controlType: 'sampleType'
+            });
 
-            expect(mockFs.copy).toHaveBeenCalled();
+            expect(mockFs.write).toHaveBeenCalled();
+            expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+"<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- controlType: sampleType -->
+    <!-- targetAggregation: content --> 
+    <!--  add your xml here -->
+
+</core:FragmentDefinition>
+"
+`);
             expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
         });
 
         it('should log an error if the XML fragment creation fails', () => {
             mockFs.exists.mockReturnValue(false);
-            mockFs.copy.mockImplementation(() => {
-                throw new Error('Copy failed');
+            mockFs.write.mockImplementation(() => {
+                throw new Error('Write failed');
+            });
+            mockFs.read.mockReturnValue(realTemplateContent);
+
+            addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                targetAggregation: 'content',
+                controlType: 'sampleType'
             });
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
-
+            expect(mockFs.write).toHaveBeenCalled();
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(`Failed to create XML Fragment "${fragmentName}.fragment.xml"`)
             );
         });
 
         describe('custom fragments', () => {
+            beforeAll(() => {
+                mockFs.write.mockReset();
+            });
             beforeEach(() => {
                 jest.spyOn(crypto, 'randomBytes').mockImplementation((size: number) => Buffer.from('0'.repeat(size)));
             });
@@ -196,7 +219,7 @@ describe('change-handler', () => {
 id="<%- ids.objectPageSection %>"
 id="<%- ids.objectPageSubSection %>"
 id="<%- ids.hBox %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `OBJECT_PAGE_CUSTOM_SECTION`
                 });
 
@@ -226,7 +249,7 @@ id="<%- ids.hBox %>"`);
                 mockFs.read.mockReturnValue(`
 id="<%- ids.vBoxContainer %>"
 id="<%- ids.label %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `OBJECT_PAGE_HEADER_FIELD`
                 });
 
@@ -254,7 +277,7 @@ id="<%- ids.label %>"`);
                 mockFs.exists.mockReturnValue(false);
                 mockFs.read.mockReturnValue(`
 id="<%- ids.toolbarActionButton %>`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `CUSTOM_ACTION`
                 });
 
@@ -292,9 +315,15 @@ id="<%- ids.columnTitle %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `V2_SMART_TABLE_COLUMN`
-                });
+                addXmlFragment(
+                    projectPath,
+                    updatedChange,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `V2_SMART_TABLE_COLUMN`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -324,7 +353,7 @@ id="<%- ids.index %>
                 mockFs.read.mockReturnValue(`
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `V2_SMART_TABLE_CELL`
                 });
 
@@ -354,7 +383,7 @@ id="<%- ids.text %>
 id="<%- ids.column %>
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `V4_MDC_TABLE_COLUMN`
                 });
 
@@ -408,9 +437,15 @@ id="<%- ids.text %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: testCase.tableType
-                });
+                addXmlFragment(
+                    projectPath,
+                    updatedChange,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: testCase.tableType
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -439,7 +474,7 @@ id="<%- ids.index %>
                 mockFs.read.mockReturnValue(`
 id="<%- ids.customToolbarAction %>"
 id="<%- ids.customActionButton %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `TABLE_ACTION`
                 });
 
@@ -586,6 +621,13 @@ id="<%- ids.customActionButton %>"`);
     });
 
     describe('addAnnotationFile', () => {
+        const variantResult = {
+            content: [],
+            id: 'adp/project',
+            layer: 'VENDOR',
+            namespace: 'test',
+            reference: 'adp/project'
+        } as unknown as DescriptorVariant;
         jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
             {
                 namespace: 'com.sap.test.serviceorder.v0001',
@@ -622,13 +664,6 @@ id="<%- ids.customActionButton %>"`);
                 }
             })
         } as any);
-        jest.spyOn(helper, 'getVariant').mockResolvedValue({
-            content: [],
-            id: 'adp/project',
-            layer: 'VENDOR',
-            namespace: 'test',
-            reference: 'adp/project'
-        });
         jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -672,11 +707,12 @@ id="<%- ids.customActionButton %>"`);
             mockFs.write.mockClear();
             mockLogger.info.mockClear();
             mockLogger.error.mockClear();
+            jest.clearAllMocks();
+            jest.spyOn(helper, 'getVariant').mockResolvedValue(variantResult);
         });
 
         it('should call the geneate change', async () => {
             mockFs.exists.mockReturnValue(false);
-
             await addAnnotationFile(
                 'projectRoot/webapp',
                 'projectRoot',
@@ -686,6 +722,14 @@ id="<%- ids.customActionButton %>"`);
                 {} as any
             );
 
+            // Assert
+            expect(manifestService.ManifestService.initMergedManifest).toHaveBeenCalledWith(
+                {} as any,
+                'projectRoot',
+                variantResult,
+                mockLogger
+            );
+            expect(helper.getVariant).toHaveBeenCalledWith('projectRoot');
             expect(generateChangeSpy).toHaveBeenCalled();
         });
     });

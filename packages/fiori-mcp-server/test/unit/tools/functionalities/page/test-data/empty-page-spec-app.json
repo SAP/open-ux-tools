@@ -1,0 +1,22 @@
+{
+    "$schema": "./.schemas/App.json",
+    "id": "managetravels",
+    "pages": {},
+    "target": {
+        "fioriElements": "v4",
+        "odata": "v4"
+    },
+    "settings": {
+        "dependencies": {
+            "minUI5Version": "1.136.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "flexEnabled": true
+    }
+}

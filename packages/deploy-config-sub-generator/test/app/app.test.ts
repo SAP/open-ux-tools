@@ -270,7 +270,7 @@ describe('Deployment Generator', () => {
                     hint: false,
                     useAutocomplete: true
                 },
-                overwrite: {
+                overwriteCfConfig: {
                     hide: true
                 },
                 routerType: {

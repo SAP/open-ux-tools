@@ -1,6 +1,10 @@
 import type { Answers, Question, Validator } from 'inquirer';
 import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types';
 import cloneDeep from 'lodash/cloneDeep';
+import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
+import { t } from '../i18n';
 
 /**
  * Extends an additionalMessages function.
@@ -147,4 +151,54 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
         }
     });
     return questions;
+}
+
+/**
+ * Checks if the given entity set name has aggregate transformations in the metadata.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for aggregate transformations.
+ * @returns true if the entity set has aggregate transformations, false otherwise.
+ */
+export function hasAggregateTransformationsForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+    return filterAggregateTransformations(metadata.entitySets).some((entitySet) => entitySet.name === entitySetName);
+}
+
+/**
+ * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
+ * This can be found within the entity set annotations or the entity type annotations.
+ *
+ * @param entitySets the entity sets to filter
+ * @returns the filtered entity sets
+ */
+export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
+    return entitySets.filter((entitySet) => {
+        return (
+            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
+        );
+    });
+}
+
+/**
+ * Converts an EDMX string to a ConvertedMetadata object.
+ *
+ * @param edmx - The EDMX string to convert.
+ * @returns The converted metadata object.
+ * @throws If the EDMX cannot be parsed or the OData version is unparseable.
+ */
+export function convertEdmxToConvertedMetadata(edmx: string): ConvertedMetadata {
+    try {
+        const convertedMetadata = convert(parse(edmx));
+        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+        if (Number.isNaN(parsedOdataVersion)) {
+            throw new Error(t('errors.unparseableOdataVersion'));
+        }
+        return convertedMetadata;
+    } catch (error) {
+        throw new Error(t('errors.unparseableMetadata', { error: (error as Error).message }));
+    }
 }

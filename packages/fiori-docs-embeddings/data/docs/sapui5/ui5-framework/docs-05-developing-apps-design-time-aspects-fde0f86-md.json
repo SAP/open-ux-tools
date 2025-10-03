@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-05-developing-apps-design-time-aspects-fde0f86-md",
+  "title": "Design Time Aspects",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/design-time-aspects-fde0f86.md",
+  "lastModified": "2025-09-01T18:17:10.559Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Design",
+    "Time",
+    "Aspects"
+  ],
+  "headers": [
+    "Design Time Aspects"
+  ],
+  "content": "<!-- loiofde0f8602258412dbb44f8770db7463b -->\n\n# Design Time Aspects\n\nYou can upload and download files from and to the SAPUI5 ABAP repository with the following tools:\n\n-   SAP Business Application Studio\n-   SAP Web IDE\n-   SAPUI5 repository upload and download reports\n-   OData service \\(upload only\\)\n\nWe recommend to use SAP Business Application Studio for developing complex apps with the latest innovations. Some advantages of SAP Business Application Studio:\n\n-   Uses Git for version control of the sources\n\n-   Supports a client-side build that generates minified files and packages preload bundles to optimize start-up performance\n\n-   Pushes the SAP Business Application Studio state to the ABAP system in a one-way, overwrite-all operation\n\n\nDon't manually edit the BSP application representing a single SAPUI5 repository.\n\nThe SAPUI5 ABAP repository supports typical code pages for transferring of text files. However, there are some code pages that are not supported, for example code page `CP932` containing Japanese characters. If in doubt, we recommend that you encode the files transferred to the SAPUI5 ABAP repository in `UTF-8`.\n\n**Related Links**\n\n-   [SAP Business Application Studio](https://help.sap.com/viewer/product/SAP%2520Business%2520Application%2520Studio/Cloud/en-US)\n\n-   [Deploying SAPUI5 Applications to the SAPUI5 ABAP Repository](deploying-sapui5-applications-to-the-sapui5-abap-repository-a560bd6.md)\n\n-   [Using an OData Service to Load Data to the SAPUI5 ABAP Repository](using-an-odata-service-to-load-data-to-the-sapui5-abap-repository-a883327.md)\n\n",
+  "excerpt": "<!-- loiofde0f8602258412dbb44f8770db7463b --> Design Time Aspects You can upload and download files from and to the SAPUI5 ABAP repository with the following tools: -   SAP Business Application Studio...",
+  "wordCount": 201,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

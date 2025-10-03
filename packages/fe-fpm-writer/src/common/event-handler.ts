@@ -18,22 +18,32 @@ interface EventHandlerConfigurationOptions {
     eventHandlerFnName?: string;
 }
 
+type EventHandlerTypescriptParameters = EventHandlerTypescriptParameter[];
+
 /**
  * Interface to describe the input parameters for the generated event handler function.
  */
-export interface EventHandlerTypescriptParameters {
+export interface EventHandlerTypescriptParameter {
+    /** Variable name in TypeScript style */
     name: string;
+    /** Variable name in JavaScript style (Hungarian notation) */
+    jsName: string;
     description: string;
     importType: string;
+    /**
+     * Optional. If not defined, the parameter type will be taken from `importType`.
+     */
+    paramType?: string;
     importSource: string;
 }
 
 /**
  * Default values for the input parameters of newly created event handlers.
  */
-export const defaultParameter: EventHandlerTypescriptParameters = {
+export const defaultParameter: EventHandlerTypescriptParameter = {
     name: 'event',
-    description: 'the event object provided by the event provider',
+    jsName: 'oEvent',
+    description: 'the event object provided by the event provider.',
     importType: 'UI5Event',
     importSource: 'sap/ui/base/Event'
 };
@@ -41,10 +51,20 @@ export const defaultParameter: EventHandlerTypescriptParameters = {
 /**
  * Values for the input parameters of newly created event handlers that are added as manifest actions.
  */
-export const contextParameter: EventHandlerTypescriptParameters = {
-    name: 'pageContext',
-    description: 'the context of the page on which the event was fired',
+export const contextParameter: EventHandlerTypescriptParameter = {
+    name: 'context',
+    jsName: 'oContext',
+    description: 'the context of the page on which the event was fired. `undefined` for list report page.',
     importType: 'Context',
+    paramType: 'Context | undefined',
+    importSource: 'sap/ui/model/odata/v4/Context'
+};
+export const selectedContextsParameter: EventHandlerTypescriptParameter = {
+    name: 'selectedContexts',
+    jsName: 'aSelectedContexts',
+    description: 'the selected contexts of the table rows.',
+    importType: 'Context',
+    paramType: 'Context[]',
     importSource: 'sap/ui/model/odata/v4/Context'
 };
 
@@ -74,7 +94,7 @@ function getFileName(fileName: string, controllerPrefix?: string): string {
  * @param config - configuration
  * @param eventHandler - eventHandler for creation
  * @param eventHandlerOptions - eventHandler options
- * @param parameters - parameter configurations for the event handler
+ * @param parameters - parameters and its configurations for the event handler
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
@@ -82,7 +102,7 @@ export function applyEventHandlerConfiguration(
     config: Partial<InternalCustomElement>,
     eventHandler: EventHandlerConfiguration | true | string,
     eventHandlerOptions: EventHandlerConfigurationOptions,
-    parameters: EventHandlerTypescriptParameters = defaultParameter
+    parameters: EventHandlerTypescriptParameters = [defaultParameter]
 ): string {
     const { controllerSuffix, typescript, templatePath = 'common/EventHandler' } = eventHandlerOptions;
     let { eventHandlerFnName = 'onPress' } = eventHandlerOptions;

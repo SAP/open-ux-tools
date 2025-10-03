@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-coloring-cards-based-on-threshold-values-02c53f4-md",
+  "title": "Coloring Cards Based on Threshold Values",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/coloring-cards-based-on-threshold-values-02c53f4.md",
+  "lastModified": "2025-09-01T18:17:10.584Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Coloring",
+    "Cards",
+    "Based",
+    "Threshold",
+    "Values"
+  ],
+  "headers": [
+    "Coloring Cards Based on Threshold Values",
+    "Examples of Measures",
+    "Target Measure \\(for example, temperature\\)",
+    "Maximizing Measure \\(for example, sales\\)",
+    "Example of Target and Maximizing Measures",
+    "Minimizing Measure \\(for example, cost\\)"
+  ],
+  "content": "<!-- loio02c53f4d9e58447db939546bed33fb44 -->\n\n# Coloring Cards Based on Threshold Values\n\nWith overview pages, column chart cards can be semantically colored based on threshold values.\n\nThe threshold values used to semantically color column charts come from the data point annotation that is associated with the measure used in the analytic card. We recommend to only use one measure in the chart if you intend to use this feature.\n\nWhen you color the chart card, the threshold value that influences the semantic color would also be displayed in the legend; however, in instances where you have more than one measure, then the chart legend would only show \"good\", \"bad\" or \"neutral\" values. For example, a measure can be linked with a data point as follows, if the following two conditions are met:\n\n-   This data point should have a value that provides the improvement direction. This typically depicts whether we are dealing with:\n    -   a maximizing measure where a higher value of a measure is better, or\n    -   a minimizing measure where a lesser value of a measure is better, or\n    -   a target measure where the measure value is preferred within a certain range\n\n-   It is also required to have all the threshold values based on the examples below.\n\n> ### Note:  \n> We recommend configuring only one measure in the chart if you want to use semantic coloring. If more than one measure is used and all the measures satisfy the above two conditions, then the chart would still be colored semantically with each measure colored based on its own threshold values. The legends, however, won't be very meaningful.\n> \n> If more than one measure is used and some of the measures don't satisfy the required conditions, those measures will be colored black and the measures that do satisfy the conditions will be semantically colored based on the threshold values.\n\n\n\n## Examples of Measures\n\n\n\n### Target Measure \\(for example, temperature\\)\n\n![](images/Target_Measure_9329c7a.png)\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nFrom\n\n</th>\n<th valign=\"top\">\n\nTo\n\n</th>\n<th valign=\"top\">\n\nMeasure Value\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nNegative\n\n</td>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\n\\>= ThresholdValues.DeviationRangeLowValue\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\nPositive\n\n</td>\n<td valign=\"top\">\n\n\\>= ThresholdValues.ToleranceRangeLowValue\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nPositive\n\n</td>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\n\\> ThresholdValues.ToleranceRangeHighValue\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\nNegative\n\n</td>\n<td valign=\"top\">\n\n\\> ThresholdValues.DeviationRangeHighValue\n\n</td>\n</tr>\n</table>\n\n\n\n### Maximizing Measure \\(for example, sales\\)\n\n![](images/Maximizing_Measure_0f242d3.png)\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nFrom\n\n</th>\n<th valign=\"top\">\n\nTo\n\n</th>\n<th valign=\"top\">\n\nMeasure Value\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nNegative\n\n</td>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\n\\>= ThresholdValues.DeviationRangeLowValue\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\nPositive\n\n</td>\n<td valign=\"top\">\n\n\\>= ThresholdValues.ToleranceRangeLowValue\n\n</td>\n</tr>\n</table>\n\n\n\n### Example of Target and Maximizing Measures\n\n\n<table>\n<tr>\n<td valign=\"top\">\n\n![](images/ovp_semanticcolor_target_b57af63.png)\n\n</td>\n<td valign=\"top\">\n\n![](images/ovp_semanticcolor_max_c16efec.png)\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nSemantic coloring with target KPIs\n\n</td>\n<td valign=\"top\">\n\nSemantic coloring with maximizing KPIs\n\n</td>\n</tr>\n</table>\n\n\n\n### Minimizing Measure \\(for example, cost\\)\n\n![](images/Minimizing_Measures_60eca15.png)\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nFrom\n\n</th>\n<th valign=\"top\">\n\nTo\n\n</th>\n<th valign=\"top\">\n\nMeasure Value\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\nPositive\n\n</td>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\n\\> ThresholdValues.ToleranceRangeHighValue\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nCritical\n\n</td>\n<td valign=\"top\">\n\nNegative\n\n</td>\n<td valign=\"top\">\n\n\\> ThresholdValues.DeviationRangeHighValue\n\n</td>\n</tr>\n</table>\n\n",
+  "excerpt": "<!-- loio02c53f4d9e58447db939546bed33fb44 --> Coloring Cards Based on Threshold Values With overview pages, column chart cards can be semantically colored based on threshold values. The threshold valu...",
+  "wordCount": 546,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

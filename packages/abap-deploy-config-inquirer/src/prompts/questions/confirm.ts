@@ -30,7 +30,7 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
  */
 function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
     return {
-        name: promptNames.overwrite,
+        name: promptNames.overwriteAbapConfig,
         type: 'confirm',
         message: t('prompts.confirm.overwrite.message'),
         guiOptions: {
@@ -49,7 +49,7 @@ function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
  */
 export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
     const questions = [getIndexPrompt(options)];
-    if (options.overwrite?.hide !== true) {
+    if (options.overwriteAbapConfig?.hide !== true) {
         questions.push(getOverwritePrompt());
     }
     return questions;

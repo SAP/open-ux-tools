@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
@@ -13,6 +13,11 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -34,6 +39,11 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -55,6 +65,11 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
@@ -76,7 +91,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -100,7 +115,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -477,6 +492,11 @@ exports[`CustomAction generateCustomColumn version 1.86, with new handler, all p
     'use strict';
 
     return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }

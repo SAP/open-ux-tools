@@ -7,7 +7,7 @@ import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
-import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
+import { applyEventHandlerConfiguration, contextParameter, selectedContextsParameter } from '../common/event-handler';
 import { getTemplatePath } from '../templates';
 import { getJsonSpace } from '../common/file';
 import { getManifest } from '../common/utils';
@@ -109,7 +109,7 @@ export async function generateCustomAction(basePath: string, actionConfig: Custo
                 controllerSuffix: false,
                 typescript: config.typescript
             },
-            contextParameter
+            [contextParameter, selectedContextsParameter]
         );
     }
 

@@ -10,7 +10,7 @@
     "rootDir": "src",
     "noErrorTruncation": true,
     "lib": [
-      "ES2021"
+      "ES2023"
     ]
   },
   "references": [

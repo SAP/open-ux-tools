@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, relative } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -16,9 +16,14 @@ import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce, gte } from 'semver';
+import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
 import { extendJSON } from '../common/file';
+import { generateBuildingBlock } from '../building-block';
+import { BuildingBlockType } from '../building-block/types';
+import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
+import type { Logger } from '@sap-ux/logger';
+import { i18nNamespaces, translate } from '../i18n';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -69,14 +74,57 @@ export function getTemplateRoot(ui5Version?: string): string {
 }
 
 /**
+ * Handles the creation of a page building block for a custom page.
+ *
+ * @param {string} basePath - The base path of the UI5 application.
+ * @param {{ pageBuildingBlockTitle: string; minUI5Version?: string }} data - Object containing the building block title and optional minimum UI5 version.
+ * @param data.pageBuildingBlockTitle
+ * @param data.minUI5Version
+ * @param {string} viewPath - The path to the view XML file.
+ * @param {Editor} fs - The memfs editor instance.
+ * @param {Logger} [log] - Logger instance.
+ * @returns {Promise<void>} Resolves when the building block is handled or skipped due to version constraints.
+ */
+async function handlePageBuildingBlock(
+    basePath: string,
+    data: { pageBuildingBlockTitle: string; minUI5Version?: string },
+    viewPath: string,
+    fs: Editor,
+    log?: Logger
+): Promise<void> {
+    const minVersion = coerce(data.minUI5Version);
+    const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+    if (minVersion && lt(minVersion.version, '1.136.0')) {
+        log?.warn(t('minUi5VersionRequirement', { minUI5Version: data.minUI5Version }));
+        return;
+    }
+
+    await generateBuildingBlock(
+        basePath,
+        {
+            viewOrFragmentPath: relative(basePath, viewPath),
+            aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
+            replace: true,
+            buildingBlockData: {
+                id: 'Page',
+                buildingBlockType: BuildingBlockType.Page,
+                title: data.pageBuildingBlockTitle
+            }
+        },
+        fs
+    );
+}
+
+/**
  * Add a custom page to an existing UI5 application.
  *
  * @param {string} basePath - the base path
  * @param {CustomPage} data - the custom page configuration
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {Logger} [log] - Logger instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export async function generate(basePath: string, data: CustomPage, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, data: CustomPage, fs?: Editor, log?: Logger): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -114,6 +162,17 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor):
             fs.copyTpl(i18TemplatePath, i18nPath, config);
         }
     }
+
+    if (data.pageBuildingBlockTitle) {
+        await handlePageBuildingBlock(
+            basePath,
+            { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version },
+            viewPath,
+            fs,
+            log
+        );
+    }
+
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {

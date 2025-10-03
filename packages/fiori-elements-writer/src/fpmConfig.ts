@@ -22,7 +22,8 @@ export async function generateFpmConfig<T extends {}>(
             entity: config.entityConfig.mainEntityName,
             name: config.pageName,
             minUI5Version: feApp.ui5?.minUI5Version,
-            typescript: feApp.appOptions?.typescript
+            typescript: feApp.appOptions?.typescript,
+            pageBuildingBlockTitle: config.pageBuildingBlockTitle
         },
         fs
     );

@@ -1,5 +1,47 @@
 # @sap-ux/axios-extension
 
+## 1.22.9
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+
+## 1.22.8
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+
+## 1.22.7
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+
+## 1.22.6
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+
+## 1.22.5
+
+### Patch Changes
+
+-   9f10a60: Use `ZLOCAL` to determine local packages and multiple minor bug fixes
+
+## 1.22.4
+
+### Patch Changes
+
+-   ffac61c: Improved performance of v4 catalog service loading
+
 ## 1.22.3
 
 ### Patch Changes

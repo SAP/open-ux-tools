@@ -1,26 +1,29 @@
-sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'testNameSpace/alpv4captypescript/test/integration/FirstJourney',
-		'testNameSpace/alpv4captypescript/test/integration/pages/BooksList',
-		'testNameSpace/alpv4captypescript/test/integration/pages/BooksObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, BooksList, BooksObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4captypescript') + '/index.html'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheBooksList: BooksList,
-					onTheBooksObjectPage: BooksObjectPage
-                }
-            },
-            opaJourney.run
-        );
+sap.ui.loader.config({
+    shim: {
+        "sap/ui/qunit/qunit-junit": {
+            deps: ["sap/ui/thirdparty/qunit-2"]
+        },
+        "sap/ui/qunit/qunit-coverage": {
+            deps: ["sap/ui/thirdparty/qunit-2"]
+        },
+        "sap/ui/thirdparty/sinon-qunit": {
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon"]
+        },
+        "sap/ui/qunit/sinon-qunit-bridge": {
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon-4"]
+        }
     }
-);
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    "sap/ui/thirdparty/qunit-2",
+    "sap/ui/qunit/qunit-junit",
+    "sap/ui/qunit/qunit-coverage",
+    'testNameSpace/alpv4captypescript/test/integration/FirstJourney'
+  ], function (QUnit) {
+    "use strict";
+    QUnit.start();
+});

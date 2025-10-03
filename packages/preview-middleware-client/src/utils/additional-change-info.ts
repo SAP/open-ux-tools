@@ -21,12 +21,15 @@ export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> 
     }
 
     let additionalChangeInfo;
+    const key = change.getDefinition().fileName;
     if (change?.getChangeType?.() === 'addXML') {
         additionalChangeInfo = getAddXMLAdditionalInfo(change);
     }
 
-    if (additionalChangeInfo) {
-        additionalChangeInfoMap.set(change.getDefinition().fileName, additionalChangeInfo);
+    if (additionalChangeInfo && !additionalChangeInfoMap.get(key)) {
+        // in certain scenarios we explicitly set additional info e.g template when creating the change 
+        // and that value should not be overwritten
+        additionalChangeInfoMap.set(key, additionalChangeInfo);
     }
 }
 

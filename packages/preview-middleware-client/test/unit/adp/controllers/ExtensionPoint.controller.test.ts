@@ -9,6 +9,8 @@ import { fetchMock } from 'mock/window';
 import { type ExtensionPointData } from '../../../../src/adp/extension-point';
 
 import ExtensionPoint from '../../../../src/adp/controllers/ExtensionPoint.controller';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 describe('ExtensionPoint', () => {
     beforeAll(() => {
@@ -100,6 +102,8 @@ describe('ExtensionPoint', () => {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
+            jest.spyOn(CommunicationService, 'sendAction');
+
             const extPoint = new ExtensionPoint(
                 'adp.extension.controllers.ExtensionPoint',
                 overlays as unknown as UI5Element,
@@ -112,6 +116,7 @@ describe('ExtensionPoint', () => {
 
             const openSpy = jest.fn();
 
+            let expectedErrorMessage;
             try {
                 await extPoint.setup({
                     open: openSpy,
@@ -119,8 +124,17 @@ describe('ExtensionPoint', () => {
                     setModel: jest.fn()
                 } as unknown as Dialog);
             } catch (e) {
-                expect(e.message).toBe(errorMsg);
+                expectedErrorMessage = e.message;
             }
+
+            expect(expectedErrorMessage).toBe(errorMsg);
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Extension Point Error',
+                    description: errorMsg,
+                    type: MessageBarType.error
+                })
+            );
 
             expect(openSpy).not.toHaveBeenCalled();
         });

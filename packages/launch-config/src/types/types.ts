@@ -21,6 +21,7 @@ export interface FioriOptions {
     urlParameters?: string;
     visible?: boolean;
     debugOptions?: DebugOptions;
+    remoteAccess?: boolean;
     /**
      * Controls whether VS Code should reload when updating workspace folders.
      *
@@ -52,8 +53,8 @@ export interface LaunchConfig {
         runtimeExecutable: string;
         args?: string[];
     };
-    console: 'internalConsole';
-    internalConsoleOptions: 'openOnSessionStart';
+    console: 'internalConsole' | 'integratedTerminal';
+    internalConsoleOptions?: 'openOnSessionStart';
     outputCapture: 'std';
     env: LaunchConfigEnv;
 }

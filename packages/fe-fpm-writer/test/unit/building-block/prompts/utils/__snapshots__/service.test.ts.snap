@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`utils - service getAnnotationPathQualifiers Existing annotations for EntitySet, absolute binding context path 1`] = `
 Object {

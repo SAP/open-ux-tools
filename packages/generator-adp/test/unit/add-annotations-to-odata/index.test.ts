@@ -11,6 +11,7 @@ import {
     SystemLookup,
     AnnotationFileSelectType
 } from '@sap-ux/adp-tooling';
+import { getTemplatesOverwritePath } from '../../../src/utils/templates';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { DescriptorVariant } from '@sap-ux/adp-tooling';
@@ -23,6 +24,10 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getVariant: jest.fn(),
     getAdpConfig: jest.fn(),
     getAdpProjectData: jest.fn()
+}));
+
+jest.mock('../../../src/utils/templates', () => ({
+    getTemplatesOverwritePath: jest.fn(() => join(__dirname, '../../../src/add-annotations-to-odata/templates'))
 }));
 
 jest.mock('@sap-ux/odata-service-writer', () => ({

@@ -1,5 +1,18 @@
 # @sap-ux/i18n
 
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [c7db726]
+    -   @sap-ux/text-document-utils@0.3.1
+
+## 0.3.2
+
+### Patch Changes
+
+-   009143e: fix: resolve i18n key
+
 ## 0.3.1
 
 ### Patch Changes

@@ -55,58 +55,67 @@ describe('Utils', () => {
         `);
     });
 
-    test('removeCircularFromServiceProvider - should remove specific properties from serviceProvider', async () => {
-        let serviceProvider = {} as ServiceProvider;
+    test('removeCircularFromServiceProvider - should remove circular refs from serviceProvider log property', async () => {
+        const serviceProvider = {} as ServiceProvider;
+        // nothing to remove, should return the same serviceProvider
         let cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
         expect(cleanedServiceProvider).toEqual(serviceProvider);
 
-        serviceProvider = {
+        const serviceProviderWithCirclularLogRefs = {
+            log: {
+                circleStart: {
+                    circleEnd: {}
+                }
+            },
             services: {
                 service1: {
-                    log: 'log1'
+                    log: {
+                        circleStart: {
+                            circleEnd: {}
+                        }
+                    }
                 },
                 service2: {
-                    log: 'log2'
+                    log: {
+                        circleStart: {
+                            circleEnd: {}
+                        }
+                    }
                 }
             }
-        } as unknown as ServiceProvider;
+        };
+        // Create circular references within the log refs
+        serviceProviderWithCirclularLogRefs.services.service1.log.circleStart.circleEnd =
+            serviceProviderWithCirclularLogRefs.services.service1.log.circleStart;
+        serviceProviderWithCirclularLogRefs.services.service2.log.circleStart.circleEnd =
+            serviceProviderWithCirclularLogRefs.services.service2.log.circleStart;
+        serviceProviderWithCirclularLogRefs.log.circleStart.circleEnd =
+            serviceProviderWithCirclularLogRefs.log.circleStart;
 
-        cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
+        cleanedServiceProvider = removeCircularFromServiceProvider(
+            serviceProviderWithCirclularLogRefs as unknown as ServiceProvider
+        );
         expect(cleanedServiceProvider).toEqual({
-            services: {
-                service1: {},
-                service2: {}
-            }
-        });
-
-        serviceProvider = {
-            log: 'log',
+            log: {
+                circleStart: {
+                    circleEnd: undefined
+                }
+            },
             services: {
                 service1: {
-                    log: 'log1'
+                    log: {
+                        circleStart: {
+                            circleEnd: undefined
+                        }
+                    }
                 },
                 service2: {
-                    log: 'log2'
+                    log: {
+                        circleStart: {
+                            circleEnd: undefined
+                        }
+                    }
                 }
-            }
-        } as unknown as ServiceProvider;
-        cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
-        expect(cleanedServiceProvider).toEqual({
-            services: {
-                service1: {},
-                service2: {}
-            }
-        });
-
-        serviceProvider = {
-            services: {
-                service1: undefined
-            }
-        } as unknown as ServiceProvider;
-        cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
-        expect(cleanedServiceProvider).toEqual({
-            services: {
-                service1: undefined
             }
         });
     });

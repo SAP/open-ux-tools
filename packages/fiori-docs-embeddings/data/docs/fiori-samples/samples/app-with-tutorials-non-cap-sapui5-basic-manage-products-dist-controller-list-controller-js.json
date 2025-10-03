@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-controller-list-controller-js",
+  "title": "List.controller",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/controller/List.controller.js",
+  "lastModified": "2025-09-01T18:17:10.800Z",
+  "tags": [
+    "samples",
+    "js",
+    "List",
+    "controller"
+  ],
+  "headers": [],
+  "content": "# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.md\n\n```javascript\n# List.controller.js\n\n```javascript\nsap.ui.define([\"sap/ui/core/mvc/Controller\",\"sap/ui/model/Filter\",\"sap/ui/model/FilterOperator\"],function(e,t,r){\"use strict\";return e.extend(\"sap.btp.sapui5.controller.List\",{handleSearch:function(e){var i=[];var a=e.getParameter(\"query\");if(a&&a.length>0){i.push(new t({path:\"ProductName\",operator:r.Contains,value1:a}))}var o=this.getView().byId(\"list\");var n=o.getBinding(\"items\");n.filter(i)},handleListItemPress:function(e){var t=sap.ui.core.UIComponent.getRouterFor(this);var r=e.getSource().getBindingContext().getProperty(\"ProductID\");t.navTo(\"detail\",{productId:r})}})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "List.controller.md javascript List.controller.md javascript List.controller.md javascript List.controller.md javascript List.controller.js",
+  "wordCount": 46,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-07-apf-the-label-object-66467c5-md",
+  "title": "The Label Object",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-label-object-66467c5.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Label",
+    "Object"
+  ],
+  "headers": [
+    "The Label Object"
+  ],
+  "content": "<!-- loio66467c53595a6655e10000000a423f68 -->\n\n# The Label Object\n\nThe `label` object is a subobject that defines a label text. It can be used, for example, in the `thumbnail` object or the `representation type` object to define the texts for the UI.\n\nThe `label` object contains a key that refers to a text resource file, where all texts are maintained and identified by the registered key. The path to this resource file is configured in the `manifest.json` file.\n\nThe `label` object has the following format:\n\n```\n\n{\n  \"type\" : \"label\",    // optional\n  \"kind\" : \"text\",\n  \"key\" : \"<key>\"    // text key related to resource file\n}\n```\n\n",
+  "excerpt": "<!-- loio66467c53595a6655e10000000a423f68 --> The Label Object The label object is a subobject that defines a label text. It can be used, for example, in the thumbnail object or the representation typ...",
+  "wordCount": 106,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-03-get-started-step-3-create-property-binding-d70e989-md",
+  "title": "Step 3: Create Property Binding",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-3-create-property-binding-d70e989.md",
+  "lastModified": "2025-09-01T18:17:10.467Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Create",
+    "Property",
+    "Binding"
+  ],
+  "headers": [
+    "Step 3: Create Property Binding",
+    "Preview",
+    "Coding"
+  ],
+  "content": "<!-- loiod70e9894c09b4c27a98d4850d4e90f2c -->\n\n# Step 3: Create Property Binding\n\nAlthough there is no visible difference, the text on the screen is now derived from model data.\n\n\n\n## Preview\n\n![The browser shows the text \"Hi, my name is Harry Hawk\"](images/Tutorial_Data_Binding_Step_1_6d391d5.png)\n\n\n\n## Coding\n\nYou can view and download all files in the Demo Kit at [Data Binding - Step 3](https://ui5.sap.com/#/entity/sap.ui.core.tutorial.databinding/sample/sap.ui.core.tutorial.databinding.03).\n\nAssign the `text` property of the `sap.m.Text` control to the value `{/greetingText}`. The curly brackets enclosing a binding path \\(binding syntax\\) are automatically interpreted as a binding. These binding instances are called property bindings. In this scenario, the control's `text` property is bound to the `greetingText` property at the root of the default model. The slash \\(`/`\\) at the beginning of the binding path signifies an absolute binding path.\n\n**webapp/view/App.view.xml**\n\n```\n<mvc:View\n\txmlns=\"sap.m\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\t<Text text=\"{/greetingText}\"/>\n</mvc:View>\n```\n\n**Related Information**  \n\n\n[Binding Types](../04_Essentials/binding-types-91f0d8a.md \"Depending on the different use cases, you can use different binding types: Propety binding, context binding, and list binding.\")\n\n[Property Binding](../04_Essentials/property-binding-91f0652.md \"With property binding, you can initialize properties of a control automatically and update them based on the data of the model.\")\n\n",
+  "excerpt": "<!-- loiod70e9894c09b4c27a98d4850d4e90f2c --> Step 3: Create Property Binding Although there is no visible difference, the text on the screen is now derived from model data. Preview !The browser shows...",
+  "wordCount": 183,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

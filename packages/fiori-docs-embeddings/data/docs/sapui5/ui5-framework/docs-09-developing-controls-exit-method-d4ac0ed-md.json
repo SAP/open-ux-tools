@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-09-developing-controls-exit-method-d4ac0ed-md",
+  "title": "exit\\(\\) Method",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/exit-method-d4ac0ed.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "exit",
+    "Method"
+  ],
+  "headers": [
+    "exit\\(\\) Method"
+  ],
+  "content": "<!-- loiod4ac0edbc467483585d0c53a282505a5 -->\n\n# exit\\(\\) Method\n\nThe `exit()` method is used to clean up resources and to deregister event handlers.\n\nIf the `exit()` method is implemented, SAPUI5 core invokes the method for each control instance when it is destroyed.\n\n> ### Note:  \n> Any method in your inheriting control overrides methods with the same name in the superclass. If, for example, your control implements the `exit()` method, the `exit()` of the superclass will no longer be executed. The control is then no longer properly destroyed, and this typically causes issues. To avoid breaking the control or causing memory leaks, call the superclass method.\n> \n> Consider also that the superclass might implement the method later on, or removes its own method implementation because it is not needed anymore. We recommend that you check for the existence of the superclass method before calling it:\n> \n> ```js\n> \n> SomeControl.extend(\"my.OwnControl\", {\n>        ...\n>        exit: function() {\n>              //... do any further cleanups of your subclass, e.g. detach events ...\n>              this.$().off(\"click\", this.handleClick);\n> \n>              if (SomeControl.prototype.exit) { // check whether superclass implements the method\n>                     SomeControl.prototype.exit.apply(this, arguments); // call the method with the original arguments\n>              }\n>        } \n> }\n> ```\n\n**Related Information**  \n\n\n[Browser Events](browser-events-91f1b38.md \"To react to browser events, a control needs to register for the event either explicitly, or by implementing the event handler.\")\n\n",
+  "excerpt": "<!-- loiod4ac0edbc467483585d0c53a282505a5 --> exit\\(\\) Method The exit() method is used to clean up resources and to deregister event handlers. If the exit() method is implemented, SAPUI5 core invokes...",
+  "wordCount": 229,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

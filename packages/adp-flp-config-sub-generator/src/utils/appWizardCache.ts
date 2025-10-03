@@ -16,7 +16,7 @@ const hostEnv = getHostEnvironment();
  */
 export function initAppWizardCache(logger: ILogWrapper, appWizard?: AppWizardCache): void {
     if (appWizard && !appWizard[ADP_FLP_CONFIG_CACHE]) {
-        appWizard[ADP_FLP_CONFIG_CACHE] = {};
+        appWizard[ADP_FLP_CONFIG_CACHE] = { credentialsPrompted: false };
         logger.debug('AppWizard based cache initialized.');
     }
 }

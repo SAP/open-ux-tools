@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-07-apf-creating-categories-3a57f71-md",
+  "title": "Creating Categories",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/creating-categories-3a57f71.md",
+  "lastModified": "2025-09-01T18:17:10.665Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Creating",
+    "Categories"
+  ],
+  "headers": [
+    "Creating Categories"
+  ],
+  "content": "<!-- loio3a57f71c7781413699459aecef6cd677 -->\n\n# Creating Categories\n\nCategories help to group analysis steps and organize the analysis step gallery. To create a category, click *Add* \\> *New Category*. A category only needs a title before you can continue to assign steps to it.\n\nAt runtime, the categories are displayed in the same order as they appear here.\n\n",
+  "excerpt": "<!-- loio3a57f71c7781413699459aecef6cd677 --> Creating Categories Categories help to group analysis steps and organize the analysis step gallery. To create a category, click Add \\> New Category. A cat...",
+  "wordCount": 57,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

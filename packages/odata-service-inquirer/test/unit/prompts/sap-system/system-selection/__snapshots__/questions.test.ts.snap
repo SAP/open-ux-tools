@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test system selection prompts should return system selection prompts and choices based on development environment, BAS or non-BAS 1`] = `
 [

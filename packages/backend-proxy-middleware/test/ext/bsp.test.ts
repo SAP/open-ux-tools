@@ -66,7 +66,7 @@ describe('bsp', () => {
             expect(options.router).toBeDefined();
             expect(
                 (options.router as Function)({
-                    path: '/my/bsp/manifest.appdescr',
+                    url: '/my/bsp/manifest.appdescr',
                     protocol: 'http',
                     headers: {
                         host: 'local.example'
@@ -85,6 +85,15 @@ describe('bsp', () => {
         test('no existing options', async () => {
             const options: Options = {};
             await addOptionsForEmbeddedBSP('/my/bsp', options, logger);
+
+            expect(options.router).toBeDefined();
+            expect(options.pathRewrite).toBeDefined();
+            expect(options.auth).toBeDefined();
+        });
+
+        test('case insensitive bsp path', async () => {
+            const options: Options = {};
+            await addOptionsForEmbeddedBSP('/my/bSp', options, logger);
 
             expect(options.router).toBeDefined();
             expect(options.pathRewrite).toBeDefined();

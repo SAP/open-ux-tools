@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-file-names-and-encoding-104135d-md",
+  "title": "File Names and Encoding",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/file-names-and-encoding-104135d.md",
+  "lastModified": "2025-09-01T18:17:10.677Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "File",
+    "Names",
+    "and",
+    "Encoding"
+  ],
+  "headers": [
+    "File Names and Encoding"
+  ],
+  "content": "<!-- loio104135dda5524696ba641001f54c3a95 -->\n\n# File Names and Encoding\n\nSome target platforms of SAPUI5 impose technical restrictions on the naming or structure of resources \\(files\\).For this, rules for file names and encoding have been introduced.\n\nWhen developing content for SAPUI5, adhere to the following rules:\n\n-   Folder names must **not** contain spaces.\n\n-   To avoid issues with the SAPUI5 module loading and with URL handling in general, resource names should **not** contain spaces.\n\n-   Single folder names must **not** be longer than 40 characters.\n\n-   Two resource names must **not** only differ in case.\n\n-   Avoid non-ASCII characters in resource names.\n\n\n",
+  "excerpt": "<!-- loio104135dda5524696ba641001f54c3a95 --> File Names and Encoding Some target platforms of SAPUI5 impose technical restrictions on the naming or structure of resources \\(files\\).For this, rules fo...",
+  "wordCount": 101,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

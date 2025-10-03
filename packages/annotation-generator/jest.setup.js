@@ -6,6 +6,7 @@ const fiveMinutes = 5 * 60000;
 const TEST_DATA_ROOT = join(__dirname, 'test', 'data');
 const CDS_PROJECTS = [
     join(TEST_DATA_ROOT, 'cds-generation'),
+    join(TEST_DATA_ROOT, 'cds-incidents'),
 ];
 
 function npmInstall(projectPath) {

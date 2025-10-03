@@ -8,9 +8,9 @@
         "noGeneratorFoundBo": "No generator found for the selected business object interface."
     },
     "info": {
-        "generationSuccessful": "The UI service: {{serviceName}} was generated.",
-        "generationSuccessfulWriteFile": "The UI service: {{serviceName}} has been created and added to your project.",
-        "generationSuccessfulMetadataFail": "The UI service: {{serviceName}} has been created but could not be added to your project.",
+        "generationSuccessful": "The UI service: {{- serviceName}} was generated.",
+        "generationSuccessfulWriteFile": "The UI service: {{- serviceName}} has been created and added to your project.",
+        "generationSuccessfulMetadataFail": "The UI service: {{- serviceName}} has been created but could not be added to your project.",
         "generationWarning": "Generating the UI Service can take a few minutes. Please be patient.",
         "generatingUiService": "Generating UI service..."
     }

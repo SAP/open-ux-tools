@@ -3,6 +3,7 @@ export {
     Range,
     Position,
     Diagnostic,
+    DiagnosticTag,
     DiagnosticSeverity,
     TextEdit,
     WorkspaceEdit

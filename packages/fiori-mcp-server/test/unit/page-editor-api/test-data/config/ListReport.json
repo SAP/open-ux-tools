@@ -1,0 +1,79 @@
+{
+    "variantManagement": "Page",
+    "header": {
+        "actions": {
+            "TestHeaderAction": {
+                "position": {
+                    "placement": "Before",
+                    "anchor": "TestHeaderAction2"
+                },
+                "text": "TestHeaderAction",
+                "press": "project1.ext.controller.TestHeaderAction.onHeaderAction",
+                "visible": true,
+                "enabled": true
+            },
+            "TestHeaderAction2": {
+                "position": {
+                    "placement": "After"
+                },
+                "text": "TestHeaderAction2",
+                "press": "project1.ext.controller.TestHeaderAction.onHeaderAction2",
+                "visible": true,
+                "enabled": true
+            }
+        }
+    },
+    "filterBar": {
+        "selectionFields": {
+            "CustomFilterField": {
+                "label": "Custom Filter Field",
+                "property": "BookingFee",
+                "template": "project1.ext.fragment.CustomFilterField",
+                "required": false,
+                "position": {
+                    "anchor": "AgencyID",
+                    "placement": "After"
+                }
+            }
+        }
+    },
+    "table": {
+        "type": "ResponsiveTable",
+        "toolBar": {
+            "actions": {
+                "TableAction": {
+                    "requiresSelection": false,
+                    "text": "TableAction",
+                    "position": {
+                        "placement": "After",
+                        "anchor": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType"
+                    },
+                    "press": "project1.ext.controller.TableAction.TableAction",
+                    "visible": true,
+                    "enabled": true
+                }
+            }
+        },
+        "columns": {
+            "TestCustomColumn": {
+                "position": {
+                    "anchor": "DataField::AgencyID",
+                    "placement": "After"
+                },
+                "header": "TestCustomColumn",
+                "template": "project1.ext.fragment.TestCustomColumn"
+            }
+        },
+        "quickVariantSelection": {
+            "paths": [
+                {
+                    "annotationPath": "test1"
+                },
+                {
+                    "annotationPath": "test2"
+                }
+            ]
+        }
+    },
+    "$schema": "../.schemas/ListReport_TravelList.json"
+}

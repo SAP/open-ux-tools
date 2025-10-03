@@ -63,7 +63,7 @@ function getDestinationPrompt(
                 if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
                     additionalMessage = {
                         message: t('warnings.virtualHost'),
-                        severity: Severity.warning
+                        severity: Severity.information
                     };
                 }
                 return additionalMessage;

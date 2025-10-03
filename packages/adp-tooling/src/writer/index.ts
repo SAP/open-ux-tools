@@ -75,9 +75,10 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     }
 
     const fullConfig = setDefaults(config);
+    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
 
     writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
-    writeTemplateToFolder(baseTmplPath, join(basePath), fullConfig, fs);
+    writeTemplateToFolder(templatePath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
 

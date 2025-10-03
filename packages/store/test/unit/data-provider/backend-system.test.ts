@@ -1,5 +1,6 @@
 import { BackendSystem, BackendSystemKey } from '../../../src';
 import * as dataAccessHybrid from '../../../src/data-access/hybrid';
+import * as fileSystemAccess from '../../../src/data-access/filesystem';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { Entities } from '../../../src/data-provider/constants';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
@@ -14,10 +15,17 @@ describe('Backend system data provider', () => {
         readAll: jest.fn(),
         partialUpdate: jest.fn()
     };
+    const mockGetFilesystemStore = jest.spyOn(fileSystemAccess, 'getFilesystemStore');
+    const mockFilesystemStore = {
+        write: jest.fn()
+    };
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
     beforeEach(() => {
         mockGetHybridStore.mockReturnValue(mockHybridStore);
+        mockGetFilesystemStore.mockReturnValue(
+            mockFilesystemStore as unknown as ReturnType<typeof fileSystemAccess.getFilesystemStore>
+        );
         jest.clearAllMocks();
     });
 
@@ -207,5 +215,36 @@ describe('Backend system data provider', () => {
             entityName: Entities.BackendSystem,
             includeSensitiveData: false
         });
+    });
+
+    it('getAll retrieves system urls from keys if required', async () => {
+        mockHybridStore.readAll.mockResolvedValueOnce({
+            'http://example1/000': {
+                username: 'user1',
+                password: 'pass1'
+            },
+            'mock$not_a_url': {
+                username: 'user2'
+            }
+        });
+        const systems = await new SystemDataProvider(logger).getAll();
+        expect(mockFilesystemStore.write).toHaveBeenCalledWith({
+            entityName: Entities.BackendSystem,
+            id: 'http://example1/000',
+            entity: {
+                url: 'http://example1',
+                client: '000',
+                name: 'http://example1, client 000'
+            }
+        });
+        expect(systems).toEqual([
+            {
+                url: 'http://example1',
+                client: '000',
+                name: 'http://example1, client 000',
+                username: 'user1',
+                password: 'pass1'
+            }
+        ]);
     });
 });

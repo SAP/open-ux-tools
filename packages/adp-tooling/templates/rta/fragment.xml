@@ -1,4 +1,7 @@
 <!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'><% if (targetAggregation && controlType) { %>
+    <!-- controlType: <%= controlType %> -->
+    <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
     <!--  add your xml here -->
+
 </core:FragmentDefinition>

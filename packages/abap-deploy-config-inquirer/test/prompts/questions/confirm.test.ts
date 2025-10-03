@@ -28,7 +28,7 @@ describe('getConfirmPrompts', () => {
                   "hint": "Deployment config will abort if you choose no. Click 'Finish' to abort.",
                 },
                 "message": "Editing the deployment configuration will overwrite the existing configuration. Are you sure you want to continue?",
-                "name": "overwrite",
+                "name": "overwriteAbapConfig",
                 "type": "confirm",
                 "validate": [Function],
               },
@@ -53,7 +53,7 @@ describe('getConfirmPrompts', () => {
         jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
 
         const confirmPrompts = getConfirmPrompts({});
-        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwrite);
+        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwriteAbapConfig);
 
         if (overwritePrompt) {
             expect(overwritePrompt.message).toBe(t('prompts.confirm.overwrite.message'));

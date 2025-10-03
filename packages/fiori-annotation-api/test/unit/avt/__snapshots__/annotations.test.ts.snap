@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`avt annotation conversion Annotation with qualifier 1`] = `
 Array [
@@ -914,7 +914,6 @@ Array [
     "annotations": Array [
       Object {
         "term": "com.sap.vocabularies.UI.v1.HiddenFilter",
-        "value": undefined,
       },
     ],
     "target": "IncidentService.Incidents/createdAt",
@@ -938,7 +937,6 @@ Array [
           },
         },
         "term": "com.sap.vocabularies.UI.v1.HiddenFilter",
-        "value": undefined,
       },
     ],
     "origins": Array [
@@ -1539,12 +1537,12 @@ Array [
           Object {
             "origin": Object {
               "end": Object {
-                "character": 79,
-                "line": 19,
+                "character": 73,
+                "line": 22,
               },
               "start": Object {
                 "character": 20,
-                "line": 19,
+                "line": 22,
               },
             },
             "term": "com.sap.vocabularies.UI.v1.TextArrangement",

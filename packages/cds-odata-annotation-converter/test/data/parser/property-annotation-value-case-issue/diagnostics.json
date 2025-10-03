@@ -1,6 +1,7 @@
 [
     {
         "message": "`$Value` is incorrect. Did you mean `$value`?",
+        "rule": "common-case-issue",
         "range": "[(4,12)..(4,18)]",
         "severity": 1,
         "data": {
@@ -13,6 +14,45 @@
         }
     },
     {
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
+        "rule": "deprecated-$value-syntax",
+        "range": "[(4,12)..(4,18)]",
+        "severity": 2,
+        "data": {
+            "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations",
+            "valueReplacement": [
+                {
+                    "range": "[(3,13)..(4,18)]",
+                    "newText": ""
+                },
+                {
+                    "range": "[(5,0)..(5,4)]",
+                    "newText": ""
+                },
+                {
+                    "range": "[(6,0)..(6,4)]",
+                    "newText": ""
+                },
+                {
+                    "range": "[(7,0)..(7,4)]",
+                    "newText": ""
+                },
+                {
+                    "range": "[(8,0)..(8,4)]",
+                    "newText": ""
+                },
+                {
+                    "range": "[(8,13)..(9,9)]",
+                    "newText": ""
+                }
+            ],
+            "additionalAnnotationRanges": [],
+            "prefix": "Title",
+            "parentRange": "[(3,8)..(9,9)]"
+        }
+    },
+    {
+        "rule": "missing-required-property",
         "range": "[(10,19)..(13,9)]",
         "message": "The mandatory `$value` property was not provided.",
         "severity": 1
@@ -23,6 +63,7 @@
         "severity": 2
     },
     {
+        "rule": "missing-required-property",
         "range": "[(15,15)..(15,25)]",
         "message": "The mandatory `$value` property was not provided.",
         "severity": 1

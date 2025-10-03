@@ -1,0 +1,26 @@
+{
+  "id": "sapui5-docs-05-developing-apps-how-translated-texts-are-accessed-at-runtime-bab4e39-md",
+  "title": "How Translated Texts Are Accessed at Runtime",
+  "category": "ui5-framework",
+  "path": "docs/05_Developing_Apps/how-translated-texts-are-accessed-at-runtime-bab4e39.md",
+  "lastModified": "2025-09-01T18:17:10.561Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "How",
+    "Translated",
+    "Texts",
+    "Are",
+    "Accessed",
+    "Runtime"
+  ],
+  "headers": [
+    "How Translated Texts Are Accessed at Runtime"
+  ],
+  "content": "<!-- loiobab4e3996f944f10b4c125c57dd28e5d -->\n\n# How Translated Texts Are Accessed at Runtime\n\nAt runtime, the translated texts are read directly from the table of the SAPUI5 text repository and sent to the browser.\n\n-   The browser sends a request for the relevant properties file with a language extension to the back end, for example `i18n_en_US.properties`.\n\n-   The handler class in the back end analyzes the name of the properties file and extracts the language key.\n\n-   All texts that fit to this language key are read, collected, and sent back to the browser. The following access sequence applies:\n\n    1.  If a text is not available in the requested language, the English text is retrieved.\n\n    2.  If the English text is not available, the text in the default language is retrieved.\n\n    3.  If the text in the default language is not available, the default properties file from the SAPUI5 ABAP repository is retrieved.\n\n\n",
+  "excerpt": "<!-- loiobab4e3996f944f10b4c125c57dd28e5d --> How Translated Texts Are Accessed at Runtime At runtime, the translated texts are read directly from the table of the SAPUI5 text repository and sent to t...",
+  "wordCount": 152,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

@@ -54,6 +54,13 @@ const questions: PromptQuestion[] = [
         choices
     },
     {
+        message: 'With default value as index',
+        name: 'defaultValueAsIndex',
+        type: 'list',
+        default: 3,
+        choices
+    },
+    {
         message: 'With external value',
         name: 'external',
         type: 'list',

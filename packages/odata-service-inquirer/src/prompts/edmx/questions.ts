@@ -11,7 +11,8 @@ import type {
     AnnotationGenerationAnswers,
     EntityPromptOptions,
     EntitySelectionAnswers,
-    TableConfigAnswers
+    TableConfigAnswers,
+    PageBuildingBlockAnswers
 } from '../../types';
 import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
 import { PromptState } from '../../utils';
@@ -21,7 +22,7 @@ import {
     type EntityAnswer,
     type EntityChoiceOptions,
     type EntitySetFilter,
-    filterAggregateTransformations,
+    getDefaultTableType,
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
@@ -78,7 +79,13 @@ export function getEntitySelectionQuestions(
     isCapService = false,
     promptOptions?: EntityPromptOptions,
     annotations?: Annotations
-): Question<EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers>[] {
+): Question<
+    EntitySelectionAnswers &
+        TableConfigAnswers &
+        AnnotationGenerationAnswers &
+        AlpTableConfigAnswers &
+        PageBuildingBlockAnswers
+>[] {
     const useAutoComplete = promptOptions?.useAutoComplete;
     let entitySetFilter: EntitySetFilter | undefined;
     if (templateType === 'feop' && !!isCapService) {
@@ -99,7 +106,11 @@ export function getEntitySelectionQuestions(
     const odataVersion = entityChoices.odataVersion;
 
     const entityQuestions: Question<
-        EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers
+        EntitySelectionAnswers &
+            TableConfigAnswers &
+            AnnotationGenerationAnswers &
+            AlpTableConfigAnswers &
+            PageBuildingBlockAnswers
     >[] = [];
 
     // OVP only has filter entity, does not use tables and we do not add annotations
@@ -169,6 +180,10 @@ export function getEntitySelectionQuestions(
         } as ListQuestion<EntitySelectionAnswers>);
     }
 
+    if (promptOptions?.displayPageBuildingBlockPrompt) {
+        entityQuestions.push(...getPageBuildingBlockQuestions());
+    }
+
     entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
     if (!promptOptions?.hideTableLayoutPrompts) {
@@ -181,6 +196,49 @@ export function getEntitySelectionQuestions(
         );
     }
     return entityQuestions;
+}
+
+/**
+ * Get the questions for page building block.
+ *
+ * @returns the page building block questions
+ */
+function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
+    const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
+
+    pageBuildingBlockQuestions.push({
+        type: 'confirm',
+        name: EntityPromptNames.addPageBuildingBlock,
+        message: t('prompts.pageBuildingBlock.message'),
+        default: false,
+        guiOptions: {
+            breadcrumb: true,
+            hint: t('prompts.pageBuildingBlock.tooltip')
+        },
+        additionalMessages: (addPageBuildingBlock: boolean) => {
+            if (addPageBuildingBlock) {
+                return {
+                    message: t('prompts.pageBuildingBlock.warning'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    } as ConfirmQuestion<PageBuildingBlockAnswers>);
+
+    // If the user wants to add a Page Building Block, ask for the title
+    pageBuildingBlockQuestions.push({
+        when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+        type: 'input',
+        name: EntityPromptNames.pageBuildingBlockTitle,
+        message: t('prompts.pageBuildingBlock.titleMessage'),
+        guiOptions: {
+            breadcrumb: true,
+            mandatory: true
+        },
+        validate: (input: string) => !!input
+    } as InputQuestion<PageBuildingBlockAnswers>);
+
+    return pageBuildingBlockQuestions;
 }
 
 /**
@@ -278,63 +336,6 @@ function getEdmxSizeInKb(edmx: string): number {
         return sizeInBytes / 1024;
     }
     return 0;
-}
-
-/**
- * Get the default table type based on the template type and previous answers.
- *
- * @param templateType the template type of the application to be generated from the prompt answers
- * @param metadata the metadata (edmx) string of the service
- * @param odataVersion the OData version of the service
- * @param mainEntitySetName the name of the main entity set
- * @param currentTableType the current table type selected by the user
- * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
- */
-function getDefaultTableType(
-    templateType: TemplateType,
-    metadata: ConvertedMetadata,
-    odataVersion: OdataVersion,
-    mainEntitySetName?: string,
-    currentTableType?: TableType
-): { tableType: TableType; setAnalyticalTableDefault: boolean } {
-    let tableType: TableType;
-    let setAnalyticalTableDefault = false;
-    if (
-        (templateType === 'lrop' || templateType === 'worklist') &&
-        odataVersion === OdataVersion.v4 &&
-        hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
-    ) {
-        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-        setAnalyticalTableDefault = true;
-    } else if (templateType === 'alp') {
-        // For ALP, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-    } else if (currentTableType) {
-        // If the user has already selected a table type use it
-        tableType = currentTableType;
-    } else {
-        // Default to ResponsiveTable for other cases
-        tableType = 'ResponsiveTable';
-    }
-    return {
-        tableType,
-        setAnalyticalTableDefault
-    };
-}
-
-/**
- * Checks if the given entity set name has aggregate transformations in the metadata.
- *
- * @param metadata The metadata (edmx) string of the service.
- * @param entitySetName The entity set name to check for aggregate transformations.
- * @returns true if the entity set has aggregate transformations, false otherwise.
- */
-function hasAggregateTransformationsForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    return filterAggregateTransformations(metadata.entitySets).some((entitySet) => entitySet.name === entitySetName);
 }
 
 /**

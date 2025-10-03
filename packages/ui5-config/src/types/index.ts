@@ -35,6 +35,10 @@ export interface AbapDeployConfig {
     app: BspApp | Adp;
     ignoreCertError?: boolean;
     index?: boolean; // generate standalone index.html during deployment
+    /**
+     * The lrep namespace to be used for the deployment configuration for ADP projects
+     */
+    lrep?: string;
 }
 
 export interface FioriAppReloadConfig {

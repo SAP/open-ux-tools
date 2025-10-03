@@ -7,3 +7,12 @@
 export function getError(error: unknown): Error {
     return error instanceof Error ? error : new Error(JSON.stringify(error));
 }
+
+export class FetchError extends Error {
+    readonly status: number;
+
+    constructor(response: Response) {
+        super(`Fetch error: ${response.url}, ${response.status} - ${response.statusText}`);
+        this.status = response.status;
+    }
+}

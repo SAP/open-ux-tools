@@ -5,8 +5,13 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
 import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
-import type { QuickAction } from '@sap-ux-private/control-property-editor-common';
-import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import {
+    quickActionListChanged,
+    executeQuickAction,
+    QuickAction,
+    MessageBarType,
+    showInfoCenterMessage
+} from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
@@ -44,6 +49,7 @@ import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import * as appUtils from 'open/ux/preview/client/utils/application';
 import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -436,7 +442,8 @@ describe('FE V2 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: false,
-                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
+                                    tooltip:
+                                        'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
@@ -460,12 +467,13 @@ describe('FE V2 quick actions', () => {
 
         describe('change table columns', () => {
             const testCases: {
-                tableType: typeof SMART_TABLE_TYPE | typeof M_TABLE_TYPE;
+                tableType: typeof SMART_TABLE_TYPE;
                 versionInfo: string;
                 actionId: 'CTX_COMP_VARIANT_CONTENT' | 'CTX_SETTINGS';
                 expectActionAvailable: boolean;
                 isTableNotLoaded?: boolean;
                 isWithIconTabBar?: boolean;
+                variantManagementDisabled?: boolean;
             }[] = [
                 {
                     tableType: SMART_TABLE_TYPE,
@@ -487,17 +495,12 @@ describe('FE V2 quick actions', () => {
                     isWithIconTabBar: true
                 },
                 {
-                    tableType: M_TABLE_TYPE,
+                    tableType: SMART_TABLE_TYPE,
                     versionInfo: '1.127.0',
-                    actionId: 'CTX_SETTINGS',
-                    expectActionAvailable: true
-                },
-                {
-                    tableType: M_TABLE_TYPE,
-                    versionInfo: '1.127.0',
-                    actionId: 'CTX_SETTINGS',
+                    actionId: 'CTX_COMP_VARIANT_CONTENT',
                     expectActionAvailable: true,
-                    isTableNotLoaded: true
+                    isWithIconTabBar: true,
+                    variantManagementDisabled: true
                 }
             ];
             const setSelectedKeyMock = jest.fn();
@@ -507,6 +510,14 @@ describe('FE V2 quick actions', () => {
                 const scrollIntoView = jest.fn();
                 let attachedEvent: (() => Promise<void>) | undefined;
                 const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
+                if (testCase.variantManagementDisabled) {
+                    jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                        return {
+                            isA: (type: string) => type === 'sap.suite.ui.generic.template.ObjectPage.Component',
+                            getAppComponent: jest.fn().mockReturnValue({})
+                        } as unknown as UIComponent;
+                    });
+                }
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == tableId) {
                         return {
@@ -534,7 +545,10 @@ describe('FE V2 quick actions', () => {
                             getBindingContext: () => !testCase.isTableNotLoaded,
                             attachEventOnce: (name: string, handler: () => Promise<void>) => {
                                 attachedEvent = handler;
-                            }
+                            },
+                            ...(testCase.variantManagementDisabled && {
+                                getVariantManagement: () => false
+                            })
                         };
                     }
                     if (id == 'NavContainer') {
@@ -607,7 +621,11 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    {
+                        ...mockChangeService,
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined)
+                    } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -654,7 +672,11 @@ describe('FE V2 quick actions', () => {
                                         {
                                             path: '0',
                                             children: [],
-                                            enabled: true,
+                                            enabled: testCase.variantManagementDisabled ? false : true,
+                                            ...(testCase.variantManagementDisabled && {
+                                                tooltip:
+                                                    'This action has been disabled because variant management is disabled. Enable variant management and try again.'
+                                            }),
                                             label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
@@ -1083,15 +1105,27 @@ describe('FE V2 quick actions', () => {
                 {
                     tableType: M_TABLE_TYPE,
                     dialog: DialogNames.ADD_TABLE_COLUMN_FRAGMENTS,
-                    toString: () => M_TABLE_TYPE
+                    toString: () => M_TABLE_TYPE,
+                    enabled: false
                 },
-                { tableType: TREE_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => TREE_TABLE_TYPE },
+                {
+                    tableType: TREE_TABLE_TYPE,
+                    dialog: DialogNames.ADD_FRAGMENT,
+                    toString: () => TREE_TABLE_TYPE,
+                    enabled: true
+                },
                 {
                     tableType: ANALYTICAL_TABLE_TYPE,
                     dialog: DialogNames.ADD_FRAGMENT,
-                    toString: () => ANALYTICAL_TABLE_TYPE
+                    toString: () => ANALYTICAL_TABLE_TYPE,
+                    enabled: true
                 },
-                { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
+                {
+                    tableType: GRID_TABLE_TYPE,
+                    dialog: DialogNames.ADD_FRAGMENT,
+                    toString: () => GRID_TABLE_TYPE,
+                    enabled: true
+                }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 mockTelemetryEventIdentifier();
@@ -1114,7 +1148,7 @@ describe('FE V2 quick actions', () => {
                                 return [
                                     {
                                         isA: (type: string) => type === testCase.tableType,
-                                        getAggregation: () => 'columns'
+                                        getAggregation: () => []
                                     }
                                 ];
                             },
@@ -1191,6 +1225,7 @@ describe('FE V2 quick actions', () => {
                                             path: '0',
                                             'children': [],
                                             enabled: true,
+
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1204,7 +1239,10 @@ describe('FE V2 quick actions', () => {
                                         {
                                             path: '0',
                                             'children': [],
-                                            enabled: true,
+                                            'enabled': testCase.enabled,
+                                            tooltip: testCase.enabled
+                                                ? undefined
+                                                : 'This action has been disabled because the table rows are not available. Please load the table data and try again.',
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1221,22 +1259,23 @@ describe('FE V2 quick actions', () => {
                         }
                     ])
                 );
+                if (testCase.enabled) {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
+                    );
 
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
-                );
-
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-                    mockOverlay,
-                    rtaMock,
-                    testCase.dialog,
-                    undefined,
-                    {
-                        aggregation: 'columns',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    },
-                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
-                );
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        testCase.dialog,
+                        undefined,
+                        {
+                            aggregation: 'columns',
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                        },
+                        { actionName: 'create-table-custom-column', telemetryEventIdentifier }
+                    );
+                }
             });
         });
 
@@ -1299,11 +1338,13 @@ describe('FE V2 quick actions', () => {
                     isManifestPagesAsArray: true
                 }
             ];
-            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-                return {
-                    isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
-                    getAppComponent: jest.fn().mockReturnValue({} as any)
-                } as unknown as UIComponent;
+            beforeEach(() => {
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return {
+                        isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
+                        getAppComponent: jest.fn().mockReturnValue({})
+                    } as unknown as UIComponent;
+                });
             });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
@@ -1713,7 +1754,14 @@ describe('FE V2 quick actions', () => {
                         }
                     };
                 });
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return {
+                        isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
+                        getAppComponent: jest.fn().mockReturnValue({})
+                    } as unknown as UIComponent;
+                });
             });
+
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 fetchMock.mockResolvedValue({
                     json: jest.fn().mockReturnValue({
@@ -2926,6 +2974,7 @@ describe('FE V2 quick actions', () => {
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
+                jest.spyOn(CommunicationService, 'sendAction');
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -2941,8 +2990,6 @@ describe('FE V2 quick actions', () => {
                     ]
                 });
 
-                const notifySpy = jest.spyOn(adpUtils, 'notifyUser');
-
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({
                         id: 'objectPage0-create-table-custom-column',
@@ -2951,9 +2998,13 @@ describe('FE V2 quick actions', () => {
                     })
                 );
 
-                expect(notifySpy).toHaveBeenCalledWith(
-                    'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
-                    8000
+                expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                    showInfoCenterMessage({
+                        title: 'Create XML Fragment',
+                        description:
+                            'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
+                        type: MessageBarType.error
+                    })
                 );
             });
         });

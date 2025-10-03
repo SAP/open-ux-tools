@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-spreadsheet-export-restrictions-2c64148-md",
+  "title": "Spreadsheet Export Restrictions",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/spreadsheet-export-restrictions-2c64148.md",
+  "lastModified": "2025-09-01T18:17:10.545Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Spreadsheet",
+    "Export",
+    "Restrictions"
+  ],
+  "headers": [
+    "Spreadsheet Export Restrictions"
+  ],
+  "content": "<!-- loio2c641481649f44de9c1c22c9c3c49d13 -->\n\n# Spreadsheet Export Restrictions\n\nThere are some restrictions and features that are not supported when you use the spreadsheet export.\n\nThe following restrictions apply:\n\n\n<table>\n<tr>\n<td valign=\"top\">\n\nColumns of type `sap.ui.export.EdmType.Date` and `sap.ui.export.EdmType.DateTime` support multiple calendars as defined by `module:sap/base/18n/date/CalendarType`. However, not all values of the `module:sap/base/18n/date/CalendarType` enumeration are supported. For more information about supported values for the `calendar` property for columns of type `sap.ui.export.EdmType.Date` and `sap.ui.export.EdmType.DateTime`, see [`Date`, `Time`, and `DateTime`.](data-types-for-spreadsheet-export-283217d.md#loio283217d8f187401c8045723abc27e5e0__section_tg5_hyv_43b) \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nColumn width is converted into an Office Open XML equivalent and may differ slightly from the original table. The column width is at least the same as the width of the column label.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nIf you use the client export within the `SmartTable` control, you have to provide additional `p13n` custom data for the custom columns.\n\nCustom columns are created by the application or SAP Fiori Elements and not by the `SmartTable` control, so the `SmartTable` control does not recognize this data type.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nThe maximum number of rows that can be exported is restricted to 1,048,575 and a column header row.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nThe number of cells that can be exported is restricted to 2,000,000 on desktop and 100,000 on mobile devices.\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nThe hierarchical depth that can be visually represented is restricted to eight levels.\n\n</td>\n</tr>\n</table>\n\nThe following features are not supported:\n\n\n<table>\n<tr>\n<td valign=\"top\">\n\nCharts\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nIcons\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nSemantic cell highlighting\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nCustom formatter functions\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nDates before January 1st, 1900\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nMilliseconds in time information\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\nAggregated rows \\(group headers or sum rows\\)\n\n</td>\n</tr>\n</table>\n\n> ### Note:  \n> For more information, see the SAP Note [3198506](https://me.sap.com/notes/3198506).\n\n",
+  "excerpt": "<!-- loio2c641481649f44de9c1c22c9c3c49d13 --> Spreadsheet Export Restrictions There are some restrictions and features that are not supported when you use the spreadsheet export. The following restric...",
+  "wordCount": 316,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

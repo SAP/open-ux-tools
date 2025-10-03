@@ -1,5 +1,5 @@
 {
-  "_version": "1.65.0",
+  "_version": "1.73.1",
   "sap.app": {
     "id": "testnamepsace.lropv4noui5version",
     "type": "application",
@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:lrop",
-      "version": "2.1.8",
-      "toolsId": "e44d3e81-aa6d-47af-9644-647c5108caa8"
+      "version": "2.5.15",
+      "toolsId": "a4a7f65a-df22-4f27-8d83-a4fe5bd40477"
     },
     "dataSources": {
       "annotation": {

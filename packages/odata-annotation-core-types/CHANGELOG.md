@@ -1,5 +1,26 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.5.0
+
+### Minor Changes
+
+-   aa8bb7a: feat: Add missing referential constraint data to navigation property metadata elements.
+    feat: Add type facets with constraints to metadata elements.
+
+## 0.4.6
+
+### Patch Changes
+
+-   1f18878: feat: extend `deprecated-$value-syntax` diagnostic with data required to create a quick fix.
+
+## 0.4.5
+
+### Patch Changes
+
+-   c7db726: feat: add deprecated $value syntax diagnostic message.
+-   Updated dependencies [c7db726]
+    -   @sap-ux/text-document-utils@0.3.1
+
 ## 0.4.4
 
 ### Patch Changes

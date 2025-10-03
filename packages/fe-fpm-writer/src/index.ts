@@ -27,13 +27,17 @@ export {
     Field,
     FieldFormatOptions,
     Table,
-    BuildingBlockConfig
+    BuildingBlockConfig,
+    Page,
+    RichTextEditor
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
     TablePromptsAnswer,
+    PagePromptsAnswer,
+    RichTextEditorPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {

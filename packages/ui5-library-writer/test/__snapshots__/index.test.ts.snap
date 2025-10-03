@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Reuse lib templates Generate files for config: lib-js 1`] = `
 Object {
@@ -2147,8 +2147,8 @@ sap.ui.define(function() {
   "com.sap.myui5tslib113/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
-    \\"target\\": \\"es2022\\",
-    \\"module\\": \\"es2022\\",
+      \\"target\\": \\"es2022\\",
+      \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
       \\"allowJs\\": true,
@@ -2770,8 +2770,8 @@ sap.ui.define(function() {
   "com.sap.myui5tslib/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
-    \\"target\\": \\"es2022\\",
-    \\"module\\": \\"es2022\\",
+      \\"target\\": \\"es2022\\",
+      \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
       \\"allowJs\\": true,
@@ -3368,8 +3368,8 @@ sap.ui.define(function() {
   "com.sap.myui5tslib121/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
-    \\"target\\": \\"es2022\\",
-    \\"module\\": \\"es2022\\",
+      \\"target\\": \\"es2022\\",
+      \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
       \\"allowJs\\": true,

@@ -20,6 +20,7 @@ import { promptYUIQuestions } from '../../common';
  */
 export function addDeployConfigCommand(cmd: Command): void {
     cmd.command('deploy-config [path]')
+        .description('Add or update ABAP deployment configuration files for the project.')
         .option('-t, --target <string>', 'target for deployment; ABAP or Cloud Foundry (not yet implemented)')
         .option('-s, --simulate', 'simulate only do not write; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
@@ -148,7 +149,8 @@ async function addDeployConfig(
             logger.debug(`Adding deployment configuration : ${JSON.stringify(config, null, 2)}`);
             const fs = await generateDeployConfig(basePath, config, {
                 baseFile,
-                deployFile
+                deployFile,
+                addBuildToUndeployScript: !isAdp
             });
             await traceChanges(fs);
 

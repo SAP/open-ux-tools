@@ -130,7 +130,7 @@ export class TransportChecksService extends AdtService {
         } else if (LocalPackageText.includes(localPackage)) {
             throw new Error(TransportChecksService.LocalPackageError);
         } else {
-            throw new Error('Unable to parse ADT response');
+            throw new Error('Unsupported ADT transport response content');
         }
     }
 

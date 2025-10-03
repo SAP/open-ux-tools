@@ -9,6 +9,7 @@ import type {
 } from '.';
 import type { Facets, Constraints } from './types';
 import type { MultilineType } from './annotation-file';
+import type { TextEdit } from './language-server';
 
 /**
  * hold all type information required for checking a value
@@ -65,6 +66,7 @@ export const IGNORE_TARGET_VALIDATION = 'ignore-target-validation';
 export const UNKNOWN_TERM = 'unknown-term';
 export const UN_SUPPORTED_VOCABULARY = 'un-supported-vocabulary';
 export const ATTRIBUTE_NOT_ALLOWED_HERE = 'attribute-not-allowed-here';
+export const MISSING_REQUIRED_PROPERTY = 'missing-required-property';
 export const MISSING_REQUIRED_ATTRIBUTE = 'missing-required-attribute';
 export const MISSING_REQUIRED_VALUE_FOR_ATTRIBUTE = 'missing-required-value-for-attribute';
 export const TERM_NOT_APPLICABLE = 'term-not-applicable';
@@ -81,6 +83,7 @@ export const INCOMPLETE_PATH_WITH_COMPATIBLE_TYPES = 'incomplete-path-with-compa
 export const COMMON_CASE_ISSUE = 'common-case-issue';
 export const ODATA_PATH_SEPARATOR_RULE = 'no-odata-path-separator';
 export const INVALID_PRIMITIVE_TYPE = 'invalid-primitive-type';
+export const DEPRECATED_$VALUE_SYNTAX = 'deprecated-$value-syntax';
 
 export interface ReplacementData {
     value: string;
@@ -140,6 +143,7 @@ export type IgnoreTargetValidation = DiagnosticBase<typeof IGNORE_TARGET_VALIDAT
 export type UnknowTerm = DiagnosticBase<typeof UNKNOWN_TERM, { name: string }>;
 export type UnsupportedVocabulary = DiagnosticBase<typeof UN_SUPPORTED_VOCABULARY, { name: string }>;
 export type AttributeNotAllowedHere = DiagnosticBase<typeof ATTRIBUTE_NOT_ALLOWED_HERE, { name: string }>;
+export type MissingRequiredProperty = DiagnosticBase<typeof MISSING_REQUIRED_PROPERTY>;
 export type MissingRequiredAttribute = DiagnosticBase<typeof MISSING_REQUIRED_ATTRIBUTE>;
 export type MissingRequiredValueForAttribute = DiagnosticBase<typeof MISSING_REQUIRED_VALUE_FOR_ATTRIBUTE>;
 export type TermNotApplicable = DiagnosticBase<
@@ -188,6 +192,16 @@ export type IncompletePathWithCompatibleTypes = DiagnosticBase<
 export type ODataPathSeparatorDiagnostic = DiagnosticBase<typeof ODATA_PATH_SEPARATOR_RULE, ReplacementData>;
 
 export type CommonCaseIssue = DiagnosticBase<typeof COMMON_CASE_ISSUE, CaseCheckBase>;
+export type Deprecated$ValueSyntax = DiagnosticBase<
+    typeof DEPRECATED_$VALUE_SYNTAX,
+    {
+        descriptionLink: string;
+        valueReplacement: TextEdit[];
+        additionalAnnotationRanges: Range[];
+        prefix: string;
+        parentRange: Range;
+    }
+>;
 
 export type DiagnosticWithRule =
     | NoUndefinedNamespaceDiagnostic
@@ -202,6 +216,7 @@ export type DiagnosticWithRule =
     | UnknowTerm
     | UnsupportedVocabulary
     | AttributeNotAllowedHere
+    | MissingRequiredProperty
     | MissingRequiredAttribute
     | MissingRequiredValueForAttribute
     | TermNotApplicable
@@ -216,7 +231,8 @@ export type DiagnosticWithRule =
     | IncompletePathWithCompatibleTypes
     | CommonCaseIssue
     | ODataPathSeparatorDiagnostic
-    | InvalidPrimitiveType;
+    | InvalidPrimitiveType
+    | Deprecated$ValueSyntax;
 
 export type ExtendedDiagnostic = DiagnosticBaseWithOptionalRule | DiagnosticWithRule;
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ADP writer generate S/4HANA cloud config 1`] = `
 Object {
@@ -88,7 +88,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -205,7 +205,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -322,7 +322,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - destination: DUMMY_DESTINATION
             url: https://REQUIRED_FOR_VSCODE.example
@@ -608,7 +608,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -736,7 +736,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -1215,7 +1215,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -1460,7 +1460,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -1653,7 +1653,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - destination: DUMMY_DESTINATION
             url: https://REQUIRED_FOR_VSCODE.example
@@ -1847,7 +1847,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -2063,7 +2063,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://sap.example
             path: /sap
@@ -2194,7 +2194,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - destination: test
             url: http://sap.example

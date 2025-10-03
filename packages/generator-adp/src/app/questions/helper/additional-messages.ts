@@ -35,6 +35,10 @@ export const getSystemAdditionalMessages = (
         };
     }
 
+    if (!flexUISystem) {
+        return undefined;
+    }
+
     if (!isOnPremise) {
         if (!isUIFlex) {
             return {

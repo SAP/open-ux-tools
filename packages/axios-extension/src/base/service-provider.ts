@@ -33,11 +33,29 @@ export interface ServiceProviderExtension {
  * Basic service provider class containing generic functionality to create and keep service instances as well as logging
  */
 export class ServiceProvider extends Axios implements ServiceProviderExtension {
-    public readonly log: Logger = new ToolsLogger();
+    public _log: Logger = new ToolsLogger();
 
     public readonly cookies: Cookies = new Cookies();
 
     protected readonly services: { [path: string]: Service } = {};
+
+    /**
+     * Set the logger for the service provider. Loggers may need to be restored after serialization/deserialization since they contain circular references.
+     *
+     * @param logger - Logger instance to be set
+     */
+    public set log(logger: Logger) {
+        this._log = logger;
+    }
+
+    /**
+     * Get the logger for the service provider.
+     *
+     * @returns Logger instance
+     */
+    public get log(): Logger {
+        return this._log;
+    }
 
     /**
      * Create a service instance or return an existing one for the given path.

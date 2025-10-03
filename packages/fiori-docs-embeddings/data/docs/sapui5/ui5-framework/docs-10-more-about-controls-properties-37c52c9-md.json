@@ -1,0 +1,21 @@
+{
+  "id": "sapui5-docs-10-more-about-controls-properties-37c52c9-md",
+  "title": "Properties",
+  "category": "ui5-framework",
+  "path": "docs/10_More_About_Controls/properties-37c52c9.md",
+  "lastModified": "2025-09-01T18:17:10.698Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Properties"
+  ],
+  "headers": [
+    "Properties"
+  ],
+  "content": "<!-- loio37c52c99a65a4f48811df0d566eb8cb4 -->\n\n# Properties\n\nThe `swipeDirection` property for lists and tables is used to configure the direction of the swipe event. This property accepts an enumeration from `sap.m.SwipeDirection?` with the following values:\n\n-   `LeftToRight?`: Swipe from left to right\n-   `RightToLeft?`: Swipe from right to left\n-   `Both`: Both directions \\(left to right, or right to left\\)\n\nThe default value is `Both`, but in some use cases we recommend that you change this property, for example to prevent swipe conflicts.\n\n",
+  "excerpt": "<!-- loio37c52c99a65a4f48811df0d566eb8cb4 --> Properties The swipeDirection property for lists and tables is used to configure the direction of the swipe event. This property accepts an enumeration fr...",
+  "wordCount": 82,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

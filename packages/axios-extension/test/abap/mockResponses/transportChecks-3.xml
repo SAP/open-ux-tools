@@ -12,7 +12,7 @@
             <KORRFLAG/>
             <AS4USER>SAP</AS4USER>
             <PDEVCLASS/>
-            <DLVUNIT>LOCAL</DLVUNIT>
+            <DLVUNIT>ZLOCAL</DLVUNIT>
             <NAMESPACE>/*/</NAMESPACE>
             <SUPER_PACKAGE/>
             <RESULT>S</RESULT>

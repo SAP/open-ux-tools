@@ -1,0 +1,34 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-hybrid-changes-md",
+  "title": "Enabling CDS Hybrid Mode in a CAP project with a Fiori UI frontend",
+  "category": "samples",
+  "path": "cap/cap-fiori-hybrid/changes.md",
+  "lastModified": "2025-09-01T18:17:10.801Z",
+  "tags": [
+    "samples",
+    "md",
+    "Enabling",
+    "CDS",
+    "Hybrid",
+    "Mode",
+    "CAP",
+    "project",
+    "with",
+    "Fiori",
+    "frontend"
+  ],
+  "headers": [
+    "Enabling CDS Hybrid Mode in a CAP project with a Fiori UI frontend",
+    "Prerequisites",
+    "Step 1: Changes to `mta.yaml`",
+    "Step 2: Append Approuter",
+    "Step 3: Update xs-security.json",
+    "Step 4: Apply Security to Catalog Service"
+  ],
+  "content": "## Enabling CDS Hybrid Mode in a CAP project with a Fiori UI frontend\n\nThe CAP project and Fiori UI application were generated using the steps outlined in this [blog post](https://blogs.sap.com/2022/02/10/build-and-deploy-a-cap-project-node.js-api-with-a-sap-fiori-elements-ui-and-a-managed-approuter-configuration/) using the `Managed Approuter` configuration as the HTML5 application runtime.\nThe [managed approuter](../cap-fiori-mta/README.md) project is the base project used in this approach.\n\n## Prerequisites\n- HANA Cloud database is setup and running in your cloud space. Refer to this [tutorial](https://developers.sap.com/tutorials/hana-cloud-create-db-project.html).\n- The CAP project and SAP Fiori UI application are deployed to Cloud Foundry.\n\n## Step 1: Changes to `mta.yaml`\n\nThese changes are required to reduce the number of manual tasks. They will hopefully be incorporated into a future edition of the SAP Fiori tools deployment generator.\n\nAppend the `properties` node to `managedAppCAPProject-db-deployer` so the local and deployed CAP projects both share the same HDI instance;\n\n```yaml\n  - name: managedAppCAPProject-db-deployer\n    type: hdb\n    path: db\n    requires:\n      - name: managedAppCAPProject-db\n        properties:\n          TARGET_CONTAINER: ~{hdi-service-name}\n```\n\nUpdate `uaa_managedAppCAPProject` -> `service-key` parameter to `managedAppCAPProject-xsuaa-service-key`, when binding to the HANA service, the key and service name are aligned;\n\n```YAML\n  - name: managedAppCAPProject-destination-content\n    type: com.sap.application.content\n    requires:\n      - name: managedAppCAPProject-destination-service\n        parameters:\n          content-target: true\n      - name: managedAppCAPProject_html_repo_host\n        parameters:\n          service-key:\n            name: managedAppCAPProject_html_repo_host-key\n      - name: uaa_managedAppCAPProject\n        parameters:\n          service-key:\n            name: managedAppCAPProject-xsuaa-service-key\n```\n\nUpdate `managedAppCAPProject-db` to append the `service-key` parameter, when binding to the HANA service, the key and service name are aligned;\n\n```yaml\n  - name: managedAppCAPProject-db\n    type: com.sap.xs.hdi-container\n    parameters:\n      service: hana\n      service-keys:\n        - name: managedAppCAPProject-db-key\n      service-plan: hdi-shared\n    properties:\n      hdi-service-name: ${service-name}\n```\n\n## Step 2: Append Approuter\n\nTo learn more about approuter, see the following links:\n\n- [@sap/approuter](https://www.npmjs.com/package/@sap/approuter#overview)\n- [Application-router on SAP BTP](https://help.sap.com/docs/btp/sap-business-technology-platform/application-router)\n\nAppend a local router to handle the XSUAA security locally;\n```bash\ncds add approuter\n```\nThe command will drop a number of files into the `app` folder but we want to control these so we are going to move them!\n```bash\nmkdir -p localrouter\nmv app/default-env.json app/package.json app/xs-app.json localrouter/\n```\n\nModify `default-env.json` so that is spins up on port `5001`;\n```JSON\n{\n  \"destinations\": [\n    {\n      \"name\": \"srv-api\",\n      \"url\": \"http://localhost:4004\",\n      \"forwardAuthToken\": true\n    }\n  ],\n  \"PORT\": 5001\n}\n```\n\n## Step 3: Update xs-security.json\n\nAppend support for the different OAuth endpoints, for local development with Visual Studio Code, SAP Business Application Studio and SAP BTP Cloud Foundry:\n```JSON\n  \"oauth2-configuration\": {\n    \"redirect-uris\": [\n        \"https://**.hana.ondemand.com/**\",\n        \"https://**.applicationstudio.cloud.sap/**\",\n        \"http://localhost:*/**\"\n    ]\n  },\n```\n\nApply new `scopes` and `role-templates` to lock down your Catalog service;\n```JSON\n  \"scopes\": [\n    {\n      \"name\": \"$XSAPPNAME.capuser\",\n      \"description\": \"CAP Project Generated role scope\"\n    }\n  ],\n  \"role-templates\": [\n    {\n      \"name\": \"capuser\",\n      \"description\": \"CAP Project Generated role template\",\n      \"scope-references\": [\"$XSAPPNAME.capuser\"],\n      \"attribute-references\": []\n    }\n  ],\n```\n\n## Step 4: Apply Security to Catalog Service\n\nEdit `srv` -> `cat-service.cds` and replace `@requires: 'authenticated-user'` with `@(requires: 'capuser')`. \n",
+  "excerpt": "Enabling CDS Hybrid Mode in a CAP project with a Fiori UI frontend The CAP project and Fiori UI application were generated using the steps outlined in this blog post using the Managed Approuter config...",
+  "wordCount": 440,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

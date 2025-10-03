@@ -1,0 +1,22 @@
+{
+  "id": "btp-fiori-tools-docs-generating-an-application-sapui5-freestyle-supported-templates-20d1146-md",
+  "title": "Supported Templates",
+  "category": "fiori-tools",
+  "path": "docs/Generating-an-Application/SAPUI5-Freestyle/supported-templates-20d1146.md",
+  "lastModified": "2025-09-01T18:17:10.152Z",
+  "tags": [
+    "fiori-tools",
+    "md",
+    "Supported",
+    "Templates"
+  ],
+  "headers": [
+    "Supported Templates"
+  ],
+  "content": "<!-- loio20d11464b0134021b58dac379ecdcbff -->\n\n# Supported Templates\n\nThis is a list of supported templates that enable you to create freestyle SAPUI5 applications.\n\n-   *Basic*\n\n    The [Basic Template](basic-template-14fdcc0.md) is intended for those developers who want to create their SAPUI5 app from scratch. With this basic template, a blank canvas is available to start coding right away. The basic file structure is set up according to our best practices.\n\n-   *Custom Page*\n\n    Create an SAP Fiori elements application containing a custom page based on the flexible programming model. For more information, see [Flexible Programming Model](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/overview/introduction).\n\n\n> ### Caution:  \n> SAP Fiori tools supports the development of SAP Fiori elements and freestyle SAPUI5 applications with minimum SAPUI5 versions 1.65 or higher.\n\n",
+  "excerpt": "<!-- loio20d11464b0134021b58dac379ecdcbff --> Supported Templates This is a list of supported templates that enable you to create freestyle SAPUI5 applications. -   Basic     The Basic Template is int...",
+  "wordCount": 118,
+  "version": "1.0.0",
+  "source": "btp-fiori-tools",
+  "sourceType": "github"
+}

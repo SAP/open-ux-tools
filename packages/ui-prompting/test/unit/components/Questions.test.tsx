@@ -372,4 +372,37 @@ describe('Questions', () => {
             expect(document.querySelectorAll(translationInputSelectors.button).length).toEqual(0);
         });
     });
+
+    describe('Questions component', () => {
+        const mockQuestions: PromptQuestion[] = [
+            { name: 'foo', type: 'list', message: 'Foo?' },
+            { name: 'bar', type: 'list', message: 'Bar?' }
+        ];
+
+        it('renders a select with no options when choices are not provided', () => {
+            const onChange = jest.fn();
+            const { queryAllByRole } = render(<Questions questions={mockQuestions} onChange={onChange} />);
+
+            // Should have no options since no choice provided
+            const options = queryAllByRole('option');
+            expect(options.length).toBeLessThanOrEqual(1);
+        });
+
+        it('updates merged answers and calls onChange for each input change', () => {
+            const onChange = jest.fn();
+            render(
+                <Questions
+                    questions={mockQuestions}
+                    onChange={onChange}
+                    choices={{
+                        foo: ['autoValueFoo'],
+                        bar: ['autoValueBar']
+                    }}
+                />
+            );
+
+            expect(onChange).toHaveBeenCalledTimes(2);
+            expect(onChange.mock.calls[1][0]).toEqual({ 'bar': 'autoValueBar', 'foo': 'autoValueFoo' });
+        });
+    });
 });

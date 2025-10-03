@@ -177,8 +177,17 @@ When the middleware is used in an adaptation project together with a middleware 
   afterMiddleware: preview-middleware
 ```
 
+### [Mobile Device Preview](#mobile-device-preview)
+The preview middleware supports previewing applications on physical mobile devices, enabling developers to test their applications on real mobile devices directly from Visual Studio Code or SAP Business Application Studio.
+
+Using the `--accept-remote-connections` argument, a remote URL that can be accessed from mobile devices on the same network will be logged in the console, and a QR code will be displayed for easy access.
+
+```Json
+"start-mobile": "ui5 serve --open test/flp.html#app-preview --accept-remote-connections"
+```
+ 
 ### [Programmatic Usage](#programmatic-usage)
-Alternatively you can use the underlying middleware fuction programmatically, e.g. for the case when you want to incorporate the `preview-middleware` functionality in your own middleware.
+Alternatively you can use the underlying middleware function programmatically. This is useful when you want to incorporate the `preview-middleware` functionality in your own middleware.
 
 ```typescript
 import { FlpSandbox } from '@sap-ux/preview-middleware';

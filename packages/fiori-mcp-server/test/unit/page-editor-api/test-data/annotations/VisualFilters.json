@@ -1,0 +1,233 @@
+{
+  "nodes": [
+    {
+      "nodeId": [0],
+      "annotationPath": "/TravelService.Travel/@com.sap.vocabularies.UI.v1.LineItem",
+      "allowedSubnodeTypes": [
+        "column/Basic",
+        "column/Rating",
+        "column/Progress",
+        "action",
+        "actionGroup",
+        "chart",
+        "navigation",
+        "contact"
+      ],
+      "tooComplex": false,
+      "nodeType": "list",
+      "location": {
+        "range": { "start": { "line": 41, "character": 6 }, "end": { "line": 48, "character": 7 } },
+        "fileUri": "layouts.cds"
+      },
+      "variant": {
+        "tooComplex": false,
+        "type": "enum",
+        "allowedValues": [
+          {
+            "value": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+            "text": "SelectionPresentationVariant#tableView"
+          }
+        ],
+        "value": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+        "text": "SelectionPresentationVariant#tableView",
+        "locations": [
+          {
+            "fileUri": "layouts.cds",
+            "range": { "start": { "line": 102, "character": 4 }, "end": { "line": 111, "character": 5 } }
+          }
+        ]
+      },
+      "selectionVariant": {
+        "tooComplex": false,
+        "type": "enum",
+        "allowedValues": [
+          {
+            "value": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+            "text": "SelectionPresentationVariant#tableView"
+          },
+          {
+            "value": "None",
+            "text": "None",
+            "tooltip": "Applies no presentation variant and references the chart in manifest.json directly"
+          }
+        ],
+        "value": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+        "text": "SelectionPresentationVariant#tableView",
+        "locations": []
+      },
+      "pvPathKind": { "tooComplex": false, "type": "string", "value": "SPV_PV", "isLanguageDependent": false },
+      "svPathKind": { "tooComplex": false, "type": "string", "value": "SPV", "isLanguageDependent": false },
+      "subnodes": [
+        {
+          "nodeId": [0, 0],
+          "annotationPath": "/TravelService.Travel/@com.sap.vocabularies.UI.v1.LineItem/0",
+          "allowedParentNodes": { "[0]": true },
+          "tooComplex": false,
+          "nodeType": "action",
+          "location": {
+            "fileUri": "file:///C:/SAPDevelop/tools-suite/packages/application-modeler/ide-extension/test/ui-integration/projects-copy/v4/cap-sflight-analytical/app/travel_processor/layouts.cds",
+            "range": { "start": { "line": 42, "character": 8 }, "end": { "line": 42, "character": 119 } }
+          },
+          "label": {
+            "tooComplex": false,
+            "type": "string",
+            "value": "{i18n>RejectTravel}",
+            "isLanguageDependent": true,
+            "locations": [],
+            "useBase": false
+          },
+          "action": {
+            "tooComplex": false,
+            "type": "enum",
+            "value": "TravelService.rejectTravel",
+            "allowedValues": [
+              { "value": "TravelService.acceptTravel" },
+              { "value": "TravelService.createTravelByTemplate" },
+              { "value": "TravelService.deductDiscount" },
+              { "value": "TravelService.rejectTravel" }
+            ]
+          },
+          "subnodes": [],
+          "inline": { "tooComplex": false, "type": "bool", "value": false },
+          "hidden": {
+            "tooComplex": false,
+            "type": "bool",
+            "value": false,
+            "baseValue": false,
+            "useBase": false,
+            "locations": []
+          },
+          "hideByProperty": null,
+          "uiProperties": {}
+        },
+        {
+          "nodeId": [0, 1],
+          "dataType": { "type": "string", "value": "String", "tooComplex": false, "isLanguageDependent": false },
+          "columnType": "Basic",
+          "annotationPath": "/TravelService.Travel/@com.sap.vocabularies.UI.v1.LineItem/1",
+          "allowedParentNodes": { "[0]": true },
+          "tooComplex": false,
+          "nodeType": "column",
+          "location": {
+            "fileUri": "file:///C:/SAPDevelop/tools-suite/packages/application-modeler/ide-extension/test/ui-integration/projects-copy/v4/cap-sflight-analytical/app/travel_processor/layouts.cds",
+            "range": { "start": { "line": 43, "character": 8 }, "end": { "line": 47, "character": 9 } }
+          },
+          "label": {
+            "tooComplex": false,
+            "type": "string",
+            "isLanguageDependent": true,
+            "value": "",
+            "useBase": true,
+            "baseTooComplex": false,
+            "locations": [],
+            "baseValue": { "value": "{i18n>CustomerID}" }
+          },
+          "restriction": {
+            "tooComplex": false,
+            "type": "enum",
+            "value": "None",
+            "allowedValues": [
+              { "value": "None", "text": "None" },
+              { "value": "Mandatory", "text": "Mandatory" },
+              { "value": "Optional", "text": "Optional" },
+              { "value": "ReadOnly", "text": "Read Only" }
+            ],
+            "baseTooComplex": true,
+            "locations": []
+          },
+          "type": {
+            "tooComplex": false,
+            "type": "enum",
+            "value": "None",
+            "allowedValues": [
+              { "value": "None", "text": "None" },
+              { "value": "TextArea", "text": "Text Area" },
+              { "value": "ValueHelp", "text": "Value Help" }
+            ],
+            "locations": [],
+            "baseValue": { "value": "ValueHelp", "text": "Value Help" }
+          },
+          "valueListTarget": {
+            "tooComplex": false,
+            "type": "string",
+            "isLanguageDependent": false,
+            "value": "TravelService.Travel/to_Customer_CustomerID"
+          },
+          "entitySet": {
+            "tooComplex": false,
+            "type": "enum",
+            "value": "Passenger",
+            "allowedValues": [
+              { "value": "Travel" },
+              { "value": "Currencies" },
+              { "value": "TravelStatus" },
+              { "value": "TravelAgency" },
+              { "value": "Passenger" },
+              { "value": "Booking" },
+              { "value": "Countries" },
+              { "value": "BookingStatus" },
+              { "value": "BookingSupplement" },
+              { "value": "Airline" },
+              { "value": "Flight" },
+              { "value": "Supplement" },
+              { "value": "FlightConnection" },
+              { "value": "SupplementType" },
+              { "value": "Airport" }
+            ]
+          },
+          "asDropDown": { "tooComplex": false, "type": "bool", "value": true },
+          "textArrangement": {
+            "tooComplex": false,
+            "value": "None",
+            "baseValue": { "value": "None", "text": "None" },
+            "type": "enum",
+            "allowedValues": [
+              { "value": "None", "text": "None" },
+              { "value": "TextFirst", "text": "Text First" },
+              { "value": "TextLast", "text": "Text Last" },
+              { "value": "TextSeparate", "text": "ID Only" },
+              { "value": "TextOnly", "text": "Text Only" }
+            ],
+            "text": "None"
+          },
+          "path": {
+            "tooComplex": false,
+            "type": "string",
+            "value": "to_Customer_CustomerID",
+            "isLanguageDependent": false,
+            "locations": []
+          },
+          "subnodes": [],
+          "hidden": {
+            "tooComplex": false,
+            "type": "bool",
+            "value": false,
+            "baseValue": false,
+            "useBase": false,
+            "locations": []
+          },
+          "hideByProperty": null,
+          "importance": {
+            "tooComplex": false,
+            "allowedValues": [{ "value": "None" }, { "value": "High" }, { "value": "Medium" }, { "value": "Low" }],
+            "locations": [],
+            "type": "enum",
+            "value": "High",
+            "baseValue": { "value": "None" }
+          }
+        }
+      ],
+      "suppressedSubnodeTypes": []
+    }
+  ],
+  "dynamicNodes": {},
+  "dialogsContext": {
+    "isCdsProject": true,
+    "analyticalChartSupport": {
+      "creationEnabled": true,
+      "creationTooltip": "Add an analytical chart to create an analytical list page.",
+      "addToMultiViewEnabled": true,
+      "addToMultiViewTooltip": "Add an analytical chart to create a multi-view report"
+    }
+  }
+}

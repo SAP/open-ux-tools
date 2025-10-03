@@ -164,6 +164,11 @@ describe('UI5Config', () => {
         test('Add with specific theme and additional library', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_belize');
             expect(ui5Config.toString()).toMatchSnapshot();
+            expect(ui5Config.getUi5Framework()).toStrictEqual({
+                name: 'SAPUI5',
+                version: '1.64.0',
+                libraries: [{ name: 'sap.m' }, { name: 'themelib_sap_belize' }]
+            });
         });
 
         test('Use a dark theme', () => {
@@ -187,19 +192,19 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('addFioriToolsProxydMiddleware', () => {
+    describe('addFioriToolsProxyMiddleware', () => {
         test('add without backend or UI5', () => {
-            ui5Config.addFioriToolsProxydMiddleware({});
+            ui5Config.addFioriToolsProxyMiddleware({});
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add without backend or but UI5 defaults', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {} });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add without backend or but all properties for UI5', () => {
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 ui5: {
                     directLoad: true,
                     path: ['/~customResources', '/~other'],
@@ -226,18 +231,18 @@ describe('UI5Config', () => {
                     authenticationType: AuthenticationType.ReentranceTicket
                 }
             ];
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 backend,
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();
 
-            const backendConfigs = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
+            const backendConfigs = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
             expect(backendConfigs).toEqual(backend);
         });
 
         test('add backend with flexible parameters (and UI5 defaults) & writes ignoreCertError true if enabled', () => {
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
                 ignoreCertError: true,
                 ui5: {}
@@ -245,21 +250,30 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
+        test('add backend with flexible parameters (and UI5 defaults) & writes ignoreCertErrors true if enabled', () => {
+            ui5Config.addFioriToolsProxyMiddleware({
+                backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
+                ignoreCertErrors: true,
+                ui5: {}
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('add backend without destination (and UI5 defaults)', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path, client }], ui5: {} });
+            ui5Config.addFioriToolsProxyMiddleware({ backend: [{ url, path, client }], ui5: {} });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
         test('add backend without path or destination (and UI5 defaults)', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url }], ui5: {} });
+            ui5Config.addFioriToolsProxyMiddleware({ backend: [{ url }], ui5: {} });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
 
-    describe('addBackendToFioriToolsProxydMiddleware', () => {
+    describe('addBackendToFioriToolsProxyMiddleware', () => {
         test('add proxy without out backend first and then call add backend', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
-            ui5Config.addBackendToFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxyMiddleware({
                 url,
                 path
             });
@@ -267,37 +281,37 @@ describe('UI5Config', () => {
         });
 
         test('add backend and update the "ignoreCertError" property', () => {
-            const expectedIgnoreCertError = true;
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, ignoreCertError: false });
-            ui5Config.addBackendToFioriToolsProxydMiddleware(
+            const expectedIgnoreCertErrors = true;
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, ignoreCertError: false });
+            ui5Config.addBackendToFioriToolsProxyMiddleware(
                 {
                     url,
                     path
                 },
-                expectedIgnoreCertError
+                expectedIgnoreCertErrors
             );
             const fioriToolsProxyMiddlewareConfig =
                 ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
-            expect(fioriToolsProxyMiddlewareConfig?.ignoreCertError).toEqual(expectedIgnoreCertError);
+            expect(fioriToolsProxyMiddlewareConfig?.ignoreCertErrors).toEqual(expectedIgnoreCertErrors);
         });
 
         test('add backend and do not update the "ignoreCertError" property', () => {
-            const expectedIgnoreCertError = false;
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, ignoreCertError: false });
-            ui5Config.addBackendToFioriToolsProxydMiddleware(
+            const expectedIgnoreCertErrors = false;
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, ignoreCertErrors: false });
+            ui5Config.addBackendToFioriToolsProxyMiddleware(
                 {
                     url,
                     path
                 },
-                expectedIgnoreCertError
+                expectedIgnoreCertErrors
             );
             const fioriToolsProxyMiddlewareConfig =
                 ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
-            expect(fioriToolsProxyMiddlewareConfig?.ignoreCertError).toEqual(expectedIgnoreCertError);
+            expect(fioriToolsProxyMiddlewareConfig?.ignoreCertErrors).toEqual(expectedIgnoreCertErrors);
         });
 
         test('handle duplicate backend', () => {
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 backend: [
                     { url, path },
                     { url, path: '/sap' }
@@ -305,7 +319,7 @@ describe('UI5Config', () => {
                 ui5: {}
             });
             // Add same backend
-            ui5Config.addBackendToFioriToolsProxydMiddleware({
+            ui5Config.addBackendToFioriToolsProxyMiddleware({
                 url,
                 path
             });
@@ -324,8 +338,8 @@ describe('UI5Config', () => {
         });
 
         test('should add comments with backend authentication type as reentrance ticket', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
-            ui5Config.addBackendToFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxyMiddleware({
                 url,
                 path,
                 authenticationType: AuthenticationType.ReentranceTicket
@@ -335,7 +349,7 @@ describe('UI5Config', () => {
 
         test('try adding backend without a proxy middleware added before', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
-            expect(() => ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path })).toThrow();
+            expect(() => ui5Config.addBackendToFioriToolsProxyMiddleware({ url, path })).toThrow();
         });
 
         test('Should add preview middlewares correctly', () => {
@@ -391,14 +405,14 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('updateBackendToFioriToolsProxydMiddleware', () => {
+    describe('updateBackendToFioriToolsProxyMiddleware', () => {
         test('add proxy with backend first and then call update for existing backend', () => {
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 backend: [{ url, path }],
                 ui5: {}
             });
             let fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
-            ui5Config.updateBackendToFioriToolsProxydMiddleware({ path, url: 'updated' });
+            ui5Config.updateBackendToFioriToolsProxyMiddleware({ path, url: 'updated' });
             fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
             expect(fioriToolsProxyMiddleware?.configuration.backend).toStrictEqual([
                 {
@@ -409,12 +423,12 @@ describe('UI5Config', () => {
         });
 
         test('add proxy with backend first and then call update for unexisting backend', () => {
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 backend: [{ url, path }],
                 ui5: {}
             });
             let fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
-            ui5Config.updateBackendToFioriToolsProxydMiddleware({ path: 'dummy', url: 'updated' });
+            ui5Config.updateBackendToFioriToolsProxyMiddleware({ path: 'dummy', url: 'updated' });
             fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
             expect(fioriToolsProxyMiddleware?.configuration.backend).toStrictEqual([
                 {
@@ -425,12 +439,12 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('removeBackendFromFioriToolsProxydMiddleware', () => {
+    describe('removeBackendFromFioriToolsProxyMiddleware', () => {
         test('add proxy with backend first and then call remove for existing backend', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ url, path }] });
             let fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
             expect(fioriToolsProxyMiddleware?.configuration).toStrictEqual({
-                ignoreCertError: false,
+                ignoreCertErrors: false,
                 backend: [
                     {
                         url: 'http://localhost:8080',
@@ -439,21 +453,21 @@ describe('UI5Config', () => {
                 ],
                 ui5: { path: ['/resources', '/test-resources'], url: 'https://ui5.sap.com' }
             });
-            ui5Config.removeBackendFromFioriToolsProxydMiddleware(path);
+            ui5Config.removeBackendFromFioriToolsProxyMiddleware(path);
             fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
             expect(fioriToolsProxyMiddleware?.configuration).toStrictEqual({
-                ignoreCertError: false,
+                ignoreCertErrors: false,
                 backend: [],
                 ui5: { path: ['/resources', '/test-resources'], url: 'https://ui5.sap.com' }
             });
         });
 
         test('add proxy with backend first and then call remove for unexisting backend', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ url, path }] });
             const initialFioriToolsProxyMiddleware =
                 ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
             expect(initialFioriToolsProxyMiddleware?.configuration).toStrictEqual({
-                ignoreCertError: false,
+                ignoreCertErrors: false,
                 backend: [
                     {
                         url: 'http://localhost:8080',
@@ -462,7 +476,7 @@ describe('UI5Config', () => {
                 ],
                 ui5: { path: ['/resources', '/test-resources'], url: 'https://ui5.sap.com' }
             });
-            ui5Config.removeBackendFromFioriToolsProxydMiddleware('dummy');
+            ui5Config.removeBackendFromFioriToolsProxyMiddleware('dummy');
             const updatedFioriToolsProxyMiddleware =
                 ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
             // Check if nothing changed
@@ -473,12 +487,12 @@ describe('UI5Config', () => {
 
         test('try removing backend without a proxy middleware added before', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
-            expect(() => ui5Config.removeBackendFromFioriToolsProxydMiddleware(url)).toThrow();
+            expect(() => ui5Config.removeBackendFromFioriToolsProxyMiddleware(url)).toThrow();
         });
 
         test('all occurances of backend should be deleted, except one with "/sap" path', () => {
             // Create proxy middleware with backend config
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 backend: [
                     { url, path },
                     { url, path },
@@ -486,7 +500,7 @@ describe('UI5Config', () => {
                 ],
                 ui5: {}
             });
-            ui5Config.removeBackendFromFioriToolsProxydMiddleware(path);
+            ui5Config.removeBackendFromFioriToolsProxyMiddleware(path);
             const fioriToolsProxyMiddlewareConfig =
                 ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
             expect(fioriToolsProxyMiddlewareConfig?.backend).toStrictEqual([
@@ -498,10 +512,10 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('getBackendConfigFromFioriToolsProxydMiddleware', () => {
+    describe('getBackendConfigFromFioriToolsProxyMiddleware', () => {
         test('finds the exact fit in case of a single backend entry', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
-            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxydMiddleware(path);
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ url, path }] });
+            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxyMiddleware(path);
             expect(matchingBackend).toStrictEqual({
                 path: '/~testpath~',
                 url: 'http://localhost:8080'
@@ -509,13 +523,13 @@ describe('UI5Config', () => {
         });
 
         test('returns undefined if no backend was found', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
-            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxydMiddleware('dummy');
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ url, path }] });
+            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxyMiddleware('dummy');
             expect(matchingBackend).toBeUndefined();
         });
 
         it('finds the exact fit in case of a multiple backend entries', async () => {
-            ui5Config.addFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({
                 ui5: {},
                 backend: [
                     { url: 'https://sap.mock2.ondemand.com', path: '/sap/opu' },
@@ -523,7 +537,7 @@ describe('UI5Config', () => {
                     { url, path }
                 ]
             });
-            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxydMiddleware(path);
+            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxyMiddleware(path);
             expect(matchingBackend).toStrictEqual({
                 path: '/~testpath~',
                 url: 'http://localhost:8080'
@@ -531,10 +545,10 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('addUi5ToFioriToolsProxydMiddleware', () => {
+    describe('addUi5ToFioriToolsProxyMiddleware', () => {
         test('add ui5 config to empty tools middleware config', () => {
-            ui5Config.addFioriToolsProxydMiddleware({});
-            ui5Config.addUi5ToFioriToolsProxydMiddleware({
+            ui5Config.addFioriToolsProxyMiddleware({});
+            ui5Config.addUi5ToFioriToolsProxyMiddleware({
                 path: ['/~customResources', '/~other'],
                 url: 'http://~url'
             });
@@ -803,7 +817,12 @@ describe('UI5Config', () => {
                 { url, client },
                 {
                     package: '$TMP'
-                }
+                },
+                true,
+                ['/test/'],
+                undefined,
+                'apps/workcenter/appVariants/customer.app.variant',
+                []
             );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
@@ -815,6 +834,7 @@ describe('UI5Config', () => {
                 false,
                 ['/test/'],
                 true,
+                undefined,
                 [
                     {
                         path: 'configuration.target.authenticationType',
@@ -854,14 +874,14 @@ describe('UI5Config', () => {
             name: 'fiori-tools-proxy',
             afterMiddleware: 'compression',
             configuration: {
-                ignoreCertError: false,
+                ignoreCertErrors: false,
                 backend: [
                     {
                         path: '/sap',
                         url: 'http://test.url.com:50017'
                     }
                 ]
-            }
+            } satisfies FioriToolsProxyConfig
         };
 
         test('add with single path (no existing serve static config)', () => {

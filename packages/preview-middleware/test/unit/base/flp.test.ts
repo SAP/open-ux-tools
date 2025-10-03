@@ -8,8 +8,8 @@ import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
-import { readFileSync, promises } from 'fs';
-import path, { join, posix } from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
@@ -147,8 +147,8 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': {
                     id: 'my.id',
-                    title: '{i18n>myDifferentTitle}',
-                    description: '{{i18n>myDifferentDescription}}'
+                    title: '{{myDifferentTitle}}',
+                    description: '{{myDifferentDescription}}'
                 }
             } as Manifest;
             await flp.init(manifest);
@@ -177,7 +177,7 @@ describe('FlpSandbox', () => {
             });
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
-                'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
+                'sap.app': { id: 'my.id', title: '{{myTitle}}', description: '{{myDescription}}' }
             } as Manifest;
             await flp.init(manifest);
             expect(projectAccessMock).toHaveBeenCalled();
@@ -187,7 +187,7 @@ describe('FlpSandbox', () => {
         test('i18n manifest with unknown propertyI18nKey', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
-                'sap.app': { id: 'my.id', title: '{i18n>myOtherTitle}', description: '{{i18n>myOtherDescription}}' }
+                'sap.app': { id: 'my.id', title: '{{myOtherTitle}}', description: '{{myOtherDescription}}' }
             } as Manifest;
             await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
@@ -198,6 +198,17 @@ describe('FlpSandbox', () => {
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('i18n key more that a word', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(
+                readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8')
+            ) as Manifest;
+            manifest['sap.app'].description = '{{my.custom.key.Description}}';
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+            expect(logger.warn).toHaveBeenCalledWith('Failed to load i18n properties bundle');
         });
 
         test('ui5Theme', async () => {

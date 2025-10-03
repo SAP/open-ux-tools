@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-the-microchart-building-block-74554b4-md",
+  "title": "The `MicroChart` Building Block",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/the-microchart-building-block-74554b4.md",
+  "lastModified": "2025-09-01T18:17:10.657Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "`MicroChart`",
+    "Building",
+    "Block"
+  ],
+  "headers": [
+    "The `MicroChart` Building Block",
+    "API"
+  ],
+  "content": "<!-- loio74554b4ca1de49aea42e2c309946ba05 -->\n\n# The `MicroChart` Building Block\n\nYou can use the `MicroChart` building block stand alone in any container as shown in the following sample code:\n\n> ### Sample Code:  \n> Consuming the `MicroChart` building block\n> \n> ```\n> <macros:MicroChart\n>     id=\"bar\"\n>     metaPath=\"@com.sap.vocabularies.UI.v1.Chart#BarStackedPath\"\n>     contextPath=\"/RootEntity/_Item\"\n>     batchGroupId=\"$auto.abc\"\n> />\n> ```\n\n> ### Note:  \n> The `contextPath` is optional if `metaPath` is provided with an absolute path. If `metaPath` is relative and there is no `contextPath` given, then we consider the parent binding path as the value of `contextPath`.\n\nApplications can influence the size of the rendered micro chart, control the visibility of the header, and handle no data scenario. Check out our live example in the flexible programming model explorer at [Micro Chart-Overview](https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/buildingBlocks/microchart/microChartDefault).\n\n\n\n<a name=\"loio74554b4ca1de49aea42e2c309946ba05__section_w21_dfs_j5b\"/>\n\n## API\n\nFor information about the `MicroChart` API, see the [API Reference](https://ui5.sap.com/#/api/sap.fe.macros.MicroChart).\n\n",
+  "excerpt": "<!-- loio74554b4ca1de49aea42e2c309946ba05 --> The MicroChart Building Block You can use the MicroChart building block stand alone in any container as shown in the following sample code: > Sample Code:...",
+  "wordCount": 142,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

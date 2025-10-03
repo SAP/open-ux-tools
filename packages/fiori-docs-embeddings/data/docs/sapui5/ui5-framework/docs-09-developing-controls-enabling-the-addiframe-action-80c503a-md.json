@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-09-developing-controls-enabling-the-addiframe-action-80c503a-md",
+  "title": "Enabling the *AddIFrame* Action",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/enabling-the-addiframe-action-80c503a.md",
+  "lastModified": "2025-09-01T18:17:10.676Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Enabling",
+    "the",
+    "AddIFrame",
+    "Action"
+  ],
+  "headers": [
+    "Enabling the *AddIFrame* Action"
+  ],
+  "content": "<!-- loio80c503a6e11d47d28f1ee101e1e4bfff -->\n\n# Enabling the *AddIFrame* Action\n\nThis section shows an example how to enable enable a control for the *AddIFrame* action.\n\n",
+  "excerpt": "<!-- loio80c503a6e11d47d28f1ee101e1e4bfff --> Enabling the AddIFrame Action This section shows an example how to enable enable a control for the AddIFrame action.",
+  "wordCount": 24,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

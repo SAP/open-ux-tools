@@ -2,14 +2,22 @@
   "name": "test_cap",
   "version": "0",
   "description": "Test file",
-  "dependencies": {},
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
+  },
   "sapux": [
     "app/1",
     "app/2",
     "app/3",
     "app/lrop_v4_version_not_specified"
   ],
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.13.0"
+  },
   "scripts": {
-    "watch-lrop_v4_version_not_specified": "cds watch --open lrop_v4_version_not_specified/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-lrop_v4_version_not_specified": "cds watch --open testNameSpace.lropv4versionnotspecified/index.html?sap-ui-xx-viewCache=false --livereload false"
   }
 }

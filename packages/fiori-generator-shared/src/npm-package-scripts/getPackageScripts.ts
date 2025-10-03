@@ -63,10 +63,14 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * When virtual endpoints are used, the search parameters are injected at runtime.
  *
  * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command.
+ * @param {string} [flpAppId] - The FLP application ID to use as the anchor in the preview URL.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(addSearchParams: boolean): string {
-    const previewAppAnchor = '#app-preview';
+function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId?: string): string {
+    let previewAppAnchor = '#app-preview';
+    if (addSearchParams && flpAppId) {
+        previewAppAnchor = `#${flpAppId}`;
+    }
     let urlParam = '';
     if (addSearchParams) {
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
@@ -76,7 +80,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
     }
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
-    // eslint-disable-next-line no-useless-escape
+
     return `fiori run --open \"/preview.html${urlParam}${previewAppAnchor}\"`;
 }
 
@@ -130,7 +134,7 @@ export function getPackageScripts({
 
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(!supportVirtualEndpoints);
+        : getVariantPreviewAppScript(!supportVirtualEndpoints, flpAppId);
 
     return scripts;
 }

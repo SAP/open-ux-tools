@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-test-integration-opatests-qunit-js",
+  "title": "opaTests.qunit",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/test/integration/opaTests.qunit.js",
+  "lastModified": "2025-09-01T18:17:10.801Z",
+  "tags": [
+    "samples",
+    "js",
+    "opaTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.js\n\n```javascript\n/* global QUnit */\n\nsap.ui.require([\"sap/btp/sapui5/test/integration/AllJourneys\"\n], function () {\n\tQUnit.config.autostart = false;\n\tQUnit.start();\n});\n\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "opaTests.qunit.md javascript opaTests.qunit.md javascript opaTests.qunit.md javascript opaTests.qunit.md javascript opaTests.qunit.js",
+  "wordCount": 50,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

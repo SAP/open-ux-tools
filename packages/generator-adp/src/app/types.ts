@@ -83,6 +83,7 @@ export interface AchPromptOptions {
 
 export interface ShouldCreateExtProjectPromptOptions {
     hide?: boolean;
+    isExtensibilityExtInstalled?: boolean;
 }
 
 /**

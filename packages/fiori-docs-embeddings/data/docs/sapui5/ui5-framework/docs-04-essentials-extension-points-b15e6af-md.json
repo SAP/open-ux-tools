@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-04-essentials-extension-points-b15e6af-md",
+  "title": "Extension Points",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/extension-points-b15e6af.md",
+  "lastModified": "2025-09-01T18:17:10.516Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Extension",
+    "Points"
+  ],
+  "headers": [
+    "Extension Points"
+  ],
+  "content": "<!-- loiob15e6afc5ae74227a661dc6ff104bf80 -->\n\n# Extension Points\n\nExtension points can be used in XML templating to extend the standard with custom content.\n\nThe extension point has a default content which is used unless the extension point is replaced via customizing. The extension point name can result from a binding, including an expression binding which evaluates to a constant. If the extension point is to be replaced by an XML fragment, the extension point element is replaced by the fragment's XML DOM and preprocessing takes place on the DOM as well. All currently available variable names and aliases are inherited into the fragment as usual. You get the same debug output as for fragment instructions, and you see the customized fragment name there.\n\n```xml\n\n<!-- expression binding just to showcase dynamic names -->\n<core:ExtensionPoint name=\"{:= 'HeaderInfo' }\">\n    <form:SimpleForm>\n        <form:title>\n            <core:Title text=\"HeaderInfo\"/>\n        </form:title>\n        <template:with path=\"entityType>com.sap.vocabularies.UI.v1.HeaderInfo\">\n            <!-- ... -->\n        </template:with>\n    </form:SimpleForm>\n</core:ExtensionPoint>\n\n```\n\n**Related Information**  \n\n\n[View Extension](../08_Extending_SAPUI5_Applications/view-extension-403c050.md \"SAPUI5 uses extension points for extending standard views with custom content. The assignment of a custom view to an extension point is done in component customizing.\")\n\n",
+  "excerpt": "<!-- loiob15e6afc5ae74227a661dc6ff104bf80 --> Extension Points Extension points can be used in XML templating to extend the standard with custom content. The extension point has a default content whic...",
+  "wordCount": 180,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

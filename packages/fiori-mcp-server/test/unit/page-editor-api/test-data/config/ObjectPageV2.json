@@ -1,0 +1,29 @@
+{
+    "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+    "header": {
+        "actions": {
+            "UpAndDownNavigation": {},
+            "Share": {}
+        }
+    },
+    "footer": {},
+    "sections": {
+        "ProductReviewFacetID": {
+            "table": {}
+        },
+        "ProductSmartChartFacetID": {
+            "chart": {}
+        },
+        "custom": [
+            {
+                "fragmentName": "fev2.ext.fragment.CustomSection",
+                "relatedFacet": "com.sap.vocabularies.UI.v1.FieldGroup::TechnicalData",
+                "relativePosition": "AfterFacet",
+                "title": "custom section",
+                "className": "sap.ui.core.Fragment",
+                "type": "XML"
+            }
+        ]
+    },
+    "$schema": "../.schemas/ObjectPage_SEPMRA_C_PD_Product.json"
+}

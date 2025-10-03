@@ -22,7 +22,7 @@ import type {
     RawAnnotation
 } from '@sap-ux/vocabularies-types';
 import { CommonAnnotationTerms, CommonAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/Common';
-import type { EntityTypeAnnotations, PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
+import type { PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { join } from 'path';
@@ -334,14 +334,18 @@ function getDataFieldRecordCollection(context: Context, isListReport = false): A
             continue;
         }
 
-        const annotations = getAnnotations(project, entityType, property, targetPath, targetElement, mdElement);
-        const annotationHidden = (annotations as PropertyAnnotations).UI?.Hidden;
+        const target = resolvePath(project, entityType, property, targetPath, targetElement, mdElement);
+        if (!target) {
+            // path might be unreachable (target entity is not exposed) or invalid
+            continue;
+        }
+        const annotationHidden = target._type === 'Property' ? target.annotations.UI?.Hidden : undefined;
         if (isHidden(annotationHidden)) {
             continue;
         }
 
-        const annotationLabel = annotations.Common?.Label;
-        const annotationTitle = (annotations as unknown as any)?.['title'];
+        const annotationLabel = target.annotations.Common?.Label;
+        const annotationTitle = (target.annotations as unknown as { title?: unknown })?.['title'];
         const hasLabel = annotationLabel ?? annotationTitle;
         const record: AnnotationRecord = {
             type: UIAnnotationTypes.DataField,
@@ -366,14 +370,14 @@ function getDataFieldRecordCollection(context: Context, isListReport = false): A
     return recordCollection;
 }
 
-function getAnnotations(
+function resolvePath(
     project: Project,
     entityType: EntityType,
     property: Property,
     targetPath: string,
     targetElement: Property,
     mdElement?: MetadataElement
-): PropertyAnnotations | EntityTypeAnnotations {
+): Property | EntityType | undefined {
     let target: Property | EntityType = targetElement;
     if (project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs') {
         const generatedProperty = property.name.split('_');
@@ -389,7 +393,11 @@ function getAnnotations(
     if (!target) {
         throw new ApiError(`Path target not found: ${targetPath}`);
     }
-    return target.annotations;
+    if (Object.keys(target).length === 0) {
+        // annotation-converter incorrectly returns empty object instead of undefined if path is not resolved.
+        return undefined;
+    }
+    return target;
 }
 
 function moveKeysToBeginning(isListReport: boolean, entityType: EntityType, properties: Property[]): number {

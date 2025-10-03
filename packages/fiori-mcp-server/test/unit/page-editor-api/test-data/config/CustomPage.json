@@ -1,0 +1,17 @@
+{
+  "FilterBar": {
+    "metaPath": "/Booking/@com.sap.vocabularies.UI.v1.SelectionFields#filterBarMacro1",
+    "id": "FilterBar",
+    "filterFields": { "FilterField": {} }
+  },
+  "Table": {
+    "filterBar": "FilterBar",
+    "header": "Test",
+    "metaPath": "/Booking/@com.sap.vocabularies.UI.v1.LineItem#tableMacro",
+    "id": "Table",
+    "actions": { "Action": { "anchor": "dummy2", "placement": "After" } },
+    "columns": { "Column": { "anchor": "DataField::BookingDate", "placement": "After" } }
+  },
+  "$schema": "../.schemas/FPMCustomPage_BookingCustomPage.json",
+  "$filePath": "ext/view/Custom.view.xml"
+}

@@ -1,0 +1,12 @@
+specVersion: '3.1'
+metadata:
+    name: jest-environment-ui5-sample-app
+type: module
+resources:
+    configuration:
+        paths:
+            /resources/sap/ui/demo/todo/: test/fixtures/webapp
+builder:
+    resources:
+        excludes:
+            - '/test/**'

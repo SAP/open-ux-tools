@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-03-get-started-step-18-icons-776f735-md",
+  "title": "Step 18: Icons",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-18-icons-776f735.md",
+  "lastModified": "2025-09-01T18:17:10.457Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Icons"
+  ],
+  "headers": [
+    "Step 18: Icons",
+    "Preview",
+    "Coding",
+    "webapp/view/HelloPanel.view.xml",
+    "webapp/view/HelloDialog.fragment.xml",
+    "Conventions"
+  ],
+  "content": "<!-- loio776f7352807e4f82b18176c8fbdc0c56 -->\n\n# Step 18: Icons\n\nOur dialog is still pretty much empty. Since SAPUI5 is shipped with a large icon font that contains more than 500 icons, we will add an icon to greet our users when the dialog is opened.\n\n\n\n## Preview\n\n  \n  \n**An icon is now displayed in the dialog box**\n\n![The graphic has an explanatory text.](images/UI5_Walkthrough_Step_18_fbc48e2.png \"An icon is now displayed in the dialog box\")\n\n\n\n<a name=\"loio776f7352807e4f82b18176c8fbdc0c56__section_pg2_zgk_syb\"/>\n\n## Coding\n\nYou can view and download all files at [Walkthrough - Step 18](https://ui5.sap.com/#/entity/sap.m.tutorial.walkthrough/sample/sap.m.tutorial.walkthrough.18).\n\n\n\n<a name=\"loio776f7352807e4f82b18176c8fbdc0c56__section_qg2_zgk_syb\"/>\n\n## webapp/view/HelloPanel.view.xml\n\n```xml\n<mvc:View\n   controllerName=\"ui5.walkthrough.controller.HelloPanel\"\n   xmlns=\"sap.m\"\n   xmlns:mvc=\"sap.ui.core.mvc\">\n   <Panel\n      headerText=\"{i18n>helloPanelTitle}\"\n      class=\"sapUiResponsiveMargin\"\n      width=\"auto\" >\n      <content>\n         <Button\n            id=\"helloDialogButton\"\n            icon=\"sap-icon://world\"\n            text=\"{i18n>openDialogButtonText}\"\n            press=\".onOpenDialog\"\n            class=\"sapUiSmallMarginEnd\"/>\n         <Button\n            text=\"{i18n>showHelloButtonText}\"\n            press=\".onShowHello\"\n            class=\"myCustomButton\"/>\n         <Input\n            value=\"{/recipient/name}\"\n            valueLiveUpdate=\"true\"\n            width=\"60%\"/>\n         <FormattedText\n            htmlText=\"Hello {/recipient/name}\"\n            class=\"sapUiSmallMargin sapThemeHighlight-asColor myCustomText\"/>\n      </content>\n   </Panel>\n</mvc:View>\n```\n\nWe add an icon to the button that opens the dialog. The `sap-icon://` protocol is indicating that an icon from the icon font should be loaded. The identifier `world` is the readable name of the icon in the icon font.\n\n> ### Tip:  \n> You can look up other icons using the [Icon Explorer tool](https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).\n> \n> To call any icon, use its name as listed in the *Icon Explorer* in <code>sap-icon://<i>&lt;iconname&gt;</i></code>.\n\n\n\n## webapp/view/HelloDialog.fragment.xml\n\n```xml\n<core:FragmentDefinition\n   xmlns=\"sap.m\"\n   xmlns:core=\"sap.ui.core\" >\n   <Dialog\n      id=\"helloDialog\"\n      title =\"Hello {/recipient/name}\">\n      <content>\n         <core:Icon\n            src=\"sap-icon://hello-world\"\n            size=\"8rem\"\n            class=\"sapUiMediumMargin\"/>\n      </content>\n      <beginButton>\n         <Button\n            text=\"{i18n>dialogCloseButtonText}\"\n            press=\".onCloseDialog\"/>\n      </beginButton>\n   </Dialog>\n</core:FragmentDefinition>\n```\n\nIn the dialog fragment, we add an icon control to the content aggregation of the dialog. Luckily, the icon font also comes with a \"Hello World\" icon that is perfect for us here. We also define the size of the icon and set a medium margin on it.\n\n\n\n## Conventions\n\n-   Always use icon fonts rather than images wherever possible, as they are scalable without quality loss \\(vector graphics\\) and do not need to be loaded separately.\n\n\n**Related Information**  \n\n\n[Icon Explorer](https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html)\n\n[API Reference: `sap.ui.core.Icon`](https://ui5.sap.com/#/api/sap.ui.core.Icon)\n\n[Samples: `sap.ui.core.Icon` ](https://ui5.sap.com/#/entity/sap.ui.core.Icon)\n\n",
+  "excerpt": "<!-- loio776f7352807e4f82b18176c8fbdc0c56 --> Step 18: Icons Our dialog is still pretty much empty. Since SAPUI5 is shipped with a large icon font that contains more than 500 icons, we will add an ico...",
+  "wordCount": 310,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

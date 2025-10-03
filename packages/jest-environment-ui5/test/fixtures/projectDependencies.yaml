@@ -1,0 +1,14 @@
+---
+id: jest-environment-ui5-sample-app
+version: '1.0.0'
+description: 'Sample App'
+main: 'index.html'
+path: './'
+configPath: 'ui5.yaml'
+dependencies:
+    - id: sap.ui.demo.lib
+      version: 'local'
+      path: 'lib'
+    - id: sap.ui.demo.module
+      version: 'local'
+      path: 'module'

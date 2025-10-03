@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sap-fiori-elements-v2-myfioriapp-webapp-index-html",
+  "title": "index",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sap-fiori-elements/V2/myfioriapp/webapp/index.html",
+  "lastModified": "2025-09-01T18:17:10.797Z",
+  "tags": [
+    "samples",
+    "html",
+    "index"
+  ],
+  "headers": [],
+  "content": "# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.md\n\n```html\n# index.html\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <title>Manage Products</title>\n    <style>\n        html, body, body > div, #container, #container-uiarea {\n            height: 100%;\n        }\n    </style>\n    <script\n        id=\"sap-ui-bootstrap\"\n        src=\"resources/sap-ui-core.js\"\n        data-sap-ui-theme=\"sap_horizon\"\n        data-sap-ui-resourceroots='{\n            \"Namespace1.myfioriapp\": \"./\"\n        }'\n        data-sap-ui-compatVersion=\"edge\"\n        data-sap-ui-async=\"true\"\n        data-sap-ui-frameOptions=\"trusted\"\n    ></script>\n    <script id=\"locate-reuse-libs\" src=\"./utils/locate-reuse-libs.js\"\n        data-sap-ui-manifest-uri=\"./manifest.json\"\n        data-sap-ui-componentName=\"Namespace1.myfioriapp\">\n    </script> \n</head>\n<body class=\"sapUiBody sapUiSizeCompact\" id=\"content\">\n    <div\n        data-sap-ui-component\n        data-name=\"Namespace1.myfioriapp\"\n        data-id=\"container\"\n        data-settings='{\"id\" : \"Namespace1.myfioriapp\"}'\n        data-handle-validation=\"true\"\n    ></div>\n</body>\n</html>\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "index.md html index.md html index.md html index.md html index.html",
+  "wordCount": 99,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

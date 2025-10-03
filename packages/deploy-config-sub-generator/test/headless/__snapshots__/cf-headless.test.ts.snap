@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 1`] = `
 "_schema-version: '3.1'

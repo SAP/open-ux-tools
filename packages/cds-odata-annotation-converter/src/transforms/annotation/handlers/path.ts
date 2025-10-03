@@ -8,15 +8,15 @@ import {
     SEPARATOR_TYPE
 } from '@sap-ux/cds-annotation-parser';
 
-import type { Element, ODataPathSeparatorDiagnostic } from '@sap-ux/odata-annotation-core-types';
+import type { CommonCaseIssue, Element, ODataPathSeparatorDiagnostic } from '@sap-ux/odata-annotation-core-types';
 import {
     createElementNode,
     createTextNode,
     Range,
     Edm,
-    Diagnostic,
     DiagnosticSeverity,
-    ODATA_PATH_SEPARATOR_RULE
+    ODATA_PATH_SEPARATOR_RULE,
+    COMMON_CASE_ISSUE
 } from '@sap-ux/odata-annotation-core-types';
 
 import { i18n } from '../../../i18n';
@@ -240,13 +240,18 @@ function pushWrongPathSeparatorDiagnostic(state: VisitorState, token: Separator)
         interpolation: { escapeValue: false }
     });
 
-    const diagnostic = Diagnostic.create(token.range, message, DiagnosticSeverity.Warning);
-    diagnostic.data = {
-        caseCheck: {
-            value: '/',
-            proposedValue: '.',
-            lookupPath: [],
-            isNamespacedValue: false
+    const diagnostic: CommonCaseIssue = {
+        rule: COMMON_CASE_ISSUE,
+        range: token.range,
+        message,
+        severity: DiagnosticSeverity.Warning,
+        data: {
+            caseCheck: {
+                value: '/',
+                proposedValue: '.',
+                lookupPath: [],
+                isNamespacedValue: false
+            }
         }
     };
     state.addDiagnostic(diagnostic);

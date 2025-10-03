@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-readme-md",
+  "title": "Description",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/README.md",
+  "lastModified": "2025-09-01T18:17:10.801Z",
+  "tags": [
+    "samples",
+    "md",
+    "Description"
+  ],
+  "headers": [
+    "Description",
+    "Requirements",
+    "Download and Installation"
+  ],
+  "content": "## Description \n\nThis is a sample app to manage products. This app is based on SAPUI5 Application template for freestyle programming \n\nTo learn how to build this app, check out [this](https://developers.sap.com/group.cp-frontend-ui5-1.html) tutorial.\n\n## Requirements\n\nThis app is intended as a sample app that can be previwed using SAP Fiori tools in SAP Business Application or VSC. Refer to [documentation](https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/2d8b1cb11f6541e5ab16f05461c64201.html) for help on how to get started with SAP Fiori tools. \n\n\n\n## Download and Installation\n\n1. After cloning the repository, right click on the app folder (i.e. `myfioriapp`) to open a terminal\n2. At the prompt of the terminal, type `npm install` \n3. Switch to \"SAP Fiori\" on the left activity bar\n4. Right click on the app name in `Application Modeler` view to open `Application Info` page\n5. Check and perfrom actions under `Application Status`\n6. Right click on the app name in `Appication Modeler` view and select `Preview Application` and choose `start` option for preview. \n\n",
+  "excerpt": "Description  This is a sample app to manage products. This app is based on SAPUI5 Application template for freestyle programming  To learn how to build this app, check out this tutorial. Requirements ...",
+  "wordCount": 157,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

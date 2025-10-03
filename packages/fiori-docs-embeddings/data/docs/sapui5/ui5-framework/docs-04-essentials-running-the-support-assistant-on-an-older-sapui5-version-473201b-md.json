@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-04-essentials-running-the-support-assistant-on-an-older-sapui5-version-473201b-md",
+  "title": "Running the Support Assistant on an Older SAPUI5 Version",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/running-the-support-assistant-on-an-older-sapui5-version-473201b.md",
+  "lastModified": "2025-09-01T18:17:10.541Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Running",
+    "the",
+    "Support",
+    "Assistant",
+    "Older",
+    "SAPUI5",
+    "Version"
+  ],
+  "headers": [
+    "Running the Support Assistant on an Older SAPUI5 Version",
+    "Prerequisites",
+    "Procedure",
+    "Results"
+  ],
+  "content": "<!-- loio473201b547734e0eb66612df5bae8553 -->\n\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/>\n\n# Running the Support Assistant on an Older SAPUI5 Version\n\nIn some cases you may want to run the Support Assistant against a different version of SAPUI5. You can do so by following a few steps.\n\n\n\n<a name=\"loio473201b547734e0eb66612df5bae8553__prereq_jhq_pbl_n1b\"/>\n\n## Prerequisites\n\nThe minimum SAPUI5 version in which the Support Assistant is available is 1.44.17.\n\n\n\n<a name=\"loio473201b547734e0eb66612df5bae8553__steps_efg_dsc_sz\"/>\n\n## Procedure\n\n1.  Open the *Technical Information Dialog* using the [shortcut](../02_Read-Me-First/keyboard-shortcuts-for-sapui5-tools-154844c.md) [Ctrl\\] + [Shift\\] + [Alt\\] /[Option\\] + [P\\] .\n\n2.  Choose the Settings button <span style=\"color:#ffffff;\"><span style=\"background-color:#009de0;\"><span class=\"SAP-icons-V5\"></span></span></span> next to the *Activate Support Assistant* button.\n\n3.  Select a predefined version from the dropdown, or select *Custom Location* to paste a custom URL in the input field.\n\n      \n      \n    **Technical Information Dialog: Support Assistant Settings**\n\n    ![](images/Support_Assistant_Older_Version_76e6ee0.png \"Technical Information Dialog: Support Assistant Settings\")\n\n    > ### Note:  \n    > When you choose a custom location, keep in mind that the URL should match the protocol of the application. For example, if the application is HTTP, the location should also be HTTP. If it is HTTPS, the location should be HTTPS. The URL should also end in `sap/ui/support/`.\n\n    -   Under *Options* you can select if the Support Assistant should be opened in a separate window.\n\n        > ### Note:  \n        > Additional window popups may be blocked by your browser settings.\n\n\n4.  Select *Activate Support Assistant*.\n\n    Your application will reload and the Support Assistant will start.\n\n    In the following diagram, you can see how the different SAPUI5 versions interact with the Support Assistant.\n\n      \n      \n    **Support Assistant - Multi-Version Support**\n\n    ![](images/Support_Assistant_Code_Injection_f976dcd.png \"Support Assistant - Multi-Version Support\")\n\n\n\n\n<a name=\"loio473201b547734e0eb66612df5bae8553__result_lcv_jxc_sz\"/>\n\n## Results\n\nYou are now able to run the Support Assistant on the version that you selected.\n\n> ### Note:  \n> Rules with a higher `minVersion` than the one currently loaded are not checked.\n\n> ### Remember:  \n> These settings are stored in your local storage \\(if selected\\) and are reused on consecutive runs.\n\n**Related Information**  \n\n\n[Technical Information Dialog](technical-information-dialog-616a3ef.md#loio616a3ef07f554e20a3adf749c11f64e9 \"The Technical Information dialog shows details of the SAPUI5 version currently being used in an app built with SAPUI5. You can use the Technical Information dialog to enable debug resources and open additional support tools to debug your app.\")\n\n",
+  "excerpt": "<!-- loio473201b547734e0eb66612df5bae8553 --> <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/sap-icons.css\"/> Running the Support Assistant on an Older SAPUI5 Version In some cases you may want t...",
+  "wordCount": 359,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

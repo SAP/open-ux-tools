@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-04-essentials-xml-view-91f2928-md",
+  "title": "XML View",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/xml-view-91f2928.md",
+  "lastModified": "2025-09-01T18:17:10.556Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "XML",
+    "View"
+  ],
+  "headers": [
+    "XML View"
+  ],
+  "content": "<!-- loio91f292806f4d1014b6dd926db0e91070 -->\n\n# XML View\n\nThe XML view type is defined in an XML file, with a file name ending in `.view.xml`. The file name and the folder structure together specify the name of the view that equals the SAPUI5 module name.\n\n> ### Example:  \n> For `resources/sap/hcm/Address.view.xml`, the view name is `sap.hcm.Address`. The application uses this view name for displaying an instance of this view. If you define the XML view by means of an XML string, no file or define/require is needed.\n> \n> The file looks as follows:\n> \n> ```xml\n> \n> <mvc:View controllerName=\"module:sap/hcm/Address\" xmlns=\"sap.m\" xmlns:mvc=\"sap.ui.core.mvc\">\n>    <Panel>\n>       <Image src=\"http://www.sap.com/global/ui/images/global/sap-logo.png\"/>\n>       <Button text=\"Press Me!\"/>\n>    </Panel>\n> </mvc:View>\n> ```\n\nNest the XML tags analogous to the nesting sequence of SAPUI5 controls and add the property values as attributes \\(see [Namespaces in XML Views](namespaces-in-xml-views-2421a2c.md)\\).\n\nEach control or element is represented by an XML tag with the name of the control. If you, for example, want to create an instance of a `sap.m.Button`, you use the `<Button>` tag with the `sap.m` namespace.\n\nYou can create a context binding for the control by using the `binding` attribute. For more information, see [Context Binding \\(Element Binding\\)](context-binding-element-binding-91f05e8.md).\n\nYou can refer to a style class for the control by using the `class` attribute.For more information, see [Using CSS Style Sheets in XML Views \\(deprecated\\)](using-css-style-sheets-in-xml-views-deprecated-b564935.md).\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.core.mvc.XMLView`](https://ui5.sap.com/#/api/sap.ui/methods/sap.ui.core.mvc.XMLView.create)\n\n",
+  "excerpt": "<!-- loio91f292806f4d1014b6dd926db0e91070 --> XML View The XML view type is defined in an XML file, with a file name ending in .view.xml. The file name and the folder structure together specify the na...",
+  "wordCount": 231,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

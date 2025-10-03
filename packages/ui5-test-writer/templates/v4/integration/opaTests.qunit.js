@@ -1,24 +1,29 @@
-sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        '<%- appPath %>/test/integration/<%- opaJourneyFileName %>',
-<%- pages.map((page) => {return "\t\t'" + page.appPath + '/test/integration/pages/' + page.targetKey + "'";}).join(',\n')%>
-    ],
-    function(JourneyRunner, opaJourney, <%- pages.map(function(page) {return page.targetKey;}).join(', ')%>) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start <%- htmlTarget %> in web folder
-            launchUrl: sap.ui.require.toUrl('<%- appPath %>') + '/<%- htmlTarget %>'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-<%- pages.map((page) => {return '\t\t\t\t\tonThe' + page.targetKey + ': ' + page.targetKey}).join(',\n')%>
-                }
-            },
-            opaJourney.run
-        );
+sap.ui.loader.config({
+    shim: {
+        "sap/ui/qunit/qunit-junit": {
+            deps: ["sap/ui/thirdparty/qunit-2"]
+        },
+        "sap/ui/qunit/qunit-coverage": {
+            deps: ["sap/ui/thirdparty/qunit-2"]
+        },
+        "sap/ui/thirdparty/sinon-qunit": {
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon"]
+        },
+        "sap/ui/qunit/sinon-qunit-bridge": {
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon-4"]
+        }
     }
-);
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    "sap/ui/thirdparty/qunit-2",
+    "sap/ui/qunit/qunit-junit",
+    "sap/ui/qunit/qunit-coverage",
+    '<%- appPath %>/test/integration/<%- opaJourneyFileName %>'
+  ], function (QUnit) {
+    "use strict";
+    QUnit.start();
+});

@@ -89,9 +89,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         window['sap-ui-no-preload'] = !this.useOptimized;
         window.requireFn(path.join(__dirname, 'env', 'ui5loader'));
         if (this.testEnvironmentOptions.isV2) {
-            const scriptTag = window.document.createElement('script');
-            scriptTag.setAttribute('src', './ui5loader-autoconfig.js');
-            window.document.head.appendChild(scriptTag);
+            window.requireFn(window.jestUI5.resolvePath('ui5loader-autoconfig.js'));
         } else {
             window['sap-ui-config'].excludejquerycompat = true;
             sap.ui.requireSync('ui5loader-autoconfig');
@@ -111,7 +109,6 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             }
         }
         sap.ui.loader.config({ async: true });
-        delete window['sap-ui-config'].resourceRoots;
 
         if (!this.testEnvironmentOptions.isV2) {
             this.core = sap.ui.requireSync('sap/ui/core/Core');
@@ -146,11 +143,25 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
      * @param {boolean} allowCSS Whether to allow the UI5 CSS to be loaded
      */
     overwriteUi5Lib(resolve, allowCSS) {
+        const that = this;
         sap.ui.require(
             ['sap/ui/core/Lib'],
             function (Lib) {
                 const fnInit = Lib.init;
+                const fnLoad = Lib._load;
+                Lib._load = function (mSettings) {
+                    if (that.testEnvironmentOptions.shimManifests) {
+                        const name = typeof mSettings === 'string' ? mSettings : mSettings.name;
+                        that.shimManifestFile(name);
+                    }
+
+                    return fnLoad.call(this, mSettings);
+                };
                 Lib.init = function (mSettings) {
+                    if (that.testEnvironmentOptions.shimManifests) {
+                        that.shimManifestFile(mSettings.name);
+                    }
+
                     mSettings.noLibraryCSS = !allowCSS;
                     return fnInit.call(this, mSettings);
                 };
@@ -159,6 +170,23 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             function (e) {
                 resolve();
             }
+        );
+    }
+
+    /**
+     * Register a shimmed manifest file for the given name.
+     * @param name The name of the library to shim
+     */
+    shimManifestFile(name) {
+        window.jestUI5.mockUrl(
+            name.replaceAll('.', '/') + '/' + 'manifest.json',
+            JSON.stringify({
+                'sap.ui5': {
+                    library: {
+                        css: false
+                    }
+                }
+            })
         );
     }
 

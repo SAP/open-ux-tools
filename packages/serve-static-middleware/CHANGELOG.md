@@ -1,5 +1,11 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.0
+
+### Minor Changes
+
+-   4c69bd0: feat: by default the cache buster part of the URL will be ignored
+
 ## 0.3.0
 
 ### Minor Changes

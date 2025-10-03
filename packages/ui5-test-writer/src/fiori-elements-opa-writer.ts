@@ -325,6 +325,16 @@ export function generateOPAFiles(
             globOptions: { dot: true }
         }
     );
+    // Journey Runner
+    editor.copyTpl(
+        join(rootV4TemplateDirPath, 'integration', 'pages', 'JourneyRunner.js'),
+        join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'),
+        config,
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
 
     return editor;
 }

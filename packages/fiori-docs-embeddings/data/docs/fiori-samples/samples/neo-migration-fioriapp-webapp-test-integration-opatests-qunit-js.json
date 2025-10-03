@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-integration-opatests-qunit-js",
+  "title": "opaTests.qunit",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/test/integration/opaTests.qunit.js",
+  "lastModified": "2025-09-01T18:17:10.810Z",
+  "tags": [
+    "samples",
+    "js",
+    "opaTests",
+    "qunit"
+  ],
+  "headers": [],
+  "content": "# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.md\n\n```javascript\n# opaTests.qunit.js\n\n```javascript\nQUnit.config.autostart=false;sap.ui.getCore().attachInit(function(){\"use strict\";sap.ui.require([\"mycompany/myapp/MyWorklistApp/test/integration/AllJourneys\"],function(){QUnit.start()})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "opaTests.qunit.md javascript opaTests.qunit.md javascript opaTests.qunit.md javascript opaTests.qunit.md javascript opaTests.qunit.js",
+  "wordCount": 38,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-layouts-childentities3-cds",
+  "title": "layouts ChildEntities3",
+  "category": "features",
+  "path": "app/featureShowcase/layouts_ChildEntities3.cds",
+  "lastModified": "2025-09-01T18:17:10.726Z",
+  "tags": [
+    "features",
+    "cds",
+    "layouts",
+    "ChildEntities3"
+  ],
+  "headers": [],
+  "content": "# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts ChildEntities3.md\n\n```cds\n# layouts_ChildEntities3.cds\n\n```cds\nusing service1 as service from '../../srv/service';\n\n/**\n    UI.LineItem\n */\nannotate service1.ChildEntities3 with @(\n    UI.LineItem : [\n        {\n            $Type : 'UI.DataField',\n            Value : field,\n        },\n    ],\n);\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "layouts ChildEntities3.md cds layouts ChildEntities3.md cds layouts ChildEntities3.md cds layouts ChildEntities3.md cds layouts_ChildEntities3.cds",
+  "wordCount": 70,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

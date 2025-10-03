@@ -167,6 +167,33 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "fiori-mcp-server: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "fiori-mcp-server: Launch inspector",
+            "runtimeExecutable": "npx",
+            "runtimeArgs": [
+                "@modelcontextprotocol/inspector",
+                "node",
+                "dist/index.js"
+            ],
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"],
+            "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "eslint-plugin-fiori-tools: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -354,7 +381,7 @@
             "request": "launch",
             "name": "ui-components: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "windows": {

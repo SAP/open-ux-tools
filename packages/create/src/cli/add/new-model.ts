@@ -14,6 +14,7 @@ import { validateAdpProject } from '../../validation/validation';
  */
 export function addNewModelCommand(cmd: Command): void {
     cmd.command('model [path]')
+        .description('Add a new OData service and UI5 model to an existing adaptation project.')
         .option('-s, --simulate', 'simulate only do not write or install')
         .action(async (path, options) => {
             await addNewModel(path, !!options.simulate);

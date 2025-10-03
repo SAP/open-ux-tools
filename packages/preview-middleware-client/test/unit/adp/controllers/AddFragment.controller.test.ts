@@ -20,6 +20,7 @@ import { AddFragmentData } from '../../../../src/adp/add-fragment';
 import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
 import { CommunicationService } from '../../../../src/cpe/communication-service';
 import * as adpUtils from '../../../../src/adp/utils';
+import { showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -174,6 +175,34 @@ describe('AddFragment', () => {
             const lastCall = setPropertySpy.mock.calls[setPropertySpy.mock.calls.length - 1];
             expect(lastCall[0]).toBe('/selectedIndex');
             expect(lastCall[1]).toBe(1);
+        });
+
+        test('should call showInfoCenterMessage with error when getFragments throws', async () => {
+            // Arrange
+            const error = new Error('Fragments fetch failed');
+            // Mock getFragments to throw
+            jest.spyOn(require('../../../../src/adp/api-handler'), 'getFragments').mockRejectedValue(error);
+            jest.spyOn(CommunicationService, 'sendAction');
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment('test', overlays as unknown as UI5Element, {} as any, {
+                title: 'Test Title'
+            });
+
+            // Act
+            await expect(addFragment.buildDialogData()).rejects.toThrow(error);
+
+            // Assert
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Add Fragment Failed',
+                    description: error.message,
+                    type: MessageBarType.error
+                })
+            );
         });
     });
 
@@ -701,6 +730,13 @@ describe('AddFragment', () => {
             });
             expect(CommandFactory.getCommandFor.mock.calls[0][4].selector).toBeUndefined();
             expect(mockSendAction).toHaveBeenCalled();
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Create XML Fragment',
+                    description: 'Note: The `Share.fragment.xml` fragment will be created once you save the change.',
+                    type: MessageBarType.info
+                })
+            );
         });
 
         test('add header field fragment and a change if targetAggregation is items and not a dynamic header', async () => {

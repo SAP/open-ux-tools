@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-integration-pages-shareoptions-dbg-js",
+  "title": "shareOptions dbg",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/test/integration/pages/shareOptions-dbg.js",
+  "lastModified": "2025-09-01T18:17:10.810Z",
+  "tags": [
+    "samples",
+    "js",
+    "shareOptions",
+    "dbg"
+  ],
+  "headers": [],
+  "content": "# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions dbg.md\n\n```javascript\n# shareOptions-dbg.js\n\n```javascript\nsap.ui.define([\n\t\"sap/ui/test/Opa5\",\n\t\"sap/ui/test/actions/Press\",\n\t\"sap/ui/test/matchers/PropertyStrictEquals\"\n], function(Opa5, Press, PropertyStrictEquals) {\n\t\"use strict\";\n\n\treturn {\n\n\t\tcreateActions : function (sViewName) {\n\t\t\treturn {\n\t\t\t\tiPressOnTheShareButton : function () {\n\t\t\t\t\treturn this.waitFor({\n\t\t\t\t\t\tcontrolType : \"sap.m.Button\",\n\t\t\t\t\t\tviewName : sViewName,\n\t\t\t\t\t\tmatchers : new PropertyStrictEquals({\n\t\t\t\t\t\t\tname : \"icon\",\n\t\t\t\t\t\t\tvalue : \"sap-icon://action\"\n\t\t\t\t\t\t}),\n\t\t\t\t\t\tactions : new Press(),\n\t\t\t\t\t\terrorMessage : \"Did not find the share button\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t};\n\t\t},\n\n\t\tcreateAssertions : function (sViewName) {\n\t\t\treturn {\n\n\t\t\t\tiShouldSeeTheShareEmailButton : function () {\n\t\t\t\t\treturn this.waitFor({\n\t\t\t\t\t\tviewName : sViewName,\n\t\t\t\t\t\tid : \"shareEmail-button\",\n\t\t\t\t\t\tmatchers : new PropertyStrictEquals({\n\t\t\t\t\t\t\tname : \"icon\",\n\t\t\t\t\t\t\tvalue : \"sap-icon://email\"\n\t\t\t\t\t\t}),\n\t\t\t\t\t\tsuccess : function () {\n\t\t\t\t\t\t\tOpa5.assert.ok(true, \"The E-Mail button is visible\");\n\t\t\t\t\t\t},\n\t\t\t\t\t\terrorMessage : \"The E-Mail button was not found\"\n\t\t\t\t\t});\n\t\t\t\t}\n\n\t\t\t};\n\n\t\t}\n\n\t};\n\n});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "shareOptions dbg.md javascript shareOptions dbg.md javascript shareOptions dbg.md javascript shareOptions dbg.md javascript shareOptions-dbg.js",
+  "wordCount": 161,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

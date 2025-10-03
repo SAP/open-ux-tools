@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-component-js",
+  "title": "Component",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/Component.js",
+  "lastModified": "2025-09-01T18:17:10.800Z",
+  "tags": [
+    "samples",
+    "js",
+    "Component"
+  ],
+  "headers": [],
+  "content": "# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.md\n\n```javascript\n# Component.js\n\n```javascript\nsap.ui.define([\"sap/ui/core/UIComponent\",\"sap/ui/Device\",\"sap/btp/sapui5/model/models\"],function(e,t,i){\"use strict\";return e.extend(\"sap.btp.sapui5.Component\",{metadata:{manifest:\"json\"},init:function(){e.prototype.init.apply(this,arguments);this.getRouter().initialize();this.setModel(i.createDeviceModel(),\"device\")}})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "Component.md javascript Component.md javascript Component.md javascript Component.md javascript Component.js",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

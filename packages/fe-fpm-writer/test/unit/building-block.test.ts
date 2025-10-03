@@ -6,14 +6,21 @@ import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } fr
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
-import type { BindingContextType } from '../../src/building-block/types';
+import {
+    bindingContextAbsolute,
+    bindingContextRelative,
+    type BindingContextType
+} from '../../src/building-block/types';
+import { i18nNamespaces, translate } from '../../src/i18n';
 
 describe('Building Blocks', () => {
     let fs: Editor;
     let testAppPath: string;
     let testXmlViewContent: string;
+    let testXmlFragmentContent: string;
     const manifestFilePath = 'webapp/manifest.json';
     const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const xmlFragmentFilePath = 'webapp/ext/fragment/custom.fragment.xml';
     const testOutputRoot = join(__dirname, '../test-output/unit/building-block');
 
     beforeAll(() => {
@@ -29,6 +36,14 @@ describe('Building Blocks', () => {
             testXmlViewContent = (
                 await fsPromises.readFile(
                     join('test/unit/sample/building-block/webapp/ext/main/Main.view.xml'),
+                    'utf-8'
+                )
+            ).toLocaleString();
+        }
+        if (!testXmlFragmentContent) {
+            testXmlFragmentContent = (
+                await fsPromises.readFile(
+                    join('test/unit/sample/building-block/webapp/ext/fragment/custom.fragment.xml'),
                     'utf-8'
                 )
             ).toLocaleString();
@@ -768,5 +783,160 @@ describe('Building Blocks', () => {
             fs
         );
         expect(fs.readJSON(join(basePath, manifestFilePath))).toMatchSnapshot();
+    });
+
+    test('generate Page building block with replace target locator set', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block');
+        const pageBlockData = {
+            id: 'testPage',
+            buildingBlockType: BuildingBlockType.Page,
+            title: 'Test Page Title',
+            description: 'Test Page Description'
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: pageBlockData,
+                replace: true
+            },
+            fs
+        );
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block');
+        await writeFilesForDebugging(fs);
+    });
+
+    test('throws error if aggregationPath not found', async () => {
+        const aggregationPath = `/mvc:Test`;
+        const basePath = join(testAppPath, 'generate-page-block-error');
+        const pageBlockData = {
+            id: 'testPage',
+            buildingBlockType: BuildingBlockType.Page,
+            title: 'Test Page Title',
+            description: 'Test Page Description'
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await expect(
+            async () =>
+                await generateBuildingBlock(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: pageBlockData,
+                        replace: true
+                    },
+                    fs
+                )
+        ).rejects.toThrow(`Aggregation control not found /mvc:Test.`);
+    });
+
+    test('generates Rich Text Editor building block with absolute binding context', async () => {
+        const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+        const basePath = join(testAppPath, 'generate-rich-text-editor-block');
+        const richTextEditorData = {
+            id: 'testRichTextEditor',
+            buildingBlockType: BuildingBlockType.RichTextEditor,
+            metaPath: {
+                bindingContextType: bindingContextAbsolute,
+                entitySet: 'testEntitySet'
+            },
+            targetProperty: 'testProperty'
+        };
+
+        fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlFragmentFilePath,
+                aggregationPath,
+                buildingBlockData: richTextEditorData
+            },
+            fs
+        );
+        expect(fs.read(join(basePath, xmlFragmentFilePath))).toMatchSnapshot('generate-rich-text-editor-block');
+        await writeFilesForDebugging(fs);
+    });
+
+    test('throws error for Rich Text Editor building block if UI5 version is below 1.117.0', async () => {
+        const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+        const basePath = join(testAppPath, 'generate-rich-text-editor-block');
+        const richTextEditorData = {
+            id: 'testRichTextEditor',
+            buildingBlockType: BuildingBlockType.RichTextEditor,
+            metaPath: {
+                bindingContextType: bindingContextRelative,
+                entitySet: '_testNavigation'
+            },
+            targetProperty: 'testProperty'
+        };
+
+        fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlFragmentFilePath,
+                aggregationPath,
+                buildingBlockData: richTextEditorData
+            },
+            fs
+        );
+        expect(fs.read(join(basePath, xmlFragmentFilePath))).toMatchSnapshot('generate-rich-text-editor-block');
+        await writeFilesForDebugging(fs);
+    });
+
+    test('generate Rich Text Editor building block with error', async () => {
+        const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+        const basePath = join(testAppPath, 'generate-rich-text-editor-block');
+        const richTextEditorData = {
+            id: 'testRichTextEditor',
+            buildingBlockType: BuildingBlockType.RichTextEditor,
+            metaPath: {
+                bindingContextType: bindingContextAbsolute,
+                entitySet: 'testEntitySet'
+            },
+            targetProperty: 'testProperty'
+        };
+
+        const manifestWithLowerUi5Version = {
+            ...testManifestContent,
+            'sap.ui5': {
+                ...testManifestContent['sap.ui5'],
+                dependencies: {
+                    ...testManifestContent['sap.ui5']?.dependencies,
+                    minUI5Version: '1.116.0'
+                }
+            }
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithLowerUi5Version));
+        fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+        const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
+
+        await expect(
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlFragmentFilePath,
+                    aggregationPath,
+                    buildingBlockData: richTextEditorData
+                },
+                fs
+            )
+        ).rejects.toThrow(
+            `${t('minUi5VersionRequirement', {
+                minUI5Version: manifestWithLowerUi5Version['sap.ui5'].dependencies.minUI5Version
+            })}`
+        );
     });
 });

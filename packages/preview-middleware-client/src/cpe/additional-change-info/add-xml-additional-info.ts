@@ -9,7 +9,9 @@ import {
 import Element from 'sap/ui/core/Element';
 
 export type AddXMLAdditionalInfo = {
-    templateName: string;
+    templateName?: string;
+    targetAggregation?: string;
+    controlType?: string;
 };
 
 export type AddXMLChangeContent = {
@@ -19,9 +21,13 @@ export type AddXMLChangeContent = {
 export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>): AddXMLAdditionalInfo | undefined {
     const selectorId = change.getSelector()?.id ?? '';
     const targetAggregation = change.getContent()?.targetAggregation ?? '';
+    const controlType = getControlById(selectorId)?.getMetadata().getName() ?? '';
     const templateName = getFragmentTemplateName(selectorId, targetAggregation);
     if (templateName) {
         return { templateName };
+    }
+    if (controlType && targetAggregation) {
+        return { targetAggregation, controlType };
     }
     return undefined;
 }
