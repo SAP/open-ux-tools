@@ -5,7 +5,7 @@
         "sysConfirmDesc": "Validates connection to the configured system.",
         "flpConfigName": "SAP Fiori Launchpad Configuration",
         "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Settings",
-        "tileSettingsDescr": "Configure Fiori Launchpad settings - {{projectName}}"
+        "tileSettingsDescr": "Configure SAP Fiori Launchpad settings - {{projectName}}"
     },
     "info": {
         "flpConfigAdded": "SAP Fiori launchpad configuration added."
