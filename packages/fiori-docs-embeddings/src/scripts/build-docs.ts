@@ -910,14 +910,15 @@ class MultiSourceDocumentationBuilder {
             }
         } else if (Array.isArray(apiData)) {
             // Array of API items
-            apiData.forEach((item: ApiSymbol, index: number) => {
+            for (let index = 0; index < apiData.length; index++) {
+                const item: ApiSymbol = apiData[index];
                 documents.push({
                     name: `api-item-${index}.md`,
                     path: `api/item-${index}.md`,
                     content: this.generateApiDocContent(item),
                     download_url: source.url
                 });
-            });
+            }
         } else {
             // Single API object
             documents.push({
@@ -972,11 +973,11 @@ class MultiSourceDocumentationBuilder {
         let content = '';
 
         if (apiItem.name) {
-            content += `# ${apiItem.name}\n\n`;
+            content += `# ${String(apiItem.name)}\n\n`;
         }
 
         if (apiItem.description) {
-            content += `${apiItem.description}\n\n`;
+            content += `${String(apiItem.description)}\n\n`;
         }
 
         return content;
@@ -992,11 +993,11 @@ class MultiSourceDocumentationBuilder {
         let content = '';
 
         if (apiItem.kind) {
-            content += `**Type:** ${apiItem.kind}\n\n`;
+            content += `**Type:** ${String(apiItem.kind)}\n\n`;
         }
 
         if (apiItem.module) {
-            content += `**Module:** ${apiItem.module}\n\n`;
+            content += `**Module:** ${String(apiItem.module)}\n\n`;
         }
 
         return content;
@@ -1016,9 +1017,9 @@ class MultiSourceDocumentationBuilder {
         let content = '## Methods\n\n';
 
         for (const method of apiItem.methods) {
-            content += `### ${method.name}\n`;
+            content += `### ${String(method.name)}\n`;
             if (method.description) {
-                content += `${method.description}\n\n`;
+                content += `${String(method.description)}\n\n`;
             }
         }
 
@@ -1039,9 +1040,9 @@ class MultiSourceDocumentationBuilder {
         let content = '## Properties\n\n';
 
         for (const prop of apiItem.properties) {
-            content += `### ${prop.name}\n`;
+            content += `### ${String(prop.name)}\n`;
             if (prop.description) {
-                content += `${prop.description}\n\n`;
+                content += `${String(prop.description)}\n\n`;
             }
         }
 
