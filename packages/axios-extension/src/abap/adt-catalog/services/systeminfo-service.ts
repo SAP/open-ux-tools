@@ -21,7 +21,7 @@ export class SystemInfoService extends AdtService {
             try {
                 return JSON.parse(response.data);
             } catch (parseError) {
-                this.log.warn(`System info could not be parsed from response.`);
+                this.log.error(`System info could not be parsed from response. Error: ${parseError.message}`);
             }
         } else {
             return response.data;

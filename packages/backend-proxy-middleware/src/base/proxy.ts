@@ -337,42 +337,7 @@ export async function generateProxyMiddlewareOptions(
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
-        const localBackend = backend as LocalBackendConfig;
-        // check if system credentials are stored in the store
-        try {
-            const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-            const system = (await systemStore.read(
-                new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
-            )) ?? {
-                name: '<unknown>',
-                url: localBackend.url,
-                authenticationType: localBackend.authenticationType
-            };
-            // Determine auth type from app config as we may have multiple stored systems with the same url/client using different auth types
-            const authType: AuthenticationType =
-                localBackend.authenticationType ?? (localBackend.scp ? 'oauth2' : 'basic');
-            await enhanceConfigForSystem(
-                proxyOptions,
-                system,
-                authType,
-                (refreshToken?: string, accessToken?: string) => {
-                    if (refreshToken) {
-                        logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
-                    }
-
-                    if (accessToken) {
-                        logger.info('Setting access token');
-                        proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
-                    } else {
-                        logger.warn('Setting of access token failed.');
-                    }
-                }
-            );
-        } catch (error) {
-            logger.warn('Accessing the credentials store failed.');
-            logger.debug(error as object);
-        }
+        await updateVSCodeConfig(backend, logger, proxyOptions);
     }
 
     if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
@@ -403,6 +368,54 @@ export async function generateProxyMiddlewareOptions(
 
     logger.info(`Backend proxy created for ${proxyOptions.target}`);
     return proxyOptions;
+}
+
+/**
+ * Determine the correct authentication configuration for connections from a non-BAS platform.
+ *
+ * @param backend the backend config loaded form the app ui5.yaml
+ * @param logger a logger instance
+ * @param proxyOptions additional proxy header, request and response settings
+ */
+async function updateVSCodeConfig(
+    backend: BackendConfig,
+    logger: ToolsLogger,
+    proxyOptions: Options<IncomingMessage, ServerResponse<IncomingMessage>> & { headers: object }
+) {
+    const localBackend = backend as LocalBackendConfig;
+    // check if system credentials are stored in the store
+    try {
+        const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+        const system = (await systemStore.read(
+            new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
+        )) ?? {
+            name: '<unknown>',
+            url: localBackend.url,
+            authenticationType: localBackend.authenticationType
+        };
+        // Auth type is determined from app config as we may have multiple stored systems with the same url/client using different auth types
+        await enhanceConfigForSystem(
+            proxyOptions,
+            system,
+            localBackend.authenticationType ?? (localBackend.scp ? 'oauth2' : 'basic'),
+            (refreshToken?: string, accessToken?: string) => {
+                if (refreshToken) {
+                    logger.info('Updating refresh token for: ' + localBackend.url);
+                    systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
+                }
+
+                if (accessToken) {
+                    logger.info('Setting access token');
+                    proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
+                } else {
+                    logger.warn('Setting of access token failed.');
+                }
+            }
+        );
+    } catch (error) {
+        logger.warn('Accessing the credentials store failed.');
+        logger.debug(error as object);
+    }
 }
 
 /**
