@@ -156,16 +156,16 @@ class EmbeddingBuilder {
 
         console.log(`✓ Loaded ${this.documents.length} documents from filestore`);
 
-        // Load FPM markdown documents from data_local
-        await this.loadFpmDocuments();
+        // Load local markdown documents from data_local
+        await this.loadLocalDocuments();
     }
 
     /**
-     * Load FPM markdown documents from data_local directory.
+     * Load Local markdown documents from data_local directory.
      * These files use -------------------------------- as chunk delimiters.
      */
-    async loadFpmDocuments(): Promise<void> {
-        console.log('\n📘 Loading FPM documents from data_local...');
+    async loadLocalDocuments(): Promise<void> {
+        console.log('\n📘 Loading local documents from data_local...');
 
         const dataLocalPath = './data_local';
 
@@ -196,7 +196,7 @@ class EmbeddingBuilder {
                             const tagsMatch = trimmedContent.match(/\*\*TAGS\*\*:\s*(.+)/);
                             const tags = tagsMatch
                                 ? tagsMatch[1].split(',').map((tag) => tag.trim())
-                                : ['fpm', 'fiori', 'elements'];
+                                : ['fiori', 'elements'];
 
                             // Determine category from filename (remove .md extension and convert to title case)
                             const category =
@@ -207,7 +207,7 @@ class EmbeddingBuilder {
                                     .join(' ') ?? 'Fiori Elements';
 
                             const doc: Document = {
-                                id: `fpm-${file.replace('.md', '')}-${index}`,
+                                id: `local-${file.replace('.md', '')}-${index}`,
                                 title,
                                 content: trimmedContent,
                                 category,
@@ -223,11 +223,11 @@ class EmbeddingBuilder {
                         }
                     });
                 } catch (error: any) {
-                    console.warn(`Failed to load FPM document ${file}:`, error.message);
+                    console.warn(`Failed to load local document ${file}:`, error.message);
                 }
             }
 
-            console.log(`✓ Loaded FPM documents (total: ${this.documents.length} documents now)`);
+            console.log(`✓ Loaded local documents (total: ${this.documents.length} documents now)`);
         } catch (error: any) {
             console.warn(`Failed to read data_local directory:`, error.message);
         }
