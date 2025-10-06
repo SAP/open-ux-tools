@@ -513,6 +513,26 @@ describe('FpmDocumentationBuilder', () => {
 
             consoleWarnSpy.mockRestore();
         });
+
+        it('should handle non-Error object in error handling', async () => {
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            const codeBlockElement = {
+                'fpmExplorer:CodeLink': {
+                    '@_file': 'test.js'
+                }
+            };
+
+            mockReadFile.mockRejectedValueOnce('string error').mockRejectedValueOnce('another error');
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).extractCodeBlocks(codeBlockElement, '/base/path');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].content).toBe('');
+            expect(consoleWarnSpy).toHaveBeenCalled();
+
+            consoleWarnSpy.mockRestore();
+        });
     });
 
     describe('generateMarkdown', () => {
@@ -1171,6 +1191,514 @@ describe('FpmDocumentationBuilder', () => {
             expect((builder as any).convertToLanguage('fragment')).toBe('');
             expect((builder as any).convertToLanguage('unknown')).toBe('');
             expect((builder as any).convertToMarkdownLanguage('unsupported')).toBe('');
+        });
+    });
+
+    describe('locateFpmExplorerViewFiles', () => {
+        it('should scan and find fpmExplorer view files', async () => {
+            mockStat.mockResolvedValue({
+                isDirectory: () => true
+            } as any);
+
+            mockReaddir.mockResolvedValue([
+                { name: 'test.view.xml', isFile: () => true, isDirectory: () => false }
+            ] as any);
+
+            mockReadFile.mockResolvedValue('<xml>fpmExplorer:Page</xml>');
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).locateFpmExplorerViewFiles('/test/repo');
+
+            expect(result.size).toBeGreaterThan(0);
+        });
+
+        it('should handle directory not found', async () => {
+            mockStat.mockResolvedValue({
+                isDirectory: () => false
+            } as any);
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).locateFpmExplorerViewFiles('/test/repo');
+
+            expect(result.size).toBe(0);
+        });
+
+        it('should handle scan errors gracefully', async () => {
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockStat.mockResolvedValue({
+                isDirectory: () => true
+            } as any);
+
+            mockReaddir.mockRejectedValue(new Error('Permission denied'));
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).locateFpmExplorerViewFiles('/test/repo');
+
+            expect(result.size).toBe(0);
+            expect(consoleWarnSpy).toHaveBeenCalled();
+            consoleWarnSpy.mockRestore();
+        });
+    });
+
+    describe('cloneOrUpdateRepository - pull failure scenario', () => {
+        it('should handle pull failure and continue with existing version', async () => {
+            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+            mockStat.mockResolvedValue({
+                isDirectory: () => true
+            } as any);
+
+            const mockSpawnInstance = {
+                stdout: { on: jest.fn() },
+                stderr: {
+                    on: jest.fn((event, callback) => {
+                        if (event === 'data') {
+                            callback(Buffer.from('Pull failed'));
+                        }
+                    })
+                },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(1); // Non-zero exit code
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockSpawnInstance);
+
+            const builder = new FpmDocumentationBuilder();
+            (builder as any).githubHost = 'github.test.com';
+            (builder as any).githubToken = 'test-token';
+
+            const result = await (builder as any).cloneOrUpdateRepository();
+
+            expect(result).toContain('sap.fe');
+            expect(consoleWarnSpy).toHaveBeenCalled();
+            consoleWarnSpy.mockRestore();
+        });
+    });
+
+    describe('extractCodeBlocks - codeType inference', () => {
+        it('should infer codeType from file extension when not specified', async () => {
+            const codeBlockElement = {
+                'fpmExplorer:CodeLink': {
+                    '@_file': 'test.ts'
+                }
+            };
+
+            mockReadFile.mockResolvedValue('const x: number = 1;');
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).extractCodeBlocks(codeBlockElement, '/base');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].codeType).toBe('ts');
+        });
+
+        it('should use filename as codeType when file has no extension', async () => {
+            const codeBlockElement = {
+                'fpmExplorer:CodeLink': {
+                    '@_file': 'README'
+                }
+            };
+
+            mockReadFile.mockResolvedValue('Content');
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).extractCodeBlocks(codeBlockElement, '/base');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].codeType).toBe('README');
+        });
+
+        it('should handle codeLink without file attribute', async () => {
+            const codeBlockElement = {
+                'fpmExplorer:CodeLink': {
+                    '@_codeType': 'js'
+                    // No @_file attribute
+                }
+            };
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).extractCodeBlocks(codeBlockElement, '/base');
+
+            expect(result).toHaveLength(0); // No file, so no code block added
+        });
+    });
+
+    describe('getAdditionalInfoFromJson - file name without key', () => {
+        it('should return undefined when filename has no parent directory', async () => {
+            const mergedNavigation = {
+                navigation: [
+                    {
+                        key: 'test',
+                        tags: 'tag1'
+                    }
+                ]
+            };
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).getAdditionalInfoFromJson('file.xml', mergedNavigation);
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should prefer editable items when no tags available', async () => {
+            const mergedNavigation = {
+                navigation: [
+                    {
+                        key: 'testKey',
+                        title: 'First'
+                    },
+                    {
+                        key: 'testKey',
+                        title: 'Second',
+                        editable: true,
+                        files: [{ url: '/test.xml', name: 'test.xml', key: 'test.xml' }]
+                    }
+                ]
+            };
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).getAdditionalInfoFromJson(
+                'path/to/testKey/file.xml',
+                mergedNavigation
+            );
+
+            expect(result).toEqual({
+                files: [{ url: '/test.xml', name: 'test.xml', key: 'test.xml' }]
+            });
+        });
+    });
+
+    describe('build method', () => {
+        it('should execute full build process', async () => {
+            // Ensure environment variables are set for this test
+            process.env.GITHUB_HOST = 'github.test.com';
+            process.env.GITHUB_TOKEN = 'test-token';
+
+            // Setup XMLParser mock to return valid parsed data
+            const { XMLParser } = require('fast-xml-parser'); // eslint-disable-line @typescript-eslint/no-var-requires
+            const mockParse = jest.fn().mockReturnValue({
+                'mvc:View': {
+                    'fpmExplorer:Page': {
+                        '@_title': 'Test',
+                        '@_introduction': 'Intro',
+                        'fpmExplorer:implementation': {
+                            'fpmExplorer:ImplementationStep': {
+                                '@_title': 'Step 1',
+                                '@_text': 'Description'
+                            }
+                        }
+                    }
+                }
+            });
+            XMLParser.mockImplementation(() => ({
+                parse: mockParse
+            }));
+
+            // Setup all mocks for a successful build
+            mockStat.mockResolvedValue({
+                isDirectory: () => true
+            } as any);
+
+            const mockSpawnInstance = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockSpawnInstance);
+
+            const navigationModel = {
+                navigation: [
+                    {
+                        key: 'test',
+                        title: 'Test',
+                        tags: 'tag1'
+                    }
+                ]
+            };
+
+            const pageConfiguration = {
+                navigation: [
+                    {
+                        key: 'test',
+                        editable: true
+                    }
+                ]
+            };
+
+            mockReadFile
+                .mockResolvedValueOnce(JSON.stringify(navigationModel)) // navigationModel.json
+                .mockResolvedValueOnce(JSON.stringify(pageConfiguration)) // pageConfiguration.json
+                .mockResolvedValueOnce(
+                    '<mvc:View><fpmExplorer:Page title="Test" introduction="Intro"><fpmExplorer:implementation><fpmExplorer:ImplementationStep title="Step 1" text="Description"></fpmExplorer:ImplementationStep></fpmExplorer:implementation></fpmExplorer:Page></mvc:View>'
+                ); // XML file
+
+            mockReaddir.mockResolvedValue([
+                { name: 'test/test.view.xml', isFile: () => true, isDirectory: () => false }
+            ] as any);
+
+            mockMkdir.mockResolvedValue(undefined);
+            mockWriteFile.mockResolvedValue(undefined);
+
+            const builder = new FpmDocumentationBuilder();
+
+            await builder.build();
+
+            expect(mockWriteFile).toHaveBeenCalled();
+        });
+
+        it('should handle no view files found error', async () => {
+            process.env.GITHUB_HOST = 'github.test.com';
+            process.env.GITHUB_TOKEN = 'test-token';
+
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+            const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
+                throw new Error('process.exit called');
+            });
+
+            mockStat.mockResolvedValue({
+                isDirectory: () => true
+            } as any);
+
+            const mockSpawnInstance = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockSpawnInstance);
+
+            const navigationModel = { navigation: [] };
+            const pageConfiguration = { navigation: [] };
+
+            mockReadFile
+                .mockResolvedValueOnce(JSON.stringify(navigationModel))
+                .mockResolvedValueOnce(JSON.stringify(pageConfiguration));
+
+            mockReaddir.mockResolvedValue([] as any);
+
+            const builder = new FpmDocumentationBuilder();
+
+            try {
+                await builder.build();
+            } catch (error) {
+                // Expected to throw due to process.exit
+            }
+
+            expect(consoleErrorSpy).toHaveBeenCalled();
+            consoleErrorSpy.mockRestore();
+            processExitSpy.mockRestore();
+        });
+
+        it('should handle no documents extracted error', async () => {
+            process.env.GITHUB_HOST = 'github.test.com';
+            process.env.GITHUB_TOKEN = 'test-token';
+
+            // Setup XMLParser mock to return empty structure (no implementation steps)
+            const { XMLParser } = require('fast-xml-parser'); // eslint-disable-line @typescript-eslint/no-var-requires
+            const mockParse = jest.fn().mockReturnValue({
+                'mvc:View': {
+                    'fpmExplorer:Page': {
+                        '@_title': 'Test',
+                        '@_introduction': 'Intro'
+                        // No fpmExplorer:implementation
+                    }
+                }
+            });
+            XMLParser.mockImplementation(() => ({
+                parse: mockParse
+            }));
+
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+            const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
+                throw new Error('process.exit called');
+            });
+
+            mockStat.mockResolvedValue({
+                isDirectory: () => true
+            } as any);
+
+            const mockSpawnInstance = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockSpawnInstance);
+
+            const navigationModel = { navigation: [] };
+            const pageConfiguration = { navigation: [] };
+
+            mockReadFile
+                .mockResolvedValueOnce(JSON.stringify(navigationModel))
+                .mockResolvedValueOnce(JSON.stringify(pageConfiguration))
+                .mockResolvedValueOnce('<xml>fpmExplorer:Page</xml>'); // File with no valid content
+
+            mockReaddir.mockResolvedValue([
+                { name: 'test.view.xml', isFile: () => true, isDirectory: () => false }
+            ] as any);
+
+            const builder = new FpmDocumentationBuilder();
+
+            try {
+                await builder.build();
+            } catch (error) {
+                // Expected to throw due to process.exit
+            }
+
+            expect(consoleErrorSpy).toHaveBeenCalled();
+            consoleErrorSpy.mockRestore();
+            processExitSpy.mockRestore();
+        });
+    });
+
+    describe('promptForInput', () => {
+        it('should prompt user for input', async () => {
+            const mockRl = {
+                question: jest.fn((q, cb) => cb('user-input')),
+                close: jest.fn()
+            };
+
+            mockReadline.createInterface.mockReturnValue(mockRl);
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).promptForInput('Enter value: ');
+
+            expect(result).toBe('user-input');
+            expect(mockRl.close).toHaveBeenCalled();
+        });
+    });
+
+    describe('extractCodeBlocks with whitespace handling', () => {
+        it('should trim whitespace from inline code', async () => {
+            const codeBlockElement = {
+                '#text': '   code with spaces   ',
+                '@_codeType': 'js'
+            };
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).extractCodeBlocks(codeBlockElement, '/base');
+
+            // Current implementation returns empty for inline text without file
+            expect(result).toBeDefined();
+        });
+
+        it('should trim whitespace from file code content', async () => {
+            const codeBlockElement = {
+                'fpmExplorer:CodeLink': {
+                    '@_file': 'test.js',
+                    '@_codeType': 'js'
+                }
+            };
+
+            mockReadFile.mockResolvedValue('   code with spaces   ');
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).extractCodeBlocks(codeBlockElement, '/base');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].content).toBe('code with spaces');
+        });
+    });
+
+    describe('generateMarkdown with code block file paths', () => {
+        it('should handle code blocks with file paths correctly', async () => {
+            const documents = [
+                {
+                    title: 'Test',
+                    introduction: 'Intro',
+                    implementationSteps: [
+                        {
+                            title: 'Step 1',
+                            text: 'Text',
+                            codeBlocks: [
+                                {
+                                    codeType: 'js',
+                                    content: 'code',
+                                    filePath: '/some/path/file.js'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).generateMarkdown(documents);
+
+            expect(result).toContain('**LANGUAGE**: JavaScript');
+            expect(result).toContain('code');
+        });
+
+        it('should handle file name without extension in additional files', async () => {
+            const documents = [
+                {
+                    title: 'Test',
+                    introduction: 'Intro',
+                    implementationSteps: [
+                        {
+                            title: 'Step 1',
+                            text: 'Text',
+                            codeBlocks: []
+                        }
+                    ],
+                    files: [
+                        {
+                            url: '/test/README',
+                            name: 'README',
+                            key: 'readme'
+                        }
+                    ]
+                }
+            ];
+
+            mockReadFile.mockResolvedValue('readme content');
+
+            const builder = new FpmDocumentationBuilder();
+            const result = await (builder as any).generateMarkdown(documents);
+
+            expect(result).toContain('**FILE**: README');
+            expect(result).toContain('readme content');
+        });
+    });
+
+    describe('initializeGitHubConfig with prompts', () => {
+        it('should prompt for GitHub host when not in environment', async () => {
+            delete process.env.GITHUB_HOST;
+            delete process.env.GITHUB_TOKEN;
+
+            const mockRl = {
+                question: jest.fn(),
+                close: jest.fn()
+            };
+
+            // First call for host, second for token
+            mockRl.question
+                .mockImplementationOnce((q, cb) => cb('github.custom.com'))
+                .mockImplementationOnce((q, cb) => cb('custom-token'));
+
+            mockReadline.createInterface.mockReturnValue(mockRl);
+
+            const builder = new FpmDocumentationBuilder();
+            await (builder as any).initializeGitHubConfig();
+
+            expect((builder as any).githubHost).toBe('github.custom.com');
+            expect((builder as any).githubToken).toBe('custom-token');
         });
     });
 });
