@@ -1,7 +1,7 @@
 import type { AxiosResponse, CustomParamsSerializer } from 'axios';
 import { Axios } from 'axios';
-import { readFileSync } from 'fs';
-import { URLSearchParams } from 'url';
+import { readFileSync } from 'node:fs';
+import { URLSearchParams } from 'node:url';
 import type { Logger } from '@sap-ux/logger';
 import { LogLevel } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';

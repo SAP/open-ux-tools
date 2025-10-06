@@ -1,6 +1,6 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { getWebappPath, FileName } from '@sap-ux/project-access';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';

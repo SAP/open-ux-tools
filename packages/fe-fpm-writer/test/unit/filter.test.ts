@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
 import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';

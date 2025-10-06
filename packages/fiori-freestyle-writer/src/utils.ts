@@ -1,4 +1,4 @@
-import { sep } from 'path';
+import { sep } from 'node:path';
 import type { FreestyleApp } from './types';
 import { TemplateType } from './types';
 import { gte } from 'semver';

@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 const mockPipeline = jest.fn();
 const mockConnect = jest.fn();

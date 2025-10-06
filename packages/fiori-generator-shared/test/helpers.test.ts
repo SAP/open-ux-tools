@@ -1,6 +1,6 @@
-import { join } from 'path';
-import os from 'os';
-import fs from 'fs';
+import { join } from 'node:path';
+import os from 'node:os';
+import fs from 'node:fs';
 import { getBootstrapResourceUrls } from '../src/index';
 import {
     YEOMANUI_TARGET_FOLDER_CONFIG_PROP,

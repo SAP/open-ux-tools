@@ -10,8 +10,8 @@ import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
-import os from 'os';
-import { join } from 'path';
+import os from 'node:os';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {

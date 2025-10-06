@@ -1,5 +1,5 @@
 import nock from 'nock';
-import fs from 'fs';
+import fs from 'node:fs';
 import type { Message } from '../../src/abap/lrep-service';
 import type { AdaptationConfig } from '../../src';
 import { LayeredRepositoryService, createForAbap } from '../../src';

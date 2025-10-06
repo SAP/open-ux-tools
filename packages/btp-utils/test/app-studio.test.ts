@@ -1,5 +1,5 @@
 import nock from 'nock';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Destination, ServiceInfo } from '../src';
 import {
     getAppStudioProxyURL,

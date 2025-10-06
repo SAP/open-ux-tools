@@ -4,8 +4,8 @@ import ui5Task from '../../../src/ui5';
 import { task } from '../../../src';
 import { mockedUi5RepoService } from '../../__mocks__';
 import { config } from 'dotenv';
-import { readdirSync } from 'fs';
-import { join } from 'path';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 jest.mock('dotenv');
 

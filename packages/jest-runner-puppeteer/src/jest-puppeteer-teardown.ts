@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import rimraf from 'rimraf';
-import os from 'os';
-import path from 'path';
+import os from 'node:os';
+import path from 'node:path';
 
 const globalAny: any = global;
 

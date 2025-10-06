@@ -2,7 +2,7 @@ export const hasNaNOrUndefined = (value: undefined | number): boolean => {
     if (value === undefined) {
         return true;
     }
-    return isNaN(value);
+    return Number.isNaN(value);
 };
 export const isDefined = <T>(value: T | undefined): value is T => {
     return value !== undefined;
