@@ -9,15 +9,14 @@ import {
 } from '../../../../src/cf/utils/validation';
 import { initI18n, t } from '../../../../src/i18n';
 import { ApplicationType, type CfCredentials, type XsApp } from '../../../../src/types';
-import { getApplicationType, isSupportedAppTypeForAdp } from '../../../../src/source/manifest';
+import { getApplicationType } from '../../../../src/source/manifest';
 
 jest.mock('../../../../src/source/manifest', () => ({
-    getApplicationType: jest.fn(),
-    isSupportedAppTypeForAdp: jest.fn()
+    ...jest.requireActual('../../../../src/source/manifest'),
+    getApplicationType: jest.fn()
 }));
 
 const mockGetApplicationType = getApplicationType as jest.MockedFunction<typeof getApplicationType>;
-const mockIsSupportedAppTypeForAdp = isSupportedAppTypeForAdp as jest.MockedFunction<typeof isSupportedAppTypeForAdp>;
 
 describe('CF Utils Validation', () => {
     beforeAll(async () => {
@@ -40,11 +39,9 @@ describe('CF Utils Validation', () => {
             } as unknown as Manifest;
 
             mockGetApplicationType.mockReturnValue(ApplicationType.FIORI_ELEMENTS);
-            mockIsSupportedAppTypeForAdp.mockReturnValue(true);
 
             await expect(validateSmartTemplateApplication(manifest)).resolves.not.toThrow();
             expect(mockGetApplicationType).toHaveBeenCalledWith(manifest);
-            expect(mockIsSupportedAppTypeForAdp).toHaveBeenCalledWith(ApplicationType.FIORI_ELEMENTS);
         });
 
         test('should not throw when application type is supported and flex is not explicitly disabled', async () => {
@@ -55,7 +52,6 @@ describe('CF Utils Validation', () => {
             } as unknown as Manifest;
 
             mockGetApplicationType.mockReturnValue(ApplicationType.FREE_STYLE);
-            mockIsSupportedAppTypeForAdp.mockReturnValue(true);
 
             await expect(validateSmartTemplateApplication(manifest)).resolves.not.toThrow();
         });
@@ -68,7 +64,6 @@ describe('CF Utils Validation', () => {
             } as unknown as Manifest;
 
             mockGetApplicationType.mockReturnValue(ApplicationType.NONE);
-            mockIsSupportedAppTypeForAdp.mockReturnValue(false);
 
             await expect(validateSmartTemplateApplication(manifest)).rejects.toThrow(
                 t('error.adpDoesNotSupportSelectedApplication')
@@ -98,7 +93,6 @@ describe('CF Utils Validation', () => {
             } as unknown as Manifest;
 
             mockGetApplicationType.mockReturnValue(ApplicationType.FIORI_ELEMENTS);
-            mockIsSupportedAppTypeForAdp.mockReturnValue(true);
 
             await expect(validateSmartTemplateApplication(manifest)).rejects.toThrow(
                 t('error.appDoesNotSupportFlexibility')
