@@ -249,7 +249,9 @@ export default class extends Generator {
 
         await this._determineTargetEnv();
 
-        if (!this.isCfEnv) {
+        if (this.isCfEnv) {
+            await this._promptForCfEnvironment();
+        } else {
             const isExtensibilityExtInstalled = isExtensionInstalled(this.vscode, 'SAP.vscode-bas-extensibility');
             const configQuestions = this.prompter.getPrompts({
                 appValidationCli: { hide: !this.isCli },
@@ -316,8 +318,6 @@ export default class extends Generator {
                     this.appWizard
                 );
             }
-        } else {
-            await this._promptForCfEnvironment();
         }
     }
 
@@ -428,13 +428,13 @@ export default class extends Generator {
      * Prompts the user for the CF project path.
      */
     private async _promptForCfProjectPath(): Promise<void> {
-        if (!this.isMtaYamlFound) {
-            const pathAnswers = await this.prompt([getProjectPathPrompt(this.logger, this.vscode)]);
-            const path = this.destinationRoot(fs.realpathSync(pathAnswers.projectLocation, 'utf-8'));
-            this.logger.log(`Project path information: ${path}`);
-        } else {
+        if (this.isMtaYamlFound) {
             const path = this.destinationRoot(process.cwd());
             getYamlContent(join(path, 'mta.yaml'));
+            this.logger.log(`Project path information: ${path}`);
+        } else {
+            const pathAnswers = await this.prompt([getProjectPathPrompt(this.logger, this.vscode)]);
+            const path = this.destinationRoot(fs.realpathSync(pathAnswers.projectLocation, 'utf-8'));
             this.logger.log(`Project path information: ${path}`);
         }
     }
