@@ -270,7 +270,8 @@ export async function writeCfTemplates(
         html5RepoRuntime: cf.html5RepoRuntimeGuid,
         org: cf.org.GUID,
         space: cf.space.GUID,
-        sapCloudService: cf.businessSolutionName ?? ''
+        sapCloudService: cf.businessSolutionName ?? '',
+        instanceName: cf.businessService
     });
 
     fs.writeJSON(join(project.folder, '.adp/config.json'), getCfAdpConfig(config));

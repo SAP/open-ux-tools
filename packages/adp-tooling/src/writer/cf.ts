@@ -29,7 +29,7 @@ export async function generateCf(
         fs = create(createStorage());
     }
 
-    const fullConfig = setDefaultsCF(config);
+    const fullConfig = setDefaults(config);
     const { app, cf, ui5 } = fullConfig;
 
     await adjustMtaYaml(
@@ -63,7 +63,7 @@ export async function generateCf(
  * @param {CfAdpWriterConfig} config - The CF configuration provided by the calling middleware.
  * @returns {CfAdpWriterConfig} The enhanced configuration with default values.
  */
-function setDefaultsCF(config: CfAdpWriterConfig): CfAdpWriterConfig {
+function setDefaults(config: CfAdpWriterConfig): CfAdpWriterConfig {
     const configWithDefaults: CfAdpWriterConfig = {
         ...config,
         app: {

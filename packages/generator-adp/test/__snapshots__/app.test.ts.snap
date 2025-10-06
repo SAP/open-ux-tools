@@ -217,7 +217,7 @@ builder:
         space: space-guid
         html5RepoRuntime: test-guid
         sapCloudService: test-solution
-"
+        serviceInstanceName: test-service"
 `;
 
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 4`] = `
@@ -253,7 +253,7 @@ modules:
               ServiceKeyName: mta-project-html_repo_host-key
               sap.cloud.service: test-solution
             - Name: test-solution-uaa-mta-project
-              ServiceInstanceName: mta-project-xsuaa
+              ServiceInstanceName: mta-project_1234567890-xsuaa
               ServiceKeyName: mta-project_uaa-key
               Authentication: OAuth2UserTokenExchange
               sap.cloud.service: test-solution

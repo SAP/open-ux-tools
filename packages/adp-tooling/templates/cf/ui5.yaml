@@ -16,3 +16,4 @@ builder:
         space: <%= space %>
         html5RepoRuntime: <%= html5RepoRuntime %>
         sapCloudService: <%= sapCloudService %>
+        serviceInstanceName: <%= instanceName %>
