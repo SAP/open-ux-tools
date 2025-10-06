@@ -1,5 +1,39 @@
 # @sap-ux/create
 
+## 0.13.124
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.24
+    -   @sap-ux/abap-deploy-config-writer@0.2.19
+    -   @sap-ux/adp-tooling@0.15.32
+    -   @sap-ux/app-config-writer@0.6.41
+    -   @sap-ux/mockserver-config-writer@0.9.19
+    -   @sap-ux/odata-service-writer@0.27.23
+    -   @sap-ux/project-access@1.32.2
+    -   @sap-ux/flp-config-inquirer@0.4.28
+    -   @sap-ux/preview-middleware@0.23.16
+    -   @sap-ux/cap-config-writer@0.12.10
+    -   @sap-ux/system-access@0.6.18
+
+## 0.13.123
+
+### Patch Changes
+
+-   4b0b8fb: fix: Missing build script for ADP onPremise projects leads to error during deployment
+-   Updated dependencies [4b0b8fb]
+    -   @sap-ux/abap-deploy-config-writer@0.2.18
+
+## 0.13.122
+
+### Patch Changes
+
+-   Updated dependencies [a22b24e]
+    -   @sap-ux/preview-middleware@0.23.15
+    -   @sap-ux/app-config-writer@0.6.40
+
 ## 0.13.121
 
 ### Patch Changes

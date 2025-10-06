@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.6
+
+### Patch Changes
+
+-   d866995: fix: pathReplace not taken into account or truncated in case of nested router instances
+
 ## 0.29.5
 
 ### Patch Changes

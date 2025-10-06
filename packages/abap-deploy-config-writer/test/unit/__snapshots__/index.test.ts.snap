@@ -219,9 +219,9 @@ Object {
         \\"start\\": \\"start script\\",
         \\"build\\": \\"build script\\",
         \\"test\\": \\"test script\\",
-        \\"deploy\\": \\"fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"fiori undeploy --config ui5-deploy.yaml\\",
-        \\"deploy-test\\": \\"fiori deploy --config ui5-deploy.yaml --testMode true\\"
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     },
     \\"devDependencies\\": {
         \\"rimraf\\": \\"^5.0.5\\"
@@ -345,7 +345,7 @@ Object {
         \\"build\\": \\"build script\\",
         \\"test\\": \\"test script\\",
         \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
-        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     },
     \\"devDependencies\\": {

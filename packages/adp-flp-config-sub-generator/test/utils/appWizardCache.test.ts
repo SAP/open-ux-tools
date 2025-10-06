@@ -33,7 +33,7 @@ describe('appWizardCache', () => {
 
             initAppWizardCache(logger, appWizard);
 
-            expect(appWizard[ADP_FLP_CONFIG_CACHE]).toEqual({});
+            expect(appWizard[ADP_FLP_CONFIG_CACHE]).toEqual({ credentialsPrompted: false });
             expect(logger.debug).toHaveBeenCalledWith('AppWizard based cache initialized.');
         });
 

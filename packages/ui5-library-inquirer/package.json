@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-inquirer",
     "description": "Prompts module that can provide prompts for UI5 library writer",
-    "version": "0.4.48",
+    "version": "0.5.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -32,6 +32,7 @@
     ],
     "dependencies": {
         "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "i18next": "25.3.0",

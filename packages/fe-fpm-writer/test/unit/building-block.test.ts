@@ -848,12 +848,7 @@ describe('Building Blocks', () => {
                 bindingContextType: bindingContextAbsolute,
                 entitySet: 'testEntitySet'
             },
-            targetProperty: 'testProperty',
-            buttonGroup: {
-                buttons: 'bold,italic,underline',
-                name: 'font-style',
-                visible: true
-            }
+            targetProperty: 'testProperty'
         };
 
         fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
@@ -882,15 +877,7 @@ describe('Building Blocks', () => {
                 bindingContextType: bindingContextRelative,
                 entitySet: '_testNavigation'
             },
-            targetProperty: 'testProperty',
-            buttonGroup: {
-                buttons: 'bold,italic,underline',
-                name: 'font-style',
-                visible: true,
-                customToolbarPriority: 10,
-                priority: 2,
-                row: 1
-            }
+            targetProperty: 'testProperty'
         };
 
         fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
@@ -919,12 +906,7 @@ describe('Building Blocks', () => {
                 bindingContextType: bindingContextAbsolute,
                 entitySet: 'testEntitySet'
             },
-            targetProperty: 'testProperty',
-            buttonGroup: {
-                buttons: 'bold,italic,underline',
-                name: 'font-style',
-                visible: true
-            }
+            targetProperty: 'testProperty'
         };
 
         const manifestWithLowerUi5Version = {
