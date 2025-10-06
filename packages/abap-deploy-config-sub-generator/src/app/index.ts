@@ -56,6 +56,7 @@ export default class extends DeploymentGenerator {
     private configExists: boolean;
     private answers: AbapDeployConfigAnswersInternal;
     private projectType: DeployProjectType;
+    private isAdp: boolean;
 
     /**
      * Constructor for the ABAP deploy config generator.
@@ -174,24 +175,24 @@ export default class extends DeploymentGenerator {
         }
         if (!this.launchDeployConfigAsSubGenerator) {
             const appType = await getAppType(this.destinationPath());
-            const isAdp = appType === 'Fiori Adaptation';
+            this.isAdp = appType === 'Fiori Adaptation';
             const packageAdditionalValidation = {
-                shouldValidatePackageForStartingPrefix: isAdp,
-                shouldValidatePackageType: isAdp,
-                shouldValidateFormatAndSpecialCharacters: isAdp
+                shouldValidatePackageForStartingPrefix: this.isAdp,
+                shouldValidatePackageType: this.isAdp,
+                shouldValidateFormatAndSpecialCharacters: this.isAdp
             };
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: isAdp },
-                transportInputChoice: { hideIfOnPremise: isAdp },
+                ui5AbapRepo: { hideIfOnPremise: this.isAdp },
+                transportInputChoice: { hideIfOnPremise: this.isAdp },
                 packageAutocomplete: {
                     additionalValidation: packageAdditionalValidation
                 },
                 packageManual: {
                     additionalValidation: packageAdditionalValidation
                 },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: isAdp } }
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp } }
             };
-            const indexGenerationAllowed = this.indexGenerationAllowed && !isAdp;
+            const indexGenerationAllowed = this.indexGenerationAllowed && !this.isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
@@ -311,7 +312,8 @@ export default class extends DeploymentGenerator {
             } as AbapDeployConfig,
             {
                 baseFile: this.options.base,
-                deployFile: this.options.config
+                deployFile: this.options.config,
+                addBuildToUndeployScript: !this.isAdp
             },
             this.fs
         );

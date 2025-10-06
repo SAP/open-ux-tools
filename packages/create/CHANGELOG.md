@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.13.123
+
+### Patch Changes
+
+-   4b0b8fb: fix: Missing build script for ADP onPremise projects leads to error during deployment
+-   Updated dependencies [4b0b8fb]
+    -   @sap-ux/abap-deploy-config-writer@0.2.18
+
 ## 0.13.122
 
 ### Patch Changes
