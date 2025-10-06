@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { relative } from 'node:path';
 import type { I18nBundle } from '../../../src/types';
 export { getInput, getAst, getAllNormalizeFolderPath, getBase, getFileContent, getToken } from './setup';
 

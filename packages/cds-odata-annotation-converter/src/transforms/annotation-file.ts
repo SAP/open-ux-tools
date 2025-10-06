@@ -347,7 +347,7 @@ function convertTargetAnnotations(
             // TODO: clean this up
             if (pointer) {
                 const [innerIndex, ...rest] = pointer.split('/').slice(1);
-                const adjustedTermIndex = acc.length + parseInt(innerIndex, 10);
+                const adjustedTermIndex = acc.length + Number.parseInt(innerIndex, 10);
                 returnValue.pointer = ['', 'targets', targetIndex, 'terms', adjustedTermIndex, ...rest].join('/');
                 // if there is no pointer, then node range is meaningless
                 returnValue.nodeRange = nodeRange;

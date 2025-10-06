@@ -3,7 +3,7 @@ import { test } from '../../fixture';
 import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, readChanges } from './test-utils';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
 import { lt, satisfies } from 'semver';
-import { join } from 'path';
+import { join } from 'node:path';
 import { readdir } from 'fs/promises';
 
 test.use({

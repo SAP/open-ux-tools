@@ -38,8 +38,8 @@ import type {
 import { ApiError, ApiErrorCode } from './error';
 import { pathFromUri } from './utils';
 import { ChangeConverter } from './change-converter';
-import { join } from 'path';
-import { pathToFileURL } from 'url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { logger } from './logger';
 
 export interface FioriAnnotationServiceConstructor<T> {

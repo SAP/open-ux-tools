@@ -2,8 +2,8 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { UI5Config } from '@sap-ux/ui5-config';
 import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yaml from 'yaml';
 
 /**

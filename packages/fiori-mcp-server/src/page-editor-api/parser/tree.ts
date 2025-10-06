@@ -152,7 +152,7 @@ export function getGenericBase(
  * @returns Is nummber value.
  */
 const isNumber = (value: number): boolean => {
-    return !isNaN(value) && !isNaN(value - 0);
+    return !Number.isNaN(value) && !Number.isNaN(value - 0);
 };
 
 /**

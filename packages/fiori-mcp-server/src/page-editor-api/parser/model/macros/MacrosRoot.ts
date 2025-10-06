@@ -1,6 +1,6 @@
 import type { JSONSchema4 } from 'json-schema';
 import i18next from 'i18next';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ObjectAggregation } from '../ObjectAggregation';
 import type { PageEditAggregationData } from '../ObjectAggregation';
 import { ANNOTATION_CREATION_FORM, AggregationCreationForm } from '../types';

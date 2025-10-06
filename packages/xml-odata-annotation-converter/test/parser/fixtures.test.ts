@@ -1,6 +1,6 @@
-import os from 'os';
+import os from 'node:os';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 import { buildAst } from '@xml-tools/ast';
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';

@@ -1,5 +1,5 @@
-import { promises } from 'fs';
-import { join, dirname } from 'path';
+import { promises } from 'node:fs';
+import { join, dirname } from 'node:path';
 import { getAllNormalizeFolderPath, serialize, getBase, getFileContent } from '.';
 import { FileFormat } from '../../../src/parser/types';
 import { FileExtension } from './types';

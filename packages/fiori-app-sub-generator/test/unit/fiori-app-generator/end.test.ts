@@ -11,7 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('../../../src/utils', () => ({
     ...jest.requireActual('../../../src/utils'),

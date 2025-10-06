@@ -1,11 +1,11 @@
 import hasbin from 'hasbin';
 import CFGenerator from '../src/app';
 import yeomanTest from 'yeoman-test';
-import { join } from 'path';
+import { join } from 'node:path';
 import { TestFixture } from './fixtures';
 import { initI18n, t } from '../src/utils';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import type * as fs from 'fs';
+import type * as fs from 'node:fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';

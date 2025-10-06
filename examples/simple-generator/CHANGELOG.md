@@ -1,5 +1,17 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.85
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-freestyle-writer@2.4.48
+    -   @sap-ux/fiori-elements-writer@2.7.16
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/btp-utils@1.1.4
+
 ## 1.1.84
 
 ### Patch Changes

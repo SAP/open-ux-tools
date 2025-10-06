@@ -3,7 +3,7 @@
 import { pipeline } from '@xenova/transformers';
 import { connect } from '@lancedb/lancedb';
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as path from 'node:path';
 
 interface EmbeddingConfig {
     docsPath: string;

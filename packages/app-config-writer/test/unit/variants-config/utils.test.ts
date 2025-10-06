@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import * as utils from '../../../src/variants-config/utils';
 
 describe('utils', () => {

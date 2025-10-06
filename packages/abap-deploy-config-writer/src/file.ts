@@ -1,6 +1,6 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import fg from 'fast-glob';
-import { platform } from 'os';
+import { platform } from 'node:os';
 import { FileName, type Package, getReuseLibs } from '@sap-ux/project-access';
 import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_IGNORE, UI5_REPO_TEXT_FILES } from './constants';
 import { coerce, satisfies } from 'semver';

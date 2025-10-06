@@ -6,8 +6,8 @@ import type { LiveReloadOptions, HttpsOptions, ConnectLivereloadOptions } from '
 import { getAvailablePort } from './utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
-import { promises } from 'fs';
-import { extname } from 'path';
+import { promises } from 'node:fs';
+import { extname } from 'node:path';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
 
 declare global {
