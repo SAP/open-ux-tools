@@ -185,7 +185,7 @@ class EmbeddingBuilder {
 
                     console.log(`  ${file}: ${chunks.length} chunks`);
 
-                    chunks.forEach((chunkContent, index) => {
+                    for (const [index, chunkContent] of chunks.entries()) {
                         const trimmedContent = chunkContent.trim();
                         if (trimmedContent) {
                             // Extract title from **TITLE**
@@ -221,7 +221,7 @@ class EmbeddingBuilder {
 
                             this.documents.push(doc);
                         }
-                    });
+                    }
                 } catch (error: any) {
                     console.warn(`Failed to load local document ${file}:`, error.message);
                 }

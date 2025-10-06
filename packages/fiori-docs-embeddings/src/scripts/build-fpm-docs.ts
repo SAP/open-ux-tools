@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { spawn } from 'node:child_process';
 import { XMLParser } from 'fast-xml-parser';
-import * as readline from 'readline';
+import * as readline from 'node:readline';
 
 const fpmExplorerFolder = 'packages/sap.fe.core/test/sap/fe/core/fpmExplorer';
 
@@ -287,7 +287,6 @@ class FpmDocumentationBuilder {
                         const content = await fs.readFile(fullPath, 'utf-8');
                         if (content.includes('fpmExplorer:')) {
                             const relativePath = path.relative(path.join(dirPath, '../../../'), fullPath);
-                            // viewFiles.set(entry.name.replace('.view.xml', ''), fullPath);
                             viewFiles.set(relativePath, fullPath);
                             console.log(`✓ Found fpmExplorer file: ${relativePath}`);
                         }
@@ -323,12 +322,7 @@ class FpmDocumentationBuilder {
             const documents: FpmDocument[] = [];
 
             // Navigate through the parsed XML structure to find fpmExplorer:Page elements
-            // For files in topicsNextGen, the code links are relative to that directory
             const basePath = path.dirname(filePath);
-            // if (filePath.includes('topicsNextGen')) {
-            //     const topicsNextGenIndex = filePath.indexOf('topicsNextGen');
-            //     basePath = filePath.substring(0, topicsNextGenIndex + 'topicsNextGen'.length);
-            // }
             await this.extractDocumentsFromParsedXml(parsedXml, documents, basePath);
 
             return documents;
@@ -490,42 +484,54 @@ class FpmDocumentationBuilder {
      * @returns Array of extracted code blocks
      */
     private async extractCodeBlocks(codeBlockElement: ParsedXmlCodeBlock, basePath: string): Promise<CodeBlock[]> {
-        let codeType = 'text';
-        let content = '';
         const codeBlocks: CodeBlock[] = [];
 
         // Check for direct text content
         if (codeBlockElement['#text']?.trim()) {
-            content = codeBlockElement['#text'].trim();
-            codeType = codeBlockElement['@_codeType'] || 'text';
+            const content = codeBlockElement['#text'].trim();
+            const codeType = codeBlockElement['@_codeType'] || 'text';
+            codeBlocks.push({ codeType, content });
         } else if (codeBlockElement['fpmExplorer:CodeLink']) {
             // Process CodeLink elements
             const codeLink = codeBlockElement['fpmExplorer:CodeLink'];
             for (const codeLinkItem of Array.isArray(codeLink) ? codeLink : [codeLink]) {
                 const file = codeLinkItem['@_file'];
-                codeType = codeLinkItem['@_codeType'] || file?.split('.').pop() || 'text';
+                const codeType = codeLinkItem['@_codeType'] || file?.split('.').pop() || 'text';
 
                 if (file) {
-                    let filePath = '';
-                    try {
-                        filePath = path.join(basePath, '..', file);
-                        content = await fs.readFile(filePath, 'utf-8');
-                    } catch (error) {
-                        try {
-                            filePath = path.join(basePath, '../../', file);
-                            content = await fs.readFile(filePath, 'utf-8');
-                        } catch (readError) {
-                            const errorMessage = readError instanceof Error ? readError.message : String(readError);
-                            console.warn(`Failed to read code file ${file}:`, errorMessage);
-                        }
+                    const content = await this.readCodeFile(basePath, file);
+                    if (content) {
+                        const filePath = path.join(basePath, '..', file);
+                        codeBlocks.push({ codeType, content: content.trim(), file, filePath });
                     }
-                    codeBlocks.push({ codeType, content: content.trim(), file, filePath });
-                    content = ''; // Reset for next file
                 }
             }
         }
 
         return codeBlocks;
+    }
+
+    /**
+     * Read code file from file system with fallback paths.
+     *
+     * @param basePath - Base path for resolving file
+     * @param file - File name to read
+     * @returns File content or empty string if failed
+     */
+    private async readCodeFile(basePath: string, file: string): Promise<string> {
+        try {
+            const filePath = path.join(basePath, '..', file);
+            return await fs.readFile(filePath, 'utf-8');
+        } catch (error) {
+            try {
+                const filePath = path.join(basePath, '../../', file);
+                return await fs.readFile(filePath, 'utf-8');
+            } catch (readError) {
+                const errorMessage = readError instanceof Error ? readError.message : String(readError);
+                console.warn(`Failed to read code file ${file}:`, errorMessage);
+                return '';
+            }
+        }
     }
 
     /**
@@ -554,7 +560,7 @@ class FpmDocumentationBuilder {
                     const markdownLanguage = this.convertToMarkdownLanguage(codeBlock.codeType);
                     markdown += `**LANGUAGE**: ${this.convertToLanguage(codeBlock.codeType)}\n\n`;
                     markdown += `**CODE**:\n`;
-                    markdown += '```' + (markdownLanguage ? markdownLanguage : '') + '\n';
+                    markdown += '```' + (markdownLanguage || '') + '\n';
                     markdown += codeBlock.content;
                     markdown += '\n```\n\n';
                     if (codeBlock.filePath) {
@@ -565,7 +571,6 @@ class FpmDocumentationBuilder {
             // Check if there are any files not already included in codeBlocks
             const hasNewFiles =
                 doc.files &&
-                doc.files.length > 0 &&
                 doc.files.some((f) => {
                     const filePath = path.join(this.gitReposPath, 'sap.fe', fpmExplorerFolder, f.url);
                     return !codeBlockFiles.includes(filePath);
@@ -591,7 +596,7 @@ class FpmDocumentationBuilder {
                     markdown += `**FILE**: ${file.name}\n\n`;
                     markdown += `**LANGUAGE**: ${language}\n\n`;
                     markdown += `**CODE**:\n`;
-                    markdown += '```' + (markdownLanguage ? markdownLanguage : '') + '\n';
+                    markdown += '```' + (markdownLanguage || '') + '\n';
 
                     // Read file content
                     try {
@@ -685,12 +690,12 @@ class FpmDocumentationBuilder {
         const configMap = new Map<string, NavigationItem>();
 
         const addToMap = (items: NavigationItem[]): void => {
-            items.forEach((item) => {
+            for (const item of items) {
                 configMap.set(item.key, item);
                 if (item.items) {
                     addToMap(item.items);
                 }
-            });
+            }
         };
 
         addToMap(pageConfiguration.navigation);
