@@ -1,0 +1,15 @@
+prompts:
+  - file://src/prompt4.txt
+providers:
+    - id: file://src/AICoreApiProvider.ts
+      config:
+        model: "gpt-4o"
+
+tests:
+  - vars:
+      appPath: "C:/SAPDevelop/test-projects/ghIssues/35887/project1-2025-10-011325" 
+      pageType: ObjectPage
+      parent: TravelObjectPage
+    assert:
+      - type: contains
+        value: successfully added
