@@ -154,7 +154,83 @@ class EmbeddingBuilder {
             }
         }
 
-        console.log(`✓ Loaded ${this.documents.length} documents`);
+        console.log(`✓ Loaded ${this.documents.length} documents from filestore`);
+
+        // Load FPM markdown documents from data_local
+        await this.loadFpmDocuments();
+    }
+
+    /**
+     * Load FPM markdown documents from data_local directory.
+     * These files use -------------------------------- as chunk delimiters.
+     */
+    async loadFpmDocuments(): Promise<void> {
+        console.log('\n📘 Loading FPM documents from data_local...');
+
+        const dataLocalPath = './data_local';
+
+        try {
+            const files = await fs.readdir(dataLocalPath);
+            const mdFiles = files.filter((file) => file.endsWith('.md'));
+
+            console.log(`Found ${mdFiles.length} markdown files in data_local`);
+
+            for (const file of mdFiles) {
+                try {
+                    const filePath = path.join(dataLocalPath, file);
+                    const content = await fs.readFile(filePath, 'utf-8');
+
+                    // Split by the delimiter
+                    const chunks = content.split('--------------------------------').filter((chunk) => chunk.trim());
+
+                    console.log(`  ${file}: ${chunks.length} chunks`);
+
+                    chunks.forEach((chunkContent, index) => {
+                        const trimmedContent = chunkContent.trim();
+                        if (trimmedContent) {
+                            // Extract title from **TITLE**
+                            const titleMatch = trimmedContent.match(/\*\*TITLE\*\*:\s*(.+)/);
+                            const title = titleMatch ? titleMatch[1].trim() : `${file} - Chunk ${index + 1}`;
+
+                            // Extract tags from **TAGS**
+                            const tagsMatch = trimmedContent.match(/\*\*TAGS\*\*:\s*(.+)/);
+                            const tags = tagsMatch
+                                ? tagsMatch[1].split(',').map((tag) => tag.trim())
+                                : ['fpm', 'fiori', 'elements'];
+
+                            // Determine category from filename (remove .md extension and convert to title case)
+                            const category =
+                                file
+                                    .replace('.md', '')
+                                    .split(/[-_]/)
+                                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(' ') ?? 'Fiori Elements';
+
+                            const doc: Document = {
+                                id: `fpm-${file.replace('.md', '')}-${index}`,
+                                title,
+                                content: trimmedContent,
+                                category,
+                                path: `data_local/${file}`,
+                                tags,
+                                headers: [],
+                                lastModified: new Date().toISOString(),
+                                wordCount: trimmedContent.split(/\s+/).length,
+                                excerpt: trimmedContent.substring(0, 200)
+                            };
+
+                            this.documents.push(doc);
+                        }
+                    });
+                } catch (error: any) {
+                    console.warn(`Failed to load FPM document ${file}:`, error.message);
+                }
+            }
+
+            console.log(`✓ Loaded FPM documents (total: ${this.documents.length} documents now)`);
+        } catch (error: any) {
+            console.warn(`Failed to read data_local directory:`, error.message);
+        }
     }
 
     /**
