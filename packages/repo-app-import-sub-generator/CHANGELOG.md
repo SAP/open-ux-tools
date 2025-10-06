@@ -1,5 +1,12 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.114
+
+### Patch Changes
+
+-   Updated dependencies [4b0b8fb]
+    -   @sap-ux/abap-deploy-config-writer@0.2.18
+
 ## 0.3.113
 
 ### Patch Changes

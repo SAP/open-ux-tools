@@ -13,6 +13,9 @@
       "path": "../inquirer-common"
     },
     {
+      "path": "../logger"
+    },
+    {
       "path": "../project-input-validator"
     },
     {

@@ -57,6 +57,9 @@ describe('generate', () => {
                 },
                 lrep: 'MOCK_LREP'
             },
+            options: {
+                addBuildToUndeployScript: false
+            },
             isAppStudio: false
         },
         {
@@ -67,6 +70,9 @@ describe('generate', () => {
                     ...config.target,
                     destination: 'MOCK_DESTINATION'
                 }
+            },
+            options: {
+                addBuildToUndeployScript: false
             },
             isAppStudio: false
         },

@@ -7,7 +7,8 @@ import {
     proxyResponseHandler,
     filterCompressedHtmlFiles,
     proxyErrorHandler,
-    updateProxyEnv
+    updateProxyEnv,
+    getPathRewrite
 } from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'node:url';
@@ -61,9 +62,7 @@ export const ui5Proxy = (
         },
         target: config.url,
         changeOrigin: true,
-        pathRewrite: (path: string, _req) => {
-            return path.startsWith(config.path) ? ui5Ver + path : ui5Ver + config.path + path;
-        },
+        pathRewrite: getPathRewrite(config, ui5Ver),
         pathFilter: proxyFilter,
         ...options
     };

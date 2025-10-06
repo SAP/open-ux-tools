@@ -1,7 +1,6 @@
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readFileSync } from 'node:fs';
 import { t } from './i18n';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 
@@ -24,18 +23,19 @@ export async function indexHtmlExists(fs: Editor, path: string): Promise<boolean
  *
  * @param path - The path to the project.
  * @param isS4HC - Whether the project is Cloud.
+ * @param fs - The file system editor.
  * @returns The variant namespace.
  */
-export async function getVariantNamespace(path: string, isS4HC: boolean): Promise<string | undefined> {
+export async function getVariantNamespace(path: string, isS4HC: boolean, fs: Editor): Promise<string | undefined> {
     if (isS4HC) {
         return undefined;
     }
 
     try {
-        const webappPath = await getWebappPath(path);
-        const filePath = join(webappPath, FileName.ManifestAppDescrVar);
-        if (existsSync(filePath)) {
-            const descriptor = JSON.parse(readFileSync(filePath, 'utf-8'));
+        const filePath = join(await getWebappPath(path, fs), FileName.ManifestAppDescrVar);
+
+        if (fs.exists(filePath)) {
+            const descriptor = fs.readJSON(filePath) as unknown as { namespace: string };
             return descriptor.namespace;
         }
     } catch (e) {
