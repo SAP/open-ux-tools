@@ -42193,7 +42193,7 @@ service AnalyticsService {
       BookingID,
       ConnectionID,
       FlightDate,
-      CurrencyCode_code
+      CurrencyCode
     ],
     AggregatableProperties: [
       {Property: FlightPrice},
@@ -42626,7 +42626,7 @@ service AnalyticsService {
       BookingID,
       ConnectionID,
       FlightDate,
-      CurrencyCode_code
+      CurrencyCode
     ],
     AggregatableProperties: [
       {Property: FlightPrice},
@@ -51691,6 +51691,130 @@ service TravelService {
 	}
 ]
 
+```
+
+--------------------------------
+
+**TITLE**: Overview Page
+
+**INTRODUCTION**: Overview pages provide quick access to vital business information through visual, actionable cards that display key data at a glance. The user-friendly interface makes viewing, filtering, and acting upon data both quick and intuitive. Business users can instantly grasp the big picture while simultaneously focusing on critical tasks, enabling faster decision-making and immediate action.
+
+**TAGS**: overview page, overview, dashboard, cards, summary
+
+**STEP**: Defining Overview Cards
+
+**DESCRIPTION**: The cards shown on the overview page are defined in your application's manifest.json file. You can choose from a variety of card types, such as list cards, analytical cards, and custom cards, to best represent your data.
+
+**LANGUAGE**: JSON
+
+**CODE**:
+```json
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "sap.fe.core.fpmExplorer.overviewPage",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [""],
+			"fallbackLocale": ""
+		},
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/fe/core/mock/overviewPage/",
+				"type": "OData",
+				"settings": {
+					"annotations": [],
+					"odataVersion": "4.0"
+				}
+			}
+		}
+	},
+	"sap.ovp": {
+		"globalFilterModel": "mainModel",
+		"globalFilterEntityType": "Travel",
+		"containerLayout": "resizable",
+		"enableLiveFilter": true,
+		"considerAnalyticalParameters": false,
+		"cards": {
+			"card_open_travels": {
+				"model": "mainModel",
+				"template": "sap.ovp.cards.v4.list",
+				"settings": {
+					"title": "{{LIST_CARD_METADATA_ANNOTATIONS}}",
+					"subTitle": "{{COMMON_LIST_CARD_SUBTITLE_V4}}",
+					"entitySet": "Travel",
+					"annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+				}
+			}
+		},
+		"globalFilterControlType": "MacroFilterBar",
+		"useDateRangeType": true,
+		"chartSettings": {}
+	},
+	"sap.ui5": {
+		"flexEnabled": true,
+		"dependencies": {
+			"minUI5Version": "1.111.1",
+			"libs": {
+				"sap.m": {
+					"lazy": false
+				},
+				"sap.ui.core": {
+					"lazy": false
+				},
+				"sap.fe.templates": {
+					"lazy": false
+				},
+				"sap.ovp": {
+					"lazy": false
+				},
+				"sap.ui.rta": {
+					"lazy": false
+				},
+				"sap.ui.layout": {
+					"lazy": false
+				}
+			}
+		},
+		"extends": {
+			"component": "sap.ovp.app",
+			"minVersion": "1.32.0",
+			"extensions": {}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"mainModel": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			}
+		},
+		"rootView": {
+			"viewName": "sap.fe.core.fpmExplorer.overviewPage.OverviewPage"
+		},
+		"resources": {
+			"css": []
+		},
+		"routing": {
+			"config": {
+				"controlId": "overviewPage"
+			},
+			"routes": [],
+			"targets": {}
+		}
+	}
+}
 ```
 
 --------------------------------

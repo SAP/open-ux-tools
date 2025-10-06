@@ -486,12 +486,8 @@ class FpmDocumentationBuilder {
     private async extractCodeBlocks(codeBlockElement: ParsedXmlCodeBlock, basePath: string): Promise<CodeBlock[]> {
         const codeBlocks: CodeBlock[] = [];
 
-        // Check for direct text content
-        if (codeBlockElement['#text']?.trim()) {
-            const content = codeBlockElement['#text'].trim();
-            const codeType = codeBlockElement['@_codeType'] || 'text';
-            codeBlocks.push({ codeType, content });
-        } else if (codeBlockElement['fpmExplorer:CodeLink']) {
+        // Only process CodeLink elements, ignore inline text content
+        if (codeBlockElement['fpmExplorer:CodeLink']) {
             // Process CodeLink elements
             const codeLink = codeBlockElement['fpmExplorer:CodeLink'];
             for (const codeLinkItem of Array.isArray(codeLink) ? codeLink : [codeLink]) {
@@ -499,11 +495,9 @@ class FpmDocumentationBuilder {
                 const codeType = codeLinkItem['@_codeType'] || file?.split('.').pop() || 'text';
 
                 if (file) {
-                    const content = await this.readCodeFile(basePath, file);
-                    if (content) {
-                        const filePath = path.join(basePath, '..', file);
-                        codeBlocks.push({ codeType, content: content.trim(), file, filePath });
-                    }
+                    const { content, filePath } = await this.readCodeFile(basePath, file);
+                    // Always push code block even if content is empty (when file read fails)
+                    codeBlocks.push({ codeType, content: content.trim(), file, filePath });
                 }
             }
         }
@@ -518,18 +512,20 @@ class FpmDocumentationBuilder {
      * @param file - File name to read
      * @returns File content or empty string if failed
      */
-    private async readCodeFile(basePath: string, file: string): Promise<string> {
+    private async readCodeFile(basePath: string, file: string): Promise<{ content: string; filePath: string }> {
         try {
             const filePath = path.join(basePath, '..', file);
-            return await fs.readFile(filePath, 'utf-8');
+            const content = await fs.readFile(filePath, 'utf-8');
+            return { content, filePath };
         } catch (error) {
             try {
                 const filePath = path.join(basePath, '../../', file);
-                return await fs.readFile(filePath, 'utf-8');
+                const content = await fs.readFile(filePath, 'utf-8');
+                return { content, filePath };
             } catch (readError) {
                 const errorMessage = readError instanceof Error ? readError.message : String(readError);
                 console.warn(`Failed to read code file ${file}:`, errorMessage);
-                return '';
+                return { content: '', filePath: '' };
             }
         }
     }
