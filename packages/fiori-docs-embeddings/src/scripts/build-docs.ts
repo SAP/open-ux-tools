@@ -4,7 +4,37 @@ import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'fs/promises';
 import * as path from 'node:path';
+import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { default as matter } from 'gray-matter';
+
+// Create promisified version of spawn for async/await
+const execCommand = (
+    command: string,
+    args: string[],
+    options: SpawnOptionsWithoutStdio
+): Promise<{ stdout: string; stderr: string }> => {
+    return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
+        const child = spawn(command, args, { ...options, stdio: ['pipe', 'pipe', 'pipe'] });
+        let stdout = '';
+        let stderr = '';
+
+        child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+        });
+
+        child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+        });
+
+        child.on('close', (code) => {
+            if (code === 0) {
+                resolve({ stdout, stderr });
+            } else {
+                reject(new Error(`Command failed with exit code ${code}: ${stderr}`));
+            }
+        });
+    });
+};
 
 interface SourceConfig {
     id: string;
@@ -20,6 +50,7 @@ interface SourceConfig {
 
 interface BuildConfig {
     outputPath: string;
+    gitReposPath?: string;
     sources: SourceConfig[];
 }
 
@@ -67,24 +98,48 @@ interface Token {
 }
 
 interface MatterResult {
-    data: Record<string, any>;
+    data: Record<string, unknown>;
     content: string;
 }
+
+interface ApiSymbol {
+    name?: string;
+    kind?: string;
+    description?: string;
+    module?: string;
+    methods?: ApiMethod[];
+    properties?: ApiProperty[];
+}
+
+interface ApiMethod {
+    name: string;
+    description?: string;
+}
+
+interface ApiProperty {
+    name: string;
+    description?: string;
+}
+
+type ApiData = {
+    symbols: ApiSymbol[];
+} & Record<string, unknown>;
 
 /**
  * Multi-source documentation builder for fetching and processing documentation from various sources.
  */
 class MultiSourceDocumentationBuilder {
-    private config: BuildConfig & { owner?: string; repo?: string; branch?: string; docsPath?: string };
-    private readonly baseUrl: string;
-    private requestCount: number;
+    private readonly config: BuildConfig;
+    private readonly requestCount: number;
     private readonly documents: Map<string, ParsedDocument>;
     private readonly categories: Map<string, string[]>;
     private readonly sourceResults: Map<string, SourceResult>;
+    private readonly gitReposPath: string;
 
     constructor() {
         this.config = {
             outputPath: './data/docs',
+            gitReposPath: './data/git_repos',
             sources: [
                 {
                     id: 'btp-fiori-tools',
@@ -102,8 +157,8 @@ class MultiSourceDocumentationBuilder {
                     owner: 'SAP-docs',
                     repo: 'sapui5',
                     branch: 'main',
-                    docsPath: 'docs',
-                    category: 'ui5-framework',
+                    docsPath: 'docs/06_SAP_Fiori_Elements',
+                    category: 'fiori-elements-framework',
                     enabled: true
                 },
                 {
@@ -113,7 +168,7 @@ class MultiSourceDocumentationBuilder {
                     repo: 'fiori-tools-samples',
                     branch: 'main',
                     docsPath: '',
-                    category: 'samples',
+                    category: 'fiori-samples',
                     enabled: true
                 },
                 {
@@ -123,7 +178,7 @@ class MultiSourceDocumentationBuilder {
                     repo: 'fiori-elements-feature-showcase',
                     branch: 'main',
                     docsPath: '',
-                    category: 'features',
+                    category: 'fiori-features',
                     enabled: true
                 },
                 {
@@ -135,150 +190,128 @@ class MultiSourceDocumentationBuilder {
                 }
             ]
         };
-        this.baseUrl = 'https://api.github.com';
         this.requestCount = 0;
         this.documents = new Map();
         this.categories = new Map();
         this.sourceResults = new Map();
+        this.gitReposPath = path.resolve(this.config.gitReposPath!);
     }
 
     /**
-     * Get headers for GitHub API requests.
+     * Clone or update a Git repository.
      *
-     * @returns Promise resolving to headers object
+     * @param source - Source configuration containing repository details
+     * @returns Promise that resolves to the local repository path
      */
-    async getHeaders(): Promise<Record<string, string>> {
-        const headers: Record<string, string> = {
-            'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'sap-fiori-docs-builder/1.0.0'
-        };
-        if (process.env.GITHUB_TOKEN) {
-            headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
-        }
+    async cloneOrUpdateRepository(source: SourceConfig): Promise<string> {
+        const repoName = `${source.owner}-${source.repo}`;
+        const repoPath = path.join(this.gitReposPath, repoName);
+        const repoUrl = `https://github.com/${source.owner}/${source.repo}.git`;
 
-        return headers;
-    }
+        // Ensure git repos directory exists
+        await fs.mkdir(this.gitReposPath, { recursive: true });
 
-    async throttleRequest(): Promise<void> {
-        // Reduced delay for better performance - GitHub allows ~5000 requests/hour
-        if (this.requestCount > 0 && this.requestCount % 10 === 0) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-        this.requestCount++;
-    }
+        try {
+            // Check if repository already exists
+            const repoExists = await this.directoryExists(repoPath);
 
-    /**
-     * Fetch data from URL with retry logic.
-     *
-     * @param url - The URL to fetch
-     * @param maxRetries - Maximum number of retry attempts
-     * @returns Promise resolving to fetched data
-     */
-    async fetchWithRetry(url: string, maxRetries: number = 3): Promise<any> {
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
-            try {
-                await this.throttleRequest();
-
-                const response = await fetch(url, {
-                    headers: await this.getHeaders()
-                });
-
-                if (!response.ok) {
-                    await this.handleResponseError(response as any, attempt, maxRetries);
-                    continue;
+            if (repoExists) {
+                console.log(`📂 Repository ${repoName} already exists, updating...`);
+                try {
+                    // Pull latest changes
+                    await execCommand('git', ['pull', 'origin', source.branch ?? 'main'], { cwd: repoPath });
+                    console.log(`✓ Updated repository: ${repoName}`);
+                } catch (pullError) {
+                    const errorMessage = pullError instanceof Error ? pullError.message : String(pullError);
+                    console.warn(`Failed to pull updates for ${repoName}, using existing version:`, errorMessage);
                 }
-
-                return await response.json();
-            } catch (error) {
-                if (attempt === maxRetries) {
-                    throw error;
-                }
-                console.warn(`Request failed (attempt ${attempt + 1}), retrying...`);
-                await this.waitForRetry(attempt);
+            } else {
+                console.log(`🔄 Cloning repository: ${repoUrl}`);
+                await execCommand(
+                    'git',
+                    ['clone', '--depth', '1', '--branch', source.branch ?? 'main', repoUrl, repoName],
+                    { cwd: this.gitReposPath }
+                );
+                console.log(`✓ Cloned repository: ${repoName}`);
             }
+
+            return repoPath;
+        } catch (error) {
+            throw new Error(`Failed to clone/update repository ${repoName}: ${error.message}`);
         }
     }
 
     /**
-     * Handle response errors with rate limit logic.
+     * Check if a directory exists.
      *
-     * @param response - The failed response
-     * @param attempt - Current attempt number
-     * @param maxRetries - Maximum retry attempts
+     * @param dirPath - Directory path to check
+     * @returns Promise that resolves to true if directory exists
      */
-    private async handleResponseError(response: Response, attempt: number, maxRetries: number): Promise<void> {
-        const isRateLimited = response.status === 403 && attempt < maxRetries;
-
-        if (isRateLimited) {
-            const shouldWaitForRateLimit = await this.tryWaitForRateLimit(response);
-            if (shouldWaitForRateLimit) {
-                return;
-            }
-        }
-
-        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-    }
-
-    /**
-     * Try to wait for rate limit reset if conditions are met.
-     *
-     * @param response - The rate-limited response
-     * @returns True if waited, false if should throw error
-     */
-    private async tryWaitForRateLimit(response: Response): Promise<boolean> {
-        const resetTime = response.headers.get('x-ratelimit-reset');
-        if (!resetTime) {
+    private async directoryExists(dirPath: string): Promise<boolean> {
+        try {
+            const stat = await fs.stat(dirPath);
+            return stat.isDirectory();
+        } catch {
             return false;
         }
+    }
 
-        const waitTime = Number.parseInt(resetTime, 10) * 1000 - Date.now();
-        const isValidWaitTime = waitTime > 0 && waitTime < 3600000; // Max 1 hour
+    /**
+     * Read files recursively from a local directory.
+     *
+     * @param basePath - Base directory path to search
+     * @param relativePath - Relative path within the base directory
+     * @returns Promise resolving to array of file contents
+     */
+    async readFilesFromDirectory(basePath: string, relativePath: string = ''): Promise<GitHubFile[]> {
+        const files: GitHubFile[] = [];
+        const fullPath = path.join(basePath, relativePath);
 
-        if (isValidWaitTime) {
-            console.log(`Rate limited. Waiting ${Math.round(waitTime / 1000)}s...`);
-            await new Promise((resolve) => setTimeout(resolve, waitTime));
-            return true;
+        try {
+            const entries = await fs.readdir(fullPath, { withFileTypes: true });
+
+            const supportedExtensions = [
+                '.md',
+                '.ts',
+                '.js',
+                '.xml',
+                '.cds',
+                '.json',
+                '.html',
+                '.properties',
+                '.yaml',
+                '.yml'
+            ];
+
+            for (const entry of entries) {
+                const entryPath = path.join(relativePath, entry.name);
+                const fullEntryPath = path.join(fullPath, entry.name);
+
+                if (entry.isDirectory()) {
+                    // Skip common directories that don't contain documentation
+                    if (!['node_modules', '.git', 'dist', 'build', 'target'].includes(entry.name)) {
+                        const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
+                        files.push(...subFiles);
+                    }
+                } else if (entry.isFile() && supportedExtensions.some((ext) => entry.name.endsWith(ext))) {
+                    try {
+                        const content = await fs.readFile(fullEntryPath, 'utf-8');
+                        files.push({
+                            name: entry.name,
+                            path: entryPath,
+                            type: 'file',
+                            content
+                        });
+                    } catch (error) {
+                        console.warn(`Failed to read file ${fullEntryPath}:`, error.message);
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(`Failed to read directory ${fullPath}:`, error.message);
         }
 
-        return false;
-    }
-
-    /**
-     * Wait before retrying with exponential backoff.
-     *
-     * @param attempt - Current attempt number
-     */
-    private async waitForRetry(attempt: number): Promise<void> {
-        const backoffTime = 2000 * Math.pow(2, attempt);
-        await new Promise((resolve) => setTimeout(resolve, backoffTime));
-    }
-
-    /**
-     * Get directory contents from GitHub API.
-     *
-     * @param path - Directory path to fetch
-     * @returns Promise resolving to array of GitHub files
-     */
-    async getDirectoryContents(path: string = ''): Promise<GitHubFile[]> {
-        const url = `${this.baseUrl}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
-        return await this.fetchWithRetry(url);
-    }
-
-    /**
-     * Get file content from GitHub API.
-     *
-     * @param path - File path to fetch
-     * @returns Promise resolving to GitHub file object
-     */
-    async getFileContent(path: string): Promise<GitHubFile> {
-        const url = `${this.baseUrl}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
-        const file = await this.fetchWithRetry(url);
-
-        if (file.content && file.encoding === 'base64') {
-            file.content = Buffer.from(file.content, 'base64').toString('utf-8');
-        }
-
-        return file;
+        return files;
     }
 
     /**
@@ -490,8 +523,9 @@ class MultiSourceDocumentationBuilder {
      * @returns Array of unique tags
      */
     private generateTags(parsed: MatterResult, category: string, fileExtension: string, fileName: string): string[] {
+        const parsedTags = Array.isArray(parsed.data.tags) ? parsed.data.tags : [];
         const tags = [
-            ...(parsed.data.tags || []),
+            ...parsedTags.map(String),
             category,
             fileExtension.replace('.', ''),
             ...fileName.split(/[\s\-_\.\[\](){}!@#$%^&*+=|\\:";'<>?,/]+/).filter((word) => word.length > 2)
@@ -546,121 +580,6 @@ class MultiSourceDocumentationBuilder {
             .replace(/-$/, ''); // Then remove trailing dash
     }
 
-    /**
-     * Get all markdown files from a base path recursively.
-     *
-     * @param basePath - Base directory path to search
-     * @returns Promise resolving to array of GitHub files
-     */
-    async getAllMarkdownFiles(basePath: string = ''): Promise<GitHubFile[]> {
-        const files: GitHubFile[] = [];
-        const path = basePath || this.config.docsPath || '';
-
-        try {
-            console.log(`Fetching directory contents for: ${path}`);
-            const contents = await this.getDirectoryContents(path);
-            console.log(`Found ${contents.length} items in ${path}`);
-
-            const supportedExtensions = [
-                '.md',
-                '.ts',
-                '.js',
-                '.xml',
-                '.cds',
-                '.json',
-                '.html',
-                '.properties',
-                '.yaml',
-                '.yml'
-            ];
-
-            // Separate files and directories for parallel processing
-            const fileItems = contents.filter(
-                (item) => item.type === 'file' && supportedExtensions.some((ext) => item.name.endsWith(ext))
-            );
-            const dirItems = contents.filter((item) => item.type === 'dir');
-
-            // Process files in parallel batches
-            const batchSize = 10; // Process 10 files concurrently
-            const fileResults: (GitHubFile | null)[] = [];
-
-            for (let i = 0; i < fileItems.length; i += batchSize) {
-                const batch = fileItems.slice(i, i + batchSize);
-
-                const batchPromises = batch.map(async (item) => {
-                    try {
-                        const file = await this.getFileContent(item.path);
-                        return file;
-                    } catch (error: any) {
-                        console.warn(`✗ Failed to fetch file ${item.path}:`, error.message);
-                        return null;
-                    }
-                });
-
-                const batchResults = await Promise.all(batchPromises);
-                fileResults.push(...batchResults);
-
-                console.log(
-                    `✓ Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(fileItems.length / batchSize)} (${
-                        batch.length
-                    } files)`
-                );
-            }
-
-            // Process directories in parallel batches to handle deep nesting
-            const allDirResults: GitHubFile[][] = [];
-            const dirBatchSize = 3; // Process fewer directories at once to avoid rate limits
-
-            console.log(`🗂️  Processing ${dirItems.length} directories in batches of ${dirBatchSize}...`);
-
-            for (let i = 0; i < dirItems.length; i += dirBatchSize) {
-                const batch = dirItems.slice(i, i + dirBatchSize);
-
-                const batchPromises = batch.map(async (item) => {
-                    try {
-                        console.log(`📁 Processing directory: ${item.path}`);
-                        const subFiles = await this.getAllMarkdownFiles(item.path);
-                        console.log(`✓ Found ${subFiles.length} files in ${item.path}`);
-                        return subFiles;
-                    } catch (error: any) {
-                        console.warn(`Failed to fetch directory ${item.path}:`, error.message);
-                        return [];
-                    }
-                });
-
-                const batchResults = await Promise.all(batchPromises);
-                allDirResults.push(...batchResults);
-
-                console.log(
-                    `✓ Completed directory batch ${Math.floor(i / dirBatchSize) + 1}/${Math.ceil(
-                        dirItems.length / dirBatchSize
-                    )}`
-                );
-            }
-
-            const dirResults = allDirResults;
-
-            // Add successful file results
-            fileResults.forEach((file) => {
-                if (file) {
-                    files.push(file);
-                }
-            });
-
-            // Add directory results
-            dirResults.forEach((subFiles) => {
-                files.push(...subFiles);
-            });
-
-            console.log(`✓ Successfully fetched ${files.length} files from ${path}`);
-        } catch (error: any) {
-            console.error(`Failed to fetch directory contents for ${path}:`, error.message);
-            throw error;
-        }
-
-        return files;
-    }
-
     async buildFilestore(): Promise<void> {
         console.log('🚀 Starting multi-source documentation build...');
 
@@ -702,15 +621,12 @@ class MultiSourceDocumentationBuilder {
             // Create master index
             await this.createMasterIndex();
 
-            // Create search indexes
-            await this.createSearchIndexes();
-
             console.log(`\n🎉 Multi-source documentation build completed!`);
             console.log(`📊 Total documents: ${this.documents.size}`);
             console.log(`📁 Categories: ${this.categories.size}`);
             console.log(`🌐 GitHub API requests: ${this.requestCount}`);
             console.log(`🔗 Sources processed: ${this.sourceResults.size}`);
-        } catch (error: any) {
+        } catch (error) {
             console.error('❌ Build failed:', error.message);
             process.exit(1);
         }
@@ -784,10 +700,9 @@ class MultiSourceDocumentationBuilder {
                             counts.success++;
                         } else {
                             const file = batch[index];
-                            console.warn(
-                                `Failed to parse document ${file.path || file.name}:`,
-                                result.reason?.message || result.reason
-                            );
+                            const errorMessage =
+                                result.reason instanceof Error ? result.reason.message : String(result.reason);
+                            console.warn(`Failed to parse document ${file.path || file.name}:`, errorMessage);
                             counts.failure++;
                         }
                         return counts;
@@ -809,7 +724,7 @@ class MultiSourceDocumentationBuilder {
 
             const duration = Date.now() - result.startTime;
             console.log(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
-        } catch (error: any) {
+        } catch (error) {
             result.success = false;
             result.message = error.message;
             console.error(`❌ Failed to process source ${source.id}:`, error.message);
@@ -821,38 +736,29 @@ class MultiSourceDocumentationBuilder {
     }
 
     /**
-     * Process GitHub source repository.
+     * Process GitHub source repository by cloning locally.
      *
      * @param source - Source configuration
      * @returns Promise resolving to array of file contents
      */
     async processGitHubSource(source: SourceConfig): Promise<FileContent[]> {
-        // Check if we can use cached documents first to avoid rate limits
         try {
-            const cachedDocs = await this.loadCachedDocuments(source);
-            if (cachedDocs.length > 0) {
-                console.log(`Using ${cachedDocs.length} cached documents for ${source.id}`);
-                return cachedDocs;
-            }
-        } catch {
-            // No cached documents available, continue with fresh fetch
-            console.log(`No cached documents found for ${source.id}, fetching from GitHub...`);
-        }
+            // Clone or update the repository
+            const repoPath = await this.cloneOrUpdateRepository(source);
 
-        // Temporarily set config for legacy method compatibility
-        const oldConfig = { ...this.config };
-        this.config.owner = source.owner;
-        this.config.repo = source.repo;
-        this.config.branch = source.branch;
-        this.config.docsPath = source.docsPath;
+            // Determine the path to read from within the repository
+            const docsPath = source.docsPath ? path.join(repoPath, source.docsPath) : repoPath;
 
-        try {
-            const files = await this.getAllMarkdownFiles();
-            this.config = oldConfig; // Restore config
+            console.log(`📖 Reading files from: ${docsPath}`);
+
+            // Read files from the local repository
+            const files = await this.readFilesFromDirectory(docsPath);
+
+            console.log(`✓ Found ${files.length} files in ${source.id}`);
+
             return files as FileContent[];
         } catch (error) {
-            this.config = oldConfig; // Restore config on error
-            throw error;
+            throw new Error(`Failed to process GitHub source ${source.id}: ${error.message}`);
         }
     }
 
@@ -865,12 +771,7 @@ class MultiSourceDocumentationBuilder {
     async loadCachedDocuments(source: SourceConfig): Promise<FileContent[]> {
         // Try new source-based structure first
         const sourceBasedFiles = await this.loadFromSourceBasedStructure(source);
-        if (sourceBasedFiles.length > 0) {
-            return sourceBasedFiles;
-        }
-
-        // Fallback to old flat structure
-        return await this.loadFromFlatStructure(source);
+        return sourceBasedFiles ?? [];
     }
 
     /**
@@ -898,11 +799,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(
-                `Source directory not found, trying fallback structure: ${
-                    error instanceof Error ? error.message : 'Unknown error'
-                }`
-            );
+            console.warn(`Source directory not found, trying fallback structure: ${error.message}`);
             return [];
         }
     }
@@ -937,9 +834,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(
-                `Skipping category directory due to error: ${error instanceof Error ? error.message : 'Unknown error'}`
-            );
+            console.warn(`Skipping category directory due to error: ${error.message}`);
             return [];
         }
     }
@@ -963,83 +858,8 @@ class MultiSourceDocumentationBuilder {
                 download_url: 'cached'
             };
         } catch (error) {
-            console.warn(
-                `Failed to load document file ${fileName}:`,
-                error instanceof Error ? error.message : 'Unknown error'
-            );
+            console.warn(`Failed to load document file ${fileName}:`, error.message);
             return null;
-        }
-    }
-
-    /**
-     * Load cached documents from old flat directory structure.
-     *
-     * @param source - Source configuration
-     * @returns Promise resolving to array of cached file contents
-     */
-    private async loadFromFlatStructure(source: SourceConfig): Promise<FileContent[]> {
-        if (source.id !== 'btp-fiori-tools') {
-            return [];
-        }
-
-        const categories = this.getBtpFioriToolsCategories();
-        const files: FileContent[] = [];
-
-        for (const category of categories) {
-            const categoryFiles = await this.loadFromFlatCategory(category);
-            files.push(...categoryFiles);
-        }
-
-        return files;
-    }
-
-    /**
-     * Get the list of categories for btp-fiori-tools fallback structure.
-     *
-     * @returns Array of category names
-     */
-    private getBtpFioriToolsCategories(): string[] {
-        return [
-            'deploying-an-application',
-            'developing-an-application',
-            'docs',
-            'generating-an-application',
-            'getting-started-with-sap-fiori-tools',
-            'previewing-an-application',
-            'project-functions',
-            'sap-fiori-elements',
-            'sapui5-freestyle',
-            'additional-configuration'
-        ];
-    }
-
-    /**
-     * Load files from a flat structure category directory.
-     *
-     * @param category - Category name
-     * @returns Promise resolving to array of file contents from the category
-     */
-    private async loadFromFlatCategory(category: string): Promise<FileContent[]> {
-        try {
-            const categoryPath = path.join(this.config.outputPath, category);
-            const categoryFiles = await fs.readdir(categoryPath);
-            const files: FileContent[] = [];
-
-            for (const file of categoryFiles) {
-                if (file.endsWith('.json')) {
-                    const fileContent = await this.loadDocumentFile(categoryPath, file);
-                    if (fileContent) {
-                        files.push(fileContent);
-                    }
-                }
-            }
-
-            return files;
-        } catch (error) {
-            console.warn(
-                `Skipping fallback category due to error: ${error instanceof Error ? error.message : 'Unknown error'}`
-            );
-            return [];
         }
     }
 
@@ -1058,9 +878,9 @@ class MultiSourceDocumentationBuilder {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
-            const apiData = await response.json();
+            const apiData = (await response.json()) as ApiData | ApiSymbol[];
             return this.convertApiToDocuments(apiData, source);
-        } catch (error: any) {
+        } catch (error) {
             throw new Error(`Failed to fetch API documentation: ${error.message}`);
         }
     }
@@ -1072,11 +892,11 @@ class MultiSourceDocumentationBuilder {
      * @param source - Source configuration
      * @returns Array of file contents
      */
-    convertApiToDocuments(apiData: any, source: SourceConfig): FileContent[] {
+    convertApiToDocuments(apiData: ApiData | ApiSymbol[], source: SourceConfig): FileContent[] {
         const documents: FileContent[] = [];
 
         // Handle different API structures
-        if (apiData.symbols) {
+        if (!Array.isArray(apiData) && apiData.symbols) {
             // UI5 API format
             for (const symbol of apiData.symbols) {
                 if (symbol.kind === 'class' || symbol.kind === 'namespace') {
@@ -1090,14 +910,15 @@ class MultiSourceDocumentationBuilder {
             }
         } else if (Array.isArray(apiData)) {
             // Array of API items
-            apiData.forEach((item: any, index: number) => {
+            for (let index = 0; index < apiData.length; index++) {
+                const item: ApiSymbol = apiData[index];
                 documents.push({
                     name: `api-item-${index}.md`,
                     path: `api/item-${index}.md`,
                     content: this.generateApiDocContent(item),
                     download_url: source.url
                 });
-            });
+            }
         } else {
             // Single API object
             documents.push({
@@ -1118,7 +939,7 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item to generate content for
      * @returns Generated documentation content as string
      */
-    generateApiDocContent(apiItem: any): string {
+    generateApiDocContent(apiItem: ApiSymbol | Record<string, unknown>): string {
         if (!apiItem) {
             return this.getDefaultApiDocContent();
         }
@@ -1148,15 +969,15 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Header content string
      */
-    private generateApiHeader(apiItem: any): string {
+    private generateApiHeader(apiItem: ApiSymbol | Record<string, unknown>): string {
         let content = '';
 
         if (apiItem.name) {
-            content += `# ${apiItem.name}\n\n`;
+            content += `# ${String(apiItem.name)}\n\n`;
         }
 
         if (apiItem.description) {
-            content += `${apiItem.description}\n\n`;
+            content += `${String(apiItem.description)}\n\n`;
         }
 
         return content;
@@ -1168,15 +989,15 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Metadata content string
      */
-    private generateApiMetadata(apiItem: any): string {
+    private generateApiMetadata(apiItem: ApiSymbol | Record<string, unknown>): string {
         let content = '';
 
         if (apiItem.kind) {
-            content += `**Type:** ${apiItem.kind}\n\n`;
+            content += `**Type:** ${String(apiItem.kind)}\n\n`;
         }
 
         if (apiItem.module) {
-            content += `**Module:** ${apiItem.module}\n\n`;
+            content += `**Module:** ${String(apiItem.module)}\n\n`;
         }
 
         return content;
@@ -1188,17 +1009,17 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Methods content string
      */
-    private generateApiMethods(apiItem: any): string {
-        if (!apiItem.methods) {
+    private generateApiMethods(apiItem: ApiSymbol | Record<string, unknown>): string {
+        if (!('methods' in apiItem) || !Array.isArray(apiItem.methods)) {
             return '';
         }
 
         let content = '## Methods\n\n';
 
         for (const method of apiItem.methods) {
-            content += `### ${method.name}\n`;
+            content += `### ${String(method.name)}\n`;
             if (method.description) {
-                content += `${method.description}\n\n`;
+                content += `${String(method.description)}\n\n`;
             }
         }
 
@@ -1211,17 +1032,17 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Properties content string
      */
-    private generateApiProperties(apiItem: any): string {
-        if (!apiItem.properties) {
+    private generateApiProperties(apiItem: ApiSymbol | Record<string, unknown>): string {
+        if (!('properties' in apiItem) || !Array.isArray(apiItem.properties)) {
             return '';
         }
 
         let content = '## Properties\n\n';
 
         for (const prop of apiItem.properties) {
-            content += `### ${prop.name}\n`;
+            content += `### ${String(prop.name)}\n`;
             if (prop.description) {
-                content += `${prop.description}\n\n`;
+                content += `${String(prop.description)}\n\n`;
             }
         }
 
@@ -1234,7 +1055,7 @@ class MultiSourceDocumentationBuilder {
      * @param apiItem - API item
      * @returns Fallback content string
      */
-    private generateFallbackApiContent(apiItem: any): string {
+    private generateFallbackApiContent(apiItem: ApiSymbol | Record<string, unknown>): string {
         if (typeof apiItem === 'object') {
             return `# API Reference\n\n\`\`\`json\n${JSON.stringify(apiItem, null, 2)}\n\`\`\`\n`;
         }
@@ -1295,38 +1116,6 @@ class MultiSourceDocumentationBuilder {
         await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
 
         console.log(`✓ Created master index: ${indexPath}`);
-    }
-
-    async createSearchIndexes(): Promise<void> {
-        console.log('\n🔍 Creating search indexes...');
-
-        const searchDir = path.join('./data/search');
-        await fs.mkdir(searchDir, { recursive: true });
-
-        // Create keyword index
-        const keywords = new Map<string, string[]>();
-        for (const doc of this.documents.values()) {
-            const allText = [doc.title, ...doc.headers, ...doc.tags, doc.content].join(' ').toLowerCase();
-            const words = allText.match(/\b\w{3,}\b/g) ?? [];
-
-            for (const word of words) {
-                if (!keywords.has(word)) {
-                    keywords.set(word, []);
-                }
-                if (!keywords.get(word)!.includes(doc.id)) {
-                    keywords.get(word)!.push(doc.id);
-                }
-            }
-        }
-
-        const keywordIndex = Object.fromEntries(keywords);
-        await fs.writeFile(path.join(searchDir, 'keywords.json'), JSON.stringify(keywordIndex, null, 2));
-
-        // Create category index
-        const categoryIndex = Object.fromEntries(this.categories);
-        await fs.writeFile(path.join(searchDir, 'categories.json'), JSON.stringify(categoryIndex, null, 2));
-
-        console.log(`✓ Created search indexes`);
     }
 }
 
