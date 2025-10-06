@@ -517,7 +517,7 @@ class FpmDocumentationBuilder {
             const filePath = path.join(basePath, '..', file);
             const content = await fs.readFile(filePath, 'utf-8');
             return { content, filePath };
-        } catch (error) {
+        } catch {
             try {
                 const filePath = path.join(basePath, '../../', file);
                 const content = await fs.readFile(filePath, 'utf-8');
@@ -540,72 +540,155 @@ class FpmDocumentationBuilder {
         let markdown = '\n';
 
         for (const doc of documents) {
-            markdown += '--------------------------------\n\n';
-            markdown += `**TITLE**: ${doc.title}\n\n`;
-            markdown += `**INTRODUCTION**: ${doc.introduction}\n\n`;
+            markdown += await this.generateDocumentMarkdown(doc);
+        }
 
-            // Add tags if available
-            if (doc.tags) {
-                markdown += `**TAGS**: ${doc.tags}\n\n`;
-            }
-            const codeBlockFiles: string[] = [];
-            for (const step of doc.implementationSteps) {
-                markdown += `**STEP**: ${step.title}\n\n`;
-                markdown += `**DESCRIPTION**: ${step.text}\n\n`;
-                for (const codeBlock of step.codeBlocks) {
-                    const markdownLanguage = this.convertToMarkdownLanguage(codeBlock.codeType);
-                    markdown += `**LANGUAGE**: ${this.convertToLanguage(codeBlock.codeType)}\n\n`;
-                    markdown += `**CODE**:\n`;
-                    markdown += '```' + (markdownLanguage || '') + '\n';
-                    markdown += codeBlock.content;
-                    markdown += '\n```\n\n';
-                    if (codeBlock.filePath) {
-                        codeBlockFiles.push(codeBlock.filePath);
-                    }
-                }
-            }
-            // Check if there are any files not already included in codeBlocks
-            const hasNewFiles = doc.files?.some((f) => {
-                const filePath = path.join(this.gitReposPath, 'sap.fe', fpmExplorerFolder, f.url);
-                return !codeBlockFiles.includes(filePath);
-            });
+        markdown += '--------------------------------\n';
 
-            if (hasNewFiles) {
-                markdown += `**ADDITIONAL RELATED CODE BLOCKS**:\n\n`;
-                // Add files content as code blocks after implementation steps
-                for (const file of doc.files!) {
-                    const filePath = path.join(this.gitReposPath, 'sap.fe', fpmExplorerFolder, file.url);
+        return markdown;
+    }
 
-                    // Skip if already included in codeBlocks
-                    if (codeBlockFiles.includes(filePath)) {
-                        continue;
-                    }
+    /**
+     * Generate markdown for a single document.
+     *
+     * @param doc - FPM document to convert
+     * @returns Markdown string for the document
+     */
+    private async generateDocumentMarkdown(doc: FpmDocument): Promise<string> {
+        let markdown = '--------------------------------\n\n';
+        markdown += `**TITLE**: ${doc.title}\n\n`;
+        markdown += `**INTRODUCTION**: ${doc.introduction}\n\n`;
 
-                    // Determine language from file extension
-                    const extension = file.name.split('.').pop()?.toLowerCase() || '';
-                    const codeType = extension;
-                    const markdownLanguage = this.convertToMarkdownLanguage(codeType);
-                    const language = this.convertToLanguage(codeType);
+        // Add tags if available
+        if (doc.tags) {
+            markdown += `**TAGS**: ${doc.tags}\n\n`;
+        }
 
-                    markdown += `**FILE**: ${file.name}\n\n`;
-                    markdown += `**LANGUAGE**: ${language}\n\n`;
-                    markdown += `**CODE**:\n`;
-                    markdown += '```' + (markdownLanguage || '') + '\n';
+        const codeBlockFiles = this.generateImplementationStepsMarkdown(doc.implementationSteps);
+        markdown += codeBlockFiles.markdown;
 
-                    // Read file content
-                    try {
-                        const content = await fs.readFile(filePath, 'utf-8');
-                        markdown += content;
-                    } catch (error) {
-                        markdown += `// Error reading file: ${error.message}`;
-                    }
+        markdown += await this.generateAdditionalFilesMarkdown(doc.files, codeBlockFiles.filePaths);
 
-                    markdown += '\n```\n\n';
+        return markdown;
+    }
+
+    /**
+     * Generate markdown for implementation steps and collect code block file paths.
+     *
+     * @param steps - Implementation steps to process
+     * @returns Object with generated markdown and list of file paths
+     */
+    private generateImplementationStepsMarkdown(steps: ImplementationStep[]): {
+        markdown: string;
+        filePaths: string[];
+    } {
+        let markdown = '';
+        const filePaths: string[] = [];
+
+        for (const step of steps) {
+            markdown += `**STEP**: ${step.title}\n\n`;
+            markdown += `**DESCRIPTION**: ${step.text}\n\n`;
+
+            for (const codeBlock of step.codeBlocks) {
+                markdown += this.generateCodeBlockMarkdown(codeBlock);
+                if (codeBlock.filePath) {
+                    filePaths.push(path.resolve(codeBlock.filePath));
                 }
             }
         }
 
-        markdown += '--------------------------------\n';
+        return { markdown, filePaths };
+    }
+
+    /**
+     * Generate markdown for a single code block.
+     *
+     * @param codeBlock - Code block to convert
+     * @returns Markdown string for the code block
+     */
+    private generateCodeBlockMarkdown(codeBlock: CodeBlock): string {
+        const markdownLanguage = this.convertToMarkdownLanguage(codeBlock.codeType);
+        let markdown = `**LANGUAGE**: ${this.convertToLanguage(codeBlock.codeType)}\n\n`;
+        markdown += `**CODE**:\n`;
+        markdown += '```' + (markdownLanguage || '') + '\n';
+        markdown += codeBlock.content;
+        markdown += '\n```\n\n';
+        return markdown;
+    }
+
+    /**
+     * Generate markdown for additional files not already in code blocks.
+     *
+     * @param files - File references to process
+     * @param codeBlockFiles - List of file paths already included in code blocks
+     * @returns Markdown string for additional files
+     */
+    private async generateAdditionalFilesMarkdown(
+        files: FileReference[] | undefined,
+        codeBlockFiles: string[]
+    ): Promise<string> {
+        if (!files) {
+            return '';
+        }
+
+        // Check if there are any files not already included in codeBlocks
+        const hasNewFiles = files.some((f) => {
+            // Remove leading slash from file.url if present
+            const cleanUrl = f.url.startsWith('/') ? f.url.slice(1) : f.url;
+            const filePath = path.resolve(this.gitReposPath, 'sap.fe', fpmExplorerFolder, cleanUrl);
+            return !codeBlockFiles.includes(filePath);
+        });
+
+        if (!hasNewFiles) {
+            return '';
+        }
+
+        let markdown = `**ADDITIONAL RELATED CODE BLOCKS**:\n\n`;
+
+        for (const file of files) {
+            markdown += await this.generateFileMarkdown(file, codeBlockFiles);
+        }
+
+        return markdown;
+    }
+
+    /**
+     * Generate markdown for a single additional file.
+     *
+     * @param file - File reference to process
+     * @param codeBlockFiles - List of file paths already included in code blocks
+     * @returns Markdown string for the file
+     */
+    private async generateFileMarkdown(file: FileReference, codeBlockFiles: string[]): Promise<string> {
+        // Remove leading slash from file.url if present
+        const cleanUrl = file.url.startsWith('/') ? file.url.slice(1) : file.url;
+        const filePath = path.resolve(this.gitReposPath, 'sap.fe', fpmExplorerFolder, cleanUrl);
+
+        // Skip if already included in codeBlocks
+        if (codeBlockFiles.includes(filePath)) {
+            return '';
+        }
+
+        // Determine language from file extension
+        const extension = file.name.split('.').pop()?.toLowerCase() || '';
+        const codeType = extension;
+        const markdownLanguage = this.convertToMarkdownLanguage(codeType);
+        const language = this.convertToLanguage(codeType);
+
+        let markdown = `**FILE**: ${file.name}\n\n`;
+        markdown += `**LANGUAGE**: ${language}\n\n`;
+        markdown += `**CODE**:\n`;
+        markdown += '```' + (markdownLanguage || '') + '\n';
+
+        // Read file content
+        try {
+            const content = await fs.readFile(filePath, 'utf-8');
+            markdown += content;
+        } catch (error) {
+            markdown += `// Error reading file: ${error.message}`;
+        }
+
+        markdown += '\n```\n\n';
 
         return markdown;
     }
@@ -803,78 +886,22 @@ class FpmDocumentationBuilder {
         console.log('🚀 Starting FPM documentation build...');
 
         try {
-            // Initialize GitHub configuration
             await this.initializeGitHubConfig();
-
-            // Clone or update repository
             const repoPath = await this.cloneOrUpdateRepository();
-
-            // Merge navigation files
-            const navigationModelPath = path.join(
-                repoPath,
-                'packages/sap.fe.core/test/sap/fe/core/fpmExplorer/model/navigationModel.json'
-            );
-            const pageConfigurationPath = path.join(
-                repoPath,
-                'packages/sap.fe.core/test/sap/fe/core/fpmExplorer/model/pageConfiguration.json'
-            );
-
-            console.log('🔄 Merging navigation files...');
-            const mergedNavigation = await this.mergeNavigationFiles(navigationModelPath, pageConfigurationPath);
-            console.log(`✓ Merged navigation with ${mergedNavigation.navigation.length} top-level items`);
-
-            // Locate view files with fpmExplorer content
+            const mergedNavigation = await this.loadAndMergeNavigationFiles(repoPath);
             const viewFiles = await this.locateFpmExplorerViewFiles(repoPath);
 
             if (viewFiles.size === 0) {
                 throw new Error('No fpmExplorer view files found');
             }
 
-            // Parse XML files and extract content
-            const allDocuments: FpmDocument[] = [];
-
-            for (const [fileName, filePath] of viewFiles) {
-                console.log(`📝 Processing file: ${fileName}`);
-                console.log(`📁 File path: ${filePath}`);
-                try {
-                    const documents = await this.parseXmlFile(filePath);
-                    const additionalInfo = await this.getAdditionalInfoFromJson(fileName, mergedNavigation);
-
-                    // Add tags and files to documents
-                    if (additionalInfo) {
-                        for (const doc of documents) {
-                            if (additionalInfo.tags) {
-                                doc.tags = additionalInfo.tags;
-                            }
-                            if (additionalInfo.files) {
-                                doc.files = additionalInfo.files;
-                            }
-                        }
-                        console.log(`   Additional info: ${JSON.stringify(additionalInfo)}`);
-                    }
-
-                    allDocuments.push(...documents);
-                    console.log(`✓ Extracted ${documents.length} code snippets from ${fileName}`);
-                    if (documents.length > 0) {
-                        console.log(`   Example: ${documents[0].title}`);
-                    }
-                } catch (error) {
-                    console.warn(`Failed to process ${fileName}:`, error.message);
-                }
-            }
+            const allDocuments = await this.processViewFiles(viewFiles, mergedNavigation);
 
             if (allDocuments.length === 0) {
                 throw new Error('No code snippets extracted from any files');
             }
 
-            // Generate markdown
-            const markdown = await this.generateMarkdown(allDocuments);
-
-            // Ensure output directory exists
-            await this.ensureOutputDirectory();
-
-            // Write output
-            await fs.writeFile(this.outputPath, markdown, 'utf-8');
+            await this.generateAndWriteOutput(allDocuments);
 
             console.log(`🎉 FPM documentation build completed!`);
             console.log(`📊 Total code snippets: ${allDocuments.length}`);
@@ -884,6 +911,123 @@ class FpmDocumentationBuilder {
             console.error('❌ Build failed:', errorMessage);
             process.exit(1);
         }
+    }
+
+    /**
+     * Load and merge navigation files.
+     *
+     * @param repoPath - Path to the repository
+     * @returns Merged navigation structure
+     */
+    private async loadAndMergeNavigationFiles(repoPath: string): Promise<{ navigation: NavigationItem[] }> {
+        const navigationModelPath = path.join(
+            repoPath,
+            'packages/sap.fe.core/test/sap/fe/core/fpmExplorer/model/navigationModel.json'
+        );
+        const pageConfigurationPath = path.join(
+            repoPath,
+            'packages/sap.fe.core/test/sap/fe/core/fpmExplorer/model/pageConfiguration.json'
+        );
+
+        console.log('🔄 Merging navigation files...');
+        const mergedNavigation = await this.mergeNavigationFiles(navigationModelPath, pageConfigurationPath);
+        console.log(`✓ Merged navigation with ${mergedNavigation.navigation.length} top-level items`);
+
+        return mergedNavigation;
+    }
+
+    /**
+     * Process all view files and extract documents.
+     *
+     * @param viewFiles - Map of view files to process
+     * @param mergedNavigation - Merged navigation structure
+     * @param mergedNavigation.navigation
+     * @returns Array of extracted documents
+     */
+    private async processViewFiles(
+        viewFiles: Map<string, string>,
+        mergedNavigation: { navigation: NavigationItem[] }
+    ): Promise<FpmDocument[]> {
+        const allDocuments: FpmDocument[] = [];
+
+        for (const [fileName, filePath] of viewFiles) {
+            const documents = await this.processViewFile(fileName, filePath, mergedNavigation);
+            allDocuments.push(...documents);
+        }
+
+        return allDocuments;
+    }
+
+    /**
+     * Process a single view file.
+     *
+     * @param fileName - Name of the file
+     * @param filePath - Full path to the file
+     * @param mergedNavigation - Merged navigation structure
+     * @param mergedNavigation.navigation
+     * @returns Array of extracted documents
+     */
+    private async processViewFile(
+        fileName: string,
+        filePath: string,
+        mergedNavigation: { navigation: NavigationItem[] }
+    ): Promise<FpmDocument[]> {
+        console.log(`📝 Processing file: ${fileName}`);
+        console.log(`📁 File path: ${filePath}`);
+
+        try {
+            const documents = await this.parseXmlFile(filePath);
+            const additionalInfo = await this.getAdditionalInfoFromJson(fileName, mergedNavigation);
+
+            this.enrichDocumentsWithAdditionalInfo(documents, additionalInfo);
+
+            console.log(`✓ Extracted ${documents.length} code snippets from ${fileName}`);
+            if (documents.length > 0) {
+                console.log(`   Example: ${documents[0].title}`);
+            }
+
+            return documents;
+        } catch (error) {
+            console.warn(`Failed to process ${fileName}:`, error.message);
+            return [];
+        }
+    }
+
+    /**
+     * Enrich documents with additional information from navigation.
+     *
+     * @param documents - Documents to enrich
+     * @param additionalInfo - Additional information to add
+     */
+    private enrichDocumentsWithAdditionalInfo(
+        documents: FpmDocument[],
+        additionalInfo: { tags?: string; files?: FileReference[] } | undefined
+    ): void {
+        if (!additionalInfo) {
+            return;
+        }
+
+        for (const doc of documents) {
+            if (additionalInfo.tags) {
+                doc.tags = additionalInfo.tags;
+            }
+            if (additionalInfo.files) {
+                doc.files = additionalInfo.files;
+            }
+        }
+
+        console.log(`   Additional info: ${JSON.stringify(additionalInfo)}`);
+    }
+
+    /**
+     * Generate markdown and write to output file.
+     *
+     * @param documents - Documents to convert to markdown
+     */
+    private async generateAndWriteOutput(documents: FpmDocument[]): Promise<void> {
+        const markdown = await this.generateMarkdown(documents);
+        await this.ensureOutputDirectory();
+        await fs.writeFile(this.outputPath, markdown, 'utf-8');
     }
 }
 
