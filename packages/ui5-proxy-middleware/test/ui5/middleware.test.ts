@@ -187,6 +187,23 @@ describe('middleware', () => {
             );
         });
 
+        test('pathReplace', async () => {
+            await getTestServer({
+                ...config,
+                ui5: {
+                    path: '/resources',
+                    url: 'http://ui5.example',
+                    pathReplace: '/new-resources'
+                }
+            });
+            expect(ui5ProxySpy).toHaveBeenCalledWith(
+                expect.objectContaining({ pathReplace: '/new-resources' }),
+                expect.objectContaining({}),
+                undefined,
+                expect.any(ToolsLogger)
+            );
+        });
+
         test('secure', async () => {
             await getTestServer({
                 ...config,
