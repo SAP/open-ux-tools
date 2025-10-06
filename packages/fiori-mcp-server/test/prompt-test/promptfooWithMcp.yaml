@@ -7,7 +7,7 @@ providers:
 
 tests:
   - vars:
-      appPath: "C:/SAPDevelop/test-projects/ghIssues/35887/project1-2025-10-011325" 
+      appPath: "/test-projects/project1-2025-10-011325" 
     assert:
       - type: contains
         value: add-page
