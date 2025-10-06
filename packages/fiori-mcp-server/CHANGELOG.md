@@ -1,5 +1,16 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.2.0
+
+### Minor Changes
+
+-   b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
+
+### Patch Changes
+
+-   Updated dependencies [b179405]
+    -   @sap-ux/fiori-docs-embeddings@0.1.0
+
 ## 0.1.6
 
 ### Patch Changes
