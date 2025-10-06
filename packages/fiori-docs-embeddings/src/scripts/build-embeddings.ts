@@ -176,61 +176,84 @@ class EmbeddingBuilder {
             console.log(`Found ${mdFiles.length} markdown files in data_local`);
 
             for (const file of mdFiles) {
-                try {
-                    const filePath = path.join(dataLocalPath, file);
-                    const content = await fs.readFile(filePath, 'utf-8');
-
-                    // Split by the delimiter
-                    const chunks = content.split('--------------------------------').filter((chunk) => chunk.trim());
-
-                    console.log(`  ${file}: ${chunks.length} chunks`);
-
-                    for (const [index, chunkContent] of chunks.entries()) {
-                        const trimmedContent = chunkContent.trim();
-                        if (trimmedContent) {
-                            // Extract title from **TITLE**
-                            const titleMatch = trimmedContent.match(/\*\*TITLE\*\*:\s*(.+)/);
-                            const title = titleMatch ? titleMatch[1].trim() : `${file} - Chunk ${index + 1}`;
-
-                            // Extract tags from **TAGS**
-                            const tagsMatch = trimmedContent.match(/\*\*TAGS\*\*:\s*(.+)/);
-                            const tags = tagsMatch
-                                ? tagsMatch[1].split(',').map((tag) => tag.trim())
-                                : ['fiori', 'elements'];
-
-                            // Determine category from filename (remove .md extension and convert to title case)
-                            const category =
-                                file
-                                    .replace('.md', '')
-                                    .split(/[-_]/)
-                                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                                    .join(' ') ?? 'Fiori Elements';
-
-                            const doc: Document = {
-                                id: `local-${file.replace('.md', '')}-${index}`,
-                                title,
-                                content: trimmedContent,
-                                category,
-                                path: `data_local/${file}`,
-                                tags,
-                                headers: [],
-                                lastModified: new Date().toISOString(),
-                                wordCount: trimmedContent.split(/\s+/).length,
-                                excerpt: trimmedContent.substring(0, 200)
-                            };
-
-                            this.documents.push(doc);
-                        }
-                    }
-                } catch (error: any) {
-                    console.warn(`Failed to load local document ${file}:`, error.message);
-                }
+                await this.processLocalMarkdownFile(dataLocalPath, file);
             }
 
             console.log(`✓ Loaded local documents (total: ${this.documents.length} documents now)`);
         } catch (error: any) {
             console.warn(`Failed to read data_local directory:`, error.message);
         }
+    }
+
+    /**
+     * Process a single local markdown file.
+     *
+     * @param dataLocalPath - Path to the data_local directory
+     * @param file - Filename to process
+     */
+    private async processLocalMarkdownFile(dataLocalPath: string, file: string): Promise<void> {
+        try {
+            const filePath = path.join(dataLocalPath, file);
+            const content = await fs.readFile(filePath, 'utf-8');
+
+            // Split by the delimiter
+            const chunks = content.split('--------------------------------').filter((chunk) => chunk.trim());
+
+            console.log(`  ${file}: ${chunks.length} chunks`);
+
+            for (const [index, chunkContent] of chunks.entries()) {
+                const doc = this.createDocumentFromChunk(file, index, chunkContent);
+                if (doc) {
+                    this.documents.push(doc);
+                }
+            }
+        } catch (error: any) {
+            console.warn(`Failed to load local document ${file}:`, error.message);
+        }
+    }
+
+    /**
+     * Create a Document from a markdown chunk.
+     *
+     * @param file - Source filename
+     * @param index - Chunk index
+     * @param chunkContent - Content of the chunk
+     * @returns Document or null if chunk is empty
+     */
+    private createDocumentFromChunk(file: string, index: number, chunkContent: string): Document | null {
+        const trimmedContent = chunkContent.trim();
+        if (!trimmedContent) {
+            return null;
+        }
+
+        // Extract title from **TITLE**
+        const titleMatch = trimmedContent.match(/\*\*TITLE\*\*:\s*(.+)/);
+        const title = titleMatch ? titleMatch[1].trim() : `${file} - Chunk ${index + 1}`;
+
+        // Extract tags from **TAGS**
+        const tagsMatch = trimmedContent.match(/\*\*TAGS\*\*:\s*(.+)/);
+        const tags = tagsMatch ? tagsMatch[1].split(',').map((tag) => tag.trim()) : ['fiori', 'elements'];
+
+        // Determine category from filename (remove .md extension and convert to title case)
+        const category =
+            file
+                .replace('.md', '')
+                .split(/[-_]/)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ') ?? 'Fiori Elements';
+
+        return {
+            id: `local-${file.replace('.md', '')}-${index}`,
+            title,
+            content: trimmedContent,
+            category,
+            path: `data_local/${file}`,
+            tags,
+            headers: [],
+            lastModified: new Date().toISOString(),
+            wordCount: trimmedContent.split(/\s+/).length,
+            excerpt: trimmedContent.substring(0, 200)
+        };
     }
 
     /**
