@@ -4,5 +4,4 @@ config.snapshotFormat = {
     escapeString: false,
     printBasicPrototype: false
 };
-config.collectCoverage = false;
 module.exports = config;
