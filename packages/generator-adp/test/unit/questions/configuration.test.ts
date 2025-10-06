@@ -20,6 +20,7 @@ import { ConfigPrompter } from '../../../src/app/questions/configuration';
 import { configPromptNames } from '../../../src/app/types';
 import { initI18n, t } from '../../../src/utils/i18n';
 import { getSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
+import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
@@ -108,6 +109,10 @@ const getSystemAdditionalMessagesMock = getSystemAdditionalMessages as jest.Mock
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
     const layer = FlexLayer.CUSTOMER_BASE;
+    const systemAdditionalMessage: IMessageSeverity = {
+        message: 'System additional message',
+        severity: Severity.information
+    };
 
     beforeAll(async () => {
         await initI18n();
@@ -156,6 +161,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
+            getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
 
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
@@ -166,6 +172,8 @@ describe('ConfigPrompter Integration Tests', () => {
                 systemVersion: '1.135.0',
                 ui5Versions: ['1.134.1 (latest)']
             });
+            expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
+            expect(systemPrompt?.additionalMessages?.()).toEqual(systemAdditionalMessage);
         });
 
         it('system prompt validate should return string when input is empty', async () => {
@@ -360,16 +368,28 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(`Authentication error: ${axiosError.message}`);
         });
 
-        it('password prompt additionalMessages should return undefined if value is passed', async () => {
+        it('password prompt additionalMessages should return undefined if system additional messages are already set', async () => {
             const prompts = configPrompter.getPrompts();
             const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
             expect(passwordPrompt).toBeDefined();
-            const systemAdditionalMessage = 'System additional message';
-            getSystemAdditionalMessagesMock.mockResolvedValue(systemAdditionalMessage);
+            configPrompter['systemAdditionalMessage'] = systemAdditionalMessage;
 
-            const result = await passwordPrompt?.additionalMessages?.(dummyApps[0]);
+            const additionalMessages = await passwordPrompt?.additionalMessages?.();
 
-            expect(result).toEqual(systemAdditionalMessage);
+            expect(additionalMessages).toBeUndefined();
+            expect(getSystemAdditionalMessagesMock).not.toHaveBeenCalled();
+        });
+
+        it('password prompt additionalMessages callback should set the system additional messages if not set', async () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
+
+            const additionalMessages = await passwordPrompt?.additionalMessages?.();
+
+            expect(additionalMessages).toEqual(systemAdditionalMessage);
+            expect(getSystemAdditionalMessagesMock).toHaveBeenCalled();
         });
     });
 
