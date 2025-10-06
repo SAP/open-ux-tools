@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.83
+
+### Patch Changes
+
+-   2a3fff1: escape text in information message after generation
+
 ## 0.1.82
 
 ### Patch Changes

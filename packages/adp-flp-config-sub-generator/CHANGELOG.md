@@ -1,5 +1,11 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.78
+
+### Patch Changes
+
+-   487296c: fix: Wrong navigation between steps in FLP Configuration generator for ADP
+
 ## 0.1.77
 
 ### Patch Changes

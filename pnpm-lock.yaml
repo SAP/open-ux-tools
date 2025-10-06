@@ -900,8 +900,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.9
-        version: 2.0.9(@types/express@4.17.21)
+        specifier: 3.0.5
+        version: 3.0.5
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -915,6 +915,9 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
     devDependencies:
+      '@types/connect':
+        specifier: ^3.4.38
+        version: 3.4.38
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
@@ -930,6 +933,9 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
+      connect:
+        specifier: ^3.7.0
+        version: 3.7.0
       express:
         specifier: 4.21.2
         version: 4.21.2
@@ -1320,7 +1326,7 @@ importers:
         version: 7.33.2(eslint@8.57.0)
       http-proxy-middleware:
         specifier: 2.0.9
-        version: 2.0.9(@types/express@4.17.21)
+        version: 2.0.9
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
@@ -4227,6 +4233,9 @@ importers:
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator
@@ -4492,8 +4501,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.9
-        version: 2.0.9(@types/express@4.17.21)
+        specifier: 3.0.5
+        version: 3.0.5
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -10279,6 +10288,7 @@ packages:
     dependencies:
       '@types/connect': 3.4.38
       '@types/node': 20.0.0
+    dev: true
 
   /@types/cheerio@0.22.31:
     resolution: {integrity: sha512-Kt7Cdjjdi2XWSfrZ53v4Of0wG3ZcmaegFXjMmz9tfNrZSkzzo36G0AL1YqSdcIA78Etjt6E609pt5h1xnQkPUw==}
@@ -10302,6 +10312,7 @@ packages:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
       '@types/node': 20.0.0
+    dev: true
 
   /@types/cookiejar@2.1.2:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}
@@ -10375,6 +10386,7 @@ packages:
       '@types/qs': 6.9.1
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
+    dev: true
 
   /@types/express@4.17.21:
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
@@ -10383,6 +10395,7 @@ packages:
       '@types/express-serve-static-core': 4.17.35
       '@types/qs': 6.9.1
       '@types/serve-static': 1.15.5
+    dev: true
 
   /@types/folder-hash@4.0.4:
     resolution: {integrity: sha512-c+PwHm51Dw3fXM8SDK+93PO3oXdk4XNouCCvV67lj4aijRkZz5g67myk+9wqWWnyv3go6q96hT6ywcd3XtoZiQ==}
@@ -10429,11 +10442,19 @@ packages:
 
   /@types/http-errors@2.0.4:
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
+    dev: true
+
+  /@types/http-proxy@1.17.16:
+    resolution: {integrity: sha512-sdWoUajOB1cd0A8cRRQ1cfyWNbmFKLAqBB89Y8x5iYyG/mkJHc0YUH8pdWBy2omi9qtCpiIgGjuwO0dQST2l5w==}
+    dependencies:
+      '@types/node': 20.0.0
+    dev: false
 
   /@types/http-proxy@1.17.8:
     resolution: {integrity: sha512-5kPLG5BKpWYkw/LVOGWpiq3nEVqxiN32rTgI53Sk12/xHFQ2rG3ehI9IO+O3W2QoKeyB92dJkoka8SUm6BX1pA==}
     dependencies:
       '@types/node': 17.0.9
+    dev: true
 
   /@types/i18next-fs-backend@1.1.2:
     resolution: {integrity: sha512-ZzTRXA5B0x0oGhzKNp08IsYjZpli4LjRZpg3q4j0XFxN5lKG2MVLnR4yHX8PPExBk4sj9Yfk1z9O6CjPrAlmIQ==}
@@ -10586,6 +10607,7 @@ packages:
 
   /@types/mime@1.3.2:
     resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
+    dev: true
 
   /@types/minimatch@3.0.5:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
@@ -10616,6 +10638,7 @@ packages:
 
   /@types/node@17.0.9:
     resolution: {integrity: sha512-5dNBXu/FOER+EXnyah7rn8xlNrfMOQb/qXnw4NQgLkCygKBKhdmF/CA5oXVOKZLBEahw8s2WP9LxIcN/oDDRgQ==}
+    dev: true
 
   /@types/node@18.11.9:
     resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
@@ -10677,6 +10700,7 @@ packages:
 
   /@types/qs@6.9.1:
     resolution: {integrity: sha512-lhbQXx9HKZAPgBkISrBcmAcMpZsmpe/Cd/hY7LGZS5OfkySUBItnPZHgQPssWYUET8elF+yCFBbP1Q0RZPTdaw==}
+    dev: true
 
   /@types/qs@6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
@@ -10688,6 +10712,7 @@ packages:
 
   /@types/range-parser@1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
+    dev: true
 
   /@types/react-dom@16.9.24:
     resolution: {integrity: sha512-Gcmq2JTDheyWn/1eteqyzzWKSqDjYU6KYsIvH7thb7CR5OYInAWOX+7WnKf6PaU/cbdOc4szJItcDEJO7UGmfA==}
@@ -10773,6 +10798,7 @@ packages:
     dependencies:
       '@types/mime': 1.3.2
       '@types/node': 20.0.0
+    dev: true
 
   /@types/serve-static@1.15.5:
     resolution: {integrity: sha512-PDRk21MnK70hja/YF8AHfC7yIsiQHn1rcXx7ijCFBX/k+XQJhQT/gw3xekXKJvx+5SXaMMS8oqQy09Mzvz2TuQ==}
@@ -10780,6 +10806,7 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/mime': 1.3.2
       '@types/node': 20.0.0
+    dev: true
 
   /@types/shimmer@1.0.5:
     resolution: {integrity: sha512-9Hp0ObzwwO57DpLFF0InUjUm/II8GmKAvzbefxQTihCb7KI6yc9yzf0nLc4mVdby5N4DRCgQM2wCup9KTieeww==}
@@ -12679,7 +12706,7 @@ packages:
   /axios@1.12.0:
     resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
     dependencies:
-      follow-redirects: 1.15.6
+      follow-redirects: 1.15.6(debug@4.4.1)
       form-data: 4.0.4
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -12688,7 +12715,7 @@ packages:
   /axios@1.12.2:
     resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
     dependencies:
-      follow-redirects: 1.15.6
+      follow-redirects: 1.15.6(debug@4.4.1)
       form-data: 4.0.4
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -16306,7 +16333,7 @@ packages:
       - supports-color
     dev: false
 
-  /follow-redirects@1.15.6:
+  /follow-redirects@1.15.6(debug@4.4.1):
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -16314,6 +16341,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.4.1
 
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -17181,7 +17210,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /http-proxy-middleware@2.0.9(@types/express@4.17.21):
+  /http-proxy-middleware@2.0.9:
     resolution: {integrity: sha512-c1IyJYLYppU574+YI7R4QyX2ystMtVXZwIdzazUIPIJsHuWNd+mho2j+bKoHftndicGj9yh+xjd+l0yj7VeT1Q==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -17190,21 +17219,35 @@ packages:
       '@types/express':
         optional: true
     dependencies:
-      '@types/express': 4.17.21
       '@types/http-proxy': 1.17.8
-      http-proxy: 1.18.1
+      http-proxy: 1.18.1(debug@4.4.1)
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
       micromatch: 4.0.8
     transitivePeerDependencies:
       - debug
+    dev: true
 
-  /http-proxy@1.18.1:
+  /http-proxy-middleware@3.0.5:
+    resolution: {integrity: sha512-GLZZm1X38BPY4lkXA01jhwxvDoOkkXqjgVyUzVxiEK4iuRu03PZoYHhHRwxnfhQMDuaxi3vVri0YgSro/1oWqg==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    dependencies:
+      '@types/http-proxy': 1.17.16
+      debug: 4.4.1
+      http-proxy: 1.18.1(debug@4.4.1)
+      is-glob: 4.0.3
+      is-plain-object: 5.0.0
+      micromatch: 4.0.8
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /http-proxy@1.18.1(debug@4.4.1):
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.6
+      follow-redirects: 1.15.6(debug@4.4.1)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -17763,6 +17806,7 @@ packages:
   /is-plain-obj@3.0.0:
     resolution: {integrity: sha512-gwsOE28k+23GP1B6vFl1oVh/WOzmawBrKwo5Ev6wMKzPkaXaCDIQKzLnvsA42DRlbVTWorkgTKIviAKCWkfUwA==}
     engines: {node: '>=10'}
+    dev: true
 
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
