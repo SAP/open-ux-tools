@@ -1,5 +1,15 @@
 # @sap-ux/system-access
 
+## 0.6.19
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
 ## 0.6.18
 
 ### Patch Changes

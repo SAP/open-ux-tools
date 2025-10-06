@@ -1,5 +1,21 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.80
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+    -   @sap-ux/flp-config-inquirer@0.4.29
+
 ## 0.1.79
 
 ### Patch Changes

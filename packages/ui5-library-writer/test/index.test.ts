@@ -1,5 +1,5 @@
 import { removeSync } from 'fs-extra';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { UI5LibConfig } from '../src';
 import { generate } from '../src';
 import { debug, projectChecks, testOutputDir, updatePackageJSONDependencyToUseLocalPath } from './common';

@@ -31,7 +31,7 @@ export const minVersionInfo = {
  * @throws Error if the version info is invalid
  */
 function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
-    if (isNaN(versionInfo.major) || isNaN(versionInfo.minor) || isNaN(versionInfo.patch ?? 0)) {
+    if (Number.isNaN(versionInfo.major) || Number.isNaN(versionInfo.minor) || Number.isNaN(versionInfo.patch ?? 0)) {
         void sendInfoCenterMessage({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: { key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION' },
@@ -61,7 +61,7 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
             type: MessageBarType.error
         });
     }
-    const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+    const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
     const label = version.split(/-(.*)/s)?.[1];
 
     return {

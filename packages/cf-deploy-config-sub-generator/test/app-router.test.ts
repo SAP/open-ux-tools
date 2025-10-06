@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import { join } from 'path';
+import * as fs from 'node:fs';
+import { join } from 'node:path';
 import AppRouterGenerator from '../src/app-router';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import yeomanTest from 'yeoman-test';

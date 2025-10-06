@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.19
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/btp-utils@1.1.4
+
 ## 0.5.18
 
 ### Patch Changes

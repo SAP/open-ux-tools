@@ -1,7 +1,7 @@
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 import { originToRelative, parseOdataVersion, removeCircularFromServiceProvider } from '../../../src/utils';
 
 describe('Utils', () => {

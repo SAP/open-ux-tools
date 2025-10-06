@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';

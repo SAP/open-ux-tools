@@ -1,6 +1,6 @@
 import * as projectValidators from '@sap-ux/project-input-validator';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
-import { join } from 'path';
+import { join } from 'node:path';
 import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
 import { validateAppName } from '../../../src/prompts/validators';
 

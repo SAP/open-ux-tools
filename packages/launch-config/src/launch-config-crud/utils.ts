@@ -1,4 +1,4 @@
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import type { ODataVersion } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';

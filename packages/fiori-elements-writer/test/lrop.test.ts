@@ -1,6 +1,6 @@
 import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TableType, TemplateType } from '../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { removeSync } from 'fs-extra';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import {

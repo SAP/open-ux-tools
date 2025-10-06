@@ -14,7 +14,7 @@ import type {
     PromptsType
 } from './types';
 import { i18nNamespaces, initI18n, translate } from '../i18n';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { SupportedPrompts, NarrowPrompt, SupportedGeneratorPrompts } from './map';
 import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './map';
 

@@ -1,4 +1,4 @@
-import { writeFile } from 'fs';
+import { writeFile } from 'node:fs';
 import { t } from '../i18n';
 import minimist from 'minimist';
 import prompts from 'prompts';

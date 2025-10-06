@@ -6,7 +6,7 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { writeAPIHubKeyFiles, writeAppGenInfoFiles } from '../../../src/fiori-app-generator/writing';
 import type { ApiHubConfig, Project, Service } from '../../../src/types';
 import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types';
