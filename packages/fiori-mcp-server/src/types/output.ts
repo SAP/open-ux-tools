@@ -2,6 +2,11 @@ import * as zod from 'zod';
 import { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic';
 
 /**
+ * Output interface for the 'search_docs' functionality
+ */
+export const SearchDocsOutputSchema = zod.string().describe('Search results as formatted text');
+
+/**
  * Output interface for the 'list_fiori_apps' functionality
  */
 export const ListFioriAppsOutputSchema = zod.object({
