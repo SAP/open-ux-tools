@@ -569,12 +569,10 @@ class FpmDocumentationBuilder {
                 }
             }
             // Check if there are any files not already included in codeBlocks
-            const hasNewFiles =
-                doc.files &&
-                doc.files.some((f) => {
-                    const filePath = path.join(this.gitReposPath, 'sap.fe', fpmExplorerFolder, f.url);
-                    return !codeBlockFiles.includes(filePath);
-                });
+            const hasNewFiles = doc.files?.some((f) => {
+                const filePath = path.join(this.gitReposPath, 'sap.fe', fpmExplorerFolder, f.url);
+                return !codeBlockFiles.includes(filePath);
+            });
 
             if (hasNewFiles) {
                 markdown += `**ADDITIONAL RELATED CODE BLOCKS**:\n\n`;
