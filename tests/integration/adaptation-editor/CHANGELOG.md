@@ -1,5 +1,11 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.11
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+
 ## 0.0.10
 
 ### Patch Changes
