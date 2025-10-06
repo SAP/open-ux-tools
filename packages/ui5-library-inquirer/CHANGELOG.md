@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.5.0
+
+### Minor Changes
+
+-   0a9af29: Resolve UI5 versions against npm registry and @sapui5/distribution-metadata to ensure dropdown options match published packages.
+
 ## 0.4.48
 
 ### Patch Changes
