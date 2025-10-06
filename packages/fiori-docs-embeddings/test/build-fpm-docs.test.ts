@@ -314,10 +314,8 @@ describe('FpmDocumentationBuilder', () => {
             };
 
             const builder = new FpmDocumentationBuilder();
-            const result = await (builder as any).getAdditionalInfoFromJson(
-                'path/to/testKey/file.xml',
-                mergedNavigation
-            );
+            const fileName = path.join('path', 'to', 'testKey', 'file.xml');
+            const result = await (builder as any).getAdditionalInfoFromJson(fileName, mergedNavigation);
 
             expect(result).toEqual({
                 tags: 'tag1, tag2, tag3'
@@ -337,10 +335,8 @@ describe('FpmDocumentationBuilder', () => {
             };
 
             const builder = new FpmDocumentationBuilder();
-            const result = await (builder as any).getAdditionalInfoFromJson(
-                'path/to/testKey/file.xml',
-                mergedNavigation
-            );
+            const fileName = path.join('path', 'to', 'testKey', 'file.xml');
+            const result = await (builder as any).getAdditionalInfoFromJson(fileName, mergedNavigation);
 
             expect(result).toEqual({
                 files: [{ url: '/test.xml', name: 'test.xml', key: 'test.xml' }]
@@ -372,10 +368,8 @@ describe('FpmDocumentationBuilder', () => {
             };
 
             const builder = new FpmDocumentationBuilder();
-            const result = await (builder as any).getAdditionalInfoFromJson(
-                'path/to/testKey/file.xml',
-                mergedNavigation
-            );
+            const fileName = path.join('path', 'to', 'testKey', 'file.xml');
+            const result = await (builder as any).getAdditionalInfoFromJson(fileName, mergedNavigation);
 
             expect(result).toEqual({
                 tags: 'tag1, tag2'
@@ -393,10 +387,8 @@ describe('FpmDocumentationBuilder', () => {
             };
 
             const builder = new FpmDocumentationBuilder();
-            const result = await (builder as any).getAdditionalInfoFromJson(
-                'path/to/testKey/file.xml',
-                mergedNavigation
-            );
+            const fileName = path.join('path', 'to', 'testKey', 'file.xml');
+            const result = await (builder as any).getAdditionalInfoFromJson(fileName, mergedNavigation);
 
             expect(result).toBeUndefined();
         });
@@ -413,10 +405,8 @@ describe('FpmDocumentationBuilder', () => {
             };
 
             const builder = new FpmDocumentationBuilder();
-            const result = await (builder as any).getAdditionalInfoFromJson(
-                'path/to/testKey/file.xml',
-                mergedNavigation
-            );
+            const fileName = path.join('path', 'to', 'testKey', 'file.xml');
+            const result = await (builder as any).getAdditionalInfoFromJson(fileName, mergedNavigation);
 
             expect(result).toBeUndefined();
         });
@@ -1360,10 +1350,8 @@ describe('FpmDocumentationBuilder', () => {
             };
 
             const builder = new FpmDocumentationBuilder();
-            const result = await (builder as any).getAdditionalInfoFromJson(
-                'path/to/testKey/file.xml',
-                mergedNavigation
-            );
+            const fileName = path.join('path', 'to', 'testKey', 'file.xml');
+            const result = await (builder as any).getAdditionalInfoFromJson(fileName, mergedNavigation);
 
             expect(result).toEqual({
                 files: [{ url: '/test.xml', name: 'test.xml', key: 'test.xml' }]
