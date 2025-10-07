@@ -75,22 +75,6 @@ description: Test MTA Project for CF Writer Tests
 ",
     "state": "modified",
   },
-  "../minimal-cf/test-cf-project/.adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"test.namespace\\",
-  \\"appvariant\\": \\"test-cf-project\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"CF\\",
-  \\"ui5Version\\": \\"1.120.0\\",
-  \\"cfApiUrl\\": \\"/test.cf.com\\",
-  \\"cfSpace\\": \\"space-guid\\",
-  \\"cfOrganization\\": \\"org-guid\\"
-}
-",
-    "state": "modified",
-  },
   "../minimal-cf/test-cf-project/.gitignore": Object {
     "contents": "/node_modules/
 /preview/
@@ -108,6 +92,7 @@ UIAdaptation*.html
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -126,7 +111,8 @@ UIAdaptation*.html
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
 		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^3.0.0\\",
+		\\"@sap/ux-ui5-tooling\\": \\"1\\",
+		\\"@ui5/cli\\": \\"^4.0.16\\",
 		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
 		\\"bestzip\\": \\"2.1.4\\",
 		\\"rimraf\\": \\"3.0.2\\"
@@ -141,20 +127,42 @@ specVersion: \\"2.2\\"
 type: application
 metadata:
   name: test-cf-project
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: test-cf-project
         appHostId: app-host-id
         appName: Base App
         appVersion: 1.0.0
-        moduleName: test-cf-project
+        html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: runtime-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service",
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+",
     "state": "modified",
   },
   "../minimal-cf/test-cf-project/webapp/i18n/i18n.properties": Object {
@@ -301,22 +309,6 @@ description: Test MTA Project for CF Writer Tests
 ",
     "state": "modified",
   },
-  "test-cf-project/.adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"test.namespace\\",
-  \\"appvariant\\": \\"test-cf-project\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"CF\\",
-  \\"ui5Version\\": \\"1.120.0\\",
-  \\"cfApiUrl\\": \\"/test.cf.com\\",
-  \\"cfSpace\\": \\"space-guid\\",
-  \\"cfOrganization\\": \\"org-guid\\"
-}
-",
-    "state": "modified",
-  },
   "test-cf-project/.gitignore": Object {
     "contents": "/node_modules/
 /preview/
@@ -334,6 +326,7 @@ UIAdaptation*.html
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -352,7 +345,8 @@ UIAdaptation*.html
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
 		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^3.0.0\\",
+		\\"@sap/ux-ui5-tooling\\": \\"1\\",
+		\\"@ui5/cli\\": \\"^4.0.16\\",
 		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
 		\\"bestzip\\": \\"2.1.4\\",
 		\\"rimraf\\": \\"3.0.2\\"
@@ -367,20 +361,42 @@ specVersion: \\"2.2\\"
 type: application
 metadata:
   name: test-cf-project
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: test-cf-project
         appHostId: app-host-id
         appName: Base App
         appVersion: 1.0.0
-        moduleName: test-cf-project
+        html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: runtime-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service",
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+",
     "state": "modified",
   },
   "test-cf-project/webapp/i18n/i18n.properties": Object {
@@ -532,22 +548,6 @@ description: Test MTA Project for CF Writer Tests
 ",
     "state": "modified",
   },
-  "../managed-approuter/test-cf-project/.adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"test.namespace\\",
-  \\"appvariant\\": \\"test-cf-project\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"CF\\",
-  \\"ui5Version\\": \\"1.120.0\\",
-  \\"cfApiUrl\\": \\"/test.cf.com\\",
-  \\"cfSpace\\": \\"space-guid\\",
-  \\"cfOrganization\\": \\"org-guid\\"
-}
-",
-    "state": "modified",
-  },
   "../managed-approuter/test-cf-project/.gitignore": Object {
     "contents": "/node_modules/
 /preview/
@@ -565,6 +565,7 @@ UIAdaptation*.html
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -583,7 +584,8 @@ UIAdaptation*.html
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
 		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^3.0.0\\",
+		\\"@sap/ux-ui5-tooling\\": \\"1\\",
+		\\"@ui5/cli\\": \\"^4.0.16\\",
 		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
 		\\"bestzip\\": \\"2.1.4\\",
 		\\"rimraf\\": \\"3.0.2\\"
@@ -598,20 +600,42 @@ specVersion: \\"2.2\\"
 type: application
 metadata:
   name: test-cf-project
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: test-cf-project
         appHostId: app-host-id
         appName: Base App
         appVersion: 1.0.0
-        moduleName: test-cf-project
+        html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: runtime-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service",
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+",
     "state": "modified",
   },
   "../managed-approuter/test-cf-project/webapp/i18n/i18n.properties": Object {
@@ -732,22 +756,6 @@ description: Test MTA Project for CF Writer Tests
 ",
     "state": "modified",
   },
-  "../minimal-cf/test-cf-project/.adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"test.namespace\\",
-  \\"appvariant\\": \\"test-cf-project\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"CF\\",
-  \\"ui5Version\\": \\"1.120.0\\",
-  \\"cfApiUrl\\": \\"/test.cf.com\\",
-  \\"cfSpace\\": \\"space-guid\\",
-  \\"cfOrganization\\": \\"org-guid\\"
-}
-",
-    "state": "modified",
-  },
   "../minimal-cf/test-cf-project/.gitignore": Object {
     "contents": "/node_modules/
 /preview/
@@ -765,6 +773,7 @@ UIAdaptation*.html
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -783,7 +792,8 @@ UIAdaptation*.html
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
 		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^3.0.0\\",
+		\\"@sap/ux-ui5-tooling\\": \\"1\\",
+		\\"@ui5/cli\\": \\"^4.0.16\\",
 		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
 		\\"bestzip\\": \\"2.1.4\\",
 		\\"rimraf\\": \\"3.0.2\\"
@@ -798,20 +808,42 @@ specVersion: \\"2.2\\"
 type: application
 metadata:
   name: test-cf-project
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: test-cf-project
         appHostId: app-host-id
         appName: Base App
         appVersion: 1.0.0
-        moduleName: test-cf-project
+        html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: runtime-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service",
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+",
     "state": "modified",
   },
   "../minimal-cf/test-cf-project/webapp/i18n/i18n.properties": Object {
@@ -994,22 +1026,6 @@ description: Test MTA Project for CF Writer Tests
 ",
     "state": "modified",
   },
-  "test-cf-project/.adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"test.namespace\\",
-  \\"appvariant\\": \\"test-cf-project\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"CF\\",
-  \\"ui5Version\\": \\"1.120.0\\",
-  \\"cfApiUrl\\": \\"/test.cf.com\\",
-  \\"cfSpace\\": \\"space-guid\\",
-  \\"cfOrganization\\": \\"org-guid\\"
-}
-",
-    "state": "modified",
-  },
   "test-cf-project/.gitignore": Object {
     "contents": "/node_modules/
 /preview/
@@ -1027,6 +1043,7 @@ UIAdaptation*.html
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -1045,7 +1062,8 @@ UIAdaptation*.html
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
 		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^3.0.0\\",
+		\\"@sap/ux-ui5-tooling\\": \\"1\\",
+		\\"@ui5/cli\\": \\"^4.0.16\\",
 		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
 		\\"bestzip\\": \\"2.1.4\\",
 		\\"rimraf\\": \\"3.0.2\\"
@@ -1060,20 +1078,42 @@ specVersion: \\"2.2\\"
 type: application
 metadata:
   name: test-cf-project
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: test-cf-project
         appHostId: app-host-id
         appName: Base App
         appVersion: 1.0.0
-        moduleName: test-cf-project
+        html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: runtime-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service",
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+",
     "state": "modified",
   },
   "test-cf-project/webapp/i18n/i18n.properties": Object {
@@ -1199,22 +1239,6 @@ description: Test MTA Project for CF Writer Tests
 ",
     "state": "modified",
   },
-  "test-cf-project/.adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"test.namespace\\",
-  \\"appvariant\\": \\"test-cf-project\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"CF\\",
-  \\"ui5Version\\": \\"1.120.0\\",
-  \\"cfApiUrl\\": \\"/test.cf.com\\",
-  \\"cfSpace\\": \\"space-guid\\",
-  \\"cfOrganization\\": \\"org-guid\\"
-}
-",
-    "state": "modified",
-  },
   "test-cf-project/.gitignore": Object {
     "contents": "/node_modules/
 /preview/
@@ -1232,6 +1256,7 @@ UIAdaptation*.html
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -1250,7 +1275,8 @@ UIAdaptation*.html
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
 		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^3.0.0\\",
+		\\"@sap/ux-ui5-tooling\\": \\"1\\",
+		\\"@ui5/cli\\": \\"^4.0.16\\",
 		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
 		\\"bestzip\\": \\"2.1.4\\",
 		\\"rimraf\\": \\"3.0.2\\"
@@ -1265,20 +1291,42 @@ specVersion: \\"2.2\\"
 type: application
 metadata:
   name: test-cf-project
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: test-cf-project
         appHostId: app-host-id
         appName: Base App
         appVersion: 1.0.0
-        moduleName: test-cf-project
+        html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: runtime-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service",
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+",
     "state": "modified",
   },
   "test-cf-project/webapp/i18n/i18n.properties": Object {

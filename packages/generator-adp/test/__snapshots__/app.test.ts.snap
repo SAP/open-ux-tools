@@ -204,20 +204,42 @@ specVersion: "2.2"
 type: application
 metadata:
   name: app.variant
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+    paths:
+      webapp: dist
 builder:
   customTasks:
     - name: app-variant-bundler-build
       beforeTask: escapeNonAsciiCharacters
       configuration:
+        module: app.variant
         appHostId: test-app-host-id
         appName: test-app-name
         appVersion: test-app-version
-        moduleName: app.variant
+        html5RepoRuntime: test-guid
         org: org-guid
         space: space-guid
-        html5RepoRuntime: test-guid
         sapCloudService: test-solution
-        serviceInstanceName: test-service"
+        instanceName: test-service
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
+"
 `;
 
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 4`] = `
@@ -326,6 +348,7 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"start": "fiori run --open /test/flp.html#app-preview",
 		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../app.variant.zip *",
 		"clean": "npx rimraf app.variant.zip dist",
@@ -344,7 +367,8 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	"devDependencies": {
 		"@sap/ui5-builder-webide-extension": "1.0.x",
 		"@sapui5/ts-types": "^1.85.1",
-		"@ui5/cli": "^3.0.0",
+		"@sap/ux-ui5-tooling": "1",
+		"@ui5/cli": "^4.0.16",
 		"@ui5/task-adaptation": "^1.0.x",
 		"bestzip": "2.1.4",
 		"rimraf": "3.0.2"
