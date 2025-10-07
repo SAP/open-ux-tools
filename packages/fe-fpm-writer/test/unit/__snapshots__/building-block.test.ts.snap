@@ -1,5 +1,81 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`Building Blocks CustomColumn building block generate CustomColumn without macros:columns - should not update aggregation path: generate-custom-column-without-macros-columns 1`] = `
+Object {
+  "generate-custom-column-without-macros-columns/webapp/ext/fragments/CustomColumnTitle2.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "generate-custom-column-without-macros-columns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table>
+            </macros:Table>
+            <macros:columns>
+                <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" key=\\"myColumnKey\\">
+                    <core:Fragment fragmentName=\\".ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                </macrosTable:Column>
+            </macros:columns>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-column-without-macros-columns/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks CustomColumn building block getSerializedFileContent for CustomColumn building block 1`] = `
+"<macros:columns>
+    <macrosTable:Column header=\\"CustomColumnSerialized\\" importance=\\"High\\"  key=\\"myColumnKey\\">
+        <core:Fragment fragmentName=\\".ext.fragment.CustomColumnSerialized\\" type=\\"XML\\" />
+    </macrosTable:Column>
+</macros:columns>"
+`;
+
+exports[`Building Blocks CustomColumn building block getSerializedFileContent for CustomColumn building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
   "default": Object {

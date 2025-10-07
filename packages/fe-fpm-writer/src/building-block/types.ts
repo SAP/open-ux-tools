@@ -413,6 +413,11 @@ export interface CustomColumn extends BuildingBlock {
     customColumnFragmentName: string;
     appName?: string;
     hasTableColumns?: boolean;
+    fragmentFile?: string;
+    folder?: string;
+    columnKey?: string;
+    content?: string;
+    width?: string;
 }
 
 /**

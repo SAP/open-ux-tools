@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse, relative } from 'path';
+import { dirname, join, parse, relative } from 'path';
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -22,6 +22,7 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddMacrosNamespace } from './prompts/utils/xml';
+import { getDefaultFragmentContent } from '../common/defaults';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -58,18 +59,26 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     // Read the view xml and template files and update contents of the view xml file
     let updatedAggregationPath;
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    if (config.buildingBlockData?.buildingBlockType === BuildingBlockType.CustomColumn) {
+    if (isCustomColumn(buildingBlockData)) {
+        const viewPath = join(
+            join(dirname(manifestPath), buildingBlockData.folder ?? ''),
+            `${buildingBlockData.customColumnFragmentName}.fragment.xml`
+        );
+        buildingBlockData.content = getDefaultFragmentContent('Sample Text');
+        if (!fs.exists(viewPath)) {
+            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData);
+        }
         // check xmlDocument for macrosTable element
         const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
         if (hasTableColumn) {
-            (buildingBlockData as unknown as CustomColumn).hasTableColumns = true;
+            buildingBlockData.hasTableColumns = true;
             updatedAggregationPath = aggregationPath + '/macros:columns';
         }
     }
-    const { content: manifest } = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
     fs = updateViewFile(
         basePath,
@@ -95,6 +104,10 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
+}
+
+function isCustomColumn(data: BuildingBlock): data is CustomColumn {
+    return data.buildingBlockType === BuildingBlockType.CustomColumn;
 }
 
 /**
