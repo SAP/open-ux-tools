@@ -278,7 +278,10 @@ export class ConfigPrompter {
             },
             default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
-            additionalMessages: () => this.systemAdditionalMessage
+            additionalMessages: () => {
+                this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                return this.systemAdditionalMessage;
+            }
         };
     }
 
@@ -625,8 +628,6 @@ export class ConfigPrompter {
             return true;
         } catch (e) {
             return e.message;
-        } finally {
-            this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
         }
     }
 

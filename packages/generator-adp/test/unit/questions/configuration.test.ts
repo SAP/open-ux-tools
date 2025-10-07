@@ -1,4 +1,10 @@
-import type { ConfigAnswers, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
+import type {
+    ConfigAnswers,
+    FlexUISupportedSystem,
+    SourceApplication,
+    SystemLookup,
+    UI5Version
+} from '@sap-ux/adp-tooling';
 import {
     FlexLayer,
     SourceManifest,
@@ -161,7 +167,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
-            getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
 
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
@@ -172,8 +177,6 @@ describe('ConfigPrompter Integration Tests', () => {
                 systemVersion: '1.135.0',
                 ui5Versions: ['1.134.1 (latest)']
             });
-            expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
-            expect(systemPrompt?.additionalMessages?.()).toEqual(systemAdditionalMessage);
         });
 
         it('system prompt validate should return string when input is empty', async () => {
@@ -191,18 +194,21 @@ describe('ConfigPrompter Integration Tests', () => {
                 ...sourceSystems,
                 getSystemRequiresAuth: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
             } as unknown as SystemLookup;
+            isAbapCloudMock.mockResolvedValue(true);
             configPrompter = new ConfigPrompter(systemLookup, layer, logger);
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
 
             const result1 = await systemPrompt?.validate?.('SYS010', dummyAnswers);
+            expect(configPrompter['isCloudProject']).toBe(true);
             const result2 = await systemPrompt?.validate?.('SYS010_NOAUTH', dummyAnswers);
 
             expect(result1).toEqual(true);
             expect(result2).toEqual(true);
             expect(configPrompter['flexUISystem']).toEqual(undefined);
             expect(configPrompter['isAuthRequired']).toEqual(true);
+            expect(configPrompter['isCloudProject']).toBeUndefined();
         });
 
         it('system prompt validate should throw error', async () => {
@@ -260,6 +266,24 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
             expect(result).toEqual(true);
+        });
+
+        it('should set system additional messages when additionalMessages callback gets called', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
+            const flexUISystem: FlexUISupportedSystem = {
+                isUIFlex: true,
+                isOnPremise: false
+            };
+            configPrompter['flexUISystem'] = flexUISystem;
+            configPrompter['isCloudProject'] = true;
+
+            const result = await systemPrompt?.additionalMessages?.();
+
+            expect(result).toEqual(systemAdditionalMessage);
+            expect(getSystemAdditionalMessagesMock).toHaveBeenCalledWith(flexUISystem, true);
+            expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
         });
     });
 
@@ -390,6 +414,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(additionalMessages).toEqual(systemAdditionalMessage);
             expect(getSystemAdditionalMessagesMock).toHaveBeenCalled();
+            expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
         });
     });
 
