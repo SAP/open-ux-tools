@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.4
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 1.1.3
 
 ### Patch Changes

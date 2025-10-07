@@ -1,5 +1,18 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.52
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/fiori-tools-settings@0.2.1
+    -   @sap-ux/ui5-library-inquirer@0.5.2
+    -   @sap-ux/ui5-library-writer@0.6.21
+    -   @sap-ux/nodejs-utils@0.2.6
+    -   @sap-ux/ui5-info@0.12.4
+
 ## 0.1.51
 
 ### Patch Changes

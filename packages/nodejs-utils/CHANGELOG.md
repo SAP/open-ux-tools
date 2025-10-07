@@ -1,5 +1,13 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.6
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/btp-utils@1.1.4
+
 ## 0.2.5
 
 ### Patch Changes

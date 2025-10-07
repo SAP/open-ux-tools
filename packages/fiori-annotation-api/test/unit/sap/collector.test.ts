@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import type { AnnotationFile, Target } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTarget, Edm, Location, Range } from '@sap-ux/odata-annotation-core-types';

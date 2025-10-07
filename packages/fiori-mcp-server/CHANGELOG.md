@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.2.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-docs-embeddings@0.1.1
+
 ## 0.2.0
 
 ### Minor Changes

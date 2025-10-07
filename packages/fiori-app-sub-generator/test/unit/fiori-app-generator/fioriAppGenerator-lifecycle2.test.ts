@@ -12,7 +12,7 @@ import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types
 import { DefaultLogger, TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
-import { join } from 'path';
+import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
 import { type FioriAppGeneratorOptions, FioriAppGenerator } from '../../../src/fiori-app-generator';

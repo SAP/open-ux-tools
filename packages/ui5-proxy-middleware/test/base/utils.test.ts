@@ -13,7 +13,7 @@ import {
     getPathRewrite
 } from '../../src/base/utils';
 import type { Response } from 'express';
-import fs from 'fs';
+import fs from 'node:fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';

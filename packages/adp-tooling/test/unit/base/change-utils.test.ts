@@ -1,7 +1,7 @@
-import path, { resolve } from 'path';
+import path, { resolve } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import { readFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { renderFile } from 'ejs';
 
 jest.mock('ejs', () => ({

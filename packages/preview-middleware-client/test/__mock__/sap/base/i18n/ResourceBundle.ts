@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import { propertiesToI18nEntry } from '@sap-ux/i18n';
 

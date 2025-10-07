@@ -14,7 +14,7 @@ import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../
 import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 

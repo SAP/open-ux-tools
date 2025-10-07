@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.23.17
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/i18n@0.3.4
+
 ## 0.23.16
 
 ### Patch Changes

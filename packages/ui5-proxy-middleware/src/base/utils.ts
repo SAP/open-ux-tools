@@ -13,7 +13,7 @@ import {
     SANDBOX2_LINK,
     SANDBOX2_REPLACE_REGEX
 } from './constants';
-import type { Url } from 'url';
+import type { Url } from 'node:url';
 import { t } from '../i18n';
 import type { ReaderCollection } from '@ui5/fs';
 import type { Socket } from 'node:net';
