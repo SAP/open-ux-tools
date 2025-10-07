@@ -15,7 +15,7 @@ import {
 } from '../../src';
 import type { AbapCloudOptions, AxiosError, AxiosRequestConfig, ProviderConfiguration } from '../../src';
 import * as auth from '../../src/auth';
-import type { ArchiveFileNode } from '../../src/abap/types';
+import type { ArchiveFileNode, SystemInfo } from '../../src/abap/types';
 import fs from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import type { ToolsLogger } from '@sap-ux/logger';
