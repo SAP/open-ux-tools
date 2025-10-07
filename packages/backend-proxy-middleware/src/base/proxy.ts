@@ -27,7 +27,7 @@ import type {
 } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import { updateProxyEnv } from './config';
-import type { Url } from 'url';
+import type { Url } from 'node:url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 import { getProxyForUrl } from 'proxy-from-env';
 import type { Socket } from 'node:net';

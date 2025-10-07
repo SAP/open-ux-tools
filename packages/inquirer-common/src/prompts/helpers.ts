@@ -193,7 +193,7 @@ export function filterAggregateTransformations(entitySets: EntitySet[]): EntityS
 export function convertEdmxToConvertedMetadata(edmx: string): ConvertedMetadata {
     try {
         const convertedMetadata = convert(parse(edmx));
-        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
         if (Number.isNaN(parsedOdataVersion)) {
             throw new Error(t('errors.unparseableOdataVersion'));
         }

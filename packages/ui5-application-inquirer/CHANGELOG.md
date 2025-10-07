@@ -1,5 +1,16 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.13
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-info@0.12.4
+
 ## 0.15.12
 
 ### Patch Changes

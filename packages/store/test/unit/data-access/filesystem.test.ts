@@ -1,9 +1,9 @@
 import 'jest-extended';
 import { vol } from 'memfs';
 import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
-import path from 'path';
-import type { FSWatcher } from 'fs';
-import fs from 'fs';
+import path from 'node:path';
+import type { FSWatcher } from 'node:fs';
+import fs from 'node:fs';
 import type { Entity } from '../../../src';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 

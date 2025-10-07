@@ -4,7 +4,7 @@ import { getLogger, traceChanges } from '../../tracing';
 import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate, FlexLayer } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
-import { join } from 'path';
+import { join } from 'node:path';
 
 /**
  * Add a new sub-command to generate SAP UI5 adaptation projects the given command.

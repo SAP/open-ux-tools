@@ -1,5 +1,5 @@
 import * as redirect from '../../../src/auth/reentrance-ticket/redirect';
-import type { AddressInfo } from 'net';
+import type { AddressInfo } from 'node:net';
 import type http from 'http';
 import { getReentranceTicket } from '../../../src/auth/reentrance-ticket';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';

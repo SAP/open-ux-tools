@@ -2,7 +2,7 @@ import { getYUIDetails, parseTarget, registerNamespaces } from '../../src/app/ut
 import { isMTAInstalled, getEnvApiHubConfig } from '../../src/utils';
 import type { DeployConfigOptions } from '../../src/types';
 import hasbin from 'hasbin';
-import mockFs from 'fs';
+import mockFs from 'node:fs';
 
 jest.mock('fs');
 jest.mock('hasbin', () => ({

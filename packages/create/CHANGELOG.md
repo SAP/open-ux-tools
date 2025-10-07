@@ -1,5 +1,24 @@
 # @sap-ux/create
 
+## 0.13.125
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/abap-deploy-config-writer@0.2.20
+    -   @sap-ux/mockserver-config-writer@0.9.20
+    -   @sap-ux/odata-service-writer@0.27.24
+    -   @sap-ux/preview-middleware@0.23.17
+    -   @sap-ux/app-config-writer@0.6.42
+    -   @sap-ux/cap-config-writer@0.12.11
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/flp-config-inquirer@0.4.29
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.25
+
 ## 0.13.124
 
 ### Patch Changes

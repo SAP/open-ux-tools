@@ -2,10 +2,10 @@ import type { CapService } from '@sap-ux/cap-config-writer';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { CapCustomPaths } from '@sap-ux/project-access';
 import { getCapCustomPaths, type CdsVersionInfo } from '@sap-ux/project-access';
-import type { PathLike } from 'fs';
+import type { PathLike } from 'node:fs';
 import * as fsPromises from 'fs/promises';
 import type { ListQuestion } from 'inquirer';
-import os from 'os';
+import os from 'node:os';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
     enterCapPathChoiceValue,

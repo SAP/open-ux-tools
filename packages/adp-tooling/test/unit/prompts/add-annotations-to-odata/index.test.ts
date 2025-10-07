@@ -3,7 +3,7 @@ import * as i18n from '../../../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import * as validators from '@sap-ux/project-input-validator';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 jest.mock('fs');
 jest.mock('@sap-ux/project-input-validator');

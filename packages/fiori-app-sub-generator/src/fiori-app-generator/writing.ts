@@ -1,7 +1,7 @@
 import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 import { generateAppGenInfo, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types';
 import { DEFAULT_CAP_HOST } from '../types';
 import { getLaunchText, getReadMeDataSourceLabel, isAbapCloud, t } from '../utils';

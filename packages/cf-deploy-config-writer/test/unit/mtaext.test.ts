@@ -1,5 +1,5 @@
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import * as memfs from 'memfs';
 import { MtaConfig } from '../../src/';
 import { FileName } from '@sap-ux/project-access';

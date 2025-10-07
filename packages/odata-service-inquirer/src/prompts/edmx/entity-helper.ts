@@ -113,7 +113,7 @@ export function getEntityChoices(
     let odataVersion: OdataVersion | undefined;
     try {
         convertedMetadata = convert(parse(edmx));
-        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));

@@ -1,7 +1,7 @@
 import HeadlessGenerator from '../../src/headless';
 import yeomanTest from 'yeoman-test';
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { generatorNamespace } from '../../src/utils';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
 import ABAPGen from '@sap-ux/abap-deploy-config-sub-generator';

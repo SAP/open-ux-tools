@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { generateSmartLinksConfig } from '../../../src';

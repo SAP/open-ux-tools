@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.47
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+
 ## 0.4.46
 
 ### Patch Changes

@@ -11,7 +11,7 @@ import {
     getPathRewrite
 } from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { Url } from 'url';
+import type { Url } from 'node:url';
 import { getProxyForUrl } from 'proxy-from-env';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { Socket } from 'node:net';
