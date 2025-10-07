@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import express from 'express';
 import supertest from 'supertest';
 import * as serveStaticMiddleware from '../../src/ui5/middleware';

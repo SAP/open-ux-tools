@@ -1,0 +1,3 @@
+<<%- macrosNamespace %>:RichTextEditorWithMetadata
+    metaPath="<%- data.metaPath %>"
+    id="<%- data.id %>"/>

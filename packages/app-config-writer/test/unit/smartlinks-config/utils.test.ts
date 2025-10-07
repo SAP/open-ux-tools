@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create as createFS } from 'mem-fs-editor';
 import nock from 'nock';
-import { join } from 'path';
+import { join } from 'node:path';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { TargetConfig } from '../../../src/types';

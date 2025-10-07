@@ -1,5 +1,5 @@
-import { createReadStream, existsSync } from 'fs';
-import { createHash } from 'crypto';
+import { createReadStream, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import type { Content, ContentIntegrity, FileIntegrity } from '../types';
 
 /**

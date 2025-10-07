@@ -4,7 +4,7 @@ jest.mock('prettier');
 
 import * as Vocabularies from '../../tools/update';
 
-import { join } from 'path';
+import { join } from 'node:path';
 import fs from 'fs/promises';
 import axios from 'axios';
 import prettier from 'prettier';

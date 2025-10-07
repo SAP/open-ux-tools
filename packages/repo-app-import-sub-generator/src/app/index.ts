@@ -19,8 +19,8 @@ import {
 import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { join, basename } from 'path';
-import { platform } from 'os';
+import { join, basename } from 'node:path';
+import { platform } from 'node:os';
 import { runPostAppGenHook } from '../utils/event-hook';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';

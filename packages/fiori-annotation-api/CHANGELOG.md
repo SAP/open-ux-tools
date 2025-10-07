@@ -1,5 +1,31 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.3
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.11
+    -   @sap-ux/xml-odata-annotation-converter@0.4.1
+    -   @sap-ux/cds-annotation-parser@0.2.19
+    -   @sap-ux/odata-annotation-core@0.2.9
+    -   @sap-ux/odata-vocabularies@0.4.16
+    -   @sap-ux/project-access@1.32.3
+
+## 0.7.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/cds-odata-annotation-converter@0.6.10
+
+## 0.7.1
+
+### Patch Changes
+
+-   321b09e: fix: annoation merging for CAP CDS projects.
+
 ## 0.7.0
 
 ### Minor Changes

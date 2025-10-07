@@ -29,7 +29,8 @@ export {
     Table,
     BuildingBlockConfig,
     Page,
-    CustomColumn
+    CustomColumn,
+    RichTextEditor
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
@@ -37,6 +38,7 @@ export {
     FilterBarPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
+    RichTextEditorPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {

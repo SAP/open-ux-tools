@@ -10,7 +10,7 @@ import type {
     PageType
 } from '@sap/ux-specification/dist/types/src';
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import type { Store } from 'mem-fs';
 import { getManifest, getUI5Version, readAnnotationFiles } from './project';

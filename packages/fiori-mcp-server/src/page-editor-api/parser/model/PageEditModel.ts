@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { JSONSchema4 } from 'json-schema';
 import { ArtifactType, DirName, PageType } from '@sap/ux-specification/dist/types/src';
 import type { PageConfig } from '@sap/ux-specification/dist/types/src';
@@ -366,7 +366,7 @@ export class PageEditModel {
             }
             if (this.isAggregation(currentNode)) {
                 params.path = params.path.concat([
-                    params.aggregation.type === AggregationType.Array ? parseInt(name, 10) : name
+                    params.aggregation.type === AggregationType.Array ? Number.parseInt(name, 10) : name
                 ]);
                 const displayName = currentNode.displayName || name;
                 const type =

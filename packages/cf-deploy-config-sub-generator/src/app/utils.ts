@@ -2,7 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { FileName, getMtaPath, getWebappPath } from '@sap-ux/project-access';
 import { DeploymentGenerator, bail, ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared';
 import { ApiHubType, MtaConfig } from '@sap-ux/cf-deploy-config-writer';
-import { join } from 'path';
+import { join } from 'node:path';
 import {
     t,
     DEFAULT_MTA_DESTINATION,
