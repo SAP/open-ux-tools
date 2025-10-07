@@ -1,6 +1,6 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { FileName, getCapCustomPaths, getWebappPath } from '@sap-ux/project-access';
-import { join, normalize, posix } from 'path';
+import { join, normalize, posix } from 'node:path';
 import { enableCdsUi5Plugin } from '../cap-config';
 import type { CapServiceCdsInfo } from '../cap-config/types';
 import type { Editor } from 'mem-fs-editor';

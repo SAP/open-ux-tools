@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { dirname, join, relative } from 'path';
+import { existsSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
 import { compressToBase64, decompressFromBase64 } from 'lz-string';
 import type { ContentIntegrity, FileIntegrity, Integrity } from '../types';
 

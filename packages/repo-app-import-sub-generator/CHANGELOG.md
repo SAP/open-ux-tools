@@ -1,5 +1,48 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.116
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/abap-deploy-config-writer@0.2.20
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/odata-service-inquirer@2.8.8
+    -   @sap-ux/fiori-elements-writer@2.7.16
+    -   @sap-ux/fiori-tools-settings@0.2.1
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/launch-config@0.10.27
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/ui5-info@0.12.4
+    -   @sap-ux/store@1.1.5
+
+## 0.3.115
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-writer@0.2.19
+-   @sap-ux/fiori-elements-writer@2.7.15
+-   @sap-ux/launch-config@0.10.26
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/odata-service-inquirer@2.8.7
+-   @sap-ux/axios-extension@1.22.9
+-   @sap-ux/fiori-generator-shared@0.13.19
+-   @sap-ux/project-input-validator@0.6.23
+-   @sap-ux/system-access@0.6.18
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.3.114
+
+### Patch Changes
+
+-   Updated dependencies [4b0b8fb]
+    -   @sap-ux/abap-deploy-config-writer@0.2.18
+
 ## 0.3.113
 
 ### Patch Changes

@@ -11,7 +11,7 @@ import {
     validateTransportRequestNumber,
     validateUrl
 } from '@sap-ux/project-input-validator';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 import type { AbapDeployConfig } from '../types';
 import type { Destinations } from '@sap-ux/btp-utils';
 import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';

@@ -174,11 +174,11 @@ export class ObjectAggregation {
         }
         // Append new
         aggregation.name = name;
-        if (order !== undefined && !isNaN(order)) {
+        if (order !== undefined && !Number.isNaN(order)) {
             // Looks like we need place aggregation in certain place - recalculate other aggregations
             for (const key in this.aggregations) {
                 const existingOrder = this.aggregations[key].order;
-                if (existingOrder !== undefined && !isNaN(existingOrder) && existingOrder >= order) {
+                if (existingOrder !== undefined && !Number.isNaN(existingOrder) && existingOrder >= order) {
                     this.aggregations[key].order = existingOrder + 1;
                 }
             }
@@ -367,7 +367,7 @@ export class ObjectAggregation {
 
         // Go with recursion
         for (const rootName in this.aggregations) {
-            const pathPart = this.type === AggregationType.Array ? parseInt(rootName, 10) : rootName;
+            const pathPart = this.type === AggregationType.Array ? Number.parseInt(rootName, 10) : rootName;
             const names = this.aggregations[rootName].union?.originalNames || [rootName];
             for (const name of names) {
                 this.aggregations[rootName].updatePropertiesValues(

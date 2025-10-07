@@ -1,5 +1,5 @@
-import { homedir } from 'os';
-import path from 'path';
+import { homedir } from 'node:os';
+import path from 'node:path';
 
 /** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {

@@ -6,7 +6,7 @@ import {
     resolveRefs,
     validateWithSchema
 } from '../../../src/tools/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
 import * as zod from 'zod';
 import type { JSONSchema4 } from 'json-schema';

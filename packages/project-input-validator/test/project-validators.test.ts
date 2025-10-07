@@ -3,7 +3,7 @@ import { validateFioriAppTargetFolder } from '../src/general/project-path-valida
 import { initI18nProjectValidators, t } from '../src/i18n';
 import { validateProjectFolder } from '../src/ui5/validators';
 import * as generalValidators from '../src/general/validators';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),

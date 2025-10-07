@@ -1,6 +1,6 @@
 import prompts from 'prompts';
 import AdmZip from 'adm-zip';
-import { join } from 'path';
+import { join } from 'node:path';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {

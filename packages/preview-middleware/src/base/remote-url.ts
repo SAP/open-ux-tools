@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { networkInterfaces } from 'os';
+import { networkInterfaces } from 'node:os';
 import { devspace } from '@sap/bas-sdk';
 import type { ToolsLogger } from '@sap-ux/logger';
 import QRCode from 'qrcode';
@@ -168,20 +168,20 @@ export function getPortFromArgs(): number | undefined {
         const portArg = process.argv[portIndex];
         if (portArg.includes('=')) {
             // --port=8080 format
-            const port = parseInt(portArg.split('=')[1], 10);
-            return isNaN(port) ? undefined : port;
+            const port = Number.parseInt(portArg.split('=')[1], 10);
+            return Number.isNaN(port) ? undefined : port;
         } else if (portIndex + 1 < process.argv.length) {
             // --port 8080 format
-            const port = parseInt(process.argv[portIndex + 1], 10);
-            return isNaN(port) ? undefined : port;
+            const port = Number.parseInt(process.argv[portIndex + 1], 10);
+            return Number.isNaN(port) ? undefined : port;
         }
     }
 
     // Check environment variable
     const envPort = process.env.PORT;
     if (envPort) {
-        const port = parseInt(envPort, 10);
-        return isNaN(port) ? undefined : port;
+        const port = Number.parseInt(envPort, 10);
+        return Number.isNaN(port) ? undefined : port;
     }
     return undefined;
 }

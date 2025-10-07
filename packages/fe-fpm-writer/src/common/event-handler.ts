@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getTemplatePath } from '../templates';
 import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types';
 import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils';

@@ -1,5 +1,37 @@
 # @sap-ux/adp-tooling
 
+## 0.15.33
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/odata-service-writer@0.27.24
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/nodejs-utils@0.2.6
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/ui5-info@0.12.4
+    -   @sap-ux/store@1.1.5
+    -   @sap-ux/i18n@0.3.4
+
+## 0.15.32
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/odata-service-writer@0.27.23
+    -   @sap-ux/project-access@1.32.2
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/project-input-validator@0.6.23
+    -   @sap-ux/system-access@0.6.18
+    -   @sap-ux/inquirer-common@0.7.46
+
 ## 0.15.31
 
 ### Patch Changes

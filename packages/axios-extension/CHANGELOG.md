@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 1.22.10
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/btp-utils@1.1.4
+
 ## 1.22.9
 
 ### Patch Changes

@@ -1,10 +1,10 @@
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { copyFileSync, promises as fsPromise, mkdirSync, readdirSync } from 'fs';
+import { copyFileSync, promises as fsPromise, mkdirSync, readdirSync } from 'node:fs';
 import 'jest-extended';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Project, Service, State } from '../../../src/types';
 import { FloorplanFE } from '../../../src/types';
 import {

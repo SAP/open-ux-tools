@@ -1,11 +1,11 @@
 import hasbin from 'hasbin';
 import * as childProcess from 'child_process';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
-import { readdirSync, writeFileSync } from 'fs';
+import { readdirSync, writeFileSync } from 'node:fs';
 import { copy, existsSync } from 'fs-extra';
 import { readFile, rename } from 'fs/promises';
 import { rimraf } from 'rimraf';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
 import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {

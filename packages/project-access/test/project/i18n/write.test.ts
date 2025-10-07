@@ -7,9 +7,9 @@ import {
     createManifestI18nEntries,
     createUI5I18nEntries
 } from '../../../src/project/i18n';
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import type { I18nPropertiesPaths } from '../../../src';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 

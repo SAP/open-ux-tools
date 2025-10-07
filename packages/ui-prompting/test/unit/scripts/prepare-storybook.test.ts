@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { sep } from 'path';
+import fs from 'node:fs';
+import { sep } from 'node:path';
 import run from '../../../scripts/storybook';
 
 describe('prepare-storybook.ts', () => {
