@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.1.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.1.1
 
 ### Patch Changes

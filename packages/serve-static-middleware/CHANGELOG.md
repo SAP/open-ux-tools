@@ -1,5 +1,11 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.4.0
 
 ### Minor Changes

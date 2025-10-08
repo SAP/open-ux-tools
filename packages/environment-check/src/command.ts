@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import os from 'os';
+import os from 'node:os';
 /**
  * npm command is platform depending: Winows 'npm.cmd', Mac 'npm'
  */

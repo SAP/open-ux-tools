@@ -1,5 +1,5 @@
 import { format } from 'util';
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';

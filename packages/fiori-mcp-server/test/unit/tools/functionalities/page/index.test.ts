@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import {
     ADD_PAGE_FUNCTIONALITY,
     addPageHandlers,
@@ -6,7 +6,7 @@ import {
     deletePageHandlers
 } from '../../../../../src/tools/functionalities/page';
 import { copyDirectory, npmInstall, removeDirectory } from '../../../utils';
-import { writeFileSync, readFileSync } from 'fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import { getManifest } from '../../../../../src/page-editor-api/project';
 
