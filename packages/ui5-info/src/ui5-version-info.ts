@@ -338,7 +338,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         }
     }
 
-    // Semantically filter the UI5 version, based on the support (maintained or not) and default version
+    // Semantically filter the UI5 version, using ui5VersionsType.official
     const isMaintained = (ui5: string) =>
         ui5VersionsOverview?.some((v) => {
             const versionStr = typeof v === 'string' ? v : v.version;
