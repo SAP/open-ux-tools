@@ -10,7 +10,7 @@ export function executeNpmUI5VersionsCmd(): Promise<string[]> {
         const cmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
         const args = ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'];
         const stack: any = [];
-        const spawnedCmd = spawn(cmd, args, { shell: true });
+        const spawnedCmd = spawn(cmd, args, {});
         spawnedCmd.stdout.setEncoding('utf8');
         let response: string;
 
