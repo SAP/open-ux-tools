@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.0
+
+### Minor Changes
+
+-   f4cd036: Move rimraf to dependencies.
+
 ## 0.1.2
 
 ### Patch Changes
