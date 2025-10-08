@@ -5,16 +5,6 @@ import { getFDCApps } from '../services/api';
 import type { CfConfig, CFApp, CfCredentials } from '../../types';
 
 /**
- * Format the discovery.
- *
- * @param {CFApp} app - The app.
- * @returns {string} The formatted discovery.
- */
-export function formatDiscovery(app: CFApp): string {
-    return `${app.title} (${app.appId} ${app.appVersion})`;
-}
-
-/**
  * Get the app host ids.
  *
  * @param {CfCredentials[]} credentials - The credentials.

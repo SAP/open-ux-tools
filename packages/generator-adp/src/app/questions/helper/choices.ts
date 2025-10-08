@@ -1,4 +1,4 @@
-import { AppRouterType, formatDiscovery } from '@sap-ux/adp-tooling';
+import { AppRouterType } from '@sap-ux/adp-tooling';
 import type { CFApp, SourceApplication } from '@sap-ux/adp-tooling';
 
 interface Choice {
@@ -34,9 +34,9 @@ export const getApplicationChoices = (apps: SourceApplication[]): Choice[] => {
  * @returns {Array<{ name: string; value: CFApp }>} The choices for the base app.
  */
 export const getCFAppChoices = (apps: CFApp[]): { name: string; value: CFApp }[] => {
-    return apps.map((result: CFApp) => ({
-        name: formatDiscovery(result),
-        value: result
+    return apps.map((app: CFApp) => ({
+        name: `${app.title} (${app.appId} ${app.appVersion})`,
+        value: app
     }));
 };
 

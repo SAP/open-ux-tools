@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';
-import { formatDiscovery, getAppHostIds, getCfApps } from '../../../../src/cf/app/discovery';
+import { getAppHostIds, getCfApps } from '../../../../src/cf/app/discovery';
 import type { CFApp, CfConfig, CfCredentials, Organization, Space, Uaa } from '../../../../src/types';
 
 jest.mock('../../../../src/cf/services/api', () => ({
@@ -38,14 +38,6 @@ describe('CF App Discovery', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    describe('formatDiscovery', () => {
-        test('should format app discovery string correctly', () => {
-            const result = formatDiscovery(mockApps[0]);
-
-            expect(result).toBe('Test App 1 (app-1 1.0.0)');
-        });
     });
 
     describe('getAppHostIds', () => {

@@ -95,7 +95,7 @@ describe('Choices Helper Functions', () => {
             title: 'Test Application 2'
         };
 
-        test('should create choices using formatDiscovery when available', () => {
+        test('should create choices when available', () => {
             const apps = [mockCFApp];
 
             const result = getCFAppChoices(apps);
