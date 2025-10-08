@@ -149,14 +149,14 @@ class FpmDocumentationBuilder {
      * @returns The user's input
      */
     private async promptForInput(question: string): Promise<string> {
-        const rl = readline.createInterface({
+        const readlineInterface = readline.createInterface({
             input: process.stdin,
             output: process.stdout
         });
 
         return new Promise((resolve) => {
-            rl.question(question, (answer) => {
-                rl.close();
+            readlineInterface.question(question, (answer) => {
+                readlineInterface.close();
                 resolve(answer.trim());
             });
         });
