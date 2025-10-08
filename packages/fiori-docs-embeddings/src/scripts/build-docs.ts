@@ -260,6 +260,66 @@ class MultiSourceDocumentationBuilder {
     }
 
     /**
+     * Check if a directory should be skipped during traversal.
+     *
+     * @param dirName - Directory name to check
+     * @returns True if directory should be skipped
+     */
+    private shouldSkipDirectory(dirName: string): boolean {
+        return ['node_modules', '.git', 'dist', 'build', 'target'].includes(dirName);
+    }
+
+    /**
+     * Check if a file has a supported extension.
+     *
+     * @param fileName - File name to check
+     * @returns True if file has a supported extension
+     */
+    private hasSupportedExtension(fileName: string): boolean {
+        const supportedExtensions = [
+            '.md',
+            '.ts',
+            '.js',
+            '.xml',
+            '.cds',
+            '.json',
+            '.html',
+            '.properties',
+            '.yaml',
+            '.yml'
+        ];
+        return supportedExtensions.some((ext) => fileName.endsWith(ext));
+    }
+
+    /**
+     * Read a single file and create a GitHubFile object.
+     *
+     * @param fullEntryPath - Full path to the file
+     * @param entryPath - Relative path to the file
+     * @param entryName - Name of the file
+     * @returns GitHubFile object or null if read fails
+     */
+    private async readSingleFile(
+        fullEntryPath: string,
+        entryPath: string,
+        entryName: string
+    ): Promise<GitHubFile | null> {
+        try {
+            const content = await fs.readFile(fullEntryPath, 'utf-8');
+            return {
+                name: entryName,
+                path: entryPath,
+                type: 'file',
+                content
+            };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to read file ${fullEntryPath}: ${errorMessage}`);
+            return null;
+        }
+    }
+
+    /**
      * Read files recursively from a local directory.
      *
      * @param basePath - Base directory path to search
@@ -273,41 +333,17 @@ class MultiSourceDocumentationBuilder {
         try {
             const entries = await fs.readdir(fullPath, { withFileTypes: true });
 
-            const supportedExtensions = [
-                '.md',
-                '.ts',
-                '.js',
-                '.xml',
-                '.cds',
-                '.json',
-                '.html',
-                '.properties',
-                '.yaml',
-                '.yml'
-            ];
-
             for (const entry of entries) {
                 const entryPath = path.join(relativePath, entry.name);
                 const fullEntryPath = path.join(fullPath, entry.name);
 
-                if (entry.isDirectory()) {
-                    // Skip common directories that don't contain documentation
-                    if (!['node_modules', '.git', 'dist', 'build', 'target'].includes(entry.name)) {
-                        const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
-                        files.push(...subFiles);
-                    }
-                } else if (entry.isFile() && supportedExtensions.some((ext) => entry.name.endsWith(ext))) {
-                    try {
-                        const content = await fs.readFile(fullEntryPath, 'utf-8');
-                        files.push({
-                            name: entry.name,
-                            path: entryPath,
-                            type: 'file',
-                            content
-                        });
-                    } catch (error) {
-                        const errorMessage = error instanceof Error ? error.message : String(error);
-                        this.logger.warn(`Failed to read file ${fullEntryPath}: ${errorMessage}`);
+                if (entry.isDirectory() && !this.shouldSkipDirectory(entry.name)) {
+                    const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
+                    files.push(...subFiles);
+                } else if (entry.isFile() && this.hasSupportedExtension(entry.name)) {
+                    const file = await this.readSingleFile(fullEntryPath, entryPath, entry.name);
+                    if (file) {
+                        files.push(file);
                     }
                 }
             }
