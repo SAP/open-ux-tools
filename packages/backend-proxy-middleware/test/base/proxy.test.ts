@@ -99,7 +99,8 @@ describe('proxy', () => {
                 {
                     client: '012',
                     path: '/old',
-                    pathReplace: '/my/new'
+                    pathReplace: '/my/new',
+                    bsp: '/my/bsp'
                 } as BackendConfig,
                 logger
             );
@@ -110,6 +111,11 @@ describe('proxy', () => {
                 } as EnhancedIncomingMessage)
             ).toBe('/my/new/my/bsp/test?sap-client=012');
             expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(
+                writerChain!('/bsp/manifest.appdescr', {
+                    originalUrl: '/my/bsp/manifest.appdescr'
+                } as EnhancedIncomingMessage)
+            ).toBe('/manifest.json');
         });
     });
 

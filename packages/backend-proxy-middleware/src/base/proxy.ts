@@ -128,7 +128,9 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
 export const PathRewriters = {
     convertAppDescriptorToManifest(bspPath: string): (path: string) => string {
         const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
-        return (path: string) => (path.match(regex) ? '/manifest.json' : path);
+        return (path: string) => {
+            return path.match(regex) ? '/manifest.json' : path;
+        }
     },
 
     /**
