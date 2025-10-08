@@ -1,10 +1,7 @@
-prompts:
-  - file://src/prompt2.txt
 providers:
-    - id: file://src/AICoreApiProvider.ts
-      config:
-        model: "gpt-4o"
-
+  - id: file://../provider/index.ts
+prompts:
+  - 'What are functionalities available in application with appPath: {{appPath}}. Provide ids'
 tests:
   - vars:
       appPath: "/test-projects/project1-2025-10-011325" 

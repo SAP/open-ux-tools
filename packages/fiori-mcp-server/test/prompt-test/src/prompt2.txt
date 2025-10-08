@@ -1,1 +1,0 @@
-What are functionalities available in application with appPath: {{appPath}}. Provide ids

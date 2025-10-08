@@ -1,7 +1,7 @@
 import type { PromptFunction } from "promptfoo";
 import { z } from "zod";
-import { readFile } from "./util/file-access.js";
-import { validate } from "./util/validate.js";
+import { readFile } from "./file-access.js";
+import { validate } from "./validate.js";
 
 const AbstractMessage = z.object({
     role: z.enum(["system", "user"])

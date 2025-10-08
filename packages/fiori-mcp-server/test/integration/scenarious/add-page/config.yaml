@@ -1,0 +1,12 @@
+providers:
+  - id: file://../../provider/index.ts
+prompts:
+  - file://./prompt.txt
+tests:
+  - vars:
+      appPath: "/test-projects/project1-2025-10-011325"
+      pageType: ObjectPage
+      parent: TravelObjectPage
+    assert:
+      - type: contains
+        value: successfully added

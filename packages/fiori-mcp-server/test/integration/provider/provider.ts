@@ -1,6 +1,4 @@
 import { AzureOpenAiChatCallOptions, AzureOpenAiChatClient } from '@sap-ai-sdk/langchain';
-import { ErrorWithCause } from '@sap-cloud-sdk/util';
-import { AxiosError } from 'axios';
 import {
     type ApiProvider,
     type CallApiContextParams,
@@ -8,15 +6,15 @@ import {
     type ProviderResponse
 } from 'promptfoo';
 import { z } from 'zod';
-import { getServiceKeyFromEnv } from './AICoreServiceKey';
-import { PromptConfig, type PromptConfigResponseFormat } from './Prompt';
+import { getServiceKeyFromEnv } from './util/service-key';
+import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
 import { readFile } from './util/file-access';
 import { validate } from './util/validate';
 import type {
     AzureOpenAiCreateChatCompletionRequest,
     AzureOpenAiResponseFormatJsonSchemaSchema
 } from '@sap-ai-sdk/foundation-models/dist/azure-openai/client/inference/schema';
-import { callTool, getTools } from './MCPAdapter';
+import { callTool, getTools } from './mcp-server';
 import type { AIMessageChunk, MessageFieldWithRole } from '@langchain/core/messages';
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { Runnable } from '@langchain/core/runnables';
@@ -26,7 +24,7 @@ import { BaseLanguageModelInput } from '@langchain/core/language_models/base';
  * Schema for the configuration of the AICoreApiProvider.
  */
 const AICoreApiProviderConfig = z.object({
-    model: z.enum(['gpt-4o', 'gpt-4o-mini']),
+    model: z.enum(['gpt-4o', 'gpt-4o-mini']).default('gpt-4o'),
     label: z.string().optional(),
     format: z.enum(['json', 'plain']).optional(),
     timeout: z.number().default(20000) // Default timeout of 20 seconds
@@ -50,11 +48,7 @@ export default class AICoreApiProvider implements ApiProvider {
 
         process.env.AICORE_SERVICE_KEY = JSON.stringify(getServiceKeyFromEnv());
 
-        if (this.config.label) {
-            this.label = this.config.label;
-        } else {
-            this.label = `SAP AI Core (${this.config.model})`;
-        }
+        this.label = `SAP AI Core (${this.config.model})`;
     }
 
     /**
@@ -276,17 +270,25 @@ export default class AICoreApiProvider implements ApiProvider {
             return pauseSeconds * 1000;
         };
 
-        if (error instanceof ErrorWithCause) {
-            const rootCause = error.rootCause;
-            if (rootCause instanceof AxiosError) {
-                if (rootCause.status === 429) {
-                    const pause = getPause(rootCause.response?.headers?.['retry-after']);
+        // Based on interface ErrorWithCause from '@sap-cloud-sdk/util'
+        if (error && typeof error === 'object' && 'rootCause' in error) {
+            const rootCause = error.rootCause as { message?: string };
+            if (rootCause && typeof rootCause === 'object' && 'isAxiosError' in rootCause && rootCause.isAxiosError) {
+                const response =
+                    'response' in rootCause
+                        ? (rootCause.response as {
+                              headers?: { ['retry-after']?: string };
+                              data?: { error?: { message?: string } };
+                          })
+                        : undefined;
+                if ('status' in rootCause && rootCause.status === 429) {
+                    const pause = getPause(response?.headers?.['retry-after']);
                     console.warn(`Too many requests: pausing for ${pause} ms before retrying...`);
                     await new Promise((resolve) => setTimeout(resolve, pause));
                     return this.callApi(prompt);
                 }
                 return {
-                    error: `Error from AI Core: ${rootCause.response?.data?.error?.message ?? rootCause.message}`
+                    error: `Error from AI Core: ${response?.data?.error?.message ?? rootCause.message}`
                 };
             }
         }
