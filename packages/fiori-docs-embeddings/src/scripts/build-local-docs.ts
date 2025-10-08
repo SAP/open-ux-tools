@@ -139,7 +139,7 @@ class FpmDocumentationBuilder {
 
     constructor() {
         this.gitReposPath = path.resolve('./data/git_repos');
-        this.outputPath = path.resolve('./data_local/fpm.md');
+        this.outputPath = path.resolve('./data_local/fiori_development_portal.md');
         this.githubHost = '';
         this.githubToken = '';
         this.logger = new ToolsLogger();

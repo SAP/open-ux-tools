@@ -1962,13 +1962,13 @@ service Service {
 
 **TITLE**: Localization
 
-**INTRODUCTION**: This guide describes how to override standard texts in your generated SAP Fiori elements apps using building blocks.
+**INTRODUCTION**: If necessary, you can replace standard UI texts for apps that you have created with SAP Fiori elements.
 
 **TAGS**: adapt i18n, internationalization, override texts, i18n properties, localization
 
-**STEP**: 1. Adapt the Manifest to Override the Texts
+**STEP**: Adapting the Manifest to Override the Texts
 
-**DESCRIPTION**: Changes must be made in the manifest file of the application. Add 'enhanceI18n' to the settings of the corresponding section as shown in the following code sample:
+**DESCRIPTION**: Make the changes in the manifest.json file of your app by adding 'enhanceI18n' to the settings of the corresponding section, as shown in the following code sample:
 
 **LANGUAGE**: JSON
 
@@ -2059,18 +2059,6 @@ service Service {
 	}
 }
 ```
-
-**STEP**: 2. Create an i18n Properties File to Override the Text
-
-**DESCRIPTION**: When you have created your specific application component, for example in SAP Fiori tools, standard texts are available from a specific template component (for example, i18n file within the application folder).
-
-**STEP**: 3. You Can Now Use the Building Blocks Provided by SAP Fiori Elements
-
-**DESCRIPTION**: Example: Using the 'Filter Bar' building block. Add the editing status key to the i18n properties file.
-
-**STEP**: 4. Keys That Are Publicly Available for the Building Blocks
-
-**DESCRIPTION**: The following table lists keys you can override for building blocks.
 
 --------------------------------
 
@@ -6478,11 +6466,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -6490,8 +6481,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -6521,13 +6518,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -6559,13 +6576,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -6573,15 +6590,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -6601,11 +6631,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -6703,6 +6733,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -6723,8 +6774,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -6961,11 +7011,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -6973,8 +7026,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -7004,13 +7063,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -7042,13 +7121,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -7056,15 +7135,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -7084,11 +7176,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -7186,6 +7278,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -7206,8 +7319,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -7282,13 +7394,33 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -7320,13 +7452,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -7334,15 +7466,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -7362,11 +7507,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -7464,6 +7609,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -7484,8 +7650,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -7581,13 +7746,33 @@ entity YourEntityName {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -7619,13 +7804,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -7633,15 +7818,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -7661,11 +7859,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -7763,6 +7961,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -7783,8 +8002,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -8000,11 +8218,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -8012,8 +8233,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -8324,13 +8551,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -8362,13 +8609,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -8376,15 +8623,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -8404,11 +8664,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -8506,6 +8766,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -8526,8 +8807,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -8747,11 +9027,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -8759,8 +9042,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -9201,11 +9490,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -9213,8 +9505,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -9260,13 +9558,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -9298,13 +9616,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -9312,15 +9630,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -9340,11 +9671,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -9442,6 +9773,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -9462,8 +9814,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -9738,11 +10089,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -9750,8 +10104,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -9781,13 +10141,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -9819,13 +10199,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -9833,15 +10213,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -9861,11 +10254,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -9963,6 +10356,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -9983,8 +10397,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -10226,11 +10639,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -10238,8 +10654,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -10285,13 +10707,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -10323,13 +10765,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -10337,15 +10779,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -10365,11 +10820,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -10467,6 +10922,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -10487,8 +10963,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -10848,11 +11323,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -10860,8 +11338,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -10891,13 +11375,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -10929,13 +11433,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -10943,15 +11447,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -10971,11 +11488,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -11073,6 +11590,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -11093,8 +11631,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -11334,11 +11871,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -11346,8 +11886,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -11377,13 +11923,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -11415,13 +11981,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -11429,15 +11995,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -11457,11 +12036,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -11559,6 +12138,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -11579,8 +12179,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -12489,13 +13088,33 @@ service Service {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -12527,13 +13146,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -12541,15 +13160,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -12569,11 +13201,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -12671,6 +13303,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -12691,8 +13344,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -12923,11 +13575,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -12935,8 +13590,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -13275,11 +13936,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -13287,8 +13951,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -13318,13 +13988,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -13356,13 +14046,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -13370,15 +14060,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -13398,11 +14101,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -13500,6 +14203,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -13520,8 +14244,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -13807,11 +14530,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -13819,8 +14545,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -13850,13 +14582,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -13888,13 +14640,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -13902,15 +14654,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -13930,11 +14695,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -14032,6 +14797,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -14052,8 +14838,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -14255,11 +15040,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -14267,8 +15055,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -14330,13 +15124,33 @@ TravelDetails : String(1024);
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -14368,13 +15182,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -14382,15 +15196,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -14410,11 +15237,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -14512,6 +15339,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -14532,8 +15380,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -15148,11 +15995,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -15160,8 +16010,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -15314,13 +16170,33 @@ extend view TravelService.Booking with {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -15352,13 +16228,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -15366,15 +16242,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -15394,11 +16283,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -15496,6 +16385,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -15516,8 +16426,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -15590,13 +16499,33 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -15628,13 +16557,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -15642,15 +16571,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -15670,11 +16612,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -15772,6 +16714,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -15792,8 +16755,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -16014,11 +16976,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -16026,8 +16991,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -16260,11 +17231,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -16272,8 +17246,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -16360,13 +17340,33 @@ _Payment;
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -16398,13 +17398,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -16412,15 +17412,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -16440,11 +17453,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -16542,6 +17555,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -16562,8 +17596,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -16742,13 +17775,33 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -16780,13 +17833,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -16794,15 +17847,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -16822,11 +17888,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -16924,6 +17990,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -16944,8 +18031,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -17156,11 +18242,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -17168,8 +18257,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -17643,11 +18738,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -17655,8 +18753,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -17686,13 +18790,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -17724,13 +18848,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -17738,15 +18862,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -17766,11 +18903,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -17868,6 +19005,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -17888,8 +19046,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -18279,11 +19436,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -18291,8 +19451,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -18322,13 +19488,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -18360,13 +19546,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -18374,15 +19560,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -18402,11 +19601,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -18504,6 +19703,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -18524,8 +19744,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -18574,13 +19793,33 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -18612,13 +19851,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -18626,15 +19865,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -18654,11 +19906,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -18756,6 +20008,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -18776,8 +20049,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -19000,11 +20272,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -19012,8 +20287,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -19440,11 +20721,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -19452,8 +20736,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -19483,13 +20773,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -19521,13 +20831,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -19535,15 +20845,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -19563,11 +20886,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -19665,6 +20988,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -19685,8 +21029,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -21836,11 +23179,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -21848,8 +23194,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -21879,13 +23231,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -21917,13 +23289,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -21931,15 +23303,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -21959,11 +23344,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -22061,6 +23446,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -22081,8 +23487,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -22194,13 +23599,33 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -22232,13 +23657,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -22246,15 +23671,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -22274,11 +23712,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -22376,6 +23814,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -22396,8 +23855,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -22580,11 +24038,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -22592,8 +24053,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -22870,11 +24337,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -22882,8 +24352,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -22913,13 +24389,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -22951,13 +24447,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -22965,15 +24461,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -22993,11 +24502,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -23095,6 +24604,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -23115,8 +24645,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -24099,11 +25628,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -24111,8 +25643,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -24142,13 +25680,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -24180,13 +25738,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -24194,15 +25752,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -24222,11 +25793,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -24324,6 +25895,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -24344,8 +25936,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -29203,11 +30794,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -29215,8 +30809,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -29246,13 +30846,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -29284,13 +30904,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -29298,15 +30918,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -29326,11 +30959,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -29428,6 +31061,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -29448,8 +31102,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -29840,11 +31493,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -29852,8 +31508,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -29883,13 +31545,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -29921,13 +31603,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -29935,15 +31617,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -29963,11 +31658,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -30065,6 +31760,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -30085,8 +31801,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -30350,11 +32065,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -30362,8 +32080,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -30393,13 +32117,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -30431,13 +32175,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -30445,15 +32189,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -30473,11 +32230,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -30575,6 +32332,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -30595,8 +32373,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -30851,11 +32628,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -30863,8 +32643,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -30894,13 +32680,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -30932,13 +32738,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -30946,15 +32752,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -30974,11 +32793,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -31076,6 +32895,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -31096,8 +32936,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -31396,11 +33235,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -31408,8 +33250,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -31439,13 +33287,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -31477,13 +33345,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -31491,15 +33359,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -31519,11 +33400,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -31621,6 +33502,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -31641,8 +33543,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -31993,11 +33894,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -32005,8 +33909,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -32036,13 +33946,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -32074,13 +34004,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -32088,15 +34018,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -32116,11 +34059,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -32218,6 +34161,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -32238,8 +34202,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -32519,11 +34482,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -32531,8 +34497,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -32562,13 +34534,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -32600,13 +34592,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -32614,15 +34606,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -32642,11 +34647,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -32744,6 +34749,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -32764,8 +34790,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -33208,13 +35233,33 @@ define root view entity RootEntity as select from root_entity_table
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -33246,13 +35291,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -33260,15 +35305,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -33288,11 +35346,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -33390,6 +35448,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -33410,8 +35489,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -33450,13 +35528,10 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 			<PropertyValue Property="Value" Path="TravelID" />
 		</Record>
 		<Record Type="UI.DataField">
-			<PropertyValue Property="Value" Path="BeginDate" />
-		</Record>
-		<Record Type="UI.DataField">
-			<PropertyValue Property="Value" Path="EndDate" />
-		</Record>
-		<Record Type="UI.DataField">
 			<PropertyValue Property="Value" Path="to_Agency_AgencyID" />
+		</Record>
+		<Record Type="UI.DataFieldForAnnotation">
+			<PropertyValue Property="Target" AnnotationPath="@UI.ConnectedFields#TripDates" />
 		</Record>
 		<Record Type="UI.DataField">
 			<PropertyValue Property="Value" Path="TravelStatus_code" />
@@ -33673,11 +35748,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -33685,8 +35763,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -33935,11 +36019,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -33947,8 +36034,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -33978,13 +36071,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -34016,13 +36129,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -34030,15 +36143,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -34058,11 +36184,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -34160,6 +36286,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -34180,8 +36327,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -34522,11 +36668,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -34534,8 +36683,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -34565,13 +36720,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -34603,13 +36778,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -34617,15 +36792,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -34645,11 +36833,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -34747,6 +36935,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -34767,8 +36976,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -35136,11 +37344,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -35148,8 +37359,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -35179,13 +37396,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -35217,13 +37454,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -35231,15 +37468,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -35259,11 +37509,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -35361,6 +37611,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -35381,8 +37652,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -35979,11 +38249,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -35991,8 +38264,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -36022,13 +38301,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -36060,13 +38359,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -36074,15 +38373,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -36102,11 +38414,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -36204,6 +38516,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -36224,8 +38557,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -36758,11 +39090,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -36770,8 +39105,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -36801,13 +39142,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -36839,13 +39200,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -36853,15 +39214,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -36881,11 +39255,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -36983,6 +39357,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -37003,8 +39398,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -37032,6 +39426,411 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
   Url  : WebAddress
 }]}});
 
+```
+
+--------------------------------
+
+**TITLE**: Table Selection Example
+
+**INTRODUCTION**: The Table building block API enables you to select or deselect line items in tables.
+
+**TAGS**: selection, APIs
+
+**STEP**: 1. Display the Selected Items in a Dedicated Grid Control
+
+**DESCRIPTION**: In this example, the selected items from the table are displayed in a grid control below the table. This control is bound to a dedicated JSON model named 'selectionModel'.
+
+**LANGUAGE**: XML
+
+**CODE**:
+```xml
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:customdata="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	xmlns:f="sap.f"
+	xmlns:u="sap.ui.unified"
+	xmlns:core="sap.ui.core"
+	xmlns:macros="sap.fe.macros"
+>
+	<VBox>
+		<Title text="Select some travels from this list:" level="H2" />
+		<macros:Table
+			metaPath="/Travel/@com.sap.vocabularies.UI.v1.PresentationVariant#TableSelection"
+			readOnly="true"
+			type="GridTable"
+			selectionMode="ForceMulti"
+			threshold="10"
+			enableExport="false"
+			disableCopyToClipboard="true"
+			beforeRebindTable=".onBeforeRebindTable"
+			selectionChange=".onTableSelectionChange"
+			id="tableForSelection"
+		/>
+		<Title class="sapUiMediumMarginTop sapUiSmallMarginBottom" text="Your selection (click on a tile to remove):" level="H2" />
+		<f:GridContainer items="{selectionModel>/items}">
+			<f:layout>
+				<f:GridContainerSettings columnSize="12rem" gap="1rem" />
+			</f:layout>
+			<GenericTile header="{selectionModel>Description}" press=".onTilePress" customdata:ID="{selectionModel>ID}">
+				<TileContent unit="{selectionModel>Currency}">
+					<NumericContent value="{selectionModel>Price}" withMargin="false" />
+				</TileContent>
+			</GenericTile>
+		</f:GridContainer>
+	</VBox>
+</core:FragmentDefinition>
+```
+
+**STEP**: 2. Update the Selection Model When the Table Selection Changes
+
+**DESCRIPTION**: The 'onTableSelectionChange' event handler is used to update the JSON model when the table selection changes. We iterate over all table items, check if they are selected or not, and update the selection model accordingly.
+
+**LANGUAGE**: TypeScript
+
+**CODE**:
+```typescript
+import PageController from "sap/fe/core/PageController";
+import type CollectionBindingInfo from "sap/fe/macros/CollectionBindingInfo";
+import type Table from "sap/fe/macros/table/TableAPI";
+import { type GenericTile$PressEvent } from "sap/m/GenericTile";
+import type UI5Event from "sap/ui/base/Event";
+import JSONModel from "sap/ui/model/json/JSONModel";
+
+interface SelectionItem {
+	ID: string;
+	Description: string;
+	Price: number;
+	Currency: string;
+}
+
+export default class TableSelectionController extends PageController {
+	onInit(): void {
+		super.onInit();
+
+		// Initial selection
+		const selectionModel = new JSONModel({
+			items: [
+				{
+					ID: "53657221A8E4645C17002DF03754AB66",
+					Description: "Lars Jensen site visit for system rollout support",
+					Price: 3164,
+					Currency: "USD"
+				},
+				{
+					ID: "6F657221A8E4645C17002DF03754AB66",
+					Description: "Sheffield annual review.",
+					Price: 1450,
+					Currency: "GBP"
+				}
+			]
+		});
+		this.getView().setModel(selectionModel, "selectionModel");
+	}
+
+	onBeforeRebindTable(event: UI5Event<{ collectionBindingInfo: CollectionBindingInfo }>): void {
+		const collectionBindingInfo = event.getParameter("collectionBindingInfo");
+		collectionBindingInfo.attachEvent(
+			"dataReceived",
+			() => {
+				this.syncTableSelectionFromJSONModel();
+			},
+			this
+		);
+	}
+
+	/**
+	 * Synchronizes the selection in the table with the selection in the JSON model.
+	 * This is required when new rows are loaded in the table such as after filtering or scrolling
+	 * or when the selection in the JSON model is changed such as when a tile is removed.
+	 */
+	syncTableSelectionFromJSONModel(): void {
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		const selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+
+		const table = this.byId("tableForSelection") as Table;
+		table.getAllCurrentContexts()?.forEach((context) => {
+			const id = context.getProperty("TravelUUID");
+			const selected = selectedItems.some((item) => item.ID === id);
+			context.setSelected(selected);
+		});
+	}
+
+	/**
+	 * When a tile is pressed, remove the corresponding item from the JSON model and deselect it in the table
+	 * @param event UI5 event
+	 */
+	onTilePress(event: GenericTile$PressEvent): void {
+		const tilePressed = event.getSource();
+		const travelId = tilePressed.data("ID");
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		let selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+		selectedItems = selectedItems.filter((item) => item.ID !== travelId);
+		selectionModel.setProperty("/items", selectedItems);
+		this.syncTableSelectionFromJSONModel();
+	}
+
+	/**
+	 * When a row is selected or deselected in the table, update the JSON model accordingly.
+	 * @param event UI5 event
+	 */
+	onTableSelectionChange(event: UI5Event): void {
+		const table = event.getSource() as Table;
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		let selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+		table.getAllCurrentContexts()?.forEach((context) => {
+			const id = context.getProperty("TravelUUID");
+			if (context.isSelected()) {
+				if (!selectedItems.some((item) => item.ID === id)) {
+					selectedItems.push({
+						ID: id,
+						Description: context.getProperty("Description"),
+						Currency: context.getProperty("CurrencyCode_code"),
+						Price: context.getProperty("TotalPrice")
+					});
+				}
+			} else {
+				selectedItems = selectedItems.filter((item) => item.ID !== id);
+			}
+		});
+		selectionModel.setProperty("/items", selectedItems);
+	}
+}
+```
+
+**STEP**: 3. Update the Selection Model and the Table Selection When an Item Is Removed from the Selection Grid
+
+**DESCRIPTION**: The 'onTilePress' event handler removes the corresponding item from the JSON model. The table selection is then synchronized with the selection model by calling 'syncTableSelectionFromJSONModel'.
+
+**STEP**: 4. Make Sure the Table Rows Are Properly Selected When the Data Is Loaded
+
+**DESCRIPTION**: Whenever additional data is loaded into the table, make sure that the table selection is synchronized with the selection model. Call 'syncTableSelectionFromJSONModel' when new data is received.
+
+**LANGUAGE**: TypeScript
+
+**CODE**:
+```typescript
+import PageController from "sap/fe/core/PageController";
+import type CollectionBindingInfo from "sap/fe/macros/CollectionBindingInfo";
+import type Table from "sap/fe/macros/table/TableAPI";
+import { type GenericTile$PressEvent } from "sap/m/GenericTile";
+import type UI5Event from "sap/ui/base/Event";
+import JSONModel from "sap/ui/model/json/JSONModel";
+
+interface SelectionItem {
+	ID: string;
+	Description: string;
+	Price: number;
+	Currency: string;
+}
+
+export default class TableSelectionController extends PageController {
+	onInit(): void {
+		super.onInit();
+
+		// Initial selection
+		const selectionModel = new JSONModel({
+			items: [
+				{
+					ID: "53657221A8E4645C17002DF03754AB66",
+					Description: "Lars Jensen site visit for system rollout support",
+					Price: 3164,
+					Currency: "USD"
+				},
+				{
+					ID: "6F657221A8E4645C17002DF03754AB66",
+					Description: "Sheffield annual review.",
+					Price: 1450,
+					Currency: "GBP"
+				}
+			]
+		});
+		this.getView().setModel(selectionModel, "selectionModel");
+	}
+
+	onBeforeRebindTable(event: UI5Event<{ collectionBindingInfo: CollectionBindingInfo }>): void {
+		const collectionBindingInfo = event.getParameter("collectionBindingInfo");
+		collectionBindingInfo.attachEvent(
+			"dataReceived",
+			() => {
+				this.syncTableSelectionFromJSONModel();
+			},
+			this
+		);
+	}
+
+	/**
+	 * Synchronizes the selection in the table with the selection in the JSON model.
+	 * This is required when new rows are loaded in the table such as after filtering or scrolling
+	 * or when the selection in the JSON model is changed such as when a tile is removed.
+	 */
+	syncTableSelectionFromJSONModel(): void {
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		const selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+
+		const table = this.byId("tableForSelection") as Table;
+		table.getAllCurrentContexts()?.forEach((context) => {
+			const id = context.getProperty("TravelUUID");
+			const selected = selectedItems.some((item) => item.ID === id);
+			context.setSelected(selected);
+		});
+	}
+
+	/**
+	 * When a tile is pressed, remove the corresponding item from the JSON model and deselect it in the table
+	 * @param event UI5 event
+	 */
+	onTilePress(event: GenericTile$PressEvent): void {
+		const tilePressed = event.getSource();
+		const travelId = tilePressed.data("ID");
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		let selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+		selectedItems = selectedItems.filter((item) => item.ID !== travelId);
+		selectionModel.setProperty("/items", selectedItems);
+		this.syncTableSelectionFromJSONModel();
+	}
+
+	/**
+	 * When a row is selected or deselected in the table, update the JSON model accordingly.
+	 * @param event UI5 event
+	 */
+	onTableSelectionChange(event: UI5Event): void {
+		const table = event.getSource() as Table;
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		let selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+		table.getAllCurrentContexts()?.forEach((context) => {
+			const id = context.getProperty("TravelUUID");
+			if (context.isSelected()) {
+				if (!selectedItems.some((item) => item.ID === id)) {
+					selectedItems.push({
+						ID: id,
+						Description: context.getProperty("Description"),
+						Currency: context.getProperty("CurrencyCode_code"),
+						Price: context.getProperty("TotalPrice")
+					});
+				}
+			} else {
+				selectedItems = selectedItems.filter((item) => item.ID !== id);
+			}
+		});
+		selectionModel.setProperty("/items", selectedItems);
+	}
+}
+```
+
+**STEP**: 5. Provide an Initial Selection (Optional)
+
+**DESCRIPTION**: Fill the selection model with the initial selection.
+
+**LANGUAGE**: TypeScript
+
+**CODE**:
+```typescript
+import PageController from "sap/fe/core/PageController";
+import type CollectionBindingInfo from "sap/fe/macros/CollectionBindingInfo";
+import type Table from "sap/fe/macros/table/TableAPI";
+import { type GenericTile$PressEvent } from "sap/m/GenericTile";
+import type UI5Event from "sap/ui/base/Event";
+import JSONModel from "sap/ui/model/json/JSONModel";
+
+interface SelectionItem {
+	ID: string;
+	Description: string;
+	Price: number;
+	Currency: string;
+}
+
+export default class TableSelectionController extends PageController {
+	onInit(): void {
+		super.onInit();
+
+		// Initial selection
+		const selectionModel = new JSONModel({
+			items: [
+				{
+					ID: "53657221A8E4645C17002DF03754AB66",
+					Description: "Lars Jensen site visit for system rollout support",
+					Price: 3164,
+					Currency: "USD"
+				},
+				{
+					ID: "6F657221A8E4645C17002DF03754AB66",
+					Description: "Sheffield annual review.",
+					Price: 1450,
+					Currency: "GBP"
+				}
+			]
+		});
+		this.getView().setModel(selectionModel, "selectionModel");
+	}
+
+	onBeforeRebindTable(event: UI5Event<{ collectionBindingInfo: CollectionBindingInfo }>): void {
+		const collectionBindingInfo = event.getParameter("collectionBindingInfo");
+		collectionBindingInfo.attachEvent(
+			"dataReceived",
+			() => {
+				this.syncTableSelectionFromJSONModel();
+			},
+			this
+		);
+	}
+
+	/**
+	 * Synchronizes the selection in the table with the selection in the JSON model.
+	 * This is required when new rows are loaded in the table such as after filtering or scrolling
+	 * or when the selection in the JSON model is changed such as when a tile is removed.
+	 */
+	syncTableSelectionFromJSONModel(): void {
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		const selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+
+		const table = this.byId("tableForSelection") as Table;
+		table.getAllCurrentContexts()?.forEach((context) => {
+			const id = context.getProperty("TravelUUID");
+			const selected = selectedItems.some((item) => item.ID === id);
+			context.setSelected(selected);
+		});
+	}
+
+	/**
+	 * When a tile is pressed, remove the corresponding item from the JSON model and deselect it in the table
+	 * @param event UI5 event
+	 */
+	onTilePress(event: GenericTile$PressEvent): void {
+		const tilePressed = event.getSource();
+		const travelId = tilePressed.data("ID");
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		let selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+		selectedItems = selectedItems.filter((item) => item.ID !== travelId);
+		selectionModel.setProperty("/items", selectedItems);
+		this.syncTableSelectionFromJSONModel();
+	}
+
+	/**
+	 * When a row is selected or deselected in the table, update the JSON model accordingly.
+	 * @param event UI5 event
+	 */
+	onTableSelectionChange(event: UI5Event): void {
+		const table = event.getSource() as Table;
+		const selectionModel = this.getView().getModel("selectionModel") as JSONModel;
+		let selectedItems = selectionModel.getProperty("/items") as SelectionItem[];
+		table.getAllCurrentContexts()?.forEach((context) => {
+			const id = context.getProperty("TravelUUID");
+			if (context.isSelected()) {
+				if (!selectedItems.some((item) => item.ID === id)) {
+					selectedItems.push({
+						ID: id,
+						Description: context.getProperty("Description"),
+						Currency: context.getProperty("CurrencyCode_code"),
+						Price: context.getProperty("TotalPrice")
+					});
+				}
+			} else {
+				selectedItems = selectedItems.filter((item) => item.ID !== id);
+			}
+		});
+		selectionModel.setProperty("/items", selectedItems);
+	}
+}
 ```
 
 --------------------------------
@@ -37806,11 +40605,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -37818,8 +40620,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -37849,13 +40657,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -37887,13 +40715,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -37901,15 +40729,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -37929,11 +40770,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -38031,6 +40872,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -38051,8 +40913,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -38700,11 +41561,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -38712,8 +41576,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -38743,13 +41613,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -38781,13 +41671,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -38795,15 +41685,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -38823,11 +41726,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -38925,6 +41828,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -38945,8 +41869,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -39711,11 +42634,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -39723,8 +42649,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -39754,13 +42686,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -39792,13 +42744,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -39806,15 +42758,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -39834,11 +42799,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -39936,6 +42901,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -39956,8 +42942,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -40529,11 +43514,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -40541,8 +43529,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -40572,13 +43566,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -40610,13 +43624,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -40624,15 +43638,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -40652,11 +43679,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -40754,6 +43781,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -40774,8 +43822,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -41635,11 +44682,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -41647,8 +44697,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -41678,13 +44734,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -41716,13 +44792,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -41730,15 +44806,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -41758,11 +44847,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -41860,6 +44949,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -41880,8 +44990,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -43931,11 +47040,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -43943,8 +47055,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -43974,13 +47092,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -44012,13 +47150,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -44026,15 +47164,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -44054,11 +47205,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -44156,6 +47307,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -44176,8 +47348,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -44791,13 +47962,33 @@ annotate TravelService.Travel with @(UI: {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -44829,13 +48020,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -44843,15 +48034,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -44871,11 +48075,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -44973,6 +48177,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -44993,8 +48218,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -45070,13 +48294,33 @@ EndDate : abap.dats;
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -45108,13 +48352,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -45122,15 +48366,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -45150,11 +48407,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -45252,6 +48509,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -45272,8 +48550,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -45380,13 +48657,33 @@ virtual TravelStatusCriticality: abap.int1
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -45418,13 +48715,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -45432,15 +48729,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -45460,11 +48770,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -45562,6 +48872,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -45582,8 +48913,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -45810,11 +49140,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -45822,8 +49155,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -46416,11 +49755,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -46428,8 +49770,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -46459,13 +49807,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -46497,13 +49865,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -46511,15 +49879,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -46539,11 +49920,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -46641,6 +50022,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -46661,8 +50063,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -47372,7 +50773,6 @@ annotate TravelService.Booking with @(UI: {LineItem: [
   {Value: ConnectionID},
   {Value: FlightDate},
   {Value: FlightPrice},
-  {Value: CurrencyCode_code},
   {Value: TextProperty},
 ]});
 ```
@@ -49372,11 +52772,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -49384,8 +52787,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -49415,13 +52824,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -49453,13 +52882,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -49467,15 +52896,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -49495,11 +52937,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -49597,6 +53039,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -49617,8 +53080,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -50300,11 +53762,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -50312,8 +53777,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
@@ -50343,13 +53814,33 @@ service TravelService {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -50381,13 +53872,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -50395,15 +53886,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -50423,11 +53927,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -50525,6 +54029,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -50545,8 +54070,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -50811,13 +54335,33 @@ annotate TravelService.Travel with @(UI: {
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -50849,13 +54393,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -50863,15 +54407,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -50891,11 +54448,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -50993,6 +54550,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -51013,8 +54591,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -51088,13 +54665,33 @@ annotate service.TravelAgency with @(UI: {FieldGroup #Link: {Data: [{
 using TravelService as service from '../service/service';
 
 annotate service.Travel {
-  TravelStatus @Common.ValueListWithFixedValues
+  TravelStatus @Common.ValueListWithFixedValues;
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
 }
 
 annotate service.Travel with @UI.LineItem: [
   {Value: TravelID},
-  {Value: BeginDate},
-  {Value: EndDate},
+  {
+    $Type : 'UI.DataFieldForAnnotation',
+    Target: '@UI.ConnectedFields#TripDates'
+  },
   {Value: to_Agency_AgencyID},
   {
     Value             : TravelStatus_code,
@@ -51126,13 +54723,13 @@ annotate service.Travel with @Capabilities.FilterRestrictions.FilterExpressionRe
 ];
 
 annotate service.Travel with @(UI: {
-  FieldGroup #TravelData  : {Data: [
+  FieldGroup #TravelData    : {Data: [
     {Value: TravelID},
     {Value: to_Agency_AgencyID},
     {Value: BeginDate},
     {Value: EndDate}
   ]},
-  FieldGroup #ApprovalData: {Data: [
+  FieldGroup #ApprovalData  : {Data: [
     {
       $Type      : 'UI.DataField',
       Value      : TravelStatus_code,
@@ -51140,15 +54737,28 @@ annotate service.Travel with @(UI: {
       Label      : 'Status'
     },
     {Value: BookingFee},
-    {Value: TotalPrice},
-    {Value: CurrencyCode_code}
+    {Value: TotalPrice}
   ]},
-  FieldGroup #HeaderMain  : {Data: [
+  FieldGroup #HeaderMain    : {Data: [
     {Value: BeginDate},
     {Value: EndDate},
     {Value: TotalPrice}
   ]},
-  Facets                  : [
+  ConnectedFields #TripDates: {
+    Label   : 'Business Trip Dates',
+    Template: '{BeginDate} / {EndDate}',
+    Data    : {
+      BeginDate: {
+        $Type: 'UI.DataField',
+        Value: BeginDate
+      },
+      EndDate  : {
+        $Type: 'UI.DataField',
+        Value: EndDate
+      }
+    }
+  },
+  Facets                    : [
     {
       $Type : 'UI.ReferenceFacet',
       ID    : 'TravelData',
@@ -51168,11 +54778,11 @@ annotate service.Travel with @(UI: {
       Target: 'to_Booking/@UI.LineItem'
     }
   ],
-  HeaderFacets            : [{
+  HeaderFacets              : [{
     $Type : 'UI.ReferenceFacet',
     Target: '@UI.FieldGroup#HeaderMain'
   }],
-  HeaderInfo              : {
+  HeaderInfo                : {
     TypeName      : 'Travel',
     TypeNamePlural: 'Travels',
     Title         : {
@@ -51270,6 +54880,27 @@ annotate service.TravelAgency with @(
   Common.IsNaturalPerson: false
 );
 
+annotate service.Booking {
+  CurrencyCode @Common.ValueList: {
+    CollectionPath: 'Currencies',
+    Parameters    : [
+      {
+        $Type            : 'Common.ValueListParameterInOut',
+        LocalDataProperty: CurrencyCode_code,
+        ValueListProperty: 'code'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'name'
+      },
+      {
+        $Type            : 'Common.ValueListParameterDisplayOnly',
+        ValueListProperty: 'descr'
+      }
+    ]
+  };
+}
+
 annotate service.Booking with @(UI: {
   HeaderInfo: {
     TypeName      : 'Booking',
@@ -51290,8 +54921,7 @@ annotate service.Booking with @(UI: {
     {Value: BookingDate},
     {Value: ConnectionID},
     {Value: FlightDate},
-    {Value: FlightPrice},
-    {Value: CurrencyCode_code}
+    {Value: FlightPrice}
   ],
   FieldGroup: {Data: [
     {
@@ -51489,11 +55119,14 @@ service TravelService {
   };
 
   entity TravelAgency : MasterData {
+        @Common.Label: 'Agency ID'
     key AgencyID       : String(6);
 
         @Common.Label: 'Agency Name'
         Name           : String(80);
         Street         : String(60);
+
+        @Common.Label: 'Postal Code'
         PostalCode     : String(10);
 
         @Common.Label: 'City'
@@ -51501,8 +55134,14 @@ service TravelService {
 
         @Common.Label: 'Country Code'
         CountryCode    : Country;
+
+        @Common.Label: 'Phone Number'
         PhoneNumber    : String(30);
+
+        @Common.Label: 'Email Address'
         EMailAddress   : String(256);
+
+        @Common.Label: 'Web Address'
         WebAddress     : String(256);
         Rating         : Integer;
         Recommendation : Integer;
