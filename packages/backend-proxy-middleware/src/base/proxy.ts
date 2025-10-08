@@ -127,7 +127,7 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
  */
 export const PathRewriters = {
     /**
-     * Generates a rewrite function that replaces the matched string with /manifest.json
+     * Generates a rewrite function that replaces the matched string with '/manifest.json'.
      *
      * @param bspPath the bsp path from the yaml config
      * @returns a path rewrite function
