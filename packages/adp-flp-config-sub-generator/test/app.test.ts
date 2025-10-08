@@ -1,5 +1,5 @@
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import fsextra from 'fs-extra';
 
 import type { YUIQuestion, CredentialsAnswers } from '@sap-ux/inquirer-common';

@@ -1,5 +1,5 @@
-import { createWriteStream, existsSync, promises } from 'fs';
-import { basename, dirname, join } from 'path';
+import { createWriteStream, existsSync, promises } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 import * as archiver from 'archiver';
 import { glob } from 'glob-gitignore';
 import ignore from 'ignore';

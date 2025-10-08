@@ -6,7 +6,7 @@ import {
     getCdsRoots,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative } from 'path';
+import { basename, isAbsolute, relative } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';

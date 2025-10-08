@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.1.5
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 1.1.4
 
 ### Patch Changes

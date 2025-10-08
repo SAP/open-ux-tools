@@ -1,5 +1,5 @@
 import { mkdir, writeFile, readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 import { readIntegrityData, writeIntegrityData } from '../../../src/integrity/persistence';
 import type { Integrity } from '../../../src/types';
 

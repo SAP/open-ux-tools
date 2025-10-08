@@ -1,7 +1,7 @@
-import type { Dirent } from 'fs';
-import path from 'path';
+import type { Dirent } from 'node:fs';
+import path from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 import { DirName } from '@sap-ux/project-access';
 import {

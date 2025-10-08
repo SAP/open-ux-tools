@@ -1,4 +1,4 @@
-import { basename } from 'path';
+import { basename } from 'node:path';
 import { type FLPConfigPromptOptions, promptNames } from '@sap-ux/flp-config-inquirer';
 /**
  * Returns the details for the YUI prompt.

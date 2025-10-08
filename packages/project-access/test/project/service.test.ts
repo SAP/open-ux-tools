@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Manifest, ManifestNamespace } from '../../src';
 import { getMainService, getServicesAndAnnotations, filterDataSourcesByType } from '../../src/project/service';
 

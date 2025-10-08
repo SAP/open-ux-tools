@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { GET_PROJECT_PATH, UPDATE_PROJECT_PATH, UPDATE_PROJECT_PATH_RESULT, SET_PROJECT_PATH } from './types';
 import type { ProjectActions } from './types';
 import { getApplication, setApplication, testAppPath } from './project';

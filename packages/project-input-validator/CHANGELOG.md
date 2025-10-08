@@ -1,5 +1,19 @@
 # @sap-ux/project-input-validator
 
+## 0.6.24
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+
+## 0.6.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+
 ## 0.6.22
 
 ### Patch Changes

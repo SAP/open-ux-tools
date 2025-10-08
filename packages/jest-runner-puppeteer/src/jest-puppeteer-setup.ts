@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import puppeteer from 'puppeteer-core';
-import fs from 'fs';
+import fs from 'node:fs';
 import mkdirp from 'mkdirp';
-import os from 'os';
-import path from 'path';
+import os from 'node:os';
+import path from 'node:path';
 import { findChrome } from './locate-chrome';
 import { getAnyEdgeStable } from './locate-edge';
 

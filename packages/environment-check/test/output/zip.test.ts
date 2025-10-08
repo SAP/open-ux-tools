@@ -1,4 +1,4 @@
-import * as mockFs from 'fs';
+import * as mockFs from 'node:fs';
 import type * as archiver from 'archiver';
 import { storeResultsZip } from '../../src/output';
 import { Check } from '../../src';

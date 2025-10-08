@@ -254,7 +254,7 @@ export function findNode(assignment: Assignment, annotations: Element[], positio
 function getTermNodes(terms: TermNode[], path: string[]): TermNode[] {
     // ignore the first empty segment
     const [, indexString, ...segments] = path;
-    const index: number = parseInt(indexString, 10); // or use Number(indexString);
+    const index: number = Number.parseInt(indexString, 10); // or use Number(indexString);
     let node: TermNode = terms[index];
     const nodes: TermNode[] = [];
     for (const segment of segments) {
