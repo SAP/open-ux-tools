@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/cds-odata-annotation-converter"
     },
-    "version": "0.6.11",
+    "version": "0.6.12",
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -34,7 +34,7 @@
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "1.18.0",
+        "@sap/ux-cds-compiler-facade": "1.19.0",
         "i18next": "25.3.0",
         "@sap-ux/text-document-utils": "workspace:*"
     },
