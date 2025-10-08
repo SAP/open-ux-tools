@@ -128,6 +128,7 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
 export const PathRewriters = {
     /**
      * Generates a rewrite function that replaces the matched string with /manifest.json
+     *
      * @param bspPath the bsp path from the yaml config
      * @returns a path rewrite function
      */
@@ -148,7 +149,7 @@ export const PathRewriters = {
     },
 
     /**
-     * Add or replace the sap-client url parameter if missing or inocrrect in the original request path.
+     * Add or replace the sap-client url parameter if missing or incorrect in the original request path.
      *
      * @param client sap-client as string
      * @returns a path rewrite function
