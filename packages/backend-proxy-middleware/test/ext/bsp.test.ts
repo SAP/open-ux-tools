@@ -1,6 +1,6 @@
 //import prompts from 'prompts';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
-import { addOptionsForEmbeddedBSP, convertAppDescriptorToManifest, promptUserPass } from '../../src/ext/bsp';
+import { addOptionsForEmbeddedBSP, promptUserPass } from '../../src/ext/bsp';
 
 // mock required btp-utils functions
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -22,14 +22,6 @@ describe('bsp', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    test('convertAppDescriptorToManifest', () => {
-        const rewrite = convertAppDescriptorToManifest('/my/bsp');
-        expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
-        expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
-        expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
-        expect(rewrite('/test')).toBe('/test');
     });
 
     describe('promptUserPass', () => {

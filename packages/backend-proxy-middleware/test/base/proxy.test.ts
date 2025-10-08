@@ -65,7 +65,7 @@ describe('proxy', () => {
     });
 
     describe('PathRewriters', () => {
-        const { replacePrefix, replaceClient, getPathRewrite } = PathRewriters;
+        const { replacePrefix, replaceClient, getPathRewrite, convertAppDescriptorToManifest } = PathRewriters;
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
@@ -78,6 +78,14 @@ describe('proxy', () => {
             expect(rewrite('/test')).toBe('/test?sap-client=012');
             expect(rewrite('/test?sap-language=en')).toBe('/test?sap-language=en&sap-client=012');
             expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
+        });
+
+        test('convertAppDescriptorToManifest', () => {
+            const rewrite = convertAppDescriptorToManifest('/my/bsp');
+            expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
+            expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
+            expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
+            expect(rewrite('/test')).toBe('/test');
         });
 
         test('getPathRewrite', () => {
