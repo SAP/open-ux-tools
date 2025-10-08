@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import axios from 'axios';
 import * as path from 'path';
 import type { AxiosRequestConfig } from 'axios';
-import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -22,7 +21,6 @@ import type {
     MtaYaml
 } from '../../types';
 import { t } from '../../i18n';
-import { isLoggedInCf } from '../core/auth';
 import { getProjectNameForXsSecurity } from '../project';
 import { createServiceKey, getServiceKeys, requestCfApi } from './cli';
 
@@ -110,7 +108,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
  * @param {string[]} appHostIds - The app host ids.
  * @param {CfConfig} cfConfig - The CF config.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<AxiosResponse<FDCResponse>>} The FDC apps.
+ * @returns {Promise<FDCResponse>} The FDC apps.
  */
 export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
     const requestArguments = getFDCRequestArguments(cfConfig);
@@ -120,11 +118,6 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
     const url = `${requestArguments.url}/api/business-service/discovery?${appHostIdParams}`;
 
     try {
-        const isLoggedIn = await isLoggedInCf(cfConfig, logger);
-        if (!isLoggedIn) {
-            await CFLocal.cfGetAvailableOrgs();
-        }
-
         const response = await axios.get<FDCResponse>(url, requestArguments.options);
 
         if (response.status === 200) {
