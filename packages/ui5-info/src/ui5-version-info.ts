@@ -1,4 +1,4 @@
-import { major, minor, valid, maxSatisfying } from 'semver';
+import { major, minor, patch, valid, maxSatisfying } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionsResponse, UI5VersionSupport, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
@@ -320,16 +320,16 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
     }
 
     const defaultUI5Version = filteredUI5Versions[0];
-    let ui5VersionsOverview: UI5VersionSupport[];
+    let ui5VersionsOverview: string[] | UI5VersionSupport[];
     let finalDefaultUI5Version = defaultUI5Version;
 
     // Retrieve UI5 versions overview if maintained versions are to be included, note: overview and official versions are not the same
     if (filterOptions?.includeMaintained) {
         try {
             ui5VersionsOverview = (await retrieveUI5VersionsCache(
-                ui5VersionsType.support,
+                ui5VersionsType.official,
                 filterOptions.useCache
-            )) as UI5Version[];
+            )) as string[];
         } catch (error) {
             new ToolsLogger().warn(
                 `Request to '${ui5VersionRequestInfo.OfficialUrl}' for supported info on UI5 versions failed. Error was: '${error.message}'. Fallback to default supported UI5 versions`
@@ -340,12 +340,14 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
 
     // Semantically filter the UI5 version, based on the support (maintained or not) and default version
     const isMaintained = (ui5: string) =>
-        ui5VersionsOverview?.some(
-            (v) =>
-                v &&
-                `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
-                v.support === 'Maintenance'
-        ) ?? false;
+        ui5VersionsOverview?.some((v) => {
+            const versionStr = typeof v === 'string' ? v : v.version;
+            return (
+                versionStr &&
+                `${major(versionStr)}.${minor(versionStr)}.${patch(versionStr)}` ===
+                    `${major(ui5)}.${minor(ui5)}.${patch(ui5)}`
+            );
+        }) ?? false;
 
     // If the default version is not maintained, then fallback to the semantically latest maintained version
     if (filterOptions?.includeDefault && filterOptions.includeMaintained && !isMaintained(defaultUI5Version)) {
