@@ -17,7 +17,7 @@ https://github.com/SAP-samples/fiori-elements-feature-showcase (Feature examples
 
 https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json (Design Time API Reference)
 
-(Internal) SAP Fiori Development Portal
+https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/overview/introduction SAP Fiori Development Portal
 
 
 - Parses markdown, JSON, TypeScript, and other file types
