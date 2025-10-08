@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 
-import { pipeline } from '@xenova/transformers';
+import { pipeline, type FeatureExtractionPipeline } from '@xenova/transformers';
 import { connect } from '@lancedb/lancedb';
 import * as fs from 'fs/promises';
 import * as path from 'node:path';
+
+interface ProgressCallback {
+    status: string;
+    progress?: number;
+}
 
 interface EmbeddingConfig {
     docsPath: string;
@@ -87,7 +92,7 @@ interface EmbeddingMetadata {
  */
 class EmbeddingBuilder {
     private readonly config: EmbeddingConfig;
-    private pipeline: any;
+    private pipeline: FeatureExtractionPipeline;
     private readonly documents: Document[];
     private readonly chunks: Chunk[];
 
@@ -101,7 +106,6 @@ class EmbeddingBuilder {
             batchSize: 20, // Increased batch size for faster processing
             maxVectorsPerTable: 5000 // Limit vectors per table to control file size
         };
-        this.pipeline = null;
         this.documents = [];
         this.chunks = [];
     }
@@ -113,7 +117,7 @@ class EmbeddingBuilder {
         try {
             this.pipeline = await pipeline('feature-extraction', this.config.model, {
                 quantized: false, // Try without quantization first
-                progress_callback: (progress: any) => {
+                progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
                         console.log(`Downloading: ${Math.round(progress.progress || 0)}%`);
                     }
@@ -124,7 +128,7 @@ class EmbeddingBuilder {
             // Fallback to a simpler model if the main one fails
             this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                 quantized: false,
-                progress_callback: (progress: any) => {
+                progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
                         console.log(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
                     }
@@ -149,7 +153,7 @@ class EmbeddingBuilder {
                 const docContent = await fs.readFile(fullPath, 'utf-8');
                 const doc: Document = JSON.parse(docContent);
                 this.documents.push(doc);
-            } catch (error: any) {
+            } catch (error) {
                 console.warn(`Failed to load document ${docId}:`, error.message);
             }
         }
@@ -180,7 +184,7 @@ class EmbeddingBuilder {
             }
 
             console.log(`✓ Loaded local documents (total: ${this.documents.length} documents now)`);
-        } catch (error: any) {
+        } catch (error) {
             console.warn(`Failed to read data_local directory:`, error.message);
         }
     }
@@ -207,7 +211,7 @@ class EmbeddingBuilder {
                     this.documents.push(doc);
                 }
             }
-        } catch (error: any) {
+        } catch (error) {
             console.warn(`Failed to load local document ${file}:`, error.message);
         }
     }
@@ -387,7 +391,7 @@ class EmbeddingBuilder {
                         const percent = Math.round((processedCount / this.chunks.length) * 100);
                         console.log(`  ✓ Processed ${processedCount}/${this.chunks.length} chunks (${percent}%)`);
                     }
-                } catch (error: any) {
+                } catch (error) {
                     console.warn(`Failed to generate embedding for ${chunk.id}:`, error.message);
                 }
             }
@@ -463,7 +467,24 @@ class EmbeddingBuilder {
             // Flatten metadata to avoid schema inference issues with nested arrays
             const normalizedChunk = chunk.map((item) => {
                 // Safely access metadata with proper typing
-                const metadata = item.metadata || ({} as any);
+                type ChunkMetadata = {
+                    tags: string[];
+                    headers: string[];
+                    lastModified: string;
+                    wordCount: number;
+                    excerpt: string;
+                    totalChunks: number;
+                };
+                const metadata: ChunkMetadata =
+                    (item.metadata as ChunkMetadata) ||
+                    ({
+                        tags: [],
+                        headers: [],
+                        lastModified: '',
+                        wordCount: 0,
+                        excerpt: '',
+                        totalChunks: 1
+                    } as ChunkMetadata);
 
                 return {
                     id: item.id || '',
@@ -539,7 +560,7 @@ class EmbeddingBuilder {
             console.log(`   Total vectors: ${metadata.totalVectors}`);
             console.log(`   Total documents: ${metadata.totalDocuments}`);
             console.log(`   Database: ${this.config.embeddingsPath}`);
-        } catch (error: any) {
+        } catch (error) {
             console.error('❌ Embedding generation failed:', error.message);
             console.error(error.stack);
             process.exit(1);
