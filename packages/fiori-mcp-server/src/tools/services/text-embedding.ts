@@ -1,4 +1,3 @@
-import { pipeline } from '@xenova/transformers';
 /**
  * Text embedding service for converting text queries to vectors.
  */
@@ -19,6 +18,9 @@ export class TextEmbeddingService {
         }
 
         try {
+            // Dynamically import the ES Module
+            const { pipeline } = await import('@xenova/transformers');
+
             // Use the same model as the build process
             this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                 quantized: false
