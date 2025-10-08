@@ -233,7 +233,7 @@ export async function initI18n(): Promise<void> {
  * Enhance the proxy options and backend configurations for the usage of destinations in SAP Business Application Studio.
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
- * @param backend reference to the backend configuration that the the function may enhance
+ * @param backend reference to the backend configuration that the function may enhance
  */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options & { headers: object },
