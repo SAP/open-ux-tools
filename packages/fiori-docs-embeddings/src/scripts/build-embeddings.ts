@@ -4,6 +4,7 @@ import { pipeline, type FeatureExtractionPipeline } from '@xenova/transformers';
 import { connect } from '@lancedb/lancedb';
 import * as fs from 'fs/promises';
 import * as path from 'node:path';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
 
 interface ProgressCallback {
     status: string;
@@ -95,6 +96,7 @@ class EmbeddingBuilder {
     private pipeline: FeatureExtractionPipeline;
     private readonly documents: Document[];
     private readonly chunks: Chunk[];
+    private readonly logger: Logger;
 
     constructor() {
         this.config = {
@@ -108,44 +110,45 @@ class EmbeddingBuilder {
         };
         this.documents = [];
         this.chunks = [];
+        this.logger = new ToolsLogger();
     }
 
     async initialize(): Promise<void> {
-        console.log('🤖 Loading embedding model...');
-        console.log(`Model: ${this.config.model}`);
+        this.logger.info('🤖 Loading embedding model...');
+        this.logger.info(`Model: ${this.config.model}`);
 
         try {
             this.pipeline = await pipeline('feature-extraction', this.config.model, {
                 quantized: false, // Try without quantization first
                 progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
-                        console.log(`Downloading: ${Math.round(progress.progress || 0)}%`);
+                        this.logger.info(`Downloading: ${Math.round(progress.progress || 0)}%`);
                     }
                 }
             });
         } catch (error) {
-            console.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
+            this.logger.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
             // Fallback to a simpler model if the main one fails
             this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                 quantized: false,
                 progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
-                        console.log(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
+                        this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
                     }
                 }
             });
         }
 
-        console.log('✓ Embedding model loaded');
+        this.logger.info('✓ Embedding model loaded');
     }
 
     async loadDocuments(): Promise<void> {
-        console.log('\n📚 Loading documents from filestore...');
+        this.logger.info('\n📚 Loading documents from filestore...');
 
         const indexPath = path.join(this.config.docsPath, 'index.json');
         const index: DocumentIndex = JSON.parse(await fs.readFile(indexPath, 'utf-8'));
 
-        console.log(`Found ${index.totalDocuments} documents in index`);
+        this.logger.info(`Found ${index.totalDocuments} documents in index`);
 
         for (const [docId, docPath] of Object.entries(index.documents)) {
             try {
@@ -154,11 +157,11 @@ class EmbeddingBuilder {
                 const doc: Document = JSON.parse(docContent);
                 this.documents.push(doc);
             } catch (error) {
-                console.warn(`Failed to load document ${docId}:`, error.message);
+                this.logger.warn(`Failed to load document ${docId}: ${error.message}`);
             }
         }
 
-        console.log(`✓ Loaded ${this.documents.length} documents from filestore`);
+        this.logger.info(`✓ Loaded ${this.documents.length} documents from filestore`);
 
         // Load local markdown documents from data_local
         await this.loadLocalDocuments();
@@ -169,7 +172,7 @@ class EmbeddingBuilder {
      * These files use -------------------------------- as chunk delimiters.
      */
     async loadLocalDocuments(): Promise<void> {
-        console.log('\n📘 Loading local documents from data_local...');
+        this.logger.info('\n📘 Loading local documents from data_local...');
 
         const dataLocalPath = './data_local';
 
@@ -177,15 +180,15 @@ class EmbeddingBuilder {
             const files = await fs.readdir(dataLocalPath);
             const mdFiles = files.filter((file) => file.endsWith('.md'));
 
-            console.log(`Found ${mdFiles.length} markdown files in data_local`);
+            this.logger.info(`Found ${mdFiles.length} markdown files in data_local`);
 
             for (const file of mdFiles) {
                 await this.processLocalMarkdownFile(dataLocalPath, file);
             }
 
-            console.log(`✓ Loaded local documents (total: ${this.documents.length} documents now)`);
+            this.logger.info(`✓ Loaded local documents (total: ${this.documents.length} documents now)`);
         } catch (error) {
-            console.warn(`Failed to read data_local directory:`, error.message);
+            this.logger.warn(`Failed to read data_local directory: ${error.message}`);
         }
     }
 
@@ -203,7 +206,7 @@ class EmbeddingBuilder {
             // Split by the delimiter
             const chunks = content.split('--------------------------------').filter((chunk) => chunk.trim());
 
-            console.log(`  ${file}: ${chunks.length} chunks`);
+            this.logger.info(`  ${file}: ${chunks.length} chunks`);
 
             for (const [index, chunkContent] of chunks.entries()) {
                 const doc = this.createDocumentFromChunk(file, index, chunkContent);
@@ -212,7 +215,7 @@ class EmbeddingBuilder {
                 }
             }
         } catch (error) {
-            console.warn(`Failed to load local document ${file}:`, error.message);
+            this.logger.warn(`Failed to load local document ${file}: ${error.message}`);
         }
     }
 
@@ -324,14 +327,14 @@ class EmbeddingBuilder {
     }
 
     async chunkAllDocuments(): Promise<void> {
-        console.log('\n✂️  Chunking documents...');
+        this.logger.info('\n✂️  Chunking documents...');
 
         for (const doc of this.documents) {
             const docChunks = this.chunkDocument(doc);
             this.chunks.push(...docChunks);
         }
 
-        console.log(`✓ Created ${this.chunks.length} chunks from ${this.documents.length} documents`);
+        this.logger.info(`✓ Created ${this.chunks.length} chunks from ${this.documents.length} documents`);
 
         const stats = {
             totalChunks: this.chunks.length,
@@ -344,11 +347,11 @@ class EmbeddingBuilder {
             ).size
         };
 
-        console.log(`📊 Chunk statistics:`);
-        console.log(`   Total chunks: ${stats.totalChunks}`);
-        console.log(`   Average size: ${stats.averageChunkSize} characters`);
-        console.log(`   Single-chunk docs: ${stats.singleChunkDocs}`);
-        console.log(`   Multi-chunk docs: ${stats.multiChunkDocs}`);
+        this.logger.info(`📊 Chunk statistics:`);
+        this.logger.info(`   Total chunks: ${stats.totalChunks}`);
+        this.logger.info(`   Average size: ${stats.averageChunkSize} characters`);
+        this.logger.info(`   Single-chunk docs: ${stats.singleChunkDocs}`);
+        this.logger.info(`   Multi-chunk docs: ${stats.multiChunkDocs}`);
     }
 
     /**
@@ -365,8 +368,8 @@ class EmbeddingBuilder {
     }
 
     async generateAllEmbeddings(): Promise<void> {
-        console.log('\n🧠 Generating embeddings...');
-        console.log(`Processing ${this.chunks.length} chunks in batches of ${this.config.batchSize}`);
+        this.logger.info('\n🧠 Generating embeddings...');
+        this.logger.info(`Processing ${this.chunks.length} chunks in batches of ${this.config.batchSize}`);
 
         const batches: Chunk[][] = [];
         for (let i = 0; i < this.chunks.length; i += this.config.batchSize) {
@@ -379,7 +382,7 @@ class EmbeddingBuilder {
 
             // Only show batch progress every 50 batches or for the first few
             if (i < 5 || i % 50 === 0 || i === batches.length - 1) {
-                console.log(`Processing batch ${i + 1}/${batches.length} (${batch.length} chunks)`);
+                this.logger.info(`Processing batch ${i + 1}/${batches.length} (${batch.length} chunks)`);
             }
 
             for (const chunk of batch) {
@@ -389,15 +392,15 @@ class EmbeddingBuilder {
 
                     if (processedCount % 200 === 0 || processedCount === this.chunks.length) {
                         const percent = Math.round((processedCount / this.chunks.length) * 100);
-                        console.log(`  ✓ Processed ${processedCount}/${this.chunks.length} chunks (${percent}%)`);
+                        this.logger.info(`  ✓ Processed ${processedCount}/${this.chunks.length} chunks (${percent}%)`);
                     }
                 } catch (error) {
-                    console.warn(`Failed to generate embedding for ${chunk.id}:`, error.message);
+                    this.logger.warn(`Failed to generate embedding for ${chunk.id}: ${error.message}`);
                 }
             }
         }
 
-        console.log(`✓ Generated ${processedCount} embeddings`);
+        this.logger.info(`✓ Generated ${processedCount} embeddings`);
     }
 
     /**
@@ -406,7 +409,7 @@ class EmbeddingBuilder {
      * @returns Promise resolving to embedding metadata
      */
     async createVectorDatabase(): Promise<EmbeddingMetadata> {
-        console.log('\n💾 Creating vector database...');
+        this.logger.info('\n💾 Creating vector database...');
 
         // Ensure embeddings directory exists
         await fs.mkdir(this.config.embeddingsPath, { recursive: true });
@@ -436,7 +439,7 @@ class EmbeddingBuilder {
                 totalChunks: chunk.metadata.totalChunks || 1
             }));
 
-        console.log(`Storing ${vectorData.length} vectors in LanceDB`);
+        this.logger.info(`Storing ${vectorData.length} vectors in LanceDB`);
 
         // Split data into smaller chunks to avoid large files
         const maxVectorsPerTable = this.config.maxVectorsPerTable;
@@ -446,14 +449,14 @@ class EmbeddingBuilder {
             tableChunks.push(vectorData.slice(i, i + maxVectorsPerTable));
         }
 
-        console.log(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
+        this.logger.info(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
 
         // Drop existing tables
         for (let i = 0; i < tableChunks.length; i++) {
             const tableName = `documents_${i.toString().padStart(3, '0')}`;
             try {
                 await db.dropTable(tableName);
-                console.log(`🗑️  Dropped existing table: ${tableName}`);
+                this.logger.info(`🗑️  Dropped existing table: ${tableName}`);
             } catch {
                 // Table doesn't exist, which is fine
             }
@@ -505,9 +508,9 @@ class EmbeddingBuilder {
                 };
             });
 
-            console.log(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
+            this.logger.info(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
             await db.createTable(tableName, normalizedChunk);
-            console.log(`✓ Created table ${tableName}`);
+            this.logger.info(`✓ Created table ${tableName}`);
         }
 
         // Create a table index file for easy querying
@@ -521,7 +524,7 @@ class EmbeddingBuilder {
         const tableIndexPath = path.join(this.config.embeddingsPath, 'table_index.json');
         await fs.writeFile(tableIndexPath, JSON.stringify(tableIndex, null, 2));
 
-        console.log('✓ Vector database created with multiple tables');
+        this.logger.info('✓ Vector database created with multiple tables');
 
         // Create metadata file
         const metadata: EmbeddingMetadata = {
@@ -538,13 +541,13 @@ class EmbeddingBuilder {
         const metadataPath = path.join(this.config.embeddingsPath, 'metadata.json');
         await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
 
-        console.log(`✓ Created metadata file: ${metadataPath}`);
+        this.logger.info(`✓ Created metadata file: ${metadataPath}`);
 
         return metadata;
     }
 
     async buildEmbeddings(): Promise<void> {
-        console.log('🚀 Starting embedding generation...');
+        this.logger.info('🚀 Starting embedding generation...');
 
         try {
             await this.initialize();
@@ -553,16 +556,18 @@ class EmbeddingBuilder {
             await this.generateAllEmbeddings();
             const metadata = await this.createVectorDatabase();
 
-            console.log('\n🎉 Embedding generation completed!');
-            console.log(`📊 Summary:`);
-            console.log(`   Model: ${metadata.model}`);
-            console.log(`   Dimensions: ${metadata.dimensions}`);
-            console.log(`   Total vectors: ${metadata.totalVectors}`);
-            console.log(`   Total documents: ${metadata.totalDocuments}`);
-            console.log(`   Database: ${this.config.embeddingsPath}`);
+            this.logger.info('\n🎉 Embedding generation completed!');
+            this.logger.info(`📊 Summary:`);
+            this.logger.info(`   Model: ${metadata.model}`);
+            this.logger.info(`   Dimensions: ${metadata.dimensions}`);
+            this.logger.info(`   Total vectors: ${metadata.totalVectors}`);
+            this.logger.info(`   Total documents: ${metadata.totalDocuments}`);
+            this.logger.info(`   Database: ${this.config.embeddingsPath}`);
         } catch (error) {
-            console.error('❌ Embedding generation failed:', error.message);
-            console.error(error.stack);
+            this.logger.error(`❌ Embedding generation failed: ${error.message}`);
+            if (error.stack) {
+                this.logger.error(error.stack);
+            }
             process.exit(1);
         }
     }
@@ -573,9 +578,10 @@ export { EmbeddingBuilder };
 
 // Run the builder
 if (require.main === module) {
+    const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
     builder.buildEmbeddings().catch((error) => {
-        console.error('Build failed:', error);
+        logger.error(`Build failed: ${error.message}`);
         process.exit(1);
     });
 }

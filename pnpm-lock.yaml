@@ -2035,6 +2035,9 @@ importers:
       '@lancedb/lancedb':
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@types/node':
         specifier: 20.0.0
         version: 20.0.0

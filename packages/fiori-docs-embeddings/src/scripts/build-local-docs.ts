@@ -5,6 +5,7 @@ import * as path from 'node:path';
 import { spawn } from 'node:child_process';
 import { XMLParser } from 'fast-xml-parser';
 import * as readline from 'node:readline';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
 
 const fpmExplorerFolder = 'packages/sap.fe.core/test/sap/fe/core/fpmExplorer';
 
@@ -134,12 +135,14 @@ class FpmDocumentationBuilder {
     private readonly outputPath: string;
     private githubHost: string;
     private githubToken: string;
+    private readonly logger: Logger;
 
     constructor() {
         this.gitReposPath = path.resolve('./data/git_repos');
         this.outputPath = path.resolve('./data_local/fpm.md');
         this.githubHost = '';
         this.githubToken = '';
+        this.logger = new ToolsLogger();
     }
 
     /**
@@ -201,26 +204,27 @@ class FpmDocumentationBuilder {
             const repoExists = await this.directoryExists(repoPath);
 
             if (repoExists) {
-                console.log(`📂 Repository ${repoName} already exists, updating...`);
+                this.logger.info(`📂 Repository ${repoName} already exists, updating...`);
                 try {
                     // Pull latest changes
                     await execCommand('git', ['pull', 'origin', 'main'], { cwd: repoPath });
-                    console.log(`✓ Updated repository: ${repoName}`);
+                    this.logger.info(`✓ Updated repository: ${repoName}`);
                 } catch (pullError) {
-                    console.warn(`Failed to pull updates for ${repoName}, using existing version:`, pullError.message);
+                    this.logger.warn(
+                        `Failed to pull updates for ${repoName}, using existing version: ${pullError.message}`
+                    );
                 }
             } else {
-                console.log(`🔄 Cloning repository: ${repoUrl.replace(this.githubToken, '***')}`);
+                this.logger.info(`🔄 Cloning repository: ${repoUrl.replace(this.githubToken, '***')}`);
                 await execCommand('git', ['clone', '--depth', '1', '--branch', 'main', repoUrl, repoName], {
                     cwd: this.gitReposPath
                 });
-                console.log(`✓ Cloned repository: ${repoName}`);
+                this.logger.info(`✓ Cloned repository: ${repoName}`);
             }
 
             return repoPath;
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            throw new Error(`Failed to clone/update repository ${repoName}: ${errorMessage}`);
+            throw new Error(`Failed to clone/update repository ${repoName}: ${error.message}`);
         }
     }
 
@@ -258,11 +262,11 @@ class FpmDocumentationBuilder {
                     await this.scanDirectoryForFpmExplorerFiles(fullSearchPath, viewFiles);
                 }
             } catch (error) {
-                console.warn(`Failed to scan directory ${fullSearchPath}:`, error.message);
+                this.logger.warn(`Failed to scan directory ${fullSearchPath}: ${error.message}`);
             }
         }
 
-        console.log(`📄 Found ${viewFiles.size} fpmExplorer view files`);
+        this.logger.info(`📄 Found ${viewFiles.size} fpmExplorer view files`);
         return viewFiles;
     }
 
@@ -288,15 +292,15 @@ class FpmDocumentationBuilder {
                         if (content.includes('fpmExplorer:')) {
                             const relativePath = path.relative(path.join(dirPath, '../../../'), fullPath);
                             viewFiles.set(relativePath, fullPath);
-                            console.log(`✓ Found fpmExplorer file: ${relativePath}`);
+                            this.logger.info(`✓ Found fpmExplorer file: ${relativePath}`);
                         }
                     } catch (error) {
-                        console.warn(`Failed to read file ${fullPath}:`, error.message);
+                        this.logger.warn(`Failed to read file ${fullPath}: ${error.message}`);
                     }
                 }
             }
         } catch (error) {
-            console.warn(`Failed to scan directory ${dirPath}:`, error.message);
+            this.logger.warn(`Failed to scan directory ${dirPath}: ${error.message}`);
         }
     }
 
@@ -524,7 +528,7 @@ class FpmDocumentationBuilder {
                 return { content, filePath };
             } catch (readError) {
                 const errorMessage = readError instanceof Error ? readError.message : String(readError);
-                console.warn(`Failed to read code file ${file}:`, errorMessage);
+                this.logger.warn(`Failed to read code file ${file}: ${errorMessage}`);
                 return { content: '', filePath: '' };
             }
         }
@@ -883,7 +887,7 @@ class FpmDocumentationBuilder {
      * Main build process - orchestrates the entire FPM documentation generation.
      */
     async build(): Promise<void> {
-        console.log('🚀 Starting FPM documentation build...');
+        this.logger.info('🚀 Starting FPM documentation build...');
 
         try {
             await this.initializeGitHubConfig();
@@ -903,12 +907,12 @@ class FpmDocumentationBuilder {
 
             await this.generateAndWriteOutput(allDocuments);
 
-            console.log(`🎉 FPM documentation build completed!`);
-            console.log(`📊 Total code snippets: ${allDocuments.length}`);
-            console.log(`📁 Output file: ${this.outputPath}`);
+            this.logger.info(`🎉 FPM documentation build completed!`);
+            this.logger.info(`📊 Total code snippets: ${allDocuments.length}`);
+            this.logger.info(`📁 Output file: ${this.outputPath}`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            console.error('❌ Build failed:', errorMessage);
+            this.logger.error(`❌ Build failed: ${errorMessage}`);
             process.exit(1);
         }
     }
@@ -929,9 +933,9 @@ class FpmDocumentationBuilder {
             'packages/sap.fe.core/test/sap/fe/core/fpmExplorer/model/pageConfiguration.json'
         );
 
-        console.log('🔄 Merging navigation files...');
+        this.logger.info('🔄 Merging navigation files...');
         const mergedNavigation = await this.mergeNavigationFiles(navigationModelPath, pageConfigurationPath);
-        console.log(`✓ Merged navigation with ${mergedNavigation.navigation.length} top-level items`);
+        this.logger.info(`✓ Merged navigation with ${mergedNavigation.navigation.length} top-level items`);
 
         return mergedNavigation;
     }
@@ -972,8 +976,8 @@ class FpmDocumentationBuilder {
         filePath: string,
         mergedNavigation: { navigation: NavigationItem[] }
     ): Promise<FpmDocument[]> {
-        console.log(`📝 Processing file: ${fileName}`);
-        console.log(`📁 File path: ${filePath}`);
+        this.logger.info(`📝 Processing file: ${fileName}`);
+        this.logger.info(`📁 File path: ${filePath}`);
 
         try {
             const documents = await this.parseXmlFile(filePath);
@@ -981,14 +985,14 @@ class FpmDocumentationBuilder {
 
             this.enrichDocumentsWithAdditionalInfo(documents, additionalInfo);
 
-            console.log(`✓ Extracted ${documents.length} code snippets from ${fileName}`);
+            this.logger.info(`✓ Extracted ${documents.length} code snippets from ${fileName}`);
             if (documents.length > 0) {
-                console.log(`   Example: ${documents[0].title}`);
+                this.logger.info(`   Example: ${documents[0].title}`);
             }
 
             return documents;
         } catch (error) {
-            console.warn(`Failed to process ${fileName}:`, error.message);
+            this.logger.warn(`Failed to process ${fileName}: ${error.message}`);
             return [];
         }
     }
@@ -1016,7 +1020,7 @@ class FpmDocumentationBuilder {
             }
         }
 
-        console.log(`   Additional info: ${JSON.stringify(additionalInfo)}`);
+        this.logger.info(`   Additional info: ${JSON.stringify(additionalInfo)}`);
     }
 
     /**
@@ -1033,9 +1037,11 @@ class FpmDocumentationBuilder {
 
 // Run the builder
 if (require.main === module) {
+    const logger = new ToolsLogger();
     const builder = new FpmDocumentationBuilder();
     builder.build().catch((error) => {
-        console.error('Build failed:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
     });
 }

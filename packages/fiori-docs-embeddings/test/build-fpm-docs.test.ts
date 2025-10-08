@@ -10,6 +10,17 @@ const mockReadline = {
     createInterface: jest.fn()
 };
 
+const mockLogger = {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn()
+};
+
+jest.mock('@sap-ux/logger', () => ({
+    ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
+}));
+
 jest.mock('fs/promises', () => ({
     readFile: mockReadFile,
     mkdir: mockMkdir,
@@ -485,7 +496,7 @@ describe('FpmDocumentationBuilder', () => {
         });
 
         it('should warn when file cannot be read from any path', async () => {
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
             const codeBlockElement = {
                 'fpmExplorer:CodeLink': {
                     '@_file': 'test.js'
@@ -499,13 +510,11 @@ describe('FpmDocumentationBuilder', () => {
 
             expect(result).toHaveLength(1);
             expect(result[0].content).toBe('');
-            expect(consoleWarnSpy).toHaveBeenCalled();
-
-            consoleWarnSpy.mockRestore();
+            expect(mockLogger.warn).toHaveBeenCalled();
         });
 
         it('should handle non-Error object in error handling', async () => {
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
             const codeBlockElement = {
                 'fpmExplorer:CodeLink': {
                     '@_file': 'test.js'
@@ -519,9 +528,7 @@ describe('FpmDocumentationBuilder', () => {
 
             expect(result).toHaveLength(1);
             expect(result[0].content).toBe('');
-            expect(consoleWarnSpy).toHaveBeenCalled();
-
-            consoleWarnSpy.mockRestore();
+            expect(mockLogger.warn).toHaveBeenCalled();
         });
     });
 
@@ -676,7 +683,7 @@ describe('FpmDocumentationBuilder', () => {
         });
 
         it('should handle errors when reading files', async () => {
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
             const viewFiles = new Map();
 
             mockReaddir.mockResolvedValue([
@@ -688,8 +695,7 @@ describe('FpmDocumentationBuilder', () => {
             const builder = new FpmDocumentationBuilder();
             await (builder as any).scanDirectoryForFpmExplorerFiles('/test/path', viewFiles);
 
-            expect(consoleWarnSpy).toHaveBeenCalled();
-            consoleWarnSpy.mockRestore();
+            expect(mockLogger.warn).toHaveBeenCalled();
         });
     });
 
@@ -1214,7 +1220,7 @@ describe('FpmDocumentationBuilder', () => {
         });
 
         it('should handle scan errors gracefully', async () => {
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
             mockStat.mockResolvedValue({
                 isDirectory: () => true
             } as any);
@@ -1225,14 +1231,13 @@ describe('FpmDocumentationBuilder', () => {
             const result = await (builder as any).locateFpmExplorerViewFiles('/test/repo');
 
             expect(result.size).toBe(0);
-            expect(consoleWarnSpy).toHaveBeenCalled();
-            consoleWarnSpy.mockRestore();
+            expect(mockLogger.warn).toHaveBeenCalled();
         });
     });
 
     describe('cloneOrUpdateRepository - pull failure scenario', () => {
         it('should handle pull failure and continue with existing version', async () => {
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
 
             mockStat.mockResolvedValue({
                 isDirectory: () => true
@@ -1263,8 +1268,7 @@ describe('FpmDocumentationBuilder', () => {
             const result = await (builder as any).cloneOrUpdateRepository();
 
             expect(result).toContain('sap.fe');
-            expect(consoleWarnSpy).toHaveBeenCalled();
-            consoleWarnSpy.mockRestore();
+            expect(mockLogger.warn).toHaveBeenCalled();
         });
     });
 
@@ -1446,7 +1450,7 @@ describe('FpmDocumentationBuilder', () => {
             process.env.GITHUB_HOST = 'github.test.com';
             process.env.GITHUB_TOKEN = 'test-token';
 
-            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+            mockLogger.error.mockClear();
             const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
                 throw new Error('process.exit called');
             });
@@ -1484,8 +1488,7 @@ describe('FpmDocumentationBuilder', () => {
                 // Expected to throw due to process.exit
             }
 
-            expect(consoleErrorSpy).toHaveBeenCalled();
-            consoleErrorSpy.mockRestore();
+            expect(mockLogger.error).toHaveBeenCalled();
             processExitSpy.mockRestore();
         });
 
@@ -1508,7 +1511,7 @@ describe('FpmDocumentationBuilder', () => {
                 parse: mockParse
             }));
 
-            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+            mockLogger.error.mockClear();
             const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
                 throw new Error('process.exit called');
             });
@@ -1549,8 +1552,7 @@ describe('FpmDocumentationBuilder', () => {
                 // Expected to throw due to process.exit
             }
 
-            expect(consoleErrorSpy).toHaveBeenCalled();
-            consoleErrorSpy.mockRestore();
+            expect(mockLogger.error).toHaveBeenCalled();
             processExitSpy.mockRestore();
         });
     });
