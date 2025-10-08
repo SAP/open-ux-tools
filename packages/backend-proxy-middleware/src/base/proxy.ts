@@ -126,6 +126,11 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
  * Collection of path rewrite functions.
  */
 export const PathRewriters = {
+    convertAppDescriptorToManifest(bspPath: string): (path: string) => string {
+        const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
+        return (path: string) => (path.match(regex) ? '/manifest.json' : path);
+    },
+
     /**
      * Generates a rewrite function that replaces the matched string with the prefix in the given string.
      *
@@ -173,6 +178,9 @@ export const PathRewriters = {
         }
         if (config.client) {
             functions.push(PathRewriters.replaceClient(config.client));
+        }
+        if (config.bsp) {
+            functions.push(PathRewriters.convertAppDescriptorToManifest(config.bsp));
         }
         if (functions.length > 0) {
             return (path: string, req: IncomingMessage) => {
