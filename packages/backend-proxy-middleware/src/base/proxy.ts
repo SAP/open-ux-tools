@@ -134,7 +134,7 @@ export const PathRewriters = {
         const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
         return (path: string) => {
             return path.match(regex) ? '/manifest.json' : path;
-        }
+        };
     },
 
     /**
