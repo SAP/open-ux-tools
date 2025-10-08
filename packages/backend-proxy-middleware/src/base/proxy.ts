@@ -129,12 +129,11 @@ export const PathRewriters = {
     /**
      * Generates a rewrite function that replaces the matched string with /manifest.json
      * @param bspPath the bsp path from the yaml config
+     * @returns a path rewrite function
      */
     convertAppDescriptorToManifest(bspPath: string): (path: string) => string {
         const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
-        return (path: string) => {
-            return path.match(regex) ? '/manifest.json' : path;
-        };
+        return (path: string) => path.match(regex) ? '/manifest.json' : path;
     },
 
     /**
