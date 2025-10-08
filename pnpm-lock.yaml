@@ -582,7 +582,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/adp-tooling:
     dependencies:
@@ -17468,6 +17468,7 @@ packages:
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
+    dev: false
 
   /inquirer@8.2.7(@types/node@18.11.9):
     resolution: {integrity: sha512-UjOaSel/iddGZJ5xP/Eixh6dY1XghiBw4XK13rCCIJcJfyhhoul/7KhLLUGtebEj6GDYM6Vnx/mVsjx2L/mFIA==}
@@ -26209,24 +26210,6 @@ packages:
       yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
     transitivePeerDependencies:
       - '@types/node'
-    dev: true
-
-  /yeoman-test@6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0):
-    resolution: {integrity: sha512-FpaLV5AiVFlYe4pizAB/QLWc+5BSyttk/TcFQfi/r8g/rz290uqEkV4waN3rHEvP/DCmoMNSJykKTZNWL2y07g==}
-    engines: {node: '>=12.10.0'}
-    peerDependencies:
-      mem-fs: ^2.1.0
-      yeoman-environment: ^3.3.0
-      yeoman-generator: '*'
-    dependencies:
-      inquirer: 8.2.6
-      lodash: 4.17.21
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      sinon: 10.0.1
-      temp-dir: 2.0.0
-      yeoman-environment: 3.8.0(@types/node@18.11.9)(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
-      yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
     dev: true
 
   /yesno@0.4.0:
