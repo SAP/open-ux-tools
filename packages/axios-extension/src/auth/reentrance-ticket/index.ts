@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { AddressInfo } from 'net';
+import type { AddressInfo } from 'node:net';
 import open = require('open');
 import { defaultTimeout } from '../connection';
 import { ABAPSystem } from './abap-system';

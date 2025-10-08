@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { removeAndCreateI18nEntries, SapShortTextType } from '@sap-ux/i18n';

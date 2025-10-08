@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.5
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.2.4
 
 ### Patch Changes

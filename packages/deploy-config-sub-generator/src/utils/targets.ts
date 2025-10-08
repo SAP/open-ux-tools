@@ -2,7 +2,7 @@ import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
 import { ApiHubType } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { join } from 'path';
+import { join } from 'node:path';
 import { cfChoice, abapChoice } from './constants';
 import type { Editor } from 'mem-fs-editor';
 import type { Target } from '../types';

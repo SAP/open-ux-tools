@@ -1,6 +1,6 @@
 import { isCFEnvironment } from '../../../src/base/cf';
-import * as mockFs from 'fs';
-import { join } from 'path';
+import * as mockFs from 'node:fs';
+import { join } from 'node:path';
 
 jest.mock('fs');
 

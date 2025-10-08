@@ -1,4 +1,4 @@
-import path, { join, sep } from 'path';
+import path, { join, sep } from 'node:path';
 import * as childProcess from 'child_process';
 import { create as createStorage, type Store } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
@@ -29,9 +29,9 @@ import {
     deleteCapApp
 } from '../../src';
 import * as file from '../../src/file';
-import os from 'os';
+import os from 'node:os';
 import type { Logger } from '@sap-ux/logger';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import { deleteFile, readFile, readJSON } from '../../src/file';
 import * as search from '../../src/project/search';
 

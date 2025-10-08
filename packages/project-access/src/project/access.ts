@@ -1,4 +1,4 @@
-import { join, relative } from 'path';
+import { join, relative } from 'node:path';
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import type {
     ApplicationAccess,

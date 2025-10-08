@@ -100,6 +100,7 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
                 path: ui5Path,
                 url: envUI5Url || ui5.url,
                 version: ui5Version,
+                pathReplace: ui5.pathReplace,
                 proxy: config.proxy
             };
 

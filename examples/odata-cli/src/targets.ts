@@ -6,7 +6,7 @@ import {
     createForDestination
 } from '@sap-ux/axios-extension';
 import { isAbapSystem, listDestinations } from '@sap-ux/btp-utils';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import type { TestActivity } from './types';
 import { logger } from './types';
 

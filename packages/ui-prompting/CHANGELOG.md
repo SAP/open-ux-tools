@@ -1,5 +1,18 @@
 # @sap-ux/ui-prompting
 
+## 0.5.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [7f652f3]
+    -   @sap-ux/ui-components@1.26.11
+
 ## 0.5.0
 
 ### Minor Changes

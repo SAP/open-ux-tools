@@ -1,5 +1,5 @@
 import { findProjectRoot, createApplicationAccess, getProject, DirName } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as zod from 'zod';
 import type { Appdetails } from '../types';
 import { logger } from '../utils/logger';

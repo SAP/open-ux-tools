@@ -1,10 +1,10 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { generateAppConfig } from '../../src';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import fs from 'fs';
+import fs from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
