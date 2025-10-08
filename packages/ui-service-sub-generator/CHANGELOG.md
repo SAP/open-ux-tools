@@ -1,5 +1,70 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.86
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.27
+-   @sap-ux/ui-service-inquirer@0.2.23
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.1.85
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/telemetry@0.6.26
+    -   @sap-ux/ui-service-inquirer@0.2.22
+
+## 0.1.84
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.25
+-   @sap-ux/ui-service-inquirer@0.2.21
+-   @sap-ux/axios-extension@1.22.9
+-   @sap-ux/fiori-generator-shared@0.13.19
+-   @sap-ux/system-access@0.6.18
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.1.83
+
+### Patch Changes
+
+-   2a3fff1: escape text in information message after generation
+
+## 0.1.82
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.20
+
+## 0.1.81
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/inquirer-common@0.7.45
+    -   @sap-ux/system-access@0.6.18
+    -   @sap-ux/telemetry@0.6.24
+    -   @sap-ux/ui-service-inquirer@0.2.19
+
+## 0.1.80
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.18
+
 ## 0.1.79
 
 ### Patch Changes

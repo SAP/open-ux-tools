@@ -1,5 +1,53 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.4
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-annotation-api@0.7.3
+    -   @sap-ux/project-access@1.32.3
+
+## 0.39.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/fiori-annotation-api@0.7.2
+
+## 0.39.2
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.39.1
+
+### Patch Changes
+
+-   Updated dependencies [321b09e]
+    -   @sap-ux/fiori-annotation-api@0.7.1
+
+## 0.39.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+## 0.38.11
+
+### Patch Changes
+
+-   d553f8e: Binding Context Type Choices Should Be Alphabetically Ordered
+
+## 0.38.10
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/fiori-annotation-api@0.7.0
+
 ## 0.38.9
 
 ### Patch Changes

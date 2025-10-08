@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { join } from 'path';
+import { join } from 'node:path';
 
 describe('Test entity helper functions', () => {
     let metadataV4WithAggregateTransforms: string;

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';

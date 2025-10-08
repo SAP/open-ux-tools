@@ -1,5 +1,52 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.42
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fe-fpm-writer@0.39.4
+
+## 0.1.41
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.39.3
+
+## 0.1.40
+
+### Patch Changes
+
+-   Updated dependencies [99ec164]
+    -   @sap-ux/fe-fpm-writer@0.39.2
+
+## 0.1.39
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.39.1
+
+## 0.1.38
+
+### Patch Changes
+
+-   Updated dependencies [1276258]
+    -   @sap-ux/fe-fpm-writer@0.39.0
+
+## 0.1.37
+
+### Patch Changes
+
+-   Updated dependencies [d553f8e]
+    -   @sap-ux/fe-fpm-writer@0.38.11
+
+## 0.1.36
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.38.10
+
 ## 0.1.35
 
 ### Patch Changes

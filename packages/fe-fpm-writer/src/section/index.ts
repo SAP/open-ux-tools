@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomSubSection } from './types';
-import { join } from 'path';
+import { join } from 'node:path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { CustomElement, Manifest } from '../common/types';

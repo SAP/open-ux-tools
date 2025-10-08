@@ -11,7 +11,7 @@ const expandPosition = (value: string): Position =>
         value
             .substr(1, value.length - 2)
             .split(',')
-            .map((text) => parseInt(text, 10)) as any
+            .map((text) => Number.parseInt(text, 10)) as any
     );
 /**
  *

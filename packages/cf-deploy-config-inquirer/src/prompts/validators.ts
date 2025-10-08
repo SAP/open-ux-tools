@@ -1,7 +1,7 @@
 import { t } from '../i18n';
 import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import type { ErrorHandler } from '@sap-ux/inquirer-common';
 import { validateWindowsPathLength } from '@sap-ux/project-input-validator';
 

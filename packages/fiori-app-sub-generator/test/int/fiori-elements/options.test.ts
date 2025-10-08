@@ -1,8 +1,8 @@
 import * as btpUtils from '@sap-ux/btp-utils';
 import '@sap-ux/jest-file-matchers';
-import { readdirSync, readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ApiHubConfig, Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils';

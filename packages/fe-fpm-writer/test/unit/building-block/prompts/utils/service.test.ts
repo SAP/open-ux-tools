@@ -1,5 +1,5 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';

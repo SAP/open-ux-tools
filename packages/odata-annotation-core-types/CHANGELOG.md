@@ -1,5 +1,12 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.5.0
+
+### Minor Changes
+
+-   aa8bb7a: feat: Add missing referential constraint data to navigation property metadata elements.
+    feat: Add type facets with constraints to metadata elements.
+
 ## 0.4.6
 
 ### Patch Changes

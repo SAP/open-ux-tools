@@ -1,5 +1,30 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.2.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-docs-embeddings@0.1.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
+
+### Patch Changes
+
+-   Updated dependencies [b179405]
+    -   @sap-ux/fiori-docs-embeddings@0.1.0
+
+## 0.1.6
+
+### Patch Changes
+
+-   f038ab8: Refactored `get-functionality-details` to return parameters as JSON Schema, unified with Zod validation (validateWithSchema) and schema conversion (convertion to JSON Schema).
+
 ## 0.1.5
 
 ### Patch Changes

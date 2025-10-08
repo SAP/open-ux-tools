@@ -1,5 +1,22 @@
 # @sap-ux/odata-cli
 
+## 0.17.15
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/btp-utils@1.1.4
+
+## 0.17.14
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+
 ## 0.17.13
 
 ### Patch Changes

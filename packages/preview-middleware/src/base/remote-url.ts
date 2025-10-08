@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { networkInterfaces } from 'os';
+import { networkInterfaces } from 'node:os';
 import { devspace } from '@sap/bas-sdk';
 import type { ToolsLogger } from '@sap-ux/logger';
 import QRCode from 'qrcode';
@@ -24,6 +24,11 @@ export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
 
         if (remoteUrl) {
             logger.info(`Remote URL: ${remoteUrl}`);
+            if (process.platform === 'win32') {
+                logger.warn(
+                    `Windows users: Ensure Windows Firewall allows inbound connections on the port.\n1. Open Windows Firewall with Advanced Security (wf.msc)\n2. Create new Inbound Rule for the port (default: 8080)\n3. Allow TCP connections on the specified port`
+                );
+            }
             logger.info('Scan the QR code below with your mobile device to access the preview:');
             await generateQRCode(remoteUrl);
         }
@@ -163,20 +168,20 @@ export function getPortFromArgs(): number | undefined {
         const portArg = process.argv[portIndex];
         if (portArg.includes('=')) {
             // --port=8080 format
-            const port = parseInt(portArg.split('=')[1], 10);
-            return isNaN(port) ? undefined : port;
+            const port = Number.parseInt(portArg.split('=')[1], 10);
+            return Number.isNaN(port) ? undefined : port;
         } else if (portIndex + 1 < process.argv.length) {
             // --port 8080 format
-            const port = parseInt(process.argv[portIndex + 1], 10);
-            return isNaN(port) ? undefined : port;
+            const port = Number.parseInt(process.argv[portIndex + 1], 10);
+            return Number.isNaN(port) ? undefined : port;
         }
     }
 
     // Check environment variable
     const envPort = process.env.PORT;
     if (envPort) {
-        const port = parseInt(envPort, 10);
-        return isNaN(port) ? undefined : port;
+        const port = Number.parseInt(envPort, 10);
+        return Number.isNaN(port) ? undefined : port;
     }
     return undefined;
 }

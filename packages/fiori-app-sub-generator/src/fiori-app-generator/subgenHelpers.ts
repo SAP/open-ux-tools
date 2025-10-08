@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { defaultNavActionDisplay } from '../types';
 import { getSemanticObject } from '@sap-ux/fiori-generator-shared';
 import type Generator from 'yeoman-generator';

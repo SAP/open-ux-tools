@@ -6,7 +6,7 @@ import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getAnalyticListPageQuestions } from '../../../../src/prompts/edmx/alp-questions';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import { EntityPromptNames } from '../../../../src/types';
-import { join } from 'path';
+import { join } from 'node:path';
 
 describe('Test analytic list page specific prompts', () => {
     let annotationsWithPresentationQualifier: string;

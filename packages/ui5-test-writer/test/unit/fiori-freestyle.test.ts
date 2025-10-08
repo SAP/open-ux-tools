@@ -1,11 +1,11 @@
 import { generateFreestyleOPAFiles } from '../../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
-import * as fileSystem from 'fs';
+import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
 import { promisify } from 'util';
 

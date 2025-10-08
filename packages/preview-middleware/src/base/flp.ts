@@ -7,7 +7,7 @@ import type http from 'http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
-import path, { dirname, join, posix } from 'path';
+import path, { dirname, join, posix } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import {
@@ -56,7 +56,7 @@ import {
     CARD_GENERATOR_DEFAULT
 } from './config';
 import { generateCdm } from './cdm';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 
@@ -358,8 +358,8 @@ export class FlpSandbox {
         const template = readFileSync(join(__dirname, '../../templates/flp/editor.ejs'), 'utf-8');
         const features = FeatureToggleAccess.getAllFeatureToggles();
         const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
-        let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
-        livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
+        let livereloadPort: number = envPort ? Number.parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
+        livereloadPort = Number.isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
         const html = render(template, {
             previewUrl: templatePreviewUrl,
@@ -568,7 +568,7 @@ export class FlpSandbox {
             version = '1.130.0';
             isCdn = false;
         }
-        const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+        const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
         if (

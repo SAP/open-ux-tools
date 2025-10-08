@@ -1,5 +1,68 @@
 # @sap-ux/generator-adp
 
+## 0.4.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.34
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.4.8
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/odata-service-writer@0.27.24
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
+## 0.4.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.32
+-   @sap-ux/odata-service-writer@0.27.23
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/axios-extension@1.22.9
+-   @sap-ux/fiori-generator-shared@0.13.19
+-   @sap-ux/project-input-validator@0.6.23
+-   @sap-ux/system-access@0.6.18
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.4.6
+
+### Patch Changes
+
+-   de2f350: fix: When the user creates ADP project and the system requires authentication the project type is displayed as an additional message beneath
+    the password prompt.
+
+## 0.4.5
+
+### Patch Changes
+
+-   2e86e1e: fix: In Cloud ADP project with selected unsupported application we should stop the ADP generator.
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/inquirer-common@0.7.45
+    -   @sap-ux/system-access@0.6.18
+
 ## 0.4.3
 
 ### Patch Changes

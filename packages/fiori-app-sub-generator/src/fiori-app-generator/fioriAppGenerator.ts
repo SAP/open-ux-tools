@@ -23,7 +23,7 @@ import { DatasourceType, getEntityRelatedPrompts } from '@sap-ux/odata-service-i
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import Generator from 'yeoman-generator';
 import type { FioriStep, Service, State, YeomanUiStepConfig } from '../types';
