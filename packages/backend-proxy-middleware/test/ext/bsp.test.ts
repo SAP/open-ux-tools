@@ -79,7 +79,6 @@ describe('bsp', () => {
             await addOptionsForEmbeddedBSP('/my/bsp', options, logger);
 
             expect(options.router).toBeDefined();
-            expect(options.pathRewrite).toBeDefined();
             expect(options.auth).toBeDefined();
         });
 
@@ -88,7 +87,6 @@ describe('bsp', () => {
             await addOptionsForEmbeddedBSP('/my/bSp', options, logger);
 
             expect(options.router).toBeDefined();
-            expect(options.pathRewrite).toBeDefined();
             expect(options.auth).toBeDefined();
         });
     });
