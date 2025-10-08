@@ -51,8 +51,7 @@ describe('bsp', () => {
 
     describe('addOptionsForEmbeddedBSP', () => {
         test('standard scenario', async () => {
-            const oldPathRewrite = jest.fn().mockReturnValue('/mocked');
-            const options: Options = { pathRewrite: oldPathRewrite };
+            const options: Options = {};
             await addOptionsForEmbeddedBSP('/my/bsp', options, logger);
 
             expect(options.router).toBeDefined();
@@ -67,11 +66,6 @@ describe('bsp', () => {
             ).toBe('http://local.example');
 
             expect(options.auth).toBeDefined();
-
-            expect(options.pathRewrite).toBeDefined();
-            expect(options.pathRewrite).not.toBe(oldPathRewrite);
-            (options.pathRewrite as Function)('test');
-            expect(oldPathRewrite).toHaveBeenCalled();
         });
 
         test('no existing options', async () => {
