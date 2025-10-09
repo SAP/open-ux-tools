@@ -84,8 +84,7 @@ export async function generateCustomColumn(
     if (!fs) {
         fs = create(createStorage());
     }
-    const dependencies = customColumn.buildingBlockView ? [] : undefined;
-    await validateBasePath(basePath, fs, dependencies);
+    await validateBasePath(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 

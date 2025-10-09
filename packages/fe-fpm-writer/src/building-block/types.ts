@@ -1,3 +1,5 @@
+import { EventHandler, EventHandlerConfiguration } from '../common/types';
+
 /**
  * Building block type.
  *
@@ -421,6 +423,9 @@ export interface CustomColumn extends BuildingBlock {
     columnKey?: string;
     content?: string;
     width?: string;
+    eventHandler?: true | string | EventHandlerConfiguration | undefined;
+    typescript?: boolean;
+    path?: string;
 }
 
 /**

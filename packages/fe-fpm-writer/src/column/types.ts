@@ -59,7 +59,6 @@ export interface CustomTableColumn extends CustomElement, EventHandler, CustomFr
      * If provided and sorting is enabled for the table the custom column header can be clicked. This will lead to a list of properties (or one) that can be sorted by, they are displayed as the labels of the properties, corresponding to their definition in the annotations.
      */
     properties?: ColumnPropertiesType;
-    buildingBlockView?: string;
 }
 
 export interface InternalCustomTableColumn extends CustomTableColumn, InternalCustomElement {
