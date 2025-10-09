@@ -1033,8 +1033,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.18.0
-        version: 1.18.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.19.0
+        version: 1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
@@ -1857,8 +1857,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.18.0
-        version: 1.18.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.19.0
+        version: 1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -2725,6 +2725,10 @@ importers:
         version: 1.0.4
 
   packages/jest-runner-puppeteer:
+    dependencies:
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
     devDependencies:
       chalk:
         specifier: 4.1.2
@@ -2738,9 +2742,6 @@ importers:
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
-      rimraf:
-        specifier: 5.0.5
-        version: 5.0.5
       which:
         specifier: 2.0.2
         version: 2.0.2
@@ -9369,13 +9370,13 @@ packages:
       '@sap-ux/project-access': 1.30.13
     dev: true
 
-  /@sap/ux-cds-compiler-facade@1.18.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-+ZFyMacxesTxnAq9F5wTbn1xu4feflnH4Q4FGM7im9du9aVlMb5jyRdbit7Gq6qG7FV80/A1qOPEATEy4MTdKw==}
+  /@sap/ux-cds-compiler-facade@1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-lPjt+K7Xyxwr0hm3lUW7Lzt3MYMVvbkzhpzDbNpG0guBp4l+8FgXl1/2ZrHoQ8ZjHv6e3YUTWm9ICZkb+7s8Qg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@sap-ux/odata-annotation-core': '>=0.2.5'
-      '@sap-ux/odata-annotation-core-types': '>=0.4.4'
-      '@sap-ux/project-access': '>=1.30.2'
+      '@sap-ux/odata-annotation-core': '>=0.2.8'
+      '@sap-ux/odata-annotation-core-types': '>=0.5.0'
+      '@sap-ux/project-access': '>=1.32.1'
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
@@ -22671,7 +22672,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       glob: 10.4.5
-    dev: true
 
   /rollup-plugin-inject@3.0.2:
     resolution: {integrity: sha512-ptg9PQwzs3orn4jkgXJ74bfs5vYz1NCZlSQMBUA0wKcGp5i5pA1AO3fOUEte8enhGUC+iapTCzEWw2jEFFUO/w==}

@@ -127,6 +127,17 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
  */
 export const PathRewriters = {
     /**
+     * Generates a rewrite function that replaces the matched string with '/manifest.json'.
+     *
+     * @param bspPath the bsp path from the yaml config
+     * @returns a path rewrite function
+     */
+    convertAppDescriptorToManifest(bspPath: string): (path: string) => string {
+        const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
+        return (path: string) => (path.match(regex) ? '/manifest.json' : path);
+    },
+
+    /**
      * Generates a rewrite function that replaces the matched string with the prefix in the given string.
      *
      * @param match part of the path that is to be replaced
@@ -138,7 +149,7 @@ export const PathRewriters = {
     },
 
     /**
-     * Add or replace the sap-client url parameter if missing or inocrrect in the original request path.
+     * Add or replace the sap-client url parameter if missing or incorrect in the original request path.
      *
      * @param client sap-client as string
      * @returns a path rewrite function
@@ -173,6 +184,9 @@ export const PathRewriters = {
         }
         if (config.client) {
             functions.push(PathRewriters.replaceClient(config.client));
+        }
+        if (config.bsp) {
+            functions.push(PathRewriters.convertAppDescriptorToManifest(config.bsp));
         }
         if (functions.length > 0) {
             return (path: string, req: IncomingMessage) => {
@@ -219,7 +233,7 @@ export async function initI18n(): Promise<void> {
  * Enhance the proxy options and backend configurations for the usage of destinations in SAP Business Application Studio.
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
- * @param backend reference to the backend configuration that the the function may enhance
+ * @param backend reference to the backend configuration that the function may enhance
  */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options & { headers: object },
