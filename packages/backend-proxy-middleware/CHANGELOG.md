@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.2
+
+### Patch Changes
+
+-   2e1fd75: fix: bsp scenario broken
+
 ## 0.10.1
 
 ### Patch Changes
