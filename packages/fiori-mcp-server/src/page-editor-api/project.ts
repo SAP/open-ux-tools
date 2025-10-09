@@ -7,9 +7,9 @@ import {
 } from '@sap-ux/project-access';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import type { FileData } from '@sap/ux-specification/dist/types/src';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 /**
  * Method returns main service of the application.
@@ -121,7 +121,7 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
     const manifest = await getManifest(appAccess);
     let ui5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
 
-    if (ui5Version !== undefined && isNaN(parseFloat(ui5Version))) {
+    if (ui5Version !== undefined && Number.isNaN(parseFloat(ui5Version))) {
         ui5Version = 'latest';
     }
 

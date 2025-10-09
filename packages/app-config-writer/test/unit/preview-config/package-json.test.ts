@@ -4,7 +4,7 @@ import {
     ensurePreviewMiddlewareDependency,
     updateVariantsCreationScript
 } from '../../../src/preview-config/package-json';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as variantsConfig from '../../../src/variants-config/generateVariantsConfig';
 

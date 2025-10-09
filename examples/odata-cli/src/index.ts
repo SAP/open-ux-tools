@@ -1,6 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { existsSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import type { TestActivity, TestTarget } from './types';
 import { logger } from './types';
 import { testWithAbapSystem, testWithDestination, testWithAbapBtpSystem, testWithCloudAbapSystem } from './targets';

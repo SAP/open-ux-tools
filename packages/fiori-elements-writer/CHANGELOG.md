@@ -1,5 +1,34 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.7.18
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.66
+-   @sap-ux/fe-fpm-writer@0.39.5
+
+## 2.7.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/cap-config-writer@0.12.12
+
+## 2.7.16
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/ui5-application-writer@1.5.18
+    -   @sap-ux/annotation-generator@0.3.65
+    -   @sap-ux/odata-service-writer@0.27.24
+    -   @sap-ux/cap-config-writer@0.12.11
+    -   @sap-ux/ui5-test-writer@0.7.28
+    -   @sap-ux/fe-fpm-writer@0.39.4
+    -   @sap-ux/ui5-config@0.29.7
+
 ## 2.7.15
 
 ### Patch Changes

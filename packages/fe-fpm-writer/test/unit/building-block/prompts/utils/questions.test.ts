@@ -3,7 +3,7 @@ import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import {

@@ -2,8 +2,8 @@
  * Copy and mod of unmaintained https://github.com/satya164/jest-file-snapshot
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import chalk from 'chalk';
 import { diff } from 'jest-diff';
 import type { MatcherIgnore } from '../types';

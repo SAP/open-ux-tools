@@ -7,8 +7,8 @@ import * as validations from '../../../../src/validation/validation';
 import * as logger from '../../../../src/tracing/logger';
 import { addComponentUsagesCommand } from '../../../../src/cli/add/component-usages';
 import { Command } from 'commander';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 jest.mock('@sap-ux/adp-tooling');
 

@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse, relative } from 'path';
+import { join, parse, relative } from 'node:path';
 import {
     BuildingBlockType,
     type BuildingBlock,

@@ -1,6 +1,6 @@
-import { promises, readdirSync, stat, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { platform } from 'os';
+import { promises, readdirSync, stat, statSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { platform } from 'node:os';
 import type { IToken, CstNode, CstNodeLocation, CstElement } from 'chevrotain';
 import type { DeclarationCstNode } from '../../src/parser/parser';
 import type { Annotation, AnnotationGroup } from '../../src/transformer/annotation-ast-nodes';

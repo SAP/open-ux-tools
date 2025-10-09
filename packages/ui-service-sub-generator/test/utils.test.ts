@@ -3,8 +3,8 @@ import { checkConnection, getAppGenSystemData } from '../src/app/utils';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import type { Destination } from '@sap-ux/btp-utils';
 
 const mockIsAppStudio = jest.fn();

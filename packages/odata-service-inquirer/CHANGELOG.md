@@ -1,5 +1,31 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.8.9
+
+### Patch Changes
+
+-   Updated dependencies [b268021]
+    -   @sap-ux/nodejs-utils@0.2.7
+    -   @sap-ux/telemetry@0.6.27
+    -   @sap-ux/fiori-generator-shared@0.13.21
+    -   @sap-ux/inquirer-common@0.7.48
+
+## 2.8.8
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/nodejs-utils@0.2.6
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/telemetry@0.6.26
+    -   @sap-ux/store@1.1.5
+
 ## 2.8.7
 
 ### Patch Changes

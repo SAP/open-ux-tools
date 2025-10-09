@@ -1,5 +1,27 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.75
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.26
+-   @sap-ux/deploy-config-generator-shared@0.1.40
+-   @sap-ux/fiori-generator-shared@0.13.21
+
+## 0.1.74
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/abap-deploy-config-writer@0.2.20
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.25
+    -   @sap-ux/deploy-config-generator-shared@0.1.39
+
 ## 0.1.73
 
 ### Patch Changes

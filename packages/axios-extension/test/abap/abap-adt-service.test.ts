@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import nock from 'nock';
 import {
     createForAbap,
@@ -16,7 +16,7 @@ import {
 import type { AxiosError } from '../../src';
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
-import fs from 'fs';
+import fs from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { Uaa } from '../../src/auth/uaa';
 import type { ToolsLogger } from '@sap-ux/logger';

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 

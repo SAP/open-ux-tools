@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';

@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomSection, getManifestRoot } from '../../src/section';
 import type { CustomSection } from '../../src/section/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';

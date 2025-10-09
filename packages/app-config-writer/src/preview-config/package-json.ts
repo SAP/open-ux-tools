@@ -1,4 +1,4 @@
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import { extractYamlConfigFileName } from '../common/package-json';
 import { generateVariantsConfig } from '../variants-config';
 import type { Editor } from 'mem-fs-editor';

@@ -151,7 +151,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
-            return parseInt(key, radix);
+            return Number.parseInt(key, radix);
         });
 
         this.model.setProperty('/selectedControlName', selectedControlName);

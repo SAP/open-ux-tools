@@ -1,5 +1,28 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.86
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.27
+-   @sap-ux/ui-service-inquirer@0.2.23
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.1.85
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/telemetry@0.6.26
+    -   @sap-ux/ui-service-inquirer@0.2.22
+
 ## 0.1.84
 
 ### Patch Changes

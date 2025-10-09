@@ -6,7 +6,7 @@ import {
 import { mockSpecificationImport } from '../../../utils';
 import * as toolUtils from '../../../../../src/tools/utils';
 import * as projectUtils from '../../../../../src/page-editor-api/project';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,

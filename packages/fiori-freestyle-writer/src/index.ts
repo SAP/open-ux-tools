@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';

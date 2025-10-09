@@ -3,7 +3,7 @@
 import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as path from 'node:path';
 import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { default as matter } from 'gray-matter';
 

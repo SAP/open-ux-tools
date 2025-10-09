@@ -1,8 +1,8 @@
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { readdirSync } from 'fs';
+import { readdirSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import {

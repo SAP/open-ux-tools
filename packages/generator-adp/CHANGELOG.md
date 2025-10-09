@@ -1,5 +1,30 @@
 # @sap-ux/generator-adp
 
+## 0.4.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.34
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.4.8
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/odata-service-writer@0.27.24
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
 ## 0.4.7
 
 ### Patch Changes

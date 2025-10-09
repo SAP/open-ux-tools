@@ -1,6 +1,6 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
-import { join, relative } from 'path';
+import { join, relative } from 'node:path';
 import { getAnnotationPathQualifiers } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';

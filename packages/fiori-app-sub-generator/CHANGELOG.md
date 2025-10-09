@@ -1,5 +1,48 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.66
+-   @sap-ux/fiori-elements-writer@2.7.18
+-   @sap-ux/odata-service-inquirer@2.8.9
+
+## 0.7.27
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.8.9
+-   @sap-ux/telemetry@0.6.27
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/cap-config-writer@0.12.12
+-   @sap-ux/fiori-elements-writer@2.7.17
+-   @sap-ux/fiori-freestyle-writer@2.4.49
+-   @sap-ux/ui5-application-inquirer@0.15.14
+
+## 0.7.26
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui5-application-inquirer@0.15.13
+    -   @sap-ux/fiori-freestyle-writer@2.4.48
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/odata-service-inquirer@2.8.8
+    -   @sap-ux/fiori-elements-writer@2.7.16
+    -   @sap-ux/annotation-generator@0.3.65
+    -   @sap-ux/fiori-tools-settings@0.2.1
+    -   @sap-ux/odata-service-writer@0.27.24
+    -   @sap-ux/cap-config-writer@0.12.11
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/launch-config@0.10.27
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/telemetry@0.6.26
+    -   @sap-ux/ui5-info@0.12.4
+    -   @sap-ux/store@1.1.5
+
 ## 0.7.25
 
 ### Patch Changes

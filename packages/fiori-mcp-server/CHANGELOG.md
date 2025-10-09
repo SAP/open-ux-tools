@@ -1,5 +1,19 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.2.2
+
+### Patch Changes
+
+-   8a97bcc: fix "Error [ERR_REQUIRE_ESM]" when starting fiori mcp server e.g. Nodejs 22.8.0
+
+## 0.2.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-docs-embeddings@0.1.1
+
 ## 0.2.0
 
 ### Minor Changes
