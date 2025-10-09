@@ -109,13 +109,13 @@ describe('<UIDialog />', () => {
         it('Custom footer with multiple elements', () => {
             wrapper.setProps({
                 footer: [
-                    <UIDefaultButton key="accept" className="dummyButton" />
-                    <UIDefaultButton key="decline" className="dummyButton" />
+                    <UIDefaultButton key="accept" className="dummyButton" />,
+                    <UIDefaultButton key="decline" className="dummyButton" />,
                     <UIDefaultButton key="cancel" className="dummyButton" />
                 ]
             });
             expect(wrapper.find(DialogFooter).length).toEqual(1);
-            expect(wrapper.find('.dummyButton').length).toEqual(3);
+            expect(wrapper.find('UIDefaultButton.dummyButton').length).toEqual(3);
         });
     });
 
