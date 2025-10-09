@@ -1,4 +1,9 @@
 /**
+ * Validates whether the provided destination string contains 's4hana.' or 's4hanacloud.'.
+ */
+const s4hanaHostRegex = /s4hana\.|s4hanacloud\./i;
+
+/**
  * Support different Token Service URL Types
  */
 export enum DestinationType {
@@ -238,16 +243,17 @@ export function getDisplayName(destination: Destination, displayUsername?: strin
 }
 
 /**
- * Checks whether the provided destination is configured to point to an S/4 HANA system.
+ * Checks whether the provided destination is configured to point to an S/4 HANA Public Cloud system.
  *
  * @param destination destination info
- * @returns boolean if the destination is configured for an SAP S/4HANA system
+ * @returns boolean if the destination is configured for an SAP S/4HANA public cloud system
  */
 export function isS4HC(destination: Destination): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) &&
             destination.Authentication === Authentication.SAML_ASSERTION &&
-            destination.ProxyType === ProxyType.INTERNET
+            destination.ProxyType === ProxyType.INTERNET &&
+            s4hanaHostRegex.test(destination.Host.toLowerCase())
     );
 }
 

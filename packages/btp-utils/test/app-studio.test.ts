@@ -186,7 +186,7 @@ describe('App Studio', () => {
                 expect(!!actualDestinations[destination.Name]).toBe(destination.WebIDEEnabled === 'true');
             });
             // test host remains unchanged when no opts passed to api
-            expect(actualDestinations['S4HC'].Host).toBe('https://s4hc-example-api.sap.example');
+            expect(actualDestinations['S4HC'].Host).toBe('https://my41111-api.s4hana.ondemand.com');
         });
 
         test('nothing returned', async () => {
@@ -200,7 +200,7 @@ describe('App Studio', () => {
                 .get('/api/listDestinations')
                 .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
             const destinationsWithOpts = await listDestinations({ stripS4HCApiHosts: true });
-            expect(destinationsWithOpts['S4HC'].Host).toBe('https://s4hc-example.sap.example');
+            expect(destinationsWithOpts['S4HC'].Host).toBe('https://my41111.s4hana.ondemand.com');
         });
     });
 
