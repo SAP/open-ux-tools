@@ -15,8 +15,7 @@ async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Ques
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
         includeMaintained: true,
-        onlyNpmVersion: true,
-        onlyLatestPatchVersion: true
+        onlyNpmVersion: true
     };
     // Get only npm-available UI5 versions to avoid post-selection resolution
     const allUI5Versions = await getUI5Versions(filterOptions);
