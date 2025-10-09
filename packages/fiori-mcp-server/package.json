@@ -35,9 +35,8 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
         "view": "promptfoo view -y",
-        "test:promptfoo": "promptfoo eval --config test/prompt-test/promptfooconfig.yaml",
-        "test:promptfooWithMcp": "promptfoo eval --config test/prompt-test/promptfooWithMcp.yaml",
-        "test:promptfooWithMcp2": "promptfoo eval --config test/prompt-test/promptfooWithMcp2.yaml"
+        "test:promptfoo": "promptfoo eval --config test/integration/scenarious/list-functionalities.yaml",
+        "test:promptfoo2": "promptfoo eval --config test/integration/scenarious/add-page/config.yaml"
     },
     "files": [
         "LICENSE",
@@ -72,10 +71,7 @@
         "zod": "4.1.5",
         "@sap-ai-sdk/foundation-models": "2.0.0",
         "@sap-ai-sdk/langchain": "2.0.0",
-        "@sap-cloud-sdk/util": "4.1.2",
-        "axios": "1.12.2",
-        "dotenv": "^17.2.1",
-        "promptfoo": "^0.117.4",
+        "promptfoo": "0.118.12",
         "@langchain/mcp-adapters": "0.6.0",
         "@langchain/core": "0.3.75"
     },

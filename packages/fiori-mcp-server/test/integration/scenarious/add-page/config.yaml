@@ -1,12 +1,17 @@
 providers:
-  - id: file://../../provider/index.ts
+    - id: file://../../provider/index.ts
+extensions:
+    - file://../../extensions/project.ts:setup
+defaultTest:
+    vars:
+        project: 'lrop'
 prompts:
-  - file://./prompt.txt
+    - file://./prompt.txt
 tests:
-  - vars:
-      appPath: "/test-projects/project1-2025-10-011325"
-      pageType: ObjectPage
-      parent: TravelObjectPage
-    assert:
-      - type: contains
-        value: successfully added
+    - vars:
+          appPath: '{{PROJECT_PATH}}'
+          pageType: ObjectPage
+          parent: BookingObjectPage
+      assert:
+          - type: contains
+            value: successfully added
