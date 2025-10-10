@@ -218,7 +218,7 @@ export async function getSystemConnectionQuestions(
 
                     if (missingCredentials) {
                         message = {
-                            message: t('systemSelection.noStoredCredentials'),
+                            message: t('prompts.systemSelection.noStoredCredentials'),
                             severity: Severity.information
                         };
                     } else if (authRequired) {
