@@ -179,6 +179,34 @@ const ConfirmDialog = (props: TestDialogProps): JSX.Element => {
     );
 };
 
+const MultipleButtons = (props: TestDialogProps): JSX.Element => {
+    const [isVisible, setVisible] = useState(false);
+    const toggle = (): void => {
+        setVisible(!isVisible);
+    };
+    return (
+        <>
+            <UIDefaultButton onClick={toggle} primary>
+                Open Dialog with multiple buttons
+            </UIDefaultButton>
+            <UIDialog
+                isOpen={isVisible}
+                isOpenAnimated={props.openAnimation}
+                isBlocking={true}
+                onDismiss={toggle}
+                title="Delete Confirmation"
+                dialogContentProps={{
+                    subText: 'This entry includes subelements. Are you sure you want to delete the entry or only its subelements? This action cannot be undone.'
+                }}
+                footer={[
+                    <UIDefaultButton key="1" onClick={toggle} primary text="Delete entry and subelements" />,
+                    <UIDefaultButton key="2" onClick={toggle} text="Delete entry only" />,
+                    <UIDefaultButton key="3" onClick={toggle} text="Cancel" />
+                ]}></UIDialog>
+        </>
+    );
+};
+
 export const Dialog = () => {
     const [openAnimation, setOpenAnimation] = useState(true);
 
@@ -217,6 +245,9 @@ export const Dialog = () => {
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
                     <ConfirmDialog openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <MultipleButtons openAnimation={openAnimation} />
                 </Stack>
             </Stack>
         </Stack>

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.5.4
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.5.3
 
 ### Patch Changes
