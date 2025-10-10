@@ -149,6 +149,8 @@ export async function runPostGenerationTasks(
         // No need to await, we cannot recover anyway
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         storeService.write(service.backendSystem);
+    } else if (service.backendSystem?.newOrUpdated === false) {
+        logger.info(t('logMessages.noCredentialsBackendSystem', { system: service.backendSystem.name }));
     }
 
     // Display info message if using a cap service as it is not otherwise shown when a top level dir is not created
