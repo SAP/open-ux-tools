@@ -13,6 +13,6 @@ export function logTelemetryEvent(eventName: string, properties: { [key: string]
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     SystemsLogger.logger.info(`Telemetry event: ${JSON.stringify(telemetryEvent)}`);
 
-    // TODO: telemetry key needs to be set up
+    // telemetry key needs to be set up
     // ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling);
 }
