@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.35
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.15.34
 
 ### Patch Changes

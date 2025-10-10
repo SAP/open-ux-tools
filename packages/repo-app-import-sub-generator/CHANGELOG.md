@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.119
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.3.118
 
 ### Patch Changes

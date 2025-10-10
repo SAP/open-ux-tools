@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.24
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.2.23
 
 ### Patch Changes
