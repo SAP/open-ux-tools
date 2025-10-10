@@ -423,7 +423,7 @@ export interface CustomColumn extends BuildingBlock {
     columnKey?: string;
     content?: string;
     width?: string;
-    eventHandler?: true | string | EventHandlerConfiguration | undefined;
+    eventHandler?: true | string | EventHandlerConfiguration;
     typescript?: boolean;
     path?: string;
 }
