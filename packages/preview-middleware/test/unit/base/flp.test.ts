@@ -26,7 +26,6 @@ import connect = require('connect');
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
-jest.spyOn(projectAccess, 'getWebappPath').mockResolvedValue(path.resolve());
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -780,8 +779,6 @@ describe('FlpSandbox', () => {
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
             promises.writeFile = mockFsPromisesWriteFile;
-            jest.clearAllMocks();
-            jest.spyOn(projectAccess, 'getWebappPath').mockResolvedValue(path.resolve());
         });
 
         afterEach(() => {
@@ -902,8 +899,6 @@ describe('FlpSandbox', () => {
                 'sap.app': { i18n: 'i18n/custom.properties' }
             };
 
-            (getWebappPath as jest.Mock).mockResolvedValue(path.resolve());
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
             const webappPath = await getWebappPath(path.resolve());
             const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
@@ -926,7 +921,6 @@ describe('FlpSandbox', () => {
                 }
             };
 
-            (getWebappPath as jest.Mock).mockResolvedValue(path.resolve());
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
             const webappPath = await getWebappPath(path.resolve());
@@ -949,7 +943,6 @@ describe('FlpSandbox', () => {
                 }
             };
 
-            (getWebappPath as jest.Mock).mockResolvedValue(path.resolve());
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=fr`).send(newI18nEntry);
 
