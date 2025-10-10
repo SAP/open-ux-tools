@@ -1,0 +1,38 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../../axios-extension"
+    },
+    {
+      "path": "../../guided-answers-helper"
+    },
+    {
+      "path": "../../logger"
+    },
+    {
+      "path": "../../store"
+    },
+    {
+      "path": "../../telemetry"
+    },
+    {
+      "path": "../../ui-components"
+    },
+    {
+      "path": "../types"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+    "views": {
+        "client": "Client: {{client}}"
+    },
+    "confirmationPrompt": {
+        "yes": "Yes",
+        "no": "No",
+        "delete": "Delete [{{- system}}]? Your Fiori application may not run locally anymore.",
+        "overwrite": "System already exists with name [{{- system}}]. Do you want to overwrite?"
+    },
+    "info": {
+        "numServices": "This SAP System [{{- system}}] returned {{v2}} OData V2 and {{v4}} OData V4 services.",
+        "refreshingSystems": "Refreshing stored systems view.",
+        "systemInfoUpdated": "System information updated.",
+        "systemDeleted": "System [{{- system}}] deleted.",
+        "systemExported": "System [{{- system}}] exported.",
+        "systemSaved": "System [{{- system}}] saved.",
+        "systemUpdated": "System [{{- system}}] updated."
+    },
+    "warn": {
+        "deletionCancelled": "Deletion cancelled for system: [{{- system}}].",
+        "importCancelled": "Import cancelled.",
+        "noFileSelected": "No file selected for import."
+    },
+    "error": {
+        "deletingSystem": "Error deleting system: [{{- system}}].",
+        "importConfigFailed": "Failed to import system configuration.",
+        "noSystemsDefined": "No systems defined in configuration file: {{- filePath}}",
+        "incompleteConfig": "System configuration is incomplete. A URL is required.",
+        "loadingSystems": "Failed to load stored systems.",
+        "unknownAction": "Unknown action type: {{- actionType}}",
+        "systemNotFound": "System [{{- backendKey}}] not found in the secure store. Please ensure the system is saved correctly.",
+        "exportFailure": "Failed to export system information: {{- error}}.",
+        "urlMissing": "This saved SAP system is missing a URL and cannot be displayed.",
+        "systemInfo": "Error during processing of system information: {{- error}}",
+        "systemKeyExists": "System (URL + Client) already exists",
+        "systemNameExists": "System name is already in use",
+        "systemUpdateFailure": "Failed to update system information: {{- error}}",
+        "noServices": "This SAP system failed to return any services: {{- error}}",
+        "cert": {
+            "urlValidation": "The system URL is using {{certError}} security certificate.",
+            "expired": "an expired",
+            "selfSigned": "a self-signed",
+            "unknownOrInvalid": "an unknown or invalid",
+            "wrongHost": "a hostname or IP address not matching the",
+            "validationHelp": "Click here for details on how to use a self-signed security certificate.",
+            "gaPromptText": "Resolve this error",
+            "gaPromptSubText": "To fix this issue, follow Guided Answers steps."
+        },
+        "launchAppGen": "Failed to launch the SAP Fiori application generator for [{{- systemName}}].",
+        "catalogRequest": "The V{{version}} request failed with error: {{error}}.",
+        "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}"
+    },
+    "validation": {
+        "provideUrl": "Please provide a valid URL to test the connection."
+    }
+}

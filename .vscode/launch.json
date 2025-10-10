@@ -182,11 +182,7 @@
             "request": "launch",
             "name": "fiori-mcp-server: Launch inspector",
             "runtimeExecutable": "npx",
-            "runtimeArgs": [
-                "@modelcontextprotocol/inspector",
-                "node",
-                "dist/index.js"
-            ],
+            "runtimeArgs": ["@modelcontextprotocol/inspector", "node", "dist/index.js"],
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
@@ -510,14 +506,22 @@
             "request": "launch",
             "name": "repo-app-import-sub-generator: Launch Yeoman generators/app",
             "program": "${workspaceFolder}/packages/repo-app-import-sub-generator/node_modules/yo/lib/cli.js",
-            "args": [
-              "${workspaceFolder}/packages/repo-app-import-sub-generator/generators/app/index.js"
-            ],
-            "env": {
-            },
+            "args": ["${workspaceFolder}/packages/repo-app-import-sub-generator/generators/app/index.js"],
+            "env": {},
             "stopOnEntry": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "SAP Systems: Launch Extension",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "args": [
+                "--log=debug",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/sap-systems-ext/extension/"
+            ],
+            "outFiles": ["${workspaceFolder}/packages/sap-systems-ext/extension/dist/**/*.js"]
         }
     ]
 }

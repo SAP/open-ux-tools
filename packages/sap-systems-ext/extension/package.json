@@ -1,0 +1,176 @@
+{
+    "name": "@sap-ux/sap-systems-ext",
+    "version": "0.0.1",
+    "displayName": "sap-systems-ext",
+    "description": "SAP Systems Visual Studio Code Extension",
+    "main": "./dist/extension.js",
+    "engines": {
+        "vscode": "^1.73.1",
+        "node": ">=20.x"
+    },
+    "scripts": {
+        "vscode:prepublish": "pnpm run package",
+        "build": "pnpm run check-types && node esbuild.js",
+        "watch": "npm-run-all -p watch:*",
+        "watch:esbuild": "node esbuild.js --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+        "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+        "check-types": "tsc --noEmit",
+        "lint": "eslint . --ext .ts",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "dependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/guided-answers-helper": "workspace:*",
+        "@sap-ux/ui-components": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/sap-systems-ext-types": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "fast-glob": "3.3.1",
+        "i18next": "25.3.0",
+        "normalize-path": "^3.0.0",
+        "@zowe/secrets-for-zowe-sdk": "8.1.2"
+    },
+    "devDependencies": {
+        "@types/normalize-path": "3.0.2",
+        "@types/vscode": "1.73.1",
+        "@typescript-eslint/eslint-plugin": "^7.1.1",
+        "@typescript-eslint/parser": "^7.1.1",
+        "eslint": "8.57.0",
+        "ts-loader": "9.4.4",
+        "typescript": "5.1.6"
+    },
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "open-ux-tools-sap-systems",
+                    "title": "SAP Systems",
+                    "icon": "resources/icon-sap-fiori-tools.svg"
+                }
+            ]
+        },
+        "views": {
+            "open-ux-tools-sap-systems": [
+                {
+                    "id": "sap.ux.tools.sapSystems",
+                    "name": "SAP Systems"
+                }
+            ]
+        },
+        "viewsWelcome": [
+            {
+                "view": "sap.ux.tools.sapSystems",
+                "contents": "No SAP systems found.",
+                "when": "sap.ux.tools.sapSystems.isTreeEmpty"
+            },
+            {
+                "view": "sap.ux.tools.sapSystems",
+                "contents": "Loading SAP systems...",
+                "when": "sap.ux.tools.sapSystems.treeLoading"
+            }
+        ],
+        "commands": [
+            {
+                "command": "sap.ux.tools.sapSystems.delete",
+                "title": "Delete SAP System",
+                "category": "SapSystemExt",
+                "icon": {
+                    "light": "resources/light/icon-trash-light.svg",
+                    "dark": "resources/dark/icon-trash-dark.svg"
+                }
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.import",
+                "title": "Import SAP System",
+                "category": "SapSystemExt",
+                "icon": {
+                    "light": "resources/light/icon-import-light.svg",
+                    "dark": "resources/dark/icon-import-dark.svg"
+                }
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.create",
+                "title": "Add SAP System",
+                "category": "SapSystemExt",
+                "icon": {
+                    "light": "resources/light/icon-add-light.svg",
+                    "dark": "resources/dark/icon-add-dark.svg"
+                }
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.refresh",
+                "title": "Refresh SAP Systems",
+                "category": "SapSystemExt",
+                "icon": {
+                    "light": "resources/light/icon-refresh-light.svg",
+                    "dark": "resources/dark/icon-refresh-dark.svg"
+                }
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.show",
+                "title": "Show SAP System Details",
+                "category": "SapSystemExt"
+            },
+            {
+                "command": "sap.ux.tools.sapSystems.launchAppGen",
+                "title": "Launch Application Generator",
+                "category": "SapSystemExt"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "sap.ux.tools.sapSystems.delete",
+                    "when": "false"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.refresh",
+                    "when": "false"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.launchAppGen",
+                    "when": "false"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "sap.ux.tools.sapSystems.import",
+                    "when": "view == sap.ux.tools.sapSystems",
+                    "group": "navigation@0"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.create",
+                    "when": "view == sap.ux.tools.sapSystems",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.refresh",
+                    "when": "view == sap.ux.tools.sapSystems",
+                    "group": "navigation@2"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "sap.ux.tools.sapSystems.delete",
+                    "group": "inline"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.delete",
+                    "when": "view == sap.ux.tools.sapSystems"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.launchAppGen",
+                    "when": "view == sap.ux.tools.sapSystems && viewItem == sapSystem",
+                    "group": "navigation"
+                },
+                {
+                    "command": "sap.ux.tools.sapSystems.show",
+                    "when": "view == sap.ux.tools.sapSystems && viewItem == sapSystem",
+                    "group": "navigation"
+                }
+            ]
+        }
+    }
+}

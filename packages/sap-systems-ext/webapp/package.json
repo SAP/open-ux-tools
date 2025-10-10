@@ -1,0 +1,68 @@
+{
+    "name": "@sap-ux/sap-systems-ext-webapp",
+    "version": "0.0.1",
+    "private": true,
+    "main": "dist/src/index.js",
+    "description": "Web view for sap-systems-ext",
+    "scripts": {
+        "pre-commit": "lint-staged -c config/lint-staged.config.js --quiet",
+        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
+        "clean": "rimraf ./out ./reports",
+        "watch": "npm-run-all -l -s clean -p watch:*",
+        "watch:webapp": "node esbuild.js --watch --minify=false --sourcemap=inline",
+        "build": "npm-run-all -l -s clean -p build:webapp ",
+        "build:debug": "npm-run-all -l -s clean -p build:webapp:debug",
+        "build:webapp:debug": "node esbuild.js --minify=false",
+        "build:webapp": "node esbuild.js",
+        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config=jest.config.js --silent",
+        "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand  --config=jest.config.js --colors",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+        "lint:fix": "eslint -c --fix",
+        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+        "format:fix": "prettier --write --ignore-path ../../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+        "madge": "madge --warning --circular --extensions ts ./"
+    },
+    "devDependencies": {
+        "@reduxjs/toolkit": "1.6.1",
+        "@sap-ux/ui-components": "1.26.10",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/sap-systems-ext-types": "workspace:*",
+        "@testing-library/dom": "8.1.0",
+        "@testing-library/jest-dom": "6.1.6",
+        "@testing-library/react": "12.1.4",
+        "@testing-library/user-event": "14.5.1",
+        "@types/react": "16.14.0",
+        "@types/react-dom": "16.9.24",
+        "@types/react-redux": "7.1.1",
+        "i18next": "25.3.0",
+        "jest": "30.0.4",
+        "react": "16.14.0",
+        "react-dom": "16.14.0",
+        "react-i18next": "11.10.0",
+        "react-redux": "7.1.0",
+        "redux": "4.0.4",
+        "redux-mock-store": "1.5.5",
+        "typescript": "5.9.2"
+    },
+    "eslint-formatter-multiple": {
+        "formatters": [
+            {
+                "name": "stylish",
+                "output": "console"
+            },
+            {
+                "name": "json",
+                "output": "file",
+                "path": "reports/lint/eslint.json"
+            },
+            {
+                "name": "checkstyle",
+                "output": "file",
+                "path": "reports/lint/eslint.checkstyle.xml"
+            }
+        ]
+    }
+}
