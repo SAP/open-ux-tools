@@ -184,6 +184,29 @@ export function filterAggregateTransformations(entitySets: EntitySet[]): EntityS
 }
 
 /**
+ * Checks if the given entity set name has a Hierarchy.RecursiveHierarchy annotation in the metadata.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for recursive hierarchy annotation.
+ * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
+ */
+export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+
+    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
+
+    if (!hierarchyAnnotations) {
+        return false;
+    }
+
+    // Check for RecursiveHierarchy annotation (with or without qualifier)
+    return Object.keys(hierarchyAnnotations).some((key) => key.startsWith('RecursiveHierarchy'));
+}
+
+/**
  * Converts an EDMX string to a ConvertedMetadata object.
  *
  * @param edmx - The EDMX string to convert.

@@ -6,7 +6,11 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import { filterAggregateTransformations, hasAggregateTransformationsForEntity } from '@sap-ux/inquirer-common';
+import {
+    filterAggregateTransformations,
+    hasAggregateTransformationsForEntity,
+    hasRecursiveHierarchyForEntity
+} from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
     entitySetName: string;
@@ -253,7 +257,15 @@ export function getDefaultTableType(
 ): { tableType: TableType; setAnalyticalTableDefault: boolean } {
     let tableType: TableType;
     let setAnalyticalTableDefault = false;
+
     if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        odataVersion === OdataVersion.v4 &&
+        hasRecursiveHierarchyForEntity(metadata, mainEntitySetName)
+    ) {
+        // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
+        tableType = 'TreeTable';
+    } else if (
         (templateType === 'lrop' || templateType === 'worklist') &&
         odataVersion === OdataVersion.v4 &&
         hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
