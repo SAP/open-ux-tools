@@ -200,7 +200,7 @@ export function getEntityPrompt(
 
                   const options = getEntitySetOptions(entitySets, pageContextEntitySet, bindingContextType);
                   // If no options, fallback to all entity sets
-                  const resolvedOptions = options.length > 0 ? options : entitySets;
+                  const resolvedOptions = options.length > 0 ? options : [];
                   return transformChoices(resolvedOptions.map((opt) => opt.name));
               }
             : [],

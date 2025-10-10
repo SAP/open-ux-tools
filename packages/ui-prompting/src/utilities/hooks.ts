@@ -3,6 +3,8 @@ import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
 import type { Answers, ChoiceOptions, AsyncDynamicQuestionProperty } from 'inquirer';
+import { SelectProps } from '../components/Inputs/Select/Select';
+import { IMessageSeverity, Severity } from '@sap-ux/inquirer-common'
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -89,6 +91,39 @@ export function usePromptMessage(message?: AsyncDynamicQuestionProperty<string, 
         }
     }, [message, answers]);
     return resolvedMessage;
+}
+
+export function useUISeverityMessage(
+    props: SelectProps,
+    choices: UISelectableOption<ChoiceOptions>[],
+    setUISeverityMessage: (msg: object) => void
+) {
+    const { answers, additionalMessages } = props;
+
+    const handleMessage = (msg: IMessageSeverity) => { 
+        if (msg) {
+            switch (msg.severity) {
+                case Severity.warning:
+                    setUISeverityMessage({ warningMessage: msg.message });
+                    break;
+                case Severity.information:
+                    setUISeverityMessage({ infoMessage: msg.message });
+                    break;
+                case Severity.error:
+                    setUISeverityMessage({ errorMessage: msg.message });
+                    break;
+                default:
+                    setUISeverityMessage({});
+            }
+        } else {
+            setUISeverityMessage({});
+        }
+    };
+
+    if (typeof additionalMessages === 'function') {
+        const result = additionalMessages(choices, answers);
+        (result as Promise<IMessageSeverity>).then(handleMessage);
+    }
 }
 
 /**
