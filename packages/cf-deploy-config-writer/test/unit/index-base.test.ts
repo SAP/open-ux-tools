@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import * as hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
@@ -9,7 +9,7 @@ import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 import { MTABinNotFound } from '../../src/constants';
 import type { Editor } from 'mem-fs-editor';
-import fs from 'fs';
+import fs from 'node:fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -61,7 +61,7 @@ describe('CF Writer Base', () => {
 
     describe('Generate Base Config - Standalone', () => {
         test('Generate deployment configs - standalone with ABAP service provider', async () => {
-            jest.setTimeout(20000);
+            jest.setTimeout(20_000);
             const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
             apiGetInstanceCredentialsMock.mockResolvedValue({
                 credentials: {

@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
@@ -56,11 +56,11 @@ function extendBackendMiddleware(
     update = false
 ): void {
     if (update) {
-        ui5Config.updateBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+        ui5Config.updateBackendToFioriToolsProxyMiddleware(service.previewSettings as ProxyBackend);
     } else {
         // Try to add backend
         try {
-            ui5Config.addBackendToFioriToolsProxydMiddleware(
+            ui5Config.addBackendToFioriToolsProxyMiddleware(
                 service.previewSettings as ProxyBackend,
                 service.ignoreCertError
             );
@@ -70,7 +70,7 @@ function extendBackendMiddleware(
                 error.message === 'Could not find fiori-tools-proxy'
             ) {
                 // Middleware is missing, add it along with the service backend
-                ui5Config.addFioriToolsProxydMiddleware({
+                ui5Config.addFioriToolsProxyMiddleware({
                     backend: [service.previewSettings as ProxyBackend],
                     ignoreCertError: service.ignoreCertError
                 });

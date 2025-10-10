@@ -14,8 +14,8 @@ import {
     filterAggregateTransformations,
     convertEdmxToConvertedMetadata
 } from '../../../src/prompts/helpers';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 describe('helpers', () => {
     describe('extendAdditionalMessages', () => {

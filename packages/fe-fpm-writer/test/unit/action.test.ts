@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
@@ -325,7 +325,7 @@ describe('CustomAction', () => {
                     },
                     undefined
                 ],
-                ['absolute position', 196, 8]
+                ['absolute position', 190, 8]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
                 async (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
@@ -420,6 +420,27 @@ describe('CustomAction', () => {
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
+            });
+        });
+
+        describe('Typescript actions', () => {
+            test('Generate action with event handler', async () => {
+                await generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        folder: 'ext',
+                        target,
+                        eventHandler: true,
+                        typescript: true,
+                        settings: {
+                            ...settings
+                        }
+                    },
+                    fs
+                );
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.ts'))).toMatchSnapshot();
             });
         });
     });

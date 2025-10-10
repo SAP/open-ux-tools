@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
-import type { ChoiceOptions } from 'inquirer';
+import type { ChoiceOptions, Answers } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
+import { useValue, getLabelRenderer, useOptions, usePromptMessage } from '../../../utilities';
 import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface SelectProps extends ListPromptQuestion {
@@ -12,10 +12,11 @@ export interface SelectProps extends ListPromptQuestion {
     dynamicChoices?: PromptListChoices;
     pending?: boolean;
     errorMessage?: string;
+    answers?: Answers;
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
+    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id, answers } = props;
     const { mandatory, hint, placeholder, creation } = guiOptions;
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
@@ -26,11 +27,18 @@ export const Select = (props: SelectProps) => {
             return options[0].data?.value;
         }
 
-        // Handle numeric default that isn't a key = it could be an index
-        if (props.defaultIndex !== undefined && options[props.defaultIndex]) {
-            return options[props.defaultIndex].data?.value;
+        // Use the first checked option as default
+        const checkedOption = options.find((opt) => opt.data && 'checked' in opt.data && opt.data.checked === true);
+        if (checkedOption) {
+            return checkedOption.data?.value;
         }
-    }, [props.defaultIndex, options]);
+
+        // do not preselect any value by default
+        return undefined;
+    }, [options]);
+
+    const resolvedMessage = usePromptMessage(message, answers);
+    const label = resolvedMessage?.trim() ? resolvedMessage : name;
 
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {
@@ -72,7 +80,7 @@ export const Select = (props: SelectProps) => {
     const component = isTextField ? (
         <UITextInput
             componentRef={inputRef}
-            label={typeof message === 'string' ? message : name}
+            label={label}
             value={value?.toString()}
             placeholder={creation.placeholder}
             errorMessage={errorMessage}
@@ -83,7 +91,7 @@ export const Select = (props: SelectProps) => {
         />
     ) : (
         <UIComboBox
-            label={typeof message === 'string' ? message : name}
+            label={label}
             options={options}
             highlight={true}
             allowFreeform={true}

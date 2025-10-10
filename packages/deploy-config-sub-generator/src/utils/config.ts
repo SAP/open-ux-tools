@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
@@ -29,7 +29,7 @@ export async function getBackendConfig(
         // Launched from app modeler where deploy config might already exist
         // need to retrieve backendConfig information.
         const ui5Config = await UI5Config.newInstance(fs.read(join(projectRoot, options.base ?? FileName.Ui5Yaml)));
-        backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware()[0];
+        backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
         isLibrary = ui5Config.getType() === DeployProjectType.Library;
     } else {
         // Launched as subgenerator from app gen

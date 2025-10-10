@@ -22,7 +22,7 @@ export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id:
  * @param path - the xpath string
  * @returns the augmented xpath string.
  */
-const augmentXpathWithLocalNames = (path: string): string => {
+export const augmentXpathWithLocalNames = (path: string): string => {
     const result = [];
     for (const token of path.split('/')) {
         result.push(token === '' || token.includes(':') ? token : `*[local-name()='${token}']`);
@@ -35,10 +35,14 @@ const augmentXpathWithLocalNames = (path: string): string => {
  *
  * @param xmlFilePath - the xml file path
  * @param fs - the file system object for reading files
- * @returns the list of xpath strings.
+ * @returns the list of xpath strings & page macro definition if page macro has been added by user.
  */
-export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
+export function getXPathStringsForXmlFile(
+    xmlFilePath: string,
+    fs: Editor
+): { inputChoices: Record<string, string>; pageMacroDefinition?: string } {
     const result: Record<string, string> = {};
+    let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
         const errorHandler = (level: string, message: string) => {
@@ -48,8 +52,8 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
-        const macrosNamespace = getOrAddMacrosNamespace(xmlDocument);
-        const pageMacroDefinition = macrosNamespace ? `${macrosNamespace}:Page` : 'macros:Page';
+        const macrosNamespace = getOrAddNamespace(xmlDocument);
+        pageMacroDefinition = macrosNamespace ? `${macrosNamespace}:Page` : 'macros:Page';
         let hasPageMacroChild = false;
 
         while (nodes && nodes.length > 0) {
@@ -82,7 +86,7 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
     } catch (error) {
         throw new Error(`An error occurred while parsing the view or fragment xml. Details: ${getErrorMessage(error)}`);
     }
-    return result;
+    return { inputChoices: result, pageMacroDefinition };
 }
 
 /**
@@ -119,17 +123,69 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
 }
 
 /**
- * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
+ * Finds the prefix associated with a given namespace URI in the root element's attributes.
+ * Handles both default namespaces (xmlns="...") and prefixed namespaces (xmlns:prefix="...").
  *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @returns {string} the macros namespace
+ * @example
+ * // Default namespace (no prefix)
+ * // <core:FragmentDefinition xmlns="sap.fe.macros">
+ * // findNamespacePrefix(root, 'sap.fe.macros') // returns ''
+ * @example
+ * // Prefixed namespace
+ * // <core:FragmentDefinition xmlns:rte="sap.fe.macros.richtexteditor">
+ * // findNamespacePrefix(root, 'sap.fe.macros') // returns 'rte'
+ * @example
+ * // Default namespace in mvc:View
+ * // <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+ * // findNamespacePrefix(root, 'sap.m') // returns ''
+ * @example
+ * // Prefixed namespace in mvc:View
+ * // <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+ * // findNamespacePrefix(root, 'sap.fe.macros') // returns 'macros'
+ * @param {HTMLElement} root - The root XML element to search for namespace declarations.
+ * @param {string} namespaceUri - The namespace URI to look for.
+ * @returns {string|null} The namespace prefix if found ('' for default namespace, or the prefix string), otherwise null.
  */
-export function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
-        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | null {
+    // Check all namespace attributes for a matching URI
+    for (const attr of Array.from(root.attributes)) {
+        if (attr.value === namespaceUri) {
+            if (attr.name === 'xmlns') {
+                // Default namespace (no prefix)
+                return '';
+            } else if (attr.name.startsWith('xmlns:')) {
+                // Return prefix
+                return attr.name.split(':')[1];
+            }
+        }
     }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
+    // Namespace not found
+    return null;
+}
+
+/**
+ * Ensures that a given XML namespace URI is defined in the document and returns its prefix.
+ * Handles both default and prefixed namespaces.
+ *
+ * @param ui5XmlDocument - The XML document
+ * @param namespaceUri - The namespace URI to check/add (e.g. 'sap.fe.macros', 'sap.fe.macros.richtexteditor')
+ * @param prefix - The preferred prefix to use if adding (e.g. 'macros', 'richtexteditor')
+ * @returns The prefix bound to the namespace URI ('' for default, or the prefix)
+ */
+export function getOrAddNamespace(
+    ui5XmlDocument: Document,
+    namespaceUri: string = 'sap.fe.macros',
+    prefix: string = 'macros'
+): string {
+    const root = ui5XmlDocument.documentElement;
+
+    // Check all namespace attributes for a matching URI
+    const existingPrefix = findNamespacePrefix(root, namespaceUri);
+    if (existingPrefix !== null) {
+        return existingPrefix;
+    }
+
+    // If not present, add with prefix
+    root.setAttributeNS('http://www.w3.org/2000/xmlns/', prefix === '' ? 'xmlns' : `xmlns:${prefix}`, namespaceUri);
+    return prefix;
 }

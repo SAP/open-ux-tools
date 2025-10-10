@@ -1,5 +1,6 @@
 import { rm, stat, symlink } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 import { getPortPromise } from 'portfinder';
 import { setup, teardown } from 'jest-dev-server';
@@ -154,13 +155,19 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         { timeout: TIMEOUT, scope: 'worker' }
     ],
     // Override default "page" fixture.
-    page: async ({ page, projectServer }, use) => {
+    page: async ({ page, projectServer, projectCopy }, use) => {
         await page.goto(
             `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`
         );
         await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 15_000 });
         // Each test will get a "page" that already has the person name.
         await use(page);
+
+        // Clean up changes directory after each test is complete
+        const changesDir = join(projectCopy, 'webapp', 'changes');
+        if (existsSync(changesDir)) {
+            await rm(changesDir, { recursive: true });
+        }
     },
     previewFrame: [
         async ({ page }, use): Promise<void> => {

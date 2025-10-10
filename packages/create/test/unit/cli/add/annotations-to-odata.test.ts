@@ -9,8 +9,8 @@ import * as logger from '../../../../src/tracing/logger';
 import * as validations from '../../../../src/validation/validation';
 import * as adp from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import * as oDataWriter from '@sap-ux/odata-service-writer';
 
 const descriptorVariant = JSON.parse(

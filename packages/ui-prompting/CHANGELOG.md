@@ -1,5 +1,43 @@
 # @sap-ux/ui-prompting
 
+## 0.5.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [7f652f3]
+    -   @sap-ux/ui-components@1.26.11
+
+## 0.5.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [904f8e3]
+    -   @sap-ux/ui-components@1.26.10
+
+## 0.4.1
+
+### Patch Changes
+
+-   2d0380a: Improve answer change handling and dependent question choice requests in Questions component in ui prompting
+
+## 0.4.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
 ## 0.3.37
 
 ### Patch Changes

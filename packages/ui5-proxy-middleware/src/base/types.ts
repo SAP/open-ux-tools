@@ -2,9 +2,25 @@ import type { NextFunction } from 'express';
 import type { IncomingMessage } from 'http';
 
 export interface ProxyConfig {
+    /**
+     * Path that is to be proxied.
+     */
     path: string;
+    /**
+     * If provided then the path will be replaced with this value before forwarding.
+     */
+    pathReplace?: string;
+    /**
+     * The target URL to proxy the request to.
+     */
     url: string;
+    /**
+     * If provided then the proxy will try to load the specified version of UI5 resources.
+     */
     version?: string;
+    /**
+     * If set then it will override the proxy settings from node.
+     */
     proxy?: string;
 }
 

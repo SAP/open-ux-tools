@@ -1,0 +1,33 @@
+{
+    "table": {
+        "type": "ResponsiveTable",
+        "condensedTableLayout": true,
+        "enableTableFilterInPageVariant": true,
+        "columns": {
+            "custom": [
+                {
+                    "id": "FioriTools::ColumnExtension",
+                    "text": "Column",
+                    "columnIndex": 4,
+                    "extensionType": "ResponsiveTableColumnsExtension",
+                    "columnKey": "ColumnExtension",
+                    "className": "sap.ui.core.Fragment",
+                    "fragmentName": "fev2.ext.fragment.CustomColumn",
+                    "cellsFragmentName": "fev2.ext.fragment.CustomCell"
+                }
+            ]
+        }
+    },
+    "header": {
+        "actions": {
+            "Share": {}
+        }
+    },
+    "filterBar": {
+        "smartVariantManagement": true,
+        "dateSettings": {
+            "useDateRange": true
+        }
+    },
+    "$schema": "../.schemas/ListReport_SEPMRA_C_PD_Product.json"
+}

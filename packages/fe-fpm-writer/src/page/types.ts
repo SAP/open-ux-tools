@@ -122,6 +122,11 @@ export interface CustomPage extends FpmPage, CustomElement {
          */
         title?: string;
     };
+
+    /**
+     * If page building block title is defined then it will be used to automatically add a macro page to the generated custom page.
+     */
+    pageBuildingBlockTitle?: string;
 }
 
 export interface FCL {

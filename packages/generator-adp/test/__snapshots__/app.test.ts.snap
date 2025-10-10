@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 1`] = `
 "{
@@ -65,7 +65,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - client: '010'
             url: urlA
@@ -150,7 +150,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - client: '010'
             url: urlA

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
@@ -67,17 +67,16 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * Returns the OPA config.
  *
  * @param appOpts - relevant app options for retrieving the opa config
- * @param appOpts.generateIndex - if an index.html file will be generated
  * @param appOpts.useVirtualPreviewEndpoints - if virtual endpoints will be used for preview
  * @param flpAppId - the flp app id
  * @returns - the opa config { htmlTarget }
  */
 function getOpaConfig(
-    { generateIndex, useVirtualPreviewEndpoints }: { generateIndex?: boolean; useVirtualPreviewEndpoints?: boolean },
+    { useVirtualPreviewEndpoints }: { useVirtualPreviewEndpoints?: boolean },
     flpAppId?: string
 ): { htmlTarget: string } {
     const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
-    const htmlTarget = generateIndex ? 'index.html' : `test/${flpTarget}.html?sap-ui-xx-viewCache=false#${flpAppId}`;
+    const htmlTarget = `test/${flpTarget}.html#${flpAppId}`;
     return {
         htmlTarget
     };
@@ -254,7 +253,6 @@ async function generate<T extends {}>(
     if (addTest) {
         const opaConfig = getOpaConfig(
             {
-                generateIndex: feApp.appOptions?.generateIndex,
                 useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
             },
             feApp.app.flpAppId
@@ -263,17 +261,13 @@ async function generate<T extends {}>(
     }
 
     if (feApp.service.capService) {
-        const enableCdsUi5Plugin =
-            !!feApp?.appOptions?.typescript || !!feApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: feApp.package.name ?? '',
             appId: feApp.app.id,
             sapux: feApp.appOptions?.sapux,
-            enableTypescript: feApp.appOptions?.typescript,
-            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-            enableCdsUi5Plugin: enableCdsUi5Plugin,
-            enableNPMWorkspaces: enableCdsUi5Plugin
+            enableCdsUi5Plugin: feApp.appOptions?.addCdsUi5Plugin,
+            enableTypescript: feApp.appOptions?.typescript
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, feApp.service.capService, settings);

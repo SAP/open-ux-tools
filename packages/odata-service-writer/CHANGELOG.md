@@ -1,5 +1,84 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.24
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/mockserver-config-writer@0.9.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+
+## 0.27.23
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/mockserver-config-writer@0.9.19
+    -   @sap-ux/project-access@1.32.2
+
+## 0.27.22
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/mockserver-config-writer@0.9.18
+    -   @sap-ux/project-access@1.32.1
+
+## 0.27.21
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/mockserver-config-writer@0.9.17
+
+## 0.27.20
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/mockserver-config-writer@0.9.16
+
+## 0.27.19
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/mockserver-config-writer@0.9.15
+    -   @sap-ux/project-access@1.30.14
+
+## 0.27.18
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/mockserver-config-writer@0.9.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.27.17
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/mockserver-config-writer@0.9.13
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.27.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/mockserver-config-writer@0.9.12
+
 ## 0.27.15
 
 ### Patch Changes

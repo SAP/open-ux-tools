@@ -1,5 +1,237 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.75
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.26
+-   @sap-ux/deploy-config-generator-shared@0.1.40
+-   @sap-ux/fiori-generator-shared@0.13.21
+
+## 0.1.74
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/abap-deploy-config-writer@0.2.20
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.25
+    -   @sap-ux/deploy-config-generator-shared@0.1.39
+
+## 0.1.73
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.24
+    -   @sap-ux/abap-deploy-config-writer@0.2.19
+    -   @sap-ux/project-access@1.32.2
+    -   @sap-ux/fiori-generator-shared@0.13.19
+    -   @sap-ux/deploy-config-generator-shared@0.1.38
+
+## 0.1.72
+
+### Patch Changes
+
+-   4b0b8fb: fix: Missing build script for ADP onPremise projects leads to error during deployment
+-   Updated dependencies [4b0b8fb]
+    -   @sap-ux/abap-deploy-config-writer@0.2.18
+
+## 0.1.71
+
+### Patch Changes
+
+-   30cf923: fix: "lrep" property is not added when the deploy config is created from within the ADP Generator
+
+## 0.1.70
+
+### Patch Changes
+
+-   Updated dependencies [fe5fd09]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.23
+
+## 0.1.69
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.22
+    -   @sap-ux/deploy-config-generator-shared@0.1.37
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/abap-deploy-config-writer@0.2.17
+
+## 0.1.68
+
+### Patch Changes
+
+-   Updated dependencies [bfdbaca]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.21
+
+## 0.1.67
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.20
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.36
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/abap-deploy-config-writer@0.2.16
+    -   @sap-ux/project-access@1.32.1
+
+## 0.1.66
+
+### Patch Changes
+
+-   Updated dependencies [c15aa4f]
+    -   @sap-ux/abap-deploy-config-writer@0.2.15
+
+## 0.1.65
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/abap-deploy-config-writer@0.2.14
+    -   @sap-ux/fiori-generator-shared@0.13.16
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.19
+    -   @sap-ux/deploy-config-generator-shared@0.1.35
+
+## 0.1.64
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/abap-deploy-config-writer@0.2.13
+    -   @sap-ux/fiori-generator-shared@0.13.15
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.18
+    -   @sap-ux/deploy-config-generator-shared@0.1.34
+
+## 0.1.63
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.17
+    -   @sap-ux/abap-deploy-config-writer@0.2.12
+    -   @sap-ux/project-access@1.30.14
+    -   @sap-ux/fiori-generator-shared@0.13.14
+    -   @sap-ux/deploy-config-generator-shared@0.1.33
+
+## 0.1.62
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.16
+    -   @sap-ux/deploy-config-generator-shared@0.1.32
+
+## 0.1.61
+
+### Patch Changes
+
+-   Updated dependencies [f46dd02]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.15
+
+## 0.1.60
+
+### Patch Changes
+
+-   Updated dependencies [2aecea7]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.14
+
+## 0.1.59
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.13
+    -   @sap-ux/deploy-config-generator-shared@0.1.31
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/abap-deploy-config-writer@0.2.11
+
+## 0.1.58
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.12
+-   @sap-ux/deploy-config-generator-shared@0.1.31
+-   @sap-ux/ui5-config@0.29.3
+-   @sap-ux/abap-deploy-config-writer@0.2.10
+-   @sap-ux/fiori-generator-shared@0.13.12
+
+## 0.1.57
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.11
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/deploy-config-generator-shared@0.1.30
+    -   @sap-ux/fiori-generator-shared@0.13.11
+    -   @sap-ux/abap-deploy-config-writer@0.2.9
+    -   @sap-ux/project-access@1.30.13
+
+## 0.1.56
+
+### Patch Changes
+
+-   Updated dependencies [384bb40]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.10
+
+## 0.1.55
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.9
+-   @sap-ux/deploy-config-generator-shared@0.1.29
+-   @sap-ux/ui5-config@0.29.2
+-   @sap-ux/abap-deploy-config-writer@0.2.8
+-   @sap-ux/fiori-generator-shared@0.13.10
+
+## 0.1.54
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.8
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/abap-deploy-config-writer@0.2.7
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/deploy-config-generator-shared@0.1.28
+
+## 0.1.53
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/abap-deploy-config-writer@0.2.6
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/abap-deploy-config-inquirer@1.6.7
+-   @sap-ux/deploy-config-generator-shared@0.1.27
+
+## 0.1.52
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.6
+-   @sap-ux/deploy-config-generator-shared@0.1.26
+
 ## 0.1.51
 
 ### Patch Changes

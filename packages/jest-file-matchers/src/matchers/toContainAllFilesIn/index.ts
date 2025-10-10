@@ -1,6 +1,6 @@
 import { compareSync } from 'dir-compare';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import chalk from 'chalk';
 import type { MatcherOptions } from '../types';
 
@@ -25,6 +25,7 @@ function getMissingFileMessages(isNot: boolean, index: number, missingFile: stri
 
 /**
  * Matcher to assert that `receivedFolder` contains all the files in  the `expectedFolder`.
+ * Contents of files are not compared, only names of files.
  *
  * @param receivedFolder path to received folder
  * @param expectedFolder path to expected folder

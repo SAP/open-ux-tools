@@ -1,16 +1,17 @@
 import { mkdir, readFile, rm, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import type { Manifest } from '@sap-ux/project-access';
 import { YamlDocument } from '@sap-ux/yaml';
 import template from './templates/manifest-fe-v2.json';
 import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2 } from './projects';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 
 export interface ProjectParameters {
     id: string;
     mainServiceUri: string;
     entitySet: string;
+    userParams?: Record<string, string | boolean>;
 }
 
 export const ADAPTATION_EDITOR_PATH = '/adaptation-editor.html';
@@ -25,7 +26,8 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
     return {
         id: parameters.id,
         mainServiceUri: parameters.mainServiceUri ?? `/sap/opu/odata/sap/SERVICE/`,
-        entitySet: parameters.entitySet ?? 'RootEntity'
+        entitySet: parameters.entitySet ?? 'RootEntity',
+        userParams: parameters.userParams ?? {}
     };
 }
 
@@ -37,7 +39,8 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
  * @returns A manifest object for the project.
  */
 export function createV2Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
-    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
+    const { id, mainServiceUri, entitySet, userParams } = getProjectParametersWithDefaults(userParameters);
+    const { qualifier = '', navigationProperty, variantManagement = true, analyticalTable } = userParams ?? {};
     const result = structuredClone(template) as Manifest;
     result['sap.app'].id = id + '.' + workerId;
     result['sap.app'].dataSources!.mainService.uri = mainServiceUri;
@@ -70,7 +73,21 @@ export function createV2Manifest(userParameters: ProjectParameters, workerId: st
                     'entitySet': entitySet,
                     'defaultLayoutTypeIfExternalNavigation': 'MidColumnFullScreen',
                     'component': {
-                        'name': 'sap.suite.ui.generic.template.ObjectPage'
+                        'name': 'sap.suite.ui.generic.template.ObjectPage',
+                        ...(navigationProperty && {
+                            'settings': {
+                                'sections': {
+                                    [`${navigationProperty}::com.sap.vocabularies.UI.v1.LineItem${
+                                        qualifier ? `::${qualifier}` : ''
+                                    }`]: {
+                                        'tableSettings': {
+                                            variantManagement,
+                                            ...(analyticalTable && { 'type': 'AnalyticalTable' })
+                                        }
+                                    }
+                                }
+                            }
+                        })
                     }
                 }
             }
@@ -193,6 +210,35 @@ export async function generateUi5Project(
                         'IntegerProperty': 89,
                         'BooleanProperty': true,
                         'Currency': 'JPY',
+                        'TextProperty': 'Description'
+                    }
+                ],
+                undefined,
+                2
+            )
+        ),
+        writeFile(
+            join(root, 'data', 'FirstAssociatedEntity.json'),
+            JSON.stringify(
+                [
+                    {
+                        'ID': 100,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello JPY',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'JPY',
+                        'TextProperty': 'Description'
+                    },
+                    {
+                        'ID': 101,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello AED',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'AED',
                         'TextProperty': 'Description'
                     }
                 ],
@@ -340,6 +386,35 @@ export async function generateAdpProject(
                         'Currency': 'JPY',
                         'TextProperty': 'Description',
                         'DateProperty': '/Date(1746057600000)/'
+                    }
+                ],
+                undefined,
+                2
+            )
+        ),
+        writeFile(
+            join(root, 'data', 'FirstAssociatedEntity.json'),
+            JSON.stringify(
+                [
+                    {
+                        'ID': 100,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello JPY',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'JPY',
+                        'TextProperty': 'Description'
+                    },
+                    {
+                        'ID': 101,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello AED',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'AED',
+                        'TextProperty': 'Description'
                     }
                 ],
                 undefined,

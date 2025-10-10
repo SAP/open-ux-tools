@@ -1,5 +1,54 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.19
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/odata-annotation-core@0.2.9
+    -   @sap-ux/odata-vocabularies@0.4.16
+
+## 0.2.18
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.8
+-   @sap-ux/odata-entity-model@0.3.1
+-   @sap-ux/odata-vocabularies@0.4.15
+
+## 0.2.17
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/odata-vocabularies@0.4.14
+
+## 0.2.16
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.7
+-   @sap-ux/odata-entity-model@0.3.1
+-   @sap-ux/odata-vocabularies@0.4.13
+
+## 0.2.15
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/odata-vocabularies@0.4.12
+
+## 0.2.14
+
+### Patch Changes
+
+-   Updated dependencies [c7db726]
+    -   @sap-ux/text-document-utils@0.3.1
+    -   @sap-ux/odata-annotation-core@0.2.6
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.11
+
 ## 0.2.13
 
 ### Patch Changes

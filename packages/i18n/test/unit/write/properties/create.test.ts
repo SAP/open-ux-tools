@@ -3,7 +3,7 @@ import * as utilsWrite from '../../../../src/write/utils';
 import * as utils from '../../../../src/utils';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { basename } from 'path';
+import { basename } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 describe('create', () => {

@@ -1,5 +1,5 @@
 import type { CustomElement, FragmentContentData, InternalCustomElement, Manifest } from './types';
-import { join, dirname } from 'path';
+import { join, dirname } from 'node:path';
 
 export const FCL_ROUTER = 'sap.f.routing.Router';
 

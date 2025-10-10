@@ -1,5 +1,43 @@
 # @sap-ux/ui5-config
 
+## 0.29.7
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/yaml@0.17.1
+
+## 0.29.6
+
+### Patch Changes
+
+-   d866995: fix: pathReplace not taken into account or truncated in case of nested router instances
+
+## 0.29.5
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
+## 0.29.4
+
+### Patch Changes
+
+-   8ccc4da: fix: "Undeploy" does not work with the new ui5-deploy.yaml file for ADP
+
+## 0.29.3
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
+## 0.29.2
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+
 ## 0.29.1
 
 ### Patch Changes

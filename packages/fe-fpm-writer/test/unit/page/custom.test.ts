@@ -1,13 +1,15 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src';
 import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
 import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
+import type { Logger } from '@sap-ux/logger';
+import { i18nNamespaces, translate } from '../../../src/i18n';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -289,6 +291,52 @@ describe('CustomPage', () => {
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             await generateCustomPage(target, input, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('should generate a custom page with pageBuildingBlockTitle enabled', async () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithPageBuildingBlockTitle = {
+                ...input,
+                pageBuildingBlockTitle: 'Test Page Title'
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs);
+
+            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            expect(fs.exists(viewXmlPath)).toBe(true);
+            const viewXml = fs.read(viewXmlPath).toString();
+            expect(viewXml).toContain('macros:Page');
+            expect(viewXml).toContain('Test Page Title');
+
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+        });
+
+        test('should log a warning when min ui5 version is not met for page building block feature', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+            const inputWithPageBuildingBlockTitle = {
+                ...input,
+                minUI5Version: '1.120',
+                pageBuildingBlockTitle: 'Test Page Title'
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+
+            await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
+
+            expect(log.warn).toHaveBeenCalledWith(
+                t('minUi5VersionRequirement', { minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version })
+            );
+
+            // page macros should not be added
+            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            expect(fs.exists(viewXmlPath)).toBe(true);
+            const viewXml = fs.read(viewXmlPath).toString();
+            expect(viewXml).not.toContain('macros:Page');
+            expect(viewXml).not.toContain('Test Page Title');
+            expect(viewXml).toContain('<Page');
         });
     });
 

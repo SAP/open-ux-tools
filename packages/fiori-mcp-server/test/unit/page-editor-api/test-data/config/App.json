@@ -1,0 +1,47 @@
+{
+    "$schema": "./.schemas/App.json",
+    "id": "project1",
+    "pages": {
+        "TravelList": {
+            "pageType": "ListReport",
+            "entitySet": "Travel",
+            "contextPath": "/Travel",
+            "entityType": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+            "variantManagement": "Page",
+            "navigation": {
+                "Travel": {
+                    "route": "TravelObjectPage"
+                }
+            },
+            "routePattern": ":?query:",
+            "template": "sap.fe.templates.ListReport"
+        },
+        "TravelObjectPage": {
+            "pageType": "ObjectPage",
+            "entitySet": "Travel",
+            "contextPath": "/Travel",
+            "entityType": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+            "navigation": {},
+            "routePattern": "Travel({key}):?query:",
+            "template": "sap.fe.templates.ObjectPage"
+        }
+    },
+    "home": "TravelList",
+    "target": {
+        "fioriElements": "v4",
+        "odata": "v4"
+    },
+    "settings": {
+        "dependencies": {
+            "minUI5Version": "1.138.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "flexEnabled": true
+    }
+}

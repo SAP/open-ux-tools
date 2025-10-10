@@ -1,45 +1,43 @@
-import fs from 'fs';
-import { join } from 'path';
-import { rimraf } from 'rimraf';
-import yeomanTest from 'yeoman-test';
 import { exec } from 'child_process';
+import fs from 'node:fs';
+import { join } from 'node:path';
+import { rimraf } from 'rimraf';
 import Generator from 'yeoman-generator';
+import yeomanTest from 'yeoman-test';
 
+import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import {
+    FlexLayer,
     SourceManifest,
     SystemLookup,
     fetchPublicVersions,
     getConfiguredProvider,
     getProviderConfig,
     loadApps,
-    validateUI5VersionExists,
-    getBaseAppInbounds,
-    FlexLayer
+    validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
-import * as Logger from '@sap-ux/logger';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { ManifestNamespace } from '@sap-ux/project-access';
-import { isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
-import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 
-import {
-    existsInWorkspace,
-    showWorkspaceFolderWarning,
-    handleWorkspaceFolderChoice,
-    workspaceChoices
-} from '../src/utils/workspace';
-import adpGenerator from '../src/app';
-import { initI18n, t } from '../src/utils/i18n';
-import type { JsonInput } from '../src/app/types';
-import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
-import * as subgenHelpers from '../src/utils/subgenHelpers';
+import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import type { JsonInput } from '../src/app/types';
+import { EventName } from '../src/telemetryEvents';
+import { initI18n, t } from '../src/utils/i18n';
+import * as subgenHelpers from '../src/utils/subgenHelpers';
+import {
+    existsInWorkspace,
+    handleWorkspaceFolderChoice,
+    showWorkspaceFolderWarning,
+    workspaceChoices
+} from '../src/utils/workspace';
 
 jest.mock('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
@@ -83,8 +81,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getProviderConfig: jest.fn(),
     validateUI5VersionExists: jest.fn(),
     fetchPublicVersions: jest.fn(),
-    isCFEnvironment: jest.fn().mockReturnValue(false),
-    getBaseAppInbounds: jest.fn()
+    isCFEnvironment: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -243,7 +240,6 @@ const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
-const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -347,8 +343,8 @@ describe('Adaptation Project Generator Integration Test', () => {
         mockIsAppStudio.mockReturnValue(false);
         existsInWorkspaceMock.mockReturnValue(false);
         jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
+        jest.spyOn(ConfigPrompter.prototype, 'baseAppInbounds', 'get').mockReturnValue(inbounds);
         jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
-        getBaseAppInboundsMock.mockResolvedValue(inbounds);
 
         const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
         const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
@@ -362,10 +358,14 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         expect(addDeployGenSpy).toHaveBeenCalledWith(
             {
-                client: '010',
                 connectedSystem: 'urlA',
                 projectName: 'app.variant',
-                targetFolder: testOutputDir
+                projectPath: testOutputDir,
+                system: {
+                    Name: 'SystemA',
+                    Client: '010',
+                    Url: 'urlA'
+                }
             },
             expect.any(Function),
             expect.any(Object),

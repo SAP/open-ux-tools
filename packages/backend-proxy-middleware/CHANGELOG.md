@@ -1,5 +1,77 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.2
+
+### Patch Changes
+
+-   2e1fd75: fix: bsp scenario broken
+
+## 0.10.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
+## 0.10.0
+
+### Minor Changes
+
+-   64250ed: migrate to http-proxy-middleware v3
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/btp-utils@1.1.2
+
+## 0.9.17
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+
+## 0.9.16
+
+### Patch Changes
+
+-   b62d5b9: fix: make 'bsp' path case insensitive
+
+## 0.9.15
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+
+## 0.9.14
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/btp-utils@1.1.1
+
+## 0.9.13
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+
 ## 0.9.12
 
 ### Patch Changes

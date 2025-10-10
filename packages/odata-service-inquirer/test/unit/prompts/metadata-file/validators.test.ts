@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { validateMetadataFile } from '../../../../src/prompts/datasources/metadata-file/validators';
 
 describe('metadata valiadtors', () => {

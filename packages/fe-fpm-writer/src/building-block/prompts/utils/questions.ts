@@ -1,7 +1,7 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
-import { join, relative } from 'path';
-import { getAnnotationPathQualifiers, getEntitySets } from './service';
+import { join, relative } from 'node:path';
+import { getAnnotationPathQualifiers } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
@@ -12,10 +12,11 @@ import type {
     WithRequired,
     PromptContext
 } from '../../../prompts/types';
-import { BuildingBlockType } from '../../types';
+import { bindingContextAbsolute, BuildingBlockType } from '../../types';
 import type { BindingContextType } from '../../types';
 import { getFilterBarIdsInFile, getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
+import { getEntitySetOptions, resolveEntitySetTargets, loadEntitySets } from './prompt-helpers';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();
@@ -179,22 +180,82 @@ export function getEntityPrompt(
     context: PromptContext,
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { project, appId } = context;
+    const { project } = context;
+    const { pageContextEntitySet } = context.options ?? {};
     const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.entitySet',
         choices: project
-            ? async () => {
-                  const entitySets = (await getEntitySets(project, appId)).map((entitySet) => entitySet.name);
-                  return transformChoices(entitySets);
+            ? async (answers?: Answers) => {
+                  const entitySets = await loadEntitySets(context);
+                  // List all entity sets when no page context is defined
+                  if (!pageContextEntitySet) {
+                      return transformChoices(entitySets.map((entitySet) => entitySet.name));
+                  }
+
+                  const bindingContextType =
+                      answers?.buildingBlockData?.metaPath.bindingContextType ?? bindingContextAbsolute;
+
+                  const options = getEntitySetOptions(entitySets, pageContextEntitySet, bindingContextType);
+                  // If no options, fallback to all entity sets
+                  const resolvedOptions = options.length > 0 ? options : entitySets;
+                  return transformChoices(resolvedOptions.map((opt) => opt.name));
               }
             : [],
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
             placeholder: guiOptions?.placeholder ?? (t('entity.defaultPlaceholder') as string)
+        }
+    };
+}
+
+/**
+ * Returns a Prompt for choosing a property of an entity.
+ *
+ * @param context - prompt context including data about project
+ * @param properties - object with additional properties of question
+ * @returns prompt for choosing an entity property.
+ */
+export function getTargetPropertiesPrompt(
+    context: PromptContext,
+    properties: Partial<ListPromptQuestion> = {}
+): ListPromptQuestion {
+    const { project } = context;
+    const pageContextEntitySet = context.options?.pageContextEntitySet ?? '';
+    const { guiOptions } = properties;
+    return {
+        ...properties,
+        type: 'list',
+        name: 'buildingBlockData.targetProperty',
+        choices: project
+            ? async (answers?: Answers) => {
+                  const entitySets = await loadEntitySets(context);
+
+                  const { bindingContextType, entitySet: selectedNavProp } = answers?.buildingBlockData?.metaPath ?? {};
+
+                  if (!selectedNavProp) {
+                      // clear choices if no entity set is selected
+                      return [];
+                  }
+
+                  const propertyChoices = resolveEntitySetTargets(
+                      entitySets,
+                      pageContextEntitySet,
+                      bindingContextType,
+                      selectedNavProp
+                  );
+                  const transformedChoices = transformChoices(propertyChoices.map((p) => p.name));
+
+                  return transformedChoices;
+              }
+            : [],
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'dynamic',
+            placeholder: guiOptions?.placeholder ?? (t('targetProperty.defaultPlaceholder') as string)
         }
     };
 }
@@ -237,15 +298,16 @@ export function getAggregationPathPrompt(
         ...properties,
         type: 'list',
         name: 'aggregationPath',
-        defaultIndex: 0,
         choices: project
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
                   if (viewOrFragmentPath) {
-                      const choices = transformChoices(
-                          getXPathStringsForXmlFile(join(appPath, viewOrFragmentPath), fs),
-                          false
+                      const { inputChoices, pageMacroDefinition } = getXPathStringsForXmlFile(
+                          join(appPath, viewOrFragmentPath),
+                          fs
                       );
+                      const key = Object.keys(inputChoices).find((k) => k.endsWith(`/${pageMacroDefinition}`));
+                      const choices = transformChoices(inputChoices, false, key);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
                       }
@@ -267,12 +329,23 @@ export function getAggregationPathPrompt(
  *
  * @param obj - object to be converted to choices
  * @param sort - apply alphabetical sort(default is "true")
+ * @param defaultKey - default key to be checked in choices
  * @returns the list of choices.
  */
-export function transformChoices(obj: Record<string, string> | string[], sort = true): PromptListChoices {
+export function transformChoices(
+    obj: Record<string, string> | string[],
+    sort = true,
+    defaultKey?: string
+): PromptListChoices {
     let choices: PromptListChoices = [];
     if (!Array.isArray(obj)) {
-        choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+        choices = Object.entries(obj).map(([key, value]) => {
+            // Add checked if value matches defaultKey example: `/mvc:View/macro:Page/`
+            if (key === defaultKey) {
+                return { name: key, value, checked: true };
+            }
+            return { name: key, value };
+        });
         if (sort) {
             choices = (choices as { name: string; value: string }[]).sort((a, b) => a.name.localeCompare(b.name));
         }
@@ -339,8 +412,8 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
         choices: [
-            { name: t('bindingContextType.option.relative') as string, value: 'relative' },
-            { name: t('bindingContextType.option.absolute') as string, value: 'absolute' }
+            { name: t('bindingContextType.option.absolute') as string, value: 'absolute' },
+            { name: t('bindingContextType.option.relative') as string, value: 'relative' }
         ],
         guiOptions: {
             ...guiOptions,

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`avt metadata conversion (CDS) bound and unbound actions and functions 1`] = `
 Object {
@@ -57,26 +57,6 @@ Object {
     },
     Object {
       "_type": "Action",
-      "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)",
-      "isBound": false,
-      "isFunction": false,
-      "name": "IncidentService.ReassignIncident(IncidentService.Incidents)",
-      "parameters": Array [
-        Object {
-          "_type": "ActionParameter",
-          "annotations": Object {},
-          "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)/incident",
-          "isCollection": false,
-          "name": "incident",
-          "type": "IncidentService.Incidents",
-        },
-      ],
-      "returnCollection": false,
-      "returnType": "Edm.Boolean",
-      "sourceType": "",
-    },
-    Object {
-      "_type": "Action",
       "fullyQualifiedName": "IncidentService.getIncidentCount(IncidentService.Incidents)",
       "isBound": false,
       "isFunction": true,
@@ -93,6 +73,26 @@ Object {
       ],
       "returnCollection": false,
       "returnType": "Edm.Int32",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.ReassignIncident(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)/incident",
+          "isCollection": false,
+          "name": "incident",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnCollection": false,
+      "returnType": "Edm.Boolean",
       "sourceType": "",
     },
     Object {
@@ -1225,7 +1225,14 @@ Object {
           "isCollection": false,
           "name": "category",
           "partner": "",
-          "referentialConstraint": Array [],
+          "referentialConstraint": Array [
+            Object {
+              "sourceProperty": "category_code",
+              "sourceTypeName": "IncidentService.Incidents",
+              "targetProperty": "code",
+              "targetTypeName": "IncidentService.Category",
+            },
+          ],
           "targetTypeName": "IncidentService.Category",
         },
       ],
@@ -1611,7 +1618,14 @@ Object {
           "isCollection": false,
           "name": "category",
           "partner": "",
-          "referentialConstraint": Array [],
+          "referentialConstraint": Array [
+            Object {
+              "sourceProperty": "category_code",
+              "sourceTypeName": "IncidentService.Incidents",
+              "targetProperty": "code",
+              "targetTypeName": "IncidentService.Category",
+            },
+          ],
           "targetTypeName": "IncidentService.Category",
         },
       ],

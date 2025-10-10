@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`fiori annotation service delete annotation all annotations CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
@@ -2684,6 +2684,261 @@ Actions: []
 ActionImports: []"
 `;
 
+exports[`fiori annotation service read cds flattened annotations with collection 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 54,
+                "line": 4,
+              },
+              "start": Object {
+                "character": 28,
+                "line": 4,
+              },
+            },
+            "term": "com.sap.vocabularies.UI.v1.Criticality",
+            "value": Object {
+              "EnumMember": "com.sap.vocabularies.UI.v1.CriticalityType/Critical",
+              "type": "EnumMember",
+            },
+          },
+        ],
+        "collection": Array [
+          Object {
+            "propertyValues": Array [
+              Object {
+                "name": "Value",
+                "value": Object {
+                  "String": "Id",
+                  "type": "String",
+                },
+              },
+            ],
+            "propertyValuesOrigins": Array [
+              Object {
+                "end": Object {
+                  "character": 43,
+                  "line": 5,
+                },
+                "start": Object {
+                  "character": 32,
+                  "line": 5,
+                },
+              },
+            ],
+            "type": "com.sap.vocabularies.UI.v1.DataField",
+          },
+        ],
+        "collectionOrigins": Array [
+          Object {
+            "end": Object {
+              "character": 45,
+              "line": 5,
+            },
+            "start": Object {
+              "character": 30,
+              "line": 5,
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 54,
+            "line": 4,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 4,
+          },
+        },
+        "term": "com.sap.vocabularies.UI.v1.LineItem",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 54,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 4,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 46,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 5,
+        },
+      },
+    ],
+    "target": "IncidentService.Individual",
+  },
+]
+`;
+
+exports[`fiori annotation service read cds flattened annotations with record 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 51,
+                "line": 4,
+              },
+              "start": Object {
+                "character": 30,
+                "line": 4,
+              },
+            },
+            "term": "Org.OData.Validation.V1.Exclusive",
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 17,
+            "line": 8,
+          },
+          "start": Object {
+            "character": 16,
+            "line": 5,
+          },
+        },
+        "record": Object {
+          "propertyValues": Array [
+            Object {
+              "name": "Data",
+              "value": Object {
+                "Collection": Array [],
+                "collectionOrigins": Array [],
+                "type": "Collection",
+              },
+            },
+          ],
+          "propertyValuesOrigins": Array [
+            Object {
+              "end": Object {
+                "character": 29,
+                "line": 7,
+              },
+              "start": Object {
+                "character": 21,
+                "line": 7,
+              },
+            },
+          ],
+          "type": "com.sap.vocabularies.UI.v1.FieldGroupType",
+        },
+        "term": "com.sap.vocabularies.UI.v1.FieldGroup",
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 51,
+          "line": 4,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 4,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 17,
+          "line": 8,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 5,
+        },
+      },
+    ],
+    "target": "IncidentService.Individual",
+  },
+]
+`;
+
+exports[`fiori annotation service read cds flattened annotations with value 1`] = `
+Array [
+  Object {
+    "annotations": Array [
+      Object {
+        "annotations": Array [
+          Object {
+            "origin": Object {
+              "end": Object {
+                "character": 62,
+                "line": 5,
+              },
+              "start": Object {
+                "character": 32,
+                "line": 5,
+              },
+            },
+            "term": "com.sap.vocabularies.UI.v1.TextArrangement",
+            "value": Object {
+              "EnumMember": "com.sap.vocabularies.UI.v1.TextArrangementType/TextLast",
+              "type": "EnumMember",
+            },
+          },
+        ],
+        "origin": Object {
+          "end": Object {
+            "character": 55,
+            "line": 6,
+          },
+          "start": Object {
+            "character": 20,
+            "line": 6,
+          },
+        },
+        "term": "com.sap.vocabularies.Common.v1.Text",
+        "value": Object {
+          "Path": "id",
+          "type": "Path",
+        },
+      },
+    ],
+    "origins": Array [
+      Object {
+        "end": Object {
+          "character": 62,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 5,
+        },
+      },
+      Object {
+        "end": Object {
+          "character": 55,
+          "line": 6,
+        },
+        "start": Object {
+          "character": 20,
+          "line": 6,
+        },
+      },
+    ],
+    "target": "IncidentService.Individual/id",
+  },
+]
+`;
+
 exports[`fiori annotation service read xml missing metadata alias 1`] = `
 "webapp/annotations/annotation.xml:
     IncidentService.Incidents [(10,16)..(12,29),(13,16)..(15,29)]:
@@ -4174,6 +4429,28 @@ exports[`serializeTarget cds cap-start 1`] = `
     ]
 );
 "
+`;
+
+exports[`serializeTarget cds update flattened annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: test2
+            );
+            "
+`;
+
+exports[`serializeTarget cds update flattened annotation with changing value type 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: 'test2'
+            );
+            "
 `;
 
 exports[`serializeTarget xml move section case 1 1`] = `

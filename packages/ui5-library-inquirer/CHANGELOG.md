@@ -1,5 +1,124 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.5.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/ui5-info@0.12.4
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.23
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.5.0
+
+### Minor Changes
+
+-   0a9af29: Resolve UI5 versions against npm registry and @sapui5/distribution-metadata to ensure dropdown options match published packages.
+
+## 0.4.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.45
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.4.46
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.21
+-   @sap-ux/inquirer-common@0.7.43
+
+## 0.4.45
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.20
+-   @sap-ux/inquirer-common@0.7.42
+
+## 0.4.44
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.19
+-   @sap-ux/inquirer-common@0.7.41
+
+## 0.4.43
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.40
+
+## 0.4.42
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.39
+
+## 0.4.41
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.38
+
+## 0.4.40
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/ui5-info@0.12.2
+    -   @sap-ux/project-input-validator@0.6.18
+
+## 0.4.39
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.4.38
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.4.37
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.4.36
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
 ## 0.4.35
 
 ### Patch Changes

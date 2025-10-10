@@ -98,12 +98,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
@@ -149,7 +149,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
@@ -337,12 +336,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
@@ -360,7 +359,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
@@ -446,7 +444,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select an aggregation path",
@@ -470,12 +467,22 @@ Object {
     Object {
       "guiOptions": Object {
         "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Page.",
+          "type": "XHED",
+        },
       },
       "message": "Page Title",
       "name": "buildingBlockData.title",
       "type": "input",
     },
     Object {
+      "guiOptions": Object {
+        "translationProperties": Object {
+          "annotation": "Description of the Page.",
+          "type": "YDES",
+        },
+      },
       "message": "Page Description",
       "name": "buildingBlockData.description",
       "type": "input",
@@ -550,12 +557,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
@@ -601,7 +608,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,
@@ -1115,12 +1121,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
@@ -1166,7 +1172,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
@@ -1576,12 +1581,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
@@ -1599,7 +1604,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
@@ -1685,7 +1689,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select an aggregation path",
@@ -1709,15 +1712,122 @@ Object {
     Object {
       "guiOptions": Object {
         "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Page.",
+          "type": "XHED",
+        },
       },
       "message": "Page Title",
       "name": "buildingBlockData.title",
       "type": "input",
     },
     Object {
+      "guiOptions": Object {
+        "translationProperties": Object {
+          "annotation": "Description of the Page.",
+          "type": "YDES",
+        },
+      },
       "message": "Page Description",
       "name": "buildingBlockData.description",
       "type": "input",
+    },
+  ],
+}
+`;
+
+exports[`Prompts getRichTextEditorBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "rich-text-editor",
+    },
+  },
+  "questions": Array [
+    Object {
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+      ],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.entitySet",
+        ],
+        "mandatory": true,
+        "selectType": "static",
+      },
+      "message": "Binding Context",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "default": undefined,
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.targetProperty",
+        ],
+        "mandatory": true,
+        "placeholder": "Select an entity",
+        "selectType": "dynamic",
+      },
+      "message": "Entity",
+      "name": "buildingBlockData.metaPath.entitySet",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select a target property",
+        "selectType": "dynamic",
+      },
+      "message": "Target Property",
+      "name": "buildingBlockData.targetProperty",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
     },
   ],
 }
@@ -1789,12 +1899,12 @@ Object {
     Object {
       "choices": Array [
         Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-        Object {
           "name": "Absolute",
           "value": "absolute",
+        },
+        Object {
+          "name": "Relative",
+          "value": "relative",
         },
       ],
       "default": "absolute",
@@ -1840,7 +1950,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,

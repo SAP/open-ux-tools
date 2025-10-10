@@ -1,5 +1,5 @@
-import { readdirSync, statSync, promises } from 'fs';
-import { join, dirname, normalize } from 'path';
+import { readdirSync, statSync, promises } from 'node:fs';
+import { join, dirname, normalize } from 'node:path';
 import { deserialize } from '../helper/deserialize-ast';
 import type { FileExtension } from './types';
 const { readFile } = promises;

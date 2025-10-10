@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
 import type { CustomTableColumn } from '../../src/column/types';
@@ -279,7 +279,7 @@ describe('CustomAction', () => {
                     },
                     undefined
                 ],
-                ['absolute position', 196, 8]
+                ['absolute position', 190, 8]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
                 async (_desc: string, position: number | FileContentPosition, appendLines?: number) => {

@@ -1,6 +1,6 @@
 import { latestVersionString } from '@sap-ux/ui5-info';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
 import {
@@ -10,6 +10,7 @@ import {
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion
 } from '../types';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
 /**
  * Tests if a directory with the specified `appName` exists at the path specified by `targetPath`.
@@ -64,15 +65,16 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
  *
  * @param prompts Keyed prompts object containing all possible prompts
  * @param promptOptions prompt options
- * @param isCapProject if we are generating into a CAP project certain prompts may be removed
+ * @param capCdsInfo CDS UI5 plugin information
  * @returns the updated questions
  */
 export function hidePrompts(
     prompts: Record<promptNames, UI5ApplicationQuestion>,
     promptOptions?: UI5ApplicationPromptOptions,
-    isCapProject = false
+    capCdsInfo?: CdsUi5PluginInfo
 ): UI5ApplicationQuestion[] {
     const questions: UI5ApplicationQuestion[] = [];
+    const isCapProject = !!capCdsInfo;
     if (promptOptions ?? isCapProject) {
         Object.keys(prompts).forEach((key) => {
             const promptKey = key as keyof typeof promptNames;
@@ -84,7 +86,16 @@ export function hidePrompts(
             if (
                 !hidePrompt &&
                 // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects
-                !([promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) && isCapProject)
+                !(
+                    [promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) &&
+                    isCapProject
+                ) &&
+                // `enableTypeScript` and `enableVirtualEndpoints` should not be shown for certain CAP projects i.e CAP Java
+                !(
+                    [promptNames.enableTypeScript, promptNames.enableVirtualEndpoints].includes(
+                        promptNames[promptKey]
+                    ) && (capCdsInfo ? !capCdsInfo?.hasMinCdsVersion : false)
+                )
             ) {
                 questions.push(prompts[promptKey]);
             }
