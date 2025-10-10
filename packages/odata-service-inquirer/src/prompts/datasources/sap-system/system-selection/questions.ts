@@ -209,23 +209,32 @@ export async function getSystemConnectionQuestions(
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                // Backend systems credentials may need to be updated
-                if (
-                    selectedSystem.type === 'backendSystem' &&
-                    connectionValidator.systemAuthType === 'basic' &&
-                    (await connectionValidator.isAuthRequired())
-                ) {
-                    return {
-                        message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
-                        severity: Severity.information
-                    };
+                let message;
+                // Check for stored credentials or authentication failure message if a backend system is selected
+                if (selectedSystem.type === 'backendSystem' && connectionValidator.systemAuthType === 'basic') {
+                    const backend = selectedSystem.system as BackendSystem;
+                    const authRequired = await connectionValidator.isAuthRequired();
+                    const missingCredentials = !backend.username || !backend.password;
+
+                    if (missingCredentials) {
+                        message = {
+                            message: t('systemSelection.noStoredCredentials'),
+                            severity: Severity.information
+                        };
+                    } else if (authRequired) {
+                        message = {
+                            message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
+                            severity: Severity.information
+                        };
+                    }
                 }
                 if (connectionValidator.ignoreCertError) {
-                    return {
+                    message = {
                         message: t('warnings.certErrorIgnoredByNodeSetting'),
                         severity: Severity.warning
                     };
                 }
+                return message ? message : undefined;
             }
         } as ListQuestion<SystemSelectionAnswers>
     ];

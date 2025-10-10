@@ -105,7 +105,8 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials.",
+            "noStoredCredentials": "This stored system has no credentials. Please provide them. They will not be saved with system details."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",

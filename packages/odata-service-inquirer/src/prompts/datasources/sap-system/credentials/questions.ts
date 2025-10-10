@@ -150,13 +150,20 @@ function updatePromptStateWithConnectedSystem(
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {
         const backendSystem = selectedSystem.system as BackendSystem;
+
+        // Check if this is a system without saved credentials
+        const hadNoCredentials = !backendSystem.username && !backendSystem.password;
+
         // Have the credentials changed..
         if (backendSystem.username !== username || backendSystem.password !== password) {
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
                 password,
                 userDisplayName: username,
-                newOrUpdated: true
+                // Only set newOrUpdated to true if the system had existing credentials (auth error scenario)
+                // For systems without credentials, we set temporaryCredentials flag instead
+                newOrUpdated: !hadNoCredentials,
+                temporaryCredentials: hadNoCredentials
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.

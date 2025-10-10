@@ -113,8 +113,9 @@ export interface ConnectedSystem {
     /**
      * The persistable backend system representation of the connected service provider
      * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
+     * `temporaryCredentials` is set to true when credentials are provided for a system without saved credentials and should not be saved.
      */
-    backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+    backendSystem?: BackendSystem & { newOrUpdated?: boolean; temporaryCredentials?: boolean };
 
     /**
      * The destination information for the connected system
