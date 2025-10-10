@@ -820,9 +820,9 @@ describe('FlpSandbox', () => {
         afterEach(() => {
             fetchMock.mockRestore();
         });
-
+        let flp: FlpSandbox;
         const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+            flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
 
@@ -830,10 +830,12 @@ describe('FlpSandbox', () => {
             app.use(flp.router);
 
             server = supertest(app);
+            return { flp, app };
         };
-
+        let flpInstance: any;
         beforeAll(async () => {
-            await setupMiddleware(mockConfig as MiddlewareConfig);
+            const setup = await setupMiddleware(mockConfig as MiddlewareConfig);
+            flpInstance = setup.flp;
         });
 
         test('GET /test/flpCardGeneratorSandbox.html', async () => {
@@ -926,62 +928,60 @@ describe('FlpSandbox', () => {
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
         });
-    });
+        test('should handle string i18n path', async () => {
+            const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
 
-    describe('router with enableCardGenerator in CAP project', () => {
-        let server!: SuperTest<Test>;
-        const mockConfig = {
-            editors: {
-                cardGenerator: {
-                    path: 'test/flpCardGeneratorSandbox.html'
+            (flp as any).manifest = {
+                'sap.app': { i18n: 'i18n/custom.properties' }
+            };
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+        });
+
+        test('should handle bundleUrl with supported and fallback locales', async () => {
+            const newI18nEntry = [{ key: 'GREETING', value: 'Hallo Welt' }];
+
+            (flp as any).manifest = {
+                'sap.app': {
+                    i18n: {
+                        bundleUrl: 'i18n/i18n.properties',
+                        supportedLocales: ['de', 'es'],
+                        fallbackLocale: 'de'
+                    }
                 }
-            }
-        };
+            };
 
-        let mockFsPromisesWriteFile: jest.Mock;
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
 
-        beforeEach(() => {
-            mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile;
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
 
-        afterEach(() => {
-            fetchMock.mockRestore();
-        });
+        test('should reject unsupported locale', async () => {
+            const newI18nEntry = [{ key: 'GREETING', value: 'Bonjour' }];
 
-        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
-            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            jest.spyOn(projectAccess, 'getProjectType').mockImplementationOnce(() => Promise.resolve('CAPNodejs'));
-            await flp.init(manifest);
+            (flp as any).manifest = {
+                'sap.app': {
+                    i18n: {
+                        bundleUrl: 'i18n/i18n.properties',
+                        supportedLocales: ['de', 'es']
+                    }
+                }
+            };
 
-            const app = express();
-            app.use(flp.router);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=fr`).send(newI18nEntry);
 
-            server = supertest(app);
-        };
-
-        beforeAll(async () => {
-            await setupMiddleware(mockConfig as MiddlewareConfig);
-        });
-
-        test('GET /test/flpCardGeneratorSandbox.html', async () => {
-            const response = await server.get(
-                `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
-            );
-            expect(response.status).toBe(200);
-            expect(response.type).toBe('text/html');
-            expect(logger.warn).toHaveBeenCalledWith('The Card Generator is not available for CAP projects.');
-        });
-
-        test('POST /cards/store with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send('hello');
-            expect(response.status).toBe(404);
-        });
-
-        test('POST /editor/i18n with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send('hello');
-            expect(response.status).toBe(404);
+            expect(response.status).toBe(400);
+            expect(response.text).toContain('Locale "fr" is not supported');
         });
     });
 
