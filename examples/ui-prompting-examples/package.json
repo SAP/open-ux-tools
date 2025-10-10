@@ -22,7 +22,7 @@
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
-        "react-markdown": "5.0.2",
+        "react-markdown": "5.0.3",
         "sanitize-html": "2.12.1"
     },
     "peerDependencies": {
@@ -45,8 +45,8 @@
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/react": "16.14.55",
-        "@types/react-dom": "16.9.24",
+        "@types/react": "16.14.67",
+        "@types/react-dom": "16.9.25",
         "@types/sanitize-html": "2.11.0",
         "@types/uuid": "3.4.11",
         "@types/ws": "8.5.12",
