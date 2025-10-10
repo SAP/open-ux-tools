@@ -1,5 +1,18 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.119
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.3.118
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.7.18
+-   @sap-ux/odata-service-inquirer@2.8.9
+
 ## 0.3.117
 
 ### Patch Changes

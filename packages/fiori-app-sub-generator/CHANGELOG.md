@@ -1,5 +1,21 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.29
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+-   Updated dependencies [e015869]
+    -   @sap-ux/ui5-application-inquirer@0.15.15
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.66
+-   @sap-ux/fiori-elements-writer@2.7.18
+-   @sap-ux/odata-service-inquirer@2.8.9
+
 ## 0.7.27
 
 ### Patch Changes

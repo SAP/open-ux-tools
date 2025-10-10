@@ -4,6 +4,17 @@ import { join } from 'node:path';
 const mockFetch = jest.fn();
 const mockSpawn = jest.fn();
 
+const mockLogger = {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn()
+};
+
+jest.mock('@sap-ux/logger', () => ({
+    ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
+}));
+
 jest.mock('node-fetch', () => ({
     default: mockFetch
 }));
@@ -1248,7 +1259,7 @@ describe('MultiSourceDocumentationBuilder', () => {
     describe('processSource with parsing errors in batch', () => {
         it('should log parsing errors and continue with remaining documents', async () => {
             const builder = new MultiSourceDocumentationBuilder();
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
 
             const mockApiData = {
                 symbols: [
@@ -1286,13 +1297,11 @@ describe('MultiSourceDocumentationBuilder', () => {
             const result = builder['sourceResults'].get('test');
             expect(result?.success).toBe(true);
             expect(result?.message).toContain('failed');
-
-            consoleWarnSpy.mockRestore();
         });
 
         it('should handle non-Error rejection reasons in batch processing', async () => {
             const builder = new MultiSourceDocumentationBuilder();
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
 
             const mockApiData = {
                 symbols: [
@@ -1331,13 +1340,11 @@ describe('MultiSourceDocumentationBuilder', () => {
             expect(result).toBeDefined();
             // When there's an error, at least one document should have been added or failed
             expect(result?.documentsAdded).toBeGreaterThanOrEqual(0);
-
-            consoleWarnSpy.mockRestore();
         });
 
         it('should use file.name when file.path is missing in error logging', async () => {
             const builder = new MultiSourceDocumentationBuilder();
-            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+            mockLogger.warn.mockClear();
 
             const mockApiData = {
                 symbols: [{ name: 'Test1', kind: 'class' }]
@@ -1374,8 +1381,7 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             await builder.processSource(source);
 
-            expect(consoleWarnSpy).toHaveBeenCalled();
-            consoleWarnSpy.mockRestore();
+            expect(mockLogger.warn).toHaveBeenCalled();
         });
     });
 
