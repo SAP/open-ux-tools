@@ -100,7 +100,6 @@ export async function runPostGenerationTasks(
         service: {
             backendSystem?: BackendSystem & {
                 newOrUpdated?: boolean;
-                temporaryCredentials?: boolean;
             };
             capService?: CapService;
             sapClient?: string;
@@ -142,12 +141,7 @@ export async function runPostGenerationTasks(
     // Persist backend system connection information
     const hostEnv = getHostEnvironment();
 
-    if (
-        service.backendSystem &&
-        hostEnv !== hostEnvironment.bas &&
-        service.backendSystem.newOrUpdated &&
-        !service.backendSystem.temporaryCredentials
-    ) {
+    if (service.backendSystem && hostEnv !== hostEnvironment.bas && service.backendSystem.newOrUpdated) {
         const storeService = await getService<BackendSystem, BackendSystemKey>({
             logger: logger,
             entityName: 'system'
@@ -155,7 +149,7 @@ export async function runPostGenerationTasks(
         // No need to await, we cannot recover anyway
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         storeService.write(service.backendSystem);
-    } else if (service.backendSystem?.temporaryCredentials) {
+    } else if (service.backendSystem?.newOrUpdated === false) {
         logger.info(t('logMessages.noCredentialsBackendSystem', { system: service.backendSystem.name }));
     }
 

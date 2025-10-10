@@ -211,9 +211,12 @@ export async function getSystemConnectionQuestions(
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
                 let message;
                 // Check for stored credentials or authentication failure message if a backend system is selected
-                if (selectedSystem.type === 'backendSystem' && connectionValidator.systemAuthType === 'basic') {
+                if (
+                    selectedSystem.type === 'backendSystem' &&
+                    connectionValidator.systemAuthType === 'basic' &&
+                    (await connectionValidator.isAuthRequired())
+                ) {
                     const backend = selectedSystem.system as BackendSystem;
-                    const authRequired = await connectionValidator.isAuthRequired();
                     const missingCredentials = !backend.username || !backend.password;
 
                     if (missingCredentials) {
@@ -221,7 +224,7 @@ export async function getSystemConnectionQuestions(
                             message: t('prompts.systemSelection.noStoredCredentials'),
                             severity: Severity.information
                         };
-                    } else if (authRequired) {
+                    } else {
                         message = {
                             message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
                             severity: Severity.information
