@@ -422,10 +422,10 @@ describe('Test entity helper functions', () => {
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
-        test('should prioritize recursive hierarchy over aggregate transformations in real metadata', () => {
+        test('should prioritize recursive hierarchy over partial aggregate transformations', () => {
             // Integration test using the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
-            // This entity has both recursive hierarchy and aggregate transformations
-            // Recursive hierarchy should take priority
+            // This entity has both recursive hierarchy and partial aggregate transformations (only 5 of 9)
+            // Recursive hierarchy should take priority over partial aggregate transformations
             const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
             const convertedMetadata = convert(parsedEdmx);
 
@@ -435,8 +435,51 @@ describe('Test entity helper functions', () => {
                 OdataVersion.v4,
                 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
             );
+            // Since the entity only has partial transformations (not all 9), recursive hierarchy takes priority
             expect(result.tableType).toBe('TreeTable');
             expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
+        test('should prioritize complete aggregate transformations over recursive hierarchy', () => {
+            // Test with mock metadata where entity has BOTH complete transformations AND recursive hierarchy
+            // Complete aggregate transformations should take highest priority
+            const mockMetadataWithBoth: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntityWithBoth',
+                        entityType: {
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {
+                                        'Transformations': [
+                                            'filter',
+                                            'identity',
+                                            'orderby',
+                                            'search',
+                                            'skip',
+                                            'top',
+                                            'groupby',
+                                            'aggregate',
+                                            'concat'
+                                        ]
+                                    }
+                                },
+                                'Hierarchy': {
+                                    'RecursiveHierarchy': {
+                                        NodeProperty: { $PropertyPath: 'NodeId' },
+                                        ParentNavigationProperty: { $NavigationPropertyPath: 'Parent' }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            const result = getDefaultTableType('lrop', mockMetadataWithBoth, OdataVersion.v4, 'TestEntityWithBoth');
+            // Complete aggregate transformations should take priority over recursive hierarchy
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
         });
     });
 });

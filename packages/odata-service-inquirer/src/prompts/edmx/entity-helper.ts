@@ -9,6 +9,7 @@ import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
     hasAggregateTransformationsForEntity,
+    hasCompleteAggregateTransformationsForEntity,
     hasRecursiveHierarchyForEntity
 } from '@sap-ux/inquirer-common';
 
@@ -261,6 +262,14 @@ export function getDefaultTableType(
     if (
         (templateType === 'lrop' || templateType === 'worklist') &&
         odataVersion === OdataVersion.v4 &&
+        hasCompleteAggregateTransformationsForEntity(metadata, mainEntitySetName)
+    ) {
+        // If the main entity type is annotated with Aggregation.ApplySupported containing all 9 transformations, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+        setAnalyticalTableDefault = true;
+    } else if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        odataVersion === OdataVersion.v4 &&
         hasRecursiveHierarchyForEntity(metadata, mainEntitySetName)
     ) {
         // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
@@ -270,7 +279,7 @@ export function getDefaultTableType(
         odataVersion === OdataVersion.v4 &&
         hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
     ) {
-        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
+        // For V4, if the selected entity has some aggregate transformations (but not all), use AnalyticalTable as default
         tableType = 'AnalyticalTable';
         setAnalyticalTableDefault = true;
     } else if (templateType === 'alp') {

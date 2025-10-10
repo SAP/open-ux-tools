@@ -11,6 +11,7 @@ import {
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
     hasAggregateTransformationsForEntity,
+    hasCompleteAggregateTransformationsForEntity,
     filterAggregateTransformations,
     convertEdmxToConvertedMetadata,
     hasRecursiveHierarchyForEntity
@@ -451,6 +452,153 @@ describe('helpers', () => {
 
         it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
             expect(hasAggregateTransformationsForEntity(metadata)).toBe(false);
+        });
+
+        it('hasCompleteAggregateTransformationsForEntity should return true for entities with all 9 required transformations', () => {
+            // Create mock metadata with complete transformations
+            const completeMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'CompleteEntity',
+                        entityTypeName: 'CompleteType',
+                        entityType: {
+                            name: 'CompleteType',
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {
+                                        'Transformations': [
+                                            'filter',
+                                            'identity',
+                                            'orderby',
+                                            'search',
+                                            'skip',
+                                            'top',
+                                            'groupby',
+                                            'aggregate',
+                                            'concat'
+                                        ]
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasCompleteAggregateTransformationsForEntity(completeMetadata, 'CompleteEntity')).toBe(true);
+        });
+
+        it('hasCompleteAggregateTransformationsForEntity should return false for entities with partial transformations', () => {
+            // Create mock metadata with only some transformations (missing identity, skip, top, groupby, aggregate, concat)
+            const partialMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'PartialEntity',
+                        entityTypeName: 'PartialType',
+                        entityType: {
+                            name: 'PartialType',
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {
+                                        'Transformations': ['filter', 'orderby', 'search']
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasCompleteAggregateTransformationsForEntity(partialMetadata, 'PartialEntity')).toBe(false);
+        });
+
+        it('hasCompleteAggregateTransformationsForEntity should return false for entities without any transformations', () => {
+            const noTransformMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'NoTransformEntity',
+                        entityTypeName: 'NoTransformType',
+                        entityType: {
+                            name: 'NoTransformType',
+                            annotations: {},
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasCompleteAggregateTransformationsForEntity(noTransformMetadata, 'NoTransformEntity')).toBe(false);
+        });
+
+        it('hasCompleteAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
+            expect(hasCompleteAggregateTransformationsForEntity(metadata)).toBe(false);
+            expect(hasCompleteAggregateTransformationsForEntity(metadata, undefined)).toBe(false);
+        });
+
+        it('hasCompleteAggregateTransformationsForEntity should return false for non-existent entity sets', () => {
+            expect(hasCompleteAggregateTransformationsForEntity(metadata, 'NonExistentEntity')).toBe(false);
+        });
+
+        it('hasCompleteAggregateTransformationsForEntity should handle transformations in entity set annotations', () => {
+            // Test with transformations directly on entity set (not just entity type)
+            const entitySetMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'EntitySetTransforms',
+                        entityTypeName: 'EntitySetType',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    'Transformations': [
+                                        'filter',
+                                        'identity',
+                                        'orderby',
+                                        'search',
+                                        'skip',
+                                        'top',
+                                        'groupby',
+                                        'aggregate',
+                                        'concat'
+                                    ]
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'EntitySetType',
+                            annotations: {},
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasCompleteAggregateTransformationsForEntity(entitySetMetadata, 'EntitySetTransforms')).toBe(true);
         });
 
         it('should throw if EDMX is not valid XML', () => {
