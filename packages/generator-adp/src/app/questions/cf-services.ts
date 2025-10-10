@@ -1,3 +1,5 @@
+import path from 'path';
+
 import type {
     CfServicesAnswers,
     CFServicesQuestion,
@@ -18,7 +20,6 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getMtaProjectName,
     getBusinessServiceKeys
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -177,7 +178,7 @@ export class CFServicesPrompter {
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = getModuleNames(mtaProjectPath);
-                const mtaProjectName = getMtaProjectName(mtaProjectPath);
+                const mtaProjectName = path.basename(mtaProjectPath);
                 const hasRouter = hasApprouter(mtaProjectName, modules);
                 if (hasRouter) {
                     this.approuter = getApprouterType(mtaProjectPath);

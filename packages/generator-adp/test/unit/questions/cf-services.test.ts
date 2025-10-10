@@ -9,7 +9,6 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getMtaProjectName,
     getBusinessServiceKeys,
     cfServicesPromptNames
 } from '@sap-ux/adp-tooling';
@@ -51,7 +50,6 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     downloadAppContent: jest.fn(),
     validateSmartTemplateApplication: jest.fn(),
     validateODataEndpoints: jest.fn(),
-    getMtaProjectName: jest.fn(),
     getBusinessServiceKeys: jest.fn()
 }));
 
@@ -74,7 +72,6 @@ const mockValidateSmartTemplateApplication = validateSmartTemplateApplication as
     typeof validateSmartTemplateApplication
 >;
 const mockValidateODataEndpoints = validateODataEndpoints as jest.MockedFunction<typeof validateODataEndpoints>;
-const mockGetMtaProjectName = getMtaProjectName as jest.MockedFunction<typeof getMtaProjectName>;
 const mockGetBusinessServiceKeys = getBusinessServiceKeys as jest.MockedFunction<typeof getBusinessServiceKeys>;
 
 const mockCfConfig: CfConfig = {
@@ -228,7 +225,6 @@ describe('CFServicesPrompter', () => {
     describe('getAppRouterPrompt', () => {
         beforeEach(() => {
             mockGetModuleNames.mockReturnValue(['module1', 'module2']);
-            mockGetMtaProjectName.mockReturnValue('test-project');
         });
 
         test('should create approuter prompt', () => {
