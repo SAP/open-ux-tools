@@ -921,7 +921,6 @@ describe('FlpSandbox', () => {
                 }
             };
 
-
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
             const webappPath = await getWebappPath(path.resolve());
             const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
@@ -942,7 +941,6 @@ describe('FlpSandbox', () => {
                     }
                 }
             };
-
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=fr`).send(newI18nEntry);
 
