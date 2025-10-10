@@ -6,7 +6,7 @@ import {
     handleAppsNotInWorkspace
 } from '../../src/debug-config/helpers';
 import type { DebugOptions } from '../../src/types';
-import path from 'path';
+import path from 'node:path';
 
 // Mock the helpers
 jest.mock('../../src/debug-config/helpers', () => ({

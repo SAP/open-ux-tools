@@ -40,7 +40,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felrop2-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -3074,7 +3074,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -3113,7 +3113,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -3675,7 +3675,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felrop2-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -6709,7 +6709,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -6748,7 +6748,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -7328,7 +7328,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropv2ts-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -7373,7 +7373,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -10449,7 +10449,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -10490,7 +10490,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -10823,7 +10823,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felrop1-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -14515,7 +14515,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felrop194-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -19452,7 +19452,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/integration/opaTests.qunit.html\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropv4addtests-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -25109,7 +25109,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/integration/opaTests.qunit.html\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropv4annotationreuselib-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -26488,7 +26488,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felropui5-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -30180,7 +30180,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felropui5-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -33873,7 +33873,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#felrop3-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -33889,7 +33889,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -36907,7 +36907,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -36946,7 +36946,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -37526,7 +37526,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -40568,7 +40568,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropV2settoolsId-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -43603,7 +43603,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -43642,7 +43642,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -44204,7 +44204,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropV2settoolsIdonly-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -47239,7 +47239,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -47278,7 +47278,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -47858,7 +47858,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropV2tsui51108-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -50979,7 +50979,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -51020,7 +51020,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -51360,7 +51360,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropV2tsui51111-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -54481,7 +54481,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -54522,7 +54522,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -54862,7 +54862,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"/index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropV2tsui51113-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -57983,7 +57983,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -58024,7 +58024,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -58360,7 +58360,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.84.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -58805,7 +58805,7 @@ archive.zip
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv2ts-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#lropv2ts-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -58821,7 +58821,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -61801,7 +61801,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -61840,7 +61840,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {

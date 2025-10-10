@@ -1,5 +1,131 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+
+## 1.6.27
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/fiori-generator-shared@0.13.22
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/inquirer-common@0.7.49
+
+## 1.6.26
+
+### Patch Changes
+
+-   Updated dependencies [b268021]
+    -   @sap-ux/nodejs-utils@0.2.7
+    -   @sap-ux/fiori-generator-shared@0.13.21
+    -   @sap-ux/inquirer-common@0.7.48
+
+## 1.6.25
+
+### Patch Changes
+
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/nodejs-utils@0.2.6
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
+## 1.6.24
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/fiori-generator-shared@0.13.19
+    -   @sap-ux/system-access@0.6.18
+    -   @sap-ux/inquirer-common@0.7.46
+
+## 1.6.23
+
+### Patch Changes
+
+-   fe5fd09: Show asterisk for the Transport Request textbox.
+
+## 1.6.22
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/inquirer-common@0.7.45
+    -   @sap-ux/nodejs-utils@0.2.5
+    -   @sap-ux/system-access@0.6.18
+
+## 1.6.21
+
+### Patch Changes
+
+-   bfdbaca: fix: Deploy Config generator should not validate the package for OnPremise systems for ADP
+
+## 1.6.20
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-config@0.29.5
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/fiori-generator-shared@0.13.17
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/nodejs-utils@0.2.4
+
+## 1.6.19
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.16
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.43
+
+## 1.6.18
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/fiori-generator-shared@0.13.15
+-   @sap-ux/system-access@0.6.16
+-   @sap-ux/inquirer-common@0.7.42
+
+## 1.6.17
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+    -   @sap-ux/axios-extension@1.22.7
+    -   @sap-ux/fiori-generator-shared@0.13.14
+    -   @sap-ux/system-access@0.6.16
+    -   @sap-ux/inquirer-common@0.7.41
+
+## 1.6.16
+
+### Patch Changes
+
+-   Updated dependencies [3c094af]
+    -   @sap-ux/fiori-generator-shared@0.13.13
+    -   @sap-ux/inquirer-common@0.7.40
+
 ## 1.6.15
 
 ### Patch Changes

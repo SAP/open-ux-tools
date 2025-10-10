@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { handleCreateFioriCommand } from '../../../src/cli';
 import * as loggerMock from '../../../src/tracing/logger';

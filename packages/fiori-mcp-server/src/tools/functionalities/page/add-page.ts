@@ -1,15 +1,22 @@
 import type {
-    ExecuteFunctionalitiesInput,
+    ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
 } from '../../../types';
-import { Application, ADD_PAGE_FUNCTIONALITY } from './application';
-import { resolveApplication } from '../../utils';
+import { Application } from './application';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
 import { ADD_PAGE } from '../../../constant';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { buildPageCreationSchema } from './schema';
+
+export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
+    functionalityId: ADD_PAGE,
+    name: 'Add new page to application by updating manifest.json',
+    description: 'Create new fiori elements page like ListReport, ObjectPage, CustomPage',
+    parameters: convertToSchema(buildPageCreationSchema({}))
+};
 
 /**
  * Retrieves the details of the Add Page functionality.
@@ -22,10 +29,10 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
-            functionalityId: ADD_PAGE,
+            ...ADD_PAGE_FUNCTIONALITY,
+            parameters: {},
             name: 'Invalid Project Root or Application Path',
-            description: `To add a new page, provide a valid project root or application path. "${appPath}" is not valid`,
-            parameters: []
+            description: `To add a new page, provide a valid project root or application path. "${appPath}" is not valid`
         };
     }
     const { appId, applicationAccess } = appDetails;
@@ -33,7 +40,12 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appData = await ftfsFileIo.readApp();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
-    return application.getCreationOptions();
+
+    const navigationOptions = await application.getCreationNavigationOptions();
+    return {
+        ...ADD_PAGE_FUNCTIONALITY,
+        parameters: convertToSchema(buildPageCreationSchema(navigationOptions.navigations, navigationOptions.entities))
+    };
 }
 
 /**
@@ -42,16 +54,8 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
  * @param params - The input parameters for executing the functionality.
  * @returns A promise that resolves to the execution output.
  */
-async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
+async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
-    const pageType = isValidPageTypeV4(parameters.pageType) ? parameters.pageType : undefined;
-    const parentPage = typeof parameters.parentPage === 'string' ? parameters.parentPage : undefined;
-    const entitySet = typeof parameters.entitySet === 'string' ? parameters.entitySet : undefined;
-    const pageNavigation = typeof parameters.pageNavigation === 'string' ? parameters.pageNavigation : undefined;
-    const viewName = typeof parameters.pageViewName === 'string' ? parameters.pageViewName : 'CustomView';
-    if (!pageType) {
-        throw new Error('Missing or invalid parameter "pageType"');
-    }
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
@@ -69,6 +73,17 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     const appData = await ftfsFileIo.readApp();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
+    // Parse page creation parameters
+    const navigationOptions = await application.getCreationNavigationOptions();
+    const schema = buildPageCreationSchema(navigationOptions.navigations, navigationOptions.entities);
+    const addPageParameters = validateWithSchema(schema, parameters);
+    const pageType = addPageParameters.pageType;
+    const parentPage = 'parentPage' in addPageParameters ? addPageParameters.parentPage : undefined;
+    const entitySet = 'entitySet' in addPageParameters ? addPageParameters.entitySet?.toString() : undefined;
+    const pageNavigation =
+        'pageNavigation' in addPageParameters ? addPageParameters.pageNavigation.toString() : undefined;
+    const viewName =
+        'pageViewName' in addPageParameters && addPageParameters.pageViewName ? addPageParameters.pageViewName : '';
     return application.createPage({
         pageType: pageType,
         parent: parentPage,
@@ -78,24 +93,7 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     });
 }
 
-/**
- * Type guard to check whether a given value is a valid PageTypeV4 for new pages.
- *
- * @param value - The value to check.
- * @returns True if the value is one of the valid `PageTypeV4` literals.
- */
-function isValidPageTypeV4(
-    value: unknown
-): value is PageTypeV4.ObjectPage | PageTypeV4.ListReport | PageTypeV4.CustomPage {
-    return (
-        typeof value === 'string' &&
-        [PageTypeV4.ObjectPage, PageTypeV4.ListReport, PageTypeV4.CustomPage].includes(value as PageTypeV4)
-    );
-}
-
 export const addPageHandlers: FunctionalityHandlers = {
     getFunctionalityDetails,
     executeFunctionality
 };
-
-export { ADD_PAGE_FUNCTIONALITY };

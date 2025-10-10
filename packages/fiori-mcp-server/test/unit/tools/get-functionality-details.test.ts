@@ -47,7 +47,7 @@ describe('getFunctionalityDetails', () => {
             appPath,
             functionalityId: 'add-page'
         });
-        expect(details).toEqual({ ...addPageDependency.ADD_PAGE_FUNCTIONALITY, parameters: [] });
+        expect(details).toEqual({ ...addPageDependency.ADD_PAGE_FUNCTIONALITY });
     });
 
     test('call atomic property', async () => {
@@ -59,18 +59,18 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
+            functionalityId: ['settings', 'flexEnabled'],
             name: 'Change property',
-            parameters: [
-                {
-                    currentValue: true,
-                    description: 'Enables key user adaptation for an application.',
-                    id: 'flexEnabled',
-                    name: 'Flex Enabled',
-                    options: [undefined, true, false],
-                    type: 'boolean'
+            parameters: {
+                type: 'object',
+                properties: {
+                    flexEnabled: {
+                        description: 'Enables key user adaptation for an application.',
+                        descriptionSrcURL: 'https://ui5.sap.com/sdk/#/topic/ccd45ba3f0b446a0901b2c9d42b8ad53',
+                        type: 'boolean'
+                    }
                 }
-            ]
+            }
         });
     });
 
@@ -90,18 +90,27 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
+            functionalityId: [
+                'TravelObjectPage',
+                'sections',
+                'GroupSection',
+                'subsections',
+                'CustomSubSection',
+                'title'
+            ],
             name: 'Change property',
             pageName: 'TravelObjectPage',
-            parameters: [
-                {
-                    currentValue: 'Custom Sub Section',
-                    description: 'The label of a custom section, preferably as an i18n key.',
-                    id: 'title',
-                    name: 'Title',
-                    type: 'string'
+            parameters: {
+                type: 'object',
+                properties: {
+                    title: {
+                        artifactType: 'Manifest',
+                        description: 'The label of a custom section, preferably as an i18n key.',
+                        i18nClassification: 'TIT: Custom section title',
+                        type: 'string'
+                    }
                 }
-            ]
+            }
         });
     });
 
@@ -114,41 +123,72 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
+            functionalityId: ['TravelObjectPage', 'sections', 'GroupSection', 'subsections', 'CustomSubSection'],
             name: 'Change property',
             pageName: 'TravelObjectPage',
-            parameters: [
-                {
-                    currentValue: 'project1.ext.fragment.CustomSubSection',
-                    description: 'The path to the XML template containing the section control.',
-                    id: 'fragmentName',
-                    name: 'Fragment Name',
-                    type: 'string'
-                },
-                {
-                    currentValue: undefined,
-                    description: 'Use the key of another section as a placement anchor.',
-                    id: 'relatedFacet',
-                    name: 'Anchor',
-                    options: ['', 'SubSection1', 'CustomSubSection'],
-                    type: 'string'
-                },
-                {
-                    currentValue: undefined,
-                    description: 'Define the placement, either before or after the anchor section.',
-                    id: 'relativePosition',
-                    name: 'Placement',
-                    options: ['', 'After', 'Before'],
-                    type: 'string'
-                },
-                {
-                    currentValue: 'Custom Sub Section',
-                    description: 'The label of a custom section, preferably as an i18n key.',
-                    id: 'title',
-                    name: 'Title',
-                    type: 'string'
+            parameters: {
+                type: 'object',
+                properties: {
+                    CustomSubSection: {
+                        actionType: 'Custom',
+                        additionalProperties: false,
+                        description: 'Custom Sub Section',
+                        isViewNode: true,
+                        keys: [
+                            {
+                                name: 'Key',
+                                value: 'CustomSubSection'
+                            }
+                        ],
+                        properties: {
+                            controls: {
+                                type: 'object'
+                            },
+                            fragmentName: {
+                                artifactType: 'Manifest',
+                                description: 'The path to the XML template containing the section control.',
+                                type: 'string'
+                            },
+                            relatedFacet: {
+                                artifactType: 'Manifest',
+                                description: 'Use the key of another section as a placement anchor.',
+                                displayName: 'Anchor',
+                                oneOf: [
+                                    {
+                                        bundle: 'ui5',
+                                        const: 'SubSection1',
+                                        description: 'Sub Section 1',
+                                        hidden: true
+                                    },
+                                    {
+                                        bundle: 'ui5',
+                                        const: 'CustomSubSection',
+                                        custom: true,
+                                        description: 'Custom Sub Section'
+                                    }
+                                ],
+                                type: 'string'
+                            },
+                            relativePosition: {
+                                displayName: 'Placement',
+                                enum: ['After', 'Before'],
+                                type: 'string',
+                                artifactType: 'Manifest',
+                                description: 'Define the placement, either before or after the anchor section.'
+                            },
+                            title: {
+                                artifactType: 'Manifest',
+                                description: 'The label of a custom section, preferably as an i18n key.',
+                                i18nClassification: 'TIT: Custom section title',
+                                type: 'string'
+                            }
+                        },
+                        propertyIndex: 1,
+                        required: ['fragmentName', 'title'],
+                        type: 'object'
+                    }
                 }
-            ]
+            }
         });
     });
 
@@ -168,67 +208,55 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
+            functionalityId: ['settings', 'flexibleColumnLayout'],
             name: 'Change property',
-            parameters: [
-                {
-                    currentValue: {
-                        defaultTwoColumnLayoutType: 'ThreeColumnsBeginExpandedEndHidden'
-                    },
-                    description:
-                        'The flexible column layout allows users to see more details on the page, and to expand and collapse the screen areas.',
-                    id: 'flexibleColumnLayout',
-                    name: 'flexibleColumnLayout',
-                    parameters: [
-                        {
-                            description:
-                                'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
-                            id: 'limitFCLToTwoColumns',
-                            name: 'Limit FCL To Two Columns',
-                            options: [undefined, true, false],
-                            type: 'boolean'
+            parameters: {
+                type: 'object',
+                properties: {
+                    flexibleColumnLayout: {
+                        additionalProperties: false,
+                        description:
+                            'The flexible column layout allows users to see more details on the page, and to expand and collapse the screen areas.',
+                        descriptionSrcURL: 'https://ui5.sap.com/sdk/#/topic/e762257125b34513b0859faa1610b09e',
+                        properties: {
+                            defaultThreeColumnLayoutType: {
+                                enum: [
+                                    'EndColumnFullScreen',
+                                    'MidColumnFullScreen',
+                                    'OneColumn',
+                                    'ThreeColumnsBeginExpandedEndHidden',
+                                    'ThreeColumnsEndExpanded',
+                                    'ThreeColumnsMidExpanded',
+                                    'ThreeColumnsMidExpandedEndHidden',
+                                    'TwoColumnsBeginExpanded',
+                                    'TwoColumnsMidExpanded'
+                                ],
+                                type: 'string'
+                            },
+                            defaultTwoColumnLayoutType: {
+                                enum: [
+                                    'EndColumnFullScreen',
+                                    'MidColumnFullScreen',
+                                    'OneColumn',
+                                    'ThreeColumnsBeginExpandedEndHidden',
+                                    'ThreeColumnsEndExpanded',
+                                    'ThreeColumnsMidExpanded',
+                                    'ThreeColumnsMidExpandedEndHidden',
+                                    'TwoColumnsBeginExpanded',
+                                    'TwoColumnsMidExpanded'
+                                ],
+                                type: 'string'
+                            },
+                            limitFCLToTwoColumns: {
+                                description:
+                                    'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
+                                type: 'boolean'
+                            }
                         },
-                        {
-                            currentValue: 'ThreeColumnsBeginExpandedEndHidden',
-                            description: '',
-                            id: 'defaultTwoColumnLayoutType',
-                            name: 'Default Two Column Layout Type',
-                            options: [
-                                '',
-                                'EndColumnFullScreen',
-                                'MidColumnFullScreen',
-                                'OneColumn',
-                                'ThreeColumnsBeginExpandedEndHidden',
-                                'ThreeColumnsEndExpanded',
-                                'ThreeColumnsMidExpanded',
-                                'ThreeColumnsMidExpandedEndHidden',
-                                'TwoColumnsBeginExpanded',
-                                'TwoColumnsMidExpanded'
-                            ],
-                            type: 'string'
-                        },
-                        {
-                            description: '',
-                            id: 'defaultThreeColumnLayoutType',
-                            name: 'Default Three Column Layout Type',
-                            options: [
-                                '',
-                                'EndColumnFullScreen',
-                                'MidColumnFullScreen',
-                                'OneColumn',
-                                'ThreeColumnsBeginExpandedEndHidden',
-                                'ThreeColumnsEndExpanded',
-                                'ThreeColumnsMidExpanded',
-                                'ThreeColumnsMidExpandedEndHidden',
-                                'TwoColumnsBeginExpanded',
-                                'TwoColumnsMidExpanded'
-                            ],
-                            type: 'string'
-                        }
-                    ],
-                    type: 'object'
+                        type: 'object'
+                    }
                 }
-            ]
+            }
         });
     });
 

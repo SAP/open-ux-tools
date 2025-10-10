@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 import { expect, test, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
 import { gte } from 'semver';
 

@@ -1,6 +1,6 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import * as util from 'util';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { exec } from 'child_process';
 
 import type { Package } from '@sap-ux/project-access';

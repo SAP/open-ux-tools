@@ -1,6 +1,6 @@
-import { fileURLToPath, pathToFileURL } from 'url';
-import { promises } from 'fs';
-import { join, relative, sep, posix } from 'path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { promises } from 'node:fs';
+import { join, relative, sep, posix } from 'node:path';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
@@ -823,6 +823,66 @@ describe('fiori annotation service', () => {
                 fsEditor.write(path, testData);
                 const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
                 expect(() => service.getSchema()).not.toThrow();
+            });
+
+            test('flattened annotations with collection', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+
+                const fsEditor = await createFsEditorForProject(root);
+                const mdPath = pathFromUri(project.files.annotations);
+                const mdContent = fsEditor.read(mdPath);
+                const mdTestData = `${mdContent}
+            annotate service.Individual with @(
+                UI.LineItem.@UI.Criticality: #Critical,
+                UI.LineItem: [{ Value: 'Id' }]
+            );`;
+                fsEditor.write(mdPath, mdTestData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+
+                expect(service.getSchema().schema.annotations[project.files.annotations]).toMatchSnapshot();
+            });
+
+            test('flattened annotations with record', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+
+                const fsEditor = await createFsEditorForProject(root);
+                const mdPath = pathFromUri(project.files.annotations);
+                const mdContent = fsEditor.read(mdPath);
+                const mdTestData = `${mdContent}
+            annotate service.Individual with @(
+                UI.FieldGroup.@Validation.Exclusive,
+                UI.FieldGroup: {
+                     $Type: 'UI.FieldGroupType',
+                     Data: []
+                }
+            );`;
+                fsEditor.write(mdPath, mdTestData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+
+                expect(service.getSchema().schema.annotations[project.files.annotations]).toMatchSnapshot();
+            });
+
+            test('flattened annotations with value', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+
+                const fsEditor = await createFsEditorForProject(root);
+                const mdPath = pathFromUri(project.files.annotations);
+                const mdContent = fsEditor.read(mdPath);
+                const mdTestData = `${mdContent}
+            annotate service.Individual with {
+                @(
+                    Common.Text.@UI.TextArrangement: #TextLast,
+                    Common.Text                    : id
+                )
+                id;
+            };`;
+                fsEditor.write(mdPath, mdTestData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+
+                expect(service.getSchema().schema.annotations[project.files.annotations]).toMatchSnapshot();
             });
         });
     });
@@ -4671,6 +4731,87 @@ describe('serializeTarget', () => {
                         },
                         uri: project.files.annotations,
                         pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/2'
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('update flattened annotation', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: test1
+            );
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        uri: project.files.annotations,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: LINE_ITEM
+                        },
+                        pointer: '/annotations/0/Path',
+                        content: {
+                            type: 'primitive',
+                            value: 'test2'
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('update flattened annotation with changing value type', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with @(
+                UI.LineItem : [],
+                UI.LineItem.@UI.Criticality: test1
+            );
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        uri: project.files.annotations,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: LINE_ITEM
+                        },
+                        pointer: '/annotations/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'String',
+                                String: 'test2'
+                            }
+                        }
                     }
                 ],
                 'IncidentService',

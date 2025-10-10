@@ -1,6 +1,6 @@
 import { exit } from 'process';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { defineConfig, devices } from '@sap-ux-private/playwright';
 import type { PlaywrightTestConfig, Project, ReporterDescription } from '@sap-ux-private/playwright';
 

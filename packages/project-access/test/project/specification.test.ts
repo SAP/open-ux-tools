@@ -1,11 +1,11 @@
-import { join } from 'path';
+import { join } from 'node:path';
 // Needs to be done before importing getSpecification() to mock the module cache path
 jest.doMock('../../src/constants', () => ({
     ...(jest.requireActual('../../src/constants') as {}),
     moduleCacheRoot: join(__dirname, '../test-data/module-loader'),
     fioriToolsDirectory: join(__dirname, '../test-data/specification')
 }));
-import * as fsMock from 'fs';
+import * as fsMock from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 import { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from '../../src';
 import * as commandMock from '../../src/command';

@@ -82,7 +82,7 @@ export function convertPointerInAnnotationToInternal(
                 path.push('attributes', 'Type', 'value');
                 break;
             default:
-                if (isNaN(Number(segment))) {
+                if (Number.isNaN(Number(segment))) {
                     // segment is not an index
                     const { subElement, clearPath, pathSegments } = handleStringSegment(segment, currentElement);
                     result.subElement = subElement;

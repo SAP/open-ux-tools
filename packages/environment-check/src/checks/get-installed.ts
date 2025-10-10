@@ -1,6 +1,6 @@
-import { existsSync, promises, readdirSync } from 'fs';
+import { existsSync, promises, readdirSync } from 'node:fs';
 import { t } from '../i18n';
-import { join } from 'path';
+import { join } from 'node:path';
 import { spawnCommand, npmCommand } from '../command';
 import { Extensions, NpmModules } from '../types';
 import type { ILogger } from '../types';

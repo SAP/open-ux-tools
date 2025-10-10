@@ -1,4 +1,4 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import type { CheckIntegrityResult, Content, ProjectSettings } from '../types';
 import { getContentIntegrity, getFileIntegrity } from './hash';
 import { readIntegrityData, writeIntegrityData } from './persistence';

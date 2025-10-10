@@ -10,7 +10,7 @@ import { t } from '../src/utils/i18n';
 import { fioriAppSourcetemplateId } from '../src/utils/constants';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { TestFixture } from './fixtures';
-import { join } from 'path';
+import { join } from 'node:path';
 import { qfaJsonFileName } from '../src/utils/constants';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 

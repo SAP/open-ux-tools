@@ -106,9 +106,9 @@ export function addSnapshot(version: string, latestVersion: string): string {
  */
 export function parseUI5Version(version: string): { major: number; minor: number; patch: number } {
     const versionParts = version ? version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.') : [];
-    const major = parseInt(versionParts[0], 10);
-    const minor = parseInt(versionParts[1], 10);
-    const patch = parseInt(versionParts[2], 10);
+    const major = Number.parseInt(versionParts[0], 10);
+    const minor = Number.parseInt(versionParts[1], 10);
+    const patch = Number.parseInt(versionParts[2], 10);
 
     return { major, minor, patch };
 }
@@ -134,7 +134,7 @@ export function isFeatureSupportedVersion(featureVersion: string, version?: stri
     } = parseUI5Version(featureVersion);
     const { major, minor, patch } = parseUI5Version(version);
 
-    if (isNaN(major) && isNaN(minor) && isNaN(patch)) {
+    if (Number.isNaN(major) && Number.isNaN(minor) && Number.isNaN(patch)) {
         return true;
     }
 

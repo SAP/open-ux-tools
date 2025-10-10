@@ -6,7 +6,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 

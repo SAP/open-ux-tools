@@ -2,8 +2,8 @@ import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
 import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('fs', () => {

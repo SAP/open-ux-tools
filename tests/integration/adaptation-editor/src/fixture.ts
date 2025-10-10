@@ -1,6 +1,6 @@
 import { rm, stat, symlink } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 import { getPortPromise } from 'portfinder';
 import { setup, teardown } from 'jest-dev-server';

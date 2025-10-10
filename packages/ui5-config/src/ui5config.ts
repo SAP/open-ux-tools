@@ -27,7 +27,7 @@ import {
 import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
-import { join, posix, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'node:path';
 import { readFile } from 'fs/promises';
 import yaml from 'js-yaml';
 
@@ -614,6 +614,7 @@ export class UI5Config {
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
      * @param exclude optional list of files that are to be excluded from the deployment configuration
      * @param index if true a standalone index.html is generated during deployment
+     * @param lrep optional lrep namespace to be used for the deployment configuration
      * @param comments optional comments that are added to the task
      * @returns this UI5Config instance
      * @memberof UI5Config
@@ -624,6 +625,7 @@ export class UI5Config {
         fioriTools = true,
         exclude?: string[],
         index = false,
+        lrep?: string,
         comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.document.appendTo({
@@ -635,8 +637,13 @@ export class UI5Config {
             value: '/localService/**'
         });
 
-        const configuration: { target: AbapTarget; app: BspApp | Adp; exclude: string[] | undefined; index?: boolean } =
-            { target, app, exclude };
+        const configuration: {
+            target: AbapTarget;
+            app: BspApp | Adp;
+            exclude: string[] | undefined;
+            index?: boolean;
+            lrep?: string;
+        } = { target, app, exclude, lrep };
 
         if (index) {
             configuration['index'] = true;

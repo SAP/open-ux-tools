@@ -5,39 +5,35 @@ Object {
   "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
   "functionalityId": "add-page",
   "name": "Add new page to application by updating manifest.json",
-  "parameters": Array [
-    Object {
-      "description": "Entity set for the new page. First try to extract entity from user input in a format defined in example, if not possible suggest content defined in options.",
-      "examples": Array [
-        "entitySet: Travels",
-      ],
-      "id": "entitySet",
-      "options": Array [
-        "Travels",
-        "Expenses",
-        "TravelsStatusCodeList",
-        "TravelsStatusCodeList_texts",
-      ],
-      "required": true,
-      "type": "string",
+  "parameters": Object {
+    "additionalProperties": false,
+    "properties": Object {
+      "entitySet": Object {
+        "description": "Entity set for the new page. First try to extract entity from user input, if not possible suggest content defined in options.",
+        "enum": Array [
+          "Travels",
+          "Expenses",
+          "TravelsStatusCodeList",
+          "TravelsStatusCodeList_texts",
+        ],
+        "type": "string",
+      },
+      "pageType": Object {
+        "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
+        "enum": Array [
+          "ListReport",
+          "ObjectPage",
+          "CustomPage",
+        ],
+        "type": "string",
+      },
     },
-    Object {
-      "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
-      "examples": Array [
-        "pageType: ObjectPage",
-      ],
-      "id": "pageType",
-      "options": Array [
-        "ObjectPage",
-        "ListReport",
-        "CustomPage",
-        "FPMCustomPage",
-        "AnalyticalListPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-  ],
+    "required": Array [
+      "pageType",
+      "entitySet",
+    ],
+    "type": "object",
+  },
 }
 `;
 
@@ -46,50 +42,85 @@ Object {
   "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
   "functionalityId": "add-page",
   "name": "Add new page to application by updating manifest.json",
-  "parameters": Array [
-    Object {
-      "description": "Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options",
-      "examples": Array [
-        "parentPage: TravelsList",
-      ],
-      "id": "parentPage",
-      "options": Array [
-        "TravelsList",
-        "TravelsObjectPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "Page navigation option for parent page. First try to extract navigation option from user input in a format defined in example, if not possible suggest content defined in options",
-      "examples": Array [
-        "pageNavigation: Travels",
-      ],
-      "id": "pageNavigation",
-      "options": Array [
-        "for TravelsList: available navigation(s) is/are one of: Travels, Expenses, TravelsStatusCodeList, TravelsStatusCodeList_texts",
-        "for TravelsObjectPage: available navigation(s) is/are one of: Expenses",
-      ],
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
-      "examples": Array [
-        "pageType: ObjectPage",
-      ],
-      "id": "pageType",
-      "options": Array [
-        "ObjectPage",
-        "ListReport",
-        "CustomPage",
-        "FPMCustomPage",
-        "AnalyticalListPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-  ],
+  "parameters": Object {
+    "anyOf": Array [
+      Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "pageNavigation": Object {
+            "enum": Array [
+              "Travels",
+              "Expenses",
+              "TravelsStatusCodeList",
+              "TravelsStatusCodeList_texts",
+            ],
+            "type": "string",
+          },
+          "pageType": Object {
+            "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
+            "enum": Array [
+              "ListReport",
+              "ObjectPage",
+              "CustomPage",
+            ],
+            "type": "string",
+          },
+          "pageViewName": Object {
+            "description": "Required if pageType is \\"CustomPage\\". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+            "type": "string",
+          },
+          "parentPage": Object {
+            "const": "TravelsList",
+            "description": "Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options",
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "parentPage",
+          "pageNavigation",
+          "pageType",
+        ],
+        "type": "object",
+      },
+      Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "pageNavigation": Object {
+            "enum": Array [
+              "Expenses",
+            ],
+            "type": "string",
+          },
+          "pageType": Object {
+            "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
+            "enum": Array [
+              "ListReport",
+              "ObjectPage",
+              "CustomPage",
+            ],
+            "type": "string",
+          },
+          "pageViewName": Object {
+            "description": "Required if pageType is \\"CustomPage\\". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+            "type": "string",
+          },
+          "parentPage": Object {
+            "const": "TravelsObjectPage",
+            "description": "Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options",
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "parentPage",
+          "pageNavigation",
+          "pageType",
+        ],
+        "type": "object",
+      },
+    ],
+  },
 }
 `;
 
@@ -98,20 +129,22 @@ Object {
   "description": "Remove existing fiori elements page from the application",
   "functionalityId": "delete-page",
   "name": "Delete page from application by updating manifest.json",
-  "parameters": Array [
-    Object {
-      "description": "Page id to be deleted. First try to extract page id from user input in a format defined in example, if not possible suggest content defined in options",
-      "examples": Array [
-        "pageId: TravelsList",
-      ],
-      "id": "pageId",
-      "options": Array [
-        "TravelsList",
-        "TravelsObjectPage",
-      ],
-      "required": true,
-      "type": "string",
+  "parameters": Object {
+    "additionalProperties": false,
+    "properties": Object {
+      "pageId": Object {
+        "description": "Page id to be deleted. First try to extract page id from user input, if not possible suggest content defined in options",
+        "enum": Array [
+          "TravelsList",
+          "TravelsObjectPage",
+        ],
+        "type": "string",
+      },
     },
-  ],
+    "required": Array [
+      "pageId",
+    ],
+    "type": "object",
+  },
 }
 `;

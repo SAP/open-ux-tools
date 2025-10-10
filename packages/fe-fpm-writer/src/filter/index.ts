@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomFilter, InternalCustomFilter, PageOptions } from './types';
-import { join } from 'path';
+import { join } from 'node:path';
 import { render } from 'ejs';
 import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
@@ -70,7 +70,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
                 typescript: config.typescript,
                 templatePath: 'filter/Controller'
             },
-            contextParameter
+            [contextParameter]
         );
     }
 

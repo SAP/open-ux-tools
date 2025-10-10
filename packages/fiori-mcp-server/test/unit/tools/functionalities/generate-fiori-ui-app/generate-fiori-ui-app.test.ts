@@ -1,4 +1,8 @@
-import { join } from 'path';
+import { join } from 'node:path';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types';
+import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/schema';
+import packageJson from '../../../../../package.json';
+
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
     {
         path: 'node_modules/@sap/generator-fiori',
@@ -19,7 +23,7 @@ import {
     GENERATE_FIORI_UI_APP,
     generateFioriUIAppHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
-import { existsSync, promises as fsPromises } from 'fs';
+import { existsSync, promises as fsPromises } from 'node:fs';
 
 // Mock child_process.exec
 const mockExec = jest.fn();
@@ -35,56 +39,58 @@ describe('getFunctionalityDetails', () => {
             appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.functionalityId
         });
-        expect(details).toEqual(GENERATE_FIORI_UI_APP);
+        expect(details).toMatchSnapshot();
     });
 });
-const paramTest = {
-    projectPath: join(testOutputDir, 'app1'),
-    appGenConfig: {
-        version: '1.0.0',
-        floorplan: 'FE_LROP',
-        project: {
-            name: 'app1',
-            targetFolder: join(testOutputDir, 'app1'),
-            namespace: 'zzz',
-            title: 'App 1',
-            description: 'Description for App 1',
-            ui5Theme: 'sap_horizon',
-            ui5Version: '1.136.7',
-            localUI5Version: '1.136.7',
-            sapux: true,
-            skipAnnotations: false,
-            enableCodeAssist: true,
-            enableEslint: true,
-            enableTypeScript: true
+const paramTest: GeneratorConfigCAP = {
+    floorplan: 'FE_LROP',
+    project: {
+        name: 'app1',
+        targetFolder: join(testOutputDir, 'app1'),
+        namespace: 'zzz',
+        title: 'App 1',
+        description: 'Description for App 1',
+        ui5Theme: 'sap_horizon',
+        ui5Version: '1.136.7',
+        localUI5Version: '1.136.7'
+    },
+    service: {
+        capService: {
+            projectPath: 'zzzapp1',
+            serviceName: 'app1',
+            serviceCdsPath: 'srv/cat-service.cds',
+            capType: 'Node.js' // optional
         },
-        service: {
-            capService: {
-                projectPath: 'zzzapp1',
-                serviceName: 'app1',
-                serviceCdsPath: 'srv/cat-service.cds',
-                capType: 'Node.js' // optional
-            },
-            servicePath: 'app1'
+        servicePath: 'app1'
+    },
+    entityConfig: {
+        mainEntity: {
+            entityName: 'Travel'
         },
-        entityConfig: {
-            mainEntity: {
-                entityName: 'Travel'
-            },
-            generateFormAnnotations: true,
-            generateLROPAnnotations: true
-        },
-        telemetryData: {
-            generationSourceName: 'test',
-            generationSourceVersion: '1.0.0'
-        }
+        generateFormAnnotations: true,
+        generateLROPAnnotations: true
     }
+};
+
+const mockFileWrite = (cb: (content: string) => void) => {
+    const originalWriteFile = fsPromises.writeFile;
+    fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
+        if (path.endsWith('generator-config.json')) {
+            cb(content);
+        }
+        return originalWriteFile(path, content);
+    });
 };
 
 describe('executeFunctionality', () => {
     test('executeFunctionality - success', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
             callback(null, 'mock stdout', 'mock stderr');
+        });
+        // Mock fs.writeFile to capture the generated config
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
@@ -96,53 +102,103 @@ describe('executeFunctionality', () => {
                 appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
-                message: `Generation completed successfully: ${join(testOutputDir, 'app1/app/app1')}`,
+                message: `Generation completed successfully: ${join(
+                    testOutputDir,
+                    'app1/app/app1'
+                )}. You must run \`npm install\` in ${join(
+                    testOutputDir,
+                    'app1'
+                )} before trying to run the application.`,
                 parameters: {
-                    appGenConfig: {
-                        version: '1.0.0',
-                        floorplan: 'FE_LROP',
-                        project: {
-                            description: 'Description for App 1',
-                            enableCodeAssist: true,
-                            enableEslint: true,
-                            enableTypeScript: true,
-                            localUI5Version: '1.136.7',
-                            name: 'app1',
-                            'namespace': 'zzz',
-                            'sapux': true,
-                            'skipAnnotations': false,
-                            targetFolder: join(testOutputDir, 'app1'),
-                            'title': 'App 1',
-                            'ui5Theme': 'sap_horizon',
-                            'ui5Version': '1.136.7'
-                        },
-                        service: {
-                            servicePath: 'app1',
-                            capService: {
-                                serviceName: 'app1',
-                                'capType': 'Node.js',
-                                'projectPath': 'zzzapp1',
-                                'serviceCdsPath': 'srv/cat-service.cds'
-                            }
-                        },
-                        entityConfig: {
-                            mainEntity: {
-                                entityName: 'Travel'
-                            },
-                            generateFormAnnotations: true,
-                            generateLROPAnnotations: true
-                        },
-                        telemetryData: {
-                            generationSourceName: 'test',
-                            generationSourceVersion: '1.0.0'
+                    floorplan: 'FE_LROP',
+                    project: {
+                        description: 'Description for App 1',
+                        localUI5Version: '1.136.7',
+                        name: 'app1',
+                        'namespace': 'zzz',
+                        targetFolder: join(testOutputDir, 'app1'),
+                        'title': 'App 1',
+                        'ui5Theme': 'sap_horizon',
+                        'ui5Version': '1.136.7'
+                    },
+                    service: {
+                        servicePath: 'app1',
+                        capService: {
+                            serviceName: 'app1',
+                            'capType': 'Node.js',
+                            'projectPath': 'zzzapp1',
+                            'serviceCdsPath': 'srv/cat-service.cds'
                         }
                     },
-                    projectPath: join(testOutputDir, 'app1')
+                    entityConfig: {
+                        mainEntity: {
+                            entityName: 'Travel'
+                        },
+                        generateFormAnnotations: true,
+                        generateLROPAnnotations: true
+                    }
                 },
                 status: 'Success'
             })
         );
         expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config).toEqual({
+            'entityConfig': {
+                'generateFormAnnotations': true,
+                'generateLROPAnnotations': true,
+                'mainEntity': {
+                    'entityName': 'Travel'
+                }
+            },
+            'floorplan': 'FE_LROP',
+            'project': {
+                'description': 'Description for App 1',
+                'localUI5Version': '1.136.7',
+                'name': 'app1',
+                'namespace': 'zzz',
+                'sapux': true,
+                'targetFolder': join(testOutputDir, 'app1'),
+                'title': 'App 1',
+                'ui5Theme': 'sap_horizon',
+                'ui5Version': '1.136.7'
+            },
+            'service': {
+                'capService': {
+                    'capType': 'Node.js',
+                    'projectPath': 'zzzapp1',
+                    'serviceCdsPath': 'srv/cat-service.cds',
+                    'serviceName': 'app1'
+                },
+                'servicePath': '/app1'
+            },
+            'telemetryData': {
+                'generationSourceName': '@sap-ux/fiori-mcp-server',
+                'generationSourceVersion': packageJson.version
+            },
+            'version': '0.2'
+        });
+    });
+
+    test('executeFunctionality - success with floorplan="FF_SIMPLE"', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+        // Mock fs.writeFile to capture the generated config
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
+        });
+        await generateFioriUIAppHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            parameters: {
+                ...paramTest,
+                floorplan: 'FF_SIMPLE'
+            }
+        });
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.project.sapux).toEqual(false);
     });
 
     test('executeFunctionality - unsuccess', async () => {
@@ -178,12 +234,44 @@ describe('executeFunctionality', () => {
                 parameters: {}
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
-            "Missing required fields in generatorConfig. [
+            "Missing required fields in parameters. [
+                {
+                    \\"code\\": \\"invalid_value\\",
+                    \\"values\\": [
+                        \\"FE_LROP\\",
+                        \\"FE_FEOP\\",
+                        \\"FE_FPM\\",
+                        \\"FE_OVP\\",
+                        \\"FE_ALP\\",
+                        \\"FE_WORKLIST\\",
+                        \\"FF_SIMPLE\\"
+                    ],
+                    \\"path\\": [
+                        \\"floorplan\\"
+                    ],
+                    \\"message\\": \\"Invalid option: expected one of \\\\\\"FE_LROP\\\\\\"|\\\\\\"FE_FEOP\\\\\\"|\\\\\\"FE_FPM\\\\\\"|\\\\\\"FE_OVP\\\\\\"|\\\\\\"FE_ALP\\\\\\"|\\\\\\"FE_WORKLIST\\\\\\"|\\\\\\"FF_SIMPLE\\\\\\"\\"
+                },
                 {
                     \\"expected\\": \\"object\\",
                     \\"code\\": \\"invalid_type\\",
                     \\"path\\": [
-                        \\"appGenConfig\\"
+                        \\"project\\"
+                    ],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                },
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [
+                        \\"service\\"
+                    ],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                },
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [
+                        \\"entityConfig\\"
                     ],
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 }
@@ -191,7 +279,7 @@ describe('executeFunctionality', () => {
         `);
     });
 
-    test('executeFunctionality - wrong appGenConfig', async () => {
+    test('executeFunctionality - parameters as non object', async () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
@@ -199,20 +287,32 @@ describe('executeFunctionality', () => {
             generateFioriUIAppHandlers.executeFunctionality({
                 appPath: 'app1',
                 functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
-                parameters: {
-                    projectPath: 'app1',
-                    appGenConfig: 'dummy'
-                }
-            })
+                parameters: 'dummy'
+            } as unknown as ExecuteFunctionalityInput)
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
-            "Missing required fields in generatorConfig. [
+            "Missing required fields in parameters. [
                 {
                     \\"expected\\": \\"object\\",
                     \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"appGenConfig\\"
-                    ],
+                    \\"path\\": [],
                     \\"message\\": \\"Invalid input: expected object, received string\\"
+                }
+            ]"
+        `);
+    });
+
+    test('executeFunctionality called without parameters (unexpected in real use case)', async () => {
+        mockExec.mockImplementation((cmd, opts, callback) => {
+            throw new Error('Dummy');
+        });
+        await expect(generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput))
+            .rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Missing required fields in parameters. [
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 }
             ]"
         `);
@@ -225,22 +325,15 @@ describe('executeFunctionality', () => {
         });
 
         // Mock fs.writeFile to capture the generated config
-        const originalWriteFile = fsPromises.writeFile;
-        fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
-            if (path.endsWith('generator-config.json')) {
-                generatedConfigContent = content;
-            }
-            return originalWriteFile(path, content);
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
         });
 
         const paramWithServicePath = {
             ...paramTest,
-            appGenConfig: {
-                ...paramTest.appGenConfig,
-                service: {
-                    ...paramTest.appGenConfig.service,
-                    servicePath: 'my-service' // No leading slash
-                }
+            service: {
+                ...paramTest.service,
+                servicePath: 'my-service' // No leading slash
             }
         };
 
@@ -263,22 +356,15 @@ describe('executeFunctionality', () => {
         });
 
         // Mock fs.writeFile to capture the generated config
-        const originalWriteFile = fsPromises.writeFile;
-        fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
-            if (path.endsWith('generator-config.json')) {
-                generatedConfigContent = content;
-            }
-            return originalWriteFile(path, content);
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
         });
 
         const paramWithServicePath = {
             ...paramTest,
-            appGenConfig: {
-                ...paramTest.appGenConfig,
-                service: {
-                    ...paramTest.appGenConfig.service,
-                    servicePath: '/my-service' // Already has leading slash
-                }
+            service: {
+                ...paramTest.service,
+                servicePath: '/my-service' // Already has leading slash
             }
         };
 
@@ -301,22 +387,15 @@ describe('executeFunctionality', () => {
         });
 
         // Mock fs.writeFile to capture the generated config
-        const originalWriteFile = fsPromises.writeFile;
-        fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
-            if (path.endsWith('generator-config.json')) {
-                generatedConfigContent = content;
-            }
-            return originalWriteFile(path, content);
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
         });
 
         const paramWithEmptyServicePath = {
             ...paramTest,
-            appGenConfig: {
-                ...paramTest.appGenConfig,
-                service: {
-                    ...paramTest.appGenConfig.service,
-                    servicePath: '' // Empty string
-                }
+            service: {
+                ...paramTest.service,
+                servicePath: '' // Empty string
             }
         };
 

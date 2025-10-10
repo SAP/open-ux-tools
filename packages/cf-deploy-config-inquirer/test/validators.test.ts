@@ -5,8 +5,8 @@ import {
     validateMtaId,
     validateAbapService
 } from '../src/prompts/validators';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import * as projectInputValidator from '@sap-ux/project-input-validator';
 import type { CfAppRouterDeployConfigAnswers } from '../src/types';

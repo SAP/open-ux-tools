@@ -8,10 +8,11 @@ Array [
   },
   Object {
     "description": "Creates (generates) a new SAP Fiori UI application within an existing CAP project.
-                Crucially, you must first construct the appGenConfig JSON argument.
-                To do this, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
+                To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
                 As a fallback, only if no such tool is available, you should manually read and parse all .cds files in the projectPath to extract this information.
-                The data obtained from either method must then be formatted into a JSON object and passed as the appGenConfig parameter.",
+                The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
+                The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
+                The configuration **MUST** be based on the project files in the projectPath.",
     "functionalityId": "generate-fiori-ui-app",
   },
   Object {

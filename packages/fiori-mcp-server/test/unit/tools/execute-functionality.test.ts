@@ -210,8 +210,10 @@ describe('executeFunctionality', () => {
         mockSpecificationImport(importProjectMock);
         mockSpecificationExport(updatedManifest);
         const parameters = {
+            controls: {},
             title: 'test1',
-            id: 'dummy'
+            id: 'dummy',
+            fragmentName: 'project1.ext.fragment.CustomSubSection'
         };
         const details = await executeFunctionality({
             appPath,
@@ -233,7 +235,8 @@ describe('executeFunctionality', () => {
         expect(modifiedConfig.sections.GroupSection.subsections.CustomSubSection).toEqual({
             controls: {},
             fragmentName: 'project1.ext.fragment.CustomSubSection',
-            title: 'test1'
+            title: 'test1',
+            id: 'dummy'
         });
         expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
