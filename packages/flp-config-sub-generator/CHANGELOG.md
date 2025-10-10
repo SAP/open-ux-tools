@@ -1,5 +1,25 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.33
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.43
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/flp-config-inquirer@0.4.32
+-   @sap-ux/fiori-generator-shared@0.13.22
+-   @sap-ux/inquirer-common@0.7.49
+-   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.3.32
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+-   Updated dependencies [e015869]
+    -   @sap-ux/flp-config-inquirer@0.4.31
+    -   @sap-ux/app-config-writer@0.6.42
+
 ## 0.3.31
 
 ### Patch Changes
