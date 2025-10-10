@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';

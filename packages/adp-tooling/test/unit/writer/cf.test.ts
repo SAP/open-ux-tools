@@ -1,8 +1,8 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';

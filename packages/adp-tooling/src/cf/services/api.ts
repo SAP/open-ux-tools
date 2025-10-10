@@ -1,6 +1,6 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import axios from 'axios';
-import * as path from 'path';
+import * as path from 'node:path';
 import type { AxiosRequestConfig } from 'axios';
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 
