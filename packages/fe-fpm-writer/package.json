@@ -37,8 +37,8 @@
         "@xmldom/xmldom": "0.8.10",
         "ejs": "3.1.10",
         "i18next": "25.3.0",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0",
         "semver": "7.5.4",
         "xml-formatter": "2.6.1",
         "xpath": "0.0.33"
@@ -48,8 +48,8 @@
         "@types/inquirer": "8.2.6",
         "@sap-ux/ui-prompting": "workspace:*",
         "@types/ejs": "3.1.2",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.5",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/semver": "7.5.2",
         "@types/vinyl": "2.0.7"
     },
