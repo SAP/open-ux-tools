@@ -6,6 +6,7 @@ import * as fs from 'fs/promises';
 import * as path from 'node:path';
 import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { default as matter } from 'gray-matter';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
 
 // Create promisified version of spawn for async/await
 const execCommand = (
@@ -135,6 +136,7 @@ class MultiSourceDocumentationBuilder {
     private readonly categories: Map<string, string[]>;
     private readonly sourceResults: Map<string, SourceResult>;
     private readonly gitReposPath: string;
+    private readonly logger: Logger;
 
     constructor() {
         this.config = {
@@ -195,6 +197,7 @@ class MultiSourceDocumentationBuilder {
         this.categories = new Map();
         this.sourceResults = new Map();
         this.gitReposPath = path.resolve(this.config.gitReposPath!);
+        this.logger = new ToolsLogger();
     }
 
     /**
@@ -216,23 +219,23 @@ class MultiSourceDocumentationBuilder {
             const repoExists = await this.directoryExists(repoPath);
 
             if (repoExists) {
-                console.log(`📂 Repository ${repoName} already exists, updating...`);
+                this.logger.info(`📂 Repository ${repoName} already exists, updating...`);
                 try {
                     // Pull latest changes
                     await execCommand('git', ['pull', 'origin', source.branch ?? 'main'], { cwd: repoPath });
-                    console.log(`✓ Updated repository: ${repoName}`);
+                    this.logger.info(`✓ Updated repository: ${repoName}`);
                 } catch (pullError) {
                     const errorMessage = pullError instanceof Error ? pullError.message : String(pullError);
-                    console.warn(`Failed to pull updates for ${repoName}, using existing version:`, errorMessage);
+                    this.logger.warn(`Failed to pull updates for ${repoName}, using existing version: ${errorMessage}`);
                 }
             } else {
-                console.log(`🔄 Cloning repository: ${repoUrl}`);
+                this.logger.info(`🔄 Cloning repository: ${repoUrl}`);
                 await execCommand(
                     'git',
                     ['clone', '--depth', '1', '--branch', source.branch ?? 'main', repoUrl, repoName],
                     { cwd: this.gitReposPath }
                 );
-                console.log(`✓ Cloned repository: ${repoName}`);
+                this.logger.info(`✓ Cloned repository: ${repoName}`);
             }
 
             return repoPath;
@@ -257,6 +260,66 @@ class MultiSourceDocumentationBuilder {
     }
 
     /**
+     * Check if a directory should be skipped during traversal.
+     *
+     * @param dirName - Directory name to check
+     * @returns True if directory should be skipped
+     */
+    private shouldSkipDirectory(dirName: string): boolean {
+        return ['node_modules', '.git', 'dist', 'build', 'target'].includes(dirName);
+    }
+
+    /**
+     * Check if a file has a supported extension.
+     *
+     * @param fileName - File name to check
+     * @returns True if file has a supported extension
+     */
+    private hasSupportedExtension(fileName: string): boolean {
+        const supportedExtensions = [
+            '.md',
+            '.ts',
+            '.js',
+            '.xml',
+            '.cds',
+            '.json',
+            '.html',
+            '.properties',
+            '.yaml',
+            '.yml'
+        ];
+        return supportedExtensions.some((ext) => fileName.endsWith(ext));
+    }
+
+    /**
+     * Read a single file and create a GitHubFile object.
+     *
+     * @param fullEntryPath - Full path to the file
+     * @param entryPath - Relative path to the file
+     * @param entryName - Name of the file
+     * @returns GitHubFile object or null if read fails
+     */
+    private async readSingleFile(
+        fullEntryPath: string,
+        entryPath: string,
+        entryName: string
+    ): Promise<GitHubFile | null> {
+        try {
+            const content = await fs.readFile(fullEntryPath, 'utf-8');
+            return {
+                name: entryName,
+                path: entryPath,
+                type: 'file',
+                content
+            };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to read file ${fullEntryPath}: ${errorMessage}`);
+            return null;
+        }
+    }
+
+    /**
      * Read files recursively from a local directory.
      *
      * @param basePath - Base directory path to search
@@ -270,45 +333,23 @@ class MultiSourceDocumentationBuilder {
         try {
             const entries = await fs.readdir(fullPath, { withFileTypes: true });
 
-            const supportedExtensions = [
-                '.md',
-                '.ts',
-                '.js',
-                '.xml',
-                '.cds',
-                '.json',
-                '.html',
-                '.properties',
-                '.yaml',
-                '.yml'
-            ];
-
             for (const entry of entries) {
                 const entryPath = path.join(relativePath, entry.name);
                 const fullEntryPath = path.join(fullPath, entry.name);
 
-                if (entry.isDirectory()) {
-                    // Skip common directories that don't contain documentation
-                    if (!['node_modules', '.git', 'dist', 'build', 'target'].includes(entry.name)) {
-                        const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
-                        files.push(...subFiles);
-                    }
-                } else if (entry.isFile() && supportedExtensions.some((ext) => entry.name.endsWith(ext))) {
-                    try {
-                        const content = await fs.readFile(fullEntryPath, 'utf-8');
-                        files.push({
-                            name: entry.name,
-                            path: entryPath,
-                            type: 'file',
-                            content
-                        });
-                    } catch (error) {
-                        console.warn(`Failed to read file ${fullEntryPath}:`, error.message);
+                if (entry.isDirectory() && !this.shouldSkipDirectory(entry.name)) {
+                    const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
+                    files.push(...subFiles);
+                } else if (entry.isFile() && this.hasSupportedExtension(entry.name)) {
+                    const file = await this.readSingleFile(fullEntryPath, entryPath, entry.name);
+                    if (file) {
+                        files.push(file);
                     }
                 }
             }
         } catch (error) {
-            console.warn(`Failed to read directory ${fullPath}:`, error.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to read directory ${fullPath}: ${errorMessage}`);
         }
 
         return files;
@@ -425,7 +466,7 @@ class MultiSourceDocumentationBuilder {
                 parsed: { data: {}, content }
             };
         } catch (error) {
-            console.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${error.message}`);
+            this.logger.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${error.message}`);
             return this.parsePlainTextFile(file);
         }
     }
@@ -581,7 +622,7 @@ class MultiSourceDocumentationBuilder {
     }
 
     async buildFilestore(): Promise<void> {
-        console.log('🚀 Starting multi-source documentation build...');
+        this.logger.info('🚀 Starting multi-source documentation build...');
 
         try {
             // Ensure output directory exists
@@ -589,7 +630,7 @@ class MultiSourceDocumentationBuilder {
 
             // Process sources in parallel (but limit concurrency to avoid rate limits)
             const enabledSources = this.config.sources.filter((source) => source.enabled);
-            console.log(`📚 Processing ${enabledSources.length} enabled sources in parallel...`);
+            this.logger.info(`📚 Processing ${enabledSources.length} enabled sources in parallel...`);
 
             const concurrentSources = 2; // Process 2 sources at once to balance speed vs rate limits
             for (let i = 0; i < enabledSources.length; i += concurrentSources) {
@@ -597,22 +638,22 @@ class MultiSourceDocumentationBuilder {
 
                 await Promise.all(
                     batch.map(async (source) => {
-                        console.log(`🔄 Starting source: ${source.id}`);
+                        this.logger.info(`🔄 Starting source: ${source.id}`);
                         await this.processSource(source);
                     })
                 );
 
-                console.log(
+                this.logger.info(
                     `✅ Completed batch ${Math.floor(i / concurrentSources) + 1}/${Math.ceil(
                         enabledSources.length / concurrentSources
                     )}`
                 );
             }
 
-            console.log(`\n📊 Multi-source build summary:`);
+            this.logger.info(`\n📊 Multi-source build summary:`);
             for (const [sourceId, result] of this.sourceResults.entries()) {
                 const status = result.success ? '✅' : '❌';
-                console.log(`${status} ${sourceId}: ${result.documentsAdded} docs (${result.message})`);
+                this.logger.info(`${status} ${sourceId}: ${result.documentsAdded} docs (${result.message})`);
             }
 
             // Save individual document files
@@ -621,13 +662,14 @@ class MultiSourceDocumentationBuilder {
             // Create master index
             await this.createMasterIndex();
 
-            console.log(`\n🎉 Multi-source documentation build completed!`);
-            console.log(`📊 Total documents: ${this.documents.size}`);
-            console.log(`📁 Categories: ${this.categories.size}`);
-            console.log(`🌐 GitHub API requests: ${this.requestCount}`);
-            console.log(`🔗 Sources processed: ${this.sourceResults.size}`);
+            this.logger.info(`\n🎉 Multi-source documentation build completed!`);
+            this.logger.info(`📊 Total documents: ${this.documents.size}`);
+            this.logger.info(`📁 Categories: ${this.categories.size}`);
+            this.logger.info(`🌐 GitHub API requests: ${this.requestCount}`);
+            this.logger.info(`🔗 Sources processed: ${this.sourceResults.size}`);
         } catch (error) {
-            console.error('❌ Build failed:', error.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`❌ Build failed: ${errorMessage}`);
             process.exit(1);
         }
     }
@@ -637,7 +679,7 @@ class MultiSourceDocumentationBuilder {
      * @param source
      */
     async processSource(source: SourceConfig): Promise<void> {
-        console.log(`\n📚 Processing source: ${source.id} (${source.type})`);
+        this.logger.info(`\n📚 Processing source: ${source.id} (${source.type})`);
 
         const result: SourceResult = {
             success: false,
@@ -660,7 +702,7 @@ class MultiSourceDocumentationBuilder {
                     throw new Error(`Unsupported source type: ${source.type}`);
             }
 
-            console.log(`📄 Found ${files.length} files from ${source.id}`);
+            this.logger.info(`📄 Found ${files.length} files from ${source.id}`);
 
             let successCount = 0;
             let failureCount = 0;
@@ -702,7 +744,7 @@ class MultiSourceDocumentationBuilder {
                             const file = batch[index];
                             const errorMessage =
                                 result.reason instanceof Error ? result.reason.message : String(result.reason);
-                            console.warn(`Failed to parse document ${file.path || file.name}:`, errorMessage);
+                            this.logger.warn(`Failed to parse document ${file.path || file.name}: ${errorMessage}`);
                             counts.failure++;
                         }
                         return counts;
@@ -715,7 +757,7 @@ class MultiSourceDocumentationBuilder {
 
                 // Progress update
                 const processed = Math.min(i + parseBatchSize, files.length);
-                console.log(`  📝 Parsed ${processed}/${files.length} files from ${source.id}`);
+                this.logger.info(`  📝 Parsed ${processed}/${files.length} files from ${source.id}`);
             }
 
             result.success = true;
@@ -723,11 +765,12 @@ class MultiSourceDocumentationBuilder {
             result.message = `${successCount} docs added, ${failureCount} failed`;
 
             const duration = Date.now() - result.startTime;
-            console.log(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
+            this.logger.info(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
         } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
             result.success = false;
-            result.message = error.message;
-            console.error(`❌ Failed to process source ${source.id}:`, error.message);
+            result.message = errorMessage;
+            this.logger.error(`❌ Failed to process source ${source.id}: ${errorMessage}`);
 
             // Continue with other sources instead of failing completely
         }
@@ -749,12 +792,12 @@ class MultiSourceDocumentationBuilder {
             // Determine the path to read from within the repository
             const docsPath = source.docsPath ? path.join(repoPath, source.docsPath) : repoPath;
 
-            console.log(`📖 Reading files from: ${docsPath}`);
+            this.logger.info(`📖 Reading files from: ${docsPath}`);
 
             // Read files from the local repository
             const files = await this.readFilesFromDirectory(docsPath);
 
-            console.log(`✓ Found ${files.length} files in ${source.id}`);
+            this.logger.info(`✓ Found ${files.length} files in ${source.id}`);
 
             return files as FileContent[];
         } catch (error) {
@@ -799,7 +842,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(`Source directory not found, trying fallback structure: ${error.message}`);
+            this.logger.warn(`Source directory not found, trying fallback structure: ${error.message}`);
             return [];
         }
     }
@@ -834,7 +877,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(`Skipping category directory due to error: ${error.message}`);
+            this.logger.warn(`Skipping category directory due to error: ${error.message}`);
             return [];
         }
     }
@@ -858,7 +901,8 @@ class MultiSourceDocumentationBuilder {
                 download_url: 'cached'
             };
         } catch (error) {
-            console.warn(`Failed to load document file ${fileName}:`, error.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to load document file ${fileName}: ${errorMessage}`);
             return null;
         }
     }
@@ -870,7 +914,7 @@ class MultiSourceDocumentationBuilder {
      * @returns Promise resolving to array of file contents
      */
     async processJsonApiSource(source: SourceConfig): Promise<FileContent[]> {
-        console.log(`Fetching API documentation from: ${source.url}`);
+        this.logger.info(`Fetching API documentation from: ${source.url}`);
 
         try {
             const response = await fetch(source.url!);
@@ -929,7 +973,7 @@ class MultiSourceDocumentationBuilder {
             });
         }
 
-        console.log(`Generated ${documents.length} API documents`);
+        this.logger.info(`Generated ${documents.length} API documents`);
         return documents;
     }
 
@@ -1064,7 +1108,7 @@ class MultiSourceDocumentationBuilder {
     }
 
     async saveDocuments(): Promise<void> {
-        console.log('\n💾 Saving document files organized by source...');
+        this.logger.info('\n💾 Saving document files organized by source...');
 
         for (const [docId, doc] of this.documents) {
             // Organize by source first, then by category within source
@@ -1078,11 +1122,11 @@ class MultiSourceDocumentationBuilder {
             await fs.writeFile(filePath, JSON.stringify(doc, null, 2));
         }
 
-        console.log(`✓ Saved ${this.documents.size} document files organized by source`);
+        this.logger.info(`✓ Saved ${this.documents.size} document files organized by source`);
     }
 
     async createMasterIndex(): Promise<void> {
-        console.log('\n📋 Creating master index...');
+        this.logger.info('\n📋 Creating master index...');
 
         const categories = Array.from(this.categories.entries()).map(([id, docIds]) => {
             const categoryName = id
@@ -1115,7 +1159,7 @@ class MultiSourceDocumentationBuilder {
         const indexPath = path.join(this.config.outputPath, 'index.json');
         await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
 
-        console.log(`✓ Created master index: ${indexPath}`);
+        this.logger.info(`✓ Created master index: ${indexPath}`);
     }
 }
 
@@ -1124,9 +1168,11 @@ export { MultiSourceDocumentationBuilder };
 
 // Run the builder
 if (require.main === module) {
+    const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
     builder.buildFilestore().catch((error) => {
-        console.error('Build failed:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
     });
 }
