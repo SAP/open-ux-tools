@@ -37,7 +37,7 @@ const mockDestinations = {
         Type: 'HTTP',
         Authentication: 'SAMLAssertion',
         Description: 'Mock destination 2',
-        Host: 'https://mock.url.dest2.com',
+        Host: 'https://mock.s4hana.url.dest2.com',
         ProxyType: 'Internet',
         WebIDEUsage: 'odata_abap'
     }
