@@ -12,7 +12,8 @@ import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
     hasAggregateTransformationsForEntity,
     filterAggregateTransformations,
-    convertEdmxToConvertedMetadata
+    convertEdmxToConvertedMetadata,
+    hasRecursiveHierarchyForEntity
 } from '../../../src/prompts/helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -460,6 +461,149 @@ describe('helpers', () => {
             // Minimal valid XML with missing/invalid version
             const badVersionEdmx = `<?xml version="1.0" encoding="utf-8" ?>\n<edmx:Edmx Version=\"notanumber\" xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\"><edmx:DataServices></edmx:DataServices></edmx:Edmx>`;
             expect(() => convertEdmxToConvertedMetadata(badVersionEdmx)).toThrow();
+        });
+    });
+
+    describe('recursive hierarchy helpers', () => {
+        it('hasRecursiveHierarchyForEntity should return true for entities with Hierarchy.RecursiveHierarchy annotation', () => {
+            // Create a mock metadata with recursive hierarchy
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        },
+                                        ParentNavigationProperty: {
+                                            $NavigationPropertyPath: 'Parent'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasRecursiveHierarchyForEntity(mockMetadata, 'TestEntity')).toBe(true);
+        });
+
+        it('hasRecursiveHierarchyForEntity should return false for entities without recursive hierarchy annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {},
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasRecursiveHierarchyForEntity(mockMetadata, 'TestEntity')).toBe(false);
+        });
+
+        it('hasRecursiveHierarchyForEntity should return false if entitySetName is not provided', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasRecursiveHierarchyForEntity(mockMetadata)).toBe(false);
+            expect(hasRecursiveHierarchyForEntity(mockMetadata, undefined)).toBe(false);
+        });
+
+        it('hasRecursiveHierarchyForEntity should return false for non-existent entity set', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasRecursiveHierarchyForEntity(mockMetadata, 'NonExistentEntity')).toBe(false);
+        });
+
+        it('hasRecursiveHierarchyForEntity should return true for entities with qualified RecursiveHierarchy annotation', () => {
+            // Test for real-world scenario where RecursiveHierarchy has a qualifier
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy#CompanyNode': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        },
+                                        ParentNavigationProperty: {
+                                            $NavigationPropertyPath: 'Parent'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasRecursiveHierarchyForEntity(mockMetadata, 'TestEntity')).toBe(true);
         });
     });
 });
