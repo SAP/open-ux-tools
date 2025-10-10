@@ -508,12 +508,7 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                if (this.projectType === 'EDMXBackend') {
-                    this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
-                } else {
-                    this.logger.warn(`The Card Generator is not available for CAP projects.`);
-                    this.templateConfig.enableCardGenerator = false;
-                }
+                this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
                 await this.flpGetHandler(req, res, next);
             }
         );
@@ -1028,9 +1023,6 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        if (this.projectType !== 'EDMXBackend') {
-            return;
-        }
         this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
 
@@ -1104,9 +1096,6 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        if (this.projectType !== 'EDMXBackend') {
-            return;
-        }
         this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
 
