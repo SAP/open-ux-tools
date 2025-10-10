@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.2.3
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.2.2
 
 ### Patch Changes
