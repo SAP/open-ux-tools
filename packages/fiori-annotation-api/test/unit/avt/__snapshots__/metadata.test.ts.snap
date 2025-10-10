@@ -57,26 +57,6 @@ Object {
     },
     Object {
       "_type": "Action",
-      "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)",
-      "isBound": false,
-      "isFunction": false,
-      "name": "IncidentService.ReassignIncident(IncidentService.Incidents)",
-      "parameters": Array [
-        Object {
-          "_type": "ActionParameter",
-          "annotations": Object {},
-          "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)/incident",
-          "isCollection": false,
-          "name": "incident",
-          "type": "IncidentService.Incidents",
-        },
-      ],
-      "returnCollection": false,
-      "returnType": "Edm.Boolean",
-      "sourceType": "",
-    },
-    Object {
-      "_type": "Action",
       "fullyQualifiedName": "IncidentService.getIncidentCount(IncidentService.Incidents)",
       "isBound": false,
       "isFunction": true,
@@ -93,6 +73,26 @@ Object {
       ],
       "returnCollection": false,
       "returnType": "Edm.Int32",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.ReassignIncident(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)/incident",
+          "isCollection": false,
+          "name": "incident",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnCollection": false,
+      "returnType": "Edm.Boolean",
       "sourceType": "",
     },
     Object {
