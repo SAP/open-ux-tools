@@ -5,7 +5,7 @@ import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as logger from '../../../../src/tracing/logger';
 import * as projectAccess from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as validations from '../../../../src/validation/validation';
 import { addChangeInboundCommand } from '../../../../src/cli/change/change-inbound';
 import * as adp from '@sap-ux/adp-tooling';

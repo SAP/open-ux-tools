@@ -1,4 +1,4 @@
-import { basename } from 'path';
+import { basename } from 'node:path';
 import type { DeployConfigOptions } from '../types';
 import type { GeneratorOptions } from 'yeoman-generator';
 

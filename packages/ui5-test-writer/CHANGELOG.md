@@ -1,5 +1,52 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-application-writer@1.5.19
+    -   @sap-ux/project-access@1.32.4
+
+## 0.7.28
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui5-application-writer@1.5.18
+    -   @sap-ux/project-access@1.32.3
+
+## 0.7.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/ui5-application-writer@1.5.17
+
+## 0.7.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.1
+-   @sap-ux/ui5-application-writer@1.5.16
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/ui5-application-writer@1.5.15
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/ui5-application-writer@1.5.15
+
 ## 0.7.23
 
 ### Patch Changes

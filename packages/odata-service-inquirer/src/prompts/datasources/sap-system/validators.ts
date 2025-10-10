@@ -2,7 +2,7 @@ import { t } from '../../../i18n';
 import { SystemService } from '@sap-ux/store';
 import LoggerHelper from '../../logger-helper';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
 /**
  * Check if the system name is already in use.

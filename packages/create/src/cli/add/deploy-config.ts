@@ -149,7 +149,8 @@ async function addDeployConfig(
             logger.debug(`Adding deployment configuration : ${JSON.stringify(config, null, 2)}`);
             const fs = await generateDeployConfig(basePath, config, {
                 baseFile,
-                deployFile
+                deployFile,
+                addBuildToUndeployScript: !isAdp
             });
             await traceChanges(fs);
 

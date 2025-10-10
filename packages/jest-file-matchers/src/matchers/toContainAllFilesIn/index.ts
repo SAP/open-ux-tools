@@ -1,6 +1,6 @@
 import { compareSync } from 'dir-compare';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import chalk from 'chalk';
 import type { MatcherOptions } from '../types';
 

@@ -3,7 +3,7 @@ import { MiddlewareConfigs } from '../types';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
 import type { Editor } from 'mem-fs-editor';
-import { basename } from 'path';
+import { basename } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 /**
  * Type guard to check if the given configuration is a deprecated preview middleware configuration.

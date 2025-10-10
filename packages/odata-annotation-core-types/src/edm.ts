@@ -2,7 +2,10 @@ export const enum Edm {
     Action = 'Action',
     ActionImport = 'ActionImport',
     Add = 'Add',
-    Alias = 'Alias', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Alias = 'Alias',
     And = 'And',
     Annotation = 'Annotation',
     Annotations = 'Annotations',
@@ -24,6 +27,10 @@ export const enum Edm {
     Date = 'Date',
     DateTimeOffset = 'DateTimeOffset',
     Decimal = 'Decimal',
+    /**
+     * as attribute name only
+     */
+    DefaultValue = 'DefaultValue',
     Div = 'Div',
     Duration = 'Duration',
     EntityContainer = 'EntityContainer',
@@ -46,38 +53,81 @@ export const enum Edm {
     LabeledElement = 'LabeledElement',
     Le = 'Le',
     Lt = 'Lt',
+    /**
+     * as attribute name only
+     */
+    MaxLength = 'MaxLength',
     Member = 'Member',
     ModelElementPath = 'ModelElementPath',
     Mul = 'Mul',
-    Name = 'Name', // as attribute name only
-    Namespace = 'Namespace', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Name = 'Name',
+    /**
+     * as attribute name only
+     */
+    Namespace = 'Namespace',
     NavigationProperty = 'NavigationProperty',
     NavigationPropertyPath = 'NavigationPropertyPath',
     Ne = 'Ne',
     Neg = 'Neg',
     Not = 'Not',
     Null = 'Null',
+    /**
+     * as attribute name only
+     */
+    Nullable = 'Nullable',
     OnDelete = 'OnDelete',
     Parameter = 'Parameter',
     Path = 'Path',
+    /**
+     * as attribute name only
+     */
+    Precision = 'Precision',
     Property = 'Property',
     PropertyPath = 'PropertyPath',
     PropertyValue = 'PropertyValue',
     Or = 'Or',
-    Qualifier = 'Qualifier', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Qualifier = 'Qualifier',
     Record = 'Record',
     Reference = 'Reference',
     ReferentialConstraint = 'ReferentialConstraint',
+    /**
+     * as attribute name only
+     */
+    ReferencedProperty = 'ReferencedProperty',
     ReturnType = 'ReturnType',
+    /**
+     * as attribute name only
+     */
+    Scale = 'Scale',
     Schema = 'Schema',
     Singleton = 'Singleton',
+    /**
+     * as attribute name only
+     */
+    SRID = 'SRID',
     String = 'String',
     Sub = 'Sub',
-    Target = 'Target', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Target = 'Target',
     Term = 'Term',
     TimeOfDay = 'TimeOfDay',
-    Type = 'Type', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Type = 'Type',
     TypeDefinition = 'TypeDefinition',
+    /**
+     * as attribute name only
+     */
+    Unicode = 'Unicode',
     UrlRef = 'UrlRef'
 }
 

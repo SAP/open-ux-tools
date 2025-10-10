@@ -61,7 +61,7 @@ export class ArrayAggregation extends ObjectAggregation {
         if (aggregation.schema && !aggregation.schema.title) {
             // Apply custom title as node label for array element
             aggregation.schema.title = i18next.t('PAGE_EDITOR_OUTLINE_ARRAY_ITEM', {
-                name: parseInt(name, 10) + 1
+                name: Number.parseInt(name, 10) + 1
             });
         }
         aggregation.custom = true;

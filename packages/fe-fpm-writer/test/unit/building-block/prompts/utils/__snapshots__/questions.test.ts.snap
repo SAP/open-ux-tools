@@ -153,12 +153,12 @@ exports[`utils - questions getBindingContextType 1`] = `
 Object {
   "choices": Array [
     Object {
-      "name": "Relative",
-      "value": "relative",
-    },
-    Object {
       "name": "Absolute",
       "value": "absolute",
+    },
+    Object {
+      "name": "Relative",
+      "value": "relative",
     },
   ],
   "guiOptions": Object {
@@ -177,12 +177,12 @@ exports[`utils - questions getBindingContextType 2`] = `
 Object {
   "choices": Array [
     Object {
-      "name": "Relative",
-      "value": "relative",
-    },
-    Object {
       "name": "Absolute",
       "value": "absolute",
+    },
+    Object {
+      "name": "Relative",
+      "value": "relative",
     },
   ],
   "guiOptions": Object {

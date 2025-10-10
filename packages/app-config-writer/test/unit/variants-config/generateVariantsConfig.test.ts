@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateVariantsConfig } from '../../../src';
 import { ToolsLogger } from '@sap-ux/logger';
 

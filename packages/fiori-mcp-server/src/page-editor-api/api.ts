@@ -34,7 +34,8 @@ export class PageEditorApi {
             children: [],
             path: [],
             properties: [],
-            text: ''
+            text: '',
+            schema: {}
         };
         if (this.pageId) {
             const pageData = await this.ftfsIO.readPageData(this.pageId);

@@ -19,7 +19,13 @@
       "path": "../fiori-annotation-api"
     },
     {
+      "path": "../fiori-docs-embeddings"
+    },
+    {
       "path": "../i18n"
+    },
+    {
+      "path": "../logger"
     },
     {
       "path": "../nodejs-utils"

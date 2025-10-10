@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Manifest } from '../../../src';
 import { getRelativeI18nPropertiesPaths, getI18nPropertiesPaths } from '../../../src/project/i18n/i18n';
 

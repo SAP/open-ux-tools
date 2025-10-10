@@ -1,8 +1,8 @@
 import { validateAdpProject, validateCloudAdpProject } from '../../../src/validation/validation';
 import * as projectAccess from '@sap-ux/project-access';
 import * as adp from '@sap-ux/adp-tooling';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 jest.mock('@sap-ux/adp-tooling');
 

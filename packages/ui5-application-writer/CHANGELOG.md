@@ -1,5 +1,35 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.19
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+
+## 1.5.18
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui5-config@0.29.7
+
+## 1.5.17
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+
+## 1.5.16
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+
 ## 1.5.15
 
 ### Patch Changes

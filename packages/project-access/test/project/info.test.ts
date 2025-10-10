@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from '../../src';
@@ -103,6 +103,11 @@ describe('Test getProject()', () => {
 
         expect(project.root).toBe(projectRoot);
         expect(project.projectType).toBe('CAPNodejs');
+        expect(project.capCustomPaths).toStrictEqual({
+            'app': 'app/',
+            'db': 'db/',
+            'srv': 'srv/'
+        });
         expect(Object.keys(project.apps).length).toBe(3);
 
         const appOne = project.apps[join('apps/one')];
@@ -213,7 +218,8 @@ describe('Test getProject()', () => {
         expect(project).toEqual({
             'root': projectRoot,
             'projectType': 'EDMXBackend',
-            'apps': {}
+            'apps': {},
+            'capCustomPaths': undefined
         });
     });
 });
