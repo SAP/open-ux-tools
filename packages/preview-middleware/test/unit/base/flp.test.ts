@@ -395,7 +395,11 @@ describe('FlpSandbox', () => {
                 );
 
                 test('test/flp.html UI5 2.x', async () => {
-                    const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -407,7 +411,25 @@ describe('FlpSandbox', () => {
 
                 test('test/flp.html UI5 legacy-free', async () => {
                     const jsonSpy = () =>
-                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+                        });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html UI5 1.76.0 from npmjs', async () => {
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'myApp',
+                            libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -419,7 +441,10 @@ describe('FlpSandbox', () => {
 
                 test('test/flp.html UI5 snapshot', async () => {
                     const jsonSpy = () =>
-                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -464,7 +489,10 @@ describe('FlpSandbox', () => {
                 if (enableEnhancedHomePage) {
                     test('test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0', async () => {
                         const jsonSpy = () =>
-                            Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
+                            Promise.resolve({
+                                name: 'SAPUI5 Distribution',
+                                libraries: [{ name: 'sap.ui.core', version: '1.120.0' }]
+                            });
                         fetchMock.mockResolvedValue({
                             json: jsonSpy,
                             text: jest.fn(),
@@ -507,7 +535,11 @@ describe('FlpSandbox', () => {
         });
 
         test('rta with developerMode=true UI5 version 2.x', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),
@@ -703,7 +735,11 @@ describe('FlpSandbox', () => {
         });
 
         test('test/flp.html UI5 1.71 with asyncHints.requests', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] });
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.71.0' }]
+                });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),
