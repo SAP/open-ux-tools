@@ -152,8 +152,9 @@ function processCustomColumnBuildingBlock<T extends BuildingBlock>(
             fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData);
         }
         // check xmlDocument for macrosTable element
-        const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
-        if (hasTableColumn) {
+        const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+        const hasTableColumn = xpathSelect("//*[local-name()='columns']", xmlDocument);
+        if (hasTableColumn && Array.isArray(hasTableColumn) && hasTableColumn.length > 0) {
             buildingBlockData.hasTableColumns = true;
             updatedAggregationPath = aggregationPath + '/macros:columns';
         }
