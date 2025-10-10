@@ -1,3 +1,5 @@
+import type { EventHandlerConfiguration } from '../common/types';
+
 /**
  * Building block type.
  *
@@ -9,6 +11,7 @@ export enum BuildingBlockType {
     Field = 'field',
     Page = 'page',
     Table = 'table',
+    CustomColumn = 'custom-column',
     RichTextEditor = 'rich-text-editor'
 }
 
@@ -407,6 +410,22 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+}
+
+export interface CustomColumn extends BuildingBlock {
+    title: string;
+    customColumnFragmentPath: string;
+    customColumnFragmentName: string;
+    appName?: string;
+    hasTableColumns?: boolean;
+    fragmentFile?: string;
+    folder?: string;
+    columnKey?: string;
+    content?: string;
+    width?: string;
+    eventHandler?: true | string | EventHandlerConfiguration;
+    typescript?: boolean;
+    path?: string;
 }
 
 /**

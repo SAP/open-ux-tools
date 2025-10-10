@@ -29,6 +29,7 @@ export {
     Table,
     BuildingBlockConfig,
     Page,
+    CustomColumn,
     RichTextEditor
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';

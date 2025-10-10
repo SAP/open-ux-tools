@@ -2,12 +2,13 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse, relative } from 'node:path';
+import { dirname, join, parse, relative } from 'node:path';
 import {
     BuildingBlockType,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
+    type CustomColumn,
     type RichTextEditor,
     bindingContextAbsolute
 } from './types';
@@ -22,8 +23,10 @@ import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
+import { getDefaultFragmentContent } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -60,10 +63,17 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    const { content: manifest } = await getManifest(basePath, fs);
-    const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
+    const { updatedAggregationPath, processedBuildingBlockData } = processCustomColumnBuildingBlock(
+        buildingBlockData,
+        xmlDocument,
+        manifestPath,
+        aggregationPath,
+        fs
+    );
+    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest);
 
     if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
@@ -77,7 +87,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     fs = updateViewFile(
         basePath,
         viewOrFragmentPath,
-        aggregationPath,
+        updatedAggregationPath,
         xmlDocument,
         templateDocument,
         fs,
@@ -98,6 +108,70 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
+}
+
+/**
+ * Processes custom column building block configuration.
+ *
+ * @param {BuildingBlock} buildingBlockData - The building block data
+ * @param {Document} xmlDocument - The XML document
+ * @param {string} manifestPath - The manifest file path
+ * @param {string} aggregationPath - The aggregation path
+ * @param {Editor} fs - The memfs editor instance
+ * @returns {object} Object containing updated aggregation path and processed building block data
+ */
+function processCustomColumnBuildingBlock<T extends BuildingBlock>(
+    buildingBlockData: T,
+    xmlDocument: Document,
+    manifestPath: string,
+    aggregationPath: string,
+    fs: Editor
+): { updatedAggregationPath: string; processedBuildingBlockData: T } {
+    let updatedAggregationPath = aggregationPath;
+
+    if (isCustomColumn(buildingBlockData)) {
+        const viewPath = join(
+            join(dirname(manifestPath), buildingBlockData.folder ?? ''),
+            `${buildingBlockData.customColumnFragmentName}.fragment.xml`
+        );
+        buildingBlockData.path = join(dirname(manifestPath), buildingBlockData.folder ?? '');
+        // Apply event handler
+        if (buildingBlockData.eventHandler) {
+            buildingBlockData.eventHandler = applyEventHandlerConfiguration(
+                fs,
+                buildingBlockData,
+                buildingBlockData.eventHandler,
+                {
+                    controllerSuffix: false,
+                    typescript: buildingBlockData.typescript
+                }
+            );
+        }
+        buildingBlockData.content = getDefaultFragmentContent('Sample Text', buildingBlockData.eventHandler);
+        if (!fs.exists(viewPath)) {
+            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData);
+        }
+        // check xmlDocument for macrosTable element
+        const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+        const hasTableColumn = xpathSelect("//*[local-name()='columns']", xmlDocument);
+        if (hasTableColumn && Array.isArray(hasTableColumn) && hasTableColumn.length > 0) {
+            buildingBlockData.hasTableColumns = true;
+            updatedAggregationPath = aggregationPath + '/macros:columns';
+        }
+        getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
+    }
+
+    return { updatedAggregationPath, processedBuildingBlockData: buildingBlockData };
+}
+
+/**
+ * Type guard to check if the building block data is a custom column.
+ *
+ * @param {BuildingBlock} data - The building block data to check
+ * @returns {boolean} True if the data is a custom column
+ */
+function isCustomColumn(data: BuildingBlock): data is CustomColumn {
+    return data.buildingBlockType === BuildingBlockType.CustomColumn;
 }
 
 /**
@@ -255,12 +329,13 @@ function getTemplateContent<T extends BuildingBlock>(
  * Method returns the manifest content for the required dependency library.
  *
  * @param {Editor} fs - the memfs editor instance
+ * @param {string} library - the dependency library
  * @returns {Promise<string>} Manifest content for the required dependency library.
  */
-export async function getManifestContent(fs: Editor): Promise<string> {
+export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'): Promise<string> {
     // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
     const templatePath = getTemplatePath('/building-block/common/manifest.json');
-    return render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } });
+    return render(fs.read(templatePath), { libraries: { [library]: {} } });
 }
 
 /**
