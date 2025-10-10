@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import '../../../../styles/StoreMain.scss';
+import '../../../../styles/SystemMain.scss';
 
 interface BTPSystemProps {
     systemInfo?: BackendSystem;

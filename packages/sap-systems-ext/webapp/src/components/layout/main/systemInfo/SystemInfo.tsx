@@ -5,7 +5,7 @@ import { BTPSystem } from './BTPSystem';
 import { OnPremSystem } from './OnPremSystem';
 import { SystemName } from './SystemName';
 
-import '../../../../styles/StoreMain.scss';
+import '../../../../styles/SystemMain.scss';
 
 interface SystemInfoProps {
     systemInfo?: BackendSystem;

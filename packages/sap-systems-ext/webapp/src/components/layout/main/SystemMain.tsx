@@ -8,7 +8,7 @@ import { SystemInfo } from './systemInfo';
 import { LoadingState } from '../../../types';
 import { useSystemMain } from '../../../hooks';
 
-import '../../../styles/StoreMain.scss';
+import '../../../styles/SystemMain.scss';
 
 export function SystemMain(): ReactElement {
     const { t } = useTranslation();

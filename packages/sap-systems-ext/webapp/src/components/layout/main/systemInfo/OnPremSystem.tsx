@@ -5,7 +5,7 @@ import { UITextInput } from '@sap-ux/ui-components';
 import { BasicAuthCreds } from './BasicAuthCreds';
 import { useTranslation } from 'react-i18next';
 
-import '../../../../styles/StoreMain.scss';
+import '../../../../styles/SystemMain.scss';
 
 interface OnPremSystemProps {
     systemInfo?: BackendSystem;

@@ -4,7 +4,7 @@ import type { SystemState } from '../../../types';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import '../../../styles/StoreHeader.scss';
+import '../../../styles/SystemHeader.scss';
 
 export function SystemHeader(): ReactElement {
     const systemInfo = useSelector((state: SystemState) => state.systemInfo);
