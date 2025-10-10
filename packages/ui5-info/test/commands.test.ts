@@ -209,7 +209,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             1,
             'npm.cmd',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
-            {}
+            { 'shell': true }
         );
     });
 });
