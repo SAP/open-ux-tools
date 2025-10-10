@@ -41,7 +41,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
-        "semver": "7.6.3"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@sap-ux/preview-middleware": "workspace:*",
@@ -49,7 +49,7 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
-        "@types/semver": "7.5.8",
+        "@types/semver": "7.7.1",
         "axios": "1.12.2",
         "nock": "13.4.0"
     },
