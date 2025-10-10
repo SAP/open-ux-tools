@@ -8,7 +8,6 @@ import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
-    hasAggregateTransformationsForEntity,
     hasCompleteAggregateTransformationsForEntity,
     hasRecursiveHierarchyForEntity
 } from '@sap-ux/inquirer-common';
@@ -274,14 +273,6 @@ export function getDefaultTableType(
     ) {
         // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
         tableType = 'TreeTable';
-    } else if (
-        (templateType === 'lrop' || templateType === 'worklist') &&
-        odataVersion === OdataVersion.v4 &&
-        hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
-    ) {
-        // For V4, if the selected entity has some aggregate transformations (but not all), use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-        setAnalyticalTableDefault = true;
     } else if (templateType === 'alp') {
         // For ALP, use AnalyticalTable as default
         tableType = 'AnalyticalTable';

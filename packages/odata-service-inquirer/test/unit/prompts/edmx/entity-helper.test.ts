@@ -422,10 +422,10 @@ describe('Test entity helper functions', () => {
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
-        test('should prioritize recursive hierarchy over partial aggregate transformations', () => {
+        test('should use TreeTable for entities with recursive hierarchy and partial aggregate transformations', () => {
             // Integration test using the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
             // This entity has both recursive hierarchy and partial aggregate transformations (only 5 of 9)
-            // Recursive hierarchy should take priority over partial aggregate transformations
+            // Since partial transformations don't qualify for AnalyticalTable, recursive hierarchy gets TreeTable
             const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
             const convertedMetadata = convert(parsedEdmx);
 
@@ -435,7 +435,7 @@ describe('Test entity helper functions', () => {
                 OdataVersion.v4,
                 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
             );
-            // Since the entity only has partial transformations (not all 9), recursive hierarchy takes priority
+            // Since the entity only has partial transformations (not complete), it gets TreeTable for recursive hierarchy
             expect(result.tableType).toBe('TreeTable');
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
