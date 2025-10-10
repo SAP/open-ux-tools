@@ -257,6 +257,7 @@
         "systemTypeS4HC": "S4HC",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
-        "choiceNameNone": "None"
+        "choiceNameNone": "None",
+        "passwordStoreWarning": "Passwords are stored in the OS credential manager and protected by its security policies."
     }
 }

@@ -125,6 +125,13 @@ export function getCredentialsPrompts<T extends Answers>(
                         severity: Severity.warning
                     };
                 }
+                // Only show password store warning if the system has stored credentials or if credentials are being newly saved
+                else if (PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated) {
+                    return {
+                        message: t('texts.passwordStoreWarning'),
+                        severity: Severity.information
+                    };
+                }
             }
         } as PasswordQuestion<T>
     ];
