@@ -1,18 +1,16 @@
 {
-  "extends": "../../../tsconfig.json",
-  "include": [
-    "src"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../../store"
+    "extends": "../../../tsconfig.json",
+    "include": ["src"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../../ui-components"
-    }
-  ]
+    "references": [
+        {
+            "path": "../../store"
+        },
+        {
+            "path": "../../ui-components"
+        }
+    ]
 }

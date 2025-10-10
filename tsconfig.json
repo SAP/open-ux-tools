@@ -6,7 +6,7 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "lib": ["ES2022", "dom", "dom.iterable"],
+        "lib": ["ES2023", "dom", "dom.iterable"],
         "module": "commonjs",
         "moduleResolution": "node",
         "noEmit": false,
@@ -14,7 +14,7 @@
         "strict": true,
         "strictPropertyInitialization": false,
         "strictNullChecks": true,
-        "target": "ES2022",
+        "target": "ES2023",
         "skipLibCheck": true,
         "resolveJsonModule": true,
         "useUnknownInCatchVariables": false

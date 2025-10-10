@@ -3581,10 +3581,10 @@ importers:
         version: 8.57.0
       ts-loader:
         specifier: 9.4.4
-        version: 9.4.4(typescript@5.1.6)(webpack@5.101.3)
+        version: 9.4.4(typescript@5.9.2)(webpack@5.101.3)
       typescript:
-        specifier: 5.1.6
-        version: 5.1.6
+        specifier: 5.9.2
+        version: 5.9.2
 
   packages/sap-systems-ext/webapp:
     devDependencies:
@@ -25723,21 +25723,6 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /ts-loader@9.4.4(typescript@5.1.6)(webpack@5.101.3):
-    resolution: {integrity: sha512-MLukxDHBl8OJ5Dk3y69IsKVFRA/6MwzEqBgh+OXMPB/OD01KQuWPFd1WAQP8a5PeSCAxfnkhiuWqfmFJzJQt9w==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      typescript: '*'
-      webpack: ^5.0.0
-    dependencies:
-      chalk: 4.1.2
-      enhanced-resolve: 5.18.3
-      micromatch: 4.0.8
-      semver: 7.7.1
-      typescript: 5.1.6
-      webpack: 5.101.3(esbuild@0.25.6)
-    dev: true
-
   /ts-loader@9.4.4(typescript@5.6.2)(webpack@5.101.3):
     resolution: {integrity: sha512-MLukxDHBl8OJ5Dk3y69IsKVFRA/6MwzEqBgh+OXMPB/OD01KQuWPFd1WAQP8a5PeSCAxfnkhiuWqfmFJzJQt9w==}
     engines: {node: '>=12.0.0'}
@@ -25748,7 +25733,7 @@ packages:
       chalk: 4.1.2
       enhanced-resolve: 5.18.3
       micromatch: 4.0.8
-      semver: 7.5.4
+      semver: 7.7.1
       typescript: 5.6.2
       webpack: 5.101.3(esbuild@0.19.2)
     dev: true
@@ -26079,12 +26064,6 @@ packages:
   /typescript@4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
-  /typescript@5.1.6:
-    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
-    engines: {node: '>=14.17'}
     hasBin: true
     dev: true
 
