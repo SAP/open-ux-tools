@@ -49,7 +49,8 @@
         },
         "launchAppGen": "Failed to launch the SAP Fiori application generator for [{{- systemName}}].",
         "catalogRequest": "The V{{version}} request failed with error: {{error}}.",
-        "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}"
+        "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}",
+        "viewSystemDetails": "Error executing command to view system details: {{- error}}"
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection."

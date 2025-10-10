@@ -33,9 +33,9 @@ export const showSystemsCommandHandler =
                 return;
             }
             openSystemPanel(context, backendSystemKey, storedBackendSystem, statusMsg);
-        } catch (err) {
+        } catch (error) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            window.showErrorMessage(t('error.viewSystemDetails', { err }));
+            window.showErrorMessage(t('error.viewSystemDetails', { error }));
             logTelemetryFailure();
         }
     };

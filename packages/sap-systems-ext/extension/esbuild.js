@@ -33,7 +33,7 @@ async function main() {
         sourcesContent: false,
         platform: 'node',
         outfile: 'dist/extension.js',
-        external: ['vscode', '@zowe/secrets-for-zowe-sdk'],
+        external: ['vscode', '@zowe/secrets-for-zowe-sdk', 'jsonc-parser'],
         logLevel: 'silent',
         plugins: [
             /* add to the end of plugins array */
