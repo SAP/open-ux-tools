@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.21
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.5.20
 
 ### Patch Changes

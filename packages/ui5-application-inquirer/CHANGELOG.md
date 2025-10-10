@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.15
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.15.14
 
 ### Patch Changes

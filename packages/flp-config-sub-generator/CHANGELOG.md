@@ -1,5 +1,14 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.32
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+-   Updated dependencies [e015869]
+    -   @sap-ux/flp-config-inquirer@0.4.31
+    -   @sap-ux/app-config-writer@0.6.42
+
 ## 0.3.31
 
 ### Patch Changes
