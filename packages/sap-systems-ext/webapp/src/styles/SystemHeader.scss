@@ -1,0 +1,22 @@
+.store-header {
+    margin: 13px 20px 0 20px;
+
+    &-title {
+        padding: 10px 0;
+        font-family: var(--vscode-font-family);
+        font-weight: 600;
+        font-size: 26px;
+        font-style: normal;
+        line-height: 29px;
+        color: var(--vscode-settings-headerForeground);
+    }
+
+    &-sub-heading {
+        font-family: var(--vscode-font-family);
+        font-weight: 450;
+        font-size: 14px;
+        font-style: normal;
+        line-height: 16px;
+        color: var(--vscode-settings-headerForeground);
+    }
+}

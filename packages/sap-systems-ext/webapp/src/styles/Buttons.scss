@@ -1,0 +1,58 @@
+.btns {
+    display: flex;
+    justify-content: normal;
+    margin-right: 18%;
+    max-width: 514px;
+    margin-top: 6px;
+}
+
+.system-btn {
+    margin-left: 20px;
+    margin-top: 18px;
+    font-size: 14px;
+    min-width: 80px;
+}
+.action-btns {
+    margin-left: 20px;
+    border-top: 1px solid var(--vscode-dropdown-border);
+    margin-right: 20%;
+    max-width: 480px;
+}
+
+.save-system-btn {
+    margin-left: 20px;
+    margin-top: 18px;
+    font-size: 14px;
+    min-width: 80px;
+}
+
+.action-btn {
+    margin-left: -10px;
+    font-size: 14px;
+    min-width: 80px;
+    color: var(--vscode-textLink-foreground);
+    background-color: transparent;
+    border-color: transparent;
+
+    &:hover {
+        text-decoration: underline;
+        background-color: transparent;
+        border-color: transparent;
+        color: var(--vscode-textLink-foreground);
+    }
+
+    .ms-Icon {
+        svg > g > path,
+        svg > path {
+            fill: var(--vscode-textLink-foreground);
+        }
+    }
+}
+
+#exportBtn {
+    margin-top: 18px;
+}
+
+#fioriProjectBtn {
+    margin-top: 10px;
+}
