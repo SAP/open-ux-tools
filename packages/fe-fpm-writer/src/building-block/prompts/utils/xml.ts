@@ -1,6 +1,5 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
-import { BuildingBlockType } from '../../types';
 
 /**
  * Method validates if passed id is available.
@@ -121,54 +120,6 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
         id && ids.push(id);
     }
     return ids;
-}
-
-/**
- * Finds the prefix associated with a given namespace URI in the root element's attributes.
- * Handles both default namespaces (xmlns="...") and prefixed namespaces (xmlns:prefix="...").
- *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @param {BuildingBlockConfig} buildingBlockType - the building block type
- * @returns {string} the macros namespace
- */
-export function getOrAddMacrosNamespace(ui5XmlDocument: Document, buildingBlockType?: BuildingBlockType): string {
-    let macrosNS = 'macros';
-    let macrosNamespaceValue = 'sap.fe.macros';
-    if (buildingBlockType === BuildingBlockType.CustomColumn) {
-        macrosNS = 'macrosTable';
-        macrosNamespaceValue = 'sap.fe.macros.table';
-    }
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === macrosNamespaceValue);
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap[macrosNS] = macrosNamespaceValue;
-        ui5XmlDocument.documentElement.setAttributeNS(
-            'http://www.w3.org/2000/xmlns/',
-            `xmlns:${macrosNS}`,
-            macrosNamespaceValue
-        );
-    }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : macrosNS;
-}
-
-/**
- * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
- *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @returns {string} the macros namespace
- */
-export function getOrAddTableMacrosNamespace(ui5XmlDocument: Document): string {
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros.table');
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap['macrosTable'] = 'sap.fe.macros.table';
-        ui5XmlDocument.documentElement.setAttributeNS(
-            'http://www.w3.org/2000/xmlns/',
-            'xmlns:macrosTable',
-            'sap.fe.macros.table'
-        );
-    }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macrosTable';
 }
 
 /**

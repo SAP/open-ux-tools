@@ -1,4 +1,4 @@
-import { EventHandler, EventHandlerConfiguration } from '../common/types';
+import type { EventHandlerConfiguration } from '../common/types';
 
 /**
  * Building block type.
