@@ -184,6 +184,76 @@ export function filterAggregateTransformations(entitySets: EntitySet[]): EntityS
 }
 
 /**
+ * Checks if the given entity set has all the required transformations for analytical table support.
+ * The required transformations are: filter, identity, orderby, search, skip, top, groupby, aggregate, concat.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for complete aggregate transformations.
+ * @returns true if the entity set has all 9 required transformations, false otherwise.
+ */
+export function hasCompleteAggregateTransformationsForEntity(
+    metadata: ConvertedMetadata,
+    entitySetName?: string
+): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+
+    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    if (!entitySet) {
+        return false;
+    }
+
+    // Required transformations for analytical table support
+    const requiredTransformations = [
+        'filter',
+        'identity',
+        'orderby',
+        'search',
+        'skip',
+        'top',
+        'groupby',
+        'aggregate',
+        'concat'
+    ];
+
+    // Get transformations from entity set or entity type annotations
+    const transformations =
+        entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
+
+    if (!transformations || !Array.isArray(transformations)) {
+        return false;
+    }
+
+    // Check if all required transformations are present
+    return requiredTransformations.every((transformation) => transformations.includes(transformation));
+}
+
+/**
+ * Checks if the given entity set name has a Hierarchy.RecursiveHierarchy annotation in the metadata.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for recursive hierarchy annotation.
+ * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
+ */
+export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+
+    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
+
+    if (!hierarchyAnnotations) {
+        return false;
+    }
+
+    // Check for RecursiveHierarchy annotation (with or without qualifier)
+    return Object.keys(hierarchyAnnotations).some((key) => key.startsWith('RecursiveHierarchy'));
+}
+
+/**
  * Converts an EDMX string to a ConvertedMetadata object.
  *
  * @param edmx - The EDMX string to convert.
