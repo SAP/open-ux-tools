@@ -1,0 +1,1 @@
+Add {{pageType}} page to {{parent}} in application with appPath: {{appPath}}
