@@ -1,4 +1,4 @@
-import type { CompilerMessage, Target, WorkspaceEdit } from '@sap-ux/odata-annotation-core-types';
+import type { CompilerMessage, Element, Location, Target, WorkspaceEdit } from '@sap-ux/odata-annotation-core-types';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
 import type { AnnotationFileChange } from './internal-change';
@@ -6,6 +6,11 @@ import type { Service, CompiledService } from './service';
 import type { TextFile } from './text-file';
 
 type ValidationResultType = Map<string, CompilerMessage> | void;
+export interface ValueListReferences {
+    location: Location;
+    annotation: Element;
+    uris: string[];
+}
 
 /**
  * Defines a set of functions that needs to be implemented to provide
@@ -45,6 +50,11 @@ export interface AnnotationServiceAdapter {
      * @param target - Content of an 'Annotations' element
      */
     serializeTarget(target: Target): string;
+
+    /**
+     * Get mapping from targets to value list references
+     */
+    getValueListReferences(): Map<string, ValueListReferences[]>;
 }
 
 export interface AnnotationServiceConstructor<T extends Service> {
