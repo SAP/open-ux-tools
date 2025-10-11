@@ -241,17 +241,16 @@ export async function transformState<T>(
         if (
             service.destinationAuthType === DestinationAuthType.SAML_ASSERTION ||
             service.connectedSystem?.destination?.Authentication === DestinationAuthType.SAML_ASSERTION ||
-            AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType
-        ) {
-            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
-        } else if (
+            AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType ||
+            // Apps generated with stored service keys (legacy) will use re-entrance tickets for connectivity
+            // New stored systems will only use re-entrance
             service.connectedSystem?.backendSystem?.serviceKeys ||
-            // If 'cloud' write `scp` property to yamls to enable preview on VSCode (using oAuth)
+            // If 'cloud' this will enable preview on VSCode (using re-entrance) for app portability
             (getHostEnvironment() === hostEnvironment.bas &&
                 service.connectedSystem?.destination &&
                 isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
         ) {
-            appConfig.service.previewSettings = { scp: true };
+            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
         } else if (service.apiHubConfig) {
             appConfig.service.previewSettings = { apiHub: true };
         }

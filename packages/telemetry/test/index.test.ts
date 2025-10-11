@@ -1,5 +1,3 @@
-jest.disableAutomock();
-
 import { EventHeader } from '../src/base/types/event-header';
 
 describe('Telemetry API Tests', () => {

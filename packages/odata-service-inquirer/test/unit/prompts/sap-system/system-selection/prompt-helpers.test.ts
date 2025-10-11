@@ -4,7 +4,6 @@ import {
     CfAbapEnvServiceChoice,
     createSystemChoices,
     findDefaultSystemSelectionIndex,
-    getBackendSystemDisplayName,
     NewSystemChoice
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
@@ -70,26 +69,6 @@ describe('Test system selection prompt helpers', () => {
             mockIsAppStudio = false;
         });
 
-        test('Should get backend system display name', () => {
-            expect(
-                getBackendSystemDisplayName({
-                    name: 'systemA',
-                    userDisplayName: 'userDisplayName1',
-                    authenticationType: 'reentranceTicket' as AuthenticationType,
-                    systemType: 'S4HC'
-                } as BackendSystem)
-            ).toEqual('systemA (S4HC) [userDisplayName1]');
-
-            expect(
-                getBackendSystemDisplayName({
-                    name: 'systemB',
-                    userDisplayName: 'userDisplayName2',
-                    serviceKeys: { url: 'Im a service key' },
-                    systemType: 'BTP'
-                } as BackendSystem)
-            ).toEqual('systemB (BTP) [userDisplayName2]');
-        });
-
         test('Should create backend system selection choices', async () => {
             expect(await createSystemChoices()).toEqual([
                 {
@@ -107,7 +86,7 @@ describe('Test system selection prompt helpers', () => {
                     }
                 },
                 {
-                    name: `${backendSystemReentrance.name} (S4HC)`,
+                    name: `${backendSystemReentrance.name} (ABAP Cloud)`,
                     value: {
                         system: backendSystemReentrance,
                         type: 'backendSystem'

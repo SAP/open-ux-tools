@@ -12,6 +12,8 @@ import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { removeSync } from 'circular-reference-remover';
+import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey } from '@sap-ux/store';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -150,6 +152,23 @@ export function removeCircularFromServiceProvider(serviceProvider: ServiceProvid
         (serviceProvider as any).log = removeSync((serviceProvider as any).log, { setUndefined: true });
     }
     return serviceProvider;
+}
+
+/**
+ * Checks if the specified backend systems contain a match for the specified url and client.
+ *
+ * @param backendSystems backend systems to search for a matching key
+ * @param url the url component of the backend system key
+ * @param client the client component of of the backend system key
+ * @returns the backend system if found or undefined
+ */
+export function isBackendSystemKeyExisting(
+    backendSystems: BackendSystem[],
+    url: string,
+    client?: string
+): BackendSystem | undefined {
+    const newBackendSystemId = new BackendSystemKey({ url, client }).getId();
+    return backendSystems.find((backendSystem) => BackendSystemKey.from(backendSystem).getId() === newBackendSystemId);
 }
 
 export { PromptState };

@@ -16,10 +16,6 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
-}));
-
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
@@ -43,10 +39,6 @@ describe('getQuestions', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
-    });
-
-    beforeEach(() => {
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     afterEach(() => {

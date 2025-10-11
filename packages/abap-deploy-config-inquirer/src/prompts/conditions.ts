@@ -60,7 +60,7 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal
  */
 function showClientCondition(scp?: boolean): boolean {
     return Boolean(
-        !isAppStudio() && !PromptState.abapDeployConfig?.isS4HC && !scp && !PromptState.abapDeployConfig?.scp
+        !isAppStudio() && !PromptState.abapDeployConfig?.isAbapCloud && !scp && !PromptState.abapDeployConfig?.scp
     );
 }
 
@@ -142,7 +142,7 @@ export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRep
         !ui5AbapPromptOptions?.hide &&
         ui5AbapPromptOptions?.hideIfOnPremise &&
         !PromptState.abapDeployConfig?.scp &&
-        !PromptState.abapDeployConfig?.isS4HC
+        !PromptState.abapDeployConfig?.isAbapCloud
     ) {
         return false;
     }
@@ -238,7 +238,7 @@ function defaultOrShowTransportQuestion(): boolean {
 export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
     if (
         options?.hideIfOnPremise === true &&
-        !PromptState.abapDeployConfig?.isS4HC &&
+        !PromptState.abapDeployConfig?.isAbapCloud &&
         !PromptState.abapDeployConfig?.scp
     ) {
         return false;
@@ -276,7 +276,7 @@ export function defaultOrShowTransportListQuestion(
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
         !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
-        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false)
+        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isAbapCloud === false)
     );
 }
 
@@ -311,7 +311,8 @@ export function defaultOrShowManualTransportQuestion(
     return (
         defaultOrShowTransportQuestion() &&
         (transportInputChoice === TransportChoices.EnterManualChoice ||
-            (transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false))
+            (transportInputChoiceOptions?.hideIfOnPremise === true &&
+                PromptState?.abapDeployConfig?.isAbapCloud === false))
     );
 }
 

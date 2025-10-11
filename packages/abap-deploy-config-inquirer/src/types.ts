@@ -46,7 +46,7 @@ export interface AbapSystemChoice {
     url?: string;
     client?: string;
     isDefault?: boolean;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
 }
 
 /**
@@ -255,7 +255,7 @@ export interface AbapDeployConfigAnswers {
 export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers {
     clientChoice?: string;
     username?: string;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
     packageInputChoice?: PackageInputChoices;
     packageManual?: string;
     packageAutocomplete?: string;

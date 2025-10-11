@@ -1,4 +1,5 @@
 import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
 import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
@@ -15,6 +16,7 @@ import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 import LoggerHelper from '../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../src/types';
 import * as nodejsUtils from '@sap-ux/nodejs-utils';
+import { ToolsLogger } from '@sap-ux/logger';
 
 const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
@@ -27,18 +29,30 @@ jest.mock('@sap-ux/nodejs-utils', () => ({
     ...jest.requireActual('@sap-ux/nodejs-utils')
 }));
 
+const mockAbapServiceProvider = {
+    catalog: catalogServiceMock,
+    getSystemInfo: jest.fn().mockResolvedValue({
+        systemID: 'ABC123',
+        userName: 'user1@acme.com',
+        userFullName: 'userFirstName1 userLastName1',
+        client: '000',
+        language: 'DE'
+    }),
+    interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
+    user: jest.fn().mockReturnValue('user1@acme.com')
+};
+
 jest.mock('@sap-ux/axios-extension', () => ({
     __esModule: true,
     ...jest.requireActual('@sap-ux/axios-extension'),
-    AbapServiceProvider: jest.fn().mockImplementation(() => ({
-        catalog: catalogServiceMock
-    })),
-    createForAbapOnCloud: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
-        interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
-        catalog: catalogServiceMock,
-        user: jest.fn().mockReturnValue('user1@acme.com'),
-        refreshTokenChangedCb // Test only, usually handled by attachUaaAuthInterceptor but here for testing purposes
-    }))
+    AbapServiceProvider: jest.fn().mockImplementation(() => mockAbapServiceProvider),
+    createForAbapOnCloud: jest.fn().mockImplementation(() => mockAbapServiceProvider),
+    createForAbap: jest.fn().mockImplementation((...args: Parameters<typeof createForAbap>): AbapServiceProvider => {
+        const { createForAbap } = jest.requireActual('@sap-ux/axios-extension');
+        const asp = createForAbap(args);
+        asp.getSystemInfo = mockAbapServiceProvider.getSystemInfo;
+        return asp;
+    })
 }));
 
 let mockIsAppStudio = false;
@@ -231,7 +245,7 @@ describe('ConnectionValidator', () => {
         );
     });
 
-    test('should report and any ignore cert errors with warning, when connecting to an odata service url, if `NODE_TLS_REJECT_UNAUTHORIZED=0` is set', async () => {
+    test('should report and ignore cert errors with warning, when connecting to an odata service url, if `NODE_TLS_REJECT_UNAUTHORIZED=0` is set', async () => {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         const serviceUrl = 'https://localhost:8080/some/path';
         // Mock first request to get the specific cert errors
@@ -407,7 +421,8 @@ describe('ConnectionValidator', () => {
             ignoreCertErrors: false,
             params: {
                 'sap-client': '999'
-            }
+            },
+            logger: expect.any(ToolsLogger)
         });
         expect(connectValidator.validity).toEqual({
             authenticated: true,
@@ -525,7 +540,6 @@ describe('ConnectionValidator', () => {
         expect(createAbapOnCloudProviderSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 environment: 'Standalone',
-                refreshTokenChangedCb: expect.any(Function),
                 service: serviceInfoMock
             })
         );
@@ -538,30 +552,20 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
 
-        // Ensure the refresh token is updated when it changes
-        (connectValidator.serviceProvider as any).refreshTokenChangedCb('newToken1234');
-        expect(connectValidator.refreshToken).toEqual('newToken1234');
-
         connectValidator = new ConnectionValidator();
         createAbapOnCloudProviderSpy.mockClear();
         // Ensure refresh token is used to create a connection if presented
-        expect(
-            await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo, undefined, '123refreshToken456')
-        ).toBe(true);
+        expect(await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)).toBe(true);
         expect(createAbapOnCloudProviderSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 environment: 'Standalone',
-                refreshTokenChangedCb: expect.any(Function),
-                service: serviceInfoMock,
-                refreshToken: '123refreshToken456'
+                service: serviceInfoMock
             })
         );
 
         createAbapOnCloudProviderSpy.mockClear();
         // Should not create a new connection if the service url is the same as current valdidate url
-        expect(
-            await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo, undefined, '123refreshToken456')
-        ).toBe(true);
+        expect(await connectValidator.validateServiceInfo(serviceInfoMock as ServiceInfo)).toBe(true);
         expect(createAbapOnCloudProviderSpy).not.toHaveBeenCalled();
     });
 
@@ -625,7 +629,7 @@ describe('ConnectionValidator', () => {
         );
 
         expect(warnLogSpy).toHaveBeenNthCalledWith(2, t('warnings.allowingUnauthorizedCertsNode'));
-        expect(createForAbapProviderSpy).toHaveBeenCalledWith(
+        expect(createForAbap as jest.Mock).toHaveBeenCalledWith(
             expect.objectContaining({
                 baseURL: 'https://example.com:1234',
                 ignoreCertErrors: true
@@ -927,9 +931,7 @@ describe('ConnectionValidator', () => {
         connectValidator.setConnectedSystem(cachedConnectedSystem);
 
         connectValResult = await connectValidator.validateServiceInfo(
-            cachedConnectedSystem.backendSystem!.serviceKeys as ServiceInfo,
-            undefined,
-            'refreshToken1234'
+            cachedConnectedSystem.backendSystem!.serviceKeys as ServiceInfo
         );
 
         expect(connectValResult).toEqual(true);

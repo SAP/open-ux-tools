@@ -1,15 +1,16 @@
-import { ServiceInfo } from '@sap-ux/btp-utils';
 import { AxiosHeaders } from 'axios';
 import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
-import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
-import { RefreshTokenChanged, Uaa } from './uaa';
 
 export * from './connection';
 export * from './error';
+export { ServiceInfo } from '@sap-ux/btp-utils';
 
-export { ServiceInfo, RefreshTokenChanged, Uaa };
+/**
+ * @deprecated Soon to be removed. No longer needed as Service Key based auth support (UAA) has been removed
+ */
+export type RefreshTokenChanged = (refreshToken?: string, accessToken?: string) => void | Promise<void>;
 
 /**
  * @param provider Basic Auth Provider
@@ -19,42 +20,6 @@ export function attachBasicAuthInterceptor(provider: Axios): void {
         delete provider.defaults.auth;
         provider.interceptors.response.eject(oneTimeInterceptorId);
         return response;
-    });
-}
-
-/**
- * @param provider  Abap Service Provider
- * @param service Service Information
- * @param refreshToken refreshToken
- * @param refreshTokenUpdateCb refreshTokenUpdate callback function
- */
-export function attachUaaAuthInterceptor(
-    provider: AbapServiceProvider,
-    service: ServiceInfo,
-    refreshToken?: string,
-    refreshTokenUpdateCb?: RefreshTokenChanged
-): void {
-    const uaa = new Uaa(service, provider.log);
-    let token: string;
-    const getToken = async (): Promise<string> => {
-        return service.uaa?.username
-            ? await uaa.getAccessTokenWithClientCredentials()
-            : await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb);
-    };
-
-    // provide function to fetch user info from UAA if needed
-    provider.user = async () => {
-        token = token ?? (await getToken());
-        return uaa.getUserInfo(token);
-    };
-
-    provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
-        token = token ?? (await getToken());
-        // add token as auth header
-        request.headers = request.headers ?? new AxiosHeaders();
-        request.headers.authorization = `bearer ${token}`;
-
-        return request;
     });
 }
 
@@ -90,20 +55,16 @@ export function getReentranceTicketAuthInterceptor({
     ejectCallback: () => void;
 }): (request: InternalAxiosRequestConfig) => Promise<InternalAxiosRequestConfig<any>> {
     return async (request: InternalAxiosRequestConfig) => {
-        const { reentranceTicket, apiUrl } = await getReentranceTicket({
+        const { reentranceTicket, backend } = await getReentranceTicket({
             backendUrl: provider.defaults.baseURL,
             logger: provider.log
         });
-        if (apiUrl && apiUrl != provider.defaults.baseURL) {
-            // Reentrance tickets work with API hostnames. If the original URL was not one, this will replace it
-            // with the API hostname returned
-            provider.log.warn(
-                `Replacing provider's default base URL (${provider.defaults.baseURL}) with API URL: ${apiUrl}`
-            );
-            provider.defaults.baseURL = apiUrl;
-        }
+        // Update the base host (provided system url) to the API host for subsequent calls as only this should be used with re-entrance tickets to generate a secure session
+        provider.defaults.baseURL = (await backend?.apiHostname()) ?? provider.defaults.baseURL;
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers.MYSAPSSO2 = reentranceTicket;
+        // Request a secure session using the reentrance token
+        request.headers['x-sap-security-session'] = 'create';
         // remove this interceptor since it is not needed anymore
         ejectCallback();
         return request;

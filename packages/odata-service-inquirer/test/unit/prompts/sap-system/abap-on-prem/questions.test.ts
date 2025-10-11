@@ -207,6 +207,24 @@ describe('questions', () => {
         expect(await (userSystemNamePrompt?.when as Function)({ [systemUrlPromptName]: systemUrl })).toBe(true);
     });
 
+    test('Should check if an existing backend system configuration exists and show validation error (VSCode)', async () => {
+        const systemUrl = 'http://some.abap.system:1234';
+        const systemUrlPromptName = `abapOnPrem:${newSystemPromptNames.newSystemUrl}`;
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const systemUrlQuestion = newSystemQuestions.find((question) => question.name === systemUrlPromptName);
+        PromptState.backendSystemsCache = [
+            {
+                name: 'System1234',
+                url: systemUrl,
+                systemType: 'OnPrem'
+            }
+        ];
+
+        expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toEqual(
+            t('prompts.validationMessages.backendSystemExistsWarning', { backendName: 'System1234' })
+        );
+    });
+
     test('Should validate sap-client input', () => {
         const newSystemQuestions = getAbapOnPremQuestions();
         const sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);

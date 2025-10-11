@@ -34,7 +34,7 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - scp: true
+          - authenticationType: reentranceTicket # SAML support for vscode
             path: /sap
             url: https://abap.cloud.host
     - name: sap-fe-mockserver

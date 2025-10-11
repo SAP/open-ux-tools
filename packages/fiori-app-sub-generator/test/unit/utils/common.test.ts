@@ -222,7 +222,9 @@ describe('Test utils', () => {
         let result = getReadMeDataSourceLabel(source, true);
         const labelDatasourceType = t(`readme.label.datasourceType.${source}`);
 
-        expect(result).toBe(`${labelDatasourceType} (${t(`readme.label.sapSystemType.${SapSystemSourceType.SCP}`)})`);
+        expect(result).toBe(
+            `${labelDatasourceType} (${t(`readme.label.sapSystemType.${SapSystemSourceType.ABAP_CLOUD}`)})`
+        );
 
         result = getReadMeDataSourceLabel(source);
         expect(result).toBe(

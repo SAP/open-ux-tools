@@ -30,9 +30,8 @@
             "filterEntityType": "Filter Entity Type",
             "navigationEntity": "Navigation Entity",
             "sapSystemType": {
-                "abapOnBtp": "ABAP Environment on SAP Business Technology Platform",
-                "s4hc": "SAP S/4HANA Cloud Environment",
-                "onPrem": "ABAP On-Premise"
+                "onPrem": "ABAP On-Premise",
+                "abapCloud": "ABAP Cloud"
             },
             "datasourceType": {
                 "sapSystem": "SAP System",

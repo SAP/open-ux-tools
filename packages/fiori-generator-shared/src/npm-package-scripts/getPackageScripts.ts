@@ -18,7 +18,7 @@ function buildStartNoFLPCommand(localOnly: boolean, searchParams?: URLSearchPara
     const searchParamString = searchParams?.toString();
     const searchParam = searchParamString ? `?${searchParamString}` : '';
     if (localOnly) {
-        return `echo \\"${t('info.mockOnlyWarning')}\\"`;
+        return `echo \\"${t('logMessages.info.mockOnlyWarning')}\\"`;
     }
     return `fiori run --open "/index.html${searchParam}"`;
 }
@@ -51,7 +51,7 @@ function buildParams(searchParams?: URLSearchParams, flpAppId?: string): string 
  */
 function buildStartCommand(localOnly: boolean, params: string, startFile?: string): string {
     if (localOnly) {
-        return `echo \\"${t('info.mockOnlyWarning')}\\"`;
+        return `echo \\"${t('logMessages.info.mockOnlyWarning')}\\"`;
     }
     return `fiori run --open "${startFile ?? SCRIPT_FLP_SANDBOX}${params}"`;
 }
@@ -133,7 +133,7 @@ export function getPackageScripts({
     }
 
     scripts['start-variants-management'] = localOnly
-        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
+        ? `echo \\"${t('logMessages.info.mockOnlyWarning')}\\"`
         : getVariantPreviewAppScript(!supportVirtualEndpoints, flpAppId);
 
     return scripts;

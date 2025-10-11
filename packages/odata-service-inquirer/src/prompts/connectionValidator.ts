@@ -343,6 +343,9 @@ export class ConnectionValidator {
 
             if (isSystem) {
                 await this.createSystemConnection({ axiosConfig, url, odataVersion });
+                const systemInfo = await (this.serviceProvider as AbapServiceProvider).getSystemInfo();
+                this._connectedUserName = systemInfo?.userName;
+                this._connectedSystemName = systemInfo?.systemID;
             } else {
                 // Full service URL
                 await this.createOdataServiceConnection(axiosConfig, url.pathname);
@@ -383,7 +386,8 @@ export class ConnectionValidator {
             ignoreCertErrors: ignoreCertError,
             cookies: '',
             baseURL: url.origin,
-            url: url.pathname
+            url: url.pathname,
+            logger: LoggerHelper.logger
         };
 
         if (username && password) {
@@ -486,7 +490,6 @@ export class ConnectionValidator {
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param connectConfig.destination the destination to connect with
-     * @param connectConfig.refreshToken
      * @throws an error if the connection attempt fails, callers should handle the error
      */
     private async createSystemConnection({
@@ -494,21 +497,19 @@ export class ConnectionValidator {
         url,
         serviceInfo,
         destination,
-        odataVersion,
-        refreshToken
+        odataVersion
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
         serviceInfo?: ServiceInfo;
         destination?: Destination;
         odataVersion?: ODataVersion;
-        refreshToken?: string;
     }): Promise<void> {
         this.resetConnectionState();
         this.resetValidity();
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
-            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
+            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
             this._validatedUrl = getDestinationUrlForAppStudio(destination.Name);
@@ -610,7 +611,7 @@ export class ConnectionValidator {
     }
 
     /**
-     * Get the service provider for the Abap on Cloud environment.
+     * Get the service provider for the Abap Cloud environment.
      *
      * @param url the system url
      * @param serviceInfo the service info
@@ -625,7 +626,8 @@ export class ConnectionValidator {
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
-                url: new URL(url.pathname, url.origin).toString()
+                url: new URL(url.pathname, url.origin).toString(),
+                logger: LoggerHelper.logger
             });
         }
 
@@ -634,7 +636,8 @@ export class ConnectionValidator {
                 environment: AbapCloudEnvironment.Standalone,
                 service: serviceInfo,
                 refreshToken,
-                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this)
+                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this),
+                logger: LoggerHelper.logger
             });
         }
 
@@ -648,14 +651,9 @@ export class ConnectionValidator {
      *
      * @param serviceInfo the service info containing the UAA details
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
-     * @param refreshToken the refresh token for the Abap on Cloud environment, will be used to avoid re-authentication while the token is valid
      * @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
-    public async validateServiceInfo(
-        serviceInfo: ServiceInfo,
-        odataVersion?: ODataVersion,
-        refreshToken?: string
-    ): Promise<ValidationResult> {
+    public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;
         }
@@ -668,7 +666,7 @@ export class ConnectionValidator {
         }
         try {
             this.systemAuthType = 'serviceKey';
-            await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
+            await this.createSystemConnection({ serviceInfo, odataVersion });
             // Cache the user info
             this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
             this._serviceInfo = serviceInfo;
@@ -819,6 +817,9 @@ export class ConnectionValidator {
             this.validity.urlFormat = false;
             return false;
         }
+        if (systemAuthType) {
+            this.systemAuthType = systemAuthType;
+        }
         let url: URL;
         try {
             // Check if the url is valid
@@ -826,13 +827,16 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
+            // Dont allow non origin URLs in for re-entrance tickets as the error handling would become complex to analyize.
+            // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
+            // The new system name would also include the additional paths which would not make sense either.
+            if (this.systemAuthType === 'reentranceTicket' && !(url.pathname.length === 0 || url.pathname === '/')) {
+                return t('prompts.validationMessages.reentranceTicketSystemHostOnly');
+            }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });
         }
 
-        if (systemAuthType) {
-            this.systemAuthType = systemAuthType;
-        }
         try {
             if (!forceReValidation && this.isUrlValidated(serviceUrl)) {
                 return this.validity.reachable ?? false;

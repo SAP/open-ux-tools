@@ -69,20 +69,20 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         expect(
             showClientChoiceQuestion({ scp: false, targetSystem: TargetSystemType.Url, url: '', package: '' }, '100')
         ).toBe(true);
         PromptState.resetAbapDeployConfig();
         // Should not show client choice question if SCP is enabled
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         PromptState.abapDeployConfig.scp = true;
         expect(
             showClientChoiceQuestion({ scp: false, targetSystem: TargetSystemType.Url, url: '', package: '' }, '100')
         ).toBe(false);
         PromptState.resetAbapDeployConfig();
         // Should not show client choice question if target system is not a URL
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         PromptState.abapDeployConfig.scp = true;
         expect(showClientChoiceQuestion({ scp: true, url: '', package: '' }, '100')).toBe(false);
         PromptState.resetAbapDeployConfig();
@@ -91,7 +91,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should not show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        PromptState.abapDeployConfig.isS4HC = true;
+        PromptState.abapDeployConfig.isAbapCloud = true;
         expect(
             showClientChoiceQuestion({ scp: true, targetSystem: TargetSystemType.Url, url: '', package: '' }, undefined)
         ).toBe(false);
@@ -114,14 +114,14 @@ describe('Test abap deploy config inquirer conditions', () => {
             PromptState.isYUI = isYui;
             mockIsAppStudio.mockReturnValueOnce(false);
             // Validate client question if SCP is enabled
-            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.isAbapCloud = false;
             expect(showClientQuestion({ scp: true, targetSystem: TargetSystemType.Url, url: '', package: '' })).toBe(
                 scpEnabled
             );
             PromptState.resetAbapDeployConfig();
             // Validate client question if SCP is disabled
             PromptState.abapDeployConfig.client = '100';
-            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.isAbapCloud = false;
             expect(
                 showClientQuestion({
                     scp: false,
@@ -190,7 +190,7 @@ describe('Test abap deploy config inquirer conditions', () => {
         };
         PromptState.abapDeployConfig.scp = false;
         expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
     });
 
@@ -237,7 +237,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should not show transport input choice question for onPremise systems', () => {
         PromptState.transportAnswers.transportRequired = false;
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         PromptState.abapDeployConfig.scp = false;
         expect(showTransportInputChoice({ hideIfOnPremise: true })).toBe(false);
     });
@@ -267,7 +267,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show transport list question', () => {
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         PromptState.transportAnswers.transportList = [
             { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport' }
         ];
@@ -303,7 +303,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show manual transport question when transportInput choice is not provided and transportInputChoice is hidden', () => {
-        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.isAbapCloud = false;
         expect(defaultOrShowManualTransportQuestion(undefined, { hideIfOnPremise: true })).toBe(true);
     });
 

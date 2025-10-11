@@ -197,12 +197,12 @@ describe('Backend system data provider', () => {
         expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(1, {
             entityName: Entities.BackendSystem,
             id: 'sys1',
-            entity: { systemType: 'S4HC' }
+            entity: { systemType: 'AbapCloud' }
         });
         expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(2, {
             entityName: Entities.BackendSystem,
             id: 'sys2',
-            entity: { systemType: 'BTP' }
+            entity: { systemType: 'AbapCloud' }
         });
         expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(3, {
             entityName: Entities.BackendSystem,

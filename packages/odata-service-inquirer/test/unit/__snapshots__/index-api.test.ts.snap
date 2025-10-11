@@ -51,7 +51,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         },
       },
       {
-        "name": "storedSystem2 (BTP)",
+        "name": "storedSystem2 (ABAP Cloud)",
         "value": {
           "system": {
             "name": "storedSystem2",
@@ -218,10 +218,6 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "value": "cloudFoundry",
       },
       {
-        "name": "Upload a Service Key File",
-        "value": "serviceKey",
-      },
-      {
         "name": "Use Reentrance Ticket",
         "value": "reentranceTicket",
       },
@@ -241,18 +237,6 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     },
     "message": "System URL",
     "name": "abapOnBtp:newSystemUrl",
-    "type": "input",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "guiOptions": {
-      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
-      "mandatory": true,
-    },
-    "guiType": "file-browser",
-    "message": "Service Key File Path",
-    "name": "serviceKey",
     "type": "input",
     "validate": [Function],
     "when": [Function],

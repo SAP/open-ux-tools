@@ -200,7 +200,7 @@ export async function createAbapServiceProvider(
     if (isAppStudio() && isDestinationTarget(target)) {
         provider = await createAbapDestinationServiceProvider(options, target, prompt);
     } else if (isUrlTarget(target)) {
-        if (target.scp) {
+        if (target.scp || target.serviceKey) {
             provider = await createAbapCloudServiceProvider(options, target, prompt, logger);
         } else if (target.authenticationType === AuthenticationType.ReentranceTicket) {
             provider = createForAbapOnCloud({

@@ -1,10 +1,11 @@
 import http from 'http';
 import type { SetupRedirectOptions } from '../../../src/auth/reentrance-ticket/redirect';
 import { setupRedirectHandling } from '../../../src/auth/reentrance-ticket/redirect';
-import { ABAPSystem } from '../../../src/auth/reentrance-ticket/abap-system';
+import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { ConnectionError, TimeoutError } from '../../../src/auth';
 import request from 'supertest';
+import nock = require('nock');
 
 describe('setupRedirectHandling()', () => {
     beforeEach(() => {
@@ -22,7 +23,7 @@ describe('setupRedirectHandling()', () => {
             resolve: jest.fn(),
             reject: jest.fn(),
             timeout: 1,
-            backend: new ABAPSystem('http://backend'),
+            backend: options.backend ? options.backend : new ABAPVirtualHostProvider('http://backend'),
             logger: new ToolsLogger({
                 transports: [new NullTransport()]
             }),
@@ -58,6 +59,9 @@ describe('setupRedirectHandling()', () => {
     });
 
     it('calls resolve() with the reentrance ticket', async () => {
+        const uiHostNameSpy = jest
+            .spyOn(ABAPVirtualHostProvider.prototype, `uiHostname`)
+            .mockResolvedValue('http://backend');
         const rejectCallback = jest.fn();
         const resolveCallback = jest.fn();
         const REENTRANCE_TICKET = 'reentrance_ticket';
@@ -69,22 +73,27 @@ describe('setupRedirectHandling()', () => {
         expect(resolveCallback).toHaveBeenCalledWith(expect.objectContaining({ reentranceTicket: REENTRANCE_TICKET }));
     });
 
-    it('calls resolve() with the with API URL', async () => {
+    it('calls resolve() with the with backend (virtual host provider)', async () => {
+        const backedUrl = 'https://backend';
+        const backendUiHost = 'https://backend-ui-host';
         const rejectCallback = jest.fn();
         const resolveCallback = jest.fn();
-        const backedUrl = 'https://backend';
+        const uiHostNameSpy = jest
+            .spyOn(ABAPVirtualHostProvider.prototype, `uiHostname`)
+            .mockResolvedValue(backendUiHost);
+
         const REENTRANCE_TICKET = 'reentrance_ticket';
 
         const { server, redirectUrl } = setup({
             resolve: resolveCallback,
             reject: rejectCallback,
-            backend: new ABAPSystem(backedUrl)
+            backend: new ABAPVirtualHostProvider(backedUrl)
         });
         await request(server).get(`${redirectPath(redirectUrl)}?reentrance-ticket=${REENTRANCE_TICKET}`);
 
         expect(rejectCallback).not.toHaveBeenCalled();
         expect(resolveCallback).toHaveBeenCalledTimes(1);
-        expect(resolveCallback).toHaveBeenCalledWith(expect.objectContaining({ apiUrl: backedUrl + '-api' }));
+        expect(uiHostNameSpy).toHaveBeenCalled();
     });
 
     it('calls reject() when reentrance ticket is missing', async () => {
@@ -95,7 +104,7 @@ describe('setupRedirectHandling()', () => {
         const { server, redirectUrl } = setup({
             resolve: resolveCallback,
             reject: rejectCallback,
-            backend: new ABAPSystem(backedUrl)
+            backend: new ABAPVirtualHostProvider(backedUrl)
         });
         await request(server).get(redirectPath(redirectUrl));
 

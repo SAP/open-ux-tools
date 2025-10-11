@@ -5,9 +5,8 @@ export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';
 
 export const enum SapSystemSourceType {
-    SCP = 'abapOnBtp',
-    ON_PREM = 'onPrem',
-    S4HC = 's4hc'
+    ABAP_CLOUD = 'abapCloud',
+    ON_PREM = 'onPrem'
 }
 
 export const PLATFORMS = {

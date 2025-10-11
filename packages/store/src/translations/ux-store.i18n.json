@@ -6,7 +6,8 @@
         "noPropertiesSpecified": "No properties specified for update",
         "systemMigrationFailed": "Migrating systems from secure store failed",
         "systemAlreadyExistsInHybridStore": "System with ID: [{{systemId}}] already exists in hybrid store. Not migrating",
-        "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]"
+        "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]",
+        "backendSystemEntityKeyExists": "The 'BackendSystem' entity was not written because a 'BackendSystem' entity key already exists: {{entityKey}}."
     },
     "info": {
         "foundRefreshToken": "Found refresh token for {{- systemId}}",

@@ -1,30 +1,25 @@
-import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
-import cloneDeep from 'lodash/cloneDeep';
 import {
-    getDestinationUrlForAppStudio,
-    getCredentialsForDestinationService,
-    isAbapSystem,
+    type Destination,
     BAS_DEST_INSTANCE_CRED_HEADER,
-    isAppStudio,
-    type Destination
+    getCredentialsForDestinationService,
+    getDestinationUrlForAppStudio,
+    isAbapSystem,
+    isAppStudio
 } from '@sap-ux/btp-utils';
+import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
+import { HttpProxyAgent } from 'http-proxy-agent';
 import { type AgentOptions, Agent as HttpsAgent } from 'https';
-import type { ServiceInfo, RefreshTokenChanged } from './auth';
-import {
-    attachConnectionHandler,
-    attachBasicAuthInterceptor,
-    attachUaaAuthInterceptor,
-    attachReentranceTicketAuthInterceptor
-} from './auth';
+import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
+import cloneDeep from 'lodash/cloneDeep';
+import { getProxyForUrl } from 'proxy-from-env';
+import { inspect } from 'util';
+import { AbapServiceProvider } from './abap';
+import type { RefreshTokenChanged, ServiceInfo } from './auth';
+import { attachBasicAuthInterceptor, attachConnectionHandler, attachReentranceTicketAuthInterceptor } from './auth';
+import type { ODataService } from './base/odata-service';
+import { TlsPatch } from './base/patchTls';
 import type { ProviderConfiguration } from './base/service-provider';
 import { ServiceProvider } from './base/service-provider';
-import type { ODataService } from './base/odata-service';
-import { AbapServiceProvider } from './abap';
-import { inspect } from 'util';
-import { TlsPatch } from './base/patchTls';
-import { getProxyForUrl } from 'proxy-from-env';
-import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
-import { HttpProxyAgent } from 'http-proxy-agent';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -98,6 +93,7 @@ function createInstance<T extends ServiceProvider>(
      */
     providerConfig.validateStatus = (status) => status < 400;
     const instance = new ProviderType(providerConfig);
+
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},
         'delete': {},
@@ -159,7 +155,13 @@ export enum AbapCloudEnvironment {
 /** Cloud Foundry OAuth 2.0 options */
 export interface CFAOauthOptions {
     service: ServiceInfo;
+    /**
+     * @deprecated No longer used as Service Key (UAA) connectivity has been replaced with reentrance ticket based sessions
+     */
     refreshToken?: string;
+    /**
+     * @deprecated  No longer used as Service Key (UAA) connectivity has been replaced with reentrance ticket based sessions
+     */
     refreshTokenChangedCb?: RefreshTokenChanged;
 }
 
@@ -179,7 +181,7 @@ export interface AbapEmbeddedSteampunkOptions extends ReentranceTicketOptions {
 }
 
 /** Discriminated union of supported environments - {@link AbapCloudStandaloneOptions} and {@link AbapEmbeddedSteampunkOptions} */
-type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOptions;
+export type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOptions;
 
 /**
  * Create an instance of an ABAP service provider for a Cloud ABAP system.
@@ -191,14 +193,15 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
     let provider: AbapServiceProvider;
     switch (options.environment) {
         case AbapCloudEnvironment.Standalone: {
-            const { service, refreshToken, refreshTokenChangedCb, cookies, ...config } = options;
+            const { service, cookies, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
                 baseURL: service.url,
                 cookies,
                 ...config
             });
             if (!cookies) {
-                attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+                // Always use re-entrance tickets regardless of the ABAP Cloud environment
+                attachReentranceTicketAuthInterceptor({ provider });
             }
             break;
         }

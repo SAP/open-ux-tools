@@ -44,7 +44,7 @@ describe('getOrCreateServiceProvider', () => {
             url: 'http://target.url',
             client: '100',
             scp: false,
-            isS4HC: true
+            isAbapCloud: true
         };
 
         const credentials = {
@@ -119,7 +119,7 @@ describe('getOrCreateServiceProvider', () => {
             url: 'http://target.url',
             client: '100',
             scp: false,
-            isS4HC: true
+            isAbapCloud: true
         };
 
         const credentials = {
