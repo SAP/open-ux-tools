@@ -3,8 +3,11 @@
     xmlns:uxap="sap.uxap"
     xmlns:core='sap.ui.core'
     xmlns='sap.m'
->
-     <VBox id="<%- ids.vBoxContainer %>">
-         <Label id="<%- ids.label %>" text="New Field"></Label>
+><% if (targetAggregation && controlType && viewName) { %>
+    <!-- viewName: <%= viewName %> -->
+    <!-- controlType: <%= controlType %> -->
+    <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
+    <VBox id="<%- ids.vBoxContainer %>">
+        <Label id="<%- ids.label %>" text="New Field"></Label>
     </VBox>
 </core:FragmentDefinition>
