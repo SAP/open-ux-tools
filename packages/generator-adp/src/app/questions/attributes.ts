@@ -33,6 +33,7 @@ interface Config {
     ui5Versions: string[];
     isVersionDetected: boolean;
     prompts: YeomanUiSteps;
+    isCfEnv?: boolean;
 }
 
 /**
@@ -44,13 +45,14 @@ interface Config {
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
 export function getPrompts(path: string, config: Config, promptOptions?: AttributePromptOptions): AttributesQuestion[] {
-    const { isVersionDetected, ui5Versions, isCloudProject, layer, prompts } = config;
+    const { isVersionDetected, ui5Versions, isCloudProject, layer, prompts, isCfEnv = false } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
         [attributePromptNames.projectName]: getProjectNamePrompt(
             path,
             isCustomerBase,
+            isCfEnv,
             promptOptions?.[attributePromptNames.projectName]
         ),
         [attributePromptNames.title]: getApplicationTitlePrompt(promptOptions?.[attributePromptNames.title]),
@@ -90,10 +92,16 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
  *
  * @param {string} path - The base project path.
  * @param {boolean} isCustomerBase - Whether the layer is CUSTOMER_BASE.
+ * @param {boolean} isCfEnv - Whether the project is in a CF environment.
  * @param {ProjectNamePromptOptions} [_] - Optional prompt options.
  * @returns {AttributesQuestion} The prompt configuration for project name.
  */
-function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: ProjectNamePromptOptions): AttributesQuestion {
+function getProjectNamePrompt(
+    path: string,
+    isCustomerBase: boolean,
+    isCfEnv: boolean,
+    _?: ProjectNamePromptOptions
+): AttributesQuestion {
     return {
         type: 'input',
         name: attributePromptNames.projectName,
@@ -105,7 +113,7 @@ function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: Project
             hint: getProjectNameTooltip(isCustomerBase)
         },
         validate: (value: string, answers: AttributesAnswers) =>
-            validateProjectName(value, answers.targetFolder || path, isCustomerBase),
+            validateProjectName(value, answers.targetFolder || path, isCustomerBase, isCfEnv),
         store: false
     } as InputQuestion<AttributesAnswers>;
 }

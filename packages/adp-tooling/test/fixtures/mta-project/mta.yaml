@@ -1,0 +1,11 @@
+_schema-version: '3.3'
+ID: mta-project
+version: 1.0.0
+description: Test MTA Project for CF Writer Tests
+resources:
+    - name: test-destination-service
+      type: org.cloudfoundry.managed-service
+      parameters:
+          service: destination
+          service-plan: lite
+          service-name: test-destination-service

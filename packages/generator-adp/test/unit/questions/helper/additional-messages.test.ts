@@ -6,7 +6,8 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import {
     getAppAdditionalMessages,
     getSystemAdditionalMessages,
-    getVersionAdditionalMessages
+    getVersionAdditionalMessages,
+    getTargetEnvAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
 import { t } from '../../../../src/utils/i18n';
 
@@ -136,6 +137,33 @@ describe('additional-messages', () => {
                 message: t('validators.ui5VersionNotDetectedError'),
                 severity: Severity.warning
             });
+        });
+
+        it('should return undefined when version is detected', () => {
+            const result = getVersionAdditionalMessages(true);
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getTargetEnvAdditionalMessages', () => {
+        const mockCfConfig = {
+            url: 'https://test.cf.com',
+            org: { Name: 'test-org' },
+            space: { Name: 'test-space' }
+        };
+
+        it('should return information when CF selected and logged in', () => {
+            const result = getTargetEnvAdditionalMessages('CF', true, mockCfConfig);
+
+            expect(result).toEqual({
+                message: 'You are logged in to Cloud Foundry: https://test.cf.com / test-org / test-space.',
+                severity: Severity.information
+            });
+        });
+
+        it('should return undefined when not CF environment', () => {
+            const result = getTargetEnvAdditionalMessages('ABAP', true, mockCfConfig);
+            expect(result).toBeUndefined();
         });
     });
 });

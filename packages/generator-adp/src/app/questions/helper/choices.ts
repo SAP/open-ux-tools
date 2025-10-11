@@ -1,4 +1,5 @@
-import type { SourceApplication } from '@sap-ux/adp-tooling';
+import { AppRouterType } from '@sap-ux/adp-tooling';
+import type { CFApp, SourceApplication } from '@sap-ux/adp-tooling';
 
 interface Choice {
     name: string;
@@ -24,4 +25,39 @@ export const getApplicationChoices = (apps: SourceApplication[]): Choice[] => {
               };
           })
         : apps;
+};
+
+/**
+ * Get the choices for the base app.
+ *
+ * @param {CFApp[]} apps - The apps to get the choices for.
+ * @returns {Array<{ name: string; value: CFApp }>} The choices for the base app.
+ */
+export const getCFAppChoices = (apps: CFApp[]): { name: string; value: CFApp }[] => {
+    return apps.map((app: CFApp) => ({
+        name: `${app.title} (${app.appId} ${app.appVersion})`,
+        value: app
+    }));
+};
+
+/**
+ * Get the choices for the approuter.
+ *
+ * @param {boolean} isInternalUsage - Whether the user is using internal features.
+ * @returns {Array<{ name: AppRouterType; value: AppRouterType }>} The choices for the approuter.
+ */
+export const getAppRouterChoices = (isInternalUsage: boolean): { name: AppRouterType; value: AppRouterType }[] => {
+    const options: { name: AppRouterType; value: AppRouterType }[] = [
+        {
+            name: AppRouterType.MANAGED,
+            value: AppRouterType.MANAGED
+        }
+    ];
+    if (isInternalUsage) {
+        options.push({
+            name: AppRouterType.STANDALONE,
+            value: AppRouterType.STANDALONE
+        });
+    }
+    return options;
 };

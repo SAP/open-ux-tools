@@ -1,10 +1,13 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ConfigAnswers, SourceApplication } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, SourceApplication, CfServicesAnswers } from '@sap-ux/adp-tooling';
+import { AppRouterType } from '@sap-ux/adp-tooling';
 
 import {
     showApplicationQuestion,
     showCredentialQuestion,
-    showExtensionProjectQuestion
+    showExtensionProjectQuestion,
+    showInternalQuestions,
+    showBusinessSolutionNameQuestion
 } from '../../../../src/app/questions/helper/conditions';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -152,6 +155,50 @@ describe('showExtensionProjectQuestion', () => {
         mockIsAppStudio.mockReturnValue(true);
 
         const result = showExtensionProjectQuestion(answers, undefined, false, true, false);
+        expect(result).toBe(false);
+    });
+});
+
+describe('showInternalQuestions', () => {
+    it('should return true when all conditions are met', () => {
+        const answers = {
+            system: 'TestSystem',
+            application: { id: '1', title: 'Test App' }
+        } as ConfigAnswers;
+        const result = showInternalQuestions(answers, false, true);
+        expect(result).toBe(true);
+    });
+
+    it('should return false when application is not supported', () => {
+        const answers = {
+            system: 'TestSystem',
+            application: { id: '1', title: 'Test App' }
+        } as ConfigAnswers;
+        const result = showInternalQuestions(answers, false, false);
+        expect(result).toBe(false);
+    });
+});
+
+describe('showBusinessSolutionNameQuestion', () => {
+    it('should return true when all conditions are met', () => {
+        const answers = {
+            approuter: AppRouterType.MANAGED,
+            businessService: 'test-service',
+            businessSolutionName: '',
+            baseApp: undefined
+        } as CfServicesAnswers;
+        const result = showBusinessSolutionNameQuestion(answers, true, true, 'test-service');
+        expect(result).toBe(true);
+    });
+
+    it('should return false when businessService is undefined', () => {
+        const answers = {
+            approuter: AppRouterType.MANAGED,
+            businessService: 'test-service',
+            businessSolutionName: '',
+            baseApp: undefined
+        } as CfServicesAnswers;
+        const result = showBusinessSolutionNameQuestion(answers, true, true, undefined);
         expect(result).toBe(false);
     });
 });

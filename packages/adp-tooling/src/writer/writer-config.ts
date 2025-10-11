@@ -1,7 +1,19 @@
+import { join } from 'node:path';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
+import type {
+    AdpWriterConfig,
+    AttributesAnswers,
+    CfAdpWriterConfig,
+    CloudApp,
+    ConfigAnswers,
+    CreateCfConfigParams,
+    OnpremApp,
+    UI5Version
+} from '../types';
 import {
     getFormattedVersion,
     getLatestVersion,
@@ -10,10 +22,10 @@ import {
     getVersionToBeUsed,
     shouldSetMinUI5Version
 } from '../ui5';
-import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
-import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
+import { AppRouterType, FlexLayer } from '../types';
+import { t } from '../i18n';
 
 export interface ConfigOptions {
     /**
@@ -152,5 +164,52 @@ export function getUi5Config(
         version: getFormattedVersion(ui5Version),
         frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
         shouldSetMinVersion: shouldSetMinUI5Version(systemVersion)
+    };
+}
+
+/**
+ * Create CF configuration from batch objects.
+ *
+ * @param {CreateCfConfigParams} params - The configuration parameters containing batch objects.
+ * @returns {CfAdpWriterConfig} The CF configuration.
+ */
+export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
+    const baseApp = params.cfServicesAnswers.baseApp;
+
+    if (!baseApp) {
+        throw new Error(t('errors.baseAppRequired'));
+    }
+
+    const ui5Version = getLatestVersion(params.publicVersions);
+
+    return {
+        app: {
+            id: baseApp.appId,
+            title: params.attributeAnswers.title,
+            layer: params.layer,
+            namespace: params.attributeAnswers.namespace,
+            manifest: params.manifest
+        },
+        baseApp,
+        cf: {
+            url: params.cfConfig.url,
+            org: params.cfConfig.org,
+            space: params.cfConfig.space,
+            html5RepoRuntimeGuid: params.html5RepoRuntimeGuid,
+            approuter: params.cfServicesAnswers.approuter ?? AppRouterType.MANAGED,
+            businessService: params.cfServicesAnswers.businessService ?? '',
+            businessSolutionName: params.cfServicesAnswers.businessSolutionName
+        },
+        project: {
+            name: params.attributeAnswers.projectName,
+            path: params.projectPath,
+            folder: join(params.projectPath, params.attributeAnswers.projectName)
+        },
+        ui5: {
+            version: ui5Version
+        },
+        options: {
+            addStandaloneApprouter: params.cfServicesAnswers.approuter === AppRouterType.STANDALONE
+        }
     };
 }
