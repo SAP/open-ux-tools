@@ -4,7 +4,8 @@
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system: ({{- system}}).",
         "sysConfirmDesc": "Validates connection to the configured system.",
         "flpConfigName": "SAP Fiori Launchpad Configuration",
-        "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Settings for {{- projectName}}"
+        "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Settings",
+        "tileSettingsDescr": "Configure SAP Fiori Launchpad settings - {{projectName}}"
     },
     "info": {
         "flpConfigAdded": "SAP Fiori launchpad configuration added."
