@@ -27,7 +27,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
                 name,
                 lazy: isLazy === 'true',
                 settings: parseStringToObject(settings),
-                data: parseStringToObject(data)
+                componentData: parseStringToObject(data)
             }
         };
         return {
