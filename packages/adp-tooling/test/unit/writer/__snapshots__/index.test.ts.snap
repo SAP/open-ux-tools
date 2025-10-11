@@ -1526,18 +1526,7 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
             \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
             \\"signature\\": {
               \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {
-                \\"sap-appvar-id\\": {
-                  \\"required\\": true,
-                  \\"filter\\": {
-                    \\"value\\": \\"my.test.app\\",
-                    \\"format\\": \\"plain\\"
-                  },
-                  \\"launcherValue\\": {
-                    \\"value\\": \\"my.test.app\\"
-                  }
-                }
-              }
+              \\"parameters\\": {}
             },
             \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
           }
@@ -1720,18 +1709,7 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
             \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
             \\"signature\\": {
               \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {
-                \\"sap-appvar-id\\": {
-                  \\"required\\": true,
-                  \\"filter\\": {
-                    \\"value\\": \\"my.test.app\\",
-                    \\"format\\": \\"plain\\"
-                  },
-                  \\"launcherValue\\": {
-                    \\"value\\": \\"my.test.app\\"
-                  }
-                }
-              }
+              \\"parameters\\": {}
             },
             \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
           }
@@ -1911,18 +1889,7 @@ my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
             \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.title}}\\",
             \\"signature\\": {
               \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {
-                \\"sap-appvar-id\\": {
-                  \\"required\\": true,
-                  \\"filter\\": {
-                    \\"value\\": \\"my.test.app\\",
-                    \\"format\\": \\"plain\\"
-                  },
-                  \\"launcherValue\\": {
-                    \\"value\\": \\"my.test.app\\"
-                  }
-                }
-              }
+              \\"parameters\\": {}
             },
             \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle}}\\"
           }
