@@ -21,6 +21,7 @@ function logAxiosTrafficInternal(logger: ToolsLogger): void {
         this: Axios,
         config: AxiosRequestConfig<D>
     ): Promise<R> {
+        // Thios config does not contain headers or query params added from interceptors.
         const mergedConfig = {
             ...this.defaults,
             ...config,
@@ -29,12 +30,12 @@ function logAxiosTrafficInternal(logger: ToolsLogger): void {
                 ...(config.headers || {})
             }
         };
-        const url = getFullUrlString(mergedConfig.baseURL ?? '', mergedConfig.url ?? '', mergedConfig.params);
+        const requestUrl = getFullUrlString(mergedConfig.baseURL ?? '', mergedConfig.url ?? '', mergedConfig.params);
         // If the developer omits the request method when dooes a call to the .request() method
         // internal axios interceptor sets a default method to GET so wee need to do the same here.
         const method = (mergedConfig.method ?? GET_REQUEST_METHOD).toUpperCase();
 
-        logger.info(`[axios][=>][${method}] ${url}`);
+        logger.info(`[axios][=>][${method}] ${requestUrl}`);
         if (mergedConfig.headers) {
             logger.info(`[axios] headers: ${mergedConfig.headers}`);
         }
@@ -44,8 +45,15 @@ function logAxiosTrafficInternal(logger: ToolsLogger): void {
 
         try {
             const response = await originalRequest.call(this, config);
+            // This config contains all data added from interceptors.
+            const responseConfig = response.config ?? {};
+            const responseUrl = getFullUrlString(
+                responseConfig.baseURL ?? '',
+                responseConfig.url ?? '',
+                responseConfig.params
+            );
 
-            logger.info(`[axios][<=][${response.status}] ${url}`);
+            logger.info(`[axios][<=][${response.status}] ${responseUrl}`);
             if (response.headers) {
                 logger.info(`[axios] headers: ${response.headers}`);
             }
@@ -55,7 +63,7 @@ function logAxiosTrafficInternal(logger: ToolsLogger): void {
 
             return response;
         } catch (error) {
-            logger.error(`[axios][error] ${url} ${error.message}`);
+            logger.error(`[axios][error] ${requestUrl} ${error.message}`);
             if (error.response) {
                 logger.error(`[axios] status: ${error.response.status}`);
                 logger.error(`[axios] headers: ${error.response.headers}`);
