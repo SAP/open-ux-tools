@@ -7,5 +7,6 @@ export * from './abap';
 export * from './factory';
 export * from './auth';
 export * from './abap/message';
+export * from './utils/axios-traffic';
 export { ServiceType } from './abap/catalog/base';
 export { AxiosError, AxiosRequestConfig, isAxiosError };

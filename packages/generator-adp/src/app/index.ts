@@ -16,7 +16,7 @@ import {
     type ConfigAnswers,
     type UI5Version
 } from '@sap-ux/adp-tooling';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { logAxiosTraffic, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
     TelemetryHelper,
@@ -133,6 +133,7 @@ export default class extends Generator {
         this.options = opts;
 
         this._setupLogging();
+        logAxiosTraffic(this.logger);
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
