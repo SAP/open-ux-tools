@@ -419,7 +419,7 @@ export interface Page extends BuildingBlock {
     description?: string;
 }
 
-export interface CustomColumn extends EventHandler, BuildingBlock {
+export interface CustomColumn extends BuildingBlock {
     title: string;
     width?: string;
     columnKey?: string;
