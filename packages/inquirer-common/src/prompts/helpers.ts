@@ -153,35 +153,6 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     return questions;
 }
 
-/**
- * Checks if the given entity set name has aggregate transformations in the metadata.
- *
- * @param metadata The metadata (edmx) of the service.
- * @param entitySetName The entity set name to check for aggregate transformations.
- * @returns true if the entity set has aggregate transformations, false otherwise.
- */
-export function hasAggregateTransformationsForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    return filterAggregateTransformations(metadata.entitySets).some((entitySet) => entitySet.name === entitySetName);
-}
-
-/**
- * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
- * This can be found within the entity set annotations or the entity type annotations.
- *
- * @param entitySets the entity sets to filter
- * @returns the filtered entity sets
- */
-export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
-    return entitySets.filter((entitySet) => {
-        return (
-            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
-            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
-        );
-    });
-}
 
 /**
  * Checks if the given entity set has all the required transformations for analytical table support.

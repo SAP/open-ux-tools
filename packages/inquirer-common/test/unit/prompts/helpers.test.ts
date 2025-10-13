@@ -10,9 +10,7 @@ import {
 } from '../../../src/prompts/helpers';
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
-    hasAggregateTransformationsForEntity,
     hasCompleteAggregateTransformationsForEntity,
-    filterAggregateTransformations,
     convertEdmxToConvertedMetadata,
     hasRecursiveHierarchyForEntity
 } from '../../../src/prompts/helpers';
@@ -413,45 +411,6 @@ describe('helpers', () => {
                 'utf-8'
             );
             metadata = convertEdmxToConvertedMetadata(edmx);
-        });
-
-        it('filterAggregateTransformations should return only entity sets with Aggregation.ApplySupported.Transformations', () => {
-            const filtered = filterAggregateTransformations(metadata.entitySets);
-            expect(Array.isArray(filtered)).toBe(true);
-            // At least one entity set should be returned if the metadata contains such annotations
-            expect(filtered.length).toBeGreaterThanOrEqual(0);
-            // All returned entity sets should have the annotation
-            filtered.forEach((entitySet) => {
-                expect(
-                    entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ??
-                        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
-                ).toBeTruthy();
-            });
-        });
-
-        it('hasAggregateTransformationsForEntity should return true for an entity set with aggregation', () => {
-            const filtered = filterAggregateTransformations(metadata.entitySets);
-            if (filtered.length > 0) {
-                expect(hasAggregateTransformationsForEntity(metadata, filtered[0].name)).toBe(true);
-            }
-        });
-
-        it('hasAggregateTransformationsForEntity should return false for an entity set without aggregation', () => {
-            // Find an entity set without aggregation
-            const nonAgg = metadata.entitySets.find(
-                (es) =>
-                    !(
-                        es.annotations?.Aggregation?.ApplySupported?.Transformations ??
-                        es.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
-                    )
-            );
-            if (nonAgg) {
-                expect(hasAggregateTransformationsForEntity(metadata, nonAgg.name)).toBe(false);
-            }
-        });
-
-        it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
-            expect(hasAggregateTransformationsForEntity(metadata)).toBe(false);
         });
 
         it('hasCompleteAggregateTransformationsForEntity should return true for entities with all 9 required transformations', () => {
