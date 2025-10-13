@@ -154,6 +154,21 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
 }
 
 /**
+ * Required transformations for analytical table support.
+ */
+export const transformationsRequiredForAnalyticalTable = [
+    'filter',
+    'identity',
+    'orderby',
+    'search',
+    'skip',
+    'top',
+    'groupby',
+    'aggregate',
+    'concat'
+] as const;
+
+/**
  * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
  * This can be found within the entity set annotations or the entity type annotations.
  *
@@ -170,16 +185,19 @@ export function filterAggregateTransformations(entitySets: EntitySet[]): EntityS
 }
 
 /**
- * Checks if the given entity set has all the required transformations for analytical table support.
- * The required transformations are: filter, identity, orderby, search, skip, top, groupby, aggregate, concat.
+ * Checks if the given entity set name has aggregate transformations in the metadata.
+ * If specific transformations are provided, checks if ALL of those transformations are present.
+ * If no transformations are specified, returns true if ANY transformations are present.
  *
  * @param metadata The metadata (edmx) of the service.
- * @param entitySetName The entity set name to check for complete aggregate transformations.
- * @returns true if the entity set has all 9 required transformations, false otherwise.
+ * @param entitySetName The entity set name to check for aggregate transformations.
+ * @param requiredTransformations Optional array of specific transformations to check for. If not provided, checks for any transformations.
+ * @returns true if the entity set has the required transformations, false otherwise.
  */
-export function hasCompleteAggregateTransformationsForEntity(
+export function hasAggregateTransformationsForEntity(
     metadata: ConvertedMetadata,
-    entitySetName?: string
+    entitySetName?: string,
+    requiredTransformations?: readonly string[]
 ): boolean {
     if (!entitySetName) {
         return false;
@@ -190,19 +208,6 @@ export function hasCompleteAggregateTransformationsForEntity(
         return false;
     }
 
-    // Required transformations for analytical table support
-    const requiredTransformations = [
-        'filter',
-        'identity',
-        'orderby',
-        'search',
-        'skip',
-        'top',
-        'groupby',
-        'aggregate',
-        'concat'
-    ];
-
     // Get transformations from entity set or entity type annotations
     const transformations =
         entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
@@ -210,6 +215,11 @@ export function hasCompleteAggregateTransformationsForEntity(
 
     if (!transformations || !Array.isArray(transformations)) {
         return false;
+    }
+
+    // If no specific transformations required, return true if any transformations exist
+    if (!requiredTransformations || requiredTransformations.length === 0) {
+        return transformations.length > 0;
     }
 
     // Check if all required transformations are present

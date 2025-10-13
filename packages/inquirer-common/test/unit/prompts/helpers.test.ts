@@ -11,9 +11,10 @@ import {
 } from '../../../src/prompts/helpers';
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
-    hasCompleteAggregateTransformationsForEntity,
     convertEdmxToConvertedMetadata,
-    hasRecursiveHierarchyForEntity
+    hasRecursiveHierarchyForEntity,
+    hasAggregateTransformationsForEntity,
+    transformationsRequiredForAnalyticalTable
 } from '../../../src/prompts/helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -569,7 +570,179 @@ describe('helpers', () => {
             });
         });
 
-        it('hasCompleteAggregateTransformationsForEntity should return true for entities with all 9 required transformations', () => {
+        describe('hasAggregateTransformationsForEntity (merged function)', () => {
+            it('should return true for entities with any transformations when no specific transformations required', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: [
+                        {
+                            name: 'EntityWithSomeTransforms',
+                            entityType: {
+                                annotations: {
+                                    'Aggregation': {
+                                        'ApplySupported': {
+                                            'Transformations': ['filter', 'orderby'] // Only 2 transformations
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                expect(hasAggregateTransformationsForEntity(mockMetadata, 'EntityWithSomeTransforms')).toBe(true);
+            });
+
+            it('should return true for entities with all required transformations when specific transformations required', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: [
+                        {
+                            name: 'CompleteEntity',
+                            entityType: {
+                                annotations: {
+                                    'Aggregation': {
+                                        'ApplySupported': {
+                                            'Transformations': transformationsRequiredForAnalyticalTable
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                expect(
+                    hasAggregateTransformationsForEntity(
+                        mockMetadata,
+                        'CompleteEntity',
+                        transformationsRequiredForAnalyticalTable
+                    )
+                ).toBe(true);
+            });
+
+            it('should return false for entities with partial transformations when specific transformations required', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: [
+                        {
+                            name: 'PartialEntity',
+                            entityType: {
+                                annotations: {
+                                    'Aggregation': {
+                                        'ApplySupported': {
+                                            'Transformations': ['filter', 'orderby', 'search'] // Missing some required transformations
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                expect(
+                    hasAggregateTransformationsForEntity(
+                        mockMetadata,
+                        'PartialEntity',
+                        transformationsRequiredForAnalyticalTable
+                    )
+                ).toBe(false);
+            });
+
+            it('should return false for entities without transformations', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: [
+                        {
+                            name: 'NoTransformsEntity',
+                            entityType: {
+                                annotations: {}
+                            }
+                        }
+                    ]
+                };
+
+                expect(hasAggregateTransformationsForEntity(mockMetadata, 'NoTransformsEntity')).toBe(false);
+                expect(
+                    hasAggregateTransformationsForEntity(
+                        mockMetadata,
+                        'NoTransformsEntity',
+                        transformationsRequiredForAnalyticalTable
+                    )
+                ).toBe(false);
+            });
+
+            it('should return false for non-existent entity sets', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: []
+                };
+
+                expect(hasAggregateTransformationsForEntity(mockMetadata, 'NonExistent')).toBe(false);
+                expect(
+                    hasAggregateTransformationsForEntity(
+                        mockMetadata,
+                        'NonExistent',
+                        transformationsRequiredForAnalyticalTable
+                    )
+                ).toBe(false);
+            });
+
+            it('should return false when entitySetName is not provided', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: []
+                };
+
+                expect(hasAggregateTransformationsForEntity(mockMetadata)).toBe(false);
+                expect(
+                    hasAggregateTransformationsForEntity(
+                        mockMetadata,
+                        undefined,
+                        transformationsRequiredForAnalyticalTable
+                    )
+                ).toBe(false);
+            });
+
+            it('should work with custom transformation requirements', () => {
+                const mockMetadata: any = {
+                    version: '4.0',
+                    namespace: 'Test.Service',
+                    entitySets: [
+                        {
+                            name: 'CustomEntity',
+                            entityType: {
+                                annotations: {
+                                    'Aggregation': {
+                                        'ApplySupported': {
+                                            'Transformations': ['filter', 'orderby', 'search']
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                const customRequirements = ['filter', 'orderby'];
+                expect(hasAggregateTransformationsForEntity(mockMetadata, 'CustomEntity', customRequirements)).toBe(
+                    true
+                );
+
+                const strictRequirements = ['filter', 'orderby', 'search', 'groupby'];
+                expect(hasAggregateTransformationsForEntity(mockMetadata, 'CustomEntity', strictRequirements)).toBe(
+                    false
+                );
+            });
+        });
+
+        it('hasAggregateTransformationsForEntity should return true for entities with all 9 required transformations (legacy test)', () => {
             // Create mock metadata with complete transformations
             const completeMetadata: any = {
                 version: '4.0',
@@ -607,10 +780,16 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasCompleteAggregateTransformationsForEntity(completeMetadata, 'CompleteEntity')).toBe(true);
+            expect(
+                hasAggregateTransformationsForEntity(
+                    completeMetadata,
+                    'CompleteEntity',
+                    transformationsRequiredForAnalyticalTable
+                )
+            ).toBe(true);
         });
 
-        it('hasCompleteAggregateTransformationsForEntity should return false for entities with partial transformations', () => {
+        it('hasAggregateTransformationsForEntity should return false for entities with partial transformations (legacy test)', () => {
             // Create mock metadata with only some transformations (missing identity, skip, top, groupby, aggregate, concat)
             const partialMetadata: any = {
                 version: '4.0',
@@ -638,10 +817,16 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasCompleteAggregateTransformationsForEntity(partialMetadata, 'PartialEntity')).toBe(false);
+            expect(
+                hasAggregateTransformationsForEntity(
+                    partialMetadata,
+                    'PartialEntity',
+                    transformationsRequiredForAnalyticalTable
+                )
+            ).toBe(false);
         });
 
-        it('hasCompleteAggregateTransformationsForEntity should return false for entities without any transformations', () => {
+        it('hasAggregateTransformationsForEntity should return false for entities without any transformations (legacy test)', () => {
             const noTransformMetadata: any = {
                 version: '4.0',
                 namespace: 'Test.Service',
@@ -662,19 +847,35 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasCompleteAggregateTransformationsForEntity(noTransformMetadata, 'NoTransformEntity')).toBe(false);
+            expect(
+                hasAggregateTransformationsForEntity(
+                    noTransformMetadata,
+                    'NoTransformEntity',
+                    transformationsRequiredForAnalyticalTable
+                )
+            ).toBe(false);
         });
 
-        it('hasCompleteAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
-            expect(hasCompleteAggregateTransformationsForEntity(metadata)).toBe(false);
-            expect(hasCompleteAggregateTransformationsForEntity(metadata, undefined)).toBe(false);
+        it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided (legacy test)', () => {
+            expect(
+                hasAggregateTransformationsForEntity(metadata, undefined, transformationsRequiredForAnalyticalTable)
+            ).toBe(false);
+            expect(
+                hasAggregateTransformationsForEntity(metadata, undefined, transformationsRequiredForAnalyticalTable)
+            ).toBe(false);
         });
 
-        it('hasCompleteAggregateTransformationsForEntity should return false for non-existent entity sets', () => {
-            expect(hasCompleteAggregateTransformationsForEntity(metadata, 'NonExistentEntity')).toBe(false);
+        it('hasAggregateTransformationsForEntity should return false for non-existent entity sets (legacy test)', () => {
+            expect(
+                hasAggregateTransformationsForEntity(
+                    metadata,
+                    'NonExistentEntity',
+                    transformationsRequiredForAnalyticalTable
+                )
+            ).toBe(false);
         });
 
-        it('hasCompleteAggregateTransformationsForEntity should handle transformations in entity set annotations', () => {
+        it('hasAggregateTransformationsForEntity should handle transformations in entity set annotations (legacy test)', () => {
             // Test with transformations directly on entity set (not just entity type)
             const entitySetMetadata: any = {
                 version: '4.0',
@@ -713,7 +914,13 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasCompleteAggregateTransformationsForEntity(entitySetMetadata, 'EntitySetTransforms')).toBe(true);
+            expect(
+                hasAggregateTransformationsForEntity(
+                    entitySetMetadata,
+                    'EntitySetTransforms',
+                    transformationsRequiredForAnalyticalTable
+                )
+            ).toBe(true);
         });
 
         it('should throw if EDMX is not valid XML', () => {
