@@ -21,7 +21,7 @@ describe('Wizard Steps Utility', () => {
     });
 
     beforeEach(() => {
-        prompts = new Prompts(getWizardPages());
+        prompts = new Prompts(getWizardPages(false));
     });
 
     it('should add a new step when it does not exist', () => {
@@ -94,7 +94,7 @@ describe('updateFlpWizardSteps', () => {
     });
 
     beforeEach(() => {
-        prompts = new Prompts(getWizardPages());
+        prompts = new Prompts(getWizardPages(false));
     });
 
     describe('when hasBaseAppInbound is true (2 pages)', () => {
