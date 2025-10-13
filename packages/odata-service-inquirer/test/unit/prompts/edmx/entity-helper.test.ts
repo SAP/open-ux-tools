@@ -3,6 +3,7 @@ import {
     getNavigationEntityChoices,
     getDefaultTableType
 } from '../../../../src/prompts/edmx/entity-helper';
+import { getRecursiveHierarchyQualifier } from '@sap-ux/inquirer-common';
 import { readFile } from 'fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -480,6 +481,46 @@ describe('Test entity helper functions', () => {
             // Complete aggregate transformations should take priority over recursive hierarchy
             expect(result.tableType).toBe('AnalyticalTable');
             expect(result.setAnalyticalTableDefault).toBe(true);
+        });
+    });
+
+    describe('Test RecursiveHierarchy qualifier population', () => {
+        test('should extract qualifier from RecursiveHierarchy annotation', () => {
+            // Test with the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
+            // This metadata contains RecursiveHierarchy annotation with qualifier "I_SADL_HIER_UUID_COMPANY_NODE"
+            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'P_SADL_HIER_UUID_D_COMPNY_ROOT');
+
+            expect(qualifier).toBe('I_SADL_HIER_UUID_COMPANY_NODE');
+        });
+
+        test('should return undefined for entities without RecursiveHierarchy annotation', () => {
+            const parsedEdmx = parse(metadataV4WithDraftEntities);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'Travel');
+
+            expect(qualifier).toBeUndefined();
+        });
+
+        test('should return undefined for non-existent entity', () => {
+            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'NonExistentEntity');
+
+            expect(qualifier).toBeUndefined();
+        });
+
+        test('should handle undefined entity set name gracefully', () => {
+            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, undefined);
+
+            expect(qualifier).toBeUndefined();
         });
     });
 });
