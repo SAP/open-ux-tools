@@ -7373,7 +7373,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -33889,7 +33889,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -37526,7 +37526,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -58360,7 +58360,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.84.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -58821,7 +58821,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core

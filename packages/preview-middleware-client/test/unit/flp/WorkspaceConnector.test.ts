@@ -114,19 +114,28 @@ describe('flp/WorkspaceConnector', () => {
         });
 
         test('version >= 1.90, no developerMode', async () => {
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(true);
         });
 
         test('version < 1.90', async () => {
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.89.3' });
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.89.3' }]
+            });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(false);
         });
 
         test('version >= 1.90, developerMode=true', async () => {
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             documentMock.getElementById.mockReturnValueOnce({
                 getAttribute: () => JSON.stringify({ developerMode: true })
             });
@@ -135,7 +144,10 @@ describe('flp/WorkspaceConnector', () => {
         });
 
         test('scenario=ADAPTATION_PROJECT', async () => {
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             documentMock.getElementById.mockReturnValueOnce({
                 getAttribute: () => JSON.stringify({ scenario: 'ADAPTATION_PROJECT' })
             });

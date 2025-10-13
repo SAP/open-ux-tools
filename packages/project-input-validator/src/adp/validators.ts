@@ -49,9 +49,15 @@ export function isDataSourceURI(uri: string): boolean {
  * @param {string} value - The project name.
  * @param {string} destinationPath - The project directory.
  * @param {boolean} isCustomerBase - Whether the layer is customer base.
+ * @param {boolean} isCfEnv - Whether the project is in a CF environment.
  * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
-export function validateProjectName(value: string, destinationPath: string, isCustomerBase: boolean): boolean | string {
+export function validateProjectName(
+    value: string,
+    destinationPath: string,
+    isCustomerBase: boolean,
+    isCfEnv: boolean
+): boolean | string {
     const validationResult = validateEmptyString(value);
     if (typeof validationResult === 'string') {
         return validationResult;
@@ -59,6 +65,10 @@ export function validateProjectName(value: string, destinationPath: string, isCu
 
     if (/[A-Z]/.test(value)) {
         return t('adp.projectNameUppercaseError');
+    }
+
+    if (isCfEnv) {
+        return validateDuplicateProjectName(value, destinationPath);
     }
 
     if (!isCustomerBase) {

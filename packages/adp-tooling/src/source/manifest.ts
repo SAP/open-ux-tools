@@ -69,6 +69,18 @@ export function getApplicationType(manifest?: Manifest): ApplicationType {
 }
 
 /**
+ * Checks if the application type is supported for ADAPTATION PROJECT.
+ *
+ * @param {ApplicationType} appType - The application type to check.
+ * @returns {boolean} True if the application type is supported for ADAPTATION PROJECT, false otherwise.
+ */
+export function isSupportedAppTypeForAdp(appType: ApplicationType): boolean {
+    return [ApplicationType.FIORI_ELEMENTS, ApplicationType.FIORI_ELEMENTS_OVP, ApplicationType.FREE_STYLE].includes(
+        appType
+    );
+}
+
+/**
  * Checks if views are loaded synchronously or asynchronously in the UI5 settings of the manifest.
  * Sets the isAppSync property based on the loading method.
  *
