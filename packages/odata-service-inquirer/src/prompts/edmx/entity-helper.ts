@@ -264,7 +264,7 @@ export function getDefaultTableType(
         odataVersion === OdataVersion.v4 &&
         hasAggregateTransformationsForEntity(metadata, mainEntitySetName, transformationsRequiredForAnalyticalTable)
     ) {
-        // If the main entity type is annotated with Aggregation.ApplySupported containing all 9 transformations, use AnalyticalTable as default
+        // If the main entity type is annotated with Aggregation.ApplySupported containing all specified transformations, use AnalyticalTable as default
         tableType = 'AnalyticalTable';
         setAnalyticalTableDefault = true;
     } else if (
