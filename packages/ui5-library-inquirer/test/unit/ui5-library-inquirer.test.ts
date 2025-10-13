@@ -22,10 +22,6 @@ describe('API test', () => {
         {
             version: '1.117.0',
             maintained: true
-        },
-        {
-            version: '1.116.0',
-            maintained: false
         }
     ];
 
@@ -58,10 +54,6 @@ describe('API test', () => {
               {
                 "name": "1.117.0 - (Maintained version)",
                 "value": "1.117.0",
-              },
-              {
-                "name": "1.116.0 - (Out of maintenance version)",
-                "value": "1.116.0",
               },
             ]
         `);

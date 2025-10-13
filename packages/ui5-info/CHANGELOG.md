@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.0
+
+### Minor Changes
+
+-   bba16a6: EINVALs error fix for Windows UI5 versions.
+
 ## 0.12.4
 
 ### Patch Changes
