@@ -46,9 +46,9 @@ export function customAssert(output: string, context: any) {
             reason = 'Snapshot file is created';
         } else {
             // validate
-            const sourceFile = fs.readFileSync(filePath, 'utf8');
-            const snapshotFile = fs.readFileSync(filePath, 'utf8');
-            pass = sourceFile === snapshotFile;
+            const sourceContent = fs.readFileSync(filePath, 'utf8');
+            const snapshotContent = fs.readFileSync(snapshotFile, 'utf8');
+            pass = sourceContent === snapshotContent;
             reason = pass ? 'Snapshot file is matching' : 'Snapshot file is not matching';
         }
     }
