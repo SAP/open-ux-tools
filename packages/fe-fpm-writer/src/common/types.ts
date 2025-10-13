@@ -196,6 +196,13 @@ export interface FragmentContentData {
 }
 
 /**
+ * Interface represents table columns data for fragments.
+ */
+export interface FragmentTableColumnsData {
+    hasTableColumns?: boolean;
+}
+
+/**
  * Interface contain information about application manifest.
  */
 export interface ManifestData {

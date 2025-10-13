@@ -12,6 +12,7 @@ import {
     type BindingContextType
 } from '../../src/building-block/types';
 import { i18nNamespaces, translate } from '../../src/i18n';
+import { Placement } from '../../src/common/types';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -885,9 +886,16 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnTitle',
-                customColumnFragmentPath: 'ext/fragments',
-                customColumnFragmentName: 'CustomColumnTitle.fragment.xml',
-                folder: 'ext/fragments'
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/webapp/ext/fragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnTitle'
+                }
             };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -903,8 +911,6 @@ describe('Building Blocks', () => {
             expect(hasTableColumn).toBe(true);
 
             // Test that content property gets set
-            expect(customColumnData.content).toBeUndefined(); // Initially undefined
-
             await writeFilesForDebugging(fs);
         });
 
@@ -915,9 +921,19 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnTitle2',
-                customColumnFragmentPath: 'ext/fragments',
-                customColumnFragmentName: 'CustomColumnTitle2',
-                folder: 'ext/fragments'
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/webapp/ext/fragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnTitle2'
+                },
+                position: {
+                    placement: Placement.After
+                }
             };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -934,7 +950,7 @@ describe('Building Blocks', () => {
             );
 
             // Check that fragment file was created
-            const expectedFragmentPath = join(basePath, 'webapp/ext/fragments/CustomColumnTitle2.fragment.xml');
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomColumnTitle2.fragment.xml');
             expect(fs.exists(expectedFragmentPath)).toBe(true);
 
             expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-column-without-macros-columns');
@@ -948,9 +964,19 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumn3',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'ExistingFragment',
-                customColumnFragmentPath: 'ext/fragments',
-                customColumnFragmentName: 'ExistingFragment',
-                folder: 'ext/fragments'
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/ext/fragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnTitle'
+                }
             };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -987,9 +1013,19 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnWithFolder',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnWithFolder',
-                customColumnFragmentPath: 'ext/customfolder',
-                customColumnFragmentName: 'CustomColumnWithFolder',
-                folder: 'ext/customfolder'
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/ext/webapp/customfolder',
+                    folder: 'ext/customfolder',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnWithFolder'
+                }
             };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -1022,8 +1058,18 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnNoFolder',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnNoFolder',
-                customColumnFragmentPath: '',
-                customColumnFragmentName: 'CustomColumnNoFolder'
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnNoFolder'
+                }
                 // Note: no folder property
             };
 
@@ -1057,9 +1103,19 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnContent',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnContent',
-                customColumnFragmentPath: 'ext/fragments',
-                customColumnFragmentName: 'CustomColumnContent',
-                folder: 'ext/fragments'
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnContent'
+                }
             };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -1076,8 +1132,8 @@ describe('Building Blocks', () => {
             );
 
             // Verify that buildingBlockData.content was set
-            expect(customColumnData.content).toBeDefined();
-            expect(customColumnData.content).toContain('Sample Text');
+            expect(customColumnData.embededFragment?.content).toBeDefined();
+            expect(customColumnData.embededFragment?.content).toContain('Sample Text');
 
             await writeFilesForDebugging(fs);
         });
@@ -1089,9 +1145,19 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnFragmentContent',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnFragmentContent',
-                customColumnFragmentPath: 'ext/fragments',
-                customColumnFragmentName: 'CustomColumnFragmentContent',
-                folder: 'ext/fragments'
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnFragmentContent'
+                }
             };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -1108,15 +1174,12 @@ describe('Building Blocks', () => {
             );
 
             // Check that fragment file was created
-            const expectedFragmentPath = join(
-                basePath,
-                'webapp/ext/fragments/CustomColumnFragmentContent.fragment.xml'
-            );
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomColumnFragmentContent.fragment.xml');
             expect(fs.exists(expectedFragmentPath)).toBe(true);
 
             // Verify content was set from getDefaultFragmentContent
-            expect(customColumnData.content).toBeDefined();
-            expect(customColumnData.content).toContain('Sample Text');
+            expect(customColumnData.embededFragment?.content).toBeDefined();
+            expect(customColumnData.embededFragment?.content).toContain('Sample Text');
 
             // Check fragment file content
             const fragmentContent = fs.read(expectedFragmentPath);
@@ -1134,9 +1197,19 @@ describe('Building Blocks', () => {
                 id: 'testCustomColumnSerialized',
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnSerialized',
-                customColumnFragmentPath: 'ext/fragments',
-                customColumnFragmentName: 'CustomColumnSerialized',
-                folder: 'ext/fragments'
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
+                    folder: 'ext.fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    ns: 'fpm1.ext.fragment',
+                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
+                    name: 'CustomColumnSerialized'
+                }
             };
 
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);

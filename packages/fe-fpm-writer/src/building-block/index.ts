@@ -66,7 +66,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    const { updatedAggregationPath, processedBuildingBlockData } = processCustomColumnBuildingBlock(
+    const { updatedAggregationPath, processedBuildingBlockData } = processBuildingBlock(
         buildingBlockData,
         xmlDocument,
         manifestPath,
@@ -120,7 +120,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
  * @param {Editor} fs - The memfs editor instance
  * @returns {object} Object containing updated aggregation path and processed building block data
  */
-function processCustomColumnBuildingBlock<T extends BuildingBlock>(
+function processBuildingBlock<T extends BuildingBlock>(
     buildingBlockData: T,
     xmlDocument: Document,
     manifestPath: string,
@@ -129,36 +129,43 @@ function processCustomColumnBuildingBlock<T extends BuildingBlock>(
 ): { updatedAggregationPath: string; processedBuildingBlockData: T } {
     let updatedAggregationPath = aggregationPath;
 
-    if (isCustomColumn(buildingBlockData)) {
+    if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
         const viewPath = join(
-            join(dirname(manifestPath), buildingBlockData.folder ?? ''),
-            `${buildingBlockData.customColumnFragmentName}.fragment.xml`
+            join(dirname(manifestPath), buildingBlockData.embededFragment.folder ?? ''),
+            `${buildingBlockData.embededFragment.name}.fragment.xml`
         );
-        buildingBlockData.path = join(dirname(manifestPath), buildingBlockData.folder ?? '');
+        buildingBlockData.embededFragment.path = join(
+            dirname(manifestPath),
+            buildingBlockData.embededFragment.folder ?? ''
+        );
         // Apply event handler
-        if (buildingBlockData.eventHandler) {
-            buildingBlockData.eventHandler = applyEventHandlerConfiguration(
+        if (buildingBlockData.embededFragment.eventHandler) {
+            buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
                 fs,
-                buildingBlockData,
-                buildingBlockData.eventHandler,
+                buildingBlockData.embededFragment,
+                buildingBlockData.embededFragment.eventHandler,
                 {
                     controllerSuffix: false,
-                    typescript: buildingBlockData.typescript
+                    typescript: buildingBlockData.embededFragment.typescript
                 }
             );
         }
-        buildingBlockData.content = getDefaultFragmentContent('Sample Text', buildingBlockData.eventHandler);
+        buildingBlockData.embededFragment.content = getDefaultFragmentContent(
+            'Sample Text',
+            buildingBlockData.embededFragment.eventHandler
+        );
         if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData);
+            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
         }
         // check xmlDocument for macrosTable element
         const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
         const hasTableColumn = xpathSelect("//*[local-name()='columns']", xmlDocument);
         if (hasTableColumn && Array.isArray(hasTableColumn) && hasTableColumn.length > 0) {
-            buildingBlockData.hasTableColumns = true;
+            buildingBlockData.embededFragment.hasTableColumns = true;
             updatedAggregationPath = aggregationPath + '/macros:columns';
         }
         getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
+        buildingBlockData.embededFragment.folder = buildingBlockData.embededFragment.folder?.replace(/\//g, '.');
     }
 
     return { updatedAggregationPath, processedBuildingBlockData: buildingBlockData };

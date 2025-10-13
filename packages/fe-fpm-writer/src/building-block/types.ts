@@ -1,4 +1,11 @@
-import type { EventHandlerConfiguration } from '../common/types';
+import type {
+    CustomFragment,
+    EventHandler,
+    FragmentContentData,
+    FragmentTableColumnsData,
+    InternalCustomElement,
+    Position
+} from '../common/types';
 
 /**
  * Building block type.
@@ -412,20 +419,22 @@ export interface Page extends BuildingBlock {
     description?: string;
 }
 
-export interface CustomColumn extends BuildingBlock {
+export interface CustomColumn extends EventHandler, BuildingBlock {
     title: string;
-    customColumnFragmentPath: string;
-    customColumnFragmentName: string;
-    appName?: string;
-    hasTableColumns?: boolean;
-    fragmentFile?: string;
-    folder?: string;
-    columnKey?: string;
-    content?: string;
     width?: string;
-    eventHandler?: true | string | EventHandlerConfiguration;
-    typescript?: boolean;
-    path?: string;
+    columnKey?: string;
+    position?: Position;
+    embededFragment?: EmbededFragment;
+}
+
+export interface EmbededFragment
+    extends EventHandler,
+        CustomFragment,
+        InternalCustomElement,
+        FragmentContentData,
+        FragmentTableColumnsData {
+    customColumnFragmentPath: string;
+    folder?: string;
 }
 
 /**

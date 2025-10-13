@@ -2,7 +2,7 @@
 
 exports[`Building Blocks CustomColumn building block generate CustomColumn without macros:columns - should not update aggregation path: generate-custom-column-without-macros-columns 1`] = `
 Object {
-  "generate-custom-column-without-macros-columns/webapp/ext/fragments/CustomColumnTitle2.fragment.xml": Object {
+  "generate-custom-column-without-macros-columns/webapp/ext/fragment/CustomColumnTitle2.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>",
@@ -15,8 +15,8 @@ Object {
             <macros:Table>
             </macros:Table>
             <macros:columns>
-                <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" key=\\"myColumnKey\\">
-                    <core:Fragment fragmentName=\\".ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                    <core:Fragment fragmentName=\\"fpm1.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
                 </macrosTable:Column>
             </macros:columns>
         </content>
@@ -60,8 +60,8 @@ Object {
 
 exports[`Building Blocks CustomColumn building block getSerializedFileContent for CustomColumn building block 1`] = `
 "<macros:columns>
-    <macrosTable:Column header=\\"CustomColumnSerialized\\" importance=\\"High\\"  key=\\"myColumnKey\\">
-        <core:Fragment fragmentName=\\".ext.fragment.CustomColumnSerialized\\" type=\\"XML\\" />
+    <macrosTable:Column header=\\"CustomColumnSerialized\\" importance=\\"High\\"     placement=\\"After\\"  key=\\"myColumnKey\\">
+        <core:Fragment fragmentName=\\"fpm1.ext.fragment.CustomColumnSerialized\\" type=\\"XML\\" />
     </macrosTable:Column>
 </macros:columns>"
 `;
