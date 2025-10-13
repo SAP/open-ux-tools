@@ -250,6 +250,50 @@ export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, enti
 }
 
 /**
+ * Checks if the given entity set name has a Hierarchy.RecursiveHierarchy annotation and returns detailed information.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for recursive hierarchy annotation.
+ * @returns Object with hasHierarchy flag and optional qualifier.
+ */
+export function getRecursiveHierarchyInfo(metadata: ConvertedMetadata, entitySetName?: string): { hasHierarchy: boolean; qualifier?: string } {
+    if (!entitySetName) {
+        return { hasHierarchy: false };
+    }
+
+    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
+
+    if (!hierarchyAnnotations) {
+        return { hasHierarchy: false };
+    }
+
+    // Check for RecursiveHierarchy annotation (with or without qualifier)
+    const recursiveHierarchyKey = Object.keys(hierarchyAnnotations).find((key) => key.startsWith('RecursiveHierarchy'));
+    
+    if (!recursiveHierarchyKey) {
+        return { hasHierarchy: false };
+    }
+
+    // Extract qualifier if present (format: "RecursiveHierarchy#qualifier" or just "RecursiveHierarchy")
+    const qualifier = recursiveHierarchyKey.includes('#') ? recursiveHierarchyKey.split('#')[1] : undefined;
+    
+    return { hasHierarchy: true, qualifier };
+}
+
+/**
+ * Gets the qualifier from a Hierarchy.RecursiveHierarchy annotation for the given entity set.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for recursive hierarchy annotation.
+ * @returns The qualifier string if found, undefined otherwise.
+ */
+export function getRecursiveHierarchyQualifier(metadata: ConvertedMetadata, entitySetName?: string): string | undefined {
+    const result = getRecursiveHierarchyInfo(metadata, entitySetName);
+    return result.qualifier;
+}
+
+/**
  * Converts an EDMX string to a ConvertedMetadata object.
  *
  * @param edmx - The EDMX string to convert.

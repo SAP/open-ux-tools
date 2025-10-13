@@ -2,7 +2,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices } from '@sap-ux/inquirer-common';
+import { searchChoices, getRecursiveHierarchyQualifier } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n';
@@ -312,14 +312,19 @@ function getTableLayoutQuestions(
                 breadcrumb: true,
                 mandatory: true
             },
-            default: '',
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                // Auto-populate qualifier from RecursiveHierarchy annotation if available
+                const entitySetName = prevAnswers?.mainEntity?.entitySetName;
+                const qualifier = getRecursiveHierarchyQualifier(metadata, entitySetName);
+                return qualifier || '';
+            },
             validate: (input: string) => {
                 if (!input) {
                     return t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning');
                 }
                 return true;
             }
-        } as InputQuestion<TableConfigAnswers>);
+        } as InputQuestion<EntitySelectionAnswers & TableConfigAnswers>);
     }
     return tableLayoutQuestions;
 }

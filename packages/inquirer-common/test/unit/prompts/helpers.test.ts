@@ -13,6 +13,8 @@ import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
     convertEdmxToConvertedMetadata,
     hasRecursiveHierarchyForEntity,
+    getRecursiveHierarchyInfo,
+    getRecursiveHierarchyQualifier,
     hasAggregateTransformationsForEntity,
     transformationsRequiredForAnalyticalTable
 } from '../../../src/prompts/helpers';
@@ -1074,6 +1076,254 @@ describe('helpers', () => {
             };
 
             expect(hasRecursiveHierarchyForEntity(mockMetadata, 'TestEntity')).toBe(true);
+        });
+
+
+    });
+
+    describe('getRecursiveHierarchyInfo', () => {
+        it('should return object with hasHierarchy true and qualifier for qualified RecursiveHierarchy annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy#CompanyNode': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = getRecursiveHierarchyInfo(mockMetadata, 'TestEntity');
+            expect(result.hasHierarchy).toBe(true);
+            expect(result.qualifier).toBe('CompanyNode');
+        });
+
+        it('should return object with hasHierarchy true and no qualifier for unqualified RecursiveHierarchy annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = getRecursiveHierarchyInfo(mockMetadata, 'TestEntity');
+            expect(result.hasHierarchy).toBe(true);
+            expect(result.qualifier).toBeUndefined();
+        });
+
+        it('should return object with hasHierarchy false when no RecursiveHierarchy annotation exists', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'UI': {
+                                    'LineItem': []
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = getRecursiveHierarchyInfo(mockMetadata, 'TestEntity');
+            expect(result.hasHierarchy).toBe(false);
+            expect(result.qualifier).toBeUndefined();
+        });
+
+        it('should return object with hasHierarchy false for non-existent entity set', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = getRecursiveHierarchyInfo(mockMetadata, 'NonExistentEntity');
+            expect(result.hasHierarchy).toBe(false);
+            expect(result.qualifier).toBeUndefined();
+        });
+
+        it('should return object with hasHierarchy false when entitySetName is not provided', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(getRecursiveHierarchyInfo(mockMetadata)).toEqual({ hasHierarchy: false });
+            expect(getRecursiveHierarchyInfo(mockMetadata, undefined)).toEqual({ hasHierarchy: false });
+        });
+    });
+
+    describe('getRecursiveHierarchyQualifier', () => {
+        it('should return qualifier for entity with qualified RecursiveHierarchy annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy#CompanyNode': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(getRecursiveHierarchyQualifier(mockMetadata, 'TestEntity')).toBe('CompanyNode');
+        });
+
+        it('should return undefined for entity with unqualified RecursiveHierarchy annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Hierarchy': {
+                                    'RecursiveHierarchy': {
+                                        NodeProperty: {
+                                            $PropertyPath: 'NodeId'
+                                        }
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(getRecursiveHierarchyQualifier(mockMetadata, 'TestEntity')).toBeUndefined();
+        });
+
+        it('should return undefined for entity without RecursiveHierarchy annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'UI': {
+                                    'LineItem': []
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(getRecursiveHierarchyQualifier(mockMetadata, 'TestEntity')).toBeUndefined();
+        });
+
+        it('should return undefined for non-existent entity set', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(getRecursiveHierarchyQualifier(mockMetadata, 'NonExistentEntity')).toBeUndefined();
+        });
+
+        it('should return undefined when entitySetName is not provided', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(getRecursiveHierarchyQualifier(mockMetadata)).toBeUndefined();
+            expect(getRecursiveHierarchyQualifier(mockMetadata, undefined)).toBeUndefined();
         });
     });
 });
