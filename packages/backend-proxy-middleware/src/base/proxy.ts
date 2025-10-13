@@ -1,33 +1,31 @@
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import type { ServerOptions } from 'http-proxy';
-import type { RequestHandler, Options } from 'http-proxy-middleware';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import i18n from 'i18next';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import { ToolsLogger, type Logger, UI5ToolingTransport } from '@sap-ux/logger';
 import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
-import {
-    isAppStudio,
-    getDestinationUrlForAppStudio,
-    getCredentialsForDestinationService,
-    listDestinations,
-    isFullUrlDestination,
-    BAS_DEST_INSTANCE_CRED_HEADER
-} from '@sap-ux/btp-utils';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import {
+    BAS_DEST_INSTANCE_CRED_HEADER,
+    getCredentialsForDestinationService,
+    getDestinationUrlForAppStudio,
+    isAppStudio,
+    isFullUrlDestination,
+    listDestinations
+} from '@sap-ux/btp-utils';
+import { ToolsLogger, UI5ToolingTransport, type Logger } from '@sap-ux/logger';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ServerOptions } from 'http-proxy';
+import type { Options, RequestHandler } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import i18n from 'i18next';
 import translations from './i18n.json';
-
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
-import { AuthenticationType } from '@sap-ux/store';
-import { BackendSystemKey, getService } from '@sap-ux/store';
-import { updateProxyEnv } from './config';
-import type { Url } from 'node:url';
-import { addOptionsForEmbeddedBSP } from '../ext/bsp';
-import { getProxyForUrl } from 'proxy-from-env';
-import type { Socket } from 'node:net';
-import type { Request } from 'express';
+import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import type connect from 'connect';
+import type { Request } from 'express';
+import type { Socket } from 'node:net';
+import type { Url } from 'node:url';
+import { getProxyForUrl } from 'proxy-from-env';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp';
+import { updateProxyEnv } from './config';
 
 export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
