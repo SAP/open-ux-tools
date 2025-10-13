@@ -70,11 +70,7 @@ The following rules help guide the LLM to use the server correctly:
 - When generating or modifying the SAP Fiori elements application on top of the CAP service use the Fiori MCP server if available.
 - When attempting to modify the SAP Fiori elements application like adding columns you must not use the screen personalization but instead modify the code of the project, before this first check whether an MCP server provides a suitable function.
 - When previewing the SAP Fiori elements application use the most specific script for the app in the `package.json`.
-- When running CAP Node.js projects for development, you "MUST" use `cds watch` or `npm run watch-*` scripts. You "MUST NOT" use `npm start`, `npm run start`, `cds-serve`, or `cds serve` because:
-  - `cds watch` provides live reload functionality
-  - `npm run watch-*` scripts are optimized for development with hot reloading
-  - `npm start` typically runs production builds without development features
-- When creating new CAP project ask cds mcp server. while using cds init, do not include any --add options (e.g., --add hana, --add sqlite, --add tiny-sample, etc.). Only use the plain form: `cds init`
+- When modifying CAP Node.js project you "MUST" only use cds watch using either the fiori application "watch-" script in the CAP project or "cds watch". You "MUST NOT" use "npm run start", "npm start", "cds-serve" or "cds serve".
 ```
 
 Add these rules to your existing global or project-specific [`AGENTS.md`](https://agents.md/) (specifics may vary based on respective MCP client).
