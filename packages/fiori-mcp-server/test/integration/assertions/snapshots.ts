@@ -56,9 +56,9 @@ export function customAssert(output: string, context: any) {
                 : compareStrings(sourceContent, snapshotContent);
             pass = !compareResult;
             if (!pass) {
-                console.log(compareResult);
+                console.log(`Snapshot mismatch for ${snapshotFile}: ${compareResult}`);
             }
-            reason = pass ? 'Snapshot file is matching' : `Snapshot file is not matching: ${compareResult}`;
+            reason = pass ? 'Snapshot file matches' : `Snapshot file does not match: ${compareResult}`;
         }
     }
 
