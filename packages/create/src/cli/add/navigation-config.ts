@@ -82,7 +82,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         const inbounds = await getInbounds(basePath, yamlPath, fs, logger, variant);
         let tileSettingsAnswers: TileSettingsAnswers | undefined;
         if (inbounds && isAdp) {
-            tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(), false);
+            tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(inbounds), false);
         }
 
         const answers = await getUserAnswers(inbounds, isAdp, tileSettingsAnswers);
@@ -94,7 +94,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 
         if (variant.isAdp) {
             const config = getAdpFlpInboundsWriterConfig(answers, variant.content.layer, tileSettingsAnswers);
-            await generateInboundConfig(basePath, config as InternalInboundNavigation, fs);
+            await generateInboundConfig(basePath, config as InternalInboundNavigation[], fs);
         } else {
             await generateInboundNavigationConfig(basePath, answers, true, fs);
         }
