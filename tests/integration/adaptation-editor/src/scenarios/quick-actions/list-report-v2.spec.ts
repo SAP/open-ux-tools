@@ -267,7 +267,13 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             async function clickOnValueHelp(): Promise<void> {
                 await test.step(`Click on value help button of \`Date Property\` filter`, async () => {
                     if (satisfies(ui5Version, '~1.96.0')) {
-                        await previewFrame.getByTitle('Open Picker').click();
+                        // Try getByTitle first, fallback to aria-label if not found
+                        const btn = previewFrame.getByTitle('Open Picker');
+                        if (await btn.count()) {
+                            await btn.click();
+                        } else {
+                            await previewFrame.locator('[aria-label="Open Picker"]').click();
+                        }
                     } else {
                         // click on second filter value help
                         await previewFrame
@@ -318,8 +324,14 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.toolbar.navigationModeButton.click();
 
             await test.step(`Click on value help button of \`Date Property\` filter`, async () => {
-                await previewFrame.getByTitle('Open Picker').click();
+                const btn = previewFrame.getByTitle('Open Picker');
+                if (await btn.count()) {
+                    await btn.click();
+                } else {
+                    await previewFrame.locator('[aria-label="Open Picker"]').click();
+                }
             });
+
             await expect(previewFrame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
             await editor.toolbar.uiAdaptationModeButton.click();
 
