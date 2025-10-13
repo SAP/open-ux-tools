@@ -425,7 +425,11 @@ export class AdpDialog {
      * @returns Promise resolving to the dialog title as a string.
      */
     async getName(): Promise<string> {
-        const title = (await this.frame.getByRole('dialog').getByRole('heading').textContent()) ?? '';
+        let heading = this.frame.getByRole('dialog').getByRole('heading');
+        if (typeof heading.first === 'function') {
+            heading = heading.first();
+        }
+        const title = (await heading.textContent()) ?? '';
         return title;
     }
 

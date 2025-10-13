@@ -58,34 +58,6 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
                     }
                 ]
             });
-            // await expect
-            //     .poll(async () => readChanges(projectCopy), {
-            //         message: 'make sure change file is created'
-            //     })
-            //     .toEqual(
-            //         expect.objectContaining({
-            //             changes: expect.arrayContaining([
-            //                 expect.objectContaining({
-            //                     fileType: 'change',
-            //                     changeType: 'appdescr_ui_generic_app_changePageConfiguration',
-            //                     content: expect.objectContaining({
-            //                         parentPage: expect.objectContaining({
-            //                             component: 'sap.suite.ui.generic.template.ObjectPage',
-            //                             entitySet: 'RootEntity'
-            //                         }),
-            //                         entityPropertyChange: expect.objectContaining({
-            //                             propertyPath:
-            //                                 'component/settings/sections/toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection/tableSettings',
-            //                             operation: 'UPSERT',
-            //                             propertyValue: expect.objectContaining({
-            //                                 variantManagement: true
-            //                             })
-            //                         })
-            //                     })
-            //                 })
-            //             ])
-            //         })
-            //     );
         }
     );
 });
