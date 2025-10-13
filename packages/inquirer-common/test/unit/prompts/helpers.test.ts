@@ -1077,8 +1077,6 @@ describe('helpers', () => {
 
             expect(hasRecursiveHierarchyForEntity(mockMetadata, 'TestEntity')).toBe(true);
         });
-
-
     });
 
     describe('getRecursiveHierarchyInfo', () => {

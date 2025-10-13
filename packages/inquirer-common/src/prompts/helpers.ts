@@ -256,7 +256,10 @@ export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, enti
  * @param entitySetName The entity set name to check for recursive hierarchy annotation.
  * @returns Object with hasHierarchy flag and optional qualifier.
  */
-export function getRecursiveHierarchyInfo(metadata: ConvertedMetadata, entitySetName?: string): { hasHierarchy: boolean; qualifier?: string } {
+export function getRecursiveHierarchyInfo(
+    metadata: ConvertedMetadata,
+    entitySetName?: string
+): { hasHierarchy: boolean; qualifier?: string } {
     if (!entitySetName) {
         return { hasHierarchy: false };
     }
@@ -270,14 +273,14 @@ export function getRecursiveHierarchyInfo(metadata: ConvertedMetadata, entitySet
 
     // Check for RecursiveHierarchy annotation (with or without qualifier)
     const recursiveHierarchyKey = Object.keys(hierarchyAnnotations).find((key) => key.startsWith('RecursiveHierarchy'));
-    
+
     if (!recursiveHierarchyKey) {
         return { hasHierarchy: false };
     }
 
     // Extract qualifier if present (format: "RecursiveHierarchy#qualifier" or just "RecursiveHierarchy")
     const qualifier = recursiveHierarchyKey.includes('#') ? recursiveHierarchyKey.split('#')[1] : undefined;
-    
+
     return { hasHierarchy: true, qualifier };
 }
 
@@ -288,7 +291,10 @@ export function getRecursiveHierarchyInfo(metadata: ConvertedMetadata, entitySet
  * @param entitySetName The entity set name to check for recursive hierarchy annotation.
  * @returns The qualifier string if found, undefined otherwise.
  */
-export function getRecursiveHierarchyQualifier(metadata: ConvertedMetadata, entitySetName?: string): string | undefined {
+export function getRecursiveHierarchyQualifier(
+    metadata: ConvertedMetadata,
+    entitySetName?: string
+): string | undefined {
     const result = getRecursiveHierarchyInfo(metadata, entitySetName);
     return result.qualifier;
 }

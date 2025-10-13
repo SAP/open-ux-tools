@@ -423,7 +423,9 @@ describe('Test entity prompts', () => {
                 entitySetName: 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
             }
         };
-        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithQualifiedEntity)).toBe('I_SADL_HIER_UUID_COMPANY_NODE');
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithQualifiedEntity)).toBe(
+            'I_SADL_HIER_UUID_COMPANY_NODE'
+        );
 
         // Test that the default function returns empty string when no qualifier found
         const mockAnswersWithoutQualifier = {
