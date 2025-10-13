@@ -1,7 +1,7 @@
 import type { Answers, Question, Validator } from 'inquirer';
 import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types';
 import cloneDeep from 'lodash/cloneDeep';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import { t } from '../i18n';
@@ -151,6 +151,22 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
         }
     });
     return questions;
+}
+
+/**
+ * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
+ * This can be found within the entity set annotations or the entity type annotations.
+ *
+ * @param entitySets the entity sets to filter
+ * @returns the filtered entity sets
+ */
+export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
+    return entitySets.filter((entitySet) => {
+        return (
+            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
+        );
+    });
 }
 
 /**

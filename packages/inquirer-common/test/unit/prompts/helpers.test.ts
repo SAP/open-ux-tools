@@ -6,7 +6,8 @@ import {
     extendAdditionalMessages,
     extendValidate,
     extendWithOptions,
-    withCondition
+    withCondition,
+    filterAggregateTransformations
 } from '../../../src/prompts/helpers';
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
@@ -411,6 +412,161 @@ describe('helpers', () => {
                 'utf-8'
             );
             metadata = convertEdmxToConvertedMetadata(edmx);
+        });
+
+        describe('filterAggregateTransformations', () => {
+            it('should return only entity sets with aggregate transformations in entity set annotations', () => {
+                const mockEntitySets: any[] = [
+                    {
+                        name: 'EntityWithTransforms',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    'Transformations': ['filter', 'orderby', 'groupby']
+                                }
+                            }
+                        },
+                        entityType: {}
+                    },
+                    {
+                        name: 'EntityWithoutTransforms',
+                        annotations: {},
+                        entityType: {}
+                    }
+                ];
+
+                const result = filterAggregateTransformations(mockEntitySets);
+                expect(result).toHaveLength(1);
+                expect(result[0].name).toBe('EntityWithTransforms');
+            });
+
+            it('should return only entity sets with aggregate transformations in entity type annotations', () => {
+                const mockEntitySets: any[] = [
+                    {
+                        name: 'EntityWithTypeTransforms',
+                        annotations: {},
+                        entityType: {
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {
+                                        'Transformations': ['filter', 'orderby']
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: 'EntityWithoutTransforms',
+                        annotations: {},
+                        entityType: {
+                            annotations: {}
+                        }
+                    }
+                ];
+
+                const result = filterAggregateTransformations(mockEntitySets);
+                expect(result).toHaveLength(1);
+                expect(result[0].name).toBe('EntityWithTypeTransforms');
+            });
+
+            it('should return entity sets with transformations in either entity set or entity type annotations', () => {
+                const mockEntitySets: any[] = [
+                    {
+                        name: 'EntitySetTransforms',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    'Transformations': ['filter']
+                                }
+                            }
+                        },
+                        entityType: {}
+                    },
+                    {
+                        name: 'EntityTypeTransforms',
+                        annotations: {},
+                        entityType: {
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {
+                                        'Transformations': ['orderby']
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: 'NoTransforms',
+                        annotations: {},
+                        entityType: {}
+                    }
+                ];
+
+                const result = filterAggregateTransformations(mockEntitySets);
+                expect(result).toHaveLength(2);
+                expect(result.map((e) => e.name)).toEqual(['EntitySetTransforms', 'EntityTypeTransforms']);
+            });
+
+            it('should return empty array when no entity sets have transformations', () => {
+                const mockEntitySets: any[] = [
+                    {
+                        name: 'Entity1',
+                        annotations: {},
+                        entityType: {}
+                    },
+                    {
+                        name: 'Entity2',
+                        annotations: {},
+                        entityType: {
+                            annotations: {}
+                        }
+                    }
+                ];
+
+                const result = filterAggregateTransformations(mockEntitySets);
+                expect(result).toHaveLength(0);
+            });
+
+            it('should return empty array when input array is empty', () => {
+                const result = filterAggregateTransformations([]);
+                expect(result).toHaveLength(0);
+            });
+
+            it('should handle entity sets with partial annotation structures', () => {
+                const mockEntitySets: any[] = [
+                    {
+                        name: 'PartialAnnotations1',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {} // No Transformations property
+                            }
+                        },
+                        entityType: {}
+                    },
+                    {
+                        name: 'PartialAnnotations2',
+                        annotations: {
+                            'Aggregation': {} // No ApplySupported property
+                        },
+                        entityType: {}
+                    },
+                    {
+                        name: 'ValidEntity',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    'Transformations': ['filter']
+                                }
+                            }
+                        },
+                        entityType: {}
+                    }
+                ];
+
+                const result = filterAggregateTransformations(mockEntitySets);
+                expect(result).toHaveLength(1);
+                expect(result[0].name).toBe('ValidEntity');
+            });
         });
 
         it('hasCompleteAggregateTransformationsForEntity should return true for entities with all 9 required transformations', () => {
