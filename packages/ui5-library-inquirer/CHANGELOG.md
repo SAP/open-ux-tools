@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.0
+
+### Minor Changes
+
+-   28f024c: Only show maintained UI5 versions in the Reusable Library Generator.
+
 ## 0.5.6
 
 ### Patch Changes

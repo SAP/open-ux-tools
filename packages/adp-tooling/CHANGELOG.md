@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.38
+
+### Patch Changes
+
+-   1df9184: fix: Add SAPUI5 Component Usage wizard generates file with wrong property
+
 ## 0.15.37
 
 ### Patch Changes
