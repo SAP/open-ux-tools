@@ -118,6 +118,8 @@ export default class extends Generator {
      */
     private isCustomerBase: boolean;
 
+    private saveMuabConfig: (muabConfigPath: string) => void;
+
     /**
      * Creates an instance of the generator.
      *
@@ -133,7 +135,6 @@ export default class extends Generator {
         this.options = opts;
 
         this._setupLogging();
-        logAxiosTraffic(this.logger);
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
@@ -312,6 +313,7 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
+        this.saveMuabConfig(`${this._getProjectPath()}/muab-config.txt`);
         if (this.shouldCreateExtProject) {
             return;
         }
@@ -385,6 +387,8 @@ export default class extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpGeneratorLogger.logger as unknown as ToolsLogger;
+        const { saveMuabConfig } = logAxiosTraffic(this.logger);
+        this.saveMuabConfig = saveMuabConfig;
     }
 
     /**
