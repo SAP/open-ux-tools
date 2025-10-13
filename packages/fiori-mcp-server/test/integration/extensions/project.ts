@@ -41,12 +41,15 @@ export async function setup(hookName: string, context: HookContext) {
         return;
     }
     const project = TEST_PROJECTS[projectName];
+    if (project) {
+        defaultVars['PROJECT_PATH'] = project.path;
+    }
     switch (hookName) {
-        case 'beforeAll': {
-            // Create 'PROJECT_PATH' variable with path to project/application
-            defaultVars['PROJECT_PATH'] = project.path;
-            break;
-        }
+        // case 'beforeAll': {
+        //     // Create 'PROJECT_PATH' variable with path to project/application
+        //     defaultVars['PROJECT_PATH'] = project.path;
+        //     break;
+        // }
         case 'beforeEach': {
             // Properate copy project before running test
             copyFolder(project.originalPath, project.path);

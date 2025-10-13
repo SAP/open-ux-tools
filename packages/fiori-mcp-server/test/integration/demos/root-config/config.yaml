@@ -1,0 +1,10 @@
+providers:
+    - id: file://../../provider/index.ts
+extensions:
+    - file://../../extensions/project.ts:setup
+prompts:
+    - '{{query}}'
+tests:
+  - file://./list-functionalities2.yaml
+  - file://./add-page.yaml
+  - file://./enable-fcl.yaml

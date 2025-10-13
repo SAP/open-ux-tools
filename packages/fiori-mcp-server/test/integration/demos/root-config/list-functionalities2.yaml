@@ -1,0 +1,8 @@
+
+vars:
+    project: 'lrop'
+    appPath: '{{PROJECT_PATH}}'
+    query: 'What are functionalities available in application with appPath: {{appPath}}. Provide ids'
+assert:
+    - type: contains-any
+      value: ['add-page','add page','adding page', 'create page']

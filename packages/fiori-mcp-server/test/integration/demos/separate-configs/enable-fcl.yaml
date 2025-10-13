@@ -1,0 +1,18 @@
+providers:
+    - id: file://../../provider/index.ts
+extensions:
+    - file://../../extensions/project.ts:setup
+defaultTest:
+    vars:
+        project: 'lrop'
+prompts:
+    - 'Enable FCL with two column middle expanded. Application in {{appPath}}'
+tests:
+    - vars:
+          appPath: '{{PROJECT_PATH}}'
+      assert:
+        - type: javascript
+          value: file://../../assertions/snapshots.ts:customAssert
+          config:
+            file: webapp/manifest.json
+            snapshot: fcl-enable

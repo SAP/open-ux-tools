@@ -1,0 +1,11 @@
+
+vars:
+    project: 'lrop'
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Enable FCL with two column middle expanded. Application in {{appPath}}'
+assert:
+  - type: javascript
+    value: file://../../assertions/snapshots.ts:customAssert
+    config:
+      file: webapp/manifest.json
+      snapshot: fcl-enable

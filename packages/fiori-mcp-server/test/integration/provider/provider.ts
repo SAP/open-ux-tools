@@ -6,19 +6,19 @@ import {
     type ProviderResponse
 } from 'promptfoo';
 import { z } from 'zod';
-import { getServiceKeyFromEnv } from './util/service-key';
-import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
-import { readFile } from './util/file-access';
-import { validate } from './util/validate';
 import type {
     AzureOpenAiCreateChatCompletionRequest,
     AzureOpenAiResponseFormatJsonSchemaSchema
 } from '@sap-ai-sdk/foundation-models/dist/azure-openai/client/inference/schema';
-import { callTool, getTools } from './mcp-server';
 import type { AIMessageChunk, MessageFieldWithRole } from '@langchain/core/messages';
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { Runnable } from '@langchain/core/runnables';
 import { BaseLanguageModelInput } from '@langchain/core/language_models/base';
+import { getServiceKeyFromEnv } from './util/service-key';
+import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
+import { readFile } from './util/file-access';
+import { validate } from './util/validate';
+import { callTool, getTools } from './mcp-server';
 
 /**
  * Schema for the configuration of the AICoreApiProvider.
@@ -41,7 +41,6 @@ export default class AICoreApiProvider implements ApiProvider {
 
     private client?: Runnable<BaseLanguageModelInput, AIMessageChunk, AzureOpenAiChatCallOptions>;
     private tools: DynamicStructuredTool[] = [];
-    private messages: MessageFieldWithRole[] = [];
 
     constructor(options: { config: AICoreApiProviderConfig }) {
         this.config = AICoreApiProviderConfig.parse(options.config);
@@ -205,18 +204,18 @@ export default class AICoreApiProvider implements ApiProvider {
     private async invokeCalls(prompt: string): Promise<AIMessageChunk> {
         const client = await this.getClient();
         // Initialize message history
-        this.messages = [
+        const messages: MessageFieldWithRole[] = [
             {
                 role: 'user',
                 content: prompt
             }
         ];
         // Make first call to AI
-        let response = await client.invoke(this.messages);
+        let response = await client.invoke(messages);
         // Resolve tool calls
         while (response.tool_calls?.length) {
             // Request from assistant for tool
-            this.messages.push({
+            messages.push({
                 role: 'assistant',
                 content: response.content,
                 tool_calls: response.tool_calls
@@ -225,21 +224,21 @@ export default class AICoreApiProvider implements ApiProvider {
                 try {
                     const result = await callTool(this.tools, toolCall);
                     // Response from tool
-                    this.messages.push({
+                    messages.push({
                         role: 'tool',
                         content: result,
                         tool_call_id: toolCall.id
                     });
                 } catch (e) {
                     // ToDo - maybe fall without option to fix???
-                    this.messages.push({
+                    messages.push({
                         role: 'tool',
                         content: e.message,
                         tool_call_id: toolCall.id
                     });
                 }
             }
-            response = await client.invoke(this.messages);
+            response = await client.invoke(messages);
         }
 
         return response;

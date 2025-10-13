@@ -6,12 +6,12 @@ defaultTest:
     vars:
         project: 'lrop'
 prompts:
-    - file://./prompt.txt
+    - id: list-functionalities
+      raw: 'What are functionalities available in application with appPath: {{appPath}}. Provide ids'
 tests:
-    - vars:
+    - prompt: list-functionalities
+      vars:
           appPath: '{{PROJECT_PATH}}'
-          pageType: ObjectPage
-          parent: BookingObjectPage
       assert:
           - type: contains
-            value: successfully added
+            value: add-page
