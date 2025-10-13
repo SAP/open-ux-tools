@@ -1,5 +1,23 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.23
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+
+## 0.5.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.5.21
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.5.20
 
 ### Patch Changes

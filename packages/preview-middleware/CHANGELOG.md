@@ -1,5 +1,34 @@
 # @sap-ux/preview-middleware
 
+## 0.23.22
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+
+## 0.23.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+
+## 0.23.20
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+    -   @sap-ux/adp-tooling@0.15.36
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/system-access@0.6.19
+
+## 0.23.19
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/adp-tooling@0.15.35
+
 ## 0.23.18
 
 ### Patch Changes

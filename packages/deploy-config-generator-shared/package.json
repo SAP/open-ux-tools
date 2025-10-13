@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-config-generator-shared",
     "description": "Commonly used shared functionality and types to support the deploy config generator.",
-    "version": "0.1.40",
+    "version": "0.1.41",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
