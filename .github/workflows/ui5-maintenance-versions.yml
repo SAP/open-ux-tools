@@ -27,7 +27,7 @@ jobs:
                   restore-keys: |
                       ubuntu-latest-build-$cache-pnpm-modules-20.x-
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: 20.x
             - name: Install pnpm modules
