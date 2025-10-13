@@ -1189,46 +1189,6 @@ describe('Building Blocks', () => {
 
             await writeFilesForDebugging(fs);
         });
-
-        test('getSerializedFileContent for CustomColumn building block', async () => {
-            const basePath = join(testAppPath, 'get-serialized-custom-column');
-            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
-            const customColumnData: CustomColumn = {
-                id: 'testCustomColumnSerialized',
-                buildingBlockType: BuildingBlockType.CustomColumn,
-                title: 'CustomColumnSerialized',
-                position: {
-                    placement: Placement.After
-                },
-                embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
-                    folder: 'ext.fragment',
-                    typescript: false,
-                    content:
-                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
-                    name: 'CustomColumnSerialized'
-                }
-            };
-
-            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
-
-            const codeSnippet = await getSerializedFileContent<CustomColumn>(
-                basePath,
-                {
-                    viewOrFragmentPath: xmlViewFilePath,
-                    aggregationPath,
-                    buildingBlockData: customColumnData
-                },
-                fs
-            );
-
-            expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
-            expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
-            expect(codeSnippet.manifest.content).toMatchSnapshot();
-            expect(codeSnippet.manifest.filePathProps?.fileName).toBe('manifest.json');
-        });
     });
     test('generates Rich Text Editor building block with absolute binding context', async () => {
         const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;

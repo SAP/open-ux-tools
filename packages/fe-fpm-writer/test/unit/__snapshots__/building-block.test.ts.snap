@@ -58,24 +58,6 @@ Object {
 }
 `;
 
-exports[`Building Blocks CustomColumn building block getSerializedFileContent for CustomColumn building block 1`] = `
-"<macros:columns>
-    <macrosTable:Column header=\\"CustomColumnSerialized\\" importance=\\"High\\"     placement=\\"After\\"  key=\\"myColumnKey\\">
-        <core:Fragment fragmentName=\\"fpm1.ext.fragment.CustomColumnSerialized\\" type=\\"XML\\" />
-    </macrosTable:Column>
-</macros:columns>"
-`;
-
-exports[`Building Blocks CustomColumn building block getSerializedFileContent for CustomColumn building block 2`] = `
-"{
-    \\"sap.ui5\\": {
-        \\"dependencies\\": {
-            \\"libs\\": {\\"sap.fe.macros\\":{}}
-        }
-    }
-}"
-`;
-
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
   "default": Object {

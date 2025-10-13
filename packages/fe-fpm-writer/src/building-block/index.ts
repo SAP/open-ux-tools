@@ -10,7 +10,8 @@ import {
     type BuildingBlockMetaPath,
     type CustomColumn,
     type RichTextEditor,
-    bindingContextAbsolute
+    bindingContextAbsolute,
+    type TemplateConfig
 } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
@@ -66,14 +67,13 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    const { updatedAggregationPath, processedBuildingBlockData } = processBuildingBlock(
-        buildingBlockData,
-        xmlDocument,
-        manifestPath,
-        aggregationPath,
-        fs
-    );
-    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest);
+    const { updatedAggregationPath, processedBuildingBlockData, hasTableColumns, macrosTableNamespace } =
+        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, aggregationPath, fs);
+    const templateConfig: TemplateConfig = {
+        hasTableColumns: hasTableColumns,
+        macrosTableNamespace: macrosTableNamespace
+    };
+    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
 
     if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
@@ -111,6 +111,40 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 }
 
 /**
+ * Updates aggregation path for table columns based on XML document structure.
+ *
+ * @param {Document} xmlDocument - The XML document to analyze
+ * @param {string} aggregationPath - The current aggregation path
+ * @param {CustomColumn} buildingBlockData - The building block data with embedded fragment
+ * @returns {object} Object containing the updated aggregation path
+ */
+function updateAggregationPathForTableColumns(
+    xmlDocument: Document,
+    aggregationPath: string,
+    buildingBlockData: CustomColumn
+): { updatedAggregationPath: string; hasTableColumns: boolean } {
+    if (!buildingBlockData.embededFragment) {
+        return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
+    }
+
+    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+    const hasColumnsAggregation = xpathSelect("//*[local-name()='columns']", xmlDocument);
+    if (hasColumnsAggregation && Array.isArray(hasColumnsAggregation) && hasColumnsAggregation.length > 0) {
+        return {
+            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:columns`,
+            hasTableColumns: true
+        };
+    } else {
+        const useDefaultAggregation = xpathSelect("//*[local-name()='Column']", xmlDocument);
+        if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
+            return { updatedAggregationPath: aggregationPath, hasTableColumns: true };
+        }
+    }
+
+    return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
+}
+
+/**
  * Processes custom column building block configuration.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
@@ -126,8 +160,15 @@ function processBuildingBlock<T extends BuildingBlock>(
     manifestPath: string,
     aggregationPath: string,
     fs: Editor
-): { updatedAggregationPath: string; processedBuildingBlockData: T } {
+): {
+    updatedAggregationPath: string;
+    processedBuildingBlockData: T;
+    hasTableColumns: boolean;
+    macrosTableNamespace: string;
+} {
     let updatedAggregationPath = aggregationPath;
+    let hasTableColumns = false;
+    let macrosTableNamespace = 'macrosTable';
 
     if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
         const viewPath = join(
@@ -158,17 +199,24 @@ function processBuildingBlock<T extends BuildingBlock>(
             fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
         }
         // check xmlDocument for macrosTable element
-        const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-        const hasTableColumn = xpathSelect("//*[local-name()='columns']", xmlDocument);
-        if (hasTableColumn && Array.isArray(hasTableColumn) && hasTableColumn.length > 0) {
-            buildingBlockData.embededFragment.hasTableColumns = true;
-            updatedAggregationPath = aggregationPath + '/macros:columns';
-        }
-        getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
-        buildingBlockData.embededFragment.folder = buildingBlockData.embededFragment.folder?.replace(/\//g, '.');
+        const tableColumnsResult = updateAggregationPathForTableColumns(
+            xmlDocument,
+            aggregationPath,
+            buildingBlockData
+        );
+        updatedAggregationPath = tableColumnsResult.updatedAggregationPath;
+        hasTableColumns = tableColumnsResult.hasTableColumns;
+
+        macrosTableNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
+        buildingBlockData.embededFragment.folder = buildingBlockData.embededFragment.folder?.replaceAll('/', '.');
     }
 
-    return { updatedAggregationPath, processedBuildingBlockData: buildingBlockData };
+    return {
+        updatedAggregationPath,
+        processedBuildingBlockData: buildingBlockData,
+        hasTableColumns,
+        macrosTableNamespace
+    };
 }
 
 /**
@@ -287,6 +335,7 @@ function getMetaPath(
  * @param {Manifest} manifest - the manifest content
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {string} the template xml file content
  */
 function getTemplateContent<T extends BuildingBlock>(
@@ -294,7 +343,8 @@ function getTemplateContent<T extends BuildingBlock>(
     viewDocument: Document | undefined,
     manifest: Manifest | undefined,
     fs: Editor,
-    usePlaceholders?: boolean
+    usePlaceholders?: boolean,
+    templateConfig?: TemplateConfig
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
@@ -326,7 +376,8 @@ function getTemplateContent<T extends BuildingBlock>(
         fs.read(templateFilePath),
         {
             macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
-            data: buildingBlockData
+            data: buildingBlockData,
+            config: templateConfig
         },
         {}
     );
@@ -352,15 +403,24 @@ export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'):
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
  * @param  {Manifest} manifest - the manifest content
+ * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {Document} the template xml file document
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
     fs: Editor,
-    manifest: Manifest | undefined
+    manifest: Manifest | undefined,
+    templateConfig: TemplateConfig
 ): Document {
-    const templateContent = getTemplateContent(buildingBlockData, viewDocument, manifest, fs);
+    const templateContent = getTemplateContent(
+        buildingBlockData,
+        viewDocument,
+        manifest,
+        fs,
+        undefined,
+        templateConfig
+    );
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };

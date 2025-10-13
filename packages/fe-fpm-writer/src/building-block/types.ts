@@ -32,6 +32,11 @@ export type BindingContextType = 'absolute' | 'relative';
 export const bindingContextAbsolute: BindingContextType = 'absolute';
 export const bindingContextRelative: BindingContextType = 'relative';
 
+export type TemplateConfig = {
+    hasTableColumns?: boolean;
+    macrosTableNamespace: string;
+};
+
 /**
  * Represents a building block metaPath object.
  */
