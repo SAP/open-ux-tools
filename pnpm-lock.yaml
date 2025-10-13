@@ -3622,8 +3622,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       applicationinsights:
-        specifier: 2.9.2
-        version: 2.9.2
+        specifier: 2.9.8
+        version: 2.9.8
       axios:
         specifier: 1.12.2
         version: 1.12.2
@@ -4752,8 +4752,15 @@ packages:
       tslib: 2.8.1
     dev: false
 
-  /@azure/core-auth@1.6.0:
-    resolution: {integrity: sha512-3X9wzaaGgRaBCwhLQZDtFp5uLIXCPrGbwJNWPPugvL4xbIGgScv77YzzxToKGLAKvG9amDoofMoP+9hsH1vs1w==}
+  /@azure/abort-controller@2.1.2:
+    resolution: {integrity: sha512-nBrLsEWm4J2u5LpAPjxADTlq3trDgVZZXHNKabeXZtpq3d3AbN/KGO82R87rdDz5/lYB024rtEf10/q0urNgsA==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      tslib: 2.8.1
+    dev: false
+
+  /@azure/core-auth@1.7.2:
+    resolution: {integrity: sha512-Igm/S3fDYmnMq1uKS38Ae1/m37B3zigdlZw+kocwEhh5GjyKjPrXKO2J6rzpC1wAxrNil/jX9BJRqBshyjnF3g==}
     engines: {node: '>=18.0.0'}
     dependencies:
       '@azure/abort-controller': 2.0.0
@@ -4761,20 +4768,18 @@ packages:
       tslib: 2.8.1
     dev: false
 
-  /@azure/core-rest-pipeline@1.10.1:
-    resolution: {integrity: sha512-Kji9k6TOFRDB5ZMTw8qUf2IJ+CeJtsuMdAHox9eqpTf1cefiNMpzrfnF6sINEBZJsaVaWgQ0o48B6kcUH68niA==}
-    engines: {node: '>=14.0.0'}
+  /@azure/core-rest-pipeline@1.16.3:
+    resolution: {integrity: sha512-VxLk4AHLyqcHsfKe4MZ6IQ+D+ShuByy+RfStKfSjxJoL3WBWq17VNmrz8aT8etKzqc2nAeIyLxScjpzsS4fz8w==}
+    engines: {node: '>=18.0.0'}
     dependencies:
-      '@azure/abort-controller': 1.1.0
-      '@azure/core-auth': 1.6.0
+      '@azure/abort-controller': 2.0.0
+      '@azure/core-auth': 1.7.2
       '@azure/core-tracing': 1.0.1
-      '@azure/core-util': 1.2.0
+      '@azure/core-util': 1.13.1
       '@azure/logger': 1.0.4
-      form-data: 4.0.4
-      http-proxy-agent: 5.0.0
-      https-proxy-agent: 5.0.1
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.5
       tslib: 2.8.1
-      uuid: 8.3.2
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4784,6 +4789,17 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       tslib: 2.8.1
+    dev: false
+
+  /@azure/core-util@1.13.1:
+    resolution: {integrity: sha512-XPArKLzsvl0Hf0CaGyKHUyVgF7oDnhKoP85Xv6M4StF/1AhfORhZudHtOyf2s+FcbuQ9dPRAjB8J2KvRRMUK2A==}
+    engines: {node: '>=20.0.0'}
+    dependencies:
+      '@azure/abort-controller': 2.1.2
+      '@typespec/ts-http-runtime': 0.3.1
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@azure/core-util@1.2.0:
@@ -9030,7 +9046,7 @@ packages:
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-module: 1.0.0
-      resolve: 1.22.8
+      resolve: 1.22.10
       rollup: 3.29.5
     dev: true
 
@@ -11393,6 +11409,17 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: false
 
+  /@typespec/ts-http-runtime@0.3.1:
+    resolution: {integrity: sha512-SnbaqayTVFEA6/tYumdF0UmybY0KHyKwGPBXnyckFlrrKdhWFrL3a2HIPXHjht5ZOElKGcXfD2D63P36btb+ww==}
+    engines: {node: '>=20.0.0'}
+    dependencies:
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.5
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@ui5/builder@3.2.0:
     resolution: {integrity: sha512-n6Z34iandeGPUS2x0OM7AdEvmnLbqqk9mfGuismuWx8gov2cawuJ/42B0BLamXRmlTqFPB7eGnaWry9tDK6h3Q==}
     engines: {node: ^16.18.0 || >=18.12.0, npm: '>= 8'}
@@ -12084,15 +12111,16 @@ packages:
   /acorn-globals@7.0.1:
     resolution: {integrity: sha512-umOSDSDrfHbTNPuNpC2NSnnA3LUrqpevPb4T9jRx4MagXNS0rs+gwiTcAvqCRmsD6utzsrzNt+ebm00SNWiC3Q==}
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       acorn-walk: 8.2.0
 
-  /acorn-import-assertions@1.9.0(acorn@8.14.1):
+  /acorn-import-assertions@1.9.0(acorn@8.15.0):
     resolution: {integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA==}
+    deprecated: package has been renamed to acorn-import-attributes
     peerDependencies:
       acorn: ^8
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
     dev: false
 
   /acorn-import-phases@1.0.4(acorn@8.15.0):
@@ -12104,12 +12132,12 @@ packages:
       acorn: 8.15.0
     dev: true
 
-  /acorn-jsx@5.3.2(acorn@8.14.1):
+  /acorn-jsx@5.3.2(acorn@8.15.0):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
 
   /acorn-walk@8.2.0:
     resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
@@ -12120,16 +12148,10 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /acorn@8.14.1:
-    resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
   /acorn@8.15.0:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-    dev: true
 
   /adm-zip@0.5.10:
     resolution: {integrity: sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ==}
@@ -12321,8 +12343,8 @@ packages:
       json-bignum: 0.0.3
       tslib: 2.8.1
 
-  /applicationinsights@2.9.2:
-    resolution: {integrity: sha512-wlDiD7v0BQNM8oNzsf9C836R5ze25u+CuCEZsbA5xMIXYYBxkqkWE/mo9GFJM7rsKaiGqpxEwWmePHKD2Lwy2w==}
+  /applicationinsights@2.9.8:
+    resolution: {integrity: sha512-eB/EtAXJ6mDLLvHrtZj/7h31qUfnC2Npr2pHGqds5+1OP7BFLsn5us+HCkwTj7Q+1sHXujLphE5Cyvq5grtV6g==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
       applicationinsights-native-metrics: '*'
@@ -12330,9 +12352,8 @@ packages:
       applicationinsights-native-metrics:
         optional: true
     dependencies:
-      '@azure/core-auth': 1.6.0
-      '@azure/core-rest-pipeline': 1.10.1
-      '@azure/core-util': 1.2.0
+      '@azure/core-auth': 1.7.2
+      '@azure/core-rest-pipeline': 1.16.3
       '@azure/opentelemetry-instrumentation-azure-sdk': 1.0.0-beta.5
       '@microsoft/applicationinsights-web-snippet': 1.0.1
       '@opentelemetry/api': 1.7.0
@@ -15706,8 +15727,8 @@ packages:
     resolution: {integrity: sha512-oruZaFkjorTpF32kDSI5/75ViwGeZginGGy2NoOSg3Q9bnwlnmDm4HLnkl0RE3n+njDXR037aY1+x58Z/zFdwQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      acorn: 8.14.1
-      acorn-jsx: 5.3.2(acorn@8.14.1)
+      acorn: 8.15.0
+      acorn-jsx: 5.3.2(acorn@8.15.0)
       eslint-visitor-keys: 3.4.3
 
   /esprima@4.0.1:
@@ -17389,8 +17410,8 @@ packages:
   /import-in-the-middle@1.4.2:
     resolution: {integrity: sha512-9WOz1Yh/cvO/p69sxRmhyQwrIGGSp7EIdcb+fFNVi7CzQGQB8U1/1XrKVSbEd/GNOAeM0peJtmi7+qphe7NvAw==}
     dependencies:
-      acorn: 8.14.1
-      acorn-import-assertions: 1.9.0(acorn@8.14.1)
+      acorn: 8.15.0
+      acorn-import-assertions: 1.9.0(acorn@8.15.0)
       cjs-module-lexer: 1.3.1
       module-details-from-path: 1.0.3
     dev: false
@@ -18920,7 +18941,7 @@ packages:
         optional: true
     dependencies:
       abab: 2.0.6
-      acorn: 8.14.1
+      acorn: 8.15.0
       acorn-globals: 7.0.1
       cssom: 0.5.0
       cssstyle: 2.3.0
@@ -24331,7 +24352,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.14.1
+      acorn: 8.15.0
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
@@ -25338,10 +25359,6 @@ packages:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
     dev: false
 
-  /uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    dev: false
-
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
     dev: true
@@ -25637,7 +25654,7 @@ packages:
       '@webassemblyjs/ast': 1.12.1
       '@webassemblyjs/wasm-edit': 1.12.1
       '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.14.1
+      acorn: 8.15.0
       browserslist: 4.25.1
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.1
