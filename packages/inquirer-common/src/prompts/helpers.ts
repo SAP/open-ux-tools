@@ -1,7 +1,7 @@
 import type { Answers, Question, Validator } from 'inquirer';
 import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types';
 import cloneDeep from 'lodash/cloneDeep';
-import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import { t } from '../i18n';
@@ -152,7 +152,6 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     });
     return questions;
 }
-
 
 /**
  * Checks if the given entity set has all the required transformations for analytical table support.
