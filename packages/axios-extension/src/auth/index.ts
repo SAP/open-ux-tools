@@ -3,8 +3,8 @@ import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
-import { AbapServiceProvider } from 'abap/abap-service-provider';
-import { ServiceInfo } from '@sap-ux/btp-utils';
+import type { AbapServiceProvider } from 'abap/abap-service-provider';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 
 export * from './connection';
 export * from './error';

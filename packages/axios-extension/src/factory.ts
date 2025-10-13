@@ -15,7 +15,12 @@ import { getProxyForUrl } from 'proxy-from-env';
 import { inspect } from 'util';
 import { AbapServiceProvider } from './abap';
 import type { RefreshTokenChanged, ServiceInfo } from './auth';
-import { attachBasicAuthInterceptor, attachConnectionHandler, attachReentranceTicketAuthInterceptor, attachUaaAuthInterceptor } from './auth';
+import {
+    attachBasicAuthInterceptor,
+    attachConnectionHandler,
+    attachReentranceTicketAuthInterceptor,
+    attachUaaAuthInterceptor
+} from './auth';
 import type { ODataService } from './base/odata-service';
 import { TlsPatch } from './base/patchTls';
 import type { ProviderConfiguration } from './base/service-provider';

@@ -351,11 +351,12 @@ describe('Transport checks', () => {
 });
 
 describe('Should create new connections', () => {
-
     const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
 
     test('abap service provider for cloud - credentials not provided, always use reentrance', async () => {
-        const getReentranceTicketSpy = jest.spyOn(reentranceTicketAuth, 'getReentranceTicket').mockResolvedValueOnce({ reentranceTicket: 'reent_tecket_1234' });
+        const getReentranceTicketSpy = jest
+            .spyOn(reentranceTicketAuth, 'getReentranceTicket')
+            .mockResolvedValueOnce({ reentranceTicket: 'reent_tecket_1234' });
 
         const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
         Uaa.prototype.getAccessToken = jest.fn();

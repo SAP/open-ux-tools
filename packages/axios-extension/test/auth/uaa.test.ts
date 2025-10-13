@@ -25,7 +25,9 @@ describe('UAA', () => {
 
             await uaaInstance({ url: uaaUrl }).getUserInfo('someToken');
 
-            expect(mockRequest).toHaveBeenCalledWith(expect.objectContaining({ url: uaaUrl + '/userinfo', method: 'GET' }));
+            expect(mockRequest).toHaveBeenCalledWith(
+                expect.objectContaining({ url: uaaUrl + '/userinfo', method: 'GET' })
+            );
         });
 
         it('Uses the token passed in for auth', async () => {
