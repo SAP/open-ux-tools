@@ -1,5 +1,8 @@
 import fs from 'fs';
 import { basename, join, dirname } from 'path';
+import { diffJson, diffTrimmedLines } from 'diff';
+import type { Change } from 'diff';
+import { green, grey, red } from 'chalk';
 
 /**
  * The function receives these arguments:
@@ -48,8 +51,14 @@ export function customAssert(output: string, context: any) {
             // validate
             const sourceContent = fs.readFileSync(filePath, 'utf8');
             const snapshotContent = fs.readFileSync(snapshotFile, 'utf8');
-            pass = sourceContent === snapshotContent;
-            reason = pass ? 'Snapshot file is matching' : 'Snapshot file is not matching';
+            const compareResult = filePath.endsWith('.json')
+                ? compareJson(sourceContent, snapshotContent)
+                : compareStrings(sourceContent, snapshotContent);
+            pass = !compareResult;
+            if (!pass) {
+                console.log(compareResult);
+            }
+            reason = pass ? 'Snapshot file is matching' : `Snapshot file is not matching: ${compareResult}`;
         }
     }
 
@@ -58,4 +67,46 @@ export function customAssert(output: string, context: any) {
         score: pass ? 1 : 0,
         reason
     };
+}
+
+/**
+ * Compare two json files.
+ *
+ * @param a - First object to compare
+ * @param b - Second object to compare
+ */
+export function compareJson(a: string, b: string): string | undefined {
+    const diffChanges = diffJson(a, b);
+    const diffResultString = getDiffResultString(diffChanges);
+    return diffResultString ? diffResultString : undefined;
+}
+
+/**
+ * Compare two strings.
+ *
+ * @param a - First object to compare
+ * @param b - Second object to compare
+ */
+export function compareStrings(a: string, b: string): string | undefined {
+    const diffChanges = diffTrimmedLines(a, b);
+    const diffResultString = getDiffResultString(diffChanges);
+    return diffResultString ? diffResultString : undefined;
+}
+
+/**
+ * Get the diff results as colored string.
+ *
+ * @param diffChanges - array of changes, result from diff
+ * @returns - diff results as colored string
+ */
+function getDiffResultString(diffChanges: Change[]): string {
+    let diffResults: string = '';
+    for (const diffChange of diffChanges) {
+        if (diffChange.added) {
+            diffResults += green(diffChange.value);
+        } else if (diffChange.removed) {
+            diffResults += red(diffChange.value);
+        }
+    }
+    return diffResults;
 }
