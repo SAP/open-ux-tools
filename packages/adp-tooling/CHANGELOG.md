@@ -1,5 +1,16 @@
 # @sap-ux/adp-tooling
 
+## 0.16.0
+
+### Minor Changes
+
+-   247a5a9: feat: Add ADP Generator Cloud Foundry prompting code
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/project-input-validator@0.6.26
+
 ## 0.15.38
 
 ### Patch Changes
