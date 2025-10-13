@@ -23,7 +23,8 @@ import {
     getAdpFlpInboundsWriterConfig,
     getTileSettingsQuestions,
     type FLPConfigAnswers,
-    type TileSettingsAnswers
+    type TileSettingsAnswers,
+    tileActions
 } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
@@ -47,6 +48,7 @@ import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
+import { tilePromptNames } from '@sap-ux/flp-config-inquirer/src/types';
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
@@ -106,8 +108,6 @@ export default class AdpFlpConfigGenerator extends Generator {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
 
-        this._setupFLPConfigPage();
-
         if (!this.launchAsSubGen) {
             await this._initializeStandAloneGenerator();
             if (this.abort || this.authenticationRequired) {
@@ -143,6 +143,11 @@ export default class AdpFlpConfigGenerator extends Generator {
         }
 
         this.tileSettingsAnswers = await this._promptTileActions();
+        if (this.tileSettingsAnswers?.[tilePromptNames.tileHandlingAction] === tileActions.REPLACE) {
+            return;
+        }
+
+        this._setupFLPConfigPage();
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
             this.inbounds,
             getAdpFlpConfigPromptOptions(this.tileSettingsAnswers as TileSettingsAnswers, this.inbounds, this.variant)
@@ -158,9 +163,10 @@ export default class AdpFlpConfigGenerator extends Generator {
             const config = getAdpFlpInboundsWriterConfig(
                 this.answers,
                 this.layer,
-                this.tileSettingsAnswers as TileSettingsAnswers
+                this.tileSettingsAnswers as TileSettingsAnswers,
+                this.inbounds
             );
-            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
+            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation[], this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -258,9 +264,11 @@ export default class AdpFlpConfigGenerator extends Generator {
      * Adds navigations steps and callback function for the generator prompts.
      */
     private _setupFLPConfigPage(): void {
+        const lastPageIndex = this.prompts.size() - 1;
+
         // if launched as a sub-generator, the navigation steps will be set by the parent generator
         if (!this.launchAsSubGen) {
-            this.prompts.splice(0, 0, [
+            this.prompts.splice(lastPageIndex, 0, [
                 {
                     name: t('yuiNavSteps.flpConfigName', { projectName: path.basename(this.projectRootPath) }),
                     description: ''
@@ -374,7 +382,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 hide: !existingFlpConfig
             }
         };
-        const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
+        const tileSettingsPrompts = getTileSettingsQuestions(this.inbounds, promptOptions);
         return this.prompt(tileSettingsPrompts);
     }
 

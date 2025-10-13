@@ -6,7 +6,6 @@ import {
     flpConfigurationExists,
     NamespacePrefix
 } from '@sap-ux/adp-tooling';
-import type { InboundContent } from '@sap-ux/axios-extension';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types';
 /**
@@ -59,27 +58,35 @@ export function getAdpFlpConfigPromptOptions(
  *
  * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
  * @param {UI5FlexLayer} layer - The layer of the project.
- * @returns {InternalInboundNavigation} The configuration for the replaced FLP inbound.
+ * @param {ManifestNamespace.Inbound} inbounds - The inbound configuration.
+ * @returns {InternalInboundNavigation[]} The configuration for the replaced FLP inbound.
  */
-function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation {
-    const {
-        semanticObject,
-        action,
-        signature: { parameters } = {}
-    } = flpConfigAnswers.inboundId ?? ({} as InboundContent);
-    let inboundId = !semanticObject || !action ? '' : `${semanticObject}-${action}`;
-    if (inboundId) {
-        inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
+function buildReplaceInboundConfig(
+    flpConfigAnswers: FLPConfigAnswers,
+    layer: UI5FlexLayer,
+    inbounds?: ManifestNamespace.Inbound
+): InternalInboundNavigation[] {
+    if (!inbounds) {
+        return [];
     }
-    return {
-        inboundId,
-        semanticObject: semanticObject ?? '',
-        action: action ?? '',
-        title: flpConfigAnswers.title ?? '',
-        subTitle: flpConfigAnswers.subTitle ?? '',
-        icon: flpConfigAnswers.icon ?? '',
-        additionalParameters: parameters ? JSON.stringify(parameters) : ''
-    };
+
+    return Object.entries(inbounds).map(([inboundKey, inboundData]) => {
+        const { semanticObject, action, signature: { parameters } = {} } = inboundData;
+        let inboundId = inboundKey;
+        if (inboundId && layer === FlexLayer.CUSTOMER_BASE) {
+            inboundId = `${NamespacePrefix.CUSTOMER}${inboundId}`;
+        }
+
+        return {
+            inboundId,
+            semanticObject: semanticObject ?? '',
+            action: action ?? '',
+            title: flpConfigAnswers.title ?? inboundData.title ?? '',
+            subTitle: flpConfigAnswers.subTitle ?? inboundData.subTitle ?? '',
+            icon: flpConfigAnswers.icon ?? inboundData.icon ?? '',
+            additionalParameters: parameters ? JSON.stringify(parameters) : ''
+        };
+    });
 }
 
 /**
@@ -87,9 +94,9 @@ function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI
  *
  * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
  * @param {FlexLayer} layer - The layer of the project.
- * @returns {InternalInboundNavigation} The configuration for the new FLP inbound.
+ * @returns {InternalInboundNavigation[]} The configuration for the new FLP inbound.
  */
-function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation {
+function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation[] {
     let inboundId =
         !flpConfigAnswers.semanticObject || !flpConfigAnswers.action
             ? ''
@@ -98,15 +105,17 @@ function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5Fle
         inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
     }
 
-    return {
-        inboundId,
-        semanticObject: flpConfigAnswers.semanticObject ?? '',
-        action: flpConfigAnswers.action ?? '',
-        title: flpConfigAnswers.title ?? '',
-        subTitle: flpConfigAnswers.subTitle ?? '',
-        icon: flpConfigAnswers.icon ?? '',
-        additionalParameters: flpConfigAnswers.additionalParameters ?? ''
-    };
+    return [
+        {
+            inboundId,
+            semanticObject: flpConfigAnswers.semanticObject ?? '',
+            action: flpConfigAnswers.action ?? '',
+            title: flpConfigAnswers.title ?? '',
+            subTitle: flpConfigAnswers.subTitle ?? '',
+            icon: flpConfigAnswers.icon ?? '',
+            additionalParameters: flpConfigAnswers.additionalParameters ?? ''
+        }
+    ];
 }
 
 /**
@@ -115,16 +124,18 @@ function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5Fle
  * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
  * @param {FlexLayer} layer - The layer of the project.
  * @param {TileSettingsAnswers} [tileSettingsAnswers] - The answers for tile settings.
+ * @param {ManifestNamespace.Inbound} inbounds - The inbound configuration.
  * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration for FLP inbounds writer.
  */
 export function getAdpFlpInboundsWriterConfig(
     flpConfigAnswers: FLPConfigAnswers,
     layer: UI5FlexLayer,
-    tileSettingsAnswers?: TileSettingsAnswers
-): InternalInboundNavigation | NewInboundNavigation {
+    tileSettingsAnswers?: TileSettingsAnswers,
+    inbounds?: ManifestNamespace.Inbound
+): InternalInboundNavigation[] | NewInboundNavigation[] {
     const { tileHandlingAction } = tileSettingsAnswers ?? {};
     if (tileHandlingAction === tileActions.REPLACE) {
-        return buildReplaceInboundConfig(flpConfigAnswers, layer);
+        return buildReplaceInboundConfig(flpConfigAnswers, layer, inbounds);
     }
     return buildAddInboundConfig(flpConfigAnswers, layer);
 }
