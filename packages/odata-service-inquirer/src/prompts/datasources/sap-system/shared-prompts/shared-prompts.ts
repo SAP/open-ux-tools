@@ -181,7 +181,6 @@ export function getUserSystemNameQuestion(
                             serviceKeys: connectValidator.serviceInfo,
                             authenticationType: connectValidator.systemAuthType
                         } as BackendSystem)
-                        // refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                     PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;

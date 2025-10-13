@@ -21,7 +21,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import { UiServiceGenerator } from '../../src/abap/adt-catalog/generators/ui-service-generator';
-import type { ServiceInfo } from '@sap-ux/btp-utils';
+import { Uaa } from '../../src/auth/uaa';
+import * as reentranceTicketAuth from '../../src/auth/reentrance-ticket';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -349,7 +350,85 @@ describe('Transport checks', () => {
     });
 });
 
-describe('Use existing connection session', () => {
+describe('Should create new connections', () => {
+
+    const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
+
+    test('abap service provider for cloud - credentials not provided, always use reentrance', async () => {
+        const getReentranceTicketSpy = jest.spyOn(reentranceTicketAuth, 'getReentranceTicket').mockResolvedValueOnce({ reentranceTicket: 'reent_tecket_1234' });
+
+        const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+        Uaa.prototype.getAccessToken = jest.fn();
+        Uaa.prototype.getAccessTokenWithClientCredentials = jest.fn();
+        const configForAbapOnCloudNoCreds = {
+            service: {
+                url: server,
+                uaa: {
+                    clientid: 'ClientId',
+                    clientsecret: 'ClientSecret',
+                    url: server
+                }
+            } as any,
+            environment: AbapCloudEnvironment.Standalone
+        } as AbapCloudOptions & Partial<ProviderConfiguration>;
+        nock(server)
+            .get('/sap/public/bc/icf/virtualhost')
+            .reply(200, { relatedUrls: { API: server, UI: server } })
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.ATO_SETTINGS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'))
+            .get('/sap/bc/adt/core/http/systeminformation')
+            .reply(200, {
+                userFullName: 'User FullName',
+                userName: 'userName01',
+                client: '100',
+                systemID: 'ABC01',
+                language: 'EN'
+            } as SystemInfo);
+
+        const provider = createForAbapOnCloud(configForAbapOnCloudNoCreds);
+        expect(await provider.isAbapCloud()).toBe(true);
+        expect(await provider.user()).toBe('userName01');
+        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0);
+        expect(attachUaaAuthInterceptorSpy).toHaveBeenCalledTimes(0);
+        expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(1);
+        expect(getReentranceTicketSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('abap service provider for cloud - credentials provided use UAA', async () => {
+        const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+        const configForAbapOnCloud = {
+            service: {
+                log: console,
+                url: server,
+                uaa: {
+                    username: 'TestUsername',
+                    password: 'TestPassword',
+                    clientid: 'ClientId',
+                    clientsecret: 'ClientSecret',
+                    url: server
+                }
+            },
+            environment: AbapCloudEnvironment.Standalone
+        };
+        nock(server)
+            .post('/oauth/token')
+            .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
+            .get('/userinfo')
+            .reply(200, { email: 'email', name: 'name' });
+
+        const provider = createForAbapOnCloud(configForAbapOnCloud as any);
+        expect(await provider.isAbapCloud()).toBe(false);
+        expect(await provider.user()).toBe('email');
+        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(2);
+        expect(attachUaaAuthInterceptorSpy).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('Use existing connection session (cookies)', () => {
     const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
     const existingCookieConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         baseURL: server,
@@ -388,7 +467,7 @@ describe('Use existing connection session', () => {
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
     });
 
-    test('abap service provider for cloud (standalone)', async () => {
+    test('abap service provider for cloud (standalone) - reentrance', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
@@ -401,7 +480,7 @@ describe('Use existing connection session', () => {
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
     });
 
-    test('abap service provider for cloud (embedded steampunk)', async () => {
+    test('abap service provider for cloud (embedded steampunk) - reentrance', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
@@ -413,7 +492,7 @@ describe('Use existing connection session', () => {
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
     });
 
-    test('abap service provider for cloud - require authentication', async () => {
+    test('abap service provider for cloud - active session', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
@@ -434,35 +513,6 @@ describe('Use existing connection session', () => {
         expect(await provider.user()).toBe('userName01');
         // Cookies with session already set so not expected to add an auth interceptor
         expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
-    });
-
-    test('abap service provider for cloud - with authentication provided', async () => {
-        nock(server)
-            .post('/oauth/token')
-            .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
-            .get('/sap/bc/adt/core/http/systeminformation')
-            .reply(200, {
-                userFullName: 'User FullName',
-                userName: 'userName01',
-                client: '100',
-                systemID: 'ABC01',
-                language: 'EN'
-            } as SystemInfo);
-
-        const configForAbapOnCloudWithAuthentication = cloneDeep(existingCookieConfigForAbapOnCloudStandalone);
-        configForAbapOnCloudWithAuthentication.service = {
-            url: server,
-            uaa: {
-                username: 'TestUsername',
-                password: 'TestPassword',
-                clientid: 'ClientId',
-                clientsecret: 'ClientSecret',
-                url: server
-            }
-        } as ServiceInfo;
-        const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication);
-        expect(await provider.isAbapCloud()).toBe(false);
-        expect(await provider.user()).toBe('userName01');
     });
 });
 

@@ -18,13 +18,8 @@ import type { ServiceInfo } from '@sap-ux/btp-utils';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
-import type {
-    ApiHubSettings,
-    ApiHubSettingsKey,
-    ApiHubSettingsService,
-    BackendSystem,
-    AuthenticationType
-} from '@sap-ux/store';
+import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
+import { AuthenticationType } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import { updateProxyEnv } from './config';
 import type { Url } from 'node:url';
@@ -265,7 +260,7 @@ export async function enhanceConfigForSystem(
     authType: AuthenticationType,
     tokenChangedCallback: (refreshToken?: string) => void
 ): Promise<void> {
-    if (authType === 'oauth2') {
+    if (authType === AuthenticationType.OAuth2RefreshToken) {
         if (system?.serviceKeys) {
             const provider = createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
@@ -278,7 +273,7 @@ export async function enhanceConfigForSystem(
         } else {
             throw new Error('Cannot connect to ABAP Environment on BTP using OAuth without service keys.');
         }
-    } else if (system && authType === 'reentranceTicket') {
+    } else if (system && authType === AuthenticationType.ReentranceTicket) {
         const provider = createForAbapOnCloud({
             ignoreCertErrors: proxyOptions.secure === false,
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
@@ -337,7 +332,7 @@ export async function generateProxyMiddlewareOptions(
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
-        await updateVSCodeConfig(backend, logger, proxyOptions);
+        await updateProxyConfigFromStore(backend, logger, proxyOptions);
     }
 
     if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
@@ -373,11 +368,11 @@ export async function generateProxyMiddlewareOptions(
 /**
  * Determine the correct authentication configuration for connections from a non-BAS platform.
  *
- * @param backend the backend config loaded form the app ui5.yaml
+ * @param backend the backend config loaded from the yaml config
  * @param logger a logger instance
  * @param proxyOptions additional proxy header, request and response settings
  */
-async function updateVSCodeConfig(
+async function updateProxyConfigFromStore(
     backend: BackendConfig,
     logger: ToolsLogger,
     proxyOptions: Options<IncomingMessage, ServerResponse<IncomingMessage>> & { headers: object }
@@ -397,7 +392,8 @@ async function updateVSCodeConfig(
         await enhanceConfigForSystem(
             proxyOptions,
             system,
-            localBackend.authenticationType ?? (localBackend.scp ? 'oauth2' : 'basic'),
+            localBackend.authenticationType ??
+                (localBackend.scp ? AuthenticationType.OAuth2RefreshToken : AuthenticationType.Basic),
             (refreshToken?: string, accessToken?: string) => {
                 if (refreshToken) {
                     logger.info('Updating refresh token for: ' + localBackend.url);

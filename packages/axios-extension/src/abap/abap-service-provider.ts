@@ -39,7 +39,7 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns the username
      */
     public async user(): Promise<string | undefined> {
-        return this.defaults.auth?.username || (await this.getSystemInfo())?.userName;
+        return await Promise.resolve(this.defaults.auth?.username) || (await this.getSystemInfo())?.userName;
     }
 
     /**

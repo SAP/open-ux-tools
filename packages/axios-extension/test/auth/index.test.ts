@@ -2,7 +2,7 @@ import { ServiceProvider } from '../../src/base/service-provider';
 import type { AbapServiceProvider } from '../../src';
 import { createForDestination } from '../../src';
 import type { ServiceInfo } from '../../src/auth';
-import { getReentranceTicketAuthInterceptor } from '../../src/auth';
+import { attachUaaAuthInterceptor, getReentranceTicketAuthInterceptor } from '../../src/auth';
 import * as rt from '../../src/auth/reentrance-ticket';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
@@ -80,9 +80,9 @@ describe('attachUaaAuthInterceptor', () => {
     const refreshToken = '~token';
     const callback = jest.fn();
 
-    /*  it('check interceptor request handlers length', () => {
-        expect(Object.keys(provider.interceptors.request['handlers']).length).toEqual(2);
+    it('check interceptor request handlers length', () => {
+        expect(Object.keys((provider.interceptors.request as any)['handlers']).length).toEqual(2);
         attachUaaAuthInterceptor(provider, service, refreshToken, callback);
-        expect(Object.keys(provider.interceptors.request['handlers']).length).toEqual(3);
-    }); */
+        expect(Object.keys((provider.interceptors.request as any)['handlers']).length).toEqual(3);
+    });
 });

@@ -2,15 +2,14 @@ import { AxiosHeaders } from 'axios';
 import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import { getReentranceTicket } from './reentrance-ticket';
+import { RefreshTokenChanged, Uaa } from './uaa';
+import { AbapServiceProvider } from 'abap/abap-service-provider';
+import { ServiceInfo } from '@sap-ux/btp-utils';
 
 export * from './connection';
 export * from './error';
-export { ServiceInfo } from '@sap-ux/btp-utils';
 
-/**
- * @deprecated Soon to be removed. No longer needed as Service Key based auth support (UAA) has been removed
- */
-export type RefreshTokenChanged = (refreshToken?: string, accessToken?: string) => void | Promise<void>;
+export { ServiceInfo, RefreshTokenChanged, Uaa };
 
 /**
  * @param provider Basic Auth Provider
@@ -20,6 +19,43 @@ export function attachBasicAuthInterceptor(provider: Axios): void {
         delete provider.defaults.auth;
         provider.interceptors.response.eject(oneTimeInterceptorId);
         return response;
+    });
+}
+
+/**
+ * @param provider  Abap Service Provider
+ * @param service Service Information
+ * @param refreshToken refreshToken
+ * @param refreshTokenUpdateCb refreshTokenUpdate callback function
+ */
+export function attachUaaAuthInterceptor(
+    provider: AbapServiceProvider,
+    service: ServiceInfo,
+    refreshToken?: string,
+    refreshTokenUpdateCb?: RefreshTokenChanged
+): void {
+    const uaa = new Uaa(service, provider.log);
+    let token: string;
+    const getToken = async (): Promise<string> => {
+        return service.uaa?.username
+            ? await uaa.getAccessTokenWithClientCredentials()
+            : await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb);
+    };
+
+    // provide function to fetch user info from UAA if needed
+    provider.user = async () => {
+        token = token ?? (await getToken());
+        return uaa.getUserInfo(token);
+    };
+
+    const oneTimeInterceptorId = provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
+        token = token ?? (await getToken());
+        // add token as auth header
+        request.headers = request.headers ?? new AxiosHeaders();
+        request.headers.authorization = `bearer ${token}`;
+        // remove this interceptor since it is not needed anymore
+        provider.interceptors.request.eject(oneTimeInterceptorId);
+        return request;
     });
 }
 

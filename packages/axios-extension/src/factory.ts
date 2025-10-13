@@ -15,7 +15,7 @@ import { getProxyForUrl } from 'proxy-from-env';
 import { inspect } from 'util';
 import { AbapServiceProvider } from './abap';
 import type { RefreshTokenChanged, ServiceInfo } from './auth';
-import { attachBasicAuthInterceptor, attachConnectionHandler, attachReentranceTicketAuthInterceptor } from './auth';
+import { attachBasicAuthInterceptor, attachConnectionHandler, attachReentranceTicketAuthInterceptor, attachUaaAuthInterceptor } from './auth';
 import type { ODataService } from './base/odata-service';
 import { TlsPatch } from './base/patchTls';
 import type { ProviderConfiguration } from './base/service-provider';
@@ -155,13 +155,9 @@ export enum AbapCloudEnvironment {
 /** Cloud Foundry OAuth 2.0 options */
 export interface CFAOauthOptions {
     service: ServiceInfo;
-    /**
-     * @deprecated No longer used as Service Key (UAA) connectivity has been replaced with reentrance ticket based sessions
-     */
+
     refreshToken?: string;
-    /**
-     * @deprecated  No longer used as Service Key (UAA) connectivity has been replaced with reentrance ticket based sessions
-     */
+
     refreshTokenChangedCb?: RefreshTokenChanged;
 }
 
@@ -193,15 +189,22 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
     let provider: AbapServiceProvider;
     switch (options.environment) {
         case AbapCloudEnvironment.Standalone: {
-            const { service, cookies, ...config } = options;
+            const { service, refreshToken, refreshTokenChangedCb, cookies, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
                 baseURL: service.url,
                 cookies,
                 ...config
             });
+
             if (!cookies) {
-                // Always use re-entrance tickets regardless of the ABAP Cloud environment
-                attachReentranceTicketAuthInterceptor({ provider });
+                // Only in the case where a username and password are provided use UAA otherwise use re-entrance
+                // This is to support unattended authentication for now.
+                if (options.service?.uaa?.username && options.service.uaa.password) {
+                    attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+                } else {
+                    // Always use re-entrance tickets regardless of the ABAP Cloud environment where credentials are not provided
+                    attachReentranceTicketAuthInterceptor({ provider });
+                }
             }
             break;
         }
