@@ -36,20 +36,44 @@ export async function validateSmartTemplateApplication(manifest: Manifest): Prom
 }
 
 /**
+ * Generic function to extract and parse JSON from zip entries.
+ *
+ * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
+ * @param {string} fileName - The file name to find (e.g., 'manifest.json', 'xs-app.json').
+ * @param {string} errorKey - The i18n error key for parsing failures.
+ * @returns {T | undefined} The parsed JSON object.
+ */
+export function extractJsonFromZip<T>(
+    zipEntries: AdmZip.IZipEntry[],
+    fileName: string,
+    errorKey: string
+): T | undefined {
+    const entry = zipEntries.find((item) => item.entryName.endsWith(fileName));
+    try {
+        return JSON.parse(entry?.getData().toString('utf8') ?? '') as T;
+    } catch (e) {
+        throw new Error(t(errorKey, { error: e.message }));
+    }
+}
+
+/**
  * Extract the xs-app.json from the zip entries.
  *
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
- * @returns {any} The xs-app.json.
+ * @returns {XsApp | undefined} The xs-app.json.
  */
 export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): XsApp | undefined {
-    let xsApp: XsApp | undefined;
-    const xsAppEntry = zipEntries.find((item) => item.entryName.endsWith('xs-app.json'));
-    try {
-        xsApp = JSON.parse(xsAppEntry?.getData().toString('utf8') ?? '') as XsApp;
-    } catch (e) {
-        throw new Error(t('error.failedToParseXsAppJson', { error: e.message }));
-    }
-    return xsApp;
+    return extractJsonFromZip<XsApp>(zipEntries, 'xs-app.json', 'error.failedToParseXsAppJson');
+}
+
+/**
+ * Extract the manifest.json from the zip entries.
+ *
+ * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
+ * @returns {Manifest | undefined} The manifest.
+ */
+function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
+    return extractJsonFromZip<Manifest>(zipEntries, 'manifest.json', 'error.failedToParseManifestJson');
 }
 
 /**
@@ -82,23 +106,6 @@ function matchRoutesAndDatasources(
         }
     }
     return messages;
-}
-
-/**
- * Extract the manifest.json from the zip entries.
- *
- * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
- * @returns {Manifest | undefined} The manifest.
- */
-function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
-    let manifest: Manifest | undefined;
-    const manifestEntry = zipEntries.find((item) => item.entryName.endsWith('manifest.json'));
-    try {
-        manifest = JSON.parse(manifestEntry?.getData().toString('utf8') ?? '') as Manifest;
-    } catch (e) {
-        throw new Error(t('error.failedToParseManifestJson', { error: e.message }));
-    }
-    return manifest;
 }
 
 /**

@@ -78,7 +78,7 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
  */
 export async function requestCfApi<T = unknown>(url: string): Promise<T> {
     try {
-        const response = await CFToolsCli.Cli.execute(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        const response = await CFToolsCli.Cli.execute(['curl', url], ENV);
         if (response.exitCode === 0) {
             try {
                 return JSON.parse(response.stdout);
