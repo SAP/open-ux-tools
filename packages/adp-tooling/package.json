@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.15.34",
+    "version": "0.15.38",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -52,7 +52,7 @@
         "adm-zip": "0.5.10",
         "ejs": "3.1.10",
         "i18next": "25.3.0",
-        "inquirer": "8.2.6",
+        "inquirer": "8.2.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",

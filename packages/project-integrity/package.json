@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-integrity",
-    "version": "0.2.20",
+    "version": "0.2.21",
     "description": "Library to check the integrity of projects",
     "repository": {
         "type": "git",

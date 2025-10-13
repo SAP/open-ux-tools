@@ -1,5 +1,53 @@
 # @sap-ux/create
 
+## 0.13.130
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+    -   @sap-ux/flp-config-inquirer@0.4.34
+    -   @sap-ux/preview-middleware@0.23.22
+    -   @sap-ux/app-config-writer@0.6.43
+
+## 0.13.129
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+-   @sap-ux/preview-middleware@0.23.21
+-   @sap-ux/flp-config-inquirer@0.4.33
+-   @sap-ux/abap-deploy-config-inquirer@1.6.28
+-   @sap-ux/app-config-writer@0.6.43
+
+## 0.13.128
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/preview-middleware@0.23.20
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/app-config-writer@0.6.43
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.27
+    -   @sap-ux/abap-deploy-config-writer@0.2.21
+    -   @sap-ux/adp-tooling@0.15.36
+    -   @sap-ux/mockserver-config-writer@0.9.21
+    -   @sap-ux/odata-service-writer@0.27.25
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/flp-config-inquirer@0.4.32
+    -   @sap-ux/cap-config-writer@0.12.13
+    -   @sap-ux/system-access@0.6.19
+
+## 0.13.127
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/flp-config-inquirer@0.4.31
+    -   @sap-ux/adp-tooling@0.15.35
+    -   @sap-ux/preview-middleware@0.23.19
+    -   @sap-ux/app-config-writer@0.6.42
+
 ## 0.13.126
 
 ### Patch Changes

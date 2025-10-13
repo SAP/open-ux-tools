@@ -8,17 +8,6 @@ import type { IncomingMessage } from 'node:http';
 import type { Request } from 'express';
 
 /**
- * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.
- *
- * @param bsp path of the BSP page
- * @returns a path rewrite function
- */
-export function convertAppDescriptorToManifest(bsp: string): (path: string) => string {
-    const regex = new RegExp('(' + bsp + '/manifest\\.appdescr\\b)');
-    return (path: string) => (path.match(regex) ? '/manifest.json' : path);
-}
-
-/**
  * Prompts the user for credentials.
  *
  * @param log logger to report info to the user
@@ -99,13 +88,6 @@ export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Op
             return undefined;
         }
     };
-    if (proxyOptions.pathRewrite) {
-        const oldRewrite = proxyOptions.pathRewrite as (path: string) => string;
-        const appDescrRewrite = convertAppDescriptorToManifest(bspPath);
-        proxyOptions.pathRewrite = (path: string): string => appDescrRewrite(oldRewrite(path));
-    } else {
-        proxyOptions.pathRewrite = convertAppDescriptorToManifest(bspPath);
-    }
 
     if (!proxyOptions.auth) {
         proxyOptions.auth = await promptUserPass(logger);

@@ -1,5 +1,29 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+-   @sap-ux/abap-deploy-config-inquirer@1.6.28
+-   @sap-ux/odata-service-inquirer@2.8.11
+
+## 0.2.25
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.8.10
+-   @sap-ux/abap-deploy-config-inquirer@1.6.27
+-   @sap-ux/telemetry@0.6.28
+-   @sap-ux/axios-extension@1.22.10
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.2.24
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.2.23
 
 ### Patch Changes

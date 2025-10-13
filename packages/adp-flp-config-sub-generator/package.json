@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/adp-flp-config-sub-generator",
     "description": "Generator for adding FLP configuration to an Adaptation Project",
-    "version": "0.1.81",
+    "version": "0.1.85",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

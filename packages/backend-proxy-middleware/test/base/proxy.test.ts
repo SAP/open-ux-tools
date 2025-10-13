@@ -65,7 +65,7 @@ describe('proxy', () => {
     });
 
     describe('PathRewriters', () => {
-        const { replacePrefix, replaceClient, getPathRewrite } = PathRewriters;
+        const { replacePrefix, replaceClient, getPathRewrite, convertAppDescriptorToManifest } = PathRewriters;
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
@@ -80,6 +80,14 @@ describe('proxy', () => {
             expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
         });
 
+        test('convertAppDescriptorToManifest', () => {
+            const rewrite = convertAppDescriptorToManifest('/my/bsp');
+            expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
+            expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
+            expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
+            expect(rewrite('/test')).toBe('/test');
+        });
+
         test('getPathRewrite', () => {
             // no rewrite required
             const pathOutput = getPathRewrite({} as BackendConfig, logger);
@@ -91,7 +99,8 @@ describe('proxy', () => {
                 {
                     client: '012',
                     path: '/old',
-                    pathReplace: '/my/new'
+                    pathReplace: '/my/new',
+                    bsp: '/my/bsp'
                 } as BackendConfig,
                 logger
             );
@@ -102,6 +111,11 @@ describe('proxy', () => {
                 } as EnhancedIncomingMessage)
             ).toBe('/my/new/my/bsp/test?sap-client=012');
             expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(
+                writerChain!('/bsp/manifest.appdescr', {
+                    originalUrl: '/my/bsp/manifest.appdescr'
+                } as EnhancedIncomingMessage)
+            ).toBe('/manifest.json');
         });
     });
 
