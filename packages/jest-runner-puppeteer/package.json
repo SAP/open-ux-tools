@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-runner-puppeteer",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Jest runner for puppeteer",
     "repository": {
         "type": "git",
@@ -25,12 +25,14 @@
         "dist",
         "src"
     ],
+    "dependencies": {
+        "rimraf": "5.0.5"
+    },
     "devDependencies": {
         "chalk": "4.1.2",
         "jest-environment-node": "30.0.1",
         "mkdirp": "1.0.4",
         "puppeteer-core": "22.15.0",
-        "rimraf": "5.0.5",
         "which": "2.0.2"
     },
     "eslint-formatter-multiple": {

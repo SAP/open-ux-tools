@@ -1,5 +1,34 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.7.19
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-application-writer@1.5.19
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/ui5-test-writer@0.7.29
+    -   @sap-ux/odata-service-writer@0.27.25
+    -   @sap-ux/annotation-generator@0.3.67
+    -   @sap-ux/cap-config-writer@0.12.13
+    -   @sap-ux/fe-fpm-writer@0.39.6
+    -   @sap-ux/fiori-generator-shared@0.13.22
+
+## 2.7.18
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.66
+-   @sap-ux/fe-fpm-writer@0.39.5
+
+## 2.7.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/cap-config-writer@0.12.12
+
 ## 2.7.16
 
 ### Patch Changes

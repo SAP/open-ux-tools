@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux-private/adaptation-editor-tests",
     "description": "Adaptation Editor UI tests",
-    "version": "0.0.12",
+    "version": "0.0.14",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",

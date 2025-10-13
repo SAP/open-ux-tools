@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/annotation-generator",
-    "version": "0.3.65",
+    "version": "0.3.67",
     "description": "Library that provides API for generation of annotations by SAP Fiori App Generator",
     "publisher": "SAPSE",
     "repository": {

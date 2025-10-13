@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.17.2",
+    "version": "0.17.3",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",

@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.7
+
+### Patch Changes
+
+-   b268021: Compare proxy to environment variables
+
 ## 0.2.6
 
 ### Patch Changes
