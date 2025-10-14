@@ -145,7 +145,7 @@ builder:
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
-        instanceName: test-service
+        serviceInstanceName: test-service
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -379,7 +379,7 @@ builder:
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
-        instanceName: test-service
+        serviceInstanceName: test-service
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -618,7 +618,7 @@ builder:
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
-        instanceName: test-service
+        serviceInstanceName: test-service
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -826,7 +826,7 @@ builder:
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
-        instanceName: test-service
+        serviceInstanceName: test-service
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -1096,7 +1096,7 @@ builder:
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
-        instanceName: test-service
+        serviceInstanceName: test-service
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -1309,7 +1309,7 @@ builder:
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
-        instanceName: test-service
+        serviceInstanceName: test-service
 server:
   customMiddleware:
     - name: fiori-tools-proxy

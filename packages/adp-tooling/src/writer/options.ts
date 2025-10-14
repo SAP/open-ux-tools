@@ -369,7 +369,7 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
                 org: cf.org.GUID,
                 space: cf.space.GUID,
                 sapCloudService: cf.businessSolutionName ?? '',
-                instanceName: cf.businessService
+                serviceInstanceName: cf.businessService
             }
         }
     ]);
