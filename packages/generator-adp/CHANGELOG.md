@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.5.3
+
+### Patch Changes
+
+-   ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
+
 ## 0.5.2
 
 ### Patch Changes
