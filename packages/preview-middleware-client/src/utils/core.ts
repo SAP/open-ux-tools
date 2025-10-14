@@ -49,8 +49,6 @@ export function isManagedObject(element: object | undefined): element is Managed
     return false;
 }
 
-
-
 /**
  * Checks whether this object is an instance of the named type.
  *
