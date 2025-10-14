@@ -18,6 +18,7 @@ interface ManualTestCase {
     name: string;
     filePath: string;
     steps: ManualTestCaseStep[];
+    projectConfig?: any; // added to capture resolved config or annotation
 }
 
 /**
@@ -30,6 +31,8 @@ export default class ManualTestCaseReporter implements Reporter {
     private fileCompletedTests: Record<string, number> = {};
     // only for latest ui5 reporter is enabled
     private isReporterDisabled = false;
+    private projectConfigMap: Record<string, any> = {}; // projectName -> project.use
+    private processedFiles: Set<string> = new Set(); // ensure per-file work runs once
 
     /**
      * Creates an empty manual test case object for the given test.
@@ -152,6 +155,20 @@ export default class ManualTestCaseReporter implements Reporter {
             const fileNameWithoutExt = filename.replace(/\.spec\.ts$/, '');
             this.fileCompletedTests[fileNameWithoutExt] = (this.fileCompletedTests[fileNameWithoutExt] || 0) + 1;
             await this.checkAndGenerateFileDocumentation(fileNameWithoutExt);
+            // Ensure we parse and store projectConfig for this file only once.
+            if (!this.processedFiles.has(fileNameWithoutExt)) {
+                this.processedFiles.add(fileNameWithoutExt);
+                try {
+                    const ann = (test as any).annotations?.find((a: any) => a.type === 'projectConfig');
+                    if (ann && ann.description) {
+                        const parsed = JSON.parse(ann.description);
+                        const isAdp = parsed.projectConfig?.kind === 'adp';
+                        this.projectConfigMap[fileNameWithoutExt] = { ...parsed, isAdp };
+                    }
+                } catch {
+                    // ignore parse errors
+                }
+            }
         }
     }
 
@@ -163,6 +180,16 @@ export default class ManualTestCaseReporter implements Reporter {
     async onEnd(_result: FullResult) {
         if (this.isReporterDisabled) {
             return;
+        }
+        // write the consolidated test -> project config mapping JSON
+        try {
+            const outPath = join(process.cwd(), 'test-project-map.json');
+            // Ensure a stable, serializable object - clone to avoid accidental references
+            const toWrite = JSON.parse(JSON.stringify(this.projectConfigMap ?? {}));
+            await writeFile(outPath, JSON.stringify(toWrite, null, 2), { encoding: 'utf-8' });
+            console.log(`Project config map written to ${outPath}`);
+        } catch (err) {
+            console.error('Failed to write project config map JSON:', err);
         }
     }
 

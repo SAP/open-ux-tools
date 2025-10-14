@@ -21,6 +21,7 @@ import { satisfies } from 'semver';
 export type TestOptions = {
     previewFrame: FrameLocator;
     testSkipper: boolean;
+    projectConfigAnnotation: boolean;
 };
 
 // Avoid installing npm packages every time, but use symlink instead
@@ -82,6 +83,28 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         }
     ],
     projectConfig: [SIMPLE_APP, { option: true, scope: 'worker' }],
+    // Inject projectConfig into test annotations so reporters can consume it reliably
+    projectConfigAnnotation: [
+        async ({ projectConfig }, use, testInfo): Promise<void> => {
+            try {
+                const payload = (() => {
+                    try {
+                        return JSON.stringify({ projectConfig });
+                    } catch {
+                        return JSON.stringify({ projectConfig: projectConfig.id ?? projectConfig });
+                    }
+                })();
+                testInfo.annotations.push({
+                    type: 'projectConfig',
+                    description: payload
+                });
+            } catch {
+                // ignore annotation failures
+            }
+            await use(true);
+        },
+        { scope: 'test', auto: true }
+    ],
     log: [
         async ({}, use, testInfo): Promise<void> => {
             const logger = createLogger(testInfo.parallelIndex);
