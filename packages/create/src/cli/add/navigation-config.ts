@@ -12,7 +12,7 @@ import {
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getPrompts } from '@sap-ux/flp-config-inquirer';
+import { getPrompts, tileActions } from '@sap-ux/flp-config-inquirer';
 import { FileName, getAppType } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -87,17 +87,12 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 
         const answers = await getUserAnswers(inbounds, isAdp, tileSettingsAnswers);
 
-        if (!answers) {
+        if (!answers && tileSettingsAnswers?.tileHandlingAction !== tileActions.REPLACE) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
             return;
         }
 
-        if (variant.isAdp) {
-            const config = getAdpFlpInboundsWriterConfig(answers, variant.content.layer, tileSettingsAnswers);
-            await generateInboundConfig(basePath, config as InternalInboundNavigation[], fs);
-        } else {
-            await generateInboundNavigationConfig(basePath, answers, true, fs);
-        }
+        await generateConfig(basePath, answers as FLPConfigAnswers, variant, fs, tileSettingsAnswers);
 
         if (!simulate) {
             fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
@@ -174,6 +169,10 @@ async function getUserAnswers(
         promptOptions = getAdpFlpConfigPromptOptions(tileSettingsAnswers as TileSettingsAnswers, inbounds);
     }
 
+    if (isAdp && tileSettingsAnswers?.tileHandlingAction === tileActions.REPLACE) {
+        return undefined;
+    }
+
     const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, promptOptions));
     const config = await promptYUIQuestions(prompts, false);
 
@@ -182,4 +181,29 @@ async function getUserAnswers(
     }
 
     return config?.overwrite === false ? undefined : config;
+}
+
+/**
+ * Generates the inbound navigation configuration for the given project.
+ *
+ * @param {string} basePath - The path to the application root.
+ * @param {FLPConfigAnswers} answers - The user-provided configuration answers.
+ * @param {Variant} variant - The descriptor variant information.
+ * @param {Editor} fs - The mem-fs editor instance.
+ * @param {TileSettingsAnswers} [tileSettingsAnswers] - The answers for tile settings.
+ * @returns {Promise<void>} A promise that resolves when the configuration is generated.
+ */
+async function generateConfig(
+    basePath: string,
+    answers: FLPConfigAnswers,
+    variant: Variant,
+    fs: Editor,
+    tileSettingsAnswers?: TileSettingsAnswers
+): Promise<void> {
+    if (variant.isAdp) {
+        const config = getAdpFlpInboundsWriterConfig(answers, variant.content.layer, tileSettingsAnswers);
+        await generateInboundConfig(basePath, config as InternalInboundNavigation[], fs);
+    } else {
+        await generateInboundNavigationConfig(basePath, answers as FLPConfigAnswers, true, fs);
+    }
 }

@@ -126,7 +126,7 @@ function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5Fle
  * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration for FLP inbounds writer.
  */
 export function getAdpFlpInboundsWriterConfig(
-    flpConfigAnswers: FLPConfigAnswers,
+    flpConfigAnswers: FLPConfigAnswers | undefined,
     layer: UI5FlexLayer,
     tileSettingsAnswers?: TileSettingsAnswers,
     inbounds?: ManifestNamespace.Inbound
@@ -135,5 +135,5 @@ export function getAdpFlpInboundsWriterConfig(
     if (tileHandlingAction === tileActions.REPLACE) {
         return buildReplaceInboundConfig(layer, inbounds);
     }
-    return buildAddInboundConfig(flpConfigAnswers, layer);
+    return buildAddInboundConfig(flpConfigAnswers as FLPConfigAnswers, layer);
 }
