@@ -114,7 +114,9 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
-
+            if (satisfies(ui5Version, '~1.71.0')) {
+                await page.waitForTimeout(1000);
+            }
             await editor.quickActions.addControllerToPage.click();
 
             await dialog.fillField('Controller Name', 'TestController');
