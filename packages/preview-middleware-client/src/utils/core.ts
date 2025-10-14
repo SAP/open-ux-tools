@@ -77,7 +77,7 @@ export function hasParent(component: ManagedObject, parentIdToFind: string): boo
  * @param element UI5 element
  * @returns parent element or null
  */
-function getElementParent(element: Element): ManagedObject | null {
+function getElementParent(element: Element | ManagedObject): ManagedObject | null {
     if (typeof element.getParent === 'function') {
         return element.getParent();
     }
@@ -94,8 +94,8 @@ export function findViewByControl(control: Element | ManagedObject): View | unde
     if (!control) {
         return undefined;
     }
-    if (isA('sap.ui.core.mvc.View', control)) {
-        return control as View;
+    if (isA<View>('sap.ui.core.mvc.View', control)) {
+        return control;
     }
     const parent = getElementParent(control);
     if (!parent) {

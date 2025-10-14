@@ -27,20 +27,17 @@ export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>)
     const templateName = getFragmentTemplateName(selectorId, targetAggregation);
     const viewName = targetControl ? (findViewByControl(targetControl)?.getViewName() ?? '') : '';
 
-    // Return additional info if we have either templateName or all required properties
-    if (templateName || (controlType && targetAggregation && viewName)) {
-        const result: AddXMLAdditionalInfo = {};
-        if (templateName) {
-            result.templateName = templateName;
-        }
-        if (controlType && targetAggregation && viewName) {
-            result.targetAggregation = targetAggregation;
-            result.controlType = controlType;
-            result.viewName = viewName;
-        }   
-        return result;
-    } 
-    return undefined;
+    const result: AddXMLAdditionalInfo = {};
+    if (templateName) {
+        result.templateName = templateName;
+    }
+    if (controlType && targetAggregation && viewName) {
+        result.targetAggregation = targetAggregation;
+        result.controlType = controlType;
+        result.viewName = viewName;
+    }
+    
+    return Object.keys(result).length > 0 ? result : undefined;
 }
 
 export function getFragmentTemplateName(selectorId: string, targetAggregation: string): string {
