@@ -882,19 +882,6 @@ describe('Building Blocks', () => {
 </mvc:View>`;
 
             const basePath = join(testAppPath, 'test-custom-column-detection');
-            const customColumnData: CustomColumn = {
-                id: 'testCustomColumn',
-                buildingBlockType: BuildingBlockType.CustomColumn,
-                title: 'CustomColumnTitle',
-                embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/webapp/ext/fragment',
-                    folder: 'ext/fragment',
-                    typescript: false,
-                    content:
-                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    name: 'CustomColumnTitle'
-                }
-            };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
             fs.write(join(basePath, xmlViewFilePath), xmlViewWithColumns);
@@ -920,7 +907,6 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.CustomColumn,
                 title: 'CustomColumnTitle2',
                 embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/webapp/ext/fragment',
                     folder: 'ext/fragment',
                     typescript: false,
                     content:
@@ -964,7 +950,6 @@ describe('Building Blocks', () => {
                     placement: Placement.After
                 },
                 embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/ext/fragment',
                     folder: 'ext/fragment',
                     typescript: false,
                     content:
@@ -1011,7 +996,6 @@ describe('Building Blocks', () => {
                     placement: Placement.After
                 },
                 embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/ext/webapp/customfolder',
                     folder: 'ext/customfolder',
                     typescript: false,
                     content:
@@ -1054,7 +1038,6 @@ describe('Building Blocks', () => {
                     placement: Placement.After
                 },
                 embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
@@ -1097,7 +1080,6 @@ describe('Building Blocks', () => {
                     placement: Placement.After
                 },
                 embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
                     folder: 'ext/fragment',
                     typescript: false,
                     content:
@@ -1137,7 +1119,6 @@ describe('Building Blocks', () => {
                     placement: Placement.After
                 },
                 embededFragment: {
-                    customColumnFragmentPath: '/test/path/to/ext/webapp/fragment',
                     folder: 'ext/fragment',
                     typescript: false,
                     content:
