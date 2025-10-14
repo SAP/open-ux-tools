@@ -1047,7 +1047,7 @@ describe('Building Blocks', () => {
             await writeFilesForDebugging(fs);
         });
 
-        test('generate CustomColumn without folder - defaults to manifest path dirname', async () => {
+        test('generate CustomColumn without folder - defaults to ext/name path dirname', async () => {
             const basePath = join(testAppPath, 'generate-custom-column-no-folder');
             const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
             const customColumnData: CustomColumn = {
@@ -1080,11 +1080,17 @@ describe('Building Blocks', () => {
             );
 
             // Check that fragment file was created in webapp folder (manifest dirname)
-            const expectedFragmentPath = join(basePath, 'webapp/CustomColumnNoFolder.fragment.xml');
+            const expectedFragmentPath = join(
+                basePath,
+                'webapp/ext/customColumnNoFolder/CustomColumnNoFolder.fragment.xml'
+            );
             expect(fs.exists(expectedFragmentPath)).toBe(true);
 
             const fragmentContent = fs.read(expectedFragmentPath);
             expect(fragmentContent).toContain('Sample Text');
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.customColumnNoFolder.CustomColumnNoFolder');
 
             await writeFilesForDebugging(fs);
         });

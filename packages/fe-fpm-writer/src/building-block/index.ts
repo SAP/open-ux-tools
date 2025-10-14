@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { dirname, join, parse, relative } from 'node:path';
+import { join, parse, relative } from 'node:path';
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -174,11 +174,11 @@ function processBuildingBlock<T extends BuildingBlock>(
     let aggregationNamespace = 'macrosTable';
 
     if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
+        const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
         const viewPath = join(
-            join(dirname(manifestPath), buildingBlockData.embededFragment.folder ?? ''),
-            `${buildingBlockData.embededFragment.name}.fragment.xml`
+            embededFragment.path,
+            `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
         );
-        setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
 
         // Apply event handler
         if (buildingBlockData.embededFragment.eventHandler) {
