@@ -425,9 +425,7 @@ export interface CustomColumn extends BuildingBlock {
     embededFragment?: EmbededFragment;
 }
 
-export interface EmbededFragment extends EventHandler, CustomFragment, CustomElement, FragmentContentData {
-    customColumnFragmentPath: string;
-}
+export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
 
 /**
  * Building block used to create a rich text editor based on the metadata provided by OData V4.
