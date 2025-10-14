@@ -269,6 +269,15 @@ export function getDefaultTableType(
         if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
+            hasAggregateTransformationsForEntitySet(entitySet) &&
+            hasRecursiveHierarchyForEntitySet(entitySet)
+        ) {
+            // If both analytical and hierarchical services are configured, the analytical table is used by default
+            tableType = 'AnalyticalTable';
+            setAnalyticalTableDefault = true;
+        } else if (
+            (templateType === 'lrop' || templateType === 'worklist') &&
+            odataVersion === OdataVersion.v4 &&
             isCapService &&
             hasAggregateTransformationsForEntitySet(entitySet)
         ) {

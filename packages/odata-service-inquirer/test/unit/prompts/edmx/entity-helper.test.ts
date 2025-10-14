@@ -436,10 +436,10 @@ describe('Test entity helper functions', () => {
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
-        test('should use TreeTable for entities with recursive hierarchy and partial aggregate transformations', () => {
+        test('should use AnalyticalTable for entities with recursive hierarchy and any aggregate transformations', () => {
             // Integration test using the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
             // This entity has both recursive hierarchy and partial aggregate transformations (only 5 of 9)
-            // Since partial transformations don't qualify for AnalyticalTable, recursive hierarchy gets TreeTable
+            // Since both analytical and hierarchical annotations are present, AnalyticalTable takes priority
             const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
             const convertedMetadata = convert(parsedEdmx);
 
@@ -450,9 +450,9 @@ describe('Test entity helper functions', () => {
                 false,
                 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
             );
-            // Since the entity only has partial transformations (not complete), it gets TreeTable for recursive hierarchy
-            expect(result.tableType).toBe('TreeTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            // When both analytical and hierarchical annotations are present, AnalyticalTable takes priority
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
         });
 
         test('should prioritize complete aggregate transformations over recursive hierarchy', () => {
@@ -746,6 +746,202 @@ describe('Test entity helper functions', () => {
 
             // For CAP services without ApplySupported, should use ResponsiveTable
             const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
+            expect(result.tableType).toBe('ResponsiveTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
+        it('should return AnalyticalTable when both analytical and hierarchical annotations are present (CAP service)', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            Aggregation: {
+                                ApplySupported: {
+                                    Transformations: ['filter', 'search', 'groupby']
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                Hierarchy: {
+                                    RecursiveHierarchy: {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // When both analytical and hierarchical annotations are present, should prefer AnalyticalTable
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
+        });
+
+        it('should return AnalyticalTable when both analytical and hierarchical annotations are present (non-CAP service)', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {},
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                Aggregation: {
+                                    ApplySupported: {
+                                        Transformations: [
+                                            'filter',
+                                            'identity',
+                                            'orderby',
+                                            'search',
+                                            'skip',
+                                            'top',
+                                            'groupby',
+                                            'aggregate',
+                                            'concat'
+                                        ]
+                                    }
+                                },
+                                Hierarchy: {
+                                    RecursiveHierarchy: {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // When both analytical and hierarchical annotations are present, should prefer AnalyticalTable over TreeTable
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity', undefined);
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
+        });
+
+        it('should return AnalyticalTable when both analytical and hierarchical annotations are present (worklist template)', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            Aggregation: {
+                                ApplySupported: {
+                                    Transformations: ['filter', 'search', 'groupby']
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                Hierarchy: {
+                                    RecursiveHierarchy: {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // Should work for worklist template as well
+            const result = getDefaultTableType(
+                'worklist',
+                mockMetadata,
+                OdataVersion.v4,
+                true,
+                'TestEntity',
+                undefined
+            );
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
+        });
+
+        it('should return TreeTable when only hierarchical annotation is present', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {},
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                Hierarchy: {
+                                    RecursiveHierarchy: {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // When only hierarchical annotation is present, should return TreeTable
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity', undefined);
+            expect(result.tableType).toBe('TreeTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
+        it('should not apply combined condition for non-lrop/worklist templates', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            Aggregation: {
+                                ApplySupported: {
+                                    Transformations: ['filter', 'search', 'groupby']
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                Hierarchy: {
+                                    RecursiveHierarchy: {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // For non-lrop/worklist templates, the combined condition should not apply
+            const result = getDefaultTableType('fpm', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
+            expect(result.tableType).toBe('ResponsiveTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
+        it('should not apply combined condition for OData v2', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            Aggregation: {
+                                ApplySupported: {
+                                    Transformations: ['filter', 'search', 'groupby']
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                Hierarchy: {
+                                    RecursiveHierarchy: {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // For OData v2, the combined condition should not apply
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v2, true, 'TestEntity', undefined);
             expect(result.tableType).toBe('ResponsiveTable');
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
