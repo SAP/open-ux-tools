@@ -840,20 +840,6 @@ describe('Building Blocks', () => {
     });
 
     describe('CustomColumn building block', () => {
-        const testXmlViewContentWithMacrosColumns = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
-    xmlns:macros="sap.fe.macros">
-    <Page title="Main">
-        <content>
-            <macros:Table>
-                <macros:columns>
-                    <macros:Column />
-                </macros:columns>
-            </macros:Table>
-        </content>
-    </Page>
-</mvc:View>`;
-
         const testXmlViewContentWithoutMacrosColumns = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
     xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
     xmlns:macros="sap.fe.macros">
@@ -901,7 +887,7 @@ describe('Building Blocks', () => {
 
         test('generate CustomColumn without macros:columns - should not update aggregation path', async () => {
             const basePath = join(testAppPath, 'generate-custom-column-without-macros-columns');
-            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
             const customColumnData: CustomColumn = {
                 id: 'testCustomColumn2',
                 buildingBlockType: BuildingBlockType.CustomColumn,
