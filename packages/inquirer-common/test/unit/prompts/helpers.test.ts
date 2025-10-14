@@ -1387,25 +1387,6 @@ describe('helpers', () => {
             expect(result).toBeUndefined();
         });
 
-        it('should return undefined when entitySetName is not provided', () => {
-            const mockMetadata: any = {
-                version: '4.0',
-                namespace: 'Test.Service',
-                entitySets: [
-                    {
-                        name: 'TestEntity',
-                        entityTypeName: 'TestType',
-                        annotations: {}
-                    }
-                ],
-                entityTypes: [],
-                entityContainer: {}
-            };
-
-            expect(findEntitySetByName(mockMetadata)).toBeUndefined();
-            expect(findEntitySetByName(mockMetadata, undefined)).toBeUndefined();
-        });
-
         it('should handle empty entitySets array', () => {
             const mockMetadata: any = {
                 version: '4.0',

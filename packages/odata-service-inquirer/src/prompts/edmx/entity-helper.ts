@@ -11,7 +11,6 @@ import {
     hasAggregateTransformations,
     hasAggregateTransformationsForEntitySet,
     transformationsRequiredForAnalyticalTable,
-    hasRecursiveHierarchy,
     hasRecursiveHierarchyForEntitySet,
     findEntitySetByName
 } from '@sap-ux/inquirer-common';
@@ -265,13 +264,13 @@ export function getDefaultTableType(
     let setAnalyticalTableDefault = false;
 
     // Find the entity set once for all annotation checks
-    const entitySet = findEntitySetByName(metadata, mainEntitySetName);
+    const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
 
     if (entitySet) {
         if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
-            ((hasAggregateTransformations(entitySet) && hasRecursiveHierarchy(entitySet)) ||
+            ((hasAggregateTransformations(entitySet) && hasRecursiveHierarchyForEntitySet(entitySet)) ||
                 (isCapService && hasAggregateTransformations(entitySet)) ||
                 (!isCapService &&
                     hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable)))
@@ -282,7 +281,7 @@ export function getDefaultTableType(
         } else if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
-            hasRecursiveHierarchy(entitySet)
+            hasRecursiveHierarchyForEntitySet(entitySet)
         ) {
             // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
             tableType = 'TreeTable';

@@ -217,6 +217,10 @@ export function hasAggregateTransformationsForEntity(
     entitySetName?: string,
     requiredTransformations?: readonly string[]
 ): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+
     const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return false;
@@ -233,6 +237,10 @@ export function hasAggregateTransformationsForEntity(
  * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
  */
 export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+
     const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return false;
@@ -252,6 +260,10 @@ export function getRecursiveHierarchyQualifier(
     metadata: ConvertedMetadata,
     entitySetName?: string
 ): string | undefined {
+    if (!entitySetName) {
+        return undefined;
+    }
+
     const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return undefined;
@@ -291,25 +303,36 @@ export function hasAggregateTransformationsForEntitySet(
 }
 
 /**
+ * Finds the RecursiveHierarchy annotation key for the given entity set.
+ * This is a helper function that both existence check and qualifier extraction can use.
+ *
+ * @param entitySet The entity set to check for recursive hierarchy annotation.
+ * @returns The RecursiveHierarchy key if found, undefined otherwise.
+ */
+function findRecursiveHierarchyKey(entitySet: EntitySet): string | undefined {
+    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
+
+    if (!hierarchyAnnotations) {
+        return undefined;
+    }
+
+    // First try exact match for the most common case
+    if (hierarchyAnnotations['RecursiveHierarchy']) {
+        return 'RecursiveHierarchy';
+    }
+
+    // Then check for qualified versions (RecursiveHierarchy#qualifier)
+    return Object.keys(hierarchyAnnotations).find((key) => key.startsWith(annotationPatterns.recursiveHierarchy));
+}
+
+/**
  * Checks if the given entity set has a Hierarchy.RecursiveHierarchy annotation.
  *
  * @param entitySet The entity set to check for recursive hierarchy annotation.
  * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
  */
 export function hasRecursiveHierarchyForEntitySet(entitySet: EntitySet): boolean {
-    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
-
-    if (!hierarchyAnnotations) {
-        return false;
-    }
-
-    // First try exact match for the most common case
-    if (hierarchyAnnotations['RecursiveHierarchy']) {
-        return true;
-    }
-
-    // Then check for qualified versions (RecursiveHierarchy#qualifier)
-    return Object.keys(hierarchyAnnotations).some((key) => key.startsWith(annotationPatterns.recursiveHierarchy));
+    return !!findRecursiveHierarchyKey(entitySet);
 }
 
 /**
@@ -319,16 +342,7 @@ export function hasRecursiveHierarchyForEntitySet(entitySet: EntitySet): boolean
  * @returns The qualifier string if found, undefined otherwise.
  */
 export function getRecursiveHierarchyQualifierForEntitySet(entitySet: EntitySet): string | undefined {
-    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
-
-    if (!hierarchyAnnotations) {
-        return undefined;
-    }
-
-    // Find RecursiveHierarchy annotation key (with or without qualifier)
-    const recursiveHierarchyKey = Object.keys(hierarchyAnnotations).find((key) =>
-        key.startsWith(annotationPatterns.recursiveHierarchy)
-    );
+    const recursiveHierarchyKey = findRecursiveHierarchyKey(entitySet);
 
     if (!recursiveHierarchyKey) {
         return undefined;
@@ -345,10 +359,7 @@ export function getRecursiveHierarchyQualifierForEntitySet(entitySet: EntitySet)
  * @param entitySetName The name of the entity set to find.
  * @returns The entity set if found, undefined otherwise.
  */
-export function findEntitySetByName(metadata: ConvertedMetadata, entitySetName?: string): EntitySet | undefined {
-    if (!entitySetName) {
-        return undefined;
-    }
+export function findEntitySetByName(metadata: ConvertedMetadata, entitySetName: string): EntitySet | undefined {
     return metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
 }
 
