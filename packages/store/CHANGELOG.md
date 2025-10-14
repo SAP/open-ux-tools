@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.2.0
+
+### Minor Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
 ## 1.1.5
 
 ### Patch Changes
