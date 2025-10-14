@@ -125,7 +125,7 @@ Set `enableTelemetry` to `false` to disable telemetry collection.
 
 ### Method 2: Environment Variable
 
-Set the environment variable `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` to `false`:
+Set the environment variable `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` to `true`:
 
 ```bash
 export SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=false
