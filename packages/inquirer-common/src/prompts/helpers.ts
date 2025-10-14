@@ -177,6 +177,21 @@ export const annotationPatterns = {
 } as const;
 
 /**
+ * Checks if the given entity set has aggregate transformations.
+ * Returns true if ANY transformations are present in either entity set or entity type annotations.
+ *
+ * @param entitySet The entity set to check for aggregate transformations.
+ * @returns true if the entity set has any aggregate transformations, false otherwise.
+ */
+export function hasAggregateTransformations(entitySet: EntitySet): boolean {
+    const transformations =
+        entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
+
+    return !!transformations && Array.isArray(transformations) && transformations.length > 0;
+}
+
+/**
  * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
  * This can be found within the entity set annotations or the entity type annotations.
  *
@@ -184,12 +199,7 @@ export const annotationPatterns = {
  * @returns the filtered entity sets
  */
 export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
-    return entitySets.filter((entitySet) => {
-        return (
-            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
-            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
-        );
-    });
+    return entitySets.filter(hasAggregateTransformations);
 }
 
 /**

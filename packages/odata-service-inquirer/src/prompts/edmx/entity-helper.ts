@@ -8,8 +8,10 @@ import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
+    hasAggregateTransformations,
     hasAggregateTransformationsForEntitySet,
     transformationsRequiredForAnalyticalTable,
+    hasRecursiveHierarchy,
     hasRecursiveHierarchyForEntitySet,
     findEntitySetByName
 } from '@sap-ux/inquirer-common';
@@ -269,8 +271,8 @@ export function getDefaultTableType(
         if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
-            ((hasAggregateTransformationsForEntitySet(entitySet) && hasRecursiveHierarchyForEntitySet(entitySet)) ||
-                (isCapService && hasAggregateTransformationsForEntitySet(entitySet)) ||
+            ((hasAggregateTransformations(entitySet) && hasRecursiveHierarchy(entitySet)) ||
+                (isCapService && hasAggregateTransformations(entitySet)) ||
                 (!isCapService &&
                     hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable)))
         ) {
@@ -280,7 +282,7 @@ export function getDefaultTableType(
         } else if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
-            hasRecursiveHierarchyForEntitySet(entitySet)
+            hasRecursiveHierarchy(entitySet)
         ) {
             // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
             tableType = 'TreeTable';
