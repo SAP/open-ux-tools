@@ -3,7 +3,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.json",   
-    "test-project-generator.ts"  
+    "test-project-generator.ts", 
+    "server.ts"  
   ],
   "compilerOptions": {
     "rootDir": "src",

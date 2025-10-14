@@ -1,11 +1,10 @@
 import { randomUUID } from 'crypto';
 import { generateAdpProject, generateUi5Project } from './src/project/builder';
-import { ADP_FIORI_ELEMENTS_V2 } from './src/project/projects';
-import { rm, stat, symlink, mkdir, readdir } from 'fs/promises';
-import { join } from 'path';
-import globalSetup from './src/global-setup';
+import { rm, stat, symlink, mkdir } from 'fs/promises';
+import { join } from 'node:path';
 import { getPortPromise } from 'portfinder';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'node:fs';
+import readline from 'node:readline';
 
 /**
  * Interface for test project configurations.
@@ -14,58 +13,6 @@ interface TestProjectConfig {
     projectConfig: any;
     isAdp?: boolean;
 }
-
-/**
- * Map of test file names to their corresponding project configurations.
- */
-const testConfigMap: Record<string, TestProjectConfig> = {
-    'list-report-v2': {
-        projectConfig: ADP_FIORI_ELEMENTS_V2,
-        isAdp: true
-    },
-    'object-page-v2': {
-        projectConfig: {
-            ...ADP_FIORI_ELEMENTS_V2,
-            baseApp: {
-                ...ADP_FIORI_ELEMENTS_V2.baseApp,
-                userParams: {
-                    navigationProperty: 'toFirstAssociatedEntity',
-                    qualifier: 'tableSection'
-                }
-            }
-        },
-        isAdp: true
-    },
-    'object-page-v2a': {
-        projectConfig: {
-            ...ADP_FIORI_ELEMENTS_V2,
-            baseApp: {
-                ...ADP_FIORI_ELEMENTS_V2.baseApp,
-                userParams: {
-                    navigationProperty: 'toFirstAssociatedEntity',
-                    variantManagement: false,
-                    qualifier: 'tableSection'
-                }
-            }
-        },
-        isAdp: true
-    },
-    'object-page-v2b': {
-        projectConfig: {
-            ...ADP_FIORI_ELEMENTS_V2,
-            baseApp: {
-                ...ADP_FIORI_ELEMENTS_V2.baseApp,
-                userParams: {
-                    navigationProperty: 'toFirstAssociatedEntity',
-                    qualifier: 'tableSection',
-                    analyticalTable: true
-                }
-            }
-        },
-        isAdp: true
-    }
-    // Add more test file mappings as needed
-};
 
 /**
  * Default UI5 version to use if not provided.
@@ -84,55 +31,6 @@ const DEFAULT_LIVERELOAD_PORT = 35729;
 
 // Avoid installing npm packages every time, but use symlink instead
 const PACKAGE_ROOT = join(__dirname, '..', '..', 'fixtures', 'projects', 'mock');
-let abapServerInstance: any;
-/**
- * Starts the mock ABAP backend server.
- * If a server is already running, it will reuse the existing server if it's using
- * the same folder, otherwise it will stop the existing server and start a new one.
- *
- * @param folderName - The folder name to use for the server
- * @param port - The port to use for the server (default: 3050)
- * @returns Promise that resolves when the server is started with the port it's running on
- */
-export async function startAbapServer(folderName: string, port: number = 3050): Promise<void> {
-    abapServerInstance = await globalSetup(port, folderName);
-    console.log(`Started ABAP server with PID ${process.pid} using folder: ${folderName} on port: ${port}`);
-}
-
-/**
- * Stops the mock ABAP backend server.
- */
-export async function stopAbapServer(): Promise<void> {
-    if (abapServerInstance) {
-        (await abapServerInstance).close();
-        abapServerInstance = null;
-        console.log('Mock ABAP backend stopped');
-    }
-}
-
-/**
- * Stops all servers.
- */
-export async function stopAllServers(): Promise<void> {
-    await stopAbapServer();
-}
-
-/**
- * Delete a project
- *
- * @param folderPath - Path to the project to delete
- */
-async function deleteProject(folderPath: string): Promise<void> {
-    if (existsSync(folderPath)) {
-        try {
-            console.log(`Deleting existing project at ${folderPath}`);
-            await rm(folderPath, { recursive: true });
-        } catch (error) {
-            console.error(`Error deleting project: ${error}`);
-            throw error;
-        }
-    }
-}
 
 /**
  * Generates a test project based on the specified test file name.
@@ -151,23 +49,23 @@ export async function generateTestProject(
     testFileName: string,
     ui5Version: string = DEFAULT_UI5_VERSION,
     backendUrl: string = DEFAULT_BACKEND_URL,
-    livereloadPort: number = DEFAULT_LIVERELOAD_PORT,
-    startServers: boolean = false,
+    livereloadPort: number = DEFAULT_LIVERELOAD_PORT
+    // startServers: boolean = false,
     //forceRegenerate: boolean = false
-): Promise<{ projectPath: string; ui5Port?: number; abapPort?: number }> {
+): Promise<{ projectPath: string }> {
     // Extract just the filename if a full path is provided
     const fileName = testFileName.includes('/')
         ? testFileName.substring(testFileName.lastIndexOf('/') + 1)
         : testFileName;
 
-    // Remove the '#file:' prefix if present
-    const normalizedFileName = fileName.startsWith('#file:') ? fileName.substring(6) : fileName;
-
     // Remove the '.spec.ts' suffix if present
-    const testName = normalizedFileName.endsWith('.spec.ts')
-        ? normalizedFileName.substring(0, normalizedFileName.length - 8)
-        : normalizedFileName;
+    const testName = fileName.endsWith('.spec.ts') ? fileName.substring(0, fileName.length - 8) : fileName;
 
+    // Get the configuration by reading #test-project-map.json
+    // load mapping from JSON file placed next to this script
+    const testConfigMap: Record<string, TestProjectConfig> = JSON.parse(
+        readFileSync(join(__dirname, 'test-project-map.json'), 'utf-8')
+    );
     const config = testConfigMap[testName];
 
     if (!config) {
@@ -179,43 +77,23 @@ export async function generateTestProject(
 
     let projectPath = '';
 
-    // if (!forceRegenerate) {
-    //     console.log(`Using existing project at ${fullFolderPath}`);
-
-    //     // Find the actual project path (it includes a unique worker ID)
-    //     const items = await readdir(fullFolderPath);
-    //     const adpProject = items.find(
-    //         (item) => item.startsWith(config.projectConfig.id) && existsSync(join(fullFolderPath, item, 'webapp'))
-    //     );
-
-    //     if (adpProject) {
-    //         projectPath = join(fullFolderPath, adpProject);
-    //     } else {
-    //         console.log('Could not find valid project in the folder, regenerating...');
-    //         await deleteProject(fullFolderPath);
-    //     }
-    // }
-
-    // Start the ABAP server if requested
-    let abapPort = 3050;
-    if (startServers) {
-        try {
-            abapPort = await getPortPromise({ port: abapPort, stopPort: 3050 + 1000 });
-            await startAbapServer(folderPath, abapPort);
-
-            // Update backendUrl with the actual port the server is running on
-            backendUrl = `http://localhost:${abapPort}`;
-        } catch (error) {
-            console.error(`Failed to start ABAP server: ${error}`);
-        }
-    }
-
     // Generate the project if it doesn't exist or we need to regenerate
     if (!projectPath) {
         // Generate a unique worker ID for the project
         const workerId = randomUUID().substring(0, 8);
 
         if (config.isAdp) {
+            const abapPort = await getPortPromise({ port: 3050, stopPort: 3050 + 1000 });
+            // If the target folder already exists, remove it completely to start clean
+            if (existsSync(fullFolderPath)) {
+                console.log(`WARNING: existing folder will be removed: ${fullFolderPath}`);
+                const ok = await promptYesNo('This will delete the existing project state. Continue and remove it? (y/N): ');
+                if (!ok) {
+                    throw new Error('Aborted by user — existing project state preserved.');
+                }
+                console.log(`Removing existing folder ${fullFolderPath} to recreate fresh project`);
+                await rm(fullFolderPath, { recursive: true, force: true });
+            }
             await mkdir(fullFolderPath, { recursive: true });
             await generateUi5Project(config.projectConfig.baseApp, workerId, ui5Version, folderPath);
             projectPath = await generateAdpProject(
@@ -245,58 +123,37 @@ export async function generateTestProject(
         }
     }
 
-    return { projectPath, abapPort };
+    return { projectPath };
 }
 
 /**
- * Command line interface for the script.
- * Usage: node test-project-generator.js #file:test-file-name.spec.ts [--start-servers] [--port=3000] [--force]
+ * Ask a yes/no question on the terminal. Returns true only if user answers 'y' or 'Y'.
+ * If stdin is not a TTY, returns false to avoid destructive actions in non-interactive environments.
  */
-if (require.main === module) {
-    // This will run only when the script is executed directly
-    const testFileName = process.argv[2];
-    const startServersFlag = process.argv.includes('--start-servers');
-    //const forceRegenerateFlag = process.argv.includes('--force');
+function promptYesNo(question: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        if (!process.stdin.isTTY) {
+            console.error('Non-interactive terminal detected — cannot confirm destructive action.');
+            return resolve(false);
+        }
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        rl.question(question, (answer) => {
+            rl.close();
+            const normalized = (answer || '').trim().toLowerCase();
+            resolve(normalized === 'y' || normalized === 'yes');
+        });
+    });
+}
 
+if (require.main === module) {
+    // argv[2] expect on file name with or without extension
+    const testFileName = process.argv[2];
     if (!testFileName) {
         console.error('Please provide a test file name. Example: #file:object-page-v2a.spec.ts');
         process.exit(1);
     }
 
-    generateTestProject(
-        testFileName,
-        DEFAULT_UI5_VERSION,
-        DEFAULT_BACKEND_URL,
-        DEFAULT_LIVERELOAD_PORT,
-        startServersFlag,
-        //forceRegenerateFlag
-    )
-        .then(({ projectPath, ui5Port }) => {
-            console.log(`Project at: ${projectPath}`);
-            if (ui5Port) {
-                console.log(
-                    `Adaptation Editor URL: http://localhost:${ui5Port}/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview`
-                );
-            }
-
-            if (!startServersFlag) {
-                process.exit(0);
-            } else {
-                console.log('Press Ctrl+C to stop the servers and exit');
-
-                // Handle graceful shutdown
-                process.on('SIGINT', async () => {
-                    console.log('Shutting down servers...');
-                    await stopAllServers();
-                    process.exit(0);
-                });
-            }
-        })
-        .catch(async (error) => {
-            console.error(`Failed to generate project: ${error.message}`);
-            if (startServersFlag) {
-                await stopAllServers();
-            }
-            process.exit(1);
-        });
+    generateTestProject(testFileName, DEFAULT_UI5_VERSION, DEFAULT_BACKEND_URL, DEFAULT_LIVERELOAD_PORT).then(
+        ({ projectPath }) => console.log(`Project Generated under folder: "${projectPath}"`)
+    );
 }

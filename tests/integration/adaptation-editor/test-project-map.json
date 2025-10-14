@@ -1,0 +1,76 @@
+{
+  "list-report-v2": {
+    "projectConfig": {
+      "type": "generated",
+      "kind": "adp",
+      "baseApp": {
+        "type": "generated",
+        "kind": "ui5",
+        "id": "fiori.elements.v2",
+        "mainServiceUri": "/sap/opu/odata/sap/SERVICE/",
+        "entitySet": "RootEntity"
+      },
+      "id": "adp.fiori.elements.v2"
+    },
+    "isAdp": true
+  },
+  "object-page-v2": {
+    "projectConfig": {
+      "type": "generated",
+      "kind": "adp",
+      "baseApp": {
+        "type": "generated",
+        "kind": "ui5",
+        "id": "fiori.elements.v2",
+        "mainServiceUri": "/sap/opu/odata/sap/SERVICE/",
+        "entitySet": "RootEntity",
+        "userParams": {
+          "navigationProperty": "toFirstAssociatedEntity",
+          "qualifier": "tableSection"
+        }
+      },
+      "id": "adp.fiori.elements.v2"
+    },
+    "isAdp": true
+  },
+  "object-page-v2a": {
+    "projectConfig": {
+      "type": "generated",
+      "kind": "adp",
+      "baseApp": {
+        "type": "generated",
+        "kind": "ui5",
+        "id": "fiori.elements.v2",
+        "mainServiceUri": "/sap/opu/odata/sap/SERVICE/",
+        "entitySet": "RootEntity",
+        "userParams": {
+          "navigationProperty": "toFirstAssociatedEntity",
+          "variantManagement": false,
+          "qualifier": "tableSection"
+        }
+      },
+      "id": "adp.fiori.elements.v2"
+    },
+    "isAdp": true
+  },
+  "object-page-v2b": {
+    "projectConfig": {
+      "type": "generated",
+      "kind": "adp",
+      "baseApp": {
+        "type": "generated",
+        "kind": "ui5",
+        "id": "fiori.elements.v2",
+        "mainServiceUri": "/sap/opu/odata/sap/SERVICE/",
+        "entitySet": "RootEntity",
+        "userParams": {
+          "navigationProperty": "toFirstAssociatedEntity",
+          "qualifier": "tableSection",
+          "analyticalTable": true
+        }
+      },
+      "id": "adp.fiori.elements.v2"
+    },
+    "isAdp": true
+  }
+}
