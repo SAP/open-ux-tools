@@ -269,28 +269,12 @@ export function getDefaultTableType(
         if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
-            hasAggregateTransformationsForEntitySet(entitySet) &&
-            hasRecursiveHierarchyForEntitySet(entitySet)
+            ((hasAggregateTransformationsForEntitySet(entitySet) && hasRecursiveHierarchyForEntitySet(entitySet)) ||
+                (isCapService && hasAggregateTransformationsForEntitySet(entitySet)) ||
+                (!isCapService &&
+                    hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable)))
         ) {
-            // If both analytical and hierarchical services are configured, the analytical table is used by default
-            tableType = 'AnalyticalTable';
-            setAnalyticalTableDefault = true;
-        } else if (
-            (templateType === 'lrop' || templateType === 'worklist') &&
-            odataVersion === OdataVersion.v4 &&
-            isCapService &&
-            hasAggregateTransformationsForEntitySet(entitySet)
-        ) {
-            // For CAP services, if the main entity type is annotated with Aggregation.ApplySupported, use AnalyticalTable as default
-            tableType = 'AnalyticalTable';
-            setAnalyticalTableDefault = true;
-        } else if (
-            (templateType === 'lrop' || templateType === 'worklist') &&
-            odataVersion === OdataVersion.v4 &&
-            !isCapService &&
-            hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable)
-        ) {
-            // For non-CAP services, if the main entity type is annotated with Aggregation.ApplySupported containing all specified transformations, use AnalyticalTable as default
+            // Use AnalyticalTable when: both analytical+hierarchical, CAP with analytical, or non-CAP with complete analytical transformations
             tableType = 'AnalyticalTable';
             setAnalyticalTableDefault = true;
         } else if (
