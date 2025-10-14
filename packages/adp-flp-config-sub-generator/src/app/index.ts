@@ -1,7 +1,7 @@
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
-import path, { join } from 'path';
+import path, { join } from 'node:path';
 import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
 import {
     getVariant,

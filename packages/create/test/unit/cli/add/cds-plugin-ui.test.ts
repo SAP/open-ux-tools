@@ -6,7 +6,7 @@ import * as capConfigWriterMock from '@sap-ux/cap-config-writer';
 import * as logger from '../../../../src/tracing/logger';
 import * as npmCommand from '@sap-ux/project-access';
 import { addAddCdsPluginUi5Command } from '../../../../src/cli/add/cds-plugin-ui';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('child_process');
 

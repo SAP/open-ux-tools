@@ -1,6 +1,6 @@
 import { ensureFileSync, pathExists, remove } from 'fs-extra';
 import { readFile, readdir, writeFile } from 'fs/promises';
-import { join, sep } from 'path';
+import { join, sep } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 const logger = new ToolsLogger();
 import { hashElement } from 'folder-hash';

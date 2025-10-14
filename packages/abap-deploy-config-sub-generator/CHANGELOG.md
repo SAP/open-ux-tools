@@ -1,5 +1,59 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.78
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.29
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.42
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/abap-deploy-config-writer@0.2.22
+
+## 0.1.77
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.28
+-   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.1.76
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.27
+    -   @sap-ux/abap-deploy-config-writer@0.2.21
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/fiori-generator-shared@0.13.22
+    -   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.1.75
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.26
+-   @sap-ux/deploy-config-generator-shared@0.1.40
+-   @sap-ux/fiori-generator-shared@0.13.21
+
+## 0.1.74
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/abap-deploy-config-writer@0.2.20
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.25
+    -   @sap-ux/deploy-config-generator-shared@0.1.39
+
 ## 0.1.73
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 {
- "extends": "../../tsconfig-esm.json",
+  "extends": "../../tsconfig-esm.json",
   "include": [
     "src",
     "src/**/*.json"
@@ -7,5 +7,10 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"
-  }
+  },
+  "references": [
+    {
+      "path": "../logger"
+    }
+  ]
 }

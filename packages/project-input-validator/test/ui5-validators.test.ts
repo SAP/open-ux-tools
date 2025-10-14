@@ -1,5 +1,5 @@
 import 'jest-extended';
-import { join } from 'path';
+import { join } from 'node:path';
 import { t } from '../src/i18n';
 import {
     validateModuleName,
@@ -8,7 +8,7 @@ import {
     validateLibModuleName
 } from '../src/ui5/validators';
 import fs from 'fs/promises';
-import os from 'os';
+import os from 'node:os';
 
 const itSkipIfWin = os.platform() === 'win32' ? it.skip : it;
 

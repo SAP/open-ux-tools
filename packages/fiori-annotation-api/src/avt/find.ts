@@ -134,8 +134,8 @@ function searchInMergedAnnotations(
         const match = mergeMap[key];
         if (match) {
             const [, targetIndexSegment, termIndexSegment, ...mappedSourceSegments] = match.replace(id, '').split('/');
-            const targetIndex = parseInt(targetIndexSegment, 10);
-            const termIndex = parseInt(termIndexSegment, 10);
+            const targetIndex = Number.parseInt(targetIndexSegment, 10);
+            const termIndex = Number.parseInt(termIndexSegment, 10);
             const sourceTerm = file.targets[targetIndex].terms[termIndex];
             const internalPointer = convertPointerInAnnotationToInternal(
                 sourceTerm,

@@ -24,7 +24,7 @@ import {
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { AuthenticationType } from '@sap-ux/store';
 
 /**
@@ -200,7 +200,7 @@ export async function createAbapServiceProvider(
     if (isAppStudio() && isDestinationTarget(target)) {
         provider = await createAbapDestinationServiceProvider(options, target, prompt);
     } else if (isUrlTarget(target)) {
-        if (target.scp) {
+        if (target.scp || target.serviceKey) {
             provider = await createAbapCloudServiceProvider(options, target, prompt, logger);
         } else if (target.authenticationType === AuthenticationType.ReentranceTicket) {
             provider = createForAbapOnCloud({

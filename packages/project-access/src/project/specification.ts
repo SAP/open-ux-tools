@@ -1,6 +1,6 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { readdir } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
 import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';

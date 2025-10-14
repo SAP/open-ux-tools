@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';

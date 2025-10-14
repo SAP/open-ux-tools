@@ -1,4 +1,4 @@
-import path, { isAbsolute } from 'path';
+import path, { isAbsolute } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';

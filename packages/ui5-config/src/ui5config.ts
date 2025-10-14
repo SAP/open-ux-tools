@@ -27,7 +27,7 @@ import {
 import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
-import { join, posix, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'node:path';
 import { readFile } from 'fs/promises';
 import yaml from 'js-yaml';
 

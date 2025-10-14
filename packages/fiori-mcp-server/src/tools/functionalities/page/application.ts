@@ -7,7 +7,7 @@ import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
 import { MissingNavigationReason } from './types';
 import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
 import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification/dist/types/src';
 import { getDefaultExtensionFolder } from '../../utils';
