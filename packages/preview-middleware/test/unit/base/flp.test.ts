@@ -965,7 +965,7 @@ describe('FlpSandbox', () => {
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             manifest['sap.app'].i18n = {
                 bundleUrl: 'i18n/i18n.properties',
-                supportedLocales: ['de', 'es'],
+                supportedLocales: ['de', 'es']
             };
             await flp.init(manifest);
 
