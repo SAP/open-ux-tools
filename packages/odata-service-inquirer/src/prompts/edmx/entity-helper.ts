@@ -8,10 +8,10 @@ import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
-    hasAggregateTransformationsForEntity,
+    hasAggregateTransformationsForEntitySet,
     transformationsRequiredForAnalyticalTable,
-    hasRecursiveHierarchyForEntity,
-    hasAggregationApplySupportedForEntity
+    hasRecursiveHierarchyForEntitySet,
+    findEntitySetByName
 } from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
@@ -94,7 +94,7 @@ function getNavigationPropertyForParameterisedEntity(
  * Returns the entity choice options for use in a list inquirer prompt.
  *
  * @param edmx metadata string
- * @param options
+ * @param options Configuration options for entity filtering and selection
  * @param options.entitySetFilter
  *     `filterDraftEnabled` : Only draft enabled entities wil be returned when true, useful for Form Object Page app generation.
  *     `filterAggregateTransformationsOnly` : Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set,
@@ -202,7 +202,7 @@ export function getNavigationEntityChoices(
     mainEntityName: string
 ): ListChoiceOptions<NavigationEntityAnswer>[] {
     const choices: ListChoiceOptions[] = [];
-    const mainEntitySet = metadata.entitySets.find((entitySet) => entitySet.name === mainEntityName);
+    const mainEntitySet = findEntitySetByName(metadata, mainEntityName);
 
     let navProps: NavigationProperty[] = [];
     if (odataVersion === OdataVersion.v4) {
@@ -246,49 +246,63 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
  * @param templateType the template type of the application to be generated from the prompt answers
  * @param metadata the metadata (edmx) string of the service
  * @param odataVersion the OData version of the service
+ * @param isCapService whether the service is a CAP service or not
  * @param mainEntitySetName the name of the main entity set
  * @param currentTableType the current table type selected by the user
- * @param isCapService whether the service is a CAP service or not
  * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
  */
 export function getDefaultTableType(
     templateType: TemplateType,
     metadata: ConvertedMetadata,
     odataVersion: OdataVersion,
+    isCapService: boolean,
     mainEntitySetName?: string,
-    currentTableType?: TableType,
-    isCapService?: boolean
+    currentTableType?: TableType
 ): { tableType: TableType; setAnalyticalTableDefault: boolean } {
     let tableType: TableType;
     let setAnalyticalTableDefault = false;
 
-    if (
-        (templateType === 'lrop' || templateType === 'worklist') &&
-        odataVersion === OdataVersion.v4 &&
-        isCapService &&
-        hasAggregationApplySupportedForEntity(metadata, mainEntitySetName)
-    ) {
-        // For CAP services, if the main entity type is annotated with Aggregation.ApplySupported, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-        setAnalyticalTableDefault = true;
-    } else if (
-        (templateType === 'lrop' || templateType === 'worklist') &&
-        odataVersion === OdataVersion.v4 &&
-        !isCapService &&
-        hasAggregateTransformationsForEntity(metadata, mainEntitySetName, transformationsRequiredForAnalyticalTable)
-    ) {
-        // For non-CAP services, if the main entity type is annotated with Aggregation.ApplySupported containing all specified transformations, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-        setAnalyticalTableDefault = true;
-    } else if (
-        (templateType === 'lrop' || templateType === 'worklist') &&
-        odataVersion === OdataVersion.v4 &&
-        hasRecursiveHierarchyForEntity(metadata, mainEntitySetName)
-    ) {
-        // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
-        tableType = 'TreeTable';
+    // Find the entity set once for all annotation checks
+    const entitySet = findEntitySetByName(metadata, mainEntitySetName);
+
+    if (entitySet) {
+        if (
+            (templateType === 'lrop' || templateType === 'worklist') &&
+            odataVersion === OdataVersion.v4 &&
+            isCapService &&
+            hasAggregateTransformationsForEntitySet(entitySet)
+        ) {
+            // For CAP services, if the main entity type is annotated with Aggregation.ApplySupported, use AnalyticalTable as default
+            tableType = 'AnalyticalTable';
+            setAnalyticalTableDefault = true;
+        } else if (
+            (templateType === 'lrop' || templateType === 'worklist') &&
+            odataVersion === OdataVersion.v4 &&
+            !isCapService &&
+            hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable)
+        ) {
+            // For non-CAP services, if the main entity type is annotated with Aggregation.ApplySupported containing all specified transformations, use AnalyticalTable as default
+            tableType = 'AnalyticalTable';
+            setAnalyticalTableDefault = true;
+        } else if (
+            (templateType === 'lrop' || templateType === 'worklist') &&
+            odataVersion === OdataVersion.v4 &&
+            hasRecursiveHierarchyForEntitySet(entitySet)
+        ) {
+            // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
+            tableType = 'TreeTable';
+        } else if (templateType === 'alp') {
+            // For ALP, use AnalyticalTable as default
+            tableType = 'AnalyticalTable';
+        } else if (currentTableType) {
+            // If the user has already selected a table type use it
+            tableType = currentTableType;
+        } else {
+            // Default to ResponsiveTable for other cases
+            tableType = 'ResponsiveTable';
+        }
     } else if (templateType === 'alp') {
-        // For ALP, use AnalyticalTable as default
+        // For ALP, use AnalyticalTable as default even if entity set is not found
         tableType = 'AnalyticalTable';
     } else if (currentTableType) {
         // If the user has already selected a table type use it

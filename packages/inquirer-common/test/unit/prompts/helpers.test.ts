@@ -15,8 +15,8 @@ import {
     hasRecursiveHierarchyForEntity,
     getRecursiveHierarchyQualifier,
     hasAggregateTransformationsForEntity,
-    hasAggregationApplySupportedForEntity,
-    transformationsRequiredForAnalyticalTable
+    transformationsRequiredForAnalyticalTable,
+    findEntitySetByName
 } from '../../../src/prompts/helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -1198,7 +1198,7 @@ describe('helpers', () => {
         });
     });
 
-    describe('hasAggregationApplySupportedForEntity', () => {
+    describe('hasAggregateTransformationsForEntity', () => {
         it('should return true when entity set has ApplySupported annotation', () => {
             const mockMetadata: any = {
                 version: '4.0',
@@ -1227,7 +1227,7 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(true);
+            expect(hasAggregateTransformationsForEntity(mockMetadata, 'TestEntity')).toBe(true);
         });
 
         it('should return true when entity type has ApplySupported annotation', () => {
@@ -1258,10 +1258,10 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(true);
+            expect(hasAggregateTransformationsForEntity(mockMetadata, 'TestEntity')).toBe(true);
         });
 
-        it('should return true when ApplySupported annotation exists without Transformations', () => {
+        it('should return false when ApplySupported annotation exists without Transformations', () => {
             const mockMetadata: any = {
                 version: '4.0',
                 namespace: 'Test.Service',
@@ -1287,7 +1287,7 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(true);
+            expect(hasAggregateTransformationsForEntity(mockMetadata, 'TestEntity')).toBe(false);
         });
 
         it('should return false when entity has no ApplySupported annotation', () => {
@@ -1312,7 +1312,7 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(false);
+            expect(hasAggregateTransformationsForEntity(mockMetadata, 'TestEntity')).toBe(false);
         });
 
         it('should return false for non-existent entity set', () => {
@@ -1324,7 +1324,7 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'NonExistentEntity')).toBe(false);
+            expect(hasAggregateTransformationsForEntity(mockMetadata, 'NonExistentEntity')).toBe(false);
         });
 
         it('should return false when entitySetName is not provided', () => {
@@ -1336,8 +1336,87 @@ describe('helpers', () => {
                 entityContainer: {}
             };
 
-            expect(hasAggregationApplySupportedForEntity(mockMetadata)).toBe(false);
-            expect(hasAggregationApplySupportedForEntity(mockMetadata, undefined)).toBe(false);
+            expect(hasAggregateTransformationsForEntity(mockMetadata)).toBe(false);
+            expect(hasAggregateTransformationsForEntity(mockMetadata, undefined)).toBe(false);
+        });
+    });
+
+    describe('findEntitySetByName', () => {
+        it('should return the correct entity set when found', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {}
+                    },
+                    {
+                        name: 'AnotherEntity',
+                        entityTypeName: 'AnotherType',
+                        annotations: {}
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = findEntitySetByName(mockMetadata, 'TestEntity');
+            expect(result).toBeDefined();
+            expect(result?.name).toBe('TestEntity');
+            expect(result?.entityTypeName).toBe('TestType');
+        });
+
+        it('should return undefined when entity set is not found', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {}
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = findEntitySetByName(mockMetadata, 'NonExistentEntity');
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when entitySetName is not provided', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {}
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(findEntitySetByName(mockMetadata)).toBeUndefined();
+            expect(findEntitySetByName(mockMetadata, undefined)).toBeUndefined();
+        });
+
+        it('should handle empty entitySets array', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            const result = findEntitySetByName(mockMetadata, 'TestEntity');
+            expect(result).toBeUndefined();
         });
     });
 });

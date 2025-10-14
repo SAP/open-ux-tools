@@ -199,11 +199,7 @@ export function hasAggregateTransformationsForEntity(
     entitySetName?: string,
     requiredTransformations?: readonly string[]
 ): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-
-    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return false;
     }
@@ -234,11 +230,7 @@ export function hasAggregateTransformationsForEntity(
  * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
  */
 export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-
-    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    const entitySet = findEntitySetByName(metadata, entitySetName);
     const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
 
     if (!hierarchyAnnotations) {
@@ -260,11 +252,7 @@ export function getRecursiveHierarchyQualifier(
     metadata: ConvertedMetadata,
     entitySetName?: string
 ): string | undefined {
-    if (!entitySetName) {
-        return undefined;
-    }
-
-    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    const entitySet = findEntitySetByName(metadata, entitySetName);
     const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
 
     if (!hierarchyAnnotations) {
@@ -283,28 +271,89 @@ export function getRecursiveHierarchyQualifier(
 }
 
 /**
- * Checks if the given entity set name has Aggregation.ApplySupported annotation in the metadata.
- * This function only checks for the presence of the ApplySupported annotation, not for specific transformations.
+ * Checks if the given entity set has aggregate transformations.
+ * If specific transformations are provided, checks if ALL of those transformations are present.
+ * If no transformations are specified, returns true if ANY transformations are present.
+ *
+ * @param entitySet The entity set to check for aggregate transformations.
+ * @param requiredTransformations Optional array of specific transformations to check for. If not provided, checks for any transformations.
+ * @returns true if the entity set has the required transformations, false otherwise.
+ */
+export function hasAggregateTransformationsForEntitySet(
+    entitySet: EntitySet,
+    requiredTransformations?: readonly string[]
+): boolean {
+    // Get transformations from entity set or entity type annotations
+    const transformations =
+        entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
+
+    if (!transformations || !Array.isArray(transformations)) {
+        return false;
+    }
+
+    // If no specific transformations required, return true if any transformations exist
+    if (!requiredTransformations || requiredTransformations.length === 0) {
+        return transformations.length > 0;
+    }
+
+    // Check if all required transformations are present
+    return requiredTransformations.every((transformation) => transformations.includes(transformation));
+}
+
+/**
+ * Checks if the given entity set has a Hierarchy.RecursiveHierarchy annotation.
+ *
+ * @param entitySet The entity set to check for recursive hierarchy annotation.
+ * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
+ */
+export function hasRecursiveHierarchyForEntitySet(entitySet: EntitySet): boolean {
+    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
+
+    if (!hierarchyAnnotations) {
+        return false;
+    }
+
+    // Check for RecursiveHierarchy annotation (with or without qualifier)
+    return Object.keys(hierarchyAnnotations).some((key) => key.startsWith('RecursiveHierarchy'));
+}
+
+/**
+ * Gets the qualifier from a Hierarchy.RecursiveHierarchy annotation for the given entity set.
+ *
+ * @param entitySet The entity set to check for recursive hierarchy annotation.
+ * @returns The qualifier string if found, undefined otherwise.
+ */
+export function getRecursiveHierarchyQualifierForEntitySet(entitySet: EntitySet): string | undefined {
+    const hierarchyAnnotations = entitySet?.entityType?.annotations?.Hierarchy;
+
+    if (!hierarchyAnnotations) {
+        return undefined;
+    }
+
+    // Check for RecursiveHierarchy annotation (with or without qualifier)
+    const recursiveHierarchyKey = Object.keys(hierarchyAnnotations).find((key) => key.startsWith('RecursiveHierarchy'));
+
+    if (!recursiveHierarchyKey) {
+        return undefined;
+    }
+
+    // Extract qualifier if present (format: "RecursiveHierarchy#qualifier" or just "RecursiveHierarchy")
+    return recursiveHierarchyKey.includes('#') ? recursiveHierarchyKey.split('#')[1] : undefined;
+}
+
+/**
+ * Finds an entity set by name in the metadata.
  *
  * @param metadata The metadata (edmx) of the service.
- * @param entitySetName The entity set name to check for aggregation support.
- * @returns true if the entity set has Aggregation.ApplySupported annotation, false otherwise.
+ * @param entitySetName The name of the entity set to find.
+ * @returns The entity set if found, undefined otherwise.
  */
-export function hasAggregationApplySupportedForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+export function findEntitySetByName(metadata: ConvertedMetadata, entitySetName?: string): EntitySet | undefined {
     if (!entitySetName) {
-        return false;
+        return undefined;
     }
-
-    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
-    if (!entitySet) {
-        return false;
-    }
-
-    // Check for ApplySupported annotation in entity set or entity type annotations
-    return (
-        !!entitySet.annotations?.Aggregation?.ApplySupported ||
-        !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported
-    );
+    return metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
 }
 
 /**
