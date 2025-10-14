@@ -103,9 +103,7 @@ Executes a specific functionality to create a new or modify an existing SAP Fior
 
 ## [Telemetry](#telemetry)
 
-You can enable and disable the collection of analytics. If enabled, non-personally identifiable information is used to help understand how you use the product to improve the Fiori MCP Server.
-
-There are two ways to enable or disable telemetry:
+You can enable and disable the collection of analytics. By default, non-personally identifiable information is used to help understand how you use the product to improve the Fiori MCP Server. In case you want to opt-out there exist two ways to disable the telemetry.
 
 ### Method 1: Configuration File
 
