@@ -1,6 +1,6 @@
 import yeomanTest from 'yeoman-test';
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import * as memfs from 'memfs';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import * as abapWriter from '@sap-ux/abap-deploy-config-writer';

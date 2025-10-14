@@ -1,8 +1,8 @@
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { copyFileSync, promises as fsPromise, mkdirSync } from 'fs';
-import { join } from 'path';
+import { copyFileSync, promises as fsPromise, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import { FloorplanFF, type State } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';

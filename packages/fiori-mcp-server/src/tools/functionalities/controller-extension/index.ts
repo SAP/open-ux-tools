@@ -9,7 +9,7 @@ import type {
     GetFunctionalityDetailsOutput
 } from '../../../types';
 import { convertToSchema, getDefaultExtensionFolder, resolveApplication, validateWithSchema } from '../../utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant';
 import { buildControllerExtensionSchema, ControllerExtensionCreationSchema } from './schema';
 

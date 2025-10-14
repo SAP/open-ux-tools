@@ -1,5 +1,5 @@
-import path, { join } from 'path';
-import { readFileSync } from 'fs';
+import path, { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
 import { getTypesPackage, getTypesVersion, getEsmTypesVersion, UI5_DEFAULT } from '@sap-ux/ui5-config';

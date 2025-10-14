@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { exec } from 'child_process';
 
 import { getPackageInfo, installDependencies } from '../../../src/utils/deps';

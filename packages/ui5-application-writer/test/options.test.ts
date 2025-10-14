@@ -1,5 +1,5 @@
 import { generate } from '../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { removeSync } from 'fs-extra';
 import type { Ui5App } from '../src';
 

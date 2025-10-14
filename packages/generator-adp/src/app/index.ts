@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
@@ -538,7 +538,7 @@ export default class extends Generator {
         }
 
         const html5RepoRuntimeGuid = this.cfPrompter.serviceInstanceGuid;
-        const cfConfig = getCfConfig({
+        const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
             cfConfig: this.cfConfig,
@@ -549,7 +549,11 @@ export default class extends Generator {
             publicVersions
         });
 
-        await generateCf(projectPath, cfConfig, this.logger, this.fs);
+        if (config.options) {
+            config.options.templatePathOverwrite = getTemplatesOverwritePath();
+        }
+
+        await generateCf(projectPath, config, this.logger, this.fs);
     }
 
     /**

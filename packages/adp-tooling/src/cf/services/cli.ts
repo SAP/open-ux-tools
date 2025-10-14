@@ -10,19 +10,6 @@ import type { CfCredentials } from '../../types';
 const ENV = { env: { 'CF_COLOR': 'false' } };
 
 /**
- * Gets the authentication token.
- *
- * @returns {Promise<string>} The authentication token.
- */
-export async function getAuthToken(): Promise<string> {
-    const response = await CFToolsCli.Cli.execute(['oauth-token'], ENV);
-    if (response.exitCode === 0) {
-        return response.stdout;
-    }
-    return response.stderr;
-}
-
-/**
  * Checks if Cloud Foundry is installed.
  *
  * @param {ToolsLogger} logger - The logger.
@@ -39,13 +26,6 @@ export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
         logger.error(t('error.cfNotInstalled', { error: e.message }));
         return false;
     }
-}
-
-/**
- * Logs out from Cloud Foundry.
- */
-export async function cFLogout(): Promise<void> {
-    await CFToolsCli.Cli.execute(['logout']);
 }
 
 /**
@@ -98,7 +78,7 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
  */
 export async function requestCfApi<T = unknown>(url: string): Promise<T> {
     try {
-        const response = await CFToolsCli.Cli.execute(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        const response = await CFToolsCli.Cli.execute(['curl', url], ENV);
         if (response.exitCode === 0) {
             try {
                 return JSON.parse(response.stdout);

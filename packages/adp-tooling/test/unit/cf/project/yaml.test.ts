@@ -1,4 +1,5 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -14,7 +15,6 @@ import { AppRouterType } from '../../../../src/types';
 import type { MtaYaml, CfUI5Yaml } from '../../../../src/types';
 import { createServices } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
-import { join } from 'path';
 
 jest.mock('fs', () => ({
     existsSync: jest.fn()

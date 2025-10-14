@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
 import {
@@ -254,34 +254,35 @@ export async function writeCfTemplates(
     fs: Editor
 ): Promise<void> {
     const baseTmplPath = join(__dirname, '../../templates');
+    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
     const { app, project, options } = config;
 
     fs.copyTpl(
-        join(baseTmplPath, 'project/webapp/manifest.appdescr_variant'),
+        join(templatePath, 'project/webapp/manifest.appdescr_variant'),
         join(project.folder, 'webapp', 'manifest.appdescr_variant'),
         { app: variant }
     );
 
-    fs.copyTpl(join(baseTmplPath, 'cf/package.json'), join(project.folder, 'package.json'), {
+    fs.copyTpl(join(templatePath, 'cf/package.json'), join(project.folder, 'package.json'), {
         module: project.name
     });
 
-    fs.copyTpl(join(baseTmplPath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
+    fs.copyTpl(join(templatePath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
         module: project.name
     });
 
-    fs.copyTpl(join(baseTmplPath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
+    fs.copyTpl(join(templatePath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
         module: project.name,
         moduleTitle: app.title,
         appVariantId: app.namespace,
         i18nGuid: config.app.i18nDescription
     });
 
-    fs.copy(join(baseTmplPath, 'cf/_gitignore'), join(project.folder, '.gitignore'));
+    fs.copy(join(templatePath, 'cf/_gitignore'), join(project.folder, '.gitignore'));
 
     if (options?.addStandaloneApprouter) {
         fs.copyTpl(
-            join(baseTmplPath, 'cf/approuter/package.json'),
+            join(templatePath, 'cf/approuter/package.json'),
             join(basePath, `${project.name}-approuter/package.json`),
             {
                 projectName: project.name
@@ -289,14 +290,14 @@ export async function writeCfTemplates(
         );
 
         fs.copyTpl(
-            join(baseTmplPath, 'cf/approuter/xs-app.json'),
+            join(templatePath, 'cf/approuter/xs-app.json'),
             join(basePath, `${project.name}-approuter/xs-app.json`),
             {}
         );
     }
 
     if (!fs.exists(join(basePath, 'xs-security.json'))) {
-        fs.copyTpl(join(baseTmplPath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
+        fs.copyTpl(join(templatePath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
             projectName: project.name
         });
     }

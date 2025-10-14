@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -28,18 +28,6 @@ export function getApprouterType(mtaProjectPath: string): AppRouterType {
 export function getModuleNames(mtaProjectPath: string): string[] {
     const yamlContent = getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
     return yamlContent?.modules?.map((module: { name: string }) => module.name) ?? [];
-}
-
-/**
- * Get the mta project name.
- *
- * @param {string} mtaProjectPath - The path to the mta project.
- * @returns {string} The mta project name.
- */
-export function getMtaProjectName(mtaProjectPath: string): string {
-    const mtaProjectName =
-        (mtaProjectPath.indexOf('/') > -1 ? mtaProjectPath.split('/').pop() : mtaProjectPath.split('\\').pop()) ?? '';
-    return mtaProjectName;
 }
 
 /**

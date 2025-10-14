@@ -3,9 +3,9 @@ import { reportRuntimeError, reportEnableTelemetryOnOff } from '../base/utils/re
 import type { Service } from '@sap-ux/store';
 import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor } from '@sap-ux/store';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import os from 'os';
-import path from 'path';
-import fs from 'fs';
+import os from 'node:os';
+import path from 'node:path';
+import fs from 'node:fs';
 import { getCommonProperties } from './data-processor';
 import { TelemetrySettings } from '../base/config-state';
 import { ToolingTelemetrySettings } from './config-state';

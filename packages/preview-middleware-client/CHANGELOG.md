@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.17.3
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+
+## 0.17.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.17.1
 
 ### Patch Changes

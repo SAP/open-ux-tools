@@ -1,5 +1,5 @@
-import fs from 'fs';
-import * as path from 'path';
+import fs from 'node:fs';
+import * as path from 'node:path';
 import yaml from 'js-yaml';
 import type { Editor } from 'mem-fs-editor';
 

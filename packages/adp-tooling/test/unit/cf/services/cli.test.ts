@@ -4,14 +4,7 @@ import { eFilters } from '@sap/cf-tools/out/src/types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
-    getAuthToken,
-    isCfInstalled,
-    cFLogout,
-    getServiceKeys,
-    createServiceKey,
-    requestCfApi
-} from '../../../../src/cf/services/cli';
+import { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
 import { initI18n, t } from '../../../../src/i18n';
 import type { CfCredentials } from '../../../../src/types';
 
@@ -36,36 +29,6 @@ describe('CF Services CLI', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    describe('getAuthToken', () => {
-        test('should return stdout when oauth-token command succeeds', async () => {
-            const mockResponse = {
-                exitCode: 0,
-                stdout: 'test-token',
-                stderr: ''
-            };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
-
-            const result = await getAuthToken();
-
-            expect(result).toBe('test-token');
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['oauth-token'], { env: { 'CF_COLOR': 'false' } });
-        });
-
-        test('should return stderr when oauth-token command fails', async () => {
-            const mockResponse = {
-                exitCode: 1,
-                stdout: '',
-                stderr: 'Authentication failed'
-            };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
-
-            const result = await getAuthToken();
-
-            expect(result).toBe('Authentication failed');
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['oauth-token'], { env: { 'CF_COLOR': 'false' } });
-        });
     });
 
     describe('isCfInstalled', () => {
@@ -112,21 +75,6 @@ describe('CF Services CLI', () => {
             expect(result).toBe(false);
             expect(mockLogger.error).toHaveBeenCalledWith(t('error.cfNotInstalled', { error: error.message }));
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['version'], { env: { 'CF_COLOR': 'false' } });
-        });
-    });
-
-    describe('cFLogout', () => {
-        test('should execute logout command', async () => {
-            const mockResponse = {
-                exitCode: 0,
-                stdout: 'Successfully logged out',
-                stderr: ''
-            };
-            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
-
-            await cFLogout();
-
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['logout']);
         });
     });
 

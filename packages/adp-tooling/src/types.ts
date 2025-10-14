@@ -1048,6 +1048,10 @@ export interface CfAdpWriterConfig {
     };
     options?: {
         addStandaloneApprouter?: boolean;
+        /**
+         * Optional: path to the template files to be used for generation
+         */
+        templatePathOverwrite?: string;
         addSecurity?: boolean;
     };
 }

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { type Editor, create } from 'mem-fs-editor';
 

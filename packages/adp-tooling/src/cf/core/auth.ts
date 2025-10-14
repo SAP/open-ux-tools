@@ -2,7 +2,6 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getAuthToken } from '../services/cli';
 import type { CfConfig, Organization } from '../../types';
 
 /**
@@ -24,23 +23,18 @@ export async function isExternalLoginEnabled(vscode: any): Promise<boolean> {
  * @returns {Promise<boolean>} Whether the user is logged in.
  */
 export async function isLoggedInCf(cfConfig: CfConfig, logger: ToolsLogger): Promise<boolean> {
-    let isLogged = false;
-    let orgs: Organization[] = [];
-
-    await getAuthToken();
-
-    if (cfConfig) {
-        try {
-            orgs = (await CFLocal.cfGetAvailableOrgs()) as Organization[];
-            logger?.log(`Available organizations: ${JSON.stringify(orgs)}`);
-            if (orgs.length > 0) {
-                isLogged = true;
-            }
-        } catch (e) {
-            logger?.error(`Error occurred while trying to check if it is logged in: ${e?.message}`);
-            isLogged = false;
-        }
+    if (!cfConfig) {
+        logger?.error('CF config is not provided');
+        return false;
     }
 
-    return isLogged;
+    try {
+        const orgs = (await CFLocal.cfGetAvailableOrgs()) as Organization[];
+        logger?.log(`Available organizations: ${JSON.stringify(orgs)}`);
+        return true;
+    } catch (e) {
+        logger?.error(`Error occurred while trying to check if it is logged in: ${e?.message}`);
+    }
+
+    return false;
 }

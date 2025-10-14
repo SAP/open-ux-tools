@@ -3,7 +3,6 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import {
     getApprouterType,
     getModuleNames,
-    getMtaProjectName,
     getServicesForFile,
     hasApprouter,
     getMtaServices,
@@ -83,40 +82,6 @@ describe('MTA Project Functions', () => {
             const result = getModuleNames(mtaProjectPath);
 
             expect(result).toEqual([]);
-        });
-    });
-
-    describe('getMtaProjectName', () => {
-        test('should extract project name from path with forward slashes', () => {
-            const mtaProjectPath = '/path/to/my-project';
-
-            const result = getMtaProjectName(mtaProjectPath);
-
-            expect(result).toBe('my-project');
-        });
-
-        test('should extract project name from path with backslashes', () => {
-            const mtaProjectPath = 'C:\\path\\to\\my-project';
-
-            const result = getMtaProjectName(mtaProjectPath);
-
-            expect(result).toBe('my-project');
-        });
-
-        test('should return empty string when path has no separators', () => {
-            const mtaProjectPath = 'my-project';
-
-            const result = getMtaProjectName(mtaProjectPath);
-
-            expect(result).toBe('my-project');
-        });
-
-        test('should handle empty path', () => {
-            const mtaProjectPath = '';
-
-            const result = getMtaProjectName(mtaProjectPath);
-
-            expect(result).toBe('');
         });
     });
 

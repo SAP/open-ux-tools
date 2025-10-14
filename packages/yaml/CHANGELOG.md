@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.17.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.17.0
 
 ### Minor Changes

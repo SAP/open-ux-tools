@@ -75,14 +75,9 @@ export function getApplicationType(manifest?: Manifest): ApplicationType {
  * @returns {boolean} True if the application type is supported for ADAPTATION PROJECT, false otherwise.
  */
 export function isSupportedAppTypeForAdp(appType: ApplicationType): boolean {
-    if (
-        appType === ApplicationType.FIORI_ELEMENTS ||
-        appType === ApplicationType.FIORI_ELEMENTS_OVP ||
-        appType === ApplicationType.FREE_STYLE
-    ) {
-        return true;
-    }
-    return false;
+    return [ApplicationType.FIORI_ELEMENTS, ApplicationType.FIORI_ELEMENTS_OVP, ApplicationType.FREE_STYLE].includes(
+        appType
+    );
 }
 
 /**

@@ -1,4 +1,4 @@
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import { exec as execCP } from 'child_process';
 import { promisify } from 'util';
 import type { UI5LibConfig } from '../src/types';

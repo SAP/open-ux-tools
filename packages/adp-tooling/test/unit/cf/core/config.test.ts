@@ -1,5 +1,5 @@
-import { homedir } from 'os';
-import { readFileSync } from 'fs';
+import { homedir } from 'node:os';
+import { readFileSync } from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 

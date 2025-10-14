@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import * as CFLocal from '@sap/cf-tools/out/src/cf-local';
 import * as CFToolsCli from '@sap/cf-tools/out/src/cli';
 
