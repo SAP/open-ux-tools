@@ -743,7 +743,7 @@ describe('helpers', () => {
             });
         });
 
-        it('hasAggregateTransformationsForEntity should return true for entities with all 9 required transformations (legacy test)', () => {
+        it('hasAggregateTransformationsForEntity should return true when all required transformations are present', () => {
             // Create mock metadata with complete transformations
             const completeMetadata: any = {
                 version: '4.0',
@@ -790,7 +790,7 @@ describe('helpers', () => {
             ).toBe(true);
         });
 
-        it('hasAggregateTransformationsForEntity should return false for entities with partial transformations (legacy test)', () => {
+        it('hasAggregateTransformationsForEntity should return false when not all required transformations are present', () => {
             // Create mock metadata with only some transformations (missing identity, skip, top, groupby, aggregate, concat)
             const partialMetadata: any = {
                 version: '4.0',
@@ -827,7 +827,7 @@ describe('helpers', () => {
             ).toBe(false);
         });
 
-        it('hasAggregateTransformationsForEntity should return false for entities without any transformations (legacy test)', () => {
+        it('hasAggregateTransformationsForEntity should return false for entities without any transformations', () => {
             const noTransformMetadata: any = {
                 version: '4.0',
                 namespace: 'Test.Service',
@@ -857,7 +857,7 @@ describe('helpers', () => {
             ).toBe(false);
         });
 
-        it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided (legacy test)', () => {
+        it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
             expect(
                 hasAggregateTransformationsForEntity(metadata, undefined, transformationsRequiredForAnalyticalTable)
             ).toBe(false);
@@ -866,7 +866,7 @@ describe('helpers', () => {
             ).toBe(false);
         });
 
-        it('hasAggregateTransformationsForEntity should return false for non-existent entity sets (legacy test)', () => {
+        it('hasAggregateTransformationsForEntity should return false for non-existent entity sets', () => {
             expect(
                 hasAggregateTransformationsForEntity(
                     metadata,
@@ -876,7 +876,7 @@ describe('helpers', () => {
             ).toBe(false);
         });
 
-        it('hasAggregateTransformationsForEntity should handle transformations in entity set annotations (legacy test)', () => {
+        it('hasAggregateTransformationsForEntity should return true if all transformations are present in entity set annotations', () => {
             // Test with transformations directly on entity set (not just entity type)
             const entitySetMetadata: any = {
                 version: '4.0',
