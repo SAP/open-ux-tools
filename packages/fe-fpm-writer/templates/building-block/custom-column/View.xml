@@ -1,5 +1,5 @@
-<% if (!config?.hasTableColumns) { %><<%- macrosNamespace %>:columns>
-    <% } %><<%- config?.macrosTableNamespace %>:Column header="<%- data.title %>" importance="High" <% if (data.width) { %>width="<%- data.width %>"<% } %>  <% if (data.position.anchor) { %>anchor="<%- data.position.anchor %>"<% } %>  <% if (data.position.placement) { %>placement="<%- data.position.placement %>"<% } %>  key="<%- data.columnKey || 'myColumnKey' %>">
+<% if (!config?.hasAggregation) { %><<%- macrosNamespace %>:columns>
+    <% } %><<%- config?.aggregationNamespace %>:Column header="<%- data.title %>" importance="High" <% if (data.width) { %>width="<%- data.width %>"<% } %>  <% if (data.position.anchor) { %>anchor="<%- data.position.anchor %>"<% } %>  <% if (data.position.placement) { %>placement="<%- data.position.placement %>"<% } %>  key="<%- data.columnKey || 'myColumnKey' %>">
         <core:Fragment fragmentName="<%- data.embededFragment.ns %>.<%- data.embededFragment.name %>" type="XML" />
-    </<%- config?.macrosTableNamespace %>:Column>
-<% if (!config?.hasTableColumns) { %></<%- macrosNamespace %>:columns><% } %>
+    </<%- config?.aggregationNamespace %>:Column>
+<% if (!config?.hasAggregation) { %></<%- macrosNamespace %>:columns><% } %>

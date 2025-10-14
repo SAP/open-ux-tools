@@ -24,7 +24,7 @@ import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
-import { getDefaultFragmentContent } from '../common/defaults';
+import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
@@ -65,13 +65,14 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
+
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    const { updatedAggregationPath, processedBuildingBlockData, hasTableColumns, macrosTableNamespace } =
-        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, aggregationPath, fs);
+    const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
+        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
     const templateConfig: TemplateConfig = {
-        hasTableColumns: hasTableColumns,
-        macrosTableNamespace: macrosTableNamespace
+        hasAggregation,
+        aggregationNamespace
     };
     const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
 
@@ -150,6 +151,7 @@ function updateAggregationPathForTableColumns(
  * @param {BuildingBlock} buildingBlockData - The building block data
  * @param {Document} xmlDocument - The XML document
  * @param {string} manifestPath - The manifest file path
+ * @param {Manifest} manifest - The manifest object
  * @param {string} aggregationPath - The aggregation path
  * @param {Editor} fs - The memfs editor instance
  * @returns {object} Object containing updated aggregation path and processed building block data
@@ -158,27 +160,26 @@ function processBuildingBlock<T extends BuildingBlock>(
     buildingBlockData: T,
     xmlDocument: Document,
     manifestPath: string,
+    manifest: Manifest,
     aggregationPath: string,
     fs: Editor
 ): {
     updatedAggregationPath: string;
     processedBuildingBlockData: T;
-    hasTableColumns: boolean;
-    macrosTableNamespace: string;
+    hasAggregation: boolean;
+    aggregationNamespace: string;
 } {
     let updatedAggregationPath = aggregationPath;
-    let hasTableColumns = false;
-    let macrosTableNamespace = 'macrosTable';
+    let hasAggregation = false;
+    let aggregationNamespace = 'macrosTable';
 
     if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
         const viewPath = join(
             join(dirname(manifestPath), buildingBlockData.embededFragment.folder ?? ''),
             `${buildingBlockData.embededFragment.name}.fragment.xml`
         );
-        buildingBlockData.embededFragment.path = join(
-            dirname(manifestPath),
-            buildingBlockData.embededFragment.folder ?? ''
-        );
+        setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
+
         // Apply event handler
         if (buildingBlockData.embededFragment.eventHandler) {
             buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
@@ -205,17 +206,17 @@ function processBuildingBlock<T extends BuildingBlock>(
             buildingBlockData
         );
         updatedAggregationPath = tableColumnsResult.updatedAggregationPath;
-        hasTableColumns = tableColumnsResult.hasTableColumns;
+        hasAggregation = tableColumnsResult.hasTableColumns;
 
-        macrosTableNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
+        aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
         buildingBlockData.embededFragment.folder = buildingBlockData.embededFragment.folder?.replaceAll('/', '.');
     }
 
     return {
         updatedAggregationPath,
         processedBuildingBlockData: buildingBlockData,
-        hasTableColumns,
-        macrosTableNamespace
+        hasAggregation,
+        aggregationNamespace
     };
 }
 

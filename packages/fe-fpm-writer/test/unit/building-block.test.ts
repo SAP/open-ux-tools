@@ -892,8 +892,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnTitle'
                 }
             };
@@ -927,8 +925,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnTitle2'
                 },
                 position: {
@@ -973,8 +969,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnTitle'
                 }
             };
@@ -1022,8 +1016,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnWithFolder'
                 }
             };
@@ -1066,8 +1058,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnNoFolder'
                 }
                 // Note: no folder property
@@ -1112,8 +1102,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnContent'
                 }
             };
@@ -1154,8 +1142,6 @@ describe('Building Blocks', () => {
                     typescript: false,
                     content:
                         '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
-                    ns: 'fpm1.ext.fragment',
-                    path: ['Page', 'items', 'Table', 'columns'].join('/'),
                     name: 'CustomColumnFragmentContent'
                 }
             };

@@ -1,11 +1,4 @@
-import type {
-    CustomFragment,
-    EventHandler,
-    FragmentContentData,
-    FragmentTableColumnsData,
-    InternalCustomElement,
-    Position
-} from '../common/types';
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
 
 /**
  * Building block type.
@@ -33,8 +26,8 @@ export const bindingContextAbsolute: BindingContextType = 'absolute';
 export const bindingContextRelative: BindingContextType = 'relative';
 
 export type TemplateConfig = {
-    hasTableColumns?: boolean;
-    macrosTableNamespace: string;
+    hasAggregation?: boolean;
+    aggregationNamespace: string;
 };
 
 /**
@@ -432,14 +425,8 @@ export interface CustomColumn extends BuildingBlock {
     embededFragment?: EmbededFragment;
 }
 
-export interface EmbededFragment
-    extends EventHandler,
-        CustomFragment,
-        InternalCustomElement,
-        FragmentContentData,
-        FragmentTableColumnsData {
+export interface EmbededFragment extends EventHandler, CustomFragment, CustomElement, FragmentContentData {
     customColumnFragmentPath: string;
-    folder?: string;
 }
 
 /**

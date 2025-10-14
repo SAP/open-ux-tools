@@ -16,7 +16,7 @@ Object {
             </macros:Table>
             <macros:columns>
                 <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
-                    <core:Fragment fragmentName=\\"fpm1.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                    <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
                 </macrosTable:Column>
             </macros:columns>
         </content>
