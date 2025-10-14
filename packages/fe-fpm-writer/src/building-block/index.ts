@@ -209,7 +209,6 @@ function processBuildingBlock<T extends BuildingBlock>(
         hasAggregation = tableColumnsResult.hasTableColumns;
 
         aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
-        buildingBlockData.embededFragment.folder = buildingBlockData.embededFragment.folder?.replaceAll('/', '.');
     }
 
     return {
