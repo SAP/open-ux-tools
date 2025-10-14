@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.16.2
+
+### Patch Changes
+
+-   3e4bf96: axios update 1.12.2
+
 ## 0.16.1
 
 ### Patch Changes
