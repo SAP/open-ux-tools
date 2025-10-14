@@ -1,6 +1,6 @@
 import * as projectAccess from '@sap-ux/project-access';
 import { listFioriApps } from '../../../src/tools';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,

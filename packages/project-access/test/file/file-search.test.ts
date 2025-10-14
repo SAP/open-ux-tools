@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { getFilePaths } from '../../src';
 import { findBy, findFiles, findFilesByExtension, findFileUp } from '../../src/file';
 import { create as createStorage } from 'mem-fs';

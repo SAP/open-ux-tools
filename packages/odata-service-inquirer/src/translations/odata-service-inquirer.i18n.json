@@ -58,7 +58,9 @@
             "metadataFilePathNotValid": "The metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not contain a valid CAP project. Please check and try again.",
             "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
-            "annotationsNotFound": "Annotations not found for the specified service."
+            "annotationsNotFound": "Annotations not found for the specified service.",
+            "backendSystemExistsWarning": "A saved system connection entry: \"{{- backendName}}\" already exists with the same URL and client. Please reuse the existing entry or remove it, using the systems panel, before adding a new connection.",
+            "reentranceTicketSystemHostOnly": "ABAP cloud system urls must only contain the hostname, for example, 'https://123.abc.com'"
         },
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Services of service type: {{serviceType}} or without a service type are not intended to be used for generating SAP Fiori UI applications.",
@@ -252,8 +254,6 @@
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "For more information, view the logs.",
         "forUserName": "(for user [{{username}}])",
-        "systemTypeBTP": "BTP",
-        "systemTypeS4HC": "S4HC",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None"

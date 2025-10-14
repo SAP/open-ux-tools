@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
 import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/schema';
 import packageJson from '../../../../../package.json';
@@ -23,7 +23,7 @@ import {
     GENERATE_FIORI_UI_APP,
     generateFioriUIAppHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
-import { existsSync, promises as fsPromises } from 'fs';
+import { existsSync, promises as fsPromises } from 'node:fs';
 
 // Mock child_process.exec
 const mockExec = jest.fn();

@@ -13,7 +13,7 @@ import {
     getPathRewrite
 } from '../../src/base/utils';
 import type { Response } from 'express';
-import fs from 'fs';
+import fs from 'node:fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
@@ -567,6 +567,17 @@ describe('utils', () => {
             const ui5Ver = '';
             const rewrite = getPathRewrite(config, ui5Ver);
             expect((rewrite as Function)('/mypath')).toEqual('this/path/should/rewrite/mypath');
+        });
+
+        test('custom pathRewrite (simulate missing path because of nested router instances)', () => {
+            const config = {
+                pathReplace: 'this/path/should/rewrite/mypath',
+                path: '/mypath',
+                url: 'https://example.example'
+            };
+            const ui5Ver = '';
+            const rewrite = getPathRewrite(config, ui5Ver);
+            expect((rewrite as Function)('/test.ts')).toEqual('this/path/should/rewrite/mypath/test.ts');
         });
 
         test('handle pathRewrite with trailing slash', () => {

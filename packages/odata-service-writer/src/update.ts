@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';

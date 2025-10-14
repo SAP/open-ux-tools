@@ -1,5 +1,5 @@
 import { FileName, getWebappPath } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { t } from './i18n';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';

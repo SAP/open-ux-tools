@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Manifest, Package } from '../../src';
 import {
     deleteDirectory,
@@ -13,7 +13,7 @@ import {
 } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { promises } from 'fs';
+import { promises } from 'node:fs';
 
 describe('fileAccess', () => {
     const memFs = create(createStorage());

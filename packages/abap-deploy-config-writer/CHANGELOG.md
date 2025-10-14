@@ -1,5 +1,41 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.22
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/ui5-config@0.29.8
+
+## 0.2.21
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/system-access@0.6.19
+
+## 0.2.20
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/ui5-config@0.29.7
+
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/project-access@1.32.2
+    -   @sap-ux/system-access@0.6.18
+
 ## 0.2.18
 
 ### Patch Changes

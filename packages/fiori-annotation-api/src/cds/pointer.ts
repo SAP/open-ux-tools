@@ -48,8 +48,8 @@ class Visitor {
      */
     public document(astNode: CDSDocument, node: AnnotationFile, pointer: string[]): ReturnValue {
         const [segment, indexSegment, ...segments] = pointer;
-        const index = parseInt(indexSegment, 10);
-        if (!isNaN(index)) {
+        const index = Number.parseInt(indexSegment, 10);
+        if (!Number.isNaN(index)) {
             if (segment === 'targets') {
                 if (segments.length === 0) {
                     return {
@@ -72,7 +72,7 @@ class Visitor {
     private target(astNode: Target, node: AnnotationFileTarget, pointer: string[]): ReturnValue | undefined {
         if (astNode.type === TARGET_TYPE) {
             const [segment, indexSegment, ...segments] = pointer;
-            const index = parseInt(indexSegment, 10);
+            const index = Number.parseInt(indexSegment, 10);
             const nextGenericNode = node.terms[index];
             if (segment === 'terms') {
                 if (nextGenericNode?.range) {
@@ -136,8 +136,8 @@ class Visitor {
             this.currentFlattenedSegmentIndexInPath = termSegmentLength - 1;
         }
         const [segment, indexSegment, ...segments] = pointer;
-        const index = parseInt(indexSegment, 10);
-        if (!isNaN(index) && segment === 'content' && astNode.value) {
+        const index = Number.parseInt(indexSegment, 10);
+        if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
             const annotationFileNode = node.content[index];
             if (annotationFileNode) {
                 if (this.flattenedSegments.length > 0) {
@@ -185,8 +185,8 @@ class Visitor {
     ): ReturnValue | undefined {
         if (astNode.type === COLLECTION_TYPE && node.type === ELEMENT_TYPE && node.name === Edm.Collection) {
             const [segment, indexSegment, ...segments] = pointer;
-            const index = parseInt(indexSegment, 10);
-            if (!isNaN(index)) {
+            const index = Number.parseInt(indexSegment, 10);
+            if (!Number.isNaN(index)) {
                 const nextAstNode = astNode.items[index];
                 if (segment === 'content' && nextAstNode) {
                     const result = this.value(nextAstNode, node.content[index], segments);
@@ -207,8 +207,8 @@ class Visitor {
         }
         if (astNode.type === RECORD_TYPE && node.type === ELEMENT_TYPE && node.name === Edm.Record) {
             const [segment, indexSegment, ...segments] = pointer;
-            const index = parseInt(indexSegment, 10);
-            if (!isNaN(index)) {
+            const index = Number.parseInt(indexSegment, 10);
+            if (!Number.isNaN(index)) {
                 const nextGenericNode = node.content[index];
 
                 if (segment === 'content' && nextGenericNode.type === ELEMENT_TYPE && nextGenericNode.range) {
@@ -318,8 +318,8 @@ class Visitor {
                 };
             }
         } else if (segment === 'content') {
-            const index = parseInt(indexSegment, 10);
-            if (!isNaN(index) && segment === 'content' && astNode.value) {
+            const index = Number.parseInt(indexSegment, 10);
+            if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
                 if (this.flattenedSegments.length > 1) {
                     const result = this.flattenedProperty(astNode, node.content[index], segments);
 
@@ -352,8 +352,8 @@ class Visitor {
         const [segment, indexSegment, ...segments] = pointer;
 
         if (segment === 'content') {
-            const index = parseInt(indexSegment, 10);
-            if (!isNaN(index) && segment === 'content' && astNode.value) {
+            const index = Number.parseInt(indexSegment, 10);
+            if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
                 this.flattenedSegments.shift();
                 this.currentFlattenedSegmentIndexInPath++;
                 const result =
@@ -384,8 +384,8 @@ class Visitor {
         }
         const [segment, indexSegment, ...segments] = pointer;
         if (segment === 'content') {
-            const index = parseInt(indexSegment, 10);
-            if (!isNaN(index) && segment === 'content') {
+            const index = Number.parseInt(indexSegment, 10);
+            if (!Number.isNaN(index) && segment === 'content') {
                 this.flattenedSegments.shift();
                 this.currentFlattenedSegmentIndexInPath++;
                 const propertyValue = node.content[index];
@@ -411,7 +411,7 @@ class Visitor {
             return undefined;
         }
         const [segment, indexSegment, ...segments] = pointer;
-        const index = parseInt(indexSegment, 10);
+        const index = Number.parseInt(indexSegment, 10);
         if (!Number.isNaN(index) && segment === 'content') {
             const next = node.content[index];
             if (next?.type !== ELEMENT_TYPE) {
@@ -448,7 +448,7 @@ class Visitor {
             };
         }
         const [segment, indexSegment] = pointer;
-        const index = parseInt(indexSegment, 10);
+        const index = Number.parseInt(indexSegment, 10);
         if (!Number.isNaN(index) && segment === 'content') {
             // value could also be a text node for primitive values
             const next = node.content[index];

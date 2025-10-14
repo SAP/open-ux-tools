@@ -1,11 +1,11 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Manifest, Package } from '../../src';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import * as specMock from '../../src/project/specification';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { promises } from 'fs';
+import { promises } from 'node:fs';
 
 describe('Test function createApplicationAccess()', () => {
     const memFs = create(createStorage());

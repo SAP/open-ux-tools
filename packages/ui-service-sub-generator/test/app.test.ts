@@ -2,7 +2,7 @@ import yeomanTest from 'yeoman-test';
 import '@sap-ux/jest-file-matchers';
 import 'jest-extended';
 import ServiceGenerator from '../src/app';
-import { join } from 'path';
+import { join } from 'node:path';
 
 //import * as validators from '../src/utils/validators';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';

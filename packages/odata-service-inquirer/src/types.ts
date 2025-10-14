@@ -195,7 +195,7 @@ export interface EntitySelectionAnswers {
  * Answers related to the Page Building Block prompt.
  */
 export interface PageBuildingBlockAnswers {
-    /** Indicates if the user wants to add a Page Building Block */
+    /** Indicates if a Page Building Block should be addedn*/
     [EntityPromptNames.addPageBuildingBlock]?: boolean;
     /** The title for the Page Building Block, required if addPageBuildingBlock is true */
     [EntityPromptNames.pageBuildingBlockTitle]?: string;

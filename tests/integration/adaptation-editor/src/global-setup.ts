@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
-import { join } from 'path';
-import path from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import path from 'node:path';
+import fs from 'node:fs';
 
 import express from 'express';
 import ZipFile from 'adm-zip';

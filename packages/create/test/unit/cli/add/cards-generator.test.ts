@@ -4,7 +4,7 @@ import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-gener
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('mem-fs-editor', () => {

@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { generatePreviewFiles } from '@sap-ux/preview-middleware';
-import { isAbsolute, join } from 'path';
+import { isAbsolute, join } from 'node:path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
