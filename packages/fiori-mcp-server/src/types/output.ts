@@ -2,6 +2,11 @@ import * as zod from 'zod';
 import { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic';
 
 /**
+ * Output interface for the 'search_docs' functionality
+ */
+export const SearchDocsOutputSchema = zod.string().describe('Search results as formatted text');
+
+/**
  * Output interface for the 'list_fiori_apps' functionality
  */
 export const ListFioriAppsOutputSchema = zod.object({
@@ -33,8 +38,8 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
     description: zod.string(),
     /** Technical description of the functionality */
     technicalDescription: zod.string().optional(),
-    /** Array of parameters for the functionality */
-    parameters: zod.array(ParameterSchema),
+    /** Schema of input parameters for functionality */
+    parameters: ParameterSchema,
     /** Array of prerequisites for the functionality */
     prerequisites: zod.array(zod.string()).optional(),
     /** Impact of the functionality */

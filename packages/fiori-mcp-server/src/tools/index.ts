@@ -4,6 +4,7 @@ import * as Output from '../types/output';
 import { convertToSchema } from './utils';
 
 export { docSearch } from './hybrid-search';
+export type { SearchResponseData } from './hybrid-search';
 export { listFioriApps } from './list-fiori-apps';
 export { listFunctionalities } from './list-functionalities';
 export { getFunctionalityDetails } from './get-functionality-details';

@@ -2,6 +2,7 @@ import type { AuthenticationType } from '@sap-ux/store';
 export interface UI5ProxyConfigTarget {
     path: string | string[];
     url: string;
+    pathReplace?: string;
 }
 
 export interface UI5ProxyConfig {

@@ -1,5 +1,5 @@
 import { latestVersionString } from '@sap-ux/ui5-info';
-import { join } from 'path';
+import { join } from 'node:path';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } from '../../../src/prompts/prompt-helpers';

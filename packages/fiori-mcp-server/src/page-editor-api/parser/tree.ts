@@ -49,6 +49,7 @@ export interface TreeNode {
     // Special node type
     type?: AggregationNodeType;
     value?: unknown;
+    schema: JSONSchema4;
 }
 
 /**
@@ -98,6 +99,7 @@ export interface TreeNodeProperty {
     // type and options
     options?: NodePropertyOptions[];
     properties?: TreeNodeProperty[];
+    schema: JSONSchema4;
 }
 
 export const BOOLEAN_DISPLAY_TRUE = 'True';
@@ -138,7 +140,8 @@ export function getGenericBase(
         displayName,
         // Default
         type: 'string',
-        value: property.value
+        value: property.value,
+        schema: property.schema ?? {}
     };
 }
 
@@ -149,7 +152,7 @@ export function getGenericBase(
  * @returns Is nummber value.
  */
 const isNumber = (value: number): boolean => {
-    return !isNaN(value) && !isNaN(value - 0);
+    return !Number.isNaN(value) && !Number.isNaN(value - 0);
 };
 
 /**
@@ -379,7 +382,8 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
         properties: getProperties(aggregation),
         annotationNodeId,
         type: getNodeType(aggregation),
-        value: aggregation.value
+        value: aggregation.value,
+        schema: aggregation.schema ?? {}
     };
 }
 
@@ -505,6 +509,7 @@ export function getTree(
     });
     // Update root node
     node.root = true;
+    node.schema = model.schema;
     return node;
 }
 

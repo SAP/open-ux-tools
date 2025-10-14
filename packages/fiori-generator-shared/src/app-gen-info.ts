@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { AbapCSN, AppGenInfo, ExternalParameters } from './types';
 

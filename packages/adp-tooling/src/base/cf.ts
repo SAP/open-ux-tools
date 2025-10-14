@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync, existsSync } from 'node:fs';
 
 /**
  * Check if the project is a CF project.

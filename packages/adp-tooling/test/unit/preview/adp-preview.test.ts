@@ -1,6 +1,6 @@
 import nock from 'nock';
-import * as fs from 'fs';
-import { join } from 'path';
+import * as fs from 'node:fs';
+import { join } from 'node:path';
 import express from 'express';
 import { renderFile } from 'ejs';
 import supertest from 'supertest';

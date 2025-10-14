@@ -1,7 +1,7 @@
 import type { AllAppResults, ReuseLib } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
 import type { ReuseLibChoice } from './types';
-import { basename } from 'path';
+import { basename } from 'node:path';
 
 /**
  * Creates the project choice options.

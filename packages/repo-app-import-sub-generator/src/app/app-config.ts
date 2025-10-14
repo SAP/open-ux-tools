@@ -10,7 +10,7 @@ import { PromptState } from '../prompts/prompt-state';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger';
 import { FileName } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getUI5Versions, type UI5Version } from '@sap-ux/ui5-info';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 

@@ -5,7 +5,7 @@ import { addGenerateAdaptationProjectCommand } from '../../../../src/cli/generat
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as adp from '@sap-ux/adp-tooling';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('prompts');
 // mock mem-fs commit so that nothing is written to the file system

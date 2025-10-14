@@ -1,5 +1,5 @@
 import { normalizePath } from '../../src/path/normalize';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 describe('normalizePath', () => {
     const originalPlatform = process.platform;

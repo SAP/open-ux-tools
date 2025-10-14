@@ -1,5 +1,5 @@
 /* eslint-disable no-console */ // Only intend to run in CLI environment where we don't need more advanced logging
-import path from 'path';
+import path from 'node:path';
 import fs from 'fs/promises';
 import axios from 'axios';
 import prettier from 'prettier';

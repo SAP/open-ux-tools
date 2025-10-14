@@ -8,10 +8,10 @@ import type {
     AppDescriptorV4Change
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { ManifestService } from '../base/abap/manifest-service';
 import { getVariant, isTypescriptSupported } from '../base/helper';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
@@ -255,8 +255,8 @@ export function addXmlFragment(
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
             const text = fs.read(fragmentTemplatePath);
-            const changeTemplate = { 
-                ...templateConfig.getData(change),                 
+            const changeTemplate = {
+                ...templateConfig.getData(change),
                 viewName: additionalChangeInfo?.viewName,
                 targetAggregation: additionalChangeInfo?.targetAggregation,
                 controlType: additionalChangeInfo?.controlType

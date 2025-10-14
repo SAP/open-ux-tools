@@ -1,5 +1,26 @@
 # @sap-ux/app-config-writer
 
+## 0.6.42
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
+## 0.6.41
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/project-access@1.32.2
+    -   @sap-ux/axios-extension@1.22.9
+
 ## 0.6.40
 
 ### Patch Changes

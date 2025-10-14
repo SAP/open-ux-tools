@@ -3,7 +3,7 @@
 import { pipeline } from '@xenova/transformers';
 import { connect } from '@lancedb/lancedb';
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as path from 'node:path';
 
 interface EmbeddingConfig {
     docsPath: string;
@@ -164,51 +164,13 @@ class EmbeddingBuilder {
      * @returns Array of document chunks
      */
     chunkDocument(doc: Document): Chunk[] {
-        // For small documents, don't chunk at all
-        if (!doc.content || doc.content.length <= this.config.chunkSize) {
-            return [
-                {
-                    id: `${doc.id}-chunk-0`,
-                    documentId: doc.id,
-                    chunkIndex: 0,
-                    content: doc.content || '',
-                    title: doc.title,
-                    category: doc.category,
-                    path: doc.path,
-                    metadata: {
-                        tags: doc.tags,
-                        headers: doc.headers,
-                        lastModified: doc.lastModified,
-                        wordCount: doc.wordCount,
-                        excerpt: doc.excerpt,
-                        totalChunks: 1
-                    }
-                }
-            ];
-        }
-
-        const chunks: Chunk[] = [];
-        const text = doc.content;
-        let currentOffset = 0;
-        let chunkIndex = 0;
-
-        while (currentOffset < text.length) {
-            const endOffset = Math.min(currentOffset + this.config.chunkSize, text.length);
-            let chunkText = text.substring(currentOffset, endOffset);
-
-            // Try to break at sentence boundaries
-            if (endOffset < text.length) {
-                const sentenceBreak = this.findSentenceBreak(chunkText);
-                if (sentenceBreak > this.config.chunkSize * 0.7) {
-                    chunkText = chunkText.substring(0, sentenceBreak);
-                }
-            }
-
-            chunks.push({
-                id: `${doc.id}-chunk-${chunkIndex}`,
+        // For simplicity, return the whole document as a single chunk
+        return [
+            {
+                id: `${doc.id}-chunk-0`,
                 documentId: doc.id,
-                chunkIndex,
-                content: chunkText.trim(),
+                chunkIndex: 0,
+                content: doc.content || '',
                 title: doc.title,
                 category: doc.category,
                 path: doc.path,
@@ -216,22 +178,12 @@ class EmbeddingBuilder {
                     tags: doc.tags,
                     headers: doc.headers,
                     lastModified: doc.lastModified,
-                    wordCount: chunkText.trim().split(/\s+/).length,
-                    excerpt: chunkText.trim().substring(0, 200) + (chunkText.trim().length > 200 ? '...' : ''),
-                    totalChunks: 0 // Will be set after all chunks are created
+                    wordCount: doc.wordCount,
+                    excerpt: doc.excerpt,
+                    totalChunks: 1
                 }
-            });
-
-            currentOffset += Math.max(chunkText.length - this.config.chunkOverlap, 1);
-            chunkIndex++;
-        }
-
-        // Update total chunks count
-        chunks.forEach((chunk) => {
-            chunk.metadata.totalChunks = chunks.length;
-        });
-
-        return chunks;
+            }
+        ];
     }
 
     /**

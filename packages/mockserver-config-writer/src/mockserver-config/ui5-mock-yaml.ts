@@ -1,4 +1,4 @@
-import { join, posix, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';

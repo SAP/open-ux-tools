@@ -1,5 +1,5 @@
-import { join, resolve } from 'path';
-import { unlinkSync } from 'fs';
+import { join, resolve } from 'node:path';
+import { unlinkSync } from 'node:fs';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 import { t, generatorNamespace, abapChoice, cfChoice } from '../utils';
 import { DeployTarget } from '@sap-ux/fiori-generator-shared';
