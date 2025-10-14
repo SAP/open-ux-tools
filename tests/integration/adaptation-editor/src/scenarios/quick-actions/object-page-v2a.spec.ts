@@ -29,7 +29,7 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
             await editor.toolbar.navigationModeButton.click();
 
             await lr.goButton.click();
-            await lr.locatorForListReportTableRow(0).click();
+            await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.quickActions.enableOPVariantManagementInTable.click();

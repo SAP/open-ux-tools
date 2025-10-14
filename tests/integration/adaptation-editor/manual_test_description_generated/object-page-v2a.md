@@ -12,11 +12,12 @@
 1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
 2. Check that UIAdaptation mode is enabled
 3. Click on button `Navigation`
-4. Click on button `UI Adaptation`
-5. Click on button `Enable Variant Management in Tables`
-6. Click on button `Save and Reload`
-7. Check `Save` button is disabled
-8. Verify changes:
+4. Click on row `1` of `Root Entities` table 
+5. Click on button `UI Adaptation`
+6. Click on button `Enable Variant Management in Tables`
+7. Click on button `Save and Reload`
+8. Check `Save` button is disabled
+9. Verify changes:
 
 **Change(s)**
 
