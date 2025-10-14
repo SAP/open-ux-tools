@@ -3,12 +3,8 @@ import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 import { addOptionsForEmbeddedBSP, promptUserPass } from '../../src/ext/bsp';
 
 // mock required btp-utils functions
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { mockIsAppStudio } from '../__mocks__';
 import type { Options } from 'http-proxy-middleware';
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
 
 const mockPrompt = jest.fn();
 jest.mock('prompts', () => {

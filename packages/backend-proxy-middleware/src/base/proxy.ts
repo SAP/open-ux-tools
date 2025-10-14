@@ -5,7 +5,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { ToolsLogger, type Logger, UI5ToolingTransport } from '@sap-ux/logger';
-import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 import {
     isAppStudio,
     getDestinationUrlForAppStudio,
@@ -14,12 +14,10 @@ import {
     isFullUrlDestination,
     BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
-import type { ServiceInfo } from '@sap-ux/btp-utils';
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import type { BackendConfig, DestinationBackendConfig } from './types';
 import translations from './i18n.json';
-
-import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
-import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
+import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService } from '@sap-ux/store';
+import { getService } from '@sap-ux/store';
 import { updateProxyEnv } from './config';
 import type { Url } from 'node:url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
@@ -260,45 +258,26 @@ export async function enhanceConfigsForDestination(
 }
 
 /**
- * Enhance the proxy options with information read from the store.
+ * Enhance the proxy options by attempting to connect based on stored information and environment variables.
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
- * @param system backend system information (most likely) read from the store
- * @param oAuthRequired if true then the OAuth flow is triggered to get cookies
- * @param tokenChangedCallback function to call if a new refreshToken is available
+ * @param backend backend system specific configuration
+ * @param logger optional logger instance
  */
 export async function enhanceConfigForSystem(
     proxyOptions: Options & { headers: object },
-    system: BackendSystem | undefined,
-    oAuthRequired: boolean | undefined,
-    tokenChangedCallback: (refreshToken?: string) => void
+    backend: BackendConfig,
+    logger: ToolsLogger
 ): Promise<void> {
-    if (oAuthRequired) {
-        if (system?.serviceKeys) {
-            const provider = createForAbapOnCloud({
-                environment: AbapCloudEnvironment.Standalone,
-                service: system.serviceKeys as ServiceInfo,
-                refreshToken: system.refreshToken,
-                refreshTokenChangedCb: tokenChangedCallback
-            });
-            // sending a request to the backend to get token
-            await provider.getAtoInfo();
-        } else {
-            throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
-        }
-    } else if (system?.authenticationType === AuthenticationType.ReentranceTicket) {
-        const provider = createForAbapOnCloud({
-            ignoreCertErrors: proxyOptions.secure === false,
-            environment: AbapCloudEnvironment.EmbeddedSteampunk,
-            url: system.url
-        });
-        // sending a request to the backend to get cookies
-        const ato = await provider.getAtoInfo();
-        if (ato) {
-            proxyOptions.headers['cookie'] = provider.cookies.toString();
-        }
-    } else if (system?.username && system.password) {
-        proxyOptions.auth = `${system.username}:${system.password}`;
+    // create a ABAP service provider with the given configuration
+    const provider = await createAbapServiceProvider(backend, undefined, false, logger);
+    // send a request to the backend to get cookies and updated the auth header
+    const ato = await provider.getAtoInfo();
+    if (ato) {
+        proxyOptions.headers['cookie'] = provider.cookies.toString();
+    }
+    if (typeof provider.defaults.headers.common.Authorization === 'string') {
+        proxyOptions.headers.Authorization = provider.defaults.headers.common.Authorization;
     }
 }
 
@@ -346,43 +325,7 @@ export async function generateProxyMiddlewareOptions(
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
-        const localBackend = backend as LocalBackendConfig;
-        // check if system credentials are stored in the store
-        try {
-            const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-            const system = (await systemStore.read(
-                new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
-            )) ?? {
-                name: '<unknown>',
-                url: localBackend.url,
-                authenticationType: localBackend.authenticationType
-            };
-            await enhanceConfigForSystem(
-                proxyOptions,
-                system,
-                backend.scp,
-                (refreshToken?: string, accessToken?: string) => {
-                    if (refreshToken) {
-                        logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
-                    }
-
-                    if (accessToken) {
-                        logger.info('Setting access token');
-                        proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
-                    } else {
-                        logger.warn('Setting of access token failed.');
-                    }
-                }
-            );
-        } catch (error) {
-            logger.warn('Accessing the credentials store failed.');
-            logger.debug(error as object);
-        }
-    }
-
-    if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
-        proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
+        await enhanceConfigForSystem(proxyOptions, backend, logger);
     }
 
     if (backend.bsp) {
