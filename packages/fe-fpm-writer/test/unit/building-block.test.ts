@@ -868,6 +868,22 @@ describe('Building Blocks', () => {
 </mvc:View>`;
 
             const basePath = join(testAppPath, 'test-custom-column-detection');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Table`;
+            const customColumnData: CustomColumn = {
+                id: 'testCustomColumn2',
+                buildingBlockType: BuildingBlockType.CustomColumn,
+                title: 'CustomColumnTitle2',
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Sample Text"/></core:FragmentDefinition>',
+                    name: 'CustomColumnTitle2'
+                },
+                position: {
+                    placement: Placement.After
+                }
+            };
 
             fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
             fs.write(join(basePath, xmlViewFilePath), xmlViewWithColumns);
@@ -880,6 +896,24 @@ describe('Building Blocks', () => {
             // Test the getElementsByTagName functionality directly - this is what the code checks
             const hasTableColumn = xmlDocument.getElementsByTagName('macros:columns').length > 0;
             expect(hasTableColumn).toBe(true);
+
+            await generateBuildingBlock<CustomColumn>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customColumnData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomColumnTitle2.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot(
+                'generate-custom-column-without-macros-columns'
+            );
 
             // Test that content property gets set
             await writeFilesForDebugging(fs);
