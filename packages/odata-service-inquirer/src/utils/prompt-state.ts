@@ -1,3 +1,4 @@
+import type { BackendSystem } from '@sap-ux/store';
 import type { OdataServiceAnswers } from '../types';
 
 /**
@@ -10,6 +11,11 @@ export class PromptState {
     public static odataService: Partial<OdataServiceAnswers> = {};
 
     public static isYUI = false;
+
+    /**
+     * To prevent re-reads from store load the backend systems once.
+     */
+    public static backendSystemsCache: BackendSystem[] = [];
 
     static reset(): void {
         // Reset all values in the odataService object, do not reset the object reference itself as it may be used by external consumers
