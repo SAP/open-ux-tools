@@ -3,7 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import type { SelectProps } from '../../../../src/components';
 import { Select } from '../../../../src/components';
-import { Severity } from '@sap-ux/inquirer-common';
 
 const props: SelectProps = {
     name: 'select',
@@ -402,65 +401,4 @@ describe('Select', () => {
         expect(input).toBeDefined();
         expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue1');
     });
-
-    it('renders warning message from async additionalMessages', async () => {
-        const prompts = {
-            ...props,
-            choices: [
-                { name: 'testText0', value: 'testValue0' },
-                { name: 'testText1', value: 'testValue1'}
-            ],
-            additionalMessages: async () => ({
-                severity: Severity.warning,
-                message: 'test warning'
-            })
-        };
-    
-        render(<Select {...prompts} />);
-        const input = screen.getByRole('combobox');
-        expect(input).toBeDefined();
-        const warningMessage = await screen.findByText('test warning');
-        expect(warningMessage).toBeDefined();
-    });
-    
-    it('renders error message from async additionalMessages', async () => {
-        const prompts = {
-            ...props,
-            choices: [
-                { name: 'testText0', value: 'testValue0' },
-                { name: 'testText1', value: 'testValue1'}
-            ],
-            additionalMessages: async () => ({
-                severity: Severity.error,
-                message: 'test error'
-            })
-        };
-    
-        render(<Select {...prompts} />);
-        const input = screen.getByRole('combobox');
-        expect(input).toBeDefined();
-        const errorMessage = await screen.findByText('test error');
-        expect(errorMessage).toBeDefined();
-    });
-    
-    it('renders info message from async additionalMessages', async () => {
-        const prompts = {
-            ...props,
-            choices: [
-                { name: 'testText0', value: 'testValue0' },
-                { name: 'testText1', value: 'testValue1'}
-            ],
-            additionalMessages: async () => ({
-                severity: Severity.information,
-                message: 'test info'
-            })
-        };
-    
-        render(<Select {...prompts} />);
-        const input = screen.getByRole('combobox');
-        expect(input).toBeDefined();
-        const infoMessage = await screen.findByText('test info');
-        expect(infoMessage).toBeDefined();
-    });
-      
 });

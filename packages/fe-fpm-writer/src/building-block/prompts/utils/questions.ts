@@ -411,13 +411,13 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
         ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
-        choices: [
+        choices: properties.choices ?? [
             { name: t('bindingContextType.option.absolute') as string, value: 'absolute' },
             { name: t('bindingContextType.option.relative') as string, value: 'relative' }
         ],
         guiOptions: {
             ...guiOptions,
-            selectType: 'static'
+            selectType: 'dynamic'
         }
     };
 }

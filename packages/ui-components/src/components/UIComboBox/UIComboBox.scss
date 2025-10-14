@@ -170,6 +170,9 @@
                 $menu-item-hover-contrast-border
             );
         }
+        .is-disabled {
+            opacity: $menu-item-disabled-opacity;
+        }
         .ms-Button--command:after {
             // focus background
             display: none;

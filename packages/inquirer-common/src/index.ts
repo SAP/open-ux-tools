@@ -6,4 +6,3 @@ export * from './prompts/cf-helper';
 export * from './telemetry/telemetry';
 export * from './prompts/credentials';
 export { addi18nResourceBundle } from './i18n';
-export { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';

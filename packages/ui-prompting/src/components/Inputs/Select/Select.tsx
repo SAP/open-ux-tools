@@ -2,9 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import type { ChoiceOptions, Answers } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions, usePromptMessage, useUISeverityMessage } from '../../../utilities';
+import { useValue, getLabelRenderer, useOptions, usePromptMessage } from '../../../utilities';
 import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
-import { useState } from 'react';
 
 export interface SelectProps extends ListPromptQuestion {
     id?: string;
@@ -17,12 +16,11 @@ export interface SelectProps extends ListPromptQuestion {
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id, answers, additionalMessages } = props;
+    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id, answers } = props;
     const { mandatory, hint, placeholder, creation } = guiOptions;
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
     const options = useOptions(props, dynamicChoices);
-    const [uiSeverityMessage, setUiSeverityMessage] = useState({});
 
     const defaultValue = useMemo(() => {
         // Single option - auto-select
@@ -42,12 +40,6 @@ export const Select = (props: SelectProps) => {
 
     const resolvedMessage = usePromptMessage(message, answers);
     const label = resolvedMessage?.trim() ? resolvedMessage : name;
-    
-    useEffect(() => {
-        if (additionalMessages) {
-            useUISeverityMessage(props, options, setUiSeverityMessage); //todo: revist
-        }
-    }, [answers, additionalMessages, dynamicChoices, options]);
 
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {
@@ -97,7 +89,6 @@ export const Select = (props: SelectProps) => {
             onChange={onChangeTextInput}
             onRenderLabel={getLabelRenderer(hint)}
             id={id}
-            {...uiSeverityMessage && uiSeverityMessage}
         />
     ) : (
         <UIComboBox
@@ -117,10 +108,7 @@ export const Select = (props: SelectProps) => {
             errorMessage={errorMessage}
             placeholder={placeholder}
             id={id}
-            {...uiSeverityMessage && uiSeverityMessage}
         />
     );
-    return <>
-        {component}
-    </>;
+    return <>{component}</>;
 };
