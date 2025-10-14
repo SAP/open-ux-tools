@@ -1,5 +1,13 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.23
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/telemetry@0.6.29
+
 ## 0.13.22
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.8.13
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/telemetry@0.6.29
+    -   @sap-ux/inquirer-common@0.7.51
+
 ## 2.8.12
 
 ### Patch Changes

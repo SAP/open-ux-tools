@@ -27,6 +27,7 @@ import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuild
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
+import { getBackendSystemType } from '@sap-ux/store';
 
 /**
  * Parse the specified edmx string for validitiy and return the ODataVersion of the specified edmx string.
@@ -165,33 +166,32 @@ export async function getCdsAnnotations(
 }
 
 /**
- * Determine if the specified connected system is hosted on BTP.
- * If a backend system uses service keys, or a destination is an ABAP environment on BTP, then it is considered to be hosted on BTP.
+ * Determine if the specified connected system is ABAP cloud.
  *
  * @param connectedSystem - The connected system object.
- * @returns {boolean} `true` if the connected system is hosted on BTP, otherwise `false`.
+ * @returns {boolean} `true` if the connected system is ABAP cloud, otherwise `false`.
  */
-export function isBTPHosted(connectedSystem?: ConnectedSystem): boolean {
-    return (
-        !!connectedSystem?.backendSystem?.serviceKeys ||
-        (connectedSystem?.destination ? isAbapEnvironmentOnBtp(connectedSystem.destination) : false)
-    );
+export function isAbapCloud(connectedSystem?: ConnectedSystem): boolean {
+    if (connectedSystem?.backendSystem) {
+        return getBackendSystemType(connectedSystem.backendSystem) === 'AbapCloud';
+    }
+    return connectedSystem?.destination ? isAbapEnvironmentOnBtp(connectedSystem.destination) : false;
 }
 
 /**
  * Retrieves the data source label.
  *
  * @param {DatasourceType} source - The data source type (`DatasourceType.sapSystem` or `DatasourceType.businessHub`).
- * @param scp
+ * @param abapCloud - Indicates if the SAP system is an ABAP Cloud system (BTP or S4HC).
  * @param {ApiHubType} apiHubType - The API hub type for business hubs.
  * @returns {string} The formatted data source label.
  */
-export function getReadMeDataSourceLabel(source: DatasourceType, scp = false, apiHubType?: ApiHubType): string {
+export function getReadMeDataSourceLabel(source: DatasourceType, abapCloud = false, apiHubType?: ApiHubType): string {
     let dataSourceLabel: string | undefined;
     if (source === DatasourceType.sapSystem) {
         const labelDatasourceType = t(`readme.label.datasourceType.${DatasourceType.sapSystem}`);
         const labelSystemType = t(
-            `readme.label.sapSystemType.${scp ? SapSystemSourceType.SCP : SapSystemSourceType.ON_PREM}`
+            `readme.label.sapSystemType.${abapCloud ? SapSystemSourceType.ABAP_CLOUD : SapSystemSourceType.ON_PREM}`
         );
         dataSourceLabel = `${labelDatasourceType} (${labelSystemType})`;
     } else if (source === DatasourceType.businessHub && apiHubType === ApiHubType.apiHubEnterprise) {

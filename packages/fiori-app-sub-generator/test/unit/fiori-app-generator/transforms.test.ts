@@ -86,7 +86,7 @@ describe('Test transform state', () => {
         expect(ffApp.service?.previewSettings?.authenticationType).toEqual(AuthenticationType.ReentranceTicket);
     });
 
-    test('should return preview setting `scp`', async () => {
+    test('should set preview setting `authenticationType` correctly', async () => {
         const state: State = {
             ...baseState,
             service: {
@@ -104,8 +104,10 @@ describe('Test transform state', () => {
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.bas);
 
         let ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
-        expect(ffApp.service?.previewSettings?.scp).toBe(true);
+        // All cloud systems support reentrance this supports BAS -> VSCode portability
+        expect(ffApp.service?.previewSettings?.authenticationType).toBe('reentranceTicket');
 
+        // Should support legacy service key backend system entries, using reentrance tickets in new apps
         state.service!.connectedSystem = {
             backendSystem: {
                 serviceKeys: { any: 'thing' },
@@ -116,7 +118,7 @@ describe('Test transform state', () => {
         } as Service['connectedSystem'];
 
         ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
-        expect(ffApp.service?.previewSettings?.scp).toBe(true);
+        expect(ffApp.service?.previewSettings?.authenticationType).toBe('reentranceTicket');
     });
 
     test('should return preview setting `apiHub`', async () => {
