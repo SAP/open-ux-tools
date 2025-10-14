@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/ui-prompting-examples",
-    "version": "0.4.3",
+    "version": "0.4.4",
     "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
     "private": true,
