@@ -160,7 +160,7 @@ export default class ManualTestCaseReporter implements Reporter {
                 this.processedFiles.add(fileNameWithoutExt);
                 try {
                     const ann = (test as any).annotations?.find((a: any) => a.type === 'projectConfig');
-                    if (ann && ann.description) {
+                    if (ann?.description) {
                         const parsed = JSON.parse(ann.description);
                         const isAdp = parsed.projectConfig?.kind === 'adp';
                         this.projectConfigMap[fileNameWithoutExt] = { ...parsed, isAdp };
