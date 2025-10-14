@@ -1,10 +1,10 @@
-import { ServiceInfo } from '@sap-ux/btp-utils';
 import { AxiosHeaders } from 'axios';
 import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
-import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
+import type { AbapServiceProvider } from 'abap/abap-service-provider';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 
 export * from './connection';
 export * from './error';
@@ -90,20 +90,16 @@ export function getReentranceTicketAuthInterceptor({
     ejectCallback: () => void;
 }): (request: InternalAxiosRequestConfig) => Promise<InternalAxiosRequestConfig<any>> {
     return async (request: InternalAxiosRequestConfig) => {
-        const { reentranceTicket, apiUrl } = await getReentranceTicket({
+        const { reentranceTicket, backend } = await getReentranceTicket({
             backendUrl: provider.defaults.baseURL,
             logger: provider.log
         });
-        if (apiUrl && apiUrl != provider.defaults.baseURL) {
-            // Reentrance tickets work with API hostnames. If the original URL was not one, this will replace it
-            // with the API hostname returned
-            provider.log.warn(
-                `Replacing provider's default base URL (${provider.defaults.baseURL}) with API URL: ${apiUrl}`
-            );
-            provider.defaults.baseURL = apiUrl;
-        }
+        // Update the base host (provided system url) to the API host for subsequent calls as only this should be used with re-entrance tickets to generate a secure session
+        provider.defaults.baseURL = (await backend?.apiHostname()) ?? provider.defaults.baseURL;
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers.MYSAPSSO2 = reentranceTicket;
+        // Request a secure session using the reentrance token
+        request.headers['x-sap-security-session'] = 'create';
         // remove this interceptor since it is not needed anymore
         ejectCallback();
         return request;
