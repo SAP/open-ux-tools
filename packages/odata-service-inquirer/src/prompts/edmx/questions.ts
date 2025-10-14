@@ -286,7 +286,8 @@ function getTableLayoutQuestions(
                     metadata,
                     odataVersion,
                     prevAnswers?.mainEntity?.entitySetName,
-                    prevAnswers?.tableType
+                    prevAnswers?.tableType,
+                    isCapService
                 );
                 setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
                 return tableTypeDefault.tableType;

@@ -283,6 +283,31 @@ export function getRecursiveHierarchyQualifier(
 }
 
 /**
+ * Checks if the given entity set name has Aggregation.ApplySupported annotation in the metadata.
+ * This function only checks for the presence of the ApplySupported annotation, not for specific transformations.
+ *
+ * @param metadata The metadata (edmx) of the service.
+ * @param entitySetName The entity set name to check for aggregation support.
+ * @returns true if the entity set has Aggregation.ApplySupported annotation, false otherwise.
+ */
+export function hasAggregationApplySupportedForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+
+    const entitySet = metadata.entitySets.find((entitySet) => entitySet.name === entitySetName);
+    if (!entitySet) {
+        return false;
+    }
+
+    // Check for ApplySupported annotation in entity set or entity type annotations
+    return (
+        !!entitySet.annotations?.Aggregation?.ApplySupported ||
+        !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported
+    );
+}
+
+/**
  * Converts an EDMX string to a ConvertedMetadata object.
  *
  * @param edmx - The EDMX string to convert.

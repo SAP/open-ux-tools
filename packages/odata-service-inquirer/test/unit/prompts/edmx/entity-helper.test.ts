@@ -482,6 +482,113 @@ describe('Test entity helper functions', () => {
             expect(result.tableType).toBe('AnalyticalTable');
             expect(result.setAnalyticalTableDefault).toBe(true);
         });
+
+        it('should return AnalyticalTable for CAP services with ApplySupported annotation', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    Transformations: ['filter', 'groupby'] // Only partial transformations
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {}
+                        }
+                    }
+                ]
+            };
+
+            // For CAP services, should use AnalyticalTable even with partial transformations
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, 'TestEntity', undefined, true);
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
+        });
+
+        it('should return ResponsiveTable for non-CAP services with partial transformations', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    Transformations: ['filter', 'groupby'] // Only partial transformations
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {}
+                        }
+                    }
+                ]
+            };
+
+            // For non-CAP services, should not use AnalyticalTable with partial transformations
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, 'TestEntity', undefined, false);
+            expect(result.tableType).toBe('ResponsiveTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
+        it('should return AnalyticalTable for CAP services with ApplySupported annotation in entity type', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {},
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {}
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            // For CAP services, should use AnalyticalTable when ApplySupported exists in entity type
+            const result = getDefaultTableType(
+                'worklist',
+                mockMetadata,
+                OdataVersion.v4,
+                'TestEntity',
+                undefined,
+                true
+            );
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(true);
+        });
+
+        it('should return ResponsiveTable for CAP services without ApplySupported annotation', () => {
+            const mockMetadata: any = {
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {},
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {}
+                        }
+                    }
+                ]
+            };
+
+            // For CAP services without ApplySupported, should use ResponsiveTable
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, 'TestEntity', undefined, true);
+            expect(result.tableType).toBe('ResponsiveTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
     });
 
     describe('Test RecursiveHierarchy qualifier population', () => {

@@ -15,6 +15,7 @@ import {
     hasRecursiveHierarchyForEntity,
     getRecursiveHierarchyQualifier,
     hasAggregateTransformationsForEntity,
+    hasAggregationApplySupportedForEntity,
     transformationsRequiredForAnalyticalTable
 } from '../../../src/prompts/helpers';
 import * as fs from 'node:fs';
@@ -1194,6 +1195,149 @@ describe('helpers', () => {
 
             expect(getRecursiveHierarchyQualifier(mockMetadata)).toBeUndefined();
             expect(getRecursiveHierarchyQualifier(mockMetadata, undefined)).toBeUndefined();
+        });
+    });
+
+    describe('hasAggregationApplySupportedForEntity', () => {
+        it('should return true when entity set has ApplySupported annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    Transformations: ['filter', 'groupby', 'aggregate']
+                                }
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {},
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(true);
+        });
+
+        it('should return true when entity type has ApplySupported annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {},
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {
+                                'Aggregation': {
+                                    'ApplySupported': {
+                                        Transformations: ['filter', 'groupby']
+                                    }
+                                }
+                            },
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(true);
+        });
+
+        it('should return true when ApplySupported annotation exists without Transformations', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {}
+                            }
+                        },
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {},
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(true);
+        });
+
+        it('should return false when entity has no ApplySupported annotation', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [
+                    {
+                        name: 'TestEntity',
+                        entityTypeName: 'TestType',
+                        annotations: {},
+                        entityType: {
+                            name: 'TestType',
+                            annotations: {},
+                            keys: [],
+                            properties: [],
+                            navigationProperties: []
+                        }
+                    }
+                ],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'TestEntity')).toBe(false);
+        });
+
+        it('should return false for non-existent entity set', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasAggregationApplySupportedForEntity(mockMetadata, 'NonExistentEntity')).toBe(false);
+        });
+
+        it('should return false when entitySetName is not provided', () => {
+            const mockMetadata: any = {
+                version: '4.0',
+                namespace: 'Test.Service',
+                entitySets: [],
+                entityTypes: [],
+                entityContainer: {}
+            };
+
+            expect(hasAggregationApplySupportedForEntity(mockMetadata)).toBe(false);
+            expect(hasAggregationApplySupportedForEntity(mockMetadata, undefined)).toBe(false);
         });
     });
 });

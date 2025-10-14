@@ -10,7 +10,8 @@ import {
     filterAggregateTransformations,
     hasAggregateTransformationsForEntity,
     transformationsRequiredForAnalyticalTable,
-    hasRecursiveHierarchyForEntity
+    hasRecursiveHierarchyForEntity,
+    hasAggregationApplySupportedForEntity
 } from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
@@ -247,6 +248,7 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
  * @param odataVersion the OData version of the service
  * @param mainEntitySetName the name of the main entity set
  * @param currentTableType the current table type selected by the user
+ * @param isCapService whether the service is a CAP service or not
  * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
  */
 export function getDefaultTableType(
@@ -254,7 +256,8 @@ export function getDefaultTableType(
     metadata: ConvertedMetadata,
     odataVersion: OdataVersion,
     mainEntitySetName?: string,
-    currentTableType?: TableType
+    currentTableType?: TableType,
+    isCapService?: boolean
 ): { tableType: TableType; setAnalyticalTableDefault: boolean } {
     let tableType: TableType;
     let setAnalyticalTableDefault = false;
@@ -262,9 +265,19 @@ export function getDefaultTableType(
     if (
         (templateType === 'lrop' || templateType === 'worklist') &&
         odataVersion === OdataVersion.v4 &&
+        isCapService &&
+        hasAggregationApplySupportedForEntity(metadata, mainEntitySetName)
+    ) {
+        // For CAP services, if the main entity type is annotated with Aggregation.ApplySupported, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+        setAnalyticalTableDefault = true;
+    } else if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        odataVersion === OdataVersion.v4 &&
+        !isCapService &&
         hasAggregateTransformationsForEntity(metadata, mainEntitySetName, transformationsRequiredForAnalyticalTable)
     ) {
-        // If the main entity type is annotated with Aggregation.ApplySupported containing all specified transformations, use AnalyticalTable as default
+        // For non-CAP services, if the main entity type is annotated with Aggregation.ApplySupported containing all specified transformations, use AnalyticalTable as default
         tableType = 'AnalyticalTable';
         setAnalyticalTableDefault = true;
     } else if (
