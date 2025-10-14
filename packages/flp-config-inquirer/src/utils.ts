@@ -56,13 +56,11 @@ export function getAdpFlpConfigPromptOptions(
 /**
  * Builds the configuration for replacing an existing FLP inbound based on the provided answers and layer.
  *
- * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
  * @param {UI5FlexLayer} layer - The layer of the project.
  * @param {ManifestNamespace.Inbound} inbounds - The inbound configuration.
  * @returns {InternalInboundNavigation[]} The configuration for the replaced FLP inbound.
  */
 function buildReplaceInboundConfig(
-    flpConfigAnswers: FLPConfigAnswers,
     layer: UI5FlexLayer,
     inbounds?: ManifestNamespace.Inbound
 ): InternalInboundNavigation[] {
@@ -81,9 +79,9 @@ function buildReplaceInboundConfig(
             inboundId,
             semanticObject: semanticObject ?? '',
             action: action ?? '',
-            title: flpConfigAnswers.title ?? inboundData.title ?? '',
-            subTitle: flpConfigAnswers.subTitle ?? inboundData.subTitle ?? '',
-            icon: flpConfigAnswers.icon ?? inboundData.icon ?? '',
+            title: inboundData.title ?? '',
+            subTitle: inboundData.subTitle ?? '',
+            icon: inboundData.icon ?? '',
             additionalParameters: parameters ? JSON.stringify(parameters) : ''
         };
     });
@@ -135,7 +133,7 @@ export function getAdpFlpInboundsWriterConfig(
 ): InternalInboundNavigation[] | NewInboundNavigation[] {
     const { tileHandlingAction } = tileSettingsAnswers ?? {};
     if (tileHandlingAction === tileActions.REPLACE) {
-        return buildReplaceInboundConfig(flpConfigAnswers, layer, inbounds);
+        return buildReplaceInboundConfig(layer, inbounds);
     }
     return buildAddInboundConfig(flpConfigAnswers, layer);
 }

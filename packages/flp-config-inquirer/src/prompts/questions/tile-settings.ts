@@ -4,15 +4,19 @@ import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { type TileSettingsAnswers, tileActions, tilePromptNames } from '../../types';
 import { t } from '../../i18n';
 
-function getReplaceScenarioAdditionalMessage(inbounds: ManifestNamespace.Inbound): IMessageSeverity | undefined {
+function getReplaceScenarioMessage(inbounds: ManifestNamespace.Inbound): string {
     let message = `Selecting this option will replace ALL existing tiles from the base application. 
            The following base application tile(s) will be affected: `;
     Object.keys(inbounds).forEach((key) => {
         message += `${key} - ${inbounds[key].title}; `;
     });
+    return message;
+}
+
+function getReplaceScenarioAdditionalMessage(inbounds: ManifestNamespace.Inbound): IMessageSeverity | undefined {
     return {
         severity: Severity.information,
-        message
+        message: getReplaceScenarioMessage(inbounds)
     };
 }
 
@@ -55,6 +59,18 @@ export function getTileSettingsPrompts(inbounds: ManifestNamespace.Inbound): YUI
                 breadcrumb: true
             },
             when: (answers: any): boolean => answers.tileHandlingAction === tileActions.ADD
+        } as ConfirmQuestion<TileSettingsAnswers>,
+        {
+            type: 'confirm',
+            name: 'ConfirmReplaceAllTiles',
+            message: getReplaceScenarioMessage(inbounds),
+            default: false,
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: true
+            },
+            validate: (answer: boolean): boolean => answer,
+            when: (answers: any): boolean => answers.tileHandlingAction === tileActions.REPLACE
         } as ConfirmQuestion<TileSettingsAnswers>
     ];
 }

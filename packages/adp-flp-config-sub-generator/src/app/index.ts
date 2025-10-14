@@ -24,7 +24,8 @@ import {
     getTileSettingsQuestions,
     type FLPConfigAnswers,
     type TileSettingsAnswers,
-    tileActions
+    tileActions,
+    tilePromptNames
 } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
@@ -48,7 +49,6 @@ import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
-import { tilePromptNames } from '@sap-ux/flp-config-inquirer/src/types';
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
