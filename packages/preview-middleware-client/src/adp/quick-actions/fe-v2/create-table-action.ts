@@ -1,6 +1,4 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type Table from 'sap/m/Table';
-import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
@@ -88,13 +86,13 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
 
     getHeaderToolbar(table: UI5Element): ManagedObject | ManagedObject[] | OverflowToolbar | null | undefined {
         let headerToolbar;
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+        if (isA(SMART_TABLE_TYPE, table)) {
             for (const item of table.getAggregation('items') as ManagedObject[]) {
                 if (item.getAggregation('headerToolbar')) {
                     headerToolbar = item.getAggregation('headerToolbar');
                     break;
                 }
-                if (isA<OverflowToolbar>('sap.m.OverflowToolbar', item)) {
+                if (isA('sap.m.OverflowToolbar', item)) {
                     headerToolbar = item;
                     break;
                 }
@@ -102,7 +100,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
             if (!headerToolbar) {
                 headerToolbar = table.getToolbar();
             }
-        } else if (isA<Table>(M_TABLE_TYPE, table)) {
+        } else if (isA(M_TABLE_TYPE, table)) {
             headerToolbar = table.getAggregation('headerToolbar');
         }
         return headerToolbar;

@@ -10,8 +10,6 @@ import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 import IconTabBar from 'sap/m/IconTabBar';
 
-import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, DialogFactory } from '../../dialog-factory';
@@ -90,20 +88,12 @@ export class AddTableCustomColumnQuickAction
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
         this.selectOverlay(table);
 
-        let tableInternal: ManagedObject | undefined = table;
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            const itemsAggregation = table.getAggregation('items') as ManagedObject[];
-            tableInternal = itemsAggregation.find((item) => {
-                return [M_TABLE_TYPE, TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((tType) =>
-                    isA(tType, item)
-                );
-            });
-            if (!tableInternal) {
-                return [];
-            }
+        const tableInternal = this.getInternalTable(table);
+        if (!tableInternal) {
+            return [];
         }
 
-        const overlay = OverlayRegistry.getOverlay(tableInternal as UI5Element) || [];
+        const overlay = OverlayRegistry.getOverlay(tableInternal);
         if (!overlay) {
             return [];
         }
@@ -119,11 +109,12 @@ export class AddTableCustomColumnQuickAction
             });
             return [];
         }
-        const dialog = [TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((type) =>
-            isA(type, tableInternal)
-        )
-            ? DialogNames.ADD_FRAGMENT
-            : DialogNames.ADD_TABLE_COLUMN_FRAGMENTS;
+        const dialog =
+            isA(TREE_TABLE_TYPE, tableInternal) ||
+            isA(ANALYTICAL_TABLE_TYPE, tableInternal) ||
+            isA(GRID_TABLE_TYPE, tableInternal)
+                ? DialogNames.ADD_FRAGMENT
+                : DialogNames.ADD_TABLE_COLUMN_FRAGMENTS;
         await DialogFactory.createDialog(
             overlay,
             this.context.rta,

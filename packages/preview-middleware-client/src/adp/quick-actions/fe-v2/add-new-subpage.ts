@@ -1,6 +1,5 @@
 import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataMetaModelV2, { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
-import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
 import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 import { getV2ApplicationPages } from '../../../utils/fe-v2';
@@ -53,7 +52,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
     }
 
     protected getEntitySetNameFromPageComponent(component: Component | undefined): Promise<string> {
-        if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
+        if (!isA('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
             throw new Error('Unexpected type of page owner component');
         }
         return Promise.resolve(component.getEntitySet());

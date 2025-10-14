@@ -82,7 +82,7 @@ export class EnableTableFilteringQuickAction
             return [];
         }
 
-        const entitySet = isA<SmartTable>(SMART_TABLE_TYPE, this.control) ? this.control.getEntitySet() : undefined;
+        const entitySet = isA(SMART_TABLE_TYPE, this.control) ? this.control.getEntitySet() : undefined;
         const command = await prepareManifestChange(
             this.context,
             'component/settings',

@@ -355,7 +355,7 @@ export class ChangeService extends EventTarget {
                                 .map((id: string) => {
                                     return getControlById(id);
                                 })
-                                .filter((ui5Element) => isA<UI5Element>('sap.ui.core.Element', ui5Element));
+                                .filter((ui5Element) => isA('sap.ui.core.Element', ui5Element));
                             acc.push(...controls);
                             return acc;
                         }, [])

@@ -9,7 +9,7 @@ import Component from 'sap/ui/core/Component';
 import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
-import SmartTableExtended from 'sap/ui/comp/smarttable';
+import { isA } from '../../../utils/core';
 
 /**
  * Gets app component of a v2 project.
@@ -120,7 +120,7 @@ export function isVariantManagementEnabledOPPage(
         if (typeof id !== 'string') {
             throw new Error('Could not retrieve configuration property because control id is not valid!');
         }
-        if (!control.isA<SmartTableExtended>('sap.ui.comp.smarttable.SmartTable')) {
+        if (!isA('sap.ui.comp.smarttable.SmartTable', control)) {
             // variant management is only supported by SmartTable
             return false;
         }

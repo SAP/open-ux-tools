@@ -49,6 +49,8 @@ export function isManagedObject(element: object | undefined): element is Managed
     return false;
 }
 
+
+
 /**
  * Checks whether this object is an instance of the named type.
  *
@@ -56,11 +58,14 @@ export function isManagedObject(element: object | undefined): element is Managed
  * @param element - Object to check
  * @returns Whether this object is an instance of the given type.
  */
-export function isA<T extends ManagedObject>(type: string, element: ManagedObject | undefined): element is T {
+export function isA<T extends keyof TypeMap>(
+    type: T,
+    element: ManagedObject | undefined
+): element is TypeMap[typeof type] {
     return !!element?.isA(type);
 }
 
-export function hasParent(component: ManagedObject, parentIdToFind: string): boolean  {
+export function hasParent(component: ManagedObject, parentIdToFind: string): boolean {
     const parent = component.getParent();
     if (!parent) {
         return false;
@@ -71,10 +76,7 @@ export function hasParent(component: ManagedObject, parentIdToFind: string): boo
     return hasParent(parent, parentIdToFind);
 }
 
-export function findNestedElements(
-    ownerElement: Element,
-    candidates: Element[]
-): Element[] {
+export function findNestedElements(ownerElement: Element, candidates: Element[]): Element[] {
     const ownerId = ownerElement.getId();
     return candidates.filter((item) => hasParent(item, ownerId));
 }

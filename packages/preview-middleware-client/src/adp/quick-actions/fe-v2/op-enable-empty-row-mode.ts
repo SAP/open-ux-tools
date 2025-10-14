@@ -14,7 +14,7 @@ import { preprocessActionExecution } from './create-table-custom-column';
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE];
-const UNSUPPORTED_TABLES = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
+const UNSUPPORTED_TABLES: (keyof TypeMap)[] = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
 const CREATION_ROWS_MODE = 'creationRows';
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
