@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.44
+
+### Patch Changes
+
+-   99155bf: fix: configuration source message
+
 ## 0.6.43
 
 ### Patch Changes
