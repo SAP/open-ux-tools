@@ -1001,6 +1001,9 @@ describe('Building Blocks', () => {
             const fragmentContent = fs.read(existingFragmentPath);
             expect(fragmentContent).toBe(existingContent);
             expect(fragmentContent).toContain('Existing Content');
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.fragment.CustomColumnTitle');
 
             await writeFilesForDebugging(fs);
         });
@@ -1043,6 +1046,10 @@ describe('Building Blocks', () => {
 
             const fragmentContent = fs.read(expectedFragmentPath);
             expect(fragmentContent).toContain('Sample Text');
+
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.customfolder.CustomColumnWithFolder');
 
             await writeFilesForDebugging(fs);
         });
@@ -1130,6 +1137,10 @@ describe('Building Blocks', () => {
             // Verify that buildingBlockData.content was set
             expect(customColumnData.embededFragment?.content).toBeDefined();
             expect(customColumnData.embededFragment?.content).toContain('Sample Text');
+
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.fragment.CustomColumnContent');
 
             await writeFilesForDebugging(fs);
         });
