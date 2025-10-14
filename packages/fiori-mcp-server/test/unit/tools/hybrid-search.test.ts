@@ -1,245 +1,353 @@
-import type { DocSearchInput } from '../../../src/tools/hybrid-search';
-import { DocSearchService, docSearch } from '../../../src/tools/hybrid-search';
-import { SimpleDocumentIndexer } from '../../../src/tools/services/indexer-simple';
-import { logger } from '../../../src/utils/logger';
+import type { DocSearchInput, SearchResponseData } from '../../../src/tools/hybrid-search';
+import { docSearch } from '../../../src/tools/hybrid-search';
+import { SimpleVectorService } from '../../../src/tools/services/vector-simple';
+import { TextEmbeddingService } from '../../../src/tools/services/text-embedding';
 
-// Mock the SimpleDocumentIndexer and logger
-jest.mock('../../../src/tools/services/indexer-simple');
-jest.mock('../../../src/utils/logger');
+// Mock the service dependencies
+jest.mock('../../../src/tools/services/vector-simple');
+jest.mock('../../../src/tools/services/text-embedding');
 
-const mockIndexer = SimpleDocumentIndexer as jest.MockedClass<typeof SimpleDocumentIndexer>;
-const mockLogger = logger as jest.Mocked<typeof logger>;
+const MockedSimpleVectorService = SimpleVectorService as jest.MockedClass<typeof SimpleVectorService>;
+const MockedTextEmbeddingService = TextEmbeddingService as jest.MockedClass<typeof TextEmbeddingService>;
 
 describe('hybrid-search', () => {
-    let indexerInstance: jest.Mocked<SimpleDocumentIndexer>;
-    let docSearchService: DocSearchService;
+    let mockVectorService: jest.Mocked<SimpleVectorService>;
+    let mockEmbeddingService: jest.Mocked<TextEmbeddingService>;
 
     beforeEach(() => {
+        // Clear all mocks
         jest.clearAllMocks();
-        // Reset the mock implementation
-        mockIndexer.mockReset();
-        indexerInstance = {
-            docSearch: jest.fn()
+
+        // Create mocked instances
+        mockVectorService = {
+            initialize: jest.fn(),
+            semanticSearch: jest.fn(),
+            isInitialized: jest.fn(),
+            close: jest.fn()
         } as any;
-        mockIndexer.mockImplementation(() => indexerInstance);
-        docSearchService = new DocSearchService(indexerInstance);
+
+        mockEmbeddingService = {
+            initialize: jest.fn(),
+            generateEmbedding: jest.fn(),
+            isInitialized: jest.fn()
+        } as any;
+
+        // Mock the constructor calls to return our mocked instances
+        MockedSimpleVectorService.mockImplementation(() => mockVectorService);
+        MockedTextEmbeddingService.mockImplementation(() => mockEmbeddingService);
     });
 
-    describe('DocSearchService', () => {
-        describe('constructor', () => {
-            it('should create instance with indexer', () => {
-                expect(docSearchService).toBeDefined();
-                expect(docSearchService).toBeInstanceOf(DocSearchService);
-            });
-        });
+    describe('docSearch', () => {
+        const mockSearchParams: DocSearchInput = {
+            query: 'test query',
+            maxResults: 5
+        };
 
-        describe('performDocSearch', () => {
-            it('should perform search with valid parameters', async () => {
-                const mockResults = [
+        const mockQueryVector = [0.1, 0.2, 0.3, 0.4, 0.5];
+
+        const mockSearchResults = [
+            {
+                score: 0.95,
+                distance: 0.05,
+                document: {
+                    id: 'doc1',
+                    vector: [0.1, 0.2, 0.3],
+                    title: 'Test Document 1',
+                    category: 'guides',
+                    path: 'guides/test1.md',
+                    content: 'This is the content of test document 1',
+                    chunk_index: 0,
+                    metadata: {
+                        tags: ['guide', 'test'],
+                        headers: ['Introduction'],
+                        lastModified: new Date('2023-01-01'),
+                        wordCount: 100,
+                        excerpt: 'This is an excerpt of test document 1'
+                    }
+                }
+            },
+            {
+                score: 0.87,
+                distance: 0.13,
+                document: {
+                    id: 'doc2',
+                    vector: [0.4, 0.5, 0.6],
+                    title: 'Test Document 2',
+                    category: 'tutorials',
+                    path: 'tutorials/test2.md',
+                    content: 'This is the content of test document 2',
+                    chunk_index: 0,
+                    metadata: {
+                        tags: ['tutorial', 'test'],
+                        headers: ['Getting Started'],
+                        lastModified: new Date('2023-01-02'),
+                        wordCount: 150,
+                        excerpt: 'This is an excerpt of test document 2'
+                    }
+                }
+            }
+        ];
+
+        it('should perform successful hybrid search and return structured results', async () => {
+            // Setup mocks for successful path
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
+
+            // Verify service initialization
+            expect(mockVectorService.initialize).toHaveBeenCalledTimes(1);
+            expect(mockEmbeddingService.initialize).toHaveBeenCalledTimes(1);
+
+            // Verify embedding generation
+            expect(mockEmbeddingService.generateEmbedding).toHaveBeenCalledWith('test query');
+
+            // Verify semantic search
+            expect(mockVectorService.semanticSearch).toHaveBeenCalledWith(mockQueryVector, 5);
+
+            // Verify result structure
+            expect(result).toEqual({
+                query: 'test query',
+                searchType: 'hybrid',
+                results: [
                     {
-                        document: {
-                            id: 'doc1',
-                            title: 'Test Document 1',
-                            category: 'guides',
-                            path: 'docs/test1.md',
-                            lastModified: new Date('2023-01-01'),
-                            tags: ['tag1', 'tag2'],
-                            headers: ['header1', 'header2'],
-                            excerpt: 'Test excerpt 1'
-                        },
+                        title: 'Test Document 1',
+                        category: 'guides',
+                        path: 'guides/test1.md',
                         score: 0.95,
-                        matches: ['keyword1', 'keyword2']
+                        matches: [],
+                        excerpt: 'This is an excerpt of test document 1',
+                        content: 'This is the content of test document 1',
+                        uri: 'sap-fiori://docs/guides/doc1'
                     },
                     {
-                        document: {
-                            id: 'doc2',
-                            title: 'Test Document 2',
-                            category: 'tutorials',
-                            path: 'docs/test2.md',
-                            lastModified: new Date('2023-01-02'),
-                            tags: ['tag3'],
-                            headers: ['header3'],
-                            excerpt: 'Test excerpt 2'
-                        },
-                        score: 0.85,
-                        matches: ['keyword1']
+                        title: 'Test Document 2',
+                        category: 'tutorials',
+                        path: 'tutorials/test2.md',
+                        score: 0.87,
+                        matches: [],
+                        excerpt: 'This is an excerpt of test document 2',
+                        content: 'This is the content of test document 2',
+                        uri: 'sap-fiori://docs/tutorials/doc2'
                     }
-                ];
-
-                indexerInstance.docSearch.mockResolvedValue(mockResults);
-
-                const result = await docSearchService.performDocSearch('test query', 5);
-
-                expect(indexerInstance.docSearch).toHaveBeenCalledWith('test query', 5);
-                expect(result).toEqual({
-                    query: 'test query',
-                    searchType: 'hybrid',
-                    results: [
-                        {
-                            title: 'Test Document 1',
-                            category: 'guides',
-                            path: 'docs/test1.md',
-                            score: 0.95,
-                            matches: ['keyword1', 'keyword2'],
-                            excerpt: 'Test excerpt 1',
-                            uri: 'sap-fiori://docs/guides/doc1'
-                        },
-                        {
-                            title: 'Test Document 2',
-                            category: 'tutorials',
-                            path: 'docs/test2.md',
-                            score: 0.85,
-                            matches: ['keyword1'],
-                            excerpt: 'Test excerpt 2',
-                            uri: 'sap-fiori://docs/tutorials/doc2'
-                        }
-                    ],
-                    total: 2
-                });
-            });
-
-            it('should use default maxResults when not provided', async () => {
-                const mockResults: any[] = [];
-                indexerInstance.docSearch.mockResolvedValue(mockResults);
-
-                await docSearchService.performDocSearch('test query');
-
-                expect(indexerInstance.docSearch).toHaveBeenCalledWith('test query', 10);
-            });
-
-            it('should handle empty results', async () => {
-                indexerInstance.docSearch.mockResolvedValue([]);
-
-                const result = await docSearchService.performDocSearch('test query');
-
-                expect(result.results).toEqual([]);
-                expect(result.total).toBe(0);
-            });
-
-            it('should validate search parameters with zod', async () => {
-                indexerInstance.docSearch.mockResolvedValue([]);
-
-                // Test with valid parameters
-                await expect(docSearchService.performDocSearch('valid query', 5)).resolves.toBeDefined();
-
-                // Test empty query should still work (zod allows empty strings)
-                await expect(docSearchService.performDocSearch('', 5)).resolves.toBeDefined();
+                ],
+                total: 2
             });
         });
-    });
 
-    describe('docSearch function', () => {
-        beforeEach(() => {
-            // Clear logger mock calls
-            jest.clearAllMocks();
+        it('should use default maxResults value when not provided', async () => {
+            const paramsWithoutMaxResults: DocSearchInput = {
+                query: 'test query'
+            };
+
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+
+            await docSearch(paramsWithoutMaxResults, false);
+
+            expect(mockVectorService.semanticSearch).toHaveBeenCalledWith(mockQueryVector, 10);
         });
 
-        afterEach(() => {
-            jest.restoreAllMocks();
+        it('should return results as formatted string when resultAsString is true', async () => {
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+
+            const result = (await docSearch(mockSearchParams, true)) as string;
+
+            expect(typeof result).toBe('string');
+            expect(result).toContain('Result 1:');
+            expect(result).toContain('Result 2:');
+            expect(result).toContain('This is the content of test document 1');
+            expect(result).toContain('This is the content of test document 2');
+            expect(result).toContain('---');
         });
 
-        it('should perform successful search', async () => {
-            const mockResults = [
+        it('should handle documents without metadata excerpt', async () => {
+            const resultsWithoutExcerpt = [
                 {
+                    score: 0.95,
+                    distance: 0.05,
                     document: {
                         id: 'doc1',
-                        title: 'Test Doc',
+                        vector: [0.1, 0.2, 0.3],
+                        title: 'Test Document 1',
                         category: 'guides',
-                        path: 'docs/test.md',
-                        lastModified: new Date('2023-01-01'),
-                        tags: ['test'],
-                        headers: ['header'],
-                        excerpt: 'Test excerpt'
-                    },
-                    score: 0.9,
-                    matches: ['test']
+                        path: 'guides/test1.md',
+                        content: 'This is the content of test document 1',
+                        chunk_index: 0,
+                        metadata: {
+                            tags: ['guide'],
+                            headers: ['Introduction'],
+                            lastModified: new Date('2023-01-01'),
+                            wordCount: 100
+                            // No excerpt
+                        }
+                    }
                 }
             ];
 
-            // Mock the indexer's docSearch method
-            const mockDocSearch = jest.fn().mockResolvedValue(mockResults);
-            mockIndexer.mockImplementation(
-                () =>
-                    ({
-                        docSearch: mockDocSearch
-                    } as any)
-            );
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(resultsWithoutExcerpt);
 
-            const params: DocSearchInput = {
-                query: 'test search',
-                maxResults: 5
-            };
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
-            const result = await docSearch(params);
-
-            expect(result).toBeDefined();
-            expect(result.query).toBe('test search');
-            expect(result.searchType).toBe('hybrid');
+            expect(result.results[0].excerpt).toBeUndefined();
         });
 
-        it('should handle search errors with fallback', async () => {
-            // Mock the indexer constructor to throw an error
-            mockIndexer.mockImplementation(() => {
-                throw new Error('Indexer initialization failed');
+        it('should handle documents with null metadata', async () => {
+            const resultsWithNullMetadata = [
+                {
+                    score: 0.95,
+                    distance: 0.05,
+                    document: {
+                        id: 'doc1',
+                        vector: [0.1, 0.2, 0.3],
+                        title: 'Test Document 1',
+                        category: 'guides',
+                        path: 'guides/test1.md',
+                        content: 'This is the content of test document 1',
+                        chunk_index: 0,
+                        metadata: null as any
+                    }
+                }
+            ];
+
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(resultsWithNullMetadata);
+
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
+
+            expect(result.results[0].excerpt).toBeUndefined();
+        });
+
+        it('should return fallback response when vector service initialization fails', async () => {
+            mockVectorService.initialize.mockRejectedValue(new Error('Vector service init failed'));
+
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
+
+            expect(result).toEqual({
+                query: 'test query',
+                searchType: 'limited_fallback',
+                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                results: [],
+                total: 0,
+                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
             });
 
-            const params: DocSearchInput = {
-                query: 'test search',
-                maxResults: 5
-            };
-
-            const result = await docSearch(params);
-
-            expect(result.searchType).toBe('limited_fallback');
-            expect(result.error).toContain('Embeddings data not available');
-            expect(result.suggestion).toContain('npm install -g @sap-ux/fiori-docs-embeddings');
-            expect(result.results).toEqual([]);
-            expect(result.total).toBe(0);
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                expect.stringContaining('Embeddings data not available, providing limited search capability:')
-            );
+            // Should not call further methods after initialization failure
+            expect(mockEmbeddingService.generateEmbedding).not.toHaveBeenCalled();
+            expect(mockVectorService.semanticSearch).not.toHaveBeenCalled();
         });
 
-        it('should handle search service errors with fallback', async () => {
-            // Mock the indexer to initialize successfully but docSearch to fail
-            const mockDocSearch = jest.fn().mockRejectedValue(new Error('Search failed'));
-            mockIndexer.mockImplementation(
-                () =>
-                    ({
-                        docSearch: mockDocSearch
-                    } as any)
-            );
+        it('should return fallback response when embedding service initialization fails', async () => {
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockRejectedValue(new Error('Embedding service init failed'));
 
-            const params: DocSearchInput = {
-                query: 'test search'
-            };
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
-            const result = await docSearch(params);
+            expect(result).toEqual({
+                query: 'test query',
+                searchType: 'limited_fallback',
+                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                results: [],
+                total: 0,
+                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
+            });
+        });
+
+        it('should return fallback response when embedding generation fails', async () => {
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockRejectedValue(new Error('Embedding generation failed'));
+
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
 
             expect(result.searchType).toBe('limited_fallback');
-            expect(result.query).toBe('test search');
+            expect(result.error).toBeDefined();
             expect(result.results).toEqual([]);
             expect(result.total).toBe(0);
         });
 
-        it('should use default maxResults when not provided', async () => {
-            const mockResults: any[] = [];
-            const mockDocSearch = jest.fn().mockResolvedValue(mockResults);
-            mockIndexer.mockImplementation(
-                () =>
-                    ({
-                        docSearch: mockDocSearch
-                    } as any)
-            );
+        it('should return fallback response when semantic search fails', async () => {
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockRejectedValue(new Error('Semantic search failed'));
 
-            const params: DocSearchInput = {
-                query: 'test search'
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
+
+            expect(result.searchType).toBe('limited_fallback');
+            expect(result.error).toBeDefined();
+            expect(result.results).toEqual([]);
+            expect(result.total).toBe(0);
+        });
+
+        it('should handle empty search results', async () => {
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue([]);
+
+            const result = (await docSearch(mockSearchParams, false)) as SearchResponseData;
+
+            expect(result.searchType).toBe('hybrid');
+            expect(result.results).toEqual([]);
+            expect(result.total).toBe(0);
+        });
+
+        it('should handle string result format with empty results', async () => {
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue([]);
+
+            const result = (await docSearch(mockSearchParams, true)) as string;
+
+            expect(typeof result).toBe('string');
+            expect(result).toBe('');
+        });
+
+        it('should handle maxResults parameter correctly', async () => {
+            const paramsWithMaxResults: DocSearchInput = {
+                query: 'test query',
+                maxResults: 15
             };
 
-            await docSearch(params);
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
 
-            // The function should work even without maxResults specified
-            expect(mockDocSearch).toHaveBeenCalledWith('test search', 10);
+            await docSearch(paramsWithMaxResults, false);
+
+            expect(mockVectorService.semanticSearch).toHaveBeenCalledWith(mockQueryVector, 15);
+        });
+
+        it('should handle different query strings', async () => {
+            const differentParams: DocSearchInput = {
+                query: 'how to configure SAP Fiori elements',
+                maxResults: 3
+            };
+
+            mockVectorService.initialize.mockResolvedValue();
+            mockEmbeddingService.initialize.mockResolvedValue();
+            mockEmbeddingService.generateEmbedding.mockResolvedValue(mockQueryVector);
+            mockVectorService.semanticSearch.mockResolvedValue(mockSearchResults);
+
+            const result = (await docSearch(differentParams, false)) as SearchResponseData;
+
+            expect(mockEmbeddingService.generateEmbedding).toHaveBeenCalledWith('how to configure SAP Fiori elements');
+            expect(result.query).toBe('how to configure SAP Fiori elements');
         });
     });
 });

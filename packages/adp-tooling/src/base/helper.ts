@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readdirSync, readFileSync } from 'fs';
-import { join, isAbsolute, relative, basename, dirname } from 'path';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';

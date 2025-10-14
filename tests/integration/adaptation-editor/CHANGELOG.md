@@ -1,5 +1,35 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.14
+
+### Patch Changes
+
+-   Updated dependencies [bba16a6]
+    -   @sap-ux/ui5-info@0.13.0
+
+## 0.0.13
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+
+## 0.0.12
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux-private/playwright@0.2.1
+    -   @sap-ux/ui5-info@0.12.4
+    -   @sap-ux/yaml@0.17.1
+
+## 0.0.11
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+
 ## 0.0.10
 
 ### Patch Changes

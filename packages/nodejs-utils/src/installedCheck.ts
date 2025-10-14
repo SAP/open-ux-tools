@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { CommandRunner } from './commandRunner';
 import fastGlob from 'fast-glob';
-import { join } from 'path';
+import { join } from 'node:path';
 import readPkgUp from 'read-pkg-up';
 import type { SemVer } from 'semver';
 import { coerce, lt } from 'semver';

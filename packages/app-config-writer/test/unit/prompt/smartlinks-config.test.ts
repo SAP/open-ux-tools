@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { prompt, inject } from 'prompts';
 import * as prompts from 'prompts';
 import type { PromptObject } from 'prompts';

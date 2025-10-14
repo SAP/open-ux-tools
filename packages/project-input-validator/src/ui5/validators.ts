@@ -1,6 +1,6 @@
-import { join, posix } from 'path';
+import { join, posix } from 'node:path';
 import { t } from '../i18n';
-import { existsSync, lstatSync, accessSync, constants } from 'fs';
+import { existsSync, lstatSync, accessSync, constants } from 'node:fs';
 import validateNpmPackageName from 'validate-npm-package-name';
 
 /**

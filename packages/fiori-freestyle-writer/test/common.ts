@@ -1,7 +1,7 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { dirname, join } from 'path';
-import { readFileSync } from 'fs';
+import { dirname, join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';

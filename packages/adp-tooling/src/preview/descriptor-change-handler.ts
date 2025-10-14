@@ -1,9 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
 import { type AppDescriptorV4Change } from '../types';
 import type { Logger } from '@sap-ux/logger';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getFragmentPathFromTemplate } from './utils';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { render } from 'ejs';
 
 export const customFragmentConfig = {

@@ -4,17 +4,8 @@ import i18n from 'i18next';
 import prompts from 'prompts';
 import type { Logger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-
-/**
- * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.
- *
- * @param bsp path of the BSP page
- * @returns a path rewrite function
- */
-export function convertAppDescriptorToManifest(bsp: string): (path: string) => string {
-    const regex = new RegExp('(' + bsp + '/manifest\\.appdescr\\b)');
-    return (path: string) => (path.match(regex) ? '/manifest.json' : path);
-}
+import type { IncomingMessage } from 'node:http';
+import type { Request } from 'express';
 
 /**
  * Prompts the user for credentials.
@@ -24,13 +15,13 @@ export function convertAppDescriptorToManifest(bsp: string): (path: string) => s
  */
 export async function promptUserPass(log: Logger): Promise<string | undefined> {
     if (isAppStudio()) {
-        const { authNeeded } = await prompts([
+        const { authNeeded } = (await prompts([
             {
                 type: 'confirm',
                 name: 'authNeeded',
                 message: `${cyan(i18n.t('info.authNeeded'))}\n\n`
             }
-        ]);
+        ])) as { authNeeded: boolean };
         if (!authNeeded) {
             return undefined;
         }
@@ -38,7 +29,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
         log.info(yellow(i18n.t('info.credentialsRequiredForFLP')));
     }
 
-    const { username, password } = await prompts(
+    const { username, password } = (await prompts(
         [
             {
                 type: 'text',
@@ -71,7 +62,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
                 return process.exit(1);
             }
         }
-    );
+    )) as { username: string; password: string };
 
     return `${username}:${password}`;
 }
@@ -83,23 +74,20 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
  * @param proxyOptions existing http-proxy-middleware options
  * @param logger logger to report info to the user
  */
-export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Options, logger: Logger) {
+export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Options, logger: Logger): Promise<void> {
     const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)', 'i');
-    proxyOptions.router = (req): string | undefined => {
+    proxyOptions.router = (req: IncomingMessage | Request): string | undefined => {
         // redirects the request for manifest.appdescr to localhost
-        if (req.path.match(regex)) {
-            return req.protocol + '://' + req.headers.host;
+        if (req.url?.match(regex)) {
+            const protocol =
+                'protocol' in req
+                    ? req.protocol
+                    : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http';
+            return protocol + '://' + req.headers.host;
         } else {
             return undefined;
         }
     };
-    if (proxyOptions.pathRewrite) {
-        const oldRewrite = proxyOptions.pathRewrite as (path: string) => string;
-        const appDescrRewrite = convertAppDescriptorToManifest(bspPath);
-        proxyOptions.pathRewrite = (path: string) => appDescrRewrite(oldRewrite(path));
-    } else {
-        proxyOptions.pathRewrite = convertAppDescriptorToManifest(bspPath);
-    }
 
     if (!proxyOptions.auth) {
         proxyOptions.auth = await promptUserPass(logger);

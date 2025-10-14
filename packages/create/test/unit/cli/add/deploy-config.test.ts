@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 import { addDeployConfigCommand } from '../../../../src/cli/add/deploy-config';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as logger from '../../../../src/tracing/logger';
 import * as deployConfigInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import * as deployConfigWriter from '@sap-ux/abap-deploy-config-writer';

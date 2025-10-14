@@ -1,5 +1,5 @@
 import { extendWithOptions, withCondition } from '@sap-ux/inquirer-common';
-import { join } from 'path';
+import { join } from 'node:path';
 import { t } from '../utils';
 import { DeploymentGenerator, showOverwriteQuestion, TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { getAbapQuestions, indexHtmlExists } from '@sap-ux/abap-deploy-config-sub-generator';

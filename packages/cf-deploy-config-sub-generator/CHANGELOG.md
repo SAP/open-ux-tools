@@ -1,5 +1,66 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.64
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+-   @sap-ux/cf-deploy-config-inquirer@0.5.23
+-   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.2.63
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-writer@0.3.31
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/fiori-generator-shared@0.13.22
+-   @sap-ux/inquirer-common@0.7.49
+-   @sap-ux/deploy-config-generator-shared@0.1.41
+-   @sap-ux/cf-deploy-config-inquirer@0.5.22
+
+## 0.2.62
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.21
+
+## 0.2.61
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-writer@0.3.30
+-   @sap-ux/deploy-config-generator-shared@0.1.40
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/inquirer-common@0.7.48
+-   @sap-ux/cf-deploy-config-inquirer@0.5.20
+
+## 0.2.60
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.19
+    -   @sap-ux/cf-deploy-config-writer@0.3.29
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.39
+
+## 0.2.59
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-writer@0.3.28
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/fiori-generator-shared@0.13.19
+-   @sap-ux/inquirer-common@0.7.46
+-   @sap-ux/deploy-config-generator-shared@0.1.38
+-   @sap-ux/cf-deploy-config-inquirer@0.5.18
+
 ## 0.2.58
 
 ### Patch Changes

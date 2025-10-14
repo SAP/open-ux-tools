@@ -411,7 +411,7 @@ class CstToAstVisitor extends Visitor {
     private toTopLevelAnnotation(assignment: AssignmentCstNode, location: CstNodeLocation): AstResult {
         if (
             isDefined(assignment.location) &&
-            isNaN(assignment.location.startOffset) &&
+            Number.isNaN(assignment.location.startOffset) &&
             assignment.recoveredNode === true
         ) {
             return undefined;

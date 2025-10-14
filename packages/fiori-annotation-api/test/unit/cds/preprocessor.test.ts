@@ -1,5 +1,5 @@
-import { pathToFileURL } from 'url';
-import { join } from 'path';
+import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
 
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import { createCdsCompilerFacadeForRoot, createMetadataCollector } from '@sap/ux-cds-compiler-facade';

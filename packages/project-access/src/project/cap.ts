@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { basename, dirname, join, normalize, relative, sep } from 'path';
+import { basename, dirname, join, normalize, relative, sep } from 'node:path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, MinCdsVersionUi5Plugin } from '../constants';
@@ -714,7 +714,7 @@ async function getCdsVersionFromPackageJson(packageJsonPath: string): Promise<st
  * @returns - major version as number
  */
 function getMajorVersion(versionString: string): number {
-    return parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
+    return Number.parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
 }
 
 /**

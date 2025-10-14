@@ -487,7 +487,7 @@ function createExpression(
         case 'Int':
             return {
                 type: 'Int',
-                Int: parseInt(value, 10)
+                Int: Number.parseInt(value, 10)
             };
         case 'Path':
             return {

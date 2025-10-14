@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
