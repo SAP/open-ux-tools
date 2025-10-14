@@ -1,7 +1,7 @@
-import type { BackendSystem } from '@sap-ux/store';
 import type { TreeDataProvider, Command, ExtensionContext, Event } from 'vscode';
+import { SystemService, type BackendSystem } from '@sap-ux/store';
 import { commands, TreeItem, TreeItemCollapsibleState, Uri, EventEmitter } from 'vscode';
-import { getBackendSystemService, getDisplayName, t } from '../utils';
+import { getDisplayName, t } from '../utils';
 import { SystemCommands } from '../utils/constants';
 import SystemsLogger from '../utils/logger';
 
@@ -113,7 +113,7 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
         let systems: BackendSystem[] = [];
         try {
             await commands.executeCommand('setContext', 'sap.ux.tools.sapSystems.treeLoading', true);
-            const systemService = await getBackendSystemService();
+            const systemService = new SystemService(SystemsLogger.logger);
             systems = await systemService.getAll({ includeSensitiveData: false });
             return systems;
         } catch (error) {

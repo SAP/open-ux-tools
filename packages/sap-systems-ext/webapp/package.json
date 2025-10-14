@@ -40,31 +40,11 @@
         "@types/react-redux": "7.1.1",
         "esbuild-plugin-alias": "0.2.1",
         "i18next": "25.3.0",
-        "jest": "30.0.4",
         "react": "16.14.0",
         "react-dom": "16.14.0",
         "react-i18next": "11.10.0",
         "react-redux": "7.1.0",
         "redux": "4.0.4",
-        "redux-mock-store": "1.5.5",
-        "typescript": "5.9.2"
-    },
-    "eslint-formatter-multiple": {
-        "formatters": [
-            {
-                "name": "stylish",
-                "output": "console"
-            },
-            {
-                "name": "json",
-                "output": "file",
-                "path": "reports/lint/eslint.json"
-            },
-            {
-                "name": "checkstyle",
-                "output": "file",
-                "path": "reports/lint/eslint.checkstyle.xml"
-            }
-        ]
+        "redux-mock-store": "1.5.5"
     }
 }

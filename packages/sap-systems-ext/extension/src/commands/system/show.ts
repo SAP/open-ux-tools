@@ -16,9 +16,6 @@ export const showSystemsCommandHandler =
     (context: SystemCommandContext) =>
     async (system: StoredSystemViewNode, statusMsg?: string): Promise<void> => {
         try {
-            if (!system.url) {
-                throw new Error(t('error.urlMissing'));
-            }
             const backendSystemKey = new BackendSystemKey({
                 url: system.url,
                 client: system.client
@@ -27,15 +24,14 @@ export const showSystemsCommandHandler =
             const storedBackendSystem = await backendService.read(backendSystemKey);
 
             if (!storedBackendSystem) {
-                SystemsLogger.logger.error(`CIAN System not found: ${backendSystemKey.getId()}`);
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 window.showErrorMessage(t('error.systemNotFound', { backendKey: backendSystemKey.getId() }));
                 return;
             }
             openSystemPanel(context, backendSystemKey, storedBackendSystem, statusMsg);
-        } catch (error) {
+        } catch {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            window.showErrorMessage(t('error.viewSystemDetails', { error }));
+            window.showErrorMessage(t('error.viewSystemDetails'));
             logTelemetryFailure();
         }
     };

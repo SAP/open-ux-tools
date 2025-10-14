@@ -142,6 +142,8 @@ const window = {
     createTerminal: (name) => {
         return new Terminal(name);
     },
+    showOpenDialog: jest.fn(),
+    showInformationMessage: () => {},
     showErrorMessage: () => {},
     showWarningMessage: () => {},
     createWebviewPanel: jest.fn().mockImplementation(() => {
@@ -153,7 +155,8 @@ const window = {
                 cspSource: ''
             },
             onDidChangeViewState: jest.fn(),
-            onDidDispose: jest.fn()
+            onDidDispose: jest.fn(),
+            reveal: jest.fn()
         };
     }),
     onDidChangeVisibleTextEditors: jest.fn(),

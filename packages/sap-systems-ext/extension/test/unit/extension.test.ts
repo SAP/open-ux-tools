@@ -1,6 +1,6 @@
-import * as views from '../src/views/';
-import * as commands from '../src/commands/registerCommands';
-import { activate } from '../src/extension';
+import * as views from '../../src/views';
+import * as commands from '../../src/commands/registerCommands';
+import { activate } from '../../src/extension';
 import type { ExtensionContext } from 'vscode';
 
 describe('Test the extension activate/deactivate', () => {

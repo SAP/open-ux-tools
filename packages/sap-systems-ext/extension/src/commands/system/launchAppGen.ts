@@ -1,6 +1,6 @@
 import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
 import { commands, window } from 'vscode';
-import { getBackendSystemService, logTelemetryEvent, t } from '../../utils';
+import { logTelemetryEvent, t } from '../../utils';
 import {
     fioriToolsAppModAppGenLaunchCmd,
     launchAppGenCmdType,
@@ -8,7 +8,7 @@ import {
     SystemActionStatus,
     SYSTEMS_EVENT
 } from '../../utils/constants';
-import { BackendSystemKey } from '@sap-ux/store';
+import { BackendSystemKey, SystemService } from '@sap-ux/store';
 import SystemsLogger from '../../utils/logger';
 
 /**
@@ -21,7 +21,7 @@ export const launchAppGenCommandHandler =
     (_context: SystemCommandContext) =>
     async (system: StoredSystemViewNode): Promise<void> => {
         if (system.url) {
-            const systemService = await getBackendSystemService();
+            const systemService = new SystemService(SystemsLogger.logger);
             const backendSystem = await systemService.read(
                 new BackendSystemKey({ url: system.url, client: system.client })
             );

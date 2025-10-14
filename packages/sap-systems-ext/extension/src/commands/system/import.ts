@@ -1,9 +1,9 @@
 import type { ImportSystemConfig, SystemCommandContext, ImportConfigFile } from '../../types/system';
-import { BackendSystem, BackendSystemKey, type SystemType } from '@sap-ux/store';
+import { BackendSystem, BackendSystemKey, SystemService, type SystemType } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'os';
 import { readFileSync } from 'fs';
-import { confirmPrompt, getBackendSystemService, logTelemetryEvent, t } from '../../utils';
+import { confirmPrompt, logTelemetryEvent, t } from '../../utils';
 import {
     ConfirmationPromptType,
     SystemAction,
@@ -24,7 +24,7 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
     try {
         const systemConfig = await getImportSystemConfig();
         const backendSystemKey = new BackendSystemKey({ url: systemConfig.url, client: systemConfig.client });
-        const systemService = await getBackendSystemService();
+        const systemService = new SystemService(SystemsLogger.logger);
         const existingSystem = await systemService.read(backendSystemKey);
 
         // if the system already exists, confirm if the user wants to overwrite
@@ -46,13 +46,9 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
             logImportTelemetry(SystemActionStatus.IMPORT_SUCCESS);
         }
     } catch (err) {
-        if (err instanceof Error) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            window.showErrorMessage(err.message);
-        } else {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            window.showErrorMessage(t('error.importConfigFailed'));
-        }
+        const msg = err instanceof Error ? err.message : t('error.importConfigFailed');
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        window.showErrorMessage(msg);
         logImportTelemetry(SystemActionStatus.IMPORT_FAIL);
     }
 };
@@ -106,7 +102,7 @@ async function getImportSystemConfig(): Promise<ImportSystemConfig> {
         })) ?? [];
 
     if (!systemFileUri) {
-        throw new Error(t('warn.noFileSelected'));
+        throw new Error(t('error.noFileSelected'));
     }
 
     const filePath = normalizeFilePath(systemFileUri?.path);
@@ -137,15 +133,11 @@ function normalizeFilePath(path: string): string {
  * @returns the import system configuration, or undefined if an error occurs
  */
 function readConfig(filePath: string): ImportSystemConfig | undefined {
-    let systemConfig: ImportSystemConfig | undefined;
-    try {
-        const raw = readFileSync(filePath, 'utf8');
-        [systemConfig] = (JSON.parse(raw) as ImportConfigFile).systems ?? [];
-        if (!systemConfig) {
-            throw new Error(t('error.noSystemsDefined', { filePath }));
-        }
-    } catch (err) {
-        SystemsLogger.logger.error(`Error reading or parsing config file at ${filePath}: ${err}`);
+    const raw = readFileSync(filePath, 'utf8');
+    const [systemConfig] = (JSON.parse(raw) as ImportConfigFile).systems ?? [];
+
+    if (!systemConfig) {
+        throw new Error(t('error.noSystemsDefined', { filePath }));
     }
     return systemConfig;
 }

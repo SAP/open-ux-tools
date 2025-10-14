@@ -1,21 +1,5 @@
-import type { Service, BackendSystem } from '@sap-ux/store';
-
+import { BackendSystemKey, SystemService, type BackendSystem } from '@sap-ux/store';
 import SystemsLogger from './logger';
-import { getService, BackendSystemKey } from '@sap-ux/store';
-
-let serviceCache: Service<BackendSystem, BackendSystemKey>;
-
-/**
- * Returns the backend system service, creating it if it doesn't already exist.
- *
- * @returns the backend system service
- */
-export async function getBackendSystemService(): Promise<Service<BackendSystem, BackendSystemKey>> {
-    serviceCache =
-        serviceCache ??
-        (await getService<BackendSystem, BackendSystemKey>({ logger: SystemsLogger.logger, entityName: 'system' }));
-    return serviceCache;
-}
 
 /**
  * Fetches a backend system based on the provided system details.
@@ -30,7 +14,7 @@ export async function getBackendSystem(system: { url: string; client?: string })
         url: system.url,
         client: system?.client
     });
-    const systemService = await getBackendSystemService();
+    const systemService = new SystemService(SystemsLogger.logger);
     const backendSystem = await systemService.read(backendSystemKey);
     return backendSystem;
 }
