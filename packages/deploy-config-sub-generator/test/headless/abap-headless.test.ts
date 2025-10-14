@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import * as childProcess from 'child_process';
 import { copy, readdirSync } from 'fs-extra';
 import { readFile } from 'fs/promises';

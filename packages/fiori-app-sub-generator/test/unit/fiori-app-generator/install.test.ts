@@ -1,7 +1,7 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { DefaultLogger } from '@sap-ux/fiori-generator-shared';
 import childProcess from 'child_process';
-import os from 'os';
+import os from 'node:os';
 import { installDependencies } from '../../../src/fiori-app-generator/install';
 import { CommandRunner, initI18nFioriAppSubGenerator, t } from '../../../src/utils';
 // eslint-disable-next-line @typescript-eslint/no-var-requires

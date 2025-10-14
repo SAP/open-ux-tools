@@ -1,5 +1,5 @@
-import { fileURLToPath, pathToFileURL } from 'url';
-import { basename, dirname, join, relative, sep } from 'path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { basename, dirname, join, relative, sep } from 'node:path';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -200,13 +200,13 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         if (relevantErrors.length > 0) {
             // if model has compiler errors
             for (const [relativePath, compilerMessage] of relevantErrors) {
-                console.log(`Compile errors in: ${relativePath}`);
+                logger.log(`Compile errors in: ${relativePath}`);
                 for (const [fileUri, content] of fileCache) {
                     if (fileUri.endsWith(relativePath)) {
-                        console.log(content);
+                        logger.log(content);
                     }
                 }
-                console.log(JSON.stringify(compilerMessage, undefined, 2));
+                logger.log(JSON.stringify(compilerMessage, undefined, 2));
             }
             return compileErrors;
         }
@@ -731,7 +731,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             writer.addChange(createInsertEmbeddedAnnotationChange(pointer, change.element, index));
         } else if (change.element.name === Edm.Record) {
             const segment = pointer.split('/');
-            const changeIndex = parseInt(segment.pop() ?? '', 10);
+            const changeIndex = Number.parseInt(segment.pop() ?? '', 10);
             const modifiedPointer = segment.join('/'); //point to annotations
             writer.addChange(createInsertRecordChange(modifiedPointer, change.element, changeIndex));
         }

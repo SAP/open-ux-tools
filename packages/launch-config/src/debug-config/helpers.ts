@@ -1,4 +1,4 @@
-import { posix, basename, dirname, join } from 'path';
+import { posix, basename, dirname, join } from 'node:path';
 import type { WorkspaceHandlerInfo } from '../types';
 
 /**

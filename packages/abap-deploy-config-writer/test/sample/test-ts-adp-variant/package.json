@@ -1,0 +1,18 @@
+{
+    "name": "test-ts-adp-variant",
+    "version": "0.0.1",
+    "sapux": true,
+    "description": "An Adaptation Project variant",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "start": "start script",
+        "build": "build script",
+        "test": "test script"
+    },
+    "devDependencies": {}
+}

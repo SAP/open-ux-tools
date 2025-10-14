@@ -2,7 +2,12 @@ import * as zod from 'zod';
 import { FioriAppSchema, FunctionalityIdSchema, FunctionalitySchema, ParameterSchema } from './basic';
 
 /**
- * Output interface for the 'list-fiori-apps' functionality
+ * Output interface for the 'search_docs' functionality
+ */
+export const SearchDocsOutputSchema = zod.string().describe('Search results as formatted text');
+
+/**
+ * Output interface for the 'list_fiori_apps' functionality
  */
 export const ListFioriAppsOutputSchema = zod.object({
     /** Array of found Fiori applications */
@@ -10,7 +15,7 @@ export const ListFioriAppsOutputSchema = zod.object({
 });
 
 /**
- * Output interface for the 'list-functionality' functionality
+ * Output interface for the 'list_functionality' functionality
  */
 export const ListFunctionalitiesOutputSchema = zod.object({
     /** Path to the Fiori application */
@@ -20,12 +25,12 @@ export const ListFunctionalitiesOutputSchema = zod.object({
 });
 
 /**
- * Output interface for the 'get-functionality-details' functionality
+ * Output interface for the 'get_functionality_details' functionality
  */
 export const GetFunctionalityDetailsOutputSchema = zod.object({
     /** ID of the functionality */
     functionalityId: FunctionalityIdSchema.describe(
-        'Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`'
+        'Identifier to pass as the `functionalityId` parameter when calling `get_functionality_details` or `execute_functionality`'
     ),
     /** Name of the functionality */
     name: zod.string(),
@@ -33,8 +38,8 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
     description: zod.string(),
     /** Technical description of the functionality */
     technicalDescription: zod.string().optional(),
-    /** Array of parameters for the functionality */
-    parameters: zod.array(ParameterSchema),
+    /** Schema of input parameters for functionality */
+    parameters: ParameterSchema,
     /** Array of prerequisites for the functionality */
     prerequisites: zod.array(zod.string()).optional(),
     /** Impact of the functionality */
@@ -46,7 +51,7 @@ export const GetFunctionalityDetailsOutputSchema = zod.object({
 });
 
 /**
- * Output interface for the 'execute-functionality' functionality
+ * Output interface for the 'execute_functionality' functionality
  */
 export const ExecuteFunctionalityOutputSchema = zod.object({
     /** ID or array of IDs of the executed functionality(ies) */

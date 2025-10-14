@@ -1,5 +1,54 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.4
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+
+## 1.6.3
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui5-config@0.29.7
+
+## 1.6.2
+
+### Patch Changes
+
+-   d866995: fix: pathReplace not taken into account or truncated in case of nested router instances
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+
+## 1.6.1
+
+### Patch Changes
+
+-   d9acb53: Supports the pathReplace over the ui5-proxy-middleware
+
+## 1.6.0
+
+### Minor Changes
+
+-   64250ed: migrate to http-proxy-middleware v3
+
+## 1.5.12
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+
+## 1.5.11
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+
 ## 1.5.10
 
 ### Patch Changes

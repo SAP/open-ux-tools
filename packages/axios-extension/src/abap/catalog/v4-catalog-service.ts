@@ -156,11 +156,11 @@ export class V4CatalogService extends CatalogService {
         const serviceGroupResponseOdata = response.odata();
         const serviceGroups = serviceGroupResponseOdata.value;
         const serviceGroupCount = serviceGroupResponseOdata['@odata.count'];
-        const pageSize = parseInt(serviceGroupResponseOdata['@odata.nextLink']?.split('skiptoken=')[1], 10);
+        const pageSize = Number.parseInt(serviceGroupResponseOdata['@odata.nextLink']?.split('skiptoken=')[1], 10);
         let numPageRequests = 1;
 
         // If we dont have a valid skip token, we assume we have all services in the first page
-        if (!isNaN(pageSize)) {
+        if (!Number.isNaN(pageSize)) {
             const numPages = Math.ceil(serviceGroupCount / pageSize);
             // Create an array of promises to fetch all pages in parallel
             const fetchPromises = Array.from({ length: numPages - 1 }, (_, index) => {

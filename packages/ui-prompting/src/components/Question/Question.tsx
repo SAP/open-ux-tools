@@ -68,6 +68,7 @@ export const Question = (props: QuestionProps) => {
                     // change to pass the relevant answer
                     value={value}
                     {...question}
+                    answers={answers}
                     dynamicChoices={choices}
                     onChange={onChange}
                     pending={pending}

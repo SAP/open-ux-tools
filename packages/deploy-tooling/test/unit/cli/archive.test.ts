@@ -1,11 +1,11 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { join, relative } from 'path';
+import { join, relative } from 'node:path';
 import { getArchive } from '../../../src/cli/archive';
 import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
 import type { Resource } from '@ui5/fs';
 import AdmZip from 'adm-zip';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 
 jest.mock('axios');
 

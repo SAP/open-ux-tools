@@ -4,16 +4,26 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
-import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
+import {
+    docSearch,
+    listFioriApps,
+    listFunctionalities,
+    getFunctionalityDetails,
+    executeFunctionality,
+    tools
+} from './tools';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
+    DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
+import { logger } from './utils/logger';
 
 type ToolArgs =
+    | DocSearchInput
     | ListFioriAppsInput
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
@@ -52,7 +62,7 @@ export class FioriFunctionalityServer {
      * Logs MCP errors and handles the SIGINT signal for graceful shutdown.
      */
     private setupErrorHandling(): void {
-        this.server.onerror = (error) => console.error('[MCP Error]', error);
+        this.server.onerror = (error) => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
             await this.server.close();
             process.exit(0);
@@ -88,16 +98,19 @@ export class FioriFunctionalityServer {
                 TelemetryHelper.markToolStartTime();
 
                 switch (name) {
-                    case 'list-fiori-apps':
+                    case 'search_docs':
+                        result = await docSearch(args as DocSearchInput, true);
+                        break;
+                    case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         break;
-                    case 'list-functionality':
+                    case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
-                    case 'get-functionality-details':
+                    case 'get_functionality_details':
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
                         break;
-                    case 'execute-functionality':
+                    case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
@@ -105,7 +118,7 @@ export class FioriFunctionalityServer {
                             /* ignore telemetry errors */
                         });
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
                         );
                 }
                 TelemetryHelper.sendTelemetry(name, telemetryData, (args as any)?.appPath).catch(() => {
@@ -135,7 +148,20 @@ export class FioriFunctionalityServer {
      * @param result - The result to be converted.
      * @returns The converted result in CallToolResult format.
      */
-    private convertResultToCallToolResult<T extends object>(result: T | string): CallToolResult {
+    private convertResultToCallToolResult<T extends object | String>(result: T | string): CallToolResult {
+        // Handle string results - return them as plain text content
+        if (typeof result === 'string' || result instanceof String) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: result.toString()
+                    }
+                ]
+            };
+        }
+
+        // Handle object results - return as JSON with structured content
         const convertedResult: CallToolResult = {
             content: [
                 {
@@ -160,6 +186,6 @@ export class FioriFunctionalityServer {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         await this.setupTelemetry();
-        console.error('Fiori Functionality MCP Server running on stdio');
+        logger.info('Fiori Functionality MCP Server running on stdio');
     }
 }

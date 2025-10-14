@@ -1,5 +1,46 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [4c448a7]
+    -   @sap-ux/ui-components@1.26.12
+    -   @sap-ux/ui-prompting@0.5.3
+
+## 0.4.3
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui-prompting@0.5.2
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [7f652f3]
+    -   @sap-ux/ui-components@1.26.11
+    -   @sap-ux/ui-prompting@0.5.1
+
+## 0.4.1
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.4.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+### Patch Changes
+
+-   Updated dependencies [1276258]
+    -   @sap-ux/ui-prompting@0.5.0
+
 ## 0.3.3
 
 ### Patch Changes

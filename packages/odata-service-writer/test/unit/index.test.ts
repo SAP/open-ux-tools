@@ -1,13 +1,13 @@
 import type { EdmxAnnotationsInfo, OdataService } from '../../src';
 import { generate, update, remove, OdataVersion, ServiceType } from '../../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { enhanceData } from '../../src/data';
 import cloneDeep from 'lodash/cloneDeep';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import { t } from '../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
 

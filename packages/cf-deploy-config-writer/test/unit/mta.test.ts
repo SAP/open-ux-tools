@@ -1,5 +1,5 @@
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import * as memfs from 'memfs';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';

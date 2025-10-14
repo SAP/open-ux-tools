@@ -1,5 +1,104 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 0.6.0
+
+### Minor Changes
+
+-   28f024c: Only show maintained UI5 versions in the Reusable Library Generator.
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [bba16a6]
+    -   @sap-ux/ui5-info@0.13.0
+    -   @sap-ux/inquirer-common@0.7.50
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.25
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.5.4
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.5.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/ui5-info@0.12.4
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.23
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.5.0
+
+### Minor Changes
+
+-   0a9af29: Resolve UI5 versions against npm registry and @sapui5/distribution-metadata to ensure dropdown options match published packages.
+
+## 0.4.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.45
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.4.46
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.21
+-   @sap-ux/inquirer-common@0.7.43
+
+## 0.4.45
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.20
+-   @sap-ux/inquirer-common@0.7.42
+
+## 0.4.44
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.19
+-   @sap-ux/inquirer-common@0.7.41
+
 ## 0.4.43
 
 ### Patch Changes

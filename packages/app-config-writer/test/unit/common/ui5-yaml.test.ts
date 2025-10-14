@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 import { updateMiddlewaresForPreview } from '../../../src/common/ui5-yaml';
 import { FileName } from '@sap-ux/project-access';

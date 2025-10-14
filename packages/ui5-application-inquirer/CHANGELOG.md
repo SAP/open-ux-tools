@@ -1,5 +1,101 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.18
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 0.15.17
+
+### Patch Changes
+
+-   Updated dependencies [bba16a6]
+    -   @sap-ux/ui5-info@0.13.0
+    -   @sap-ux/inquirer-common@0.7.50
+
+## 0.15.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/project-input-validator@0.6.25
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.15.15
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.15.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.15.13
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-input-validator@0.6.24
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-info@0.12.4
+
+## 0.15.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/project-input-validator@0.6.23
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.15.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.45
+
+## 0.15.10
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/ui5-info@0.12.3
+    -   @sap-ux/project-access@1.32.1
+    -   @sap-ux/project-input-validator@0.6.22
+
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/project-input-validator@0.6.21
+    -   @sap-ux/inquirer-common@0.7.43
+
+## 0.15.8
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/project-input-validator@0.6.20
+    -   @sap-ux/inquirer-common@0.7.42
+
+## 0.15.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/project-input-validator@0.6.19
+-   @sap-ux/inquirer-common@0.7.41
+
 ## 0.15.6
 
 ### Patch Changes

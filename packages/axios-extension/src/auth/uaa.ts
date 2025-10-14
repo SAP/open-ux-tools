@@ -2,7 +2,7 @@ import open = require('open');
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import http from 'http';
-import type { AddressInfo } from 'net';
+import type { AddressInfo } from 'node:net';
 import qs from 'qs';
 import type { Logger } from '@sap-ux/logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';

@@ -49,8 +49,8 @@ export function shouldSetMinUI5Version(systemVersion?: string): boolean {
     }
 
     const versionParts = systemVersion.split('.');
-    const minorVersion = versionParts.length > 1 ? parseInt(versionParts[1], 10) : NaN;
-    return !isNaN(minorVersion) && minorVersion >= 90;
+    const minorVersion = versionParts.length > 1 ? Number.parseInt(versionParts[1], 10) : NaN;
+    return !Number.isNaN(minorVersion) && minorVersion >= 90;
 }
 
 /**
@@ -126,13 +126,13 @@ export async function getInternalVersions(latestVersion: string): Promise<string
 export async function getHigherVersions(version: string, publicVersions: UI5Version): Promise<string[]> {
     const latestVersion = publicVersions?.latest?.version;
     const radix = 10;
-    const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => parseInt(part, radix));
+    const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => Number.parseInt(part, radix));
 
     const higherVersions = Object.keys(publicVersions)
         .filter((key) => key !== 'latest')
         .map((key) => publicVersions[key]['version'])
         .filter((ver: string) => {
-            const [, minor, micro] = ver.split('.').map((part) => parseInt(part, radix));
+            const [, minor, micro] = ver.split('.').map((part) => Number.parseInt(part, radix));
             return minor > baselineMinor || (minor === baselineMinor && micro > baselineMicro);
         });
 

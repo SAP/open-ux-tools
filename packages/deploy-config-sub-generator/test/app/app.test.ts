@@ -1,4 +1,4 @@
-import { sep, join } from 'path';
+import { sep, join } from 'node:path';
 import DeployGenerator from '../../src/app';
 import yeomanTest from 'yeoman-test';
 import * as memfs from 'memfs';
@@ -11,7 +11,7 @@ import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
 import Generator from 'yeoman-generator';
-import type fs from 'fs';
+import type fs from 'node:fs';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),

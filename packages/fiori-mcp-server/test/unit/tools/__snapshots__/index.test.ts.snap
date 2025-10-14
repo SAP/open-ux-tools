@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Tools schemas execute-functionality: Input schema for "execute-functionality" 1`] = `
+exports[`Tools schemas execute_functionality: Input schema for "execute_functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -47,7 +47,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas execute-functionality: Output schema for "execute-functionality" 1`] = `
+exports[`Tools schemas execute_functionality: Output schema for "execute_functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -104,7 +104,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas get-functionality-details: Input schema for "get-functionality-details" 1`] = `
+exports[`Tools schemas get_functionality_details: Input schema for "get_functionality_details" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -142,7 +142,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas get-functionality-details: Output schema for "get-functionality-details" 1`] = `
+exports[`Tools schemas get_functionality_details: Output schema for "get_functionality_details" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -174,7 +174,7 @@ Object {
           "type": "array",
         },
       ],
-      "description": "Identifier to pass as the \`functionalityId\` parameter when calling \`get-functionality-details\` or \`execute-functionality\`",
+      "description": "Identifier to pass as the \`functionalityId\` parameter when calling \`get_functionality_details\` or \`execute_functionality\`",
     },
     "impact": Object {
       "type": "string",
@@ -186,264 +186,102 @@ Object {
       "type": "string",
     },
     "parameters": Object {
-      "items": Object {
-        "additionalProperties": false,
+      "additionalProperties": Object {},
+      "properties": Object {
+        "description": Object {
+          "type": "string",
+        },
         "properties": Object {
-          "currentValue": Object {},
-          "defaultValue": Object {},
-          "description": Object {
-            "type": "string",
-          },
-          "examples": Object {
-            "items": Object {
-              "type": "string",
-            },
-            "type": "array",
-          },
-          "id": Object {
-            "type": "string",
-          },
-          "name": Object {
-            "type": "string",
-          },
-          "options": Object {
-            "items": Object {
-              "anyOf": Array [
-                Object {
-                  "type": "string",
-                },
-                Object {
-                  "type": "number",
-                },
-                Object {
-                  "type": "boolean",
-                },
-                Object {
-                  "type": "null",
-                },
-              ],
-            },
-            "type": "array",
-          },
-          "parameters": Object {
-            "items": Object {
-              "additionalProperties": false,
-              "properties": Object {
-                "currentValue": Object {},
-                "defaultValue": Object {},
-                "description": Object {
-                  "type": "string",
-                },
-                "examples": Object {
-                  "items": Object {
+          "additionalProperties": Object {
+            "anyOf": Array [
+              Object {
+                "additionalProperties": Object {},
+                "properties": Object {
+                  "description": Object {
                     "type": "string",
                   },
-                  "type": "array",
-                },
-                "id": Object {
-                  "type": "string",
-                },
-                "name": Object {
-                  "type": "string",
-                },
-                "options": Object {
-                  "items": Object {
+                  "properties": Object {},
+                  "type": Object {
                     "anyOf": Array [
                       Object {
+                        "enum": Array [
+                          "object",
+                          "array",
+                          "string",
+                          "number",
+                          "boolean",
+                          "null",
+                          "integer",
+                          "any",
+                        ],
                         "type": "string",
                       },
                       Object {
-                        "type": "number",
-                      },
-                      Object {
-                        "type": "boolean",
-                      },
-                      Object {
-                        "type": "null",
-                      },
-                    ],
-                  },
-                  "type": "array",
-                },
-                "parameters": Object {
-                  "items": Object {
-                    "additionalProperties": false,
-                    "properties": Object {
-                      "currentValue": Object {},
-                      "defaultValue": Object {},
-                      "description": Object {
-                        "type": "string",
-                      },
-                      "examples": Object {
                         "items": Object {
+                          "enum": Array [
+                            "object",
+                            "array",
+                            "string",
+                            "number",
+                            "boolean",
+                            "null",
+                            "integer",
+                            "any",
+                          ],
                           "type": "string",
                         },
                         "type": "array",
                       },
-                      "id": Object {
-                        "type": "string",
-                      },
-                      "name": Object {
-                        "type": "string",
-                      },
-                      "options": Object {
-                        "items": Object {
-                          "anyOf": Array [
-                            Object {
-                              "type": "string",
-                            },
-                            Object {
-                              "type": "number",
-                            },
-                            Object {
-                              "type": "boolean",
-                            },
-                            Object {
-                              "type": "null",
-                            },
-                          ],
-                        },
-                        "type": "array",
-                      },
-                      "parameters": Object {
-                        "items": Object {
-                          "additionalProperties": false,
-                          "properties": Object {
-                            "currentValue": Object {},
-                            "defaultValue": Object {},
-                            "description": Object {
-                              "type": "string",
-                            },
-                            "examples": Object {
-                              "items": Object {
-                                "type": "string",
-                              },
-                              "type": "array",
-                            },
-                            "id": Object {
-                              "type": "string",
-                            },
-                            "name": Object {
-                              "type": "string",
-                            },
-                            "options": Object {
-                              "items": Object {
-                                "anyOf": Array [
-                                  Object {
-                                    "type": "string",
-                                  },
-                                  Object {
-                                    "type": "number",
-                                  },
-                                  Object {
-                                    "type": "boolean",
-                                  },
-                                  Object {
-                                    "type": "null",
-                                  },
-                                ],
-                              },
-                              "type": "array",
-                            },
-                            "pattern": Object {
-                              "type": "string",
-                            },
-                            "required": Object {
-                              "type": "boolean",
-                            },
-                            "type": Object {
-                              "enum": Array [
-                                "string",
-                                "number",
-                                "boolean",
-                                "array",
-                                "object",
-                              ],
-                              "type": "string",
-                            },
-                          },
-                          "required": Array [
-                            "id",
-                            "type",
-                          ],
-                          "type": "object",
-                        },
-                        "type": "array",
-                      },
-                      "pattern": Object {
-                        "type": "string",
-                      },
-                      "required": Object {
-                        "type": "boolean",
-                      },
-                      "type": Object {
-                        "enum": Array [
-                          "string",
-                          "number",
-                          "boolean",
-                          "array",
-                          "object",
-                        ],
-                        "type": "string",
-                      },
-                    },
-                    "required": Array [
-                      "id",
-                      "type",
                     ],
-                    "type": "object",
                   },
-                  "type": "array",
                 },
-                "pattern": Object {
-                  "type": "string",
-                },
-                "required": Object {
-                  "type": "boolean",
-                },
-                "type": Object {
-                  "enum": Array [
-                    "string",
-                    "number",
-                    "boolean",
-                    "array",
-                    "object",
-                  ],
-                  "type": "string",
-                },
+                "type": "object",
               },
-              "required": Array [
-                "id",
-                "type",
-              ],
-              "type": "object",
-            },
-            "type": "array",
-          },
-          "pattern": Object {
-            "type": "string",
-          },
-          "required": Object {
-            "type": "boolean",
-          },
-          "type": Object {
-            "enum": Array [
-              "string",
-              "number",
-              "boolean",
-              "array",
-              "object",
+              Object {
+                "type": "boolean",
+              },
             ],
+          },
+          "propertyNames": Object {
             "type": "string",
           },
+          "type": "object",
         },
-        "required": Array [
-          "id",
-          "type",
-        ],
-        "type": "object",
+        "type": Object {
+          "anyOf": Array [
+            Object {
+              "enum": Array [
+                "object",
+                "array",
+                "string",
+                "number",
+                "boolean",
+                "null",
+                "integer",
+                "any",
+              ],
+              "type": "string",
+            },
+            Object {
+              "items": Object {
+                "enum": Array [
+                  "object",
+                  "array",
+                  "string",
+                  "number",
+                  "boolean",
+                  "null",
+                  "integer",
+                  "any",
+                ],
+                "type": "string",
+              },
+              "type": "array",
+            },
+          ],
+        },
       },
-      "type": "array",
+      "type": "object",
     },
     "prerequisites": Object {
       "items": Object {
@@ -465,7 +303,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-fiori-apps: Input schema for "list-fiori-apps" 1`] = `
+exports[`Tools schemas list_fiori_apps: Input schema for "list_fiori_apps" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -484,7 +322,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-fiori-apps: Output schema for "list-fiori-apps" 1`] = `
+exports[`Tools schemas list_fiori_apps: Output schema for "list_fiori_apps" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -537,7 +375,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-functionality: Input schema for "list-functionality" 1`] = `
+exports[`Tools schemas list_functionality: Input schema for "list_functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -553,7 +391,7 @@ Object {
 }
 `;
 
-exports[`Tools schemas list-functionality: Output schema for "list-functionality" 1`] = `
+exports[`Tools schemas list_functionality: Output schema for "list_functionality" 1`] = `
 Object {
   "additionalProperties": false,
   "properties": Object {
@@ -586,7 +424,7 @@ Object {
                 "type": "array",
               },
             ],
-            "description": "Identifier to pass as the \`functionalityId\` parameter when calling \`get-functionality-details\` or \`execute-functionality\`",
+            "description": "Identifier to pass as the \`functionalityId\` parameter when calling \`get_functionality_details\` or \`execute_functionality\`",
           },
         },
         "required": Array [
