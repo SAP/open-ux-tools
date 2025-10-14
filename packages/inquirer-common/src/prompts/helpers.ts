@@ -171,50 +171,10 @@ export const transformationsRequiredForAnalyticalTable = [
 /**
  * Constants for annotation search patterns.
  */
-export const ANNOTATION_PATTERNS = {
-    RECURSIVE_HIERARCHY: 'RecursiveHierarchy',
-    HIERARCHY_RECURSIVE_HIERARCHY: 'Hierarchy.RecursiveHierarchy'
+export const annotationPatterns = {
+    recursiveHierarchy: 'RecursiveHierarchy',
+    hierarchyRecursiveHierarchy: 'Hierarchy.RecursiveHierarchy'
 } as const;
-
-/**
- * Gets transformations from entity set or entity type annotations.
- *
- * @param entitySet The entity set to extract transformations from.
- * @returns The transformations array if found, undefined otherwise.
- */
-function getAggregateTransformations(entitySet: EntitySet): string[] | undefined {
-    const transformations =
-        entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
-        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
-
-    return transformations as string[] | undefined;
-}
-
-/**
- * Finds a RecursiveHierarchy annotation key in hierarchy annotations.
- *
- * @param hierarchyAnnotations The hierarchy annotations object.
- * @returns The RecursiveHierarchy key if found, undefined otherwise.
- */
-function findRecursiveHierarchyKey(hierarchyAnnotations: Record<string, any>): string | undefined {
-    // First try exact match for the most common case
-    if (hierarchyAnnotations[ANNOTATION_PATTERNS.HIERARCHY_RECURSIVE_HIERARCHY]) {
-        return ANNOTATION_PATTERNS.HIERARCHY_RECURSIVE_HIERARCHY;
-    }
-
-    // Then check for qualified versions (RecursiveHierarchy#qualifier)
-    return Object.keys(hierarchyAnnotations).find((key) => key.startsWith(ANNOTATION_PATTERNS.RECURSIVE_HIERARCHY));
-}
-
-/**
- * Checks if hierarchy annotations contain a RecursiveHierarchy annotation.
- *
- * @param hierarchyAnnotations The hierarchy annotations object.
- * @returns true if RecursiveHierarchy annotation exists, false otherwise.
- */
-function hasRecursiveHierarchyAnnotation(hierarchyAnnotations: Record<string, any>): boolean {
-    return !!findRecursiveHierarchyKey(hierarchyAnnotations);
-}
 
 /**
  * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
@@ -225,8 +185,10 @@ function hasRecursiveHierarchyAnnotation(hierarchyAnnotations: Record<string, an
  */
 export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
     return entitySets.filter((entitySet) => {
-        const transformations = getAggregateTransformations(entitySet);
-        return !!transformations;
+        return (
+            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
+        );
     });
 }
 
@@ -301,7 +263,9 @@ export function hasAggregateTransformationsForEntitySet(
     entitySet: EntitySet,
     requiredTransformations?: readonly string[]
 ): boolean {
-    const transformations = getAggregateTransformations(entitySet);
+    const transformations =
+        entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
 
     if (!transformations || !Array.isArray(transformations)) {
         return false;
@@ -329,7 +293,13 @@ export function hasRecursiveHierarchyForEntitySet(entitySet: EntitySet): boolean
         return false;
     }
 
-    return hasRecursiveHierarchyAnnotation(hierarchyAnnotations);
+    // First try exact match for the most common case
+    if (hierarchyAnnotations['RecursiveHierarchy']) {
+        return true;
+    }
+
+    // Then check for qualified versions (RecursiveHierarchy#qualifier)
+    return Object.keys(hierarchyAnnotations).some((key) => key.startsWith(annotationPatterns.recursiveHierarchy));
 }
 
 /**
@@ -345,7 +315,10 @@ export function getRecursiveHierarchyQualifierForEntitySet(entitySet: EntitySet)
         return undefined;
     }
 
-    const recursiveHierarchyKey = findRecursiveHierarchyKey(hierarchyAnnotations);
+    // Find RecursiveHierarchy annotation key (with or without qualifier)
+    const recursiveHierarchyKey = Object.keys(hierarchyAnnotations).find((key) =>
+        key.startsWith(annotationPatterns.recursiveHierarchy)
+    );
 
     if (!recursiveHierarchyKey) {
         return undefined;
