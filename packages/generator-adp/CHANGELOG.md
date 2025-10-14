@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.5.4
+
+### Patch Changes
+
+-   3d63709: fix: Project name appears twice under system and password prompts when cloud system is selected.
+
 ## 0.5.3
 
 ### Patch Changes
