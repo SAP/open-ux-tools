@@ -1,8 +1,8 @@
 {
   "generationParameters": {
-    "generationDate": "Tue Jun 24 2025 22:45:01 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Tue Sep 30 2025 16:47:22 GMT+0100 (Irish Standard Time)",
     "generatorPlatform": "CLI",
-    "serviceType": "SAP System (ABAP Environment on SAP Business Technology Platform)",
+    "serviceType": "SAP System (ABAP Cloud)",
     "metadataFilename": "",
     "serviceUrl": "https://abap.cloud.host/sap/opu/odata/sap/SEPMRA_PROD_MAN",
     "appName": "lrop_v2_sap_system",
