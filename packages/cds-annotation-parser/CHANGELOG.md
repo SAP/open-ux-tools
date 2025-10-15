@@ -1,5 +1,12 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [ccb5285]
+    -   @sap-ux/odata-vocabularies@0.4.17
+
 ## 0.2.19
 
 ### Patch Changes
