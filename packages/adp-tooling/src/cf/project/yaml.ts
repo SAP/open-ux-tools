@@ -413,6 +413,7 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  *
  * @param {AdjustMtaYamlParams} params - The parameters.
  * @param {Editor} memFs - The mem-fs editor instance.
+ * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
  */
@@ -455,7 +456,15 @@ export async function adjustMtaYaml(
     // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
     adjustMtaYamlFlpModule(yamlContent, projectName, businessService);
 
-    await createServices(projectPath, yamlContent, initialServices, timestamp, spaceGuid, templatePathOverwrite, logger);
+    await createServices(
+        projectPath,
+        yamlContent,
+        initialServices,
+        timestamp,
+        spaceGuid,
+        templatePathOverwrite,
+        logger
+    );
 
     const updatedYamlContent = yaml.dump(yamlContent);
 

@@ -143,6 +143,7 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
  * @param {object} [security] - Security configuration.
  * @param {string | null} security.filePath - The security file path.
  * @param {string} [security.xsappname] - The XS app name.
+ * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} [logger] - The logger.
  */
 export async function createService(
@@ -207,6 +208,7 @@ export async function createService(
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
  * @param {string} spaceGuid - The space GUID.
+ * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
  */
