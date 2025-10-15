@@ -1,19 +1,20 @@
+import { ODataVersion } from '../base/odata-service';
 import { ServiceProvider } from '../base/service-provider';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
+import { AppIndexService } from './app-index-service';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
-import { AppIndexService } from './app-index-service';
-import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AbapCDSView, AtoSettings, BusinessObject } from './types';
+import type { AbapCDSView, AtoSettings, BusinessObject, SystemInfo } from './types';
 import { TenantType } from './types';
+import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
 import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
-import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
 import type { GeneratorEntry } from './adt-catalog/generators/types';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
+import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
+import { SystemInfoService } from './adt-catalog/services/systeminfo-service';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -27,13 +28,36 @@ export class AbapServiceProvider extends ServiceProvider {
     protected _publicUrl: string;
 
     /**
+     * The connected system info
+     */
+    protected _systemInfo: SystemInfo | undefined;
+
+    /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
      * The function returns a promise because it may be required to fetch the information from the backend.
      *
      * @returns the username
      */
-    public user(): Promise<string | undefined> {
-        return Promise.resolve(this.defaults.auth?.username);
+    public async user(): Promise<string | undefined> {
+        return (await Promise.resolve(this.defaults.auth?.username)) || (await this.getSystemInfo())?.userName;
+    }
+
+    /**
+     * Get user information.
+     *
+     * @returns user name or undefined
+     */
+    public async getSystemInfo(): Promise<SystemInfo | undefined> {
+        if (this._systemInfo) {
+            return this._systemInfo;
+        }
+        try {
+            const systemInfoService = this.createService<SystemInfoService>('', SystemInfoService);
+            this._systemInfo = await systemInfoService.getSystemInfo();
+        } catch (error) {
+            this.log.error(`An error occurred retrieving system info: ${error}`);
+        }
+        return this._systemInfo;
     }
 
     /**
