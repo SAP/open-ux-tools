@@ -236,7 +236,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "when": [Function],
   },
   {
-    "default": "",
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Leading property that decides between either a recursive hierarchy or data aggregation.",
