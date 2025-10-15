@@ -2,7 +2,15 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig, CustomConfig, TypesConfig } from '../types';
+import {
+    type CloudApp,
+    type AdpWriterConfig,
+    type CustomConfig,
+    type TypesConfig,
+    type CfAdpWriterConfig,
+    type DescriptorVariant,
+    ApplicationType
+} from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -82,6 +90,63 @@ export function getCustomConfig(environment: OperationsType, { name: id, version
             }
         }
     };
+}
+
+/**
+ * Get the variant for the CF project.
+ *
+ * @param {CfAdpWriterConfig} config - The CF configuration.
+ * @returns {DescriptorVariant} The variant for the CF project.
+ */
+export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
+    const { app, ui5 } = config;
+    const variant: DescriptorVariant = {
+        layer: app.layer,
+        reference: app.id,
+        id: app.namespace,
+        namespace: 'apps/' + app.id + '/appVariants/' + app.namespace + '/',
+        content: [
+            {
+                changeType: 'appdescr_ui5_setMinUI5Version',
+                content: {
+                    minUI5Version: ui5.version
+                }
+            },
+            {
+                changeType: 'appdescr_app_setTitle',
+                content: {},
+                texts: {
+                    i18n: 'i18n/i18n.properties'
+                }
+            }
+        ]
+    };
+
+    return variant;
+}
+
+/**
+ * Get the ADP config for the CF project.
+ *
+ * @param {CfAdpWriterConfig} config - The CF configuration.
+ * @returns {Record<string, unknown>} The ADP config for the CF project.
+ */
+export function getCfAdpConfig(config: CfAdpWriterConfig): Record<string, unknown> {
+    const { app, project, ui5, cf } = config;
+    const configJson = {
+        componentname: app.namespace,
+        appvariant: project.name,
+        layer: app.layer,
+        isOVPApp: app.appType === ApplicationType.FIORI_ELEMENTS_OVP,
+        isFioriElement: app.appType === ApplicationType.FIORI_ELEMENTS,
+        environment: 'CF',
+        ui5Version: ui5.version,
+        cfApiUrl: cf.url,
+        cfSpace: cf.space.GUID,
+        cfOrganization: cf.org.GUID
+    };
+
+    return configJson;
 }
 
 /**
@@ -167,5 +232,79 @@ export async function writeUI5DeployYaml(projectPath: string, data: AdpWriterCon
         }
     } catch (e) {
         throw new Error(`Could not write ui5-deploy.yaml file. Reason: ${e.message}`);
+    }
+}
+
+/**
+ * Write CF-specific templates and configuration files.
+ *
+ * @param {string} basePath - The base path.
+ * @param {DescriptorVariant} variant - The descriptor variant.
+ * @param {CfAdpWriterConfig} config - The CF configuration.
+ * @param {Editor} fs - The memfs editor instance.
+ */
+export async function writeCfTemplates(
+    basePath: string,
+    variant: DescriptorVariant,
+    config: CfAdpWriterConfig,
+    fs: Editor
+): Promise<void> {
+    const baseTmplPath = join(__dirname, '../../templates');
+    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
+    const { app, baseApp, cf, project, options } = config;
+
+    fs.copyTpl(
+        join(templatePath, 'project/webapp/manifest.appdescr_variant'),
+        join(project.folder, 'webapp', 'manifest.appdescr_variant'),
+        { app: variant }
+    );
+
+    fs.copyTpl(join(templatePath, 'cf/package.json'), join(project.folder, 'package.json'), {
+        module: project.name
+    });
+
+    fs.copyTpl(join(templatePath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
+        appHostId: baseApp.appHostId,
+        appName: baseApp.appName,
+        appVersion: baseApp.appVersion,
+        module: project.name,
+        html5RepoRuntime: cf.html5RepoRuntimeGuid,
+        org: cf.org.GUID,
+        space: cf.space.GUID,
+        sapCloudService: cf.businessSolutionName ?? '',
+        instanceName: cf.businessService
+    });
+
+    fs.writeJSON(join(project.folder, '.adp/config.json'), getCfAdpConfig(config));
+
+    fs.copyTpl(join(templatePath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
+        module: project.name,
+        moduleTitle: app.title,
+        appVariantId: app.namespace,
+        i18nGuid: config.app.i18nDescription
+    });
+
+    fs.copy(join(templatePath, 'cf/_gitignore'), join(project.folder, '.gitignore'));
+
+    if (options?.addStandaloneApprouter) {
+        fs.copyTpl(
+            join(templatePath, 'cf/approuter/package.json'),
+            join(basePath, `${project.name}-approuter/package.json`),
+            {
+                projectName: project.name
+            }
+        );
+
+        fs.copyTpl(
+            join(templatePath, 'cf/approuter/xs-app.json'),
+            join(basePath, `${project.name}-approuter/xs-app.json`),
+            {}
+        );
+    }
+
+    if (!fs.exists(join(basePath, 'xs-security.json'))) {
+        fs.copyTpl(join(templatePath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
+            projectName: project.name
+        });
     }
 }

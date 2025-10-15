@@ -2,8 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { Service, ServiceRetrievalOptions } from '.';
 import type { DataProvider } from '../data-provider';
 import { SystemDataProvider } from '../data-provider/backend-system';
-import type { BackendSystemKey } from '../entities/backend-system';
-import { BackendSystem } from '../entities/backend-system';
+import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
 import type { ServiceOptions } from '../types';
 
@@ -22,7 +21,9 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         this.validatePartialUpdateInput(entity);
         const existingSystem = await this.readOrThrow(key);
         const updatedEntity = this.mergeProperties(entity, existingSystem);
-        return this.write(updatedEntity);
+        return this.write(updatedEntity, {
+            force: true
+        });
     }
 
     private mergeProperties(update: Partial<BackendSystem>, existingSystem: BackendSystem): BackendSystem {
@@ -51,7 +52,24 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
         return this.dataProvider.read(key);
     }
-    public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
+
+    /**
+     * Write the backend system to the store. If a backend entity with the same key already exists and error is thrown.
+     * Use the `force` option to overwrite, use with cautions and are sure other clients will not break.
+     *
+     * @param entity the backend system to write
+     * @param options
+     * @param options.force Force overwrite existing backend system with the same key
+     * @returns
+     */
+    public async write(entity: BackendSystem, options?: { force: boolean }): Promise<BackendSystem | undefined> {
+        // Prevent overwrite of existing entity with the same key unless explicitly forced
+        const entityKey = BackendSystemKey.from(entity);
+        const existingSystem = await this.read(BackendSystemKey.from(entity));
+
+        if (!options?.force && existingSystem) {
+            throw new Error(text('error.backendSystemEntityKeyExists', { entityKey: entityKey.getId() }));
+        }
         return this.dataProvider.write(entity);
     }
     public async delete(entity: BackendSystem): Promise<boolean> {

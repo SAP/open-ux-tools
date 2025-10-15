@@ -1,6 +1,6 @@
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 import { ApiHubType, type TelemetryBusinessHubType, type TelemetrySapSystemType } from '../types';
-import { isBTPHosted } from './common';
+import { isAbapCloud } from './common';
 import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
 /**
@@ -10,8 +10,8 @@ import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer';
  * @returns
  */
 export function getTelemetrySapSystemType(connectedSystem: ConnectedSystem): TelemetrySapSystemType | undefined {
-    if (isBTPHosted(connectedSystem)) {
-        return 'SCP';
+    if (isAbapCloud(connectedSystem)) {
+        return 'SCP'; // Legacy term, leaving as is to support telem conmtinuity
     }
 
     if (
@@ -20,7 +20,8 @@ export function getTelemetrySapSystemType(connectedSystem: ConnectedSystem): Tel
     ) {
         return 'ABAP';
     }
-    // The only remaining case is CF on VSCode
+    // This wont ever be the case now as all reentrance ticket based connections are to Abap Cloud regardless of how the system was discovered
+    // This can probably be removed
     if (connectedSystem?.serviceProvider) {
         return 'CF';
     }

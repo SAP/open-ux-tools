@@ -169,7 +169,7 @@ export class AbapServiceProviderManager {
             } as UrlAbapTarget;
 
             if (
-                PromptState.abapDeployConfig.isS4HC ??
+                PromptState.abapDeployConfig.isAbapCloud ??
                 backendTarget?.abapTarget.authenticationType === AuthenticationType.ReentranceTicket
             ) {
                 abapTarget.authenticationType = AuthenticationType.ReentranceTicket;

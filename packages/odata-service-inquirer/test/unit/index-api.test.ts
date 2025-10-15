@@ -1,11 +1,12 @@
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { getPrompts, getSystemSelectionQuestions } from '../../src/index';
+import { type BackendSystem } from '@sap-ux/store';
+import type { OdataServicePromptOptions } from '../../src/index';
+import { getPrompts, getSystemSelectionQuestions, OdataVersion, promptNames } from '../../src/index';
 import * as prompts from '../../src/prompts';
 import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
-import { type BackendSystem } from '@sap-ux/store';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
@@ -15,10 +16,6 @@ jest.mock('../../src/prompts', () => ({
 jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts/datasources/sap-system/system-selection')
-}));
-
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
 }));
 
 jest.mock('@sap-ux/store', () => ({
@@ -43,7 +40,6 @@ jest.mock('@sap-ux/store', () => ({
 describe('API tests', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('getPrompts', async () => {
@@ -53,7 +49,23 @@ describe('API tests', () => {
                 validate: () => (PromptState.odataService.metadata = 'metadata contents')
             }
         ]);
-        const { prompts: questions, answers } = await getPrompts(undefined, undefined, true, undefined, true);
+
+        const prompOptions: OdataServicePromptOptions = {
+            [promptNames.serviceUrl]: {
+                requiredOdataVersion: OdataVersion.v4,
+                showCollaborativeDraftWarning: false,
+                additionalMessages: (input: any) => {
+                    if (input === 'X') {
+                        return {
+                            message: 'X may mark the spot',
+                            severity: Severity.information
+                        };
+                    }
+                }
+            }
+        };
+
+        const { prompts: questions, answers } = await getPrompts(prompOptions);
 
         expect(questions).toHaveLength(1);
         // execute the validate function as it would be done by inquirer
@@ -61,11 +73,12 @@ describe('API tests', () => {
         expect(answers.metadata).toBe('metadata contents');
 
         // Ensure stateful properties are set correctly
-        expect(PromptState.isYUI).toBe(true);
+        expect(PromptState.isYUI).toBe(false);
         expect(PromptState.odataService).toBe(answers);
+        // Default logger created
         expect(LoggerHelper.logger).toBeDefined();
-        expect(ErrorHandler.guidedAnswersEnabled).toBe(true);
         expect(ErrorHandler.logger).toBeDefined();
+        expect(ErrorHandler.guidedAnswersEnabled).toBe(false);
     });
 
     test('getSystemSelectionQuestions', async () => {

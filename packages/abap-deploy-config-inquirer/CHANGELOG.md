@@ -1,5 +1,35 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.29
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 1.6.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+
+## 1.6.27
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/fiori-generator-shared@0.13.22
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/inquirer-common@0.7.49
+
 ## 1.6.26
 
 ### Patch Changes

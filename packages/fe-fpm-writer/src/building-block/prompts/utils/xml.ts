@@ -123,9 +123,6 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
 }
 
 /**
- * Finds the prefix associated with a given namespace URI in the root element's attributes.
- * Handles both default namespaces (xmlns="...") and prefixed namespaces (xmlns:prefix="...").
- *
  * @example
  * // Default namespace (no prefix)
  * // <core:FragmentDefinition xmlns="sap.fe.macros">

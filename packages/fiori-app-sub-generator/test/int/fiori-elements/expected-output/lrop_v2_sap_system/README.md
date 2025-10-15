@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Tue Jun 24 2025 22:45:01 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Tue Sep 30 2025 16:47:22 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>List Report Page V2|
-|**Service Type**<br>SAP System (ABAP Environment on SAP Business Technology Platform)|
+|**Service Type**<br>SAP System (ABAP Cloud)|
 |**Service URL**<br>https://abap.cloud.host/sap/opu/odata/sap/SEPMRA_PROD_MAN|
 |**Module Name**<br>lrop_v2_sap_system|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
