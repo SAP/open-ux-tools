@@ -1,4 +1,4 @@
-import type { ImportSystemConfig, SystemCommandContext, ImportConfigFile } from '../../types/system';
+import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
 import { BackendSystem, BackendSystemKey, SystemService, type SystemType } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'os';
@@ -65,7 +65,7 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
 function createNewPanel(
     context: SystemCommandContext,
     panelKey: string,
-    systemConfig: ImportSystemConfig,
+    systemConfig: SystemConfig,
     existingSystemName?: BackendSystem['name']
 ): SystemPanel {
     const name = systemConfig?.name ?? existingSystemName ?? 'New System';
@@ -92,7 +92,7 @@ function createNewPanel(
  * @returns - the import system configuration
  * @throws - an error if no file is selected or if the configuration is incomplete
  */
-async function getImportSystemConfig(): Promise<ImportSystemConfig> {
+async function getImportSystemConfig(): Promise<SystemConfig> {
     const [systemFileUri] =
         (await window.showOpenDialog({
             canSelectFolders: false,
@@ -132,9 +132,9 @@ function normalizeFilePath(path: string): string {
  * @param filePath - path to the config file
  * @returns the import system configuration, or undefined if an error occurs
  */
-function readConfig(filePath: string): ImportSystemConfig | undefined {
+function readConfig(filePath: string): SystemConfig | undefined {
     const raw = readFileSync(filePath, 'utf8');
-    const [systemConfig] = (JSON.parse(raw) as ImportConfigFile).systems ?? [];
+    const [systemConfig] = (JSON.parse(raw) as SystemConfigFile).systems ?? [];
 
     if (!systemConfig) {
         throw new Error(t('error.noSystemsDefined', { filePath }));

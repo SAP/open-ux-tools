@@ -18,9 +18,9 @@ export type StoredSystemViewNode = {
 };
 
 /**
- * Configuration for importing a system from a config file.
+ * Configuration for importing/exporting a system from a config file.
  */
-export interface ImportSystemConfig {
+export interface SystemConfig {
     url: string;
     client?: string;
     name?: string;
@@ -28,10 +28,10 @@ export interface ImportSystemConfig {
 }
 
 /**
- * Configuration file structure for importing systems.
+ * Configuration file structure for importing/exporting systems.
  */
-export interface ImportConfigFile {
-    systems: ImportSystemConfig[];
+export interface SystemConfigFile {
+    systems: SystemConfig[];
 }
 
 export * from './panel';

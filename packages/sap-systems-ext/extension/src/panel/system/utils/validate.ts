@@ -32,7 +32,7 @@ export async function validateSystemName(newName: string, currentName?: string):
     );
 
     if (nameExists) {
-        throw t('error.systemNameExists');
+        throw t('validation.systemNameExists');
     }
 
     return true;

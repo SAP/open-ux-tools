@@ -24,18 +24,15 @@ export function getDisplayName(system: BackendSystem): string {
  * @param systemName - name of system
  * @returns boolean - confirmation if yes is selected or not
  */
-export async function confirmPrompt(confirmPromptType: ConfirmationPromptType, systemName?: string): Promise<boolean> {
-    let confirm;
+export async function confirmPrompt(confirmPromptType: ConfirmationPromptType, systemName: string): Promise<boolean> {
+    let confirm: string | undefined;
     const yes = t('confirmationPrompt.yes');
     const no = t('confirmationPrompt.no');
     const i18nkey = confirmationPromptMap.get(confirmPromptType);
 
     if (i18nkey) {
         confirm = await window.showWarningMessage(
-            t(i18nkey, {
-                interpolation: { escapeValue: false },
-                system: systemName
-            }),
+            t(i18nkey, geti18nOpts(systemName)),
             {
                 modal: true
             },

@@ -39,6 +39,28 @@ class EventEmitter {
     }
 }
 
+const TreeItemCollapsibleState = {
+    /**
+     * Determines an item can be neither collapsed nor expanded. Implies it has no children.
+     */
+    None: 0,
+    /**
+     * Determines an item is collapsed
+     */
+    Collapsed: 1,
+    /**
+     * Determines an item is expanded
+     */
+    Expanded: 2
+};
+
+class TreeItem {
+    constructor(label, collapsibleState) {
+        this.label = label;
+        this.collapsibleState = collapsibleState;
+    }
+}
+
 const FileChangeType = {
     Changed: 1,
     Created: 2,
@@ -108,6 +130,7 @@ const workspace = {
 };
 
 const window = {
+    registerTreeDataProvider: jest.fn(),
     createOutputChannel: () => {
         return {
             appendLine: jest.fn(),
@@ -143,6 +166,7 @@ const window = {
         return new Terminal(name);
     },
     showOpenDialog: jest.fn(),
+    showSaveDialog: jest.fn(),
     showInformationMessage: () => {},
     showErrorMessage: () => {},
     showWarningMessage: () => {},
@@ -165,7 +189,11 @@ const window = {
 
 const Uri = {
     file: (f) => f,
-    parse: jest.fn()
+    parse: jest.fn(),
+    joinPath: (a, b) => {
+        if (a == '""') return b;
+        return (a + ' + ' + b).replace(/' \+ '/g, '');
+    }
 };
 
 const env = {
@@ -217,7 +245,9 @@ const vscode = {
     RelativePattern,
     ViewColumn,
     Uri,
-    debug
+    debug,
+    TreeItemCollapsibleState,
+    TreeItem
 };
 
 module.exports = vscode;

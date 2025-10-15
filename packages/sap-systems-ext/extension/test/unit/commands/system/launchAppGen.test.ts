@@ -70,4 +70,31 @@ describe('Test the launch app generator command handler', () => {
             'Failed to launch the SAP Fiori application generator for [Test System].'
         );
     });
+
+    it('should show an error message if executing the command throws', async () => {
+        systemServiceReadMock.mockResolvedValue({
+            ...backendSystem,
+            name: undefined
+        });
+        const vsCodeCommands = vscodeMod.commands;
+        const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand').mockRejectedValue('Failed to launch');
+        const vsCodeWindow = vscodeMod.window;
+        const showErrorMessageSpy = jest.spyOn(vsCodeWindow, 'showErrorMessage');
+
+        const handler = launchAppGenCommandHandler(mockContext);
+        await handler({
+            url: backendSystem.url,
+            client: backendSystem.client
+        });
+
+        expect(executeCommandSpy).toHaveBeenCalled();
+        expect(showErrorMessageSpy).toHaveBeenCalledWith(
+            'Failed to launch the SAP Fiori application generator for [Test System].'
+        );
+    });
+
+    it('should show not throw an error if a url is not passed', async () => {
+        const handler = launchAppGenCommandHandler(mockContext);
+        expect(await handler({} as any)).toBeUndefined();
+    });
 });

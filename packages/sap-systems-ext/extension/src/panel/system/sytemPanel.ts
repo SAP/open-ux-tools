@@ -3,11 +3,11 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { DisposeCallback, PanelContext } from '../../types/system';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
 import { extensions, type WebviewPanel, type Disposable } from 'vscode';
+import { t } from '../../utils';
 import { join } from 'path';
 import { createWebviewPanel } from './utils';
 import { dispatchPanelAction } from './actions';
 import { GUIDED_ANSWERS_EXTENSION_ID } from '@sap-ux/guided-answers-helper';
-import i18next from 'i18next';
 import SystemsLogger from '../../utils/logger';
 
 /**
@@ -65,21 +65,19 @@ export class SystemPanel implements Disposable {
      */
     private async onWebviewMessage(action: WebAppActions): Promise<void> {
         try {
-            if (!this.panel) {
-                // should not happen
-                return;
+            if (this.panel) {
+                const context: PanelContext = {
+                    panelViewType: this.systemPanelViewType,
+                    backendSystem: this.backendSystem,
+                    systemStatusMessage: this.systemStatusMessage,
+                    isGuidedAnswersEnabled: this.isGuidedAnswersEnabled,
+                    disposePanel: this.dispose.bind(this),
+                    postMessage: this.panel.webview.postMessage.bind(this.panel.webview)
+                };
+                await dispatchPanelAction(context, action);
             }
-            const context: PanelContext = {
-                panelViewType: this.systemPanelViewType,
-                backendSystem: this.backendSystem,
-                systemStatusMessage: this.systemStatusMessage,
-                isGuidedAnswersEnabled: this.isGuidedAnswersEnabled,
-                disposePanel: this.dispose.bind(this),
-                postMessage: this.panel.webview.postMessage.bind(this.panel.webview)
-            };
-            await dispatchPanelAction(context, action);
         } catch (e) {
-            SystemsLogger.logger.error(i18next.t('SYSTEM_INFO_ERROR', { error: (e as Error).message ?? String(e) }));
+            SystemsLogger.logger.error(t('error.panelActionDispatch', { error: (e as Error).message ?? String(e) }));
         }
     }
 }

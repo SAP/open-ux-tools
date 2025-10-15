@@ -2,6 +2,9 @@
     "views": {
         "client": "Client: {{client}}"
     },
+    "commands": {
+        "openSystemDetails": "Open System Details"
+    },
     "confirmationPrompt": {
         "yes": "Yes",
         "no": "No",
@@ -33,7 +36,6 @@
         "urlMissing": "This saved SAP system is missing a URL and cannot be displayed.",
         "systemInfo": "Error during processing of system information: {{- error}}",
         "systemKeyExists": "System (URL + Client) already exists",
-        "systemNameExists": "System name is already in use",
         "systemUpdateFailure": "Failed to update system information: {{- error}}",
         "noServices": "This SAP system failed to return any services: {{- error}}",
         "cert": {
@@ -50,9 +52,11 @@
         "catalogRequest": "The V{{version}} request failed with error: {{error}}.",
         "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}",
         "viewSystemDetails": "Error executing command to view system details.",
-        "noFileSelected": "No file selected for import."
+        "noFileSelected": "No file selected for import.",
+        "panelActionDispatch": "Error dispatching panel action: {{- error}}"
     },
     "validation": {
-        "provideUrl": "Please provide a valid URL to test the connection."
+        "provideUrl": "Please provide a valid URL to test the connection.",
+        "systemNameExists": "System name is already in use"
     }
 }

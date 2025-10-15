@@ -10,6 +10,7 @@ import type {
 export const systemInfoLoading = (): SystemInfoLoading => ({
     type: 'SYSTEM_INFO_LOADING'
 });
+
 export const createNewSystem = (): CreateNewSystem => ({
     type: 'CREATE_NEW_SYSTEM'
 });

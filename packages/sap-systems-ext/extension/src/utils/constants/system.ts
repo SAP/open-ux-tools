@@ -11,6 +11,13 @@ export enum SystemCommands {
 }
 
 /**
+ * VSCode command identifiers for extension related actions.
+ */
+export enum ExtensionCommands {
+    OpenOutputChannel = 'sap.ux.storedSystens.openOutputChannel'
+}
+
+/**
  * The type or mode the panel view is created for.
  * i.e creating a new system, viewing or updating an existing system, or importing a system.
  */

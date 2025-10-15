@@ -1,4 +1,4 @@
-import type { ImportConfigFile, PanelContext } from '../../../types/system';
+import type { SystemConfigFile, PanelContext } from '../../../types/system';
 import type { ExportSystem } from '@sap-ux/sap-systems-ext-types';
 import { window, workspace } from 'vscode';
 import { writeFileSync } from 'fs';
@@ -23,11 +23,10 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
     }
 
     try {
-        const systemDetails: ImportConfigFile = {
+        const systemDetails: SystemConfigFile = {
             systems: [
                 {
                     name: backendSystem.name,
-                    type: backendSystem.systemType,
                     url: backendSystem.url,
                     client: backendSystem.client
                 }
@@ -41,11 +40,24 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
             window.showInformationMessage(t('info.systemExported', geti18nOpts(backendSystem.name)));
             logTelemetry(SystemActionStatus.EXPORT_SUCCESS);
         }
-    } catch (error) {
-        SystemsLogger.logger.error(t('error.exportFailure', { error }));
-        logTelemetry(SystemActionStatus.EXPORT_FAIL);
+    } catch (e) {
+        const error = e instanceof Error ? e.message : e;
+        const errorMsg = t('error.exportFailure', { error });
+        errorHandler(errorMsg);
     }
 };
+
+/**
+ * Handles the error.
+ *
+ * @param errorMsg - the error message to display and log
+ */
+function errorHandler(errorMsg: string): void {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    window.showErrorMessage(errorMsg);
+    SystemsLogger.logger.error(errorMsg);
+    logTelemetry(SystemActionStatus.EXPORT_FAIL);
+}
 
 /**
  * Logs telemetry for the export action.

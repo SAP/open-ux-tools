@@ -1,5 +1,5 @@
 import type { CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, SystemType } from '@sap-ux/store';
 import type { AbapServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import { AbapCloudEnvironment, createForAbap, createForAbapOnCloud, ODataVersion } from '@sap-ux/axios-extension';
 
@@ -43,7 +43,7 @@ function getAbapOnPremServiceProvider({
  * @returns an instance of AbapServiceProvider
  */
 function getAbapServiceProvider(system: BackendSystem): AbapServiceProvider {
-    if (system.systemType === 'S4HC' && system.url) {
+    if ((system.systemType as SystemType) === 'AbapCloud' && system.url) {
         return createForAbapOnCloud({
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
             url: new URL(system.url).toString()
