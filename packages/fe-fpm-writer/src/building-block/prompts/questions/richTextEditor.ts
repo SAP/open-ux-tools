@@ -11,6 +11,7 @@ import {
 import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType, bindingContextAbsolute } from '../../types';
 import type { BuildingBlockConfig, RichTextEditor } from '../../types';
+import { resolveBindingContextTypeChoices } from '../utils/prompt-helpers';
 
 export type RichTextEditorPromptsAnswer = BuildingBlockConfig<RichTextEditor> & Answers;
 
@@ -47,7 +48,8 @@ export async function getRichTextEditorBuildingBlockPrompts(
                 guiOptions: {
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.entitySet']
-                }
+                },
+                choices: resolveBindingContextTypeChoices(context)
             }),
             getEntityPrompt(context, {
                 name: 'buildingBlockData.metaPath.entitySet',
