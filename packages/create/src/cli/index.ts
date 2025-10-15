@@ -44,6 +44,15 @@ function getCommanderProgram(): Command {
     const program = new Command();
     const version = getVersion();
     program.description(`Configure features for Fiori applications and projects. (${version})`);
+    program.addHelpText('after', `\nExample Usages:
+  'npx --yes @sap-ux/create@latest add --help'              Get more information about the available 'add' sub-commands.
+  'npx --yes @sap-ux/create@latest add html --help'         See the options available for the 'add html' command.
+  'npx --yes @sap-ux/create@latest add html --simulate'     Simulate adding HTML files for local preview and testing to an existing project.`);
+    program.addHelpText('after', `\nAI Instructions:
+  First, find the command that suites best, then use '[command] --help' to find the best suitable sub-command.
+  Then use '[command] [sub-command] --help' to get details about the available options.
+  If you are confident one of the available commands and options fits, use it otherwise try finding a different tools to solve the task.
+`);
     program.version(version);
 
     // Handler for create-fiori generate <feature> ..

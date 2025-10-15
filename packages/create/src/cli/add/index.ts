@@ -16,8 +16,7 @@ import { addAddVariantsConfigCommand } from './variants-config';
  * @returns - commander command containing add <feature> commands
  */
 export function getAddCommands(): Command {
-    const addCommands = new Command('add')
-        .description('List of commands to add features to an existing SAP Fiori application.');
+    const addCommands = new Command('add');
 
     addAddMockserverConfigCommand(addCommands);
     addAddSmartLinksConfigCommand(addCommands);
@@ -30,5 +29,11 @@ export function getAddCommands(): Command {
     addComponentUsagesCommand(addCommands);
     addDeployConfigCommand(addCommands);
     addAddVariantsConfigCommand(addCommands);
+
+    const subCommandNames = addCommands.commands.map((cmd) => cmd.name());
+    const featureSummary = subCommandNames.slice(0, 3).join(', ');
+    addCommands.description(
+        `Add features to a Fiori app (e.g., ${featureSummary}, ...). Run 'add --help' for a full list.`
+    );
     return addCommands;
 }

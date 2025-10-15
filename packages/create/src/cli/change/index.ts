@@ -8,10 +8,15 @@ import { addChangeInboundCommand } from './change-inbound';
  * @returns - commander command containing change <feature> commands
  */
 export function getChangeCommands(): Command {
-    const addCommands = new Command('change')
-        .description('List of commands to change existing adaptation projects.');
+    const changeCommands = new Command('change');
 
-    addChangeDataSourceCommand(addCommands);
-    addChangeInboundCommand(addCommands);
-    return addCommands;
+    addChangeDataSourceCommand(changeCommands);
+    addChangeInboundCommand(changeCommands);
+
+    const subCommandNames = changeCommands.commands.map((cmd) => cmd.name());
+    const featureSummary = subCommandNames.slice(0, 3).join(', ');
+    changeCommands.description(
+        `Change existing adaptation projects (e.g., ${featureSummary}, ...). Run 'change --help' for a full list.`
+    );
+    return changeCommands;
 }
