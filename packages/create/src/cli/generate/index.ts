@@ -9,10 +9,5 @@ export function getGenerateCommands(): Command {
 
     addGenerateAdaptationProjectCommand(genCommands);
 
-    const subCommandNames = genCommands.commands.map((cmd) => cmd.name());
-    const featureSummary = subCommandNames.slice(0, 3).join(', ');
-    genCommands.description(
-        `Generate adaptation projects (e.g., ${featureSummary}, ...). Run 'generate --help' for a full list.`
-    );
     return genCommands;
 }

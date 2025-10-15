@@ -13,10 +13,5 @@ export function getChangeCommands(): Command {
     addChangeDataSourceCommand(changeCommands);
     addChangeInboundCommand(changeCommands);
 
-    const subCommandNames = changeCommands.commands.map((cmd) => cmd.name());
-    const featureSummary = subCommandNames.slice(0, 3).join(', ');
-    changeCommands.description(
-        `Change existing adaptation projects (e.g., ${featureSummary}, ...). Run 'change --help' for a full list.`
-    );
     return changeCommands;
 }

@@ -30,10 +30,5 @@ export function getAddCommands(): Command {
     addDeployConfigCommand(addCommands);
     addAddVariantsConfigCommand(addCommands);
 
-    const subCommandNames = addCommands.commands.map((cmd) => cmd.name());
-    const featureSummary = subCommandNames.slice(0, 3).join(', ');
-    addCommands.description(
-        `Add features to a Fiori app (e.g., ${featureSummary}, ...). Run 'add --help' for a full list.`
-    );
     return addCommands;
 }

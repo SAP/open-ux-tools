@@ -44,9 +44,9 @@ function getCommanderProgram(): Command {
     const program = new Command();
     const version = getVersion();
     program.description(`Configure features for Fiori applications and projects. (${version})`);
-    program.addHelpText('after', `\nExample Usages:
-  'npx --yes @sap-ux/create@latest add --help'              Get more information about the available 'add' sub-commands.
-  'npx --yes @sap-ux/create@latest add html --help'         See the options available for the 'add html' command.
+    program.addHelpText('after', `\nExample Usage:
+  'npx --yes @sap-ux/create@latest add --help'              Get available sub-commands for the 'add' command.
+  'npx --yes @sap-ux/create@latest add html --help'         Get available options for the 'add html' command.
   'npx --yes @sap-ux/create@latest add html --simulate'     Simulate adding HTML files for local preview and testing to an existing project.`);
     program.addHelpText('after', `\nAI Instructions:
   First, find the command that suites best, then use '[command] --help' to find the best suitable sub-command.
@@ -56,24 +56,55 @@ function getCommanderProgram(): Command {
     program.version(version);
 
     // Handler for create-fiori generate <feature> ..
-    program.addCommand(getGenerateCommands());
+    const genCommands = getGenerateCommands();
+    genCommands.description(
+        `Generate adaptation projects (e.g., ${getFeatureSummary(genCommands.commands)}, ...). Run 'generate --help' for a full list.`
+    );
+    program.addCommand(genCommands);
 
     // Handler for create-fiori add <feature> ..
-    program.addCommand(getAddCommands());
+    const addCommands = getAddCommands();
+    addCommands.description(
+        `Add features to a Fiori app (e.g., ${getFeatureSummary(addCommands.commands)}, ...). Run 'add --help' for a full list.`
+    );
+    program.addCommand(addCommands);
 
     // Handler for create-fiori convert <feature> ..
-    program.addCommand(getConvertCommands());
+    const convertCommands = getConvertCommands();
+    convertCommands.description(
+        `Convert existing SAP Fiori applications (e.g., ${getFeatureSummary(convertCommands.commands)}, ...). Run 'convert --help' for a full list.`
+    );
+    program.addCommand(convertCommands);
 
     // Handler for create-fiori remove <feature> ..
-    program.addCommand(getRemoveCommands());
+    const removeCommands = getRemoveCommands();
+    removeCommands.description(
+        `Remove features from existing SAP Fiori applications (e.g., ${getFeatureSummary(removeCommands.commands)}, ...). Run 'remove --help' for a full list.`
+    );
+    program.addCommand(removeCommands);
 
     // Handler for create-fiori change <feature> ..
-    program.addCommand(getChangeCommands());
+    const changeCommands = getChangeCommands();
+    changeCommands.description(
+        `Change existing adaptation projects (e.g., ${getFeatureSummary(changeCommands.commands)}, ...). Run 'change --help' for a full list.`
+    );
+    program.addCommand(changeCommands);
 
     // Override exit so calling this command without arguments does not result in an exit code 1, which causes an error message when running from npm init
     program.exitOverride();
 
     return program;
+}
+
+/**
+ * Return a summary of the first three features from the provided commands.
+ *
+ * @param commands - list of commands
+ * @returns - summary of the first three features
+ */
+function getFeatureSummary(commands: Command[]): string {
+    const subCommandNames = commands.map((cmd) => cmd.name());
+    return subCommandNames.slice(0, 3).join(', ');
 }
 
 /**

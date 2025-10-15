@@ -11,10 +11,5 @@ export function getRemoveCommands(): Command {
 
     addRemoveMockserverConfigCommand(removeCommands);
 
-    const subCommandNames = removeCommands.commands.map((cmd) => cmd.name());
-    const featureSummary = subCommandNames.slice(0, 3).join(', ');
-    removeCommands.description(
-        `Remove features from existing SAP Fiori applications (e.g., ${featureSummary}, ...). Run 'remove --help' for a full list.`
-    );
     return removeCommands;
 }
