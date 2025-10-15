@@ -335,6 +335,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         });
 
         it('should throw error when writing phase fails', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
             const error = new Error('Test error');
             mockIsAppStudio.mockReturnValue(false);
             getAtoInfoMock.mockRejectedValueOnce(error);
