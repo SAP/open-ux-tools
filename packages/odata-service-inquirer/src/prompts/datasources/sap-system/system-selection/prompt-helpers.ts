@@ -18,6 +18,7 @@ import { convertODataVersionType, PromptState, removeCircularFromServiceProvider
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { ValidationResult } from '../../../types';
+import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -68,8 +69,7 @@ export async function connectWithBackendSystem(
         } else if (backendSystem.serviceKeys) {
             connectValResult = await connectionValidator.validateServiceInfo(
                 backendSystem.serviceKeys as ServiceInfo,
-                convertODataVersionType(requiredOdataVersion),
-                backendSystem.refreshToken
+                convertODataVersionType(requiredOdataVersion)
             );
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
             let errorType;
@@ -151,34 +151,6 @@ export async function connectWithDestination(
 
     // Deal with all destination errors here
     return connectValResult;
-}
-
-/**
- * Creates and returns a display name for the system, appending the system type and user display name if available.
- *
- * @param system the backend system to create a display name for
- * @returns the display name for the system
- */
-export function getBackendSystemDisplayName(system: BackendSystem): string {
-    const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    const systemTypeName = getBackendSystemTypeName(system.systemType);
-    return `${system.name}${systemTypeName}${userDisplayName}`;
-}
-
-/**
- * Returns the formatted system type name for the given backend system.
- *
- * @param systemType the system type to get the name for
- * @returns system type name formatted as a string, e.g. " (BTP)" or " (S4HC)".
- */
-function getBackendSystemTypeName(systemType?: string): string {
-    let systemTypeName = ''; // for on prem we do not show the system type
-    if (systemType === 'S4HC') {
-        systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
-    } else if (systemType === 'BTP') {
-        systemTypeName = ` (${t('texts.systemTypeBTP')})`;
-    }
-    return systemTypeName;
 }
 
 /**
@@ -267,6 +239,9 @@ export async function createSystemChoices(
         }
     } else {
         const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
+        // Cache the backend systems
+        PromptState.backendSystemsCache = backendSystems;
+
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),

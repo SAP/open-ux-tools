@@ -2748,12 +2748,12 @@ Array [
         ],
         "origin": Object {
           "end": Object {
-            "character": 54,
-            "line": 4,
+            "character": 46,
+            "line": 5,
           },
           "start": Object {
             "character": 16,
-            "line": 4,
+            "line": 5,
           },
         },
         "term": "com.sap.vocabularies.UI.v1.LineItem",

@@ -1,5 +1,37 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.35
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.7.22
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.34
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.68
+-   @sap-ux/fiori-elements-writer@2.7.21
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.33
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/odata-service-inquirer@2.8.13
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/telemetry@0.6.29
+    -   @sap-ux/cap-config-writer@0.12.14
+    -   @sap-ux/fiori-elements-writer@2.7.20
+    -   @sap-ux/fiori-freestyle-writer@2.4.51
+    -   @sap-ux/ui5-application-inquirer@0.15.19
+
 ## 0.7.32
 
 ### Patch Changes

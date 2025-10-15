@@ -308,7 +308,7 @@ describe('proxy', () => {
         test('simple system', async () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigForSystem({ ...proxyOptions }, system, false, jest.fn());
+            await enhanceConfigForSystem({ ...proxyOptions }, system, 'basic', jest.fn());
             expect(proxyOptions).toEqual(proxyOptions);
         });
 
@@ -321,7 +321,7 @@ describe('proxy', () => {
             });
 
             try {
-                await enhanceConfigForSystem({ headers: {} }, system, true, jest.fn());
+                await enhanceConfigForSystem({ headers: {} }, system, 'oauth2', jest.fn());
                 fail('Should have thrown an error because no service keys have been provided.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -334,7 +334,7 @@ describe('proxy', () => {
                 refreshToken: '~token'
             };
             const callback = jest.fn();
-            await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
+            await enhanceConfigForSystem(proxyOptions, cloudSystem, 'oauth2', callback);
             expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,
@@ -351,13 +351,13 @@ describe('proxy', () => {
             };
 
             // provided from config
-            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, 'basic', jest.fn());
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
 
             // provided from env variables
             process.env.FIORI_TOOLS_USER = creds.username;
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
-            await enhanceConfigForSystem(proxyOptions, system, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, system, 'basic', jest.fn());
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
         });
 
@@ -375,7 +375,7 @@ describe('proxy', () => {
                     ...system,
                     authenticationType: AuthenticationType.ReentranceTicket
                 },
-                false,
+                'reentranceTicket',
                 jest.fn()
             );
 

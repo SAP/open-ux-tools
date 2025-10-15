@@ -1,5 +1,37 @@
 # @sap-ux/generator-adp
 
+## 0.5.4
+
+### Patch Changes
+
+-   3d63709: fix: Project name appears twice under system and password prompts when cloud system is selected.
+
+## 0.5.3
+
+### Patch Changes
+
+-   ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/adp-tooling@0.16.1
+    -   @sap-ux/inquirer-common@0.7.51
+
 ## 0.5.0
 
 ### Minor Changes
