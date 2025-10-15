@@ -242,6 +242,40 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
 }
 
 /**
+ * Determines if AnalyticalTable should be used based on entity annotations and service type.
+ *
+ * AnalyticalTable is used when entity has hierarchical and analytical data together, for CAP services with analytical data,
+ * or for non-CAP services with complete analytical transformations.
+ *
+ * @param entitySet The entity set to check for annotations.
+ * @param isCapService Whether the service is a CAP service (affects analytical requirements).
+ * @returns True if AnalyticalTable should be used, false otherwise.
+ */
+function shouldUseAnalyticalTable(entitySet: EntitySet, isCapService: boolean): boolean {
+    // Evaluate annotations once to avoid multiple iterations
+    const hasAnalytical = hasAggregateTransformations(entitySet);
+    const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
+
+    // No analytical data means no need for AnalyticalTable
+    if (!hasAnalytical) {
+        return false;
+    }
+
+    // If entity has both analytical and hierarchical data, always use AnalyticalTable
+    if (hasHierarchy) {
+        return true;
+    }
+
+    // For CAP services, analytical annotations are sufficient
+    if (isCapService) {
+        return true;
+    }
+
+    // For non-CAP services, require complete analytical transformations
+    return hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable);
+}
+
+/**
  * Get the default table type based on the template type and previous answers.
  *
  * @param templateType the template type of the application to be generated from the prompt answers
@@ -270,12 +304,9 @@ export function getDefaultTableType(
         if (
             (templateType === 'lrop' || templateType === 'worklist') &&
             odataVersion === OdataVersion.v4 &&
-            ((hasAggregateTransformations(entitySet) && hasRecursiveHierarchyForEntitySet(entitySet)) ||
-                (isCapService && hasAggregateTransformations(entitySet)) ||
-                (!isCapService &&
-                    hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable)))
+            shouldUseAnalyticalTable(entitySet, isCapService)
         ) {
-            // Use AnalyticalTable when: both analytical+hierarchical, CAP with analytical, or non-CAP with complete analytical transformations
+            // Use AnalyticalTable for entities with analytical data based on optimized annotation evaluation
             tableType = 'AnalyticalTable';
             setAnalyticalTableDefault = true;
         } else if (
