@@ -30,6 +30,7 @@ export {
     BuildingBlockConfig,
     Page,
     CustomColumn,
+    CustomFilterField,
     RichTextEditor
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
