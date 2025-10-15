@@ -155,6 +155,8 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
 
 /**
  * Required transformations for analytical table support.
+ * NOTE: This constant is primarily used by odata-service-inquirer but is exported
+ * here to maintain backward compatibility with external packages that import it.
  */
 export const transformationsRequiredForAnalyticalTable = [
     'filter',
@@ -169,12 +171,9 @@ export const transformationsRequiredForAnalyticalTable = [
 ] as const;
 
 /**
- * Constants for annotation search patterns.
+ * Annotation pattern for RecursiveHierarchy.
  */
-export const annotationPatterns = {
-    recursiveHierarchy: 'RecursiveHierarchy',
-    hierarchyRecursiveHierarchy: 'Hierarchy.RecursiveHierarchy'
-} as const;
+const RECURSIVE_HIERARCHY_ANNOTATION = 'RecursiveHierarchy';
 
 /**
  * Checks if the given entity set has aggregate transformations.
@@ -317,12 +316,12 @@ function findRecursiveHierarchyKey(entitySet: EntitySet): string | undefined {
     }
 
     // First try exact match for the most common case
-    if (hierarchyAnnotations['RecursiveHierarchy']) {
-        return 'RecursiveHierarchy';
+    if (hierarchyAnnotations[RECURSIVE_HIERARCHY_ANNOTATION]) {
+        return RECURSIVE_HIERARCHY_ANNOTATION;
     }
 
     // Then check for qualified versions (RecursiveHierarchy#qualifier)
-    return Object.keys(hierarchyAnnotations).find((key) => key.startsWith(annotationPatterns.recursiveHierarchy));
+    return Object.keys(hierarchyAnnotations).find((key) => key.startsWith(RECURSIVE_HIERARCHY_ANNOTATION));
 }
 
 /**
