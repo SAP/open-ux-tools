@@ -44,7 +44,6 @@
         "react-dom": "16.14.0",
         "react-i18next": "15.4.1",
         "react-redux": "7.2.9",
-        "redux": "4.0.4",
-        "redux-mock-store": "1.5.5"
+        "redux": "4.0.4"
     }
 }

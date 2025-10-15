@@ -18,10 +18,7 @@
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
-        "@sap-ux/ui-components": "workspace:*",
-        "eslint": "8.57.0",
-        "ts-loader": "9.4.4",
-        "typescript": "5.9.2"
+        "@sap-ux/ui-components": "workspace:*"
     },
     "files": [
         "dist",
