@@ -7,7 +7,7 @@ import { i18nNamespaces, translate } from '../../../i18n';
 /**
  * Loads entity sets from cache or fetches them for the given context.
  */
-const entitySetCache: Record<string, EntitySet[]> = {};
+export const entitySetCache: Record<string, EntitySet[]> = {};
 
 /**
  * Loads and caches entity sets for the given prompt context.
