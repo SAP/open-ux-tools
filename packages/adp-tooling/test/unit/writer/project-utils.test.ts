@@ -4,11 +4,12 @@ import type { Editor } from 'mem-fs-editor';
 
 import { getTypesPackage, getTypesVersion, getEsmTypesVersion, UI5_DEFAULT } from '@sap-ux/ui5-config';
 
-import type { AdpWriterConfig } from '../../../src';
+import { type AdpWriterConfig, AppRouterType, FlexLayer } from '../../../src';
 import {
     writeTemplateToFolder,
     writeUI5Yaml,
     writeUI5DeployYaml,
+    writeUI5YamlCf,
     getPackageJSONInfo,
     getTypes
 } from '../../../src/writer/project-utils';
@@ -251,6 +252,94 @@ describe('Project Utils', () => {
                 fail('Expected error to be thrown');
             } catch (error) {
                 expect(error.message).toBe(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
+            }
+        });
+    });
+
+    describe('writeUI5YamlCf', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        const projectPath = 'project';
+        const cfData = {
+            app: {
+                id: 'my.test.cf.app',
+                title: 'My Test CF App',
+                layer: FlexLayer.CUSTOMER_BASE,
+                namespace: 'my.test.cf.app',
+                manifest: {} as any
+            },
+            baseApp: {
+                appId: 'the.original.app',
+                appName: 'Original App',
+                appVersion: '1.0.0',
+                appHostId: 'host123',
+                serviceName: 'service123',
+                title: 'Original App Title'
+            },
+            cf: {
+                url: 'https://cf.example.com',
+                org: { Name: 'test-org', GUID: 'org-guid' },
+                space: { Name: 'test-space', GUID: 'space-guid' },
+                html5RepoRuntimeGuid: 'runtime-guid',
+                approuter: AppRouterType.MANAGED,
+                businessService: 'business-service'
+            },
+            project: {
+                name: 'my-test-cf-project',
+                path: '/test/path',
+                folder: '/test/path/my-test-cf-project'
+            },
+            ui5: {
+                version: '1.133.1'
+            },
+            options: {
+                addStandaloneApprouter: false
+            }
+        };
+
+        const ui5YamlContent = `# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+specVersion: "3.0"
+metadata:
+  name: ${cfData.app.id}
+  type: application`;
+
+        const writeFilesSpy = jest.fn();
+        const mockFs = {
+            write: writeFilesSpy,
+            read: jest.fn().mockReturnValue(ui5YamlContent)
+        };
+
+        it('should write ui5.yaml for CF project to the specified folder', async () => {
+            await writeUI5YamlCf(projectPath, cfData, mockFs as unknown as Editor);
+
+            expect(mockFs.read).toHaveBeenCalledWith(path.join(projectPath, 'ui5.yaml'));
+            expect(writeFilesSpy).toHaveBeenCalledWith(
+                path.join(projectPath, 'ui5.yaml'),
+                expect.stringContaining('propertiesFileSourceEncoding: UTF-8')
+            );
+            expect(writeFilesSpy).toHaveBeenCalledWith(
+                path.join(projectPath, 'ui5.yaml'),
+                expect.stringContaining('paths:')
+            );
+            expect(writeFilesSpy).toHaveBeenCalledWith(
+                path.join(projectPath, 'ui5.yaml'),
+                expect.stringContaining('webapp: dist')
+            );
+        });
+
+        it('should throw error when reading ui5.yaml fails', async () => {
+            const errMsg = 'File not found';
+            mockFs.read.mockImplementation(() => {
+                throw new Error(errMsg);
+            });
+
+            try {
+                await writeUI5YamlCf(projectPath, cfData, mockFs as unknown as Editor);
+                fail('Expected error to be thrown');
+            } catch (error) {
+                expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
         });
     });
