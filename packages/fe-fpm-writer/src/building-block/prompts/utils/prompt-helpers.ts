@@ -1,12 +1,13 @@
 import type { NavigationProperty, Property, EntitySet } from '@sap-ux/vocabularies-types';
-import { bindingContextRelative } from '../../types';
+import { bindingContextRelative, bindingContextAbsolute } from '../../types';
 import type { PromptContext } from '../../../prompts/types';
 import { getEntitySets } from './service';
+import { i18nNamespaces, translate } from '../../../i18n';
 
 /**
  * Loads entity sets from cache or fetches them for the given context.
  */
-const entitySetCache: Record<string, EntitySet[]> = {};
+export const entitySetCache: Record<string, EntitySet[]> = {};
 
 /**
  * Loads and caches entity sets for the given prompt context.
@@ -94,4 +95,52 @@ export function resolveEntitySetTargets(
 
     // Otherwise, return properties of the selected entity set
     return entitySet?.entityType?.entityProperties ?? [];
+}
+
+/**
+ * Returns binding context type choices for a prompt, optionally disabling the "relative" option and providing a tooltip.
+ *
+ * @param disableRelative - If true, disables the "relative" option in the returned choices.
+ * @returns An array of choice objects for binding context type selection.
+ */
+function getBindingContextTypeChoices(disableRelative: boolean = false) {
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
+    return [
+        { name: t('common.bindingContextType.option.absolute') as string, value: bindingContextAbsolute },
+        {
+            name: t('common.bindingContextType.option.relative') as string,
+            value: bindingContextRelative,
+            ...(disableRelative ? { disabled: true, title: t('richTextEditor.relativeBindingDisabledTooltip') } : {})
+        }
+    ];
+}
+
+/**
+ * Returns binding context type choices based on project and available entity sets.
+ *
+ * @param context - prompt context
+ * @returns Array of choices or a Promise resolving to choices
+ */
+export function resolveBindingContextTypeChoices(context: PromptContext) {
+    const { project } = context;
+    if (project) {
+        return async () => {
+            const entitySets = await loadEntitySets(context);
+            const { pageContextEntitySet } = context.options ?? {};
+
+            if (!pageContextEntitySet) {
+                return getBindingContextTypeChoices();
+            }
+
+            // Check if there are any entity sets available for relative binding context.
+            // If none are found, disable the "Relative" option since the user has nothing to select.
+            const options = getEntitySetOptions(entitySets, pageContextEntitySet, bindingContextRelative);
+            if (!options.length) {
+                return getBindingContextTypeChoices(true);
+            }
+
+            return getBindingContextTypeChoices();
+        };
+    }
+    return getBindingContextTypeChoices();
 }

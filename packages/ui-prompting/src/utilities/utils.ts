@@ -137,6 +137,8 @@ export function convertChoicesToOptions(choices: PromptListChoices): UISelectabl
             options.push({
                 key: choice.value.toString(),
                 text: choice.name ?? '',
+                disabled: 'disabled' in choice ? Boolean(choice.disabled) : undefined,
+                title: 'title' in choice ? String(choice.title) : '',
                 data: choice
             });
         } else {

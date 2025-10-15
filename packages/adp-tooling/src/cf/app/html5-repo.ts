@@ -82,6 +82,7 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
                 ['html5-apps-repo-rt'],
                 undefined,
                 undefined,
+                undefined,
                 logger
             );
             serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
