@@ -6,7 +6,8 @@ import {
     enhanceConfigForSystem,
     ProxyEventHandlers,
     PathRewriters,
-    proxyErrorHandler
+    proxyErrorHandler,
+    type EnhancedIncomingMessage
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
@@ -64,7 +65,7 @@ describe('proxy', () => {
     });
 
     describe('PathRewriters', () => {
-        const { replacePrefix, replaceClient, getPathRewrite } = PathRewriters;
+        const { replacePrefix, replaceClient, getPathRewrite, convertAppDescriptorToManifest } = PathRewriters;
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
@@ -79,61 +80,79 @@ describe('proxy', () => {
             expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
         });
 
+        test('convertAppDescriptorToManifest', () => {
+            const rewrite = convertAppDescriptorToManifest('/my/bsp');
+            expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
+            expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
+            expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
+            expect(rewrite('/test')).toBe('/test');
+        });
+
         test('getPathRewrite', () => {
             // no rewrite required
             const pathOutput = getPathRewrite({} as BackendConfig, logger);
             expect(pathOutput).toBeDefined();
-            expect(pathOutput!('/my/path')).toEqual('/my/path');
+            expect(pathOutput!('/my/path', { originalUrl: '/my/path' } as EnhancedIncomingMessage)).toEqual('/my/path');
 
             // all writers added
             const writerChain = getPathRewrite(
                 {
                     client: '012',
                     path: '/old',
-                    pathReplace: '/my/new'
+                    pathReplace: '/my/new',
+                    bsp: '/my/bsp'
                 } as BackendConfig,
                 logger
             );
             expect(writerChain).toBeDefined();
-            expect(writerChain!('/old/my/bsp/test?sap-client=000')).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/test')).toBe('/test?sap-client=012');
+            expect(
+                writerChain!('/old/my/bsp/test?sap-client=000', {
+                    originalUrl: '/old/my/bsp/test?sap-client=000'
+                } as EnhancedIncomingMessage)
+            ).toBe('/my/new/my/bsp/test?sap-client=012');
+            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(
+                writerChain!('/bsp/manifest.appdescr', {
+                    originalUrl: '/my/bsp/manifest.appdescr'
+                } as EnhancedIncomingMessage)
+            ).toBe('/manifest.json');
         });
     });
 
     describe('ProxyEventHandlers', () => {
-        const { onProxyReq, onProxyRes } = ProxyEventHandlers;
+        const { proxyReq, proxyRes } = ProxyEventHandlers;
 
-        test('onProxyReq', () => {
+        test('proxyReq', () => {
             const mockSetHeader = jest.fn() as unknown;
 
-            onProxyReq({ setHeader: mockSetHeader } as ClientRequest);
+            proxyReq({ setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).not.toHaveBeenCalled();
 
-            onProxyReq({ path: 'hello/world', setHeader: mockSetHeader } as ClientRequest);
+            proxyReq({ path: 'hello/world', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).not.toHaveBeenCalled();
 
-            onProxyReq({
+            proxyReq({
                 path: 'hello/Fiorilaunchpad.html',
                 headersSent: true,
                 setHeader: mockSetHeader
             } as ClientRequest);
             expect(mockSetHeader).not.toHaveBeenCalled();
 
-            onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
+            proxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).toHaveBeenCalledWith('accept-encoding', '*');
         });
 
-        test('onProxyRes', () => {
+        test('proxyRes', () => {
             const response = {} as IncomingMessage;
 
             // no set-cookie header, nothing to do, nothing changes
-            onProxyRes(response);
+            proxyRes(response);
             expect(response).toEqual({});
             response.headers = {};
-            onProxyRes(response);
+            proxyRes(response);
             expect(response).toEqual({ headers: {} });
             response.headers['set-cookie'] = [];
-            onProxyRes(response);
+            proxyRes(response);
             expect(response).toEqual({ headers: { 'set-cookie': [] } });
 
             // cookies are modified i.e. SameSite, Domain, Secure, Partitioned are removed
@@ -144,7 +163,7 @@ describe('proxy', () => {
                 'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; secure; Domain=example.com',
                 'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; SameSite=None; secure'
             ];
-            onProxyRes(response);
+            proxyRes(response);
             expect(response.headers['set-cookie']).toEqual([
                 'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
                 'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
@@ -289,7 +308,7 @@ describe('proxy', () => {
         test('simple system', async () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigForSystem({ ...proxyOptions }, system, false, jest.fn());
+            await enhanceConfigForSystem({ ...proxyOptions }, system, 'basic', jest.fn());
             expect(proxyOptions).toEqual(proxyOptions);
         });
 
@@ -302,7 +321,7 @@ describe('proxy', () => {
             });
 
             try {
-                await enhanceConfigForSystem({ headers: {} }, system, true, jest.fn());
+                await enhanceConfigForSystem({ headers: {} }, system, 'oauth2', jest.fn());
                 fail('Should have thrown an error because no service keys have been provided.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -315,7 +334,7 @@ describe('proxy', () => {
                 refreshToken: '~token'
             };
             const callback = jest.fn();
-            await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
+            await enhanceConfigForSystem(proxyOptions, cloudSystem, 'oauth2', callback);
             expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,
@@ -332,13 +351,13 @@ describe('proxy', () => {
             };
 
             // provided from config
-            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, 'basic', jest.fn());
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
 
             // provided from env variables
             process.env.FIORI_TOOLS_USER = creds.username;
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
-            await enhanceConfigForSystem(proxyOptions, system, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, system, 'basic', jest.fn());
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
         });
 
@@ -356,7 +375,7 @@ describe('proxy', () => {
                     ...system,
                     authenticationType: AuthenticationType.ReentranceTicket
                 },
-                false,
+                'reentranceTicket',
                 jest.fn()
             );
 
@@ -370,6 +389,7 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
+
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -386,9 +406,9 @@ describe('proxy', () => {
 
             const options = await generateProxyMiddlewareOptions(backend, baseOptions, logger);
             expect(options).toBeDefined();
-            expect(options.onError).toBeDefined();
-            expect(options.onProxyReq).toBeDefined();
-            expect(options.onProxyRes).toBeDefined();
+            expect(options?.on?.error).toBeDefined();
+            expect(options?.on?.proxyReq).toBeDefined();
+            expect(options?.on?.proxyRes).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
             expect(options.agent).toBeDefined();
@@ -478,14 +498,31 @@ describe('proxy', () => {
         });
 
         test('calling onError calls proxyErrorHandler', async () => {
+            const debugSpy = jest.fn();
+
+            jest.mock('@sap-ux/logger', () => {
+                return {
+                    ...jest.requireActual('@sap-ux/logger'),
+                    ToolsLogger: jest.fn().mockImplementation(() => ({
+                        debug: debugSpy,
+                        info: jest.fn(),
+                    }))
+                };
+            });
+
+            jest.resetModules();
+            // To ensure the mock is applied the import must be done after the mock is set
+            const { generateProxyMiddlewareOptions } = await import('../../src');
+
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
                 path: '/my/path'
             };
-            const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
-            const debugSpy = jest.spyOn(logger, 'debug');
-            if (typeof proxyOptions?.onError === 'function') {
-                proxyOptions?.onError(undefined as any, {} as any, {} as any);
+
+            const proxyOptions = await generateProxyMiddlewareOptions(backend, {});
+
+            if (typeof proxyOptions?.on?.error === 'function') {
+                proxyOptions.on.error(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);
             }
         });

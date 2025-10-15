@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { relative } from 'node:path';
 import type { Command } from 'commander';
 import { prompt } from 'prompts';
 import { getWebappPath } from '@sap-ux/project-access';

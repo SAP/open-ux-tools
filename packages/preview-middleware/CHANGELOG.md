@@ -1,5 +1,147 @@
 # @sap-ux/preview-middleware
 
+## 0.23.25
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+
+## 0.23.24
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/adp-tooling@0.16.1
+
+## 0.23.23
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/adp-tooling@0.16.0
+
+## 0.23.22
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+
+## 0.23.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+
+## 0.23.20
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+    -   @sap-ux/adp-tooling@0.15.36
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/system-access@0.6.19
+
+## 0.23.19
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/adp-tooling@0.15.35
+
+## 0.23.18
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.34
+
+## 0.23.17
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/i18n@0.3.4
+
+## 0.23.16
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.32
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/system-access@0.6.18
+
+## 0.23.15
+
+### Patch Changes
+
+-   a22b24e: enhance logging for remote connection of windows users
+
+## 0.23.14
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/system-access@0.6.18
+
+## 0.23.13
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/btp-utils@1.1.2
+    -   @sap-ux/adp-tooling@0.15.30
+    -   @sap-ux/system-access@0.6.17
+    -   @sap-ux/project-access@1.32.1
+
+## 0.23.12
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+    -   @sap-ux/adp-tooling@0.15.29
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.11
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+    -   @sap-ux/adp-tooling@0.15.28
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.10
+
+### Patch Changes
+
+-   8e8d781: feat: support preview on physical mobile devices
+
+## 0.23.9
+
+### Patch Changes
+
+-   4fa9dd9: fix: for disabling change table column quick action when variant management is disabled
+
+## 0.23.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.27
+-   @sap-ux/project-access@1.30.14
+-   @sap-ux/system-access@0.6.16
+
 ## 0.23.7
 
 ### Patch Changes

@@ -61,8 +61,9 @@ describe('getTransportRequestPrompts', () => {
                 "guiOptions": Object {
                   "breadcrumb": "Transport Request",
                   "hint": "Provide a transport request for your application.",
+                  "mandatory": true,
                 },
-                "message": [Function],
+                "message": "Transport Request",
                 "name": "transportManual",
                 "type": "input",
                 "validate": [Function],
@@ -237,9 +238,7 @@ describe('getTransportRequestPrompts', () => {
                     transportInputChoice: TransportChoices.EnterManualChoice
                 })
             ).toBe(true);
-            expect((transportManualPrompt.message as Function)()).toBe(
-                t('prompts.config.transport.common.transportRequestMandatory')
-            );
+            expect(transportManualPrompt.message).toBe(t('prompts.config.transport.common.transportRequest'));
             const previousAnswers = { transportManual: 'TR1234' };
             expect((transportManualPrompt.default as Function)(previousAnswers)).toBe('TR1234');
             expect((transportManualPrompt.validate as Function)(previousAnswers)).toBe(true);

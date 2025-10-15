@@ -1,4 +1,4 @@
-import { createWriteStream } from 'fs';
+import { createWriteStream } from 'node:fs';
 import * as archiver from 'archiver';
 import type { EnvironmentCheckResult } from '../types';
 import { byteNumberToSizeString } from '../formatter';

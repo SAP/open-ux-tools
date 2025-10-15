@@ -79,7 +79,10 @@ describe('adp', () => {
     test('init', async () => {
         const spyPostMessage = jest.spyOn(CommunicationService, 'subscribe');
         const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+        });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -123,7 +126,10 @@ describe('adp', () => {
     });
 
     test('init - send notification for UI5 version lower than 1.71', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.70.0' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.70.0' }]
+        });
         jest.spyOn(CommunicationService, 'sendAction');
 
         await init(rtaMock as unknown as RuntimeAuthoring);
@@ -157,7 +163,10 @@ describe('adp', () => {
             'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
         });
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.123.1' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.123.1' }]
+        });
 
         jest.spyOn(CommunicationService, 'sendAction');
 
@@ -192,7 +201,10 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+        });
 
         jest.spyOn(CommunicationService, 'sendAction');
 
@@ -222,7 +234,10 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.2' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.136.2' }]
+        });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -241,7 +256,10 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.136.0' }]
+        });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 

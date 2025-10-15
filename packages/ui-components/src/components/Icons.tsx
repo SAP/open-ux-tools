@@ -175,7 +175,9 @@ export enum UiIcons {
     WorldArrow = 'WorldArrow',
     WorldWarning = 'WorldWarning',
     ZoomIn = 'ZoomIn',
-    ZoomOut = 'ZoomOut'
+    ZoomOut = 'ZoomOut',
+    BuildingBlocks = 'BuildingBlocks',
+    Page = 'Page'
 }
 
 export function initIcons(): void {
@@ -1990,6 +1992,53 @@ export function initIcons(): void {
                         fill={COLORS.default}
                         d="M1,16 C0.44771525,16 0,15.5522847 0,15 L0,1 C0,0.44771525 0.44771525,0 1,0 L15,0 C15.5522847,0 16,0.44771525 16,1 L16,15 C16,15.5522847 15.5522847,16 15,16 L1,16 Z M5,11 L1,11 L1,15 L5,15 L5,11 Z M10,11 L6,11 L6,15 L10,15 L10,11 Z M15,11 L11,11 L11,15 L15,15 L15,11 Z M5,6 L1,6 L1,10 L5,10 L5,6 Z M10,6 L6,6 L6,10 L10,10 L10,6 Z M15,6 L11,6 L11,10 L15,10 L15,6 Z M5,1 L1,1 L1,5 L5,5 L5,1 Z M6,1 L6,5 L10,5 L10,1 L6,1 Z M11,5 L15,5 L15,1 L11,1 L11,5 Z"
                     />
+                </svg>
+            ),
+            [UiIcons.BuildingBlocks]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8.5" y="11.5" width="7" height="3" rx="0.5" stroke={COLORS.default} />
+                    <rect x="4.5" y="6.5" width="7" height="3" rx="0.5" stroke={COLORS.default} />
+                    <rect x="8.5" y="1.5" width="7" height="3" rx="0.5" stroke={COLORS.default} />
+                    <rect x="0.5" y="11.5" width="6" height="3" rx="0.5" stroke={COLORS.default} />
+                    <path
+                        fill={COLORS.default}
+                        d="M16 7H14V9H16V10H14C13.4477 10 13 9.55228 13 9V7C13 6.44772 13.4477 6 14 6H16V7Z"
+                    />
+                    <path
+                        fill={COLORS.default}
+                        d="M2 6C2.55228 6 3 6.44772 3 7V9L2.99512 9.10254C2.94379 9.60667 2.51768 10 2 10H0V9H2V7H0V6H2Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.Page]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M1 15H1.875V16H1L0.897461 15.9951C0.393331 15.9438 0 15.5177 0 15V14.125H1V15Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M5.375 16H3.625V15H5.375V16Z" fill={COLORS.default} />
+                    <path d="M8.875 16H7.125V15H8.875V16Z" fill={COLORS.default} />
+                    <path d="M12.375 16H10.625V15H12.375V16Z" fill={COLORS.default} />
+                    <path d="M16 15C16 15.5523 15.5523 16 15 16H14.125V15H15V14.125H16V15Z" fill={COLORS.default} />
+                    <path d="M5 13H4V11H5V13Z" fill={COLORS.default} />
+                    <path d="M1 12.375H0V10.625H1V12.375Z" fill={COLORS.default} />
+                    <path d="M16 12.375H15V10.625H16V12.375Z" fill={COLORS.default} />
+                    <path d="M5 9H4V7H5V9Z" fill={COLORS.default} />
+                    <path d="M1 8.875H0V7.125H1V8.875Z" fill={COLORS.default} />
+                    <path d="M16 8.875H15V7.125H16V8.875Z" fill={COLORS.default} />
+                    <path d="M1 4H1.875V5H1V5.375H0V3.625H1V4Z" fill={COLORS.default} />
+                    <path d="M16 5.375H15V5H14.125V4H15V3.625H16V5.375Z" fill={COLORS.default} />
+                    <path d="M5.375 5H3.625V4H5.375V5Z" fill={COLORS.default} />
+                    <path d="M8.875 5H7.125V4H8.875V5Z" fill={COLORS.default} />
+                    <path d="M12.375 5H10.625V4H12.375V5Z" fill={COLORS.default} />
+                    <path
+                        d="M1.875 1H1V1.875H0V1C0 0.482323 0.393331 0.0562144 0.897461 0.00488281L1 0H1.875V1Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M15 0C15.5523 0 16 0.447715 16 1V1.875H15V1H14.125V0H15Z" fill={COLORS.default} />
+                    <path d="M5.375 1H3.625V0H5.375V1Z" fill={COLORS.default} />
+                    <path d="M8.875 1H7.125V0H8.875V1Z" fill={COLORS.default} />
+                    <path d="M12.375 1H10.625V0H12.375V1Z" fill={COLORS.default} />
                 </svg>
             ),
             [UiIcons.Tags]: (

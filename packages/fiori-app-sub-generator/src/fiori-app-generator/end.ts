@@ -16,7 +16,7 @@ import {
     getService
 } from '@sap-ux/store';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ApiHubConfig } from '../types';
 import { ApiHubType } from '../types';
 import { buildSapClientParam, generateLaunchConfig, runHooks, t } from '../utils';

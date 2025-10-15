@@ -1,6 +1,7 @@
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { TestCaseName } from '../setup';
 import { getAst, getDiagnostics, getPaths, getTerm } from '../setup';
+import { deserialize } from '../deserialize-ast';
 import { Position, Range } from '@sap-ux/text-document-utils';
 import { initI18n } from '../../src/i18n';
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
@@ -21,7 +22,7 @@ const testConversion = (testCase: TestCaseName): void => {
         const expectedPaths = await getPaths(testCase);
         const { terms, diagnostics, pathSet } = toTerms(ast as Assignment, { vocabularyService });
         expect(terms).toStrictEqual(expectedTerm);
-        expect(diagnostics).toStrictEqual(expectedDiagnostics);
+        expect(deserialize(JSON.stringify(diagnostics))).toStrictEqual(expectedDiagnostics);
         // Assuming pathSet is a Set<string> or undefined
         const actualPaths = pathSet ? [...pathSet.values()] : [];
         expect(actualPaths).toStrictEqual(expectedPaths);
@@ -602,7 +603,7 @@ describe('ast to generic format', () => {
             });
             test('annotations with value', () => {
                 const ast = parse(`UI.RecommendationState : { $value: 1, ![@Core.Description] : '' }`);
-                const { terms } = toTerms(ast as Assignment, { vocabularyService });
+                const { terms, diagnostics } = toTerms(ast as Assignment, { vocabularyService });
                 const valueNode = terms[0].content[0] as Element;
                 expect(valueNode.name).toStrictEqual('Int');
                 const textNode = valueNode.content[0] as TextNode;
@@ -610,6 +611,7 @@ describe('ast to generic format', () => {
                 const annotationNode = terms[0].content[1] as Element;
                 expect(annotationNode.name).toStrictEqual('Annotation');
                 expect(annotationNode.attributes.Term.value).toStrictEqual('Core.Description');
+                expect(diagnostics).toMatchSnapshot();
             });
             test('annotation with empty value', () => {
                 const ast = parse(`UI.RecommendationState : { ![] : , $value: 1}`);
@@ -620,6 +622,18 @@ describe('ast to generic format', () => {
                 const ast = parse(`UI.RecommendationState : { ![] : false, $value: 1}`);
                 const { terms } = toTerms(ast as Assignment, { vocabularyService });
                 expect(terms[0].content.length).toStrictEqual(2);
+            });
+            test('annotations with multi line value', () => {
+                const ast = parse(`
+                UI.RecommendationState : {
+                    $value: {
+                       Test: 1
+                    },
+                    ![@Core.Description] : ''
+                }`);
+                const { diagnostics } = toTerms(ast as Assignment, { vocabularyService });
+
+                expect(diagnostics).toMatchSnapshot();
             });
         });
         describe('pointer', () => {

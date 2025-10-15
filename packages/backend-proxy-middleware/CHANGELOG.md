@@ -1,5 +1,52 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.3
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+
+## 0.10.2
+
+### Patch Changes
+
+-   2e1fd75: fix: bsp scenario broken
+
+## 0.10.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
+## 0.10.0
+
+### Minor Changes
+
+-   64250ed: migrate to http-proxy-middleware v3
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/axios-extension@1.22.8
+    -   @sap-ux/btp-utils@1.1.2
+
 ## 0.9.17
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import * as sapuxProjectAccess from '@sap-ux/project-access';
-import path, { join, sep } from 'path';
+import path, { join, sep } from 'node:path';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
     getCapEdmx,
@@ -9,9 +9,9 @@ import {
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
-import os from 'os';
+import os from 'node:os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
-import type { PathLike } from 'fs';
+import type { PathLike } from 'node:fs';
 import * as fsPromises from 'fs/promises';
 
 const initMockCapModelAndServices = {

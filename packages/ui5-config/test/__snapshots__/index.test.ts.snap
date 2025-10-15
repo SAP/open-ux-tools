@@ -143,6 +143,9 @@ exports[`UI5Config addAbapDeployTask minimal adp settings 1`] = `
           client: '012'
         app:
           package: $TMP
+        exclude:
+          - /test/
+        lrep: apps/workcenter/appVariants/customer.app.variant
 "
 `;
 

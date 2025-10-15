@@ -16,6 +16,7 @@ import {
     DATA_FIELD_FOR_ACTION_GROUP
 } from './model';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
+import { logger } from '../../utils/logger';
 
 interface TraverseNodeData {
     text: string;
@@ -48,6 +49,7 @@ export interface TreeNode {
     // Special node type
     type?: AggregationNodeType;
     value?: unknown;
+    schema: JSONSchema4;
 }
 
 /**
@@ -97,6 +99,7 @@ export interface TreeNodeProperty {
     // type and options
     options?: NodePropertyOptions[];
     properties?: TreeNodeProperty[];
+    schema: JSONSchema4;
 }
 
 export const BOOLEAN_DISPLAY_TRUE = 'True';
@@ -137,7 +140,8 @@ export function getGenericBase(
         displayName,
         // Default
         type: 'string',
-        value: property.value
+        value: property.value,
+        schema: property.schema ?? {}
     };
 }
 
@@ -148,7 +152,7 @@ export function getGenericBase(
  * @returns Is nummber value.
  */
 const isNumber = (value: number): boolean => {
-    return !isNaN(value) && !isNaN(value - 0);
+    return !Number.isNaN(value) && !Number.isNaN(value - 0);
 };
 
 /**
@@ -273,7 +277,7 @@ export function getPropertyData(
             if (property.schema.enum) {
                 getEnumOptions(property.schema.enum);
             } else {
-                console.warn('Unhandled property', property);
+                logger.warn(`Unhandled property: ${JSON.stringify(property)}`);
             }
             break;
         }
@@ -378,7 +382,8 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
         properties: getProperties(aggregation),
         annotationNodeId,
         type: getNodeType(aggregation),
-        value: aggregation.value
+        value: aggregation.value,
+        schema: aggregation.schema ?? {}
     };
 }
 
@@ -504,6 +509,7 @@ export function getTree(
     });
     // Update root node
     node.root = true;
+    node.schema = model.schema;
     return node;
 }
 

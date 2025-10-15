@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'url';
-import { relative } from 'path';
+import { fileURLToPath } from 'node:url';
+import { relative } from 'node:path';
 
 import type {
     RawAnnotation,

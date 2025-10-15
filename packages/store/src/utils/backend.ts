@@ -1,6 +1,6 @@
 import type { BackendSystem } from '../entities/backend-system';
 
-export type SystemType = 'OnPrem' | 'S4HC' | 'BTP' | undefined;
+export type SystemType = 'OnPrem' | 'AbapCloud' | undefined;
 
 /**
  * Determines the backend system type based on the authentication type and service keys (defaults to OnPrem).
@@ -11,9 +11,10 @@ export type SystemType = 'OnPrem' | 'S4HC' | 'BTP' | undefined;
 export function getBackendSystemType(system: BackendSystem): SystemType {
     let backendSystemType: SystemType;
     if (system.authenticationType === 'reentranceTicket') {
-        backendSystemType = 'S4HC';
+        backendSystemType = 'AbapCloud';
     } else if (system.serviceKeys) {
-        backendSystemType = 'BTP';
+        /** @deprecated Basing the system type on the auth method is no longer supported since service key support removal */
+        backendSystemType = 'AbapCloud';
     } else if (system.authenticationType === 'basic' || system.username) {
         backendSystemType = 'OnPrem';
     }

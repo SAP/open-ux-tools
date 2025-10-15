@@ -201,6 +201,69 @@ builder:
 }
 `;
 
+exports[`generate Generate deployment configs: test-js-adp-variant 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"test-js-adp-variant\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"sapux\\": true,
+    \\"description\\": \\"An Adaptation Project variant\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"scripts\\": {
+        \\"start\\": \\"start script\\",
+        \\"build\\": \\"build script\\",
+        \\"test\\": \\"test script\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    },
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'test-js-adp-variant'
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: MOCK_DESTINATION
+          url: https://example.com
+          client: '000'
+        app:
+          name: test-js-adp-variant
+          package: TESTPKG12
+          description: Mock deployment description
+          transport: TR123
+        exclude:
+          - /test/
+        lrep: MOCK_LREP
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`generate Generate deployment configs: test-js-app 1`] = `
 Object {
   "package.json": Object {
@@ -252,6 +315,68 @@ builder:
           authenticationType: reentranceTicket # SAML support for vscode
         app:
           name: test-js-app
+          package: TESTPKG12
+          description: Mock deployment description
+          transport: TR123
+        exclude:
+          - /test/
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`generate Generate deployment configs: test-ts-adp-variant 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"test-ts-adp-variant\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"sapux\\": true,
+    \\"description\\": \\"An Adaptation Project variant\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"scripts\\": {
+        \\"start\\": \\"start script\\",
+        \\"build\\": \\"build script\\",
+        \\"test\\": \\"test script\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    },
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'test-ts-adp-variant'
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: MOCK_DESTINATION
+          url: https://example.com
+          client: '000'
+        app:
+          name: test-ts-adp-variant
           package: TESTPKG12
           description: Mock deployment description
           transport: TR123

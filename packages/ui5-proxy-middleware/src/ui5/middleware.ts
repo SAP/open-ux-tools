@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
 import { Router as createRouter } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { ProxyConfig } from '../base';
 import { getCorporateProxyServer, directLoadProxy, ui5Proxy, resolveUI5Version, hideProxyCredentials } from '../base';
 import dotenv from 'dotenv';
@@ -20,8 +20,7 @@ import type { ReaderCollection } from '@ui5/fs';
 function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
     return {
         secure: config.secure !== undefined ? !!config.secure : true,
-        logLevel: config.debug ? 'debug' : 'info',
-        logProvider: () => logger
+        logger: config.debug ? logger : undefined
     };
 }
 
@@ -56,6 +55,7 @@ async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | u
 
 module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
+        logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info,
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
 
@@ -84,12 +84,15 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     const proxyOptions = createProxyOptions(logger, config);
 
     logger.info(
-        `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${proxyOptions.secure}'\nlog: '${proxyOptions.logLevel}''\ndirectLoad: '${directLoad}'`
+        `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${
+            proxyOptions.secure
+        }'\nlog: '${config.debug ? 'debug' : 'info'}' \ndirectLoad: '${directLoad}'`
     );
 
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
     const ui5Configs: ProxyConfig[] = [];
     const routes: { route: string; handler: RequestHandler }[] = [];
+
     for (const ui5 of configs) {
         const paths = Array.isArray(ui5.path) ? ui5.path : [ui5.path];
         for (const ui5Path of paths) {
@@ -97,10 +100,11 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
                 path: ui5Path,
                 url: envUI5Url || ui5.url,
                 version: ui5Version,
+                pathReplace: ui5.pathReplace,
                 proxy: config.proxy
             };
 
-            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
+            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions, undefined, logger) });
             ui5Configs.push(ui5Config);
         }
     }

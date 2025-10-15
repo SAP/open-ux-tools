@@ -22,7 +22,7 @@ export function updateProperty(obj: object, paths: PropertyPath, value: unknown,
                 ctx[key] = arrayElement ? [value] : value;
             }
         } else if (Array.isArray(ctx)) {
-            ctx.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
+            ctx.splice(typeof key === 'string' ? Number.parseInt(key, 10) : key, 1);
         } else {
             delete ctx[key];
         }

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { JSONSchema4 } from 'json-schema';
 import { ArtifactType, DirName, PageType } from '@sap/ux-specification/dist/types/src';
 import type { PageConfig } from '@sap/ux-specification/dist/types/src';
@@ -22,6 +22,7 @@ import { FieldsAggregation, ConnectedFieldsAggregation } from './fields';
 import { isArrayEndsWith, getMatchingNode } from './utils';
 import { ActionsAggregation } from './actions';
 import i18next from 'i18next';
+import { logger } from '../../../utils/logger';
 import { FilterFieldsAggregation } from './filter-fields';
 import { VisualFiltersAggregation } from './visual-filters';
 import { SectionAggregation, HeaderSectionsAggregation, SubSectionsAggregation } from './sections';
@@ -365,7 +366,7 @@ export class PageEditModel {
             }
             if (this.isAggregation(currentNode)) {
                 params.path = params.path.concat([
-                    params.aggregation.type === AggregationType.Array ? parseInt(name, 10) : name
+                    params.aggregation.type === AggregationType.Array ? Number.parseInt(name, 10) : name
                 ]);
                 const displayName = currentNode.displayName || name;
                 const type =
@@ -932,7 +933,7 @@ export class PageEditModel {
             if (currentNode[property] !== undefined || (property === 'i18nClassification' && property in currentNode)) {
                 if (!this.isCorrectSchemaProperty(property, currentNode[property])) {
                     // schema property is not correct - throw error and do not store value, because it can give unpredictable behavior
-                    console.error(
+                    logger.error(
                         i18next.t('SCHEMA_PARSING_ERROR_UNEXPECTED_VALUE', {
                             name: property,
                             value: JSON.stringify(currentNode[property])
