@@ -40,6 +40,14 @@ export class ListReport {
     }
 
     /**
+     * Clicks on the go button.
+     */
+    async clickOnGoButton(): Promise<void> {
+        await test.step(`Click on \`Go\` button.`, async () => {
+            await this.goButton.click();
+        });
+    }
+    /**
      * Clicks on the specified row in the List Report table.
      *
      * @param index - table row index
@@ -640,6 +648,20 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
 }
 
 /**
+ * Replace literal occurrences like "[a-z0-9]+" in content with a readable placeholder.
+ *
+ * @param input - string to sanitize
+ * @returns sanitized string
+ */
+function sanitizeIds(input: string): string {
+    return input
+        .replace(/\[a-z0-9\]\+/g, '<UNIQUE_ID>')
+        .replace(/\[0-9\]\+/g, '<UNIQUE_ID>')
+        .replace(/\\\[a-z0-9\\\]\+/g, '<UNIQUE_ID>')
+        .replace(/\\\[0-9\\\]\+/g, '<UNIQUE_ID>');
+}
+
+/**
  * Format fragments for markdown output.
  *
  * @param fragments Fragment files to format
@@ -652,7 +674,8 @@ function formatFragmentsForMarkdown(fragments: Record<string, string>): string {
 
     let result = '**Fragment(s)**\n\n';
     for (const [filename, content] of Object.entries(fragments)) {
-        result += `**${filename}**\n\`\`\`xml\n${content}\n\`\`\`\n\n`;
+        const sanitized = sanitizeIds(content);
+        result += `**${filename}**\n\`\`\`xml\n${sanitized}\n\`\`\`\n\n`;
     }
     return result;
 }
@@ -671,7 +694,7 @@ function formatAnnotationsForMarkdown(annotations: Record<string, string> | unde
     let result = '**Annotations**\n';
     if (Object.keys(annotations).length > 0) {
         for (const [_filename, content] of Object.entries(annotations)) {
-            result += `\`\`\`xml\n${content}\n\`\`\`\n\n`;
+            result += `\`\`\`xml\n${sanitizeIds(content)}\n\`\`\`\n\n`;
         }
     }
     return result;
@@ -691,7 +714,8 @@ function formatCodingForMarkdown(coding: Record<string, string | RegExp> | undef
     let result = '**Coding**\n\n';
     if (Object.keys(coding).length > 0) {
         for (const [filename, content] of Object.entries(coding)) {
-            result += `**${filename}**\n\`\`\`js\n${content}\n\`\`\`\n\n`;
+            const text = typeof content === 'string' ? content : String(content);
+            result += `**${filename}**\n\`\`\`js\n${sanitizeIds(text)}\n\`\`\`\n\n`;
         }
     }
     return result;

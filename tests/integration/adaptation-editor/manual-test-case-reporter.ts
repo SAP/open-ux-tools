@@ -105,12 +105,14 @@ export default class ManualTestCaseReporter implements Reporter {
             /^expect\.toBeDisabled$/,
             /^expect\.poll$/,
             /^locator\.textContent/,
+            /^locator\.count/,
             /^locator\.click\(iframe.*internal:control=enter-frame.*\)$/,
             /^locator\.hover\(iframe.*internal:control=enter-frame.*\)$/,
             /^locator\.fill\(iframe.*internal:control=enter-frame.*\)$/,
             /^Click on in Application Preview$/,
             /^locator\.getByTestId\(\'saved-changes-stack\'\)/,
-            /^Verifying Changes.../
+            /^Verifying Changes.../,
+            /^page\.goto\(/
         ];
 
         const shouldSkip = skipPatterns.some((pattern) => pattern.test(step.title));

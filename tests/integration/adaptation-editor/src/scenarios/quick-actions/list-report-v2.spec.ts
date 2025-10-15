@@ -178,7 +178,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
             if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
                 await editor.toolbar.navigationModeButton.click();
-                await lr.goButton.click();
+                await lr.clickOnGoButton();
                 await editor.toolbar.uiAdaptationModeButton.click();
             }
 
@@ -238,7 +238,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.reloadCompleted();
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await expect(
                 previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div'),
                 `Check Column Name is \`New Column\``
@@ -483,7 +483,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.quickActions.showLocalAnnotationFile.click();
             await expect(
                 previewFrame.getByText(/adp\.fiori\.elements\.v2\/changes\/annotations\/annotation_\d+\.xml/),
-                `Check filename \`adp.fiori.elements.v2/changes/annotations/annotation_\d+.xml\` is visible in the dialog`
+                `Check filename \`adp.fiori.elements.v2/changes/annotations/annotation_<UNIQUE_ID>.xml\` is visible in the dialog`
             ).toBeVisible();
             await expect(
                 previewFrame.getByRole('button', { name: 'Show File in VSCode' }),

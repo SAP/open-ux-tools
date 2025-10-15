@@ -17,14 +17,13 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Check `Clear` Button is hidden
-4. Click on button `Enable "Clear" Button in Filter Bar`
-5. Check `Clear` Button is visible
-6. Click on button `Save`
-7. Check `Save` button is disabled
-8. Verify changes:
+1. Check that UIAdaptation mode is enabled
+2. Check `Clear` Button is hidden
+3. Click on button `Enable "Clear" Button in Filter Bar`
+4. Check `Clear` Button is visible
+5. Click on button `Save`
+6. Check `Save` button is disabled
+7. Verify changes:
 
 **Change(s)**
 
@@ -40,11 +39,11 @@
 ```
 
 
-9. Click on button `Disable "Clear" Button in Filter Bar`
-10. Check `Clear` Button is hidden
-11. Click on button `Save`
-12. Check `Save` button is disabled
-13. Verify changes:
+8. Click on button `Disable "Clear" Button in Filter Bar`
+9. Check `Clear` Button is hidden
+10. Click on button `Save`
+11. Check `Save` button is disabled
+12. Verify changes:
 
 **Change(s)**
 
@@ -68,13 +67,12 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Add Controller to Page`
-4. Fill `Controller Name` field with `TestController` in dialog `Extend With Controller`
-5. Click on `Create` button in dialog `Extend With Controller`
-6. Click on button `Save`
-7. Verify changes:
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Add Controller to Page`
+3. Fill `Controller Name` field with `TestController` in dialog `Extend With Controller`
+4. Click on `Create` button in dialog `Extend With Controller`
+5. Click on button `Save`
+6. Verify changes:
 
 **Coding**
 
@@ -96,10 +94,10 @@
 ```
 
 
-8. Click on link `Reload`
-9. Click on button `Show Page Controller`
-10. Check filename `adp.fiori.elements.v2/changes/coding/TestController.js` is visible
-11. Check `Open in VS Code` button is visible
+7. Click on link `Reload`
+8. Click on button `Show Page Controller`
+9. Check filename `adp.fiori.elements.v2/changes/coding/TestController.js` is visible
+10. Check `Open in VS Code` button is visible
 
 ---
 
@@ -108,10 +106,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Change Table Columns`
-4. Check `String Property, Boolean Property, Currency` exist in the `View Settings` dialog
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Change Table Columns`
+3. Check `String Property, Boolean Property, Currency` exist in the `View Settings` dialog
 
 ---
 
@@ -120,14 +117,13 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Add Custom Table Action`
-4. Fill `Fragment Name` field with `table-action` in dialog `Add Custom Table Action`
-5. Click on `Create` button in dialog `Add Custom Table Action`
-6. Click on button `Save and Reload`
-7. Check `Save` button is disabled
-8. Verify changes:
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Add Custom Table Action`
+3. Fill `Fragment Name` field with `table-action` in dialog `Add Custom Table Action`
+4. Click on `Create` button in dialog `Add Custom Table Action`
+5. Click on button `Save and Reload`
+6. Check `Save` button is disabled
+7. Verify changes:
 
 **Fragment(s)**
 
@@ -136,7 +132,7 @@
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
-    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
+    <Button text="New Button"  id="btn-<UNIQUE_ID>"></Button>
 </core:FragmentDefinition>
 
 ```
@@ -163,10 +159,10 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Check if `Add Custom Table Column` is disabled
-4. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Check if `Add Custom Table Column` is disabled
+3. Click on button `Navigation`
+4. Click on `Go` button.
 5. Click on button `UI Adaptation`
 6. Click on button `Add Custom Table Column`
 7. Fill `Column Fragment Name` field with `table-column` in dialog `Add Custom Table Column`
@@ -182,7 +178,7 @@
 ```xml
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
-    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
+    <Text id="cell-text-<UNIQUE_ID>" text="Sample data" />
 </core:FragmentDefinition>
 ```
 
@@ -191,15 +187,15 @@
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
-     <Column id="column-[a-z0-9]+"
+     <Column id="column-<UNIQUE_ID>"
         width="12em"
         hAlign="Left"
         vAlign="Middle">
-        <Text id="column-title-[a-z0-9]+" text="New column" />
+        <Text id="column-title-<UNIQUE_ID>" text="New column" />
 
         <customData>
-            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
-                value='\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
+            <core:CustomData key="p13nData" id="custom-data-<UNIQUE_ID>"
+                value='\\{"columnKey": "column-<UNIQUE_ID>", "columnIndex": "3"}' />
         </customData>
     </Column>
 </core:FragmentDefinition>
@@ -234,8 +230,9 @@
 
 
 13. Click on button `Navigation`
-14. Check Column Name is `New Column`
-15. Check Column Data is `Sample data`
+14. Click on `Go` button.
+15. Check Column Name is `New Column`
+16. Check Column Data is `Sample data`
 
 ---
 
@@ -244,15 +241,14 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
-4. Click on value help button of `Date Property` filter
-5. Check semantic date `Yesterday` visible in filter
-6. Click on button `UI Adaptation`
-7. Click on button `Disable Semantic Date Range in Filter Bar`
-8. Click on button `Save and Reload`
-9. Verify changes:
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on value help button of `Date Property` filter
+4. Check semantic date `Yesterday` visible in filter
+5. Click on button `UI Adaptation`
+6. Click on button `Disable Semantic Date Range in Filter Bar`
+7. Click on button `Save and Reload`
+8. Verify changes:
 
 **Change(s)**
 
@@ -272,12 +268,12 @@
 ```
 
 
-10. Click on button `Navigation`
-11. Click on value help button of `Date Property` filter
-12. Click on button `UI Adaptation`
-13. Click on button `Enable Semantic Date Range in Filter Bar`
-14. Click on button `Save and Reload`
-15. Verify changes:
+9. Click on button `Navigation`
+10. Click on value help button of `Date Property` filter
+11. Click on button `UI Adaptation`
+12. Click on button `Enable Semantic Date Range in Filter Bar`
+13. Click on button `Save and Reload`
+14. Verify changes:
 
 **Change(s)**
 
@@ -305,12 +301,11 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Enable Variant Management in Tables and Charts`
-4. Click on button `Save and Reload`
-5. Check `Save` button is disabled
-6. Verify changes:
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Enable Variant Management in Tables and Charts`
+3. Click on button `Save and Reload`
+4. Check `Save` button is disabled
+5. Verify changes:
 
 **Change(s)**
 
@@ -341,16 +336,15 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Change Table Actions`
-4. Check `Button - Create, Button - Delete, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
-5. Hover over row `2` and click on `Move up` button in the row of `Rearrange Toolbar Content` table
-6. Check `Button - Delete, Button - Create, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
-7. Click on `OK` button of the dialog `Rearrange Toolbar Content`
-8. Click on button `Save`
-9. Check `Save` button is disabled
-10. Check saved changes stack contains `1` `Toolbar Content Move Change` change(s)
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Change Table Actions`
+3. Check `Button - Create, Button - Delete, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
+4. Hover over row `2` and click on `Move up` button in the row of `Rearrange Toolbar Content` table
+5. Check `Button - Delete, Button - Create, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
+6. Click on `OK` button of the dialog `Rearrange Toolbar Content`
+7. Click on button `Save`
+8. Check `Save` button is disabled
+9. Check saved changes stack contains `1` `Toolbar Content Move Change` change(s)
 
 ---
 
@@ -359,13 +353,12 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `UI Adaptation`
-4. Click on button `Add Local Annotation File`
-5. Click on button `Save and Reload`
-6. Check `Save` button is disabled
-7. Verify changes:
+1. Check that UIAdaptation mode is enabled
+2. Click on button `UI Adaptation`
+3. Click on button `Add Local Annotation File`
+4. Click on button `Save and Reload`
+5. Check `Save` button is disabled
+6. Verify changes:
 
 **Annotations**
 ```xml
@@ -383,7 +376,7 @@
         <edmx:Include Namespace="SERVICE"/>
     </edmx:Reference>
     <edmx:DataServices>
-        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local_[0-9]+">
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local_<UNIQUE_ID>">
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
@@ -405,9 +398,9 @@
 ```
 
 
-8. Click on button `Show Local Annotation File`
-9. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_d+.xml` is visible in the dialog
-10. Check button `Show File in VSCode` is visible in the dialog
+7. Click on button `Show Local Annotation File`
+8. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_<UNIQUE_ID>.xml` is visible in the dialog
+9. Check button `Show File in VSCode` is visible in the dialog
 
 ---
 

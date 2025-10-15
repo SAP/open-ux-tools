@@ -16,9 +16,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Enable Empty Row Mode for Tables`
@@ -53,9 +53,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Change Table Actions`
@@ -73,9 +73,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on button `UI Adaptation`
 5. Click on button `Add Controller to Page`
 6. Fill `Controller Name` field with `TestController` in dialog `Extend With Controller`
@@ -115,9 +115,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on button `UI Adaptation`
 5. Click on button `Add Custom Table Action`
 6. Fill `Fragment Name` field with `op-table-action` in dialog `Add Custom Table Action`
@@ -133,7 +133,7 @@
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
-    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
+    <Button text="New Button"  id="btn-<UNIQUE_ID>"></Button>
 </core:FragmentDefinition>
 ```
 
@@ -159,9 +159,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Change Table Columns`
@@ -174,9 +174,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Add Custom Table Column`
@@ -193,7 +193,7 @@
 ```xml
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
-    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
+    <Text id="cell-text-<UNIQUE_ID>" text="Sample data" />
 </core:FragmentDefinition>
 ```
 
@@ -202,15 +202,15 @@
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
-     <Column id="column-[a-z0-9]+"
+     <Column id="column-<UNIQUE_ID>"
         width="12em"
         hAlign="Left"
         vAlign="Middle">
-        <Text id="column-title-[a-z0-9]+" text="New column" />
+        <Text id="column-title-<UNIQUE_ID>" text="New column" />
 
         <customData>
-            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
-                value='\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
+            <core:CustomData key="p13nData" id="custom-data-<UNIQUE_ID>"
+                value='\\{"columnKey": "column-<UNIQUE_ID>", "columnIndex": "3"}' />
         </customData>
     </Column>
 </core:FragmentDefinition>
@@ -254,9 +254,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Add Header Field`
@@ -276,8 +276,8 @@
     xmlns:core='sap.ui.core'
     xmlns='sap.m'
 >
-     <VBox id="vBox-[a-z0-9]+">
-         <Label id="label-[a-z0-9]+" text="New Field"></Label>
+     <VBox id="vBox-<UNIQUE_ID>">
+         <Label id="label-<UNIQUE_ID>" text="New Field"></Label>
     </VBox>
 </core:FragmentDefinition>
 ```
@@ -304,9 +304,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Add Custom Section`
@@ -327,11 +327,11 @@
     xmlns='sap.m'
 >
     <uxap:ObjectPageSection
-        id="op-section-[a-z0-9]+"
+        id="op-section-<UNIQUE_ID>"
         title="New Custom Section"
     >
-        <uxap:ObjectPageSubSection id="op-subsection-[a-z0-9]+">
-            <HBox id="hbox-[a-z0-9]+">
+        <uxap:ObjectPageSubSection id="op-subsection-<UNIQUE_ID>">
+            <HBox id="hbox-<UNIQUE_ID>">
                 <!--  add your xml here -->
             </HBox>
         </uxap:ObjectPageSubSection>

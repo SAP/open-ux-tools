@@ -28,7 +28,7 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
             const lr = new ListReport(previewFrame);
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();

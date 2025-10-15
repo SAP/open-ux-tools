@@ -9,9 +9,9 @@
 
 ### Steps
 
-1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
-2. Check that UIAdaptation mode is enabled
-3. Click on button `Navigation`
+1. Check that UIAdaptation mode is enabled
+2. Click on button `Navigation`
+3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click on button `UI Adaptation`
 6. Click on button `Change Table Columns`

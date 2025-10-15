@@ -30,7 +30,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const lr = new ListReport(previewFrame);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -72,7 +72,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const tableSettings = new TableSettings(previewFrame, 'Rearrange Toolbar Content');
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.quickActions.changeTableActions.click();
@@ -110,7 +110,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -170,7 +170,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -218,7 +218,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -241,7 +241,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -332,7 +332,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.goButton.click();
+            await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -377,7 +377,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
         await editor.toolbar.navigationModeButton.click();
 
-        await lr.goButton.click();
+        await lr.clickOnGoButton();
         await lr.clickOnTableNthRow(0);
 
         await editor.toolbar.uiAdaptationModeButton.click();
