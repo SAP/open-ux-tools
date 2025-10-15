@@ -74,6 +74,15 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         getOrAddNamespace(xmlDocument, 'sap.fe.macros.richtexteditor', 'richtexteditor');
     }
 
+    if (buildingBlockData.buildingBlockType === BuildingBlockType.CustomFilter) {
+        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        if (minUI5Version && lt(minUI5Version, '1.117.0')) {
+            const t = translate(i18nNamespaces.buildingBlock, 'customFilterBuildingBlock.');
+            throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);
+        }
+        getOrAddNamespace(xmlDocument, 'sap.fe.macros.customfilter', 'customfilter');
+    }
+
     fs = updateViewFile(
         basePath,
         viewOrFragmentPath,

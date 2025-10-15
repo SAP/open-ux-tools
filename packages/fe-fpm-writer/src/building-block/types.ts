@@ -6,6 +6,7 @@
 export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
+    CustomFilter = 'custom-filter',
     Field = 'field',
     Page = 'page',
     Table = 'table',

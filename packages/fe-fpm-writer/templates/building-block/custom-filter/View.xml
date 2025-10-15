@@ -1,0 +1,5 @@
+<<%- macrosNamespace %>:filterFields>
+    <<%- macrosNamespace %>:FilterField key="<%- data.key %>">
+		<core:Fragment fragmentName="<%- data.appName %>.ext.fragment.<%- data.customFilterFragmentName %>" type="XML" />
+	</<%- macrosNamespace %>:FilterField>
+</<%- macrosNamespace %>:filterFields>
