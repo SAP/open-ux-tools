@@ -8,8 +8,9 @@ import { addChangeInboundCommand } from './change-inbound';
  * @returns - commander command containing change <feature> commands
  */
 export function getChangeCommands(): Command {
-    const addCommands = new Command('change');
-    // create-fiori change data-source
+    const addCommands = new Command('change')
+        .description('List of commands to change existing adaptation projects.');
+
     addChangeDataSourceCommand(addCommands);
     addChangeInboundCommand(addCommands);
     return addCommands;

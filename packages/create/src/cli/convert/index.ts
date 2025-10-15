@@ -7,7 +7,9 @@ import { addConvertPreviewCommand } from './preview';
  * @returns - commander command containing convert <feature> commands
  */
 export function getConvertCommands(): Command {
-    const convertCommands = new Command('convert');
+    const convertCommands = new Command('convert')
+        .description('List of commands to convert existing SAP Fiori applications.');
+
     addConvertPreviewCommand(convertCommands);
     return convertCommands;
 }
