@@ -130,6 +130,29 @@ describe('utils - questions', () => {
         ]);
     });
 
+    test('getBindingContextTypePrompt uses choices passed in properties and overwrites default choices', async () => {
+        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+
+        const bindingContextPrompt = getBindingContextTypePrompt({
+            message: 'bindingContext',
+            choices: async () => {
+                return [
+                    { name: 'Absolute', value: bindingContextAbsolute },
+                    { name: 'Relative', value: bindingContextRelative, disabled: true }
+                ];
+            }
+        });
+
+        const choicesFn = bindingContextPrompt.choices as Choices;
+        expect(choicesFn).toBeDefined();
+
+        const choices = await choicesFn();
+        expect(choices).toEqual([
+            { name: 'Absolute', value: bindingContextAbsolute },
+            { name: 'Relative', value: bindingContextRelative, disabled: true }
+        ]);
+    });
+
     test('entityPrompt fallback to empty array when no options returned', async () => {
         const contextWithPageContextEntitySet = {
             ...context,

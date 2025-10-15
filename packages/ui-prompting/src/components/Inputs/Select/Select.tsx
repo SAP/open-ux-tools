@@ -21,7 +21,6 @@ export const Select = (props: SelectProps) => {
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
     const options = useOptions(props, dynamicChoices);
-
     const defaultValue = useMemo(() => {
         // Single option - auto-select
         if (options.length === 1) {
