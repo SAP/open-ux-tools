@@ -319,10 +319,11 @@ function getTableLayoutQuestions(
             },
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
                 // Auto-populate qualifier from RecursiveHierarchy annotation if available
-                const entitySetName = prevAnswers?.mainEntity?.entitySetName;
-                const entitySet = entitySetName ? findEntitySetByName(metadata, entitySetName) : undefined;
-                const qualifier = entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : undefined;
-                return qualifier || '';
+                if (prevAnswers?.mainEntity?.entitySetName) {
+                    const entitySet = findEntitySetByName(metadata, prevAnswers.mainEntity.entitySetName);
+                    return entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : '';
+                }
+                return '';
             },
             validate: (input: string) => {
                 if (!input) {
@@ -330,7 +331,7 @@ function getTableLayoutQuestions(
                 }
                 return true;
             }
-        } as InputQuestion<EntitySelectionAnswers & TableConfigAnswers>);
+        } as InputQuestion<TableConfigAnswers>);
     }
     return tableLayoutQuestions;
 }
