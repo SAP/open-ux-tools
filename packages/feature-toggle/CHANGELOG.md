@@ -1,5 +1,11 @@
 # @sap-ux/feature-toggle
 
+## 0.3.2
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
 ## 0.3.1
 
 ### Patch Changes

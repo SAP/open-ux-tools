@@ -102,16 +102,16 @@ export async function determineScpFromTarget(target: AbapTarget): Promise<boolea
  * @returns - true if the target is an s4hana cloud system, false otherwise
  */
 export async function determineS4HCFromTarget(target: AbapTarget): Promise<boolean> {
-    let isS4HCloud = false;
+    let isAbapCloud = false;
     if (isAppStudio() && target.destination) {
         const destinations = await getDestinations();
         if (destinations?.[target.destination]) {
-            isS4HCloud = isS4HC(destinations?.[target.destination]);
+            isAbapCloud = isS4HC(destinations?.[target.destination]);
         }
     } else if (target.url) {
         const backendSystems = await getBackendSystems();
         const backendSystem = backendSystems?.find((backend: BackendSystem) => isSameSystem(backend, target));
-        isS4HCloud = backendSystem?.authenticationType === AuthenticationType.ReentranceTicket;
+        isAbapCloud = backendSystem?.authenticationType === AuthenticationType.ReentranceTicket;
     }
-    return isS4HCloud;
+    return isAbapCloud;
 }

@@ -1,5 +1,39 @@
 # @sap-ux/adp-tooling
 
+## 0.16.2
+
+### Patch Changes
+
+-   3e4bf96: axios update 1.12.2
+
+## 0.16.1
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 0.16.0
+
+### Minor Changes
+
+-   247a5a9: feat: Add ADP Generator Cloud Foundry prompting code
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 0.15.38
+
+### Patch Changes
+
+-   1df9184: fix: Add SAPUI5 Component Usage wizard generates file with wrong property
+
 ## 0.15.37
 
 ### Patch Changes
