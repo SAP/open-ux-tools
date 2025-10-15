@@ -1,5 +1,12 @@
 # @sap-ux/annotation-generator
 
+## 0.3.68
+
+### Patch Changes
+
+-   Updated dependencies [1443680]
+    -   @sap-ux/fiori-annotation-api@0.7.6
+
 ## 0.3.67
 
 ### Patch Changes
