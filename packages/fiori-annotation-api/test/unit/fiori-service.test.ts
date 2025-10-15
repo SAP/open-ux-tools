@@ -4042,6 +4042,51 @@ rating : Rating;
                 ]
             });
             createEditTestCase({
+                name: 'different parents and delete source',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createLineItem(
+                        files.annotations,
+                        [createDataField(), createDataField('test1'), createDataField('test2')],
+                        'a'
+                    ),
+                    createLineItem(files.annotations, [], 'b')
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Move,
+                        uri: files.annotations,
+                        pointer: 'collection',
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM,
+                            qualifier: 'b'
+                        },
+                        moveReference: [
+                            {
+                                fromPointer: ['collection/0', 'collection/1'],
+                                reference: {
+                                    target: targetName,
+                                    term: LINE_ITEM,
+                                    qualifier: 'a'
+                                }
+                            }
+                        ],
+                        index: 0
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        uri: files.annotations,
+                        pointer: '',
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM,
+                            qualifier: 'a'
+                        }
+                    }
+                ]
+            });
+            createEditTestCase({
                 name: 'before first record',
                 projectTestModels: TEST_TARGETS,
                 getInitialChanges: (files) => [

@@ -2263,6 +2263,53 @@ exports[`fiori annotation service move collection - record different parents EDM
 "
 `;
 
+exports[`fiori annotation service move collection - record different parents and delete source CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with @(
+    UI.LineItem #b : [
+        {
+            $Type : 'UI.DataField',
+            Value : path,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : test1,
+        },
+    ],
+);
+
+"
+`;
+
+exports[`fiori annotation service move collection - record different parents and delete source EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.test\\">
+                <Annotation Term=\\"UI.LineItem\\" Qualifier=\\"b\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" PropertyPath=\\"path\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" PropertyPath=\\"test1\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service move collection - record to the end CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
