@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.10
+
+### Patch Changes
+
+-   6debb89: incorrect entity list rich text editor fix
+
 ## 0.39.9
 
 ### Patch Changes
