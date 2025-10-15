@@ -319,7 +319,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(spaceGuid, plan, serviceInstanceName, [], serviceOffering, undefined, mockLogger);
+            await createService(spaceGuid, plan, serviceInstanceName, [], serviceOffering, undefined, undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
@@ -338,7 +338,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(spaceGuid, plan, serviceInstanceName, [], serviceOffering, undefined, mockLogger);
+            await createService(spaceGuid, plan, serviceInstanceName, [], serviceOffering, undefined, undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
@@ -366,7 +366,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(spaceGuid, plan, serviceInstanceName, tags, undefined, undefined, mockLogger);
+            await createService(spaceGuid, plan, serviceInstanceName, tags, undefined, undefined, undefined, mockLogger);
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
@@ -384,7 +384,7 @@ describe('CF Services API', () => {
             mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
 
             await expect(
-                createService(spaceGuid, plan, serviceInstanceName, [], 'test-offering', undefined, mockLogger)
+                createService(spaceGuid, plan, serviceInstanceName, [], 'test-offering', undefined, undefined, mockLogger)
             ).rejects.toThrow(
                 t('error.failedToCreateServiceInstance', {
                     serviceInstanceName: serviceInstanceName,
@@ -408,6 +408,7 @@ describe('CF Services API', () => {
                     [],
                     serviceOffering,
                     { filePath: securityFilePath, xsappname: xsSecurityProjectName },
+                    undefined,
                     mockLogger
                 )
             ).rejects.toThrow(t('error.xsSecurityJsonCouldNotBeParsed'));
@@ -449,7 +450,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(projectPath, yamlContent, initialServices, '1234567890', spaceGuid, mockLogger);
+            await createServices(projectPath, yamlContent, initialServices, '1234567890', spaceGuid, undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining([
@@ -492,7 +493,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(projectPath, yamlContent, initialServices, '1234567890', spaceGuid, mockLogger);
+            await createServices(projectPath, yamlContent, initialServices, '1234567890', spaceGuid, undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining(['create-service', 'destination', 'lite', 'test-destination-service'])
