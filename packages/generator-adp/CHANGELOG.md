@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.5.5
+
+### Patch Changes
+
+-   441be86: fix: Remove CF flow from the ADP Generator and fix template resolution problem
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+
 ## 0.5.4
 
 ### Patch Changes
