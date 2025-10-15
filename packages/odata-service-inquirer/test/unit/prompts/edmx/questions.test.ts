@@ -4,7 +4,6 @@ import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inqui
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFile } from 'fs/promises';
-import { readFileSync } from 'fs';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
@@ -408,7 +407,7 @@ describe('Test entity prompts', () => {
         );
 
         // Test qualifier auto-population functionality
-        const metadataV4WithHierarchyQualifier = readFileSync(
+        const metadataV4WithHierarchyQualifier = await readFile(
             join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
             'utf8'
         );
