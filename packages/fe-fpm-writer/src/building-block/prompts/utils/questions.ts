@@ -417,7 +417,7 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
         ],
         guiOptions: {
             ...guiOptions,
-            selectType: 'dynamic'
+            selectType: typeof properties.choices === 'function' ? 'dynamic' : 'static'
         }
     };
 }

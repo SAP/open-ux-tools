@@ -4,4 +4,6 @@
 '@sap-ux/ui-prompting': patch
 ---
 
-incorrect entity list rich text editor fix
+fe-fpm-writer: incorrect entity list rich text editor fix
+ui-components: style update for disabled combobox option
+ui-prompting: support for disabled options in Select choice lists

@@ -165,7 +165,7 @@ Object {
     "dependantPromptNames": Array [
       "buildingBlockData.metaPath.qualifier",
     ],
-    "selectType": "dynamic",
+    "selectType": "static",
   },
   "message": "bindingContext",
   "name": "buildingBlockData.metaPath.bindingContextType",
@@ -186,7 +186,7 @@ Object {
     },
   ],
   "guiOptions": Object {
-    "selectType": "dynamic",
+    "selectType": "static",
   },
   "name": "buildingBlockData.metaPath.bindingContextType",
   "type": "list",
