@@ -8,7 +8,7 @@ import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, 
 export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
-    CustomFilter = 'custom-filter',
+    CustomFilterField = 'custom-filter-field',
     Field = 'field',
     Page = 'page',
     Table = 'table',
@@ -98,38 +98,6 @@ export interface Chart extends BuildingBlock {
      * whether data is selected or deselected.
      */
     selectionChange?: string;
-}
-
-/**
- * Represents a custom filter to be used inside the FilterBar.
- * The template for the FilterField has to be provided as the default aggregation.
- */
-export interface FilterField {
-    /**
-     * Reference to the key of another filter already displayed in the table to properly place this one.
-     */
-    anchor: string;
-    /**
-     * The property name of the FilterField.
-     */
-    key: string;
-    /**
-     * The text that will be displayed for this FilterField.
-     */
-    label: string;
-    /**
-     * If set the search will be automatically triggered, when a filter value was changed.
-     */
-    liveMode: boolean;
-    /**
-     * Defines where this filter should be placed relative to the defined anchor.
-     * Allowed values are `Before` and `After`.
-     */
-    placement: 'Before' | 'After';
-    /**
-     * Parameter which sets the visibility of the FilterBar building block.
-     */
-    visible: boolean;
 }
 
 /**
@@ -416,6 +384,51 @@ export interface Page extends BuildingBlock {
      * The description of the page.
      */
     description?: string;
+}
+
+/**
+ * Represents a custom filter to be used inside the FilterBar.
+ * The template for the FilterField has to be provided as the default aggregation.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.filterBar.FilterField
+ * @example
+ * <macros:filterFields>
+ *    <macros:FilterField key="TotalPrice">
+ *       <core:Fragment fragmentName="sap.fe.core.fpmExplorer.filterBarCustom.CustomRangeFilter" type="XML" />
+ *    </macros:FilterField>
+ * </macros:filterFields>
+ * @extends {BuildingBlock}
+ */
+export interface CustomFilterField extends BuildingBlock {
+    /**
+     * Reference to the key of another filter already displayed in the table to properly place this one.
+     */
+    anchor: string;
+    /**
+     * The property name of the FilterField.
+     */
+    key: string;
+    /**
+     * The text that will be displayed for this FilterField.
+     */
+    label: string;
+    /**
+     * Defines where this filter should be placed relative to the defined anchor.
+     * Allowed values are `Before` and `After`.
+     */
+    placement: 'Before' | 'After';
+    /**
+     * The property used to filter by.
+     */
+    property: string;
+    /**
+     * If set to true, the filter will be marked as required in the UI.
+     */
+    required: boolean;
+    /**
+     * The fragment that contains the template for the custom filter.
+     */
+    embededFragment?: EmbededFragment;
 }
 
 export interface CustomColumn extends BuildingBlock {
