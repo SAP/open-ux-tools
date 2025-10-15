@@ -87,6 +87,10 @@ type Ui5Version = {
     minor: number;
     patch: number;
     label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn: boolean;
 };
 
 /**
@@ -240,24 +244,33 @@ export class FlpSandbox {
      * Deletes the Fiori Tools local connector (WorkspaceConnector) in case of a not supported UI5 versions.
      * As an alternative the Fiori Tools fake connector (FakeLrepConnector) will be used as defined in preview-middleware-client/src/flp/initConnectors.ts.
      * Also deletes the ABAP connector in case of a CAP project.
+     * Deletes all connectors if UI5 version is < 1.84 and served from npmjs.
      *
      * @param ui5VersionMajor - the major version of UI5
      * @param ui5VersionMinor - the minor version of UI5
+     * @param isCDN - whether the UI5 sources are served from CDN
      * @private
      */
-    private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor < 76) {
-            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter((connector) =>
+    private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number, isCDN: boolean): void {
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 84) {
+            this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter((connector) =>
                 isFlexConnector(connector)
             );
             this.logger.debug(
-                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
+                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it.${
+                    isCDN ? 'The Fiori Tools fake connector (FakeLrepConnector) will be used instead.' : ''
+                } `
             );
+            if (!isCDN) {
+                this.logger.warn(
+                    `The preview with virtual endpoints does not support flex changes for the current UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs. Consider using a proxy to load UI5 resources from the CDN (e.g., https://ui5.sap.com), or upgrade the UI5 version in the yaml configuration to at least 1.84.`
+                );
+            }
         } else {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter(
+            this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter(
                 (connector) =>
                     !isFlexConnector(connector) ||
                     (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
@@ -302,7 +315,7 @@ export class FlpSandbox {
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
 
-        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor);
+        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
 
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
@@ -464,7 +477,7 @@ export class FlpSandbox {
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
-            this.checkDeleteConnectors(ui5Version.major, ui5Version.minor);
+            this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
@@ -535,15 +548,17 @@ export class FlpSandbox {
         baseUrl: string = ''
     ): Promise<Ui5Version> {
         let version: string | undefined;
+        let isCdn = false;
         if (!host) {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         } else {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
-                    | { libraries: { name: string; version: string }[] }
+                    | { name: string; libraries: { name: string; version: string }[] }
                     | undefined;
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
+                isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
                 this.logger.error(error);
             }
@@ -551,6 +566,7 @@ export class FlpSandbox {
         if (!version) {
             this.logger.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
             version = '1.130.0';
+            isCdn = false;
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
@@ -567,7 +583,8 @@ export class FlpSandbox {
             major,
             minor,
             patch,
-            label
+            label,
+            isCdn
         };
     }
 
