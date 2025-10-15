@@ -1,3 +1,5 @@
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
+
 /**
  * Building block type.
  *
@@ -9,6 +11,7 @@ export enum BuildingBlockType {
     Field = 'field',
     Page = 'page',
     Table = 'table',
+    CustomColumn = 'custom-column',
     RichTextEditor = 'rich-text-editor'
 }
 
@@ -21,6 +24,11 @@ export enum BuildingBlockType {
 export type BindingContextType = 'absolute' | 'relative';
 export const bindingContextAbsolute: BindingContextType = 'absolute';
 export const bindingContextRelative: BindingContextType = 'relative';
+
+export type TemplateConfig = {
+    hasAggregation?: boolean;
+    aggregationNamespace: string;
+};
 
 /**
  * Represents a building block metaPath object.
@@ -408,6 +416,16 @@ export interface Page extends BuildingBlock {
      */
     description?: string;
 }
+
+export interface CustomColumn extends BuildingBlock {
+    title: string;
+    width?: string;
+    columnKey?: string;
+    position?: Position;
+    embededFragment?: EmbededFragment;
+}
+
+export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
 
 /**
  * Building block used to create a rich text editor based on the metadata provided by OData V4.
