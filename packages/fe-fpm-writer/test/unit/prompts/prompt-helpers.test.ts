@@ -177,8 +177,8 @@ describe('resolveBindingContextTypeChoices', () => {
             options: { pageContextEntitySet: 'MainSet' }
         } as unknown as PromptContext;
 
-        const resolver = promptHelpers.resolveBindingContextTypeChoices(context);
-        const choices = typeof resolver === 'function' ? await resolver() : resolver;
+        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
 
         expect(choices).toEqual([
             { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
@@ -209,8 +209,8 @@ describe('resolveBindingContextTypeChoices', () => {
             options: { pageContextEntitySet: 'MainSet' }
         } as unknown as PromptContext;
 
-        const resolver = promptHelpers.resolveBindingContextTypeChoices(context);
-        const choices = typeof resolver === 'function' ? await resolver() : resolver;
+        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
 
         expect(choices).toEqual([
             { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
@@ -243,8 +243,8 @@ describe('resolveBindingContextTypeChoices', () => {
             appId: 'app1'
         } as unknown as PromptContext;
 
-        const resolver = promptHelpers.resolveBindingContextTypeChoices(context);
-        const choices = typeof resolver === 'function' ? await resolver() : resolver;
+        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
 
         expect(choices).toEqual([
             { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
