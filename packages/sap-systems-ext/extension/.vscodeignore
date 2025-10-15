@@ -1,0 +1,7 @@
+
+node_modules
+src
+test
+*.js
+tsconfig*
+*.vsix

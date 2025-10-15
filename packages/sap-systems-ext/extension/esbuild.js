@@ -1,4 +1,6 @@
 const esbuild = require('esbuild');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -23,6 +25,32 @@ const esbuildProblemMatcherPlugin = {
     }
 };
 
+/**
+ * @type {import('esbuild').Plugin}
+ */
+const copyPrebuildsPlugin = {
+    name: 'copy-prebuilds',
+
+    setup(build) {
+        build.onEnd(async () => {
+            const sourceModule = '@zowe/secrets-for-zowe-sdk';
+            const sourceDir = path.join(
+                require.resolve(sourceModule),
+                '../..',
+                'prebuilds'
+            );
+            const targetDir = path.join(__dirname, 'prebuilds');
+
+            if (fs.existsSync(sourceDir)) {
+                await fs.promises.cp(sourceDir, targetDir, { recursive: true });
+                console.log(`Copied prebuilds from ${sourceModule} to ./prebuilds`);
+            } else {
+                console.warn(`Warning: prebuilds folder not found in ${sourceModule}`);
+            }
+        });
+    }
+};
+
 async function main() {
     const ctx = await esbuild.context({
         entryPoints: ['src/extension.ts'],
@@ -33,9 +61,12 @@ async function main() {
         sourcesContent: false,
         platform: 'node',
         outfile: 'dist/extension.js',
-        external: ['vscode', '@zowe/secrets-for-zowe-sdk', 'jsonc-parser'],
+        external: ['vscode', 
+            // '@zowe/secrets-for-zowe-sdk', 'jsonc-parser'
+        ],
         logLevel: 'silent',
         plugins: [
+            copyPrebuildsPlugin,
             /* add to the end of plugins array */
             esbuildProblemMatcherPlugin
         ]

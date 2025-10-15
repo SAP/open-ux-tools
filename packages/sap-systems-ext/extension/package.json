@@ -1,13 +1,24 @@
 {
-    "name": "@sap-ux/sap-systems-ext",
+    "name": "sap-ux-sap-systems-ext",
     "version": "0.0.1",
     "displayName": "sap-systems-ext",
     "description": "SAP Systems Visual Studio Code Extension",
     "main": "./dist/extension.js",
+    "publisher": "SAP-OSS",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/sap-systems-ext"
+    },
     "engines": {
         "vscode": "^1.73.1",
         "node": ">=20.x"
     },
+    "files": [
+        "dist",
+        "resources",
+        "prebuilds"
+    ],
     "scripts": {
         "vscode:prepublish": "pnpm run package",
         "build": "pnpm run check-types && node esbuild.js",
@@ -17,9 +28,21 @@
         "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
         "check-types": "tsc --noEmit",
         "lint": "eslint . --ext .ts",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "ide-ext:package": "vsce package"
     },
+    "activationEvents": [
+        "onView:sap.ux.tools.sapSystems",
+        "onCommand:sap.ux.tools.sapSystems.create",
+        "onCommand:sap.ux.tools.sapSystems.delete",
+        "onCommand:sap.ux.tools.sapSystems.import",
+        "onCommand:sap.ux.tools.sapSystems.refresh",
+        "onCommand:sap.ux.tools.sapSystems.show",
+        "onCommand:sap.ux.tools.sapSystems.launchAppGen"
+    ],
     "dependencies": {
+    },
+    "devDependencies": {
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/ui-components": "workspace:*",
@@ -27,18 +50,15 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/sap-systems-ext-types": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
+        "@zowe/secrets-for-zowe-sdk": "8.1.2",
         "fast-glob": "3.3.1",
         "i18next": "25.3.0",
         "normalize-path": "3.0.0",
-        "jsonc-parser": "3.2.0"
-    },
-    "devDependencies": {
+        "jsonc-parser": "3.2.0",
         "@types/normalize-path": "3.0.0",
         "@types/vscode": "1.73.1",
-        "vscode-uri": "3.0.7"
-    },
-    "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.1.2"
+        "vscode-uri": "3.0.7",
+        "vsce": "2.15.0"
     },
     "contributes": {
         "viewsContainers": {
