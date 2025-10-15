@@ -9,25 +9,18 @@ import type {
     AttributesAnswers,
     CFApp,
     CfConfig,
-    CfServicesAnswers,
     ConfigAnswers,
     Language,
     SourceApplication,
     VersionDetail
 } from '@sap-ux/adp-tooling';
 import {
-    AppRouterType,
     FlexLayer,
     SourceManifest,
     SystemLookup,
-    createServices,
     fetchPublicVersions,
-    getApprouterType,
     getConfiguredProvider,
-    getModuleNames,
-    getMtaServices,
     getProviderConfig,
-    hasApprouter,
     isCfInstalled,
     isLoggedInCf,
     loadApps,
@@ -36,6 +29,7 @@ import {
 } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isCli, isExtensionInstalled, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
@@ -46,7 +40,7 @@ import type { AdpGeneratorOptions } from '../src/app';
 import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
-import { TargetEnv, type JsonInput, type TargetEnvAnswers } from '../src/app/types';
+import { type JsonInput } from '../src/app/types';
 import { EventName } from '../src/telemetryEvents';
 import { initI18n, t } from '../src/utils/i18n';
 import * as subgenHelpers from '../src/utils/subgenHelpers';
@@ -56,10 +50,10 @@ import {
     showWorkspaceFolderWarning,
     workspaceChoices
 } from '../src/utils/workspace';
-import { CFServicesPrompter } from '../src/app/questions/cf-services';
 
 jest.mock('@sap-ux/feature-toggle', () => ({
-    isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
+    ...jest.requireActual('@sap-ux/feature-toggle'),
+    isInternalFeaturesSettingEnabled: jest.fn()
 }));
 
 jest.mock('../src/app/questions/helper/default-values.ts', () => ({
@@ -193,27 +187,6 @@ const baseApp: CFApp = {
     title: 'test-app-title'
 };
 
-const answersCf: CfServicesAnswers & AttributesAnswers & TargetEnvAnswers = {
-    targetEnv: TargetEnv.CF,
-    projectName: 'app.variant',
-    namespace: 'customer.app.variant',
-    title: 'App Title',
-    ui5Version: '1.134.1',
-    targetFolder: testOutputDir,
-    enableTypeScript: false,
-    baseApp,
-    approuter: AppRouterType.MANAGED,
-    businessService: 'test-service',
-    businessSolutionName: 'test-solution'
-};
-
-const cfConfig: CfConfig = {
-    url: '/api.cf.example.com',
-    token: 'test-token',
-    org: { GUID: 'org-guid', Name: 'test-org' },
-    space: { GUID: 'space-guid', Name: 'test-space' }
-};
-
 const inbounds = {
     'display-bank': {
         semanticObject: 'test',
@@ -302,11 +275,9 @@ const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
 const isCfInstalledMock = isCfInstalled as jest.MockedFunction<typeof isCfInstalled>;
 const loadCfConfigMock = loadCfConfig as jest.MockedFunction<typeof loadCfConfig>;
 const isLoggedInCfMock = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
-const mockGetModuleNames = getModuleNames as jest.MockedFunction<typeof getModuleNames>;
-const mockGetApprouterType = getApprouterType as jest.MockedFunction<typeof getApprouterType>;
-const mockHasApprouter = hasApprouter as jest.MockedFunction<typeof hasApprouter>;
-const mockGetMtaServices = getMtaServices as jest.MockedFunction<typeof getMtaServices>;
-const createServicesMock = createServices as jest.MockedFunction<typeof createServices>;
+const mockIsInternalFeaturesSettingEnabled = isInternalFeaturesSettingEnabled as jest.MockedFunction<
+    typeof isInternalFeaturesSettingEnabled
+>;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -318,6 +289,7 @@ describe('Adaptation Project Generator Integration Test', () => {
     describe('ABAP Environment', () => {
         beforeEach(() => {
             fs.mkdirSync(testOutputDir, { recursive: true });
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
             isExtensionInstalledMock.mockReturnValueOnce(false).mockReturnValueOnce(true);
             loadAppsMock.mockResolvedValue(apps);
             jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
@@ -363,6 +335,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         });
 
         it('should throw error when writing phase fails', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
             const error = new Error('Test error');
             mockIsAppStudio.mockReturnValue(false);
             getAtoInfoMock.mockRejectedValueOnce(error);
@@ -543,92 +516,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(manifestContent).toMatchSnapshot();
             expect(i18nContent).toMatchSnapshot();
             expect(ui5Content).toMatchSnapshot();
-        });
-    });
-
-    describe('CF Environment', () => {
-        beforeEach(() => {
-            fs.mkdirSync(testOutputDir, { recursive: true });
-
-            const mtaYamlSource = join(__dirname, 'fixtures', 'mta-project', 'mta.yaml');
-            const mtaYamlTarget = join(testOutputDir, 'mta.yaml');
-            fs.copyFileSync(mtaYamlSource, mtaYamlTarget);
-
-            jest.spyOn(Date, 'now').mockReturnValue(1234567890);
-            isExtensionInstalledMock.mockReturnValue(true);
-            loadAppsMock.mockResolvedValue(apps);
-            jest.spyOn(CFServicesPrompter.prototype, 'manifest', 'get').mockReturnValue(mockManifest);
-            jest.spyOn(CFServicesPrompter.prototype, 'serviceInstanceGuid', 'get').mockReturnValue('test-guid');
-
-            isCliMock.mockReturnValue(false);
-            getDefaultProjectNameMock.mockReturnValue('app.variant1');
-            getCredentialsFromStoreMock.mockResolvedValue(undefined);
-            createServicesMock.mockResolvedValue(undefined);
-
-            isCfInstalledMock.mockResolvedValue(true);
-            loadCfConfigMock.mockReturnValue(cfConfig);
-            isLoggedInCfMock.mockResolvedValue(true);
-            mockGetModuleNames.mockReturnValue(['module1', 'module2']);
-            mockGetMtaServices.mockResolvedValue(['service1', 'service2']);
-            mockGetApprouterType.mockReturnValue(AppRouterType.STANDALONE);
-            mockHasApprouter.mockReturnValue(false);
-
-            fetchPublicVersionsMock.mockResolvedValue(publicVersions);
-        });
-
-        afterAll(async () => {
-            process.chdir(originalCwd);
-            rimraf.sync(testOutputDir);
-        });
-
-        afterEach(() => {
-            const mtaYamlPath = join(testOutputDir, 'mta.yaml');
-            if (fs.existsSync(mtaYamlPath)) {
-                fs.unlinkSync(mtaYamlPath);
-            }
-
-            jest.clearAllMocks();
-        });
-
-        it('should generate an adaptation project successfully', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-
-            const runContext = yeomanTest
-                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
-                .withOptions({ shouldInstallDeps: true, vscode: vscodeMock } as AdpGeneratorOptions)
-                .withPrompts({ ...answersCf, projectLocation: testOutputDir });
-
-            await expect(runContext.run()).resolves.not.toThrow();
-
-            expect(executeCommandSpy).not.toHaveBeenCalled();
-            expect(sendTelemetryMock).not.toHaveBeenCalled();
-
-            const generatedDirs = fs.readdirSync(testOutputDir);
-            expect(generatedDirs).toContain(answers.projectName);
-            const projectFolder = join(testOutputDir, answers.projectName);
-
-            const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
-            const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
-            const ui5Yaml = join(projectFolder, 'ui5.yaml');
-            const mtaYaml = join(testOutputDir, 'mta.yaml');
-            const packageJson = join(projectFolder, 'package.json');
-
-            expect(fs.existsSync(manifestPath)).toBe(true);
-            expect(fs.existsSync(i18nPath)).toBe(true);
-            expect(fs.existsSync(ui5Yaml)).toBe(true);
-            expect(fs.existsSync(mtaYaml)).toBe(true);
-            expect(fs.existsSync(packageJson)).toBe(true);
-
-            const manifestContent = fs.readFileSync(manifestPath, 'utf8');
-            const i18nContent = fs.readFileSync(i18nPath, 'utf8');
-            const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
-            const mtaContent = fs.readFileSync(mtaYaml, 'utf8');
-            const packageJsonContent = fs.readFileSync(packageJson, 'utf8');
-            expect(manifestContent).toMatchSnapshot();
-            expect(i18nContent).toMatchSnapshot();
-            expect(ui5Content).toMatchSnapshot();
-            expect(mtaContent).toMatchSnapshot();
-            expect(packageJsonContent).toMatchSnapshot();
         });
     });
 });

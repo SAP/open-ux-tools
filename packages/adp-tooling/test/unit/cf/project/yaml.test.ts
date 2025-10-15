@@ -308,6 +308,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -340,6 +341,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -377,6 +379,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -412,6 +415,7 @@ describe('YAML Project Functions', () => {
                         spaceGuid
                     },
                     mockMemFs,
+                    undefined,
                     mockLogger
                 )
             ).rejects.toThrow('Write failed');
@@ -460,6 +464,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -515,6 +520,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -574,6 +580,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -633,6 +640,7 @@ describe('YAML Project Functions', () => {
                     spaceGuid
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
