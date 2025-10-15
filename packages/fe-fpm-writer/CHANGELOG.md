@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.8
+
+### Patch Changes
+
+-   43dc48c: Add custom columns for building blocks
+
 ## 0.39.7
 
 ### Patch Changes
