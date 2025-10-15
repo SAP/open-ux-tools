@@ -44,49 +44,65 @@ function getCommanderProgram(): Command {
     const program = new Command();
     const version = getVersion();
     program.description(`Configure features for Fiori applications and projects. (${version})`);
-    program.addHelpText('after', `\nExample Usage:
+    program.addHelpText(
+        'after',
+        `\nExample Usage:
   'npx --yes @sap-ux/create@latest add --help'              Get available sub-commands for the 'add' command.
   'npx --yes @sap-ux/create@latest add html --help'         Get available options for the 'add html' command.
-  'npx --yes @sap-ux/create@latest add html --simulate'     Simulate adding HTML files for local preview and testing to an existing project.`);
-    program.addHelpText('after', `\nAI Instructions:
+  'npx --yes @sap-ux/create@latest add html --simulate'     Simulate adding HTML files for local preview and testing to an existing project.`
+    );
+    program.addHelpText(
+        'after',
+        `\nAI Instructions:
   First, find the command that suites best, then use '[command] --help' to find the best suitable sub-command.
   Then use '[command] [sub-command] --help' to get details about the available options.
   If you are confident one of the available commands and options fits, use it otherwise try finding a different tools to solve the task.
-`);
+`
+    );
     program.version(version);
 
     // Handler for create-fiori generate <feature> ..
     const genCommands = getGenerateCommands();
     genCommands.description(
-        `Generate adaptation projects (e.g., ${getFeatureSummary(genCommands.commands)}, ...). Run 'generate --help' for a full list.`
+        `Generate adaptation projects (e.g., ${getFeatureSummary(
+            genCommands.commands
+        )}, ...). Run 'generate --help' for a full list.`
     );
     program.addCommand(genCommands);
 
     // Handler for create-fiori add <feature> ..
     const addCommands = getAddCommands();
     addCommands.description(
-        `Add features to a Fiori app (e.g., ${getFeatureSummary(addCommands.commands)}, ...). Run 'add --help' for a full list.`
+        `Add features to a Fiori app (e.g., ${getFeatureSummary(
+            addCommands.commands
+        )}, ...). Run 'add --help' for a full list.`
     );
     program.addCommand(addCommands);
 
     // Handler for create-fiori convert <feature> ..
     const convertCommands = getConvertCommands();
     convertCommands.description(
-        `Convert existing SAP Fiori applications (e.g., ${getFeatureSummary(convertCommands.commands)}, ...). Run 'convert --help' for a full list.`
+        `Convert existing SAP Fiori applications (e.g., ${getFeatureSummary(
+            convertCommands.commands
+        )}, ...). Run 'convert --help' for a full list.`
     );
     program.addCommand(convertCommands);
 
     // Handler for create-fiori remove <feature> ..
     const removeCommands = getRemoveCommands();
     removeCommands.description(
-        `Remove features from existing SAP Fiori applications (e.g., ${getFeatureSummary(removeCommands.commands)}, ...). Run 'remove --help' for a full list.`
+        `Remove features from existing SAP Fiori applications (e.g., ${getFeatureSummary(
+            removeCommands.commands
+        )}, ...). Run 'remove --help' for a full list.`
     );
     program.addCommand(removeCommands);
 
     // Handler for create-fiori change <feature> ..
     const changeCommands = getChangeCommands();
     changeCommands.description(
-        `Change existing adaptation projects (e.g., ${getFeatureSummary(changeCommands.commands)}, ...). Run 'change --help' for a full list.`
+        `Change existing adaptation projects (e.g., ${getFeatureSummary(
+            changeCommands.commands
+        )}, ...). Run 'change --help' for a full list.`
     );
     program.addCommand(changeCommands);
 
