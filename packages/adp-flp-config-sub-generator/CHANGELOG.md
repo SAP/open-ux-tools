@@ -1,5 +1,19 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.89
+
+### Patch Changes
+
+-   ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
+
+## 0.1.88
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+    -   @sap-ux/flp-config-inquirer@0.4.37
+
 ## 0.1.87
 
 ### Patch Changes
