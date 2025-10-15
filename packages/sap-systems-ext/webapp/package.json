@@ -2,7 +2,7 @@
     "name": "@sap-ux/sap-systems-ext-webapp",
     "version": "0.0.1",
     "private": true,
-    "main": "dist/src/index.js",
+    "main": "dist/store.js",
     "description": "Web view for sap-systems-ext",
     "scripts": {
         "pre-commit": "lint-staged -c config/lint-staged.config.js --quiet",

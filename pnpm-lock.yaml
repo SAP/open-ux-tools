@@ -3536,6 +3536,9 @@ importers:
       '@sap-ux/sap-systems-ext-types':
         specifier: workspace:*
         version: link:../types
+      '@sap-ux/sap-systems-ext-webapp':
+        specifier: workspace:*
+        version: link:../webapp
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../../store

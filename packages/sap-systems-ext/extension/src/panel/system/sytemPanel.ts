@@ -48,7 +48,7 @@ export class SystemPanel implements Disposable {
 
     public async reveal(): Promise<void> {
         if (!this.panel) {
-            const webappDirPath = join(this.extensionPath, '..', 'webapp', 'dist');
+            const webappDirPath = join(this.extensionPath, 'dist', 'webapp');
             this.panel = await createWebviewPanel(
                 webappDirPath,
                 this.disposeCallback?.bind(this),

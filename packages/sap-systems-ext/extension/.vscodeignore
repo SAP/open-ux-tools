@@ -5,3 +5,9 @@ test
 *.js
 tsconfig*
 *.vsix
+
+dist/**/*.js.map
+dist/**/*.tsbuildinfo
+
+dist/*.js.map
+dist/*.tsbuildinfo

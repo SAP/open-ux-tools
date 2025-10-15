@@ -49,6 +49,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/sap-systems-ext-types": "workspace:*",
+        "@sap-ux/sap-systems-ext-webapp": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@zowe/secrets-for-zowe-sdk": "8.1.2",
         "fast-glob": "3.3.1",

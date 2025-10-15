@@ -51,6 +51,32 @@ const copyPrebuildsPlugin = {
     }
 };
 
+/**
+ * @type {import('esbuild').Plugin}
+ */
+const copyWebappPlugin = {
+    name: 'copy-webapp',
+
+    setup(build) {
+        build.onEnd(async () => {
+            const sourceModule = '@sap-ux/sap-systems-ext-webapp';
+            const sourceDir = path.join(
+                path.dirname(require.resolve(sourceModule)),
+               '..',
+                'dist'
+            );
+            const targetDir = path.join(__dirname, 'dist', 'webapp');
+
+            if (fs.existsSync(sourceDir)) {
+                await fs.promises.cp(sourceDir, targetDir, { recursive: true });
+                console.log(`Copied dist from ${sourceModule} to ./dist/webapp`);
+            } else {
+                console.warn(`Warning: dist folder not found in ${sourceModule} at ${sourceDir}`);
+            }
+        });
+    }
+};
+
 async function main() {
     const ctx = await esbuild.context({
         entryPoints: ['src/extension.ts'],
@@ -67,6 +93,7 @@ async function main() {
         logLevel: 'silent',
         plugins: [
             copyPrebuildsPlugin,
+            copyWebappPlugin,
             /* add to the end of plugins array */
             esbuildProblemMatcherPlugin
         ]
