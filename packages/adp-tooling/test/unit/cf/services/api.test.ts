@@ -10,7 +10,8 @@ import {
     getBusinessServiceKeys,
     getFDCApps,
     getFDCRequestArguments,
-    createService,
+    createServiceWithName,
+    createServiceByTags,
     createServices,
     getServiceInstanceKeys
 } from '../../../../src/cf/services/api';
@@ -305,69 +306,88 @@ describe('CF Services API', () => {
         });
     });
 
-    describe('createService', () => {
-        const spaceGuid = 'test-space-guid';
+    describe('createServiceWithName', () => {
         const plan = 'test-plan';
         const serviceInstanceName = 'test-service';
+        const serviceName = 'test-offering';
 
         test('should create service with service name provided', async () => {
-            const serviceOffering = 'test-offering';
-
             mockCFToolsCliExecute.mockResolvedValue({
                 exitCode: 0,
                 stdout: 'Service created successfully',
                 stderr: ''
             });
 
-            await createService(
-                spaceGuid,
-                plan,
-                serviceInstanceName,
-                [],
-                serviceOffering,
-                undefined,
-                undefined,
-                mockLogger
-            );
+            await createServiceWithName(plan, serviceInstanceName, serviceName, { logger: mockLogger });
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
-                serviceOffering,
+                serviceName,
                 plan,
                 serviceInstanceName
             ]);
         });
 
         test('should create service with XS security configuration', async () => {
-            const serviceOffering = 'xsuaa';
-
+            const xsSecurityContent = '{"xsappname": "test-app"}';
+            mockReadFileSync.mockReturnValue(xsSecurityContent);
             mockCFToolsCliExecute.mockResolvedValue({
                 exitCode: 0,
                 stdout: 'Service created successfully',
                 stderr: ''
             });
 
-            await createService(
-                spaceGuid,
-                plan,
-                serviceInstanceName,
-                [],
-                serviceOffering,
-                undefined,
-                undefined,
-                mockLogger
-            );
+            await createServiceWithName(plan, serviceInstanceName, 'xsuaa', {
+                xsSecurityProjectName: 'test-project',
+                logger: mockLogger
+            });
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
-                serviceOffering,
+                'xsuaa',
                 plan,
-                serviceInstanceName
+                serviceInstanceName,
+                '-c',
+                JSON.stringify({ xsappname: 'test-project' })
             ]);
         });
 
-        test('should create service without service name provided', async () => {
-            const tags = ['test-tag'];
+        test('should handle service creation failure', async () => {
+            mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
+
+            await expect(
+                createServiceWithName(plan, serviceInstanceName, serviceName, { logger: mockLogger })
+            ).rejects.toThrow(
+                t('error.failedToCreateServiceInstance', {
+                    serviceInstanceName: serviceInstanceName,
+                    error: 'Service creation failed'
+                })
+            );
+        });
+
+        test('should handle xs-security.json parsing failure', async () => {
+            mockReadFileSync.mockReturnValue('invalid json content');
+
+            await expect(
+                createServiceWithName(plan, serviceInstanceName, 'xsuaa', {
+                    xsSecurityProjectName: 'test-project',
+                    logger: mockLogger
+                })
+            ).rejects.toThrow(t('error.xsSecurityJsonCouldNotBeParsed'));
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to parse xs-security.json file:')
+            );
+        });
+    });
+
+    describe('createServiceByTags', () => {
+        const spaceGuid = 'test-space-guid';
+        const plan = 'test-plan';
+        const serviceInstanceName = 'test-service';
+        const tags = ['test-tag'];
+
+        test('should create service by discovering service name using tags', async () => {
             const mockServiceOfferings = {
                 resources: [
                     {
@@ -384,16 +404,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(
-                spaceGuid,
-                plan,
-                serviceInstanceName,
-                tags,
-                undefined,
-                undefined,
-                undefined,
-                mockLogger
-            );
+            await createServiceByTags(spaceGuid, plan, serviceInstanceName, tags, { logger: mockLogger });
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
@@ -407,57 +418,40 @@ describe('CF Services API', () => {
             ]);
         });
 
-        test('should handle service creation failure', async () => {
-            mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
+        test('should handle service discovery failure when no service found', async () => {
+            const mockServiceOfferings = {
+                resources: []
+            };
+
+            mockRequestCfApi.mockResolvedValue(mockServiceOfferings);
+            mockCFToolsCliExecute.mockRejectedValue(new Error('Service not found'));
 
             await expect(
-                createService(
-                    spaceGuid,
-                    plan,
-                    serviceInstanceName,
-                    [],
-                    'test-offering',
-                    undefined,
-                    undefined,
-                    mockLogger
-                )
+                createServiceByTags(spaceGuid, plan, serviceInstanceName, tags, { logger: mockLogger })
             ).rejects.toThrow(
                 t('error.failedToCreateServiceInstance', {
                     serviceInstanceName: serviceInstanceName,
-                    error: 'Service creation failed'
+                    error: 'Service not found'
                 })
             );
         });
 
-        test('should handle xs-security.json parsing failure', async () => {
-            const serviceOffering = 'xsuaa';
-            const securityFilePath = '/path/to/xs-security.json';
-            const xsSecurityProjectName = 'test-project';
-
-            mockReadFileSync.mockReturnValue('invalid json content');
+        test('should handle API request failure', async () => {
+            mockRequestCfApi.mockRejectedValue(new Error('API request failed'));
 
             await expect(
-                createService(
-                    spaceGuid,
-                    plan,
-                    serviceInstanceName,
-                    [],
-                    serviceOffering,
-                    { filePath: securityFilePath, xsappname: xsSecurityProjectName },
-                    undefined,
-                    mockLogger
-                )
-            ).rejects.toThrow(t('error.xsSecurityJsonCouldNotBeParsed'));
-
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('Failed to parse xs-security.json file:')
+                createServiceByTags(spaceGuid, plan, serviceInstanceName, tags, { logger: mockLogger })
+            ).rejects.toThrow(
+                t('error.failedToCreateServiceInstance', {
+                    serviceInstanceName: serviceInstanceName,
+                    error: 'API request failed'
+                })
             );
         });
     });
 
     describe('createServices', () => {
         test('should create all required services', async () => {
-            const projectPath = '/test/project';
             const yamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -476,7 +470,6 @@ describe('CF Services API', () => {
                 ]
             };
             const initialServices = ['portal'];
-            const spaceGuid = 'test-space-guid';
 
             mockGetProjectNameForXsSecurity.mockReturnValue('test-project-1234567890');
             mockReadFileSync.mockReturnValue('{"xsappname": "test-app"}');
@@ -486,15 +479,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(
-                projectPath,
-                yamlContent,
-                initialServices,
-                '1234567890',
-                spaceGuid,
-                undefined,
-                mockLogger
-            );
+            await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining([
@@ -537,15 +522,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(
-                projectPath,
-                yamlContent,
-                initialServices,
-                '1234567890',
-                spaceGuid,
-                undefined,
-                mockLogger
-            );
+            await createServices(yamlContent, initialServices, '1234567890', undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining(['create-service', 'destination', 'lite', 'test-destination-service'])
