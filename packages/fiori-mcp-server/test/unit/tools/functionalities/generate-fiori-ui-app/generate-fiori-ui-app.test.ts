@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
-import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/schema';
+import type { GeneratorConfigCAP } from '../../../../../src/tools/schemas';
 import packageJson from '../../../../../package.json';
 
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
@@ -44,15 +44,15 @@ describe('getFunctionalityDetails', () => {
 });
 const paramTest: GeneratorConfigCAP = {
     floorplan: 'FE_LROP',
+    version: '0.2',
+    projectType: 'LIST_REPORT_OBJECT_PAGE',
     project: {
         name: 'app1',
         targetFolder: join(testOutputDir, 'app1'),
-        namespace: 'zzz',
         title: 'App 1',
         description: 'Description for App 1',
-        ui5Theme: 'sap_horizon',
         ui5Version: '1.136.7',
-        localUI5Version: '1.136.7'
+        sapux: true
     },
     service: {
         capService: {
@@ -60,8 +60,7 @@ const paramTest: GeneratorConfigCAP = {
             serviceName: 'app1',
             serviceCdsPath: 'srv/cat-service.cds',
             capType: 'Node.js' // optional
-        },
-        servicePath: 'app1'
+        }
     },
     entityConfig: {
         mainEntity: {
@@ -69,6 +68,10 @@ const paramTest: GeneratorConfigCAP = {
         },
         generateFormAnnotations: true,
         generateLROPAnnotations: true
+    },
+    telemetryData: {
+        generationSourceName: '@sap-ux/fiori-mcp-server',
+        generationSourceVersion: packageJson.version
     }
 };
 
@@ -111,18 +114,16 @@ describe('executeFunctionality', () => {
                 )} before trying to run the application.`,
                 parameters: {
                     floorplan: 'FE_LROP',
+                    projectType: 'LIST_REPORT_OBJECT_PAGE',
                     project: {
                         description: 'Description for App 1',
-                        localUI5Version: '1.136.7',
                         name: 'app1',
-                        'namespace': 'zzz',
                         targetFolder: join(testOutputDir, 'app1'),
                         'title': 'App 1',
-                        'ui5Theme': 'sap_horizon',
-                        'ui5Version': '1.136.7'
+                        'ui5Version': '1.136.7',
+                        sapux: true
                     },
                     service: {
-                        servicePath: 'app1',
                         capService: {
                             serviceName: 'app1',
                             'capType': 'Node.js',
@@ -136,7 +137,12 @@ describe('executeFunctionality', () => {
                         },
                         generateFormAnnotations: true,
                         generateLROPAnnotations: true
-                    }
+                    },
+                    telemetryData: {
+                        generationSourceName: '@sap-ux/fiori-mcp-server',
+                        generationSourceVersion: '0.2.4'
+                    },
+                    version: '0.2'
                 },
                 status: 'Success'
             })
@@ -152,15 +158,13 @@ describe('executeFunctionality', () => {
                 }
             },
             'floorplan': 'FE_LROP',
+            'projectType': 'LIST_REPORT_OBJECT_PAGE',
             'project': {
                 'description': 'Description for App 1',
-                'localUI5Version': '1.136.7',
                 'name': 'app1',
-                'namespace': 'zzz',
                 'sapux': true,
                 'targetFolder': join(testOutputDir, 'app1'),
                 'title': 'App 1',
-                'ui5Theme': 'sap_horizon',
                 'ui5Version': '1.136.7'
             },
             'service': {
@@ -169,8 +173,7 @@ describe('executeFunctionality', () => {
                     'projectPath': 'zzzapp1',
                     'serviceCdsPath': 'srv/cat-service.cds',
                     'serviceName': 'app1'
-                },
-                'servicePath': '/app1'
+                }
             },
             'telemetryData': {
                 'generationSourceName': '@sap-ux/fiori-mcp-server',
@@ -236,20 +239,28 @@ describe('executeFunctionality', () => {
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
             "Missing required fields in parameters. [
                 {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [
+                        \\"entityConfig\\"
+                    ],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                },
+                {
                     \\"code\\": \\"invalid_value\\",
                     \\"values\\": [
-                        \\"FE_LROP\\",
-                        \\"FE_FEOP\\",
                         \\"FE_FPM\\",
+                        \\"FE_LROP\\",
                         \\"FE_OVP\\",
                         \\"FE_ALP\\",
+                        \\"FE_FEOP\\",
                         \\"FE_WORKLIST\\",
                         \\"FF_SIMPLE\\"
                     ],
                     \\"path\\": [
                         \\"floorplan\\"
                     ],
-                    \\"message\\": \\"Invalid option: expected one of \\\\\\"FE_LROP\\\\\\"|\\\\\\"FE_FEOP\\\\\\"|\\\\\\"FE_FPM\\\\\\"|\\\\\\"FE_OVP\\\\\\"|\\\\\\"FE_ALP\\\\\\"|\\\\\\"FE_WORKLIST\\\\\\"|\\\\\\"FF_SIMPLE\\\\\\"\\"
+                    \\"message\\": \\"Invalid option: expected one of \\\\\\"FE_FPM\\\\\\"|\\\\\\"FE_LROP\\\\\\"|\\\\\\"FE_OVP\\\\\\"|\\\\\\"FE_ALP\\\\\\"|\\\\\\"FE_FEOP\\\\\\"|\\\\\\"FE_WORKLIST\\\\\\"|\\\\\\"FF_SIMPLE\\\\\\"\\"
                 },
                 {
                     \\"expected\\": \\"object\\",
@@ -258,6 +269,18 @@ describe('executeFunctionality', () => {
                         \\"project\\"
                     ],
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                },
+                {
+                    \\"code\\": \\"invalid_value\\",
+                    \\"values\\": [
+                        \\"LIST_REPORT_OBJECT_PAGE\\",
+                        \\"FORM_ENTRY_OBJECT_PAGE\\",
+                        \\"FLEXIBLE_PROGRAMMING_MODEL\\"
+                    ],
+                    \\"path\\": [
+                        \\"projectType\\"
+                    ],
+                    \\"message\\": \\"Invalid option: expected one of \\\\\\"LIST_REPORT_OBJECT_PAGE\\\\\\"|\\\\\\"FORM_ENTRY_OBJECT_PAGE\\\\\\"|\\\\\\"FLEXIBLE_PROGRAMMING_MODEL\\\\\\"\\"
                 },
                 {
                     \\"expected\\": \\"object\\",
@@ -271,7 +294,7 @@ describe('executeFunctionality', () => {
                     \\"expected\\": \\"object\\",
                     \\"code\\": \\"invalid_type\\",
                     \\"path\\": [
-                        \\"entityConfig\\"
+                        \\"telemetryData\\"
                     ],
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 }
@@ -316,98 +339,5 @@ describe('executeFunctionality', () => {
                 }
             ]"
         `);
-    });
-
-    test('executeFunctionality - servicePath normalization without leading slash', async () => {
-        let generatedConfigContent: string;
-        mockExec.mockImplementation((_cmd, _opts, callback) => {
-            callback(null, 'mock stdout', 'mock stderr');
-        });
-
-        // Mock fs.writeFile to capture the generated config
-        mockFileWrite((content) => {
-            generatedConfigContent = content;
-        });
-
-        const paramWithServicePath = {
-            ...paramTest,
-            service: {
-                ...paramTest.service,
-                servicePath: 'my-service' // No leading slash
-            }
-        };
-
-        const result = await generateFioriUIAppHandlers.executeFunctionality({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
-            parameters: paramWithServicePath
-        });
-
-        expect(result.status).toBe('Success');
-        // Verify the generated config has the normalized path
-        const config = JSON.parse(generatedConfigContent!);
-        expect(config.service.servicePath).toBe('/my-service');
-    });
-
-    test('executeFunctionality - servicePath normalization with leading slash', async () => {
-        let generatedConfigContent: string;
-        mockExec.mockImplementation((_cmd, _opts, callback) => {
-            callback(null, 'mock stdout', 'mock stderr');
-        });
-
-        // Mock fs.writeFile to capture the generated config
-        mockFileWrite((content) => {
-            generatedConfigContent = content;
-        });
-
-        const paramWithServicePath = {
-            ...paramTest,
-            service: {
-                ...paramTest.service,
-                servicePath: '/my-service' // Already has leading slash
-            }
-        };
-
-        const result = await generateFioriUIAppHandlers.executeFunctionality({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
-            parameters: paramWithServicePath
-        });
-
-        expect(result.status).toBe('Success');
-        // Verify the generated config preserves the path with leading slash
-        const config = JSON.parse(generatedConfigContent!);
-        expect(config.service.servicePath).toBe('/my-service');
-    });
-
-    test('executeFunctionality - servicePath normalization with empty string', async () => {
-        let generatedConfigContent: string;
-        mockExec.mockImplementation((_cmd, _opts, callback) => {
-            callback(null, 'mock stdout', 'mock stderr');
-        });
-
-        // Mock fs.writeFile to capture the generated config
-        mockFileWrite((content) => {
-            generatedConfigContent = content;
-        });
-
-        const paramWithEmptyServicePath = {
-            ...paramTest,
-            service: {
-                ...paramTest.service,
-                servicePath: '' // Empty string
-            }
-        };
-
-        const result = await generateFioriUIAppHandlers.executeFunctionality({
-            appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
-            parameters: paramWithEmptyServicePath
-        });
-
-        expect(result.status).toBe('Success');
-        // Verify the generated config keeps empty string as-is (no normalization for empty strings)
-        const config = JSON.parse(generatedConfigContent!);
-        expect(config.service.servicePath).toBe('');
     });
 });
