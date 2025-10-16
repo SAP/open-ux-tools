@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { Command } from 'commander';
+import { Command, type Option } from 'commander';
 import { getLogger } from '../tracing';
 import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';
@@ -48,11 +48,14 @@ function getCommanderProgram(): Command {
   'npx --yes @sap-ux/create@latest add --help'              Get available sub-commands for the 'add' command.
   'npx --yes @sap-ux/create@latest add html --help'         Get available options for the 'add html' command.
   'npx --yes @sap-ux/create@latest add html --simulate'     Simulate adding HTML files for local preview and testing to an existing project.`);
-    program.addHelpText('after', `\nAI Instructions:
-  First, find the command that suites best, then use '[command] --help' to find the best suitable sub-command.
-  Then use '[command] [sub-command] --help' to get details about the available options.
-  If you are confident one of the available commands and options fits, use it otherwise try finding a different tools to solve the task.
-`);
+    program.option('--generateJsonSpec', 'Output the command structure as JSON');
+    program.action(async (options) => {
+        if (options.generateJsonSpec) {
+            console.log(generateJsonSpec(program));
+        } else {
+            program.outputHelp();
+        }
+    });
     program.version(version);
 
     // Handler for create-fiori generate <feature> ..
@@ -108,6 +111,52 @@ function getFeatureSummary(commands: Command[]): string {
 }
 
 /**
+ * Parses a commander.Option object into a simpler format for the JSON spec.
+ *
+ * @param {Option} opt - The Commander Option object.
+ * @returns {object} A simplified option object.
+ */
+function parseOption(opt: Option) {
+    return {
+        name: opt.flags,
+        description: opt.description,
+        required: opt.required,
+        ...(opt.defaultValue !== undefined && { defaultValue: opt.defaultValue }),
+    };
+}
+
+/**
+ * Recursively parses a commander.Command object and its subcommands.
+ *
+ * @param cmd - The Commander Command object to parse.
+ * @returns A structured object representing the command.
+ */
+function parseCommand(cmd: Command): {} {
+    const options = 'options' in cmd? (cmd.options as Option[]) : [];
+    return {
+        name: cmd.name(),
+        description: cmd.description(),
+        ...(options?.length > 0 && { options: options.map(parseOption) }),
+        ...(cmd.commands?.length > 0 && { subcommands: cmd.commands.map(parseCommand) }),
+    };
+}
+
+/**
+ * Generates the full MCP specification for a top-level commander program.
+ *
+ * @param cmd - The main Commander program instance.
+ * @returns A JSON string representing the CLI's capabilities.
+ */
+export function generateJsonSpec(cmd: Command) {
+    const spec = {
+        description: cmd.description(),
+        commands: cmd.commands.map(parseCommand),
+    };
+    return JSON.stringify(spec, null, 2);
+}
+
+
+/**
  * Return the version from package.json.
  *
  *  @returns - version from package.json
@@ -118,7 +167,7 @@ function getVersion(): string {
         version = JSON.parse(
             readFileSync(join(__dirname, '../../package.json'), { encoding: 'utf8' }).toString()
         ).version;
-    } catch (error: any) {
+    } catch (error) {
         const logger = getLogger();
         logger.warn(`Could not read version from 'package.json'`);
         logger.debug(error);
