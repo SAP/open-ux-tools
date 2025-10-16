@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
+## 0.16.3
+
+### Patch Changes
+
+-   441be86: fix: Remove CF flow from the ADP Generator and fix template resolution problem
+
 ## 0.16.2
 
 ### Patch Changes

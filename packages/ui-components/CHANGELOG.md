@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.13
+
+### Patch Changes
+
+-   6debb89: style update for disabled combobox option
+
 ## 1.26.12
 
 ### Patch Changes

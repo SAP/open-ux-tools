@@ -1,6 +1,15 @@
 import type { EntitySet } from '@sap-ux/vocabularies-types';
 import { getEntitySetOptions, resolveEntitySetTargets } from '../../../src/building-block/prompts/utils/prompt-helpers';
-import { bindingContextRelative } from '../../../src/building-block/types';
+import { bindingContextAbsolute, bindingContextRelative } from '../../../src/building-block/types';
+import type { PromptContext } from '../../../src/prompts/types';
+import * as promptHelpers from '../../../src/building-block/prompts/utils/prompt-helpers';
+import { i18nNamespaces, translate } from '../../../src/i18n';
+const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
+
+import { getEntitySets } from '../../../src/building-block/prompts/utils/service';
+jest.mock('../../../src/building-block/prompts/utils/service', () => ({
+    getEntitySets: jest.fn()
+}));
 
 describe('getEntitySetOptions', () => {
     const entitySets = [
@@ -138,5 +147,108 @@ describe('resolveEntitySetTargets', () => {
     it('returns properties for selected entity set when page context is undefined', () => {
         const result = resolveEntitySetTargets(entitySets, undefined, undefined, 'MainSet');
         expect(result).toEqual([{ name: 'PropA' }, { name: 'PropB' }]);
+    });
+});
+
+describe('resolveBindingContextTypeChoices', () => {
+    const { entitySetCache } = promptHelpers;
+    beforeEach(() => {
+        (getEntitySets as jest.Mock).mockClear();
+        for (const key of Object.keys(entitySetCache)) {
+            delete entitySetCache[key];
+        }
+    });
+
+    it('returns choices with relative disabled when no entity sets available for relative', async () => {
+        (getEntitySets as jest.Mock).mockResolvedValue([
+            {
+                name: 'MainSet',
+                entityType: {
+                    navigationProperties: [{ name: 'NavB', isCollection: true, targetTypeName: 'NavBType' }],
+                    entityProperties: []
+                },
+                entityTypeName: 'MainType'
+            }
+        ]);
+
+        const context = {
+            project: { projectType: 'mockProject', apps: { app1: { mainService: 'MainService' } } },
+            appId: 'app1',
+            options: { pageContextEntitySet: 'MainSet' }
+        } as unknown as PromptContext;
+
+        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
+
+        expect(choices).toEqual([
+            { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
+            {
+                name: t('common.bindingContextType.option.relative'),
+                value: bindingContextRelative,
+                disabled: true,
+                title: t('richTextEditor.relativeBindingDisabledTooltip')
+            }
+        ]);
+    });
+
+    it('returns both options enabled when entity sets for relative are available', async () => {
+        (getEntitySets as jest.Mock).mockResolvedValue([
+            {
+                name: 'MainSet',
+                entityType: {
+                    navigationProperties: [{ name: 'NavA', isCollection: false, targetTypeName: 'NavAType' }],
+                    entityProperties: []
+                },
+                entityTypeName: 'MainType'
+            }
+        ]);
+
+        const context = {
+            project: { projectType: 'mockProject', apps: { app1: { mainService: 'MainService' } } },
+            appId: 'app1',
+            options: { pageContextEntitySet: 'MainSet' }
+        } as unknown as PromptContext;
+
+        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
+
+        expect(choices).toEqual([
+            { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
+            { name: t('common.bindingContextType.option.relative'), value: bindingContextRelative }
+        ]);
+    });
+
+    it('returns default choices when project is not present', () => {
+        const choices = promptHelpers.resolveBindingContextTypeChoices({ project: undefined } as any);
+        expect(choices).toEqual([
+            { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
+            { name: t('common.bindingContextType.option.relative'), value: bindingContextRelative }
+        ]);
+    });
+
+    it('returns both binding context options enabled when pageContextEntitySet is not provided', async () => {
+        (getEntitySets as jest.Mock).mockResolvedValue([
+            {
+                name: 'MainSet',
+                entityType: {
+                    navigationProperties: [{ name: 'NavA', isCollection: false, targetTypeName: 'NavAType' }],
+                    entityProperties: []
+                },
+                entityTypeName: 'MainType'
+            }
+        ]);
+
+        const context = {
+            project: { projectType: 'mockProject', apps: { app1: { mainService: 'MainService' } } },
+            appId: 'app1'
+        } as unknown as PromptContext;
+
+        const getChoicesFn = promptHelpers.resolveBindingContextTypeChoices(context);
+        const choices = typeof getChoicesFn === 'function' ? await getChoicesFn() : getChoicesFn;
+
+        expect(choices).toEqual([
+            { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
+            { name: t('common.bindingContextType.option.relative'), value: bindingContextRelative }
+        ]);
     });
 });
