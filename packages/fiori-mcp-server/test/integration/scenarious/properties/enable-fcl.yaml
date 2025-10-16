@@ -1,0 +1,18 @@
+config:
+    project: 'lrop'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Enable FCL with two columns mid expanded. Application in {{appPath}}'
+assert:
+  - type: javascript
+    value: file://../assertions/snapshots.ts:customAssert
+    config:
+      snapshot: fcl-enable
+      file: webapp/manifest.json
+      segments:
+        - path: ["sap.ui5", "dependencies"]
+        - path: ["sap.ui5", "routing", "routes"]
+        - path: ["sap.ui5", "routing", "targets"]
+        - path: ["sap.ui5", "routing", "config"]
+          mode: contains
+        - path: ["sap.ui5", "rootView"]

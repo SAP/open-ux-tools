@@ -1,0 +1,15 @@
+config:
+    project: 'lrop'
+    # Overwrite original manifest.json by continuing from state of 'fcl-enable' test
+    setupFiles:
+    - source: fcl-enable/webapp/manifest.json
+      target: webapp/manifest.json
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Disable FCL. Application in {{appPath}}'
+assert:
+  - type: javascript
+    value: file://../assertions/snapshots.ts:customAssert
+    config:
+      snapshot: fcl-disable
+      file: webapp/manifest.json

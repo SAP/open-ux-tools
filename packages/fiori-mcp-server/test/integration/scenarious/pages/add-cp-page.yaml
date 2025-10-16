@@ -1,0 +1,11 @@
+config:
+    project: 'lrop'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Add Custom page to BookingObjectPage witn name dummy in application with appPath: {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:customAssert
+      config:
+          file: webapp/manifest.json
+          snapshot: add-cp-page
