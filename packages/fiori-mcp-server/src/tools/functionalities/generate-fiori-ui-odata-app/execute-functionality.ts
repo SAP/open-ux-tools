@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
+import type { NonCAPSchema, GeneratorConfigNonCAP } from './schema';
 
 import { promises, existsSync } from 'fs';
-import { promisify } from 'util';
-import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
-import * as z from 'zod';
-import { GENERATE_FIORI_UI_ODATA_APP_ID as functionalityId } from '../../../constant';
-import { GeneratorConfigSchemaNonCAP } from './generator-schema';
+import { exec as execAsync } from 'child_process';
+import { promisify } from 'util';
+import { GeneratorConfigSchemaNonCAP } from './schema';
+import details from './details';
+import { validateWithSchema } from '../../utils';
+import packageJson from '../../../../package.json';
 
 const exec = promisify(execAsync);
 
@@ -18,16 +20,15 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    let generatorConfigNonCap;
-    try {
-        generatorConfigNonCap = GeneratorConfigSchemaNonCAP.parse(params.parameters);
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new Error(`Missing required fields in generatorConfig. ${JSON.stringify(error.issues, null, 4)}`);
-        }
-    }
+    const nonCAPConfig: NonCAPSchema = validateWithSchema(GeneratorConfigSchemaNonCAP, params?.parameters);
+    const generatorConfig: GeneratorConfigNonCAP = nonCAPConfig?.appGenConfig;
 
-    const generatorConfig = generatorConfigNonCap?.appGenConfig;
+    generatorConfig.telemetryData = {
+        generationSourceName: packageJson.name,
+        generationSourceVersion: packageJson.version
+    };
+    generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
+
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
 
     if (!projectPath || typeof projectPath !== 'string') {
@@ -54,7 +55,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     } catch (error) {
         console.error('Error generating application:', error);
         return {
-            functionalityId,
+            functionalityId: details.functionalityId,
             status: 'Error',
             message: 'Error generating application: ' + error.message,
             parameters: params.parameters,
@@ -70,7 +71,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     }
 
     return {
-        functionalityId,
+        functionalityId: details.functionalityId,
         status: 'Success',
         message: 'Generation completed successfully: ' + appPath,
         parameters: params.parameters,
