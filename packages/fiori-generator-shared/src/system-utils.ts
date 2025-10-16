@@ -35,7 +35,7 @@ function getSystemTypeLabel(systemType?: string): string {
     let systemTypeName = ''; // for on prem we do not show the system type
     const abapCloudLabel = ` (${t('texts.systemTypeLabel.abapCloud')})`;
     // Legacy store system types will now display as ABAP Cloud
-    if (systemType === 'ABAPCloud' || systemType === 'S4HC' || systemType === 'BTP') {
+    if (systemType === 'AbapCloud' || systemType === 'S4HC' || systemType === 'BTP') {
         systemTypeName = abapCloudLabel;
     }
     return systemTypeName;
