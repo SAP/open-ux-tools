@@ -1,6 +1,7 @@
 
-vars:
+config:
     project: 'lrop'
+vars:
     appPath: '{{PROJECT_PATH}}'
     pageType: ObjectPage
     parent: BookingObjectPage

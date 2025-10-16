@@ -5,6 +5,6 @@ extensions:
 prompts:
     - '{{query}}'
 tests:
-  - file://./list-functionalities2.yaml
   - file://./add-page.yaml
   - file://./enable-fcl.yaml
+  - file://./disable-fcl.yaml
