@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { TableType } from '@sap-ux/fiori-elements-writer';
-import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFile } from 'fs/promises';
@@ -405,6 +405,34 @@ describe('Test entity prompts', () => {
         expect((hierarchyQualifier.validate as Function)('')).toEqual(
             t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning')
         );
+
+        // Test qualifier auto-population functionality
+        const metadataV4WithHierarchyQualifier = await readFile(
+            join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
+            'utf8'
+        );
+        const questionsWithQualifier = getEntitySelectionQuestions(metadataV4WithHierarchyQualifier, 'lrop', false);
+        const hierarchyQualifierWithAutoPopulation = questionsWithQualifier.find(
+            (question) => question.name === EntityPromptNames.hierarchyQualifier
+        ) as InputQuestion;
+
+        // Test that the default function auto-populates with qualifier from metadata
+        const mockAnswersWithQualifiedEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
+            }
+        };
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithQualifiedEntity)).toBe(
+            'I_SADL_HIER_UUID_COMPANY_NODE'
+        );
+
+        // Test that the default function returns empty string when no qualifier found
+        const mockAnswersWithoutQualifier = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SomeOtherEntity'
+            }
+        };
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithoutQualifier)).toBe('');
     });
 
     test('should skip navigation entity prompt when metadata contains a valid parameterised main entity', async () => {
