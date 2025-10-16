@@ -3,10 +3,10 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Axios } from 'axios';
 import type { WriteStream } from 'fs';
 import fs from 'fs';
-import { rename } from 'fs/promises';
 import { once } from 'lodash';
-import os from 'os';
-import path from 'path';
+import { rename, access, constants } from 'fs/promises';
+import { getResponseMapFromHar } from './export-from-har';
+import { once as Once } from 'events';
 
 // We call the actual function with once because we want sort of idempotency.
 // For example when called in yo generator, the generator could be started multiple times
@@ -18,7 +18,8 @@ const QUERY_PARAMS_PREFIX = '?';
 const QUERY_PARAMS_SEPARATOR = '&';
 const GET_REQUEST_METHOD = 'get';
 const SAP_CLIENT_QUERY_PARAM_NAME = 'sap-client';
-const TEMP_MUAB_CONFIG_PATH = path.join(os.tmpdir(), 'temp-muab-config.txt');
+const TEMP_MUAB_CONFIG_PATH = '/Users/I762682/projects/temp-muab-config.txt';
+//path.join(os.tmpdir(), 'temp-muab-config.txt');
 
 type URLQueryParams = string | URLSearchParams | Record<string, string> | string[][];
 
@@ -29,10 +30,11 @@ interface MuabResponse {
     body: any;
 }
 
-function logAxiosTrafficInternal(logger: ToolsLogger) {
+function logAxiosTrafficInternal(logger: ToolsLogger, isGeneratorWorkflow: boolean = true) {
     const prototype = Axios.prototype;
     const originalRequest = prototype.request;
     const muabConfigStream = fs.createWriteStream(TEMP_MUAB_CONFIG_PATH, { flags: 'w' });
+    logger.info('[axios] Start dump');
 
     appendNewLine(muabConfigStream, `## Automated muab config file.`);
 
@@ -81,12 +83,16 @@ function logAxiosTrafficInternal(logger: ToolsLogger) {
                 logger.info(`[axios] body: ${response.data}`);
             }
 
-            appendMuabResponse(muabConfigStream, {
-                relativeUrl: response.request.path,
-                method,
-                statusCode: parseInt(response.status, 10),
-                body: response.data
-            });
+            appendMuabResponse(
+                muabConfigStream,
+                {
+                    relativeUrl: response.request.path,
+                    method,
+                    statusCode: parseInt(response.status, 10),
+                    body: response.data
+                },
+                isGeneratorWorkflow
+            );
 
             return response;
         } catch (error) {
@@ -101,9 +107,7 @@ function logAxiosTrafficInternal(logger: ToolsLogger) {
     };
 
     return {
-        saveMuabConfig: (muabConfigPath: string) => {
-            saveMuabConfig(muabConfigStream, muabConfigPath);
-        }
+        saveMuabConfig: (muabConfigPath: string) => saveMuabConfig(muabConfigStream, muabConfigPath)
     };
 }
 
@@ -123,8 +127,8 @@ function getFullUrlString(baseURL: string, relativeUrl: string, queryParams?: UR
     }
 }
 
-function appendMuabResponse(stream: WriteStream, response: MuabResponse): void {
-    appendNewLine(stream, '# [axios] response');
+function appendMuabResponse(stream: WriteStream, response: MuabResponse, isGeneratorWorkflow: boolean): void {
+    appendNewLine(stream, `# [${isGeneratorWorkflow ? 'generator' : 'editor'}][axios] response`);
     appendNewLine(
         stream,
         `${removeQueryParamFromPath(response.relativeUrl, SAP_CLIENT_QUERY_PARAM_NAME)};${response.method}|${
@@ -137,10 +141,35 @@ function appendNewLine(stream: WriteStream, message: string): void {
     stream.write(`${message}\n\n`);
 }
 
-function saveMuabConfig(stream: WriteStream, muabConfigPath: string): void {
-    stream.end(async () => {
-        await rename(TEMP_MUAB_CONFIG_PATH, muabConfigPath);
+async function saveMuabConfig(stream: WriteStream, muabConfigPath: string): Promise<void> {
+    await mergeWithHarFile(stream, muabConfigPath);
+    await new Promise<void>((resolve) => {
+        stream.end(() => resolve());
     });
+
+    await access(TEMP_MUAB_CONFIG_PATH, constants.F_OK);
+    await rename(TEMP_MUAB_CONFIG_PATH, muabConfigPath + '/muab-config.txt');
+}
+
+async function mergeWithHarFile(stream: WriteStream, muabConfigPath: string): Promise<void> {
+    const harMap = getResponseMapFromHar(`${muabConfigPath}/localhost.har`);
+
+    for (const [url, response] of Object.entries(harMap)) {
+        appendMuabResponse(
+            stream,
+            {
+                relativeUrl: url.replace('http://localhost:8080', ''),
+                method: response.method,
+                statusCode: 200,
+                body: response.body
+            },
+            false
+        );
+
+        // ✅ Wait for the stream buffer to drain if full
+        if (!stream.writableNeedDrain) continue;
+        await Once(stream, 'drain');
+    }
 }
 
 /**

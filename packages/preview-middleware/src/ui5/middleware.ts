@@ -5,6 +5,7 @@ import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
 import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
+import { logAxiosTraffic } from '@sap-ux/axios-extension';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -60,6 +61,13 @@ module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise
         transports: [new UI5ToolingTransport({ moduleName: 'preview-middleware' })],
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
     });
+
+    const { saveMuabConfig } = logAxiosTraffic(logger, false);
+    process.on('SIGINT', async () => {
+        await saveMuabConfig(process.cwd());
+        process.exit();
+    });
+
     try {
         return await createRouter(params, logger);
     } catch (error) {
