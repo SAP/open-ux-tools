@@ -1,12 +1,22 @@
-import * as z from 'zod';
+import { z } from 'zod';
 import { convertToSchema } from '../utils';
-import { version, entityConfig, floorplan, project, serviceCap as service } from './appgen-config-schema-props';
+import {
+    entityConfig,
+    floorplan,
+    project,
+    projectType,
+    serviceCap as service,
+    telemetryData,
+    version
+} from './appgen-config-schema-props';
 
 export const generatorConfigCAP = z.object({
     entityConfig,
     floorplan,
     project,
+    projectType,
     service,
+    telemetryData,
     version
 }).describe(`The configuration that will be used for the Application UI generation.
             The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.`);
