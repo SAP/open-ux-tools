@@ -44,7 +44,11 @@ describe('Test handleCreateFioriCommand()', () => {
 
     test('Execute command create-fiori --generateJsonSpec, should show json spec', () => {
         // Mock setup
-        const mockLogger = { error: jest.fn(), debug: jest.fn(), info: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        const mockLogger = {
+            error: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn()
+        } as Partial<ToolsLogger> as ToolsLogger;
         jest.spyOn(loggerMock, 'getLogger').mockImplementation(() => mockLogger);
         process.stdout.write = jest.fn() as any;
 
