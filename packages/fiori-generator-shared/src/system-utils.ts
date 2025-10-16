@@ -17,7 +17,7 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
  *
  * @param systemName - system name
  * @param displayUsername - display username
- * @param systemType - 'ABAPCloud' or undefined
+ * @param systemType - Backend system type (as string) or undefined
  * @returns system display name
  */
 export function getSystemDisplayName(systemName: string, displayUsername?: string, systemType?: string): string {
