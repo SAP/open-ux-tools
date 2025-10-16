@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.0
+
+### Minor Changes
+
+-   4053369: Determine the default table type based on the service capabilities. Auto-populate qualifier from RecursiveHierarchy annotation if available.
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
 ## 2.8.13
 
 ### Patch Changes
