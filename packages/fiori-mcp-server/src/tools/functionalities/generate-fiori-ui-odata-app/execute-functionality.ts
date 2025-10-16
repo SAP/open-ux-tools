@@ -1,15 +1,14 @@
 /* eslint-disable no-console */
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
-import type { NonCAPSchema, GeneratorConfigNonCAP } from './schema';
+import type { GeneratorConfigOData } from '../../schemas';
 
 import { promises, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { exec as execAsync } from 'child_process';
 import { promisify } from 'util';
-import { GeneratorConfigSchemaNonCAP } from './schema';
-import details from './details';
+import { generatorConfigOData } from '../../schemas';
 import { validateWithSchema } from '../../utils';
-import packageJson from '../../../../package.json';
+import details from './details';
 
 const exec = promisify(execAsync);
 
@@ -20,15 +19,7 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const nonCAPConfig: NonCAPSchema = validateWithSchema(GeneratorConfigSchemaNonCAP, params?.parameters);
-    const generatorConfig: GeneratorConfigNonCAP = nonCAPConfig?.appGenConfig;
-
-    generatorConfig.telemetryData = {
-        generationSourceName: packageJson.name,
-        generationSourceVersion: packageJson.version
-    };
-    generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
-
+    const generatorConfig: GeneratorConfigOData = validateWithSchema(generatorConfigOData, params?.parameters);
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
 
     if (!projectPath || typeof projectPath !== 'string') {

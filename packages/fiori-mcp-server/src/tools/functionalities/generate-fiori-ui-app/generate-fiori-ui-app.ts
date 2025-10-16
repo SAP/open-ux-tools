@@ -1,13 +1,13 @@
-import { command } from './command';
-import { GeneratorConfigSchemaCAP } from './schema';
-import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import type {
     ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsOutput
 } from '../../../types';
-import { convertToSchema } from '../../utils';
+
+import { command } from './command';
+import { generatorConfigCAPJson as parameters } from '../../schemas';
+import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 
 export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
     functionalityId: GENERATE_FIORI_UI_APP_ID,
@@ -18,7 +18,7 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                 The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
                 The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
                 The configuration **MUST** be based on the project files in the projectPath.`,
-    parameters: convertToSchema(GeneratorConfigSchemaCAP)
+    parameters
 };
 
 /**
