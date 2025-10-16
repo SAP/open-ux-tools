@@ -41,4 +41,21 @@ describe('Test handleCreateFioriCommand()', () => {
         expect(mockLogger.debug).not.toHaveBeenCalled();
         expect(mockLogger.error).not.toHaveBeenCalled();
     });
+
+    test('Execute command create-fiori --generateJsonSpec, should show json spec', () => {
+        // Mock setup
+        const mockLogger = { error: jest.fn(), debug: jest.fn(), info: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        jest.spyOn(loggerMock, 'getLogger').mockImplementation(() => mockLogger);
+        process.stdout.write = jest.fn() as any;
+
+        // Test execution
+        handleCreateFioriCommand([process.argv[0], 'create-fiori', '--generateJsonSpec']);
+
+        // Result check
+        expect(mockLogger.info).toHaveBeenCalledWith(expect.any(String));
+        const jsonSpec = (mockLogger.info as jest.Mock).mock.calls[0][0];
+        expect(() => JSON.parse(jsonSpec)).not.toThrow();
+        expect(mockLogger.debug).not.toHaveBeenCalled();
+        expect(mockLogger.error).not.toHaveBeenCalled();
+    });
 });
