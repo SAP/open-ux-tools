@@ -321,6 +321,57 @@ describe('FioriFunctionalityServer', () => {
         });
     });
 
+    describe('Prompts', () => {
+        test('list_prompts', async () => {
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB();
+            expect(result.prompts).toEqual([
+                {
+                    name: 'fiori-rules',
+                    description:
+                        'Complete set of rules and best practices for creating or modifying SAP Fiori elements applications'
+                }
+            ]);
+        });
+
+        test('get_prompt - fiori-rules', async () => {
+            const getFioriRulesSpy = jest.spyOn(tools, 'getFioriRules').mockReturnValue('# Fiori Rules Content...');
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[3];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'fiori-rules'
+                }
+            });
+            expect(getFioriRulesSpy).toHaveBeenCalledTimes(1);
+            expect(result.messages).toEqual([
+                {
+                    role: 'user',
+                    content: {
+                        type: 'text',
+                        text: '# Fiori Rules Content...'
+                    }
+                }
+            ]);
+        });
+
+        test('get_prompt - unknown prompt', async () => {
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[3];
+            const onRequestCB = setRequestHandlerCall[1];
+            await expect(
+                onRequestCB({
+                    params: {
+                        name: 'unknown-prompt'
+                    }
+                })
+            ).rejects.toThrow('Unknown prompt: unknown-prompt');
+        });
+    });
+
     describe('Run', () => {
         test('execute_functionality', async () => {
             const server = new FioriFunctionalityServer();
