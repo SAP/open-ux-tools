@@ -38,9 +38,9 @@ describe('FioriFunctionalityServer', () => {
         // Check initialization
         expect(Server).toHaveBeenCalledWith(
             { name: 'fiori-mcp', version: expect.any(String) },
-            { capabilities: { tools: {} } }
+            { capabilities: { tools: {}, prompts: {} } }
         );
-        expect(setRequestHandlerMock).toHaveBeenCalledTimes(2);
+        expect(setRequestHandlerMock).toHaveBeenCalledTimes(4);
     });
 
     test('setup tools', async () => {
@@ -53,7 +53,8 @@ describe('FioriFunctionalityServer', () => {
             'list_fiori_apps',
             'list_functionality',
             'get_functionality_details',
-            'execute_functionality'
+            'execute_functionality',
+            'get_fiori_rules'
         ]);
     });
 
@@ -280,7 +281,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality, get_fiori_rules.',
                     type: 'text'
                 }
             ]);
