@@ -134,7 +134,7 @@ function parseOption(opt: Option) {
         name: opt.flags,
         description: opt.description,
         required: opt.required,
-        ...(opt.defaultValue !== undefined && { defaultValue: opt.defaultValue }),
+        ...(opt.defaultValue !== undefined && { defaultValue: opt.defaultValue })
     };
 }
 
@@ -145,12 +145,12 @@ function parseOption(opt: Option) {
  * @returns A structured object representing the command.
  */
 function parseCommand(cmd: Command): {} {
-    const options = 'options' in cmd? (cmd.options as Option[]) : [];
+    const options = 'options' in cmd ? (cmd.options as Option[]) : [];
     return {
         name: cmd.name(),
         description: cmd.description(),
         ...(options?.length > 0 && { options: options.map(parseOption) }),
-        ...(cmd.commands?.length > 0 && { subcommands: cmd.commands.map(parseCommand) }),
+        ...(cmd.commands?.length > 0 && { subcommands: cmd.commands.map(parseCommand) })
     };
 }
 
@@ -163,11 +163,10 @@ function parseCommand(cmd: Command): {} {
 export function generateJsonSpec(cmd: Command) {
     const spec = {
         description: cmd.description(),
-        commands: cmd.commands.map(parseCommand),
+        commands: cmd.commands.map(parseCommand)
     };
     return JSON.stringify(spec, null, 2);
 }
-
 
 /**
  * Return the version from package.json.
