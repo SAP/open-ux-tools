@@ -33,7 +33,7 @@ customer.my.app_sap.app.title=My app title
 exports[`Adaptation Project Generator Integration Test ABAP Environment should create adaptation project from json correctly 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "3.1"
+specVersion: "4.0"
 metadata:
   name: customer-my-app
 type: application
@@ -118,7 +118,7 @@ customer.app.variant_sap.app.title=App Title
 exports[`Adaptation Project Generator Integration Test ABAP Environment should generate an onPremise adaptation project successfully 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "3.1"
+specVersion: "4.0"
 metadata:
   name: customer-app-variant
 type: application
