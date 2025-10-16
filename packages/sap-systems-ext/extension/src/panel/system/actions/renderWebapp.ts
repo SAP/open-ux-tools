@@ -1,4 +1,5 @@
 import type { PanelContext } from '../../../types/system';
+import { getBackendSystemType, type BackendSystem } from '@sap-ux/store';
 import { SystemPanelViewType } from '../../../utils/constants';
 import { createNewSystem, systemInfoLoading, updateSystemInfo, updateSystemStatus } from '../utils';
 
@@ -9,6 +10,7 @@ import { createNewSystem, systemInfoLoading, updateSystemInfo, updateSystemStatu
  */
 export async function renderWebApp(context: PanelContext): Promise<void> {
     const { backendSystem, panelViewType, systemStatusMessage, postMessage } = context;
+    const systemInfo = getSystemInfo(backendSystem);
 
     await postMessage(systemInfoLoading());
 
@@ -19,8 +21,8 @@ export async function renderWebApp(context: PanelContext): Promise<void> {
     }
 
     // view the existing saved system
-    if (backendSystem && panelViewType === SystemPanelViewType.View) {
-        await postMessage(updateSystemInfo({ systemInfo: backendSystem, unSaved: false }));
+    if (systemInfo && panelViewType === SystemPanelViewType.View) {
+        await postMessage(updateSystemInfo({ systemInfo, unSaved: true }));
         if (systemStatusMessage) {
             await postMessage(updateSystemStatus({ message: systemStatusMessage, updateSuccess: true }));
         }
@@ -28,8 +30,22 @@ export async function renderWebApp(context: PanelContext): Promise<void> {
     }
 
     // view the imported system
-    if (backendSystem && panelViewType === SystemPanelViewType.Import) {
-        await postMessage(updateSystemInfo({ systemInfo: backendSystem, unSaved: true }));
+    if (systemInfo && panelViewType === SystemPanelViewType.Import) {
+        await postMessage(updateSystemInfo({ systemInfo, unSaved: true }));
         return;
     }
+}
+
+/**
+ * Retrieves the backend system with the correct system type.
+ *
+ * @param backendSystem - backend system
+ * @returns backend sysem with correct system type
+ */
+function getSystemInfo(backendSystem?: BackendSystem): BackendSystem | undefined {
+    let systemInfo: BackendSystem | undefined;
+    if (backendSystem) {
+        systemInfo = { ...backendSystem, systemType: getBackendSystemType(backendSystem) };
+    }
+    return systemInfo;
 }

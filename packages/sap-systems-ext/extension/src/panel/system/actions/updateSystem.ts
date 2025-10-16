@@ -29,7 +29,7 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
     try {
         await validateSystemName(newBackendSystem.name, context.backendSystem?.name);
         const newPanelMsg = await updateHandler(context, newBackendSystem, systemExistsInStore);
-        await saveSystem(newBackendSystem, systemExistsInStore);
+        await saveSystem(newBackendSystem, systemExistsInStore, context.panelViewType);
 
         if (newPanelMsg) {
             await commands.executeCommand(SystemCommands.Show, newBackendSystem, newPanelMsg);
@@ -139,13 +139,19 @@ function compareSystems(currentSystem: BackendSystem, newSystem: BackendSystem):
  *
  * @param backendSystem - the backend system to save
  * @param systemExistsInStore - boolean indicating if the system already exists in the store
+ * @param systemPanelViewType - the current panel view type
  * @returns - the saved backend system or undefined if saving failed
  */
-async function saveSystem(backendSystem: BackendSystem, systemExistsInStore: boolean): Promise<void> {
-    await new SystemService(SystemsLogger.logger).write(backendSystem);
+async function saveSystem(
+    backendSystem: BackendSystem,
+    systemExistsInStore: boolean,
+    systemPanelViewType: SystemPanelViewType
+): Promise<void> {
+    await new SystemService(SystemsLogger.logger).write(backendSystem, { force: systemExistsInStore });
 
+    const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    window.showInformationMessage(t('SYSTEM_INFO_UPDATED', geti18nOpts(backendSystem.name)));
+    window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 
     logTelemetryEvent(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,

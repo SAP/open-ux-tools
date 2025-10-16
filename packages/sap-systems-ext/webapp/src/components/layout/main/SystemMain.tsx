@@ -41,7 +41,7 @@ export function SystemMain(): ReactElement {
     return (
         <div className="store-main">
             {systemState === LoadingState.Error ? (
-                <div className="system-info-status">{t('status.infoError')}</div>
+                <div className="system-info-status">{t('systemStatus.infoError')}</div>
             ) : (
                 <div>
                     {addNewSapSystem && <SystemTypes setType={setType} />}

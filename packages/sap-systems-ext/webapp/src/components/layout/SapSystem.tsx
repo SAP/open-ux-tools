@@ -18,7 +18,7 @@ export function SapSystem() {
     return (
         <div>
             {systemState === LoadingState.Loading && !addNewSapSystem ? (
-                <div className="system-info-status">{t('status.infoLoading')}</div>
+                <div className="system-info-status">{t('systemStatus.infoLoading')}</div>
             ) : (
                 <div>
                     <header>
