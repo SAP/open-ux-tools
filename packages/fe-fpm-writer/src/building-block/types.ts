@@ -493,3 +493,35 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      */
     replace?: boolean;
 }
+
+/**
+ * Represents a custom filter to be used inside the FilterBar.
+ * The template for the FilterField has to be provided as the default aggregation.
+ */
+export interface FilterField {
+    /**
+     * Reference to the key of another filter already displayed in the table to properly place this one.
+     */
+    anchor: string;
+    /**
+     * The property name of the FilterField.
+     */
+    key: string;
+    /**
+     * The text that will be displayed for this FilterField.
+     */
+    label: string;
+    /**
+     * If set the search will be automatically triggered, when a filter value was changed.
+     */
+    liveMode: boolean;
+    /**
+     * Defines where this filter should be placed relative to the defined anchor.
+     * Allowed values are `Before` and `After`.
+     */
+    placement: 'Before' | 'After';
+    /**
+     * Parameter which sets the visibility of the FilterBar building block.
+     */
+    visible: boolean;
+}
