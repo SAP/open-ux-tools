@@ -1068,18 +1068,26 @@ export class FlpSandbox {
             this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const i18nConfig = this.manifest['sap.app'].i18n;
-            let i18nPath: string;
-            let supportedLocales: unknown[] = [];
+            let i18nPath = 'i18n/i18n.properties';
             let fallbackLocale: string | undefined;
+            let supportedLocales: string[] = [];
 
             if (typeof i18nConfig === 'string') {
                 i18nPath = i18nConfig;
             } else if (typeof i18nConfig === 'object' && i18nConfig !== null && 'bundleUrl' in i18nConfig) {
-                const { bundleUrl: i18nPath } = i18nConfig;
-                supportedLocales = i18nConfig.supportedLocales ?? [];
-                fallbackLocale = i18nConfig.fallbackLocale;
-            } else {
-                i18nPath = 'i18n/i18n.properties';
+                const {
+                    bundleUrl: i18nPathFromConfig,
+                    supportedLocales: locales = [],
+                    fallbackLocale: fallback
+                } = i18nConfig as {
+                    bundleUrl: string;
+                    supportedLocales?: string[];
+                    fallbackLocale?: string;
+                };
+
+                i18nPath = i18nPathFromConfig;
+                supportedLocales = locales;
+                fallbackLocale = fallback;
             }
 
             const requestedLocale = (req.query.locale as string) || fallbackLocale || '';
@@ -1097,12 +1105,11 @@ export class FlpSandbox {
                 );
                 return;
             }
-            const entries = (req.body as Array<I18nEntry>) || [];
-            entries.forEach((entry) => {
-                if (entry.comment) {
-                    entry.annotation = entry.comment;
-                }
-            });
+
+            const entries = ((req.body as Array<I18nEntry>) || []).map((entry) => ({
+                ...entry,
+                annotation: entry.comment ?? entry.annotation
+            }));
             await createPropertiesI18nEntries(filePath, entries);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
         } catch (error) {
