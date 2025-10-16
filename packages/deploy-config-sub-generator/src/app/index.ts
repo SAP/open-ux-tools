@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'node:path';
 import { getMtaPath, findCapProjectRoot, getAppType } from '@sap-ux/project-access';
 import {
     bail,

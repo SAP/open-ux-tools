@@ -1,6 +1,6 @@
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import {
     renameDefaultSandboxes,
     deleteNoLongerUsedFiles,

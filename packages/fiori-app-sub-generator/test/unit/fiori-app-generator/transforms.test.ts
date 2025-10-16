@@ -86,7 +86,7 @@ describe('Test transform state', () => {
         expect(ffApp.service?.previewSettings?.authenticationType).toEqual(AuthenticationType.ReentranceTicket);
     });
 
-    test('should return preview setting `scp`', async () => {
+    test('should set preview setting `authenticationType` correctly', async () => {
         const state: State = {
             ...baseState,
             service: {
@@ -104,8 +104,10 @@ describe('Test transform state', () => {
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.bas);
 
         let ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
-        expect(ffApp.service?.previewSettings?.scp).toBe(true);
+        // All cloud systems support reentrance this supports BAS -> VSCode portability
+        expect(ffApp.service?.previewSettings?.authenticationType).toBe('reentranceTicket');
 
+        // Should support legacy service key backend system entries, using reentrance tickets in new apps
         state.service!.connectedSystem = {
             backendSystem: {
                 serviceKeys: { any: 'thing' },
@@ -116,7 +118,7 @@ describe('Test transform state', () => {
         } as Service['connectedSystem'];
 
         ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
-        expect(ffApp.service?.previewSettings?.scp).toBe(true);
+        expect(ffApp.service?.previewSettings?.authenticationType).toBe('reentranceTicket');
     });
 
     test('should return preview setting `apiHub`', async () => {
@@ -132,6 +134,48 @@ describe('Test transform state', () => {
         };
         const feApp = await transformState<FioriElementsApp<unknown>>(state);
         expect(feApp.service.previewSettings).toMatchObject({ apiHub: true });
+    });
+
+    test('should correctly map entity related config and page building block title for FPM floorplan', async () => {
+        const state: State = {
+            ...baseState,
+            project: {
+                ...baseState.project
+            },
+            service: {
+                ...baseState.service,
+                connectedSystem: {
+                    backendSystem: {
+                        authenticationType: AuthenticationType.ReentranceTicket,
+                        name: 'some-backend-system',
+                        url: 'https://abap.cloud.system'
+                    },
+                    serviceProvider: {} as ServiceProvider
+                }
+            },
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SEPMRA_C_PD_Product',
+                    entitySetType: 'SEPMRA_C_PD_ProductType'
+                },
+                addPageBuildingBlock: true,
+                pageBuildingBlockTitle: 'Product Details',
+                navigationEntity: {} as EntityRelatedAnswers['navigationEntity'], // test None selection,
+                presentationQualifier: '',
+                tableType: 'ResponsiveTable',
+                tableSelectionMode: 'None'
+            },
+            floorplan: FloorplanFE.FE_FPM
+        };
+
+        const feApp = await transformState<FioriElementsApp<unknown>>(state);
+        expect(feApp.template.settings).toEqual({
+            entityConfig: {
+                mainEntityName: 'SEPMRA_C_PD_Product'
+            },
+            pageBuildingBlockTitle: 'Product Details',
+            pageName: 'Main'
+        });
     });
 
     test('should transform entity related config correctly', async () => {

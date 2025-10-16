@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { TableType } from '@sap-ux/fiori-elements-writer';
-import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFile } from 'fs/promises';
@@ -10,11 +10,11 @@ import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import * as EntityHelper from '../../../../src/prompts/edmx/entity-helper';
 import { getEntitySelectionQuestions } from '../../../../src/prompts/edmx/questions';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import type { EntitySelectionAnswers } from '../../../../src/types';
+import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types';
 import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 
@@ -405,6 +405,34 @@ describe('Test entity prompts', () => {
         expect((hierarchyQualifier.validate as Function)('')).toEqual(
             t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning')
         );
+
+        // Test qualifier auto-population functionality
+        const metadataV4WithHierarchyQualifier = await readFile(
+            join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
+            'utf8'
+        );
+        const questionsWithQualifier = getEntitySelectionQuestions(metadataV4WithHierarchyQualifier, 'lrop', false);
+        const hierarchyQualifierWithAutoPopulation = questionsWithQualifier.find(
+            (question) => question.name === EntityPromptNames.hierarchyQualifier
+        ) as InputQuestion;
+
+        // Test that the default function auto-populates with qualifier from metadata
+        const mockAnswersWithQualifiedEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
+            }
+        };
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithQualifiedEntity)).toBe(
+            'I_SADL_HIER_UUID_COMPANY_NODE'
+        );
+
+        // Test that the default function returns empty string when no qualifier found
+        const mockAnswersWithoutQualifier = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SomeOtherEntity'
+            }
+        };
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithoutQualifier)).toBe('');
     });
 
     test('should skip navigation entity prompt when metadata contains a valid parameterised main entity', async () => {
@@ -546,5 +574,60 @@ describe('Test entity prompts', () => {
                 } as EntityAnswer
             })
         ).toBe(true);
+    });
+
+    test('pageBuildingBlockTitle question is displayed when addPageBuildingBlock is true', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.message).toBe(t('prompts.pageBuildingBlock.message'));
+        expect(addPageBuildingBlockQuestion.default).toBe(false);
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages({
+                addPageBuildingBlock: true
+            } as PageBuildingBlockAnswers);
+            expect(message).toEqual({
+                message: t('prompts.pageBuildingBlock.warning'),
+                severity: Severity.warning
+            });
+        }
+
+        const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
+        expect(typeof pageBlockTitleQuestion?.when).toBe('function');
+        if (typeof pageBlockTitleQuestion?.when === 'function') {
+            expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: true } as PageBuildingBlockAnswers)).toBe(true);
+        }
+        // check that page title is mandatory
+        if (typeof pageBlockTitleQuestion?.validate === 'function') {
+            expect(pageBlockTitleQuestion.validate('')).toBe(false);
+            expect(pageBlockTitleQuestion.validate('My Title')).toBe(true);
+        }
+    });
+
+    test('pageBuildingBlockTitle question is not displayed when addPageBuildingBlock is false', () => {
+        const promptOptions = { displayPageBuildingBlockPrompt: true };
+        const questions = getEntitySelectionQuestions(metadataV2, 'fpm', false, promptOptions);
+        const addPageBuildingBlockQuestion = questions.find(
+            (q) => q.name === EntityPromptNames.addPageBuildingBlock
+        ) as ConfirmQuestion;
+        expect(addPageBuildingBlockQuestion).toBeDefined();
+        expect(addPageBuildingBlockQuestion.guiOptions?.hint).toBe(t('prompts.pageBuildingBlock.tooltip'));
+        if (typeof addPageBuildingBlockQuestion?.additionalMessages === 'function') {
+            const message = addPageBuildingBlockQuestion.additionalMessages();
+            expect(message).toEqual(undefined);
+        }
+
+        const pageBlockTitleQuestion = questions.find((q) => q.name === EntityPromptNames.pageBuildingBlockTitle);
+        // Should not display when addPageBuildingBlock is false
+        if (typeof pageBlockTitleQuestion?.when === 'function') {
+            expect(pageBlockTitleQuestion.when({ addPageBuildingBlock: false } as PageBuildingBlockAnswers)).toBe(
+                false
+            );
+        }
     });
 });

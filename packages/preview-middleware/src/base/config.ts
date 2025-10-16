@@ -11,9 +11,10 @@ import type {
     TestConfig
 } from '../types';
 import { render } from 'ejs';
-import { join, posix } from 'path';
+import { join, posix } from 'node:path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
-import { readFileSync } from 'fs';
+import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
+import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -329,11 +330,10 @@ async function getI18nTextFromProperty(
     propertyValue: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
-    //i18n model format could be {{key}} or {i18n>key}
-    if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+    const propertyI18nKey = extractDoubleCurlyBracketsKey(propertyValue ?? '');
+    if (!projectRoot || !propertyI18nKey) {
         return propertyValue;
     }
-    const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
     const projectAccess = await createProjectAccess(projectRoot);
     const applicationIds = projectAccess.getApplicationIds();
     try {

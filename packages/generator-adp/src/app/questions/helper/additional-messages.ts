@@ -35,6 +35,10 @@ export const getSystemAdditionalMessages = (
         };
     }
 
+    if (!flexUISystem) {
+        return undefined;
+    }
+
     if (!isOnPremise) {
         if (!isUIFlex) {
             return {
@@ -122,6 +126,29 @@ export const getVersionAdditionalMessages = (isVersionDetected: boolean): IMessa
         return {
             message: t('validators.ui5VersionNotDetectedError'),
             severity: Severity.warning
+        };
+    }
+
+    return undefined;
+};
+
+/**
+ * Provides additional messages related to the target environment.
+ *
+ * @param {string} value - The selected target environment.
+ * @param {boolean} isCFLoggedIn - Flag indicating whether the user is logged in to Cloud Foundry.
+ * @param {any} cfConfig - The Cloud Foundry configuration.
+ * @returns {IMessageSeverity | undefined} Message object or undefined if no message is applicable.
+ */
+export const getTargetEnvAdditionalMessages = (
+    value: string,
+    isCFLoggedIn: boolean,
+    cfConfig: any
+): IMessageSeverity | undefined => {
+    if (value === 'CF' && isCFLoggedIn) {
+        return {
+            message: `You are logged in to Cloud Foundry: ${cfConfig.url} / ${cfConfig.org?.Name} / ${cfConfig.space?.Name}.`,
+            severity: Severity.information
         };
     }
 

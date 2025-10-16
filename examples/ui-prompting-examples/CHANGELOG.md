@@ -1,5 +1,96 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [6debb89]
+-   Updated dependencies [6debb89]
+    -   @sap-ux/ui-components@1.26.13
+    -   @sap-ux/ui-prompting@0.5.4
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [4c448a7]
+    -   @sap-ux/ui-components@1.26.12
+    -   @sap-ux/ui-prompting@0.5.3
+
+## 0.4.3
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui-prompting@0.5.2
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [7f652f3]
+    -   @sap-ux/ui-components@1.26.11
+    -   @sap-ux/ui-prompting@0.5.1
+
+## 0.4.1
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.4.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+### Patch Changes
+
+-   Updated dependencies [1276258]
+    -   @sap-ux/ui-prompting@0.5.0
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [904f8e3]
+    -   @sap-ux/ui-components@1.26.10
+    -   @sap-ux/ui-prompting@0.4.2
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [2d0380a]
+    -   @sap-ux/ui-prompting@0.4.1
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [69cfbe3]
+    -   @sap-ux/ui-prompting@0.4.0
+
+## 0.3.0
+
+### Minor Changes
+
+-   f81c86b: Add Page building block support to fpm writer
+
+### Patch Changes
+
+-   Updated dependencies [e4197e0]
+    -   @sap-ux/ui-prompting@0.3.37
+
+## 0.2.50
+
+### Patch Changes
+
+-   Updated dependencies [e660064]
+    -   @sap-ux/ui-components@1.26.9
+    -   @sap-ux/ui-prompting@0.3.36
+
 ## 0.2.49
 
 ### Patch Changes

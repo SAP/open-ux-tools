@@ -1,5 +1,87 @@
 # @sap-ux/project-integrity
 
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+
+## 0.2.20
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+
+## 0.2.19
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+
+## 0.2.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.1
+
+## 0.2.17
+
+### Patch Changes
+
+-   Updated dependencies [f9b4afe]
+    -   @sap-ux/project-access@1.32.0
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [c385a76]
+    -   @sap-ux/project-access@1.31.0
+
+## 0.2.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.14
+
+## 0.2.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.13
+
+## 0.2.13
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+
+## 0.2.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.2.11
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+
+## 0.2.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+
+## 0.2.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+
 ## 0.2.8
 
 ### Patch Changes

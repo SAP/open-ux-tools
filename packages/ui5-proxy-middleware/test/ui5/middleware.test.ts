@@ -6,6 +6,7 @@ import express from 'express';
 import supertest from 'supertest';
 import nock from 'nock';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import {ToolsLogger} from "@sap-ux/logger";
 
 // spy on ui5Proxy and injectScripts to verify calls
 const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
@@ -154,7 +155,9 @@ describe('middleware', () => {
             await getTestServer(config);
             expect(ui5ProxySpy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ secure: true, logLevel: 'info' })
+                expect.objectContaining({ secure: true, logger: undefined }),
+                undefined,
+                expect.any(ToolsLogger)
             );
         });
 
@@ -165,7 +168,9 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toHaveBeenCalledWith(
                 expect.objectContaining({ proxy: 'http://proxy.example' }),
-                expect.objectContaining({})
+                expect.objectContaining({}),
+                undefined,
+                expect.any(ToolsLogger)
             );
         });
 
@@ -176,7 +181,26 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toHaveBeenCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ logLevel: 'debug' })
+                expect.objectContaining({ logger: expect.objectContaining({})}),
+                undefined,
+                expect.any(ToolsLogger)
+            );
+        });
+
+        test('pathReplace', async () => {
+            await getTestServer({
+                ...config,
+                ui5: {
+                    path: '/resources',
+                    url: 'http://ui5.example',
+                    pathReplace: '/new-resources'
+                }
+            });
+            expect(ui5ProxySpy).toHaveBeenCalledWith(
+                expect.objectContaining({ pathReplace: '/new-resources' }),
+                expect.objectContaining({}),
+                undefined,
+                expect.any(ToolsLogger)
             );
         });
 
@@ -185,7 +209,12 @@ describe('middleware', () => {
                 ...config,
                 secure: true
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(expect.objectContaining({}), expect.objectContaining({ secure: true }));
+            expect(ui5ProxySpy).toHaveBeenCalledWith(
+                expect.objectContaining({}),
+                expect.objectContaining({ secure: true, logger: undefined }),
+                undefined,
+                expect.any(ToolsLogger)
+            );
         });
 
         test('secure', async () => {
@@ -193,7 +222,12 @@ describe('middleware', () => {
                 ...config,
                 secure: false
             });
-            expect(ui5ProxySpy).toHaveBeenCalledWith(expect.objectContaining({}), expect.objectContaining({ secure: false }));
+            expect(ui5ProxySpy).toHaveBeenCalledWith(
+                expect.objectContaining({}),
+                expect.objectContaining({ secure: false, logger: undefined }),
+                undefined,
+                expect.any(ToolsLogger)
+            );
         });
 
         test('directLoad', async () => {
@@ -242,7 +276,9 @@ describe('middleware', () => {
             expect(loadManifestMock).toHaveBeenCalled();
             expect(ui5ProxySpy).toHaveBeenCalledWith(
                 expect.objectContaining({ version: ui5Version }),
-                expect.objectContaining({})
+                expect.objectContaining({}),
+                undefined,
+                expect.any(ToolsLogger)
             );
         });
 
@@ -253,13 +289,23 @@ describe('middleware', () => {
                 }
             ]);
             await getTestServer(config);
-            expect(ui5ProxySpy).toHaveBeenCalledWith(expect.objectContaining({ version: '' }), expect.objectContaining({}));
+            expect(ui5ProxySpy).toHaveBeenCalledWith(
+                expect.objectContaining({ version: '' }),
+                expect.objectContaining({}),
+                undefined,
+                expect.any(ToolsLogger)
+            );
         });
 
         test('no manifest.json', async () => {
             rootProjectMock.byGlob.mockResolvedValueOnce([]);
             await getTestServer(config);
-            expect(ui5ProxySpy).toHaveBeenCalledWith(expect.objectContaining({ version: '' }), expect.objectContaining({}));
+            expect(ui5ProxySpy).toHaveBeenCalledWith(
+                expect.objectContaining({ version: '' }),
+                expect.objectContaining({}),
+                undefined,
+                expect.any(ToolsLogger)
+            );
         });
     });
 });

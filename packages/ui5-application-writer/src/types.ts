@@ -167,6 +167,10 @@ export interface AppOptions {
      * Also updates the configs (e.g. ui5.yaml) and package.json scripts accordingly.
      */
     useVirtualPreviewEndpoints?: boolean;
+    /**
+     * add the cds ui5 plugin (and enable npm workspaces) in the project - defaults to true.
+     */
+    addCdsUi5Plugin?: boolean;
 }
 
 /**

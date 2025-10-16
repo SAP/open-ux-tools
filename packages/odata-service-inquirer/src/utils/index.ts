@@ -11,6 +11,9 @@ import { PromptState } from './prompt-state';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { removeSync } from 'circular-reference-remover';
+import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey } from '@sap-ux/store';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -38,7 +41,7 @@ export function parseOdataVersion(metadata: string): {
 } {
     try {
         const convertedMetadata = convert(parse(metadata));
-        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
 
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
@@ -131,18 +134,41 @@ export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undef
 }
 
 /**
- * Temp fix for circular dependency issue within the service provider winston logger, causing issues with serialization in Yeoman generators.
- * More investigation is needed to determine what properties are required from the service provider for subsequent flows.
+ * Remove circular dependencies from within the service provider winston logger, causing issues with serialization in Yeoman generators.
  *
  * @param serviceProvider - instance of the service provider
  * @returns the service provider with the circular dependencies removed
  */
 export function removeCircularFromServiceProvider(serviceProvider: ServiceProvider): ServiceProvider {
     for (const service in (serviceProvider as any).services) {
-        delete (serviceProvider as any).services?.[service]?.log;
+        if ((serviceProvider as any).services?.[service].log) {
+            (serviceProvider as any).services[service].log = removeSync(
+                (serviceProvider as any).services[service]?.log,
+                { setUndefined: true }
+            );
+        }
     }
-    delete (serviceProvider as any).log;
+    if (serviceProvider.log) {
+        (serviceProvider as any).log = removeSync((serviceProvider as any).log, { setUndefined: true });
+    }
     return serviceProvider;
+}
+
+/**
+ * Checks if the specified backend systems contain a match for the specified url and client.
+ *
+ * @param backendSystems backend systems to search for a matching key
+ * @param url the url component of the backend system key
+ * @param client the client component of of the backend system key
+ * @returns the backend system if found or undefined
+ */
+export function isBackendSystemKeyExisting(
+    backendSystems: BackendSystem[],
+    url: string,
+    client?: string
+): BackendSystem | undefined {
+    const newBackendSystemId = new BackendSystemKey({ url, client }).getId();
+    return backendSystems.find((backendSystem) => BackendSystemKey.from(backendSystem).getId() === newBackendSystemId);
 }
 
 export { PromptState };

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -320,6 +320,16 @@ export function generateOPAFiles(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
         join(testOutDirPath, `integration/${config.opaJourneyFileName}.js`),
         journeyParams,
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
+    // Journey Runner
+    editor.copyTpl(
+        join(rootV4TemplateDirPath, 'integration', 'pages', 'JourneyRunner.js'),
+        join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'),
+        config,
         undefined,
         {
             globOptions: { dot: true }

@@ -27,15 +27,8 @@ import {
     elementsWithName,
     getSingleTextNode
 } from '@sap-ux/odata-annotation-core';
-import type {
-    Namespace,
-    AnnotationFile,
-    PositionPointer,
-    Element,
-    Diagnostic,
-    Reference
-} from '@sap-ux/odata-annotation-core';
-import type { Target as TargetType } from '@sap-ux/odata-annotation-core-types';
+import type { Namespace, AnnotationFile, PositionPointer, Element, Reference } from '@sap-ux/odata-annotation-core';
+import type { ExtendedDiagnostic, Target as TargetType } from '@sap-ux/odata-annotation-core-types';
 import type { MetadataElementWithParentKey } from '@sap/ux-cds-compiler-facade/dist/metadata';
 
 export { TARGET_TYPE } from '@sap-ux/odata-annotation-core-types';
@@ -165,7 +158,7 @@ interface ReturnValue {
     file: AnnotationFile;
     pointer?: PositionPointer;
     nodeRange?: Range;
-    diagnostics?: Diagnostic[];
+    diagnostics?: ExtendedDiagnostic[];
 }
 
 export const toTarget = (
@@ -228,7 +221,7 @@ export const toAnnotationFile = (
     metadataCollector: MetadataCollector,
     position?: Position,
     propagationMap?: PropagatedTargetMap
-): { file: AnnotationFile; pointer?: PositionPointer; nodeRange?: Range; diagnostics?: Diagnostic[] } => {
+): { file: AnnotationFile; pointer?: PositionPointer; nodeRange?: Range; diagnostics?: ExtendedDiagnostic[] } => {
     const supportedVocabularies = [...vocabularyService.getVocabularies().values()];
     const returnValue: ReturnValue = {
         file: {
@@ -250,7 +243,7 @@ export const toAnnotationFile = (
             ]
         }
     };
-    let diagnostics: Diagnostic[] = [];
+    let diagnostics: ExtendedDiagnostic[] = [];
     returnValue.file.targets = [...cdsAnnotationFile.targetMap].map(([, value], targetIndex) => {
         const { terms, mdPathSet, diag } = convertTargetAnnotations(
             value,
@@ -294,7 +287,7 @@ export const toAnnotationFile = (
  * @param returnValue - The return value object.
  * @param range - The range to copy the end position from.
  */
-function setFileRange(returnValue: ReturnValue, range: Range) {
+function setFileRange(returnValue: ReturnValue, range: Range): void {
     if (returnValue.file.range) {
         returnValue.file.range.end = copyPosition(range.end);
     }
@@ -306,7 +299,7 @@ function setFileRange(returnValue: ReturnValue, range: Range) {
  * @param returnValue - The return value object.
  * @param range - The range to copy the end position from.
  */
-function setContentRange(returnValue: ReturnValue, range: Range) {
+function setContentRange(returnValue: ReturnValue, range: Range): void {
     if (returnValue.file.contentRange) {
         returnValue.file.contentRange.end = copyPosition(range.end);
     }
@@ -323,7 +316,7 @@ function setContentRange(returnValue: ReturnValue, range: Range) {
  * @returns Returns an object containing the converted terms, metadata path set, and diagnostics.
  * @property {Element[]} terms - The array of converted Element nodes representing the terms.
  * @property {Set<string>} mdPathSet - The set of metadata paths extracted from the converted terms.
- * @property {Diagnostic[]} diag - The array of diagnostics generated during conversion.
+ * @property {ExtendedDiagnostic[]} diag - The array of diagnostics generated during conversion.
  */
 function convertTargetAnnotations(
     value: Target,
@@ -334,9 +327,9 @@ function convertTargetAnnotations(
 ): {
     terms: Element[];
     mdPathSet: Set<string>;
-    diag: Diagnostic[];
+    diag: ExtendedDiagnostic[];
 } {
-    let diag: Diagnostic[] = [];
+    let diag: ExtendedDiagnostic[] = [];
     const mdPathSet: Set<string> = new Set();
     const terms = value.assignments.reduce((acc, assignment): Element[] => {
         const options: ToTermsOptions = {
@@ -354,7 +347,7 @@ function convertTargetAnnotations(
             // TODO: clean this up
             if (pointer) {
                 const [innerIndex, ...rest] = pointer.split('/').slice(1);
-                const adjustedTermIndex = acc.length + parseInt(innerIndex, 10);
+                const adjustedTermIndex = acc.length + Number.parseInt(innerIndex, 10);
                 returnValue.pointer = ['', 'targets', targetIndex, 'terms', adjustedTermIndex, ...rest].join('/');
                 // if there is no pointer, then node range is meaningless
                 returnValue.nodeRange = nodeRange;

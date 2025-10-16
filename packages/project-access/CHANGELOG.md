@@ -1,5 +1,88 @@
 # @sap-ux/project-access
 
+## 1.32.4
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+
+## 1.32.3
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/i18n@0.3.4
+
+## 1.32.2
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+
+## 1.32.1
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/ui5-config@0.29.5
+
+## 1.32.0
+
+### Minor Changes
+
+-   f9b4afe: Enhanced the Project type with the capCustomPaths property to store information about custom paths in CAP projects. These custom paths should be considered during performance optimization checks.
+
+## 1.31.0
+
+### Minor Changes
+
+-   c385a76: Enhanced the Project type with the capCustomPaths property to store information about custom paths in CAP projects. These custom paths should be considered during performance optimization checks.
+
+## 1.30.14
+
+### Patch Changes
+
+-   Updated dependencies [8ccc4da]
+    -   @sap-ux/ui5-config@0.29.4
+
+## 1.30.13
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+
+## 1.30.12
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+
+## 1.30.11
+
+### Patch Changes
+
+-   @sap-ux/i18n@0.3.3
+
+## 1.30.10
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+
+## 1.30.9
+
+### Patch Changes
+
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+
 ## 1.30.8
 
 ### Patch Changes

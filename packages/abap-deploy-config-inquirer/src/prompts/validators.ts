@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { isAbapEnvironmentOnBtp, isAppStudio, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
@@ -50,7 +50,7 @@ const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 async function validateSystemType(options?: TargetSystemPromptOptions): Promise<boolean | string> {
     if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
         const isDefaultProviderAbapCloud = AbapServiceProviderManager.getIsDefaultProviderAbapCloud();
-        const isSelectedS4HC = PromptState?.abapDeployConfig?.isS4HC;
+        const isSelectedS4HC = PromptState?.abapDeployConfig?.isAbapCloud;
         if (isDefaultProviderAbapCloud === true && isSelectedS4HC === false) {
             return t('errors.validators.invalidCloudSystem');
         } else if (isDefaultProviderAbapCloud === false && isSelectedS4HC) {
@@ -90,26 +90,26 @@ export async function validateDestinationQuestion(
  * @param props - properties to update
  * @param props.url - url
  * @param props.client - client
- * @param props.isS4HC - is S/4HANA Cloud
+ * @param props.isAbapCloud - Cloud based Abap (either Steampunk or Embedded Steampunk)
  * @param props.scp - is SCP
  * @param props.target - target system
  */
 function updatePromptState({
     url,
     client,
-    isS4HC,
+    isAbapCloud,
     scp,
     target
 }: {
     url: string;
     client?: string;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
     scp?: boolean;
     target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
     PromptState.abapDeployConfig.client = client;
-    PromptState.abapDeployConfig.isS4HC = isS4HC;
+    PromptState.abapDeployConfig.isAbapCloud = isAbapCloud;
     PromptState.abapDeployConfig.scp = scp;
     PromptState.abapDeployConfig.targetSystem = target;
 }
@@ -134,13 +134,12 @@ export async function updateDestinationPromptState(
         updatePromptState({
             url: dest?.Host,
             client: dest['sap-client'],
-            isS4HC: isS4HC(dest),
+            isAbapCloud: isS4HC(dest),
             scp: isAbapEnvironmentOnBtp(dest)
         });
 
         if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
-            const isS4HCloud = await isAbapCloud(backendTarget);
-            PromptState.abapDeployConfig.isS4HC = isS4HCloud ?? false;
+            PromptState.abapDeployConfig.isAbapCloud = (await isAbapCloud(backendTarget)) ?? false;
         }
     }
 }
@@ -171,7 +170,7 @@ export async function validateTargetSystem(
                 url: choice.value,
                 client: choice.client ?? '',
                 scp: choice.scp,
-                isS4HC: choice.isS4HC,
+                isAbapCloud: choice.isAbapCloud,
                 target: target
             });
         }
@@ -202,7 +201,7 @@ export function validateUrl(input: string): boolean | string {
             url: input.trim(),
             client: backendSystem?.client,
             scp: !!backendSystem?.serviceKeys,
-            isS4HC: backendSystem?.authenticationType === AuthenticationType.ReentranceTicket
+            isAbapCloud: backendSystem?.authenticationType === AuthenticationType.ReentranceTicket
         });
     } else {
         return t('errors.invalidUrl', { url: input?.trim() });
@@ -278,12 +277,14 @@ export function validateClient(client: string): boolean | string {
  * @param input - password entered
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
+ * @param shouldCheckSystemType - if the system type should be checked
  * @returns boolean or error message as a string
  */
 export async function validateCredentials(
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    shouldCheckSystemType = false
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
@@ -301,6 +302,10 @@ export async function validateCredentials(
             handleTransportConfigError(e);
         }
     });
+
+    if (isAppStudio() && shouldCheckSystemType) {
+        PromptState.abapDeployConfig.isAbapCloud = (await isAbapCloud(backendTarget)) ?? false;
+    }
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
     return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
@@ -639,25 +644,24 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
 async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
-    const isS4HC = PromptState?.abapDeployConfig?.isS4HC;
-    if (isS4HC === false && input === DEFAULT_PACKAGE_ABAP) {
+    const isAbapCloud = PromptState?.abapDeployConfig?.isAbapCloud;
+    if (!isAbapCloud) {
+        LoggerHelper.logger.debug(`System is OnPremise, skipping package "${input}" type validation`);
         return true;
     }
-    const packageType = isS4HC ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
-    const errorMsg =
-        packageType === AdaptationProjectType.CLOUD_READY
-            ? t('errors.validators.invalidCloudPackage')
-            : t('errors.validators.invalidOnPremPackage');
     const systemInfoResult = await getSystemInfo(input, backendTarget);
     if (!systemInfoResult.apiExist) {
         return true;
     }
 
-    const systemInfo = systemInfoResult.systemInfo;
-    const isValidPackageType =
-        systemInfo?.adaptationProjectTypes?.length === 1 && systemInfo?.adaptationProjectTypes[0] === packageType;
+    const types = systemInfoResult.systemInfo?.adaptationProjectTypes;
+    if (types && types?.length > 1) {
+        return true;
+    }
 
-    return isValidPackageType ? true : errorMsg;
+    const isValidPackageType = types?.length === 1 && types[0] === AdaptationProjectType.CLOUD_READY;
+
+    return isValidPackageType ? true : t('errors.validators.invalidCloudPackage');
 }
 
 /**
@@ -813,7 +817,7 @@ function shouldValidatePackageForStartingPrefix(
         !ui5AbapPromptOptions?.hide &&
         !(
             ui5AbapPromptOptions?.hideIfOnPremise === true &&
-            PromptState.abapDeployConfig?.isS4HC === false &&
+            PromptState.abapDeployConfig?.isAbapCloud === false &&
             PromptState.abapDeployConfig?.scp === false
         )
     );

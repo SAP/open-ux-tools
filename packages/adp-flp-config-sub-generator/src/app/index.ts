@@ -1,7 +1,7 @@
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
-import path, { join } from 'path';
+import path, { join } from 'node:path';
 import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
 import {
     getVariant,
@@ -127,7 +127,9 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (this.authenticationRequired) {
+        // If authentication was already prompted it should not be skipped as this leads to issues with Yeoman UI navigation
+        const credentialsPrompted = getFromCache<boolean>(this.appWizard, 'credentialsPrompted', this.logger);
+        if (this.authenticationRequired || credentialsPrompted) {
             await this._promptAuthentication();
         }
         if (this.abort) {
@@ -197,7 +199,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 try {
                     this.provider = await getAbapServiceProvider(this.ui5Yaml, this.toolsLogger, this.credentials);
                     this.inbounds = await getBaseAppInbounds(this.appId, this.provider);
-                    addToCache(this.appWizard, { provider: this.provider }, this.logger);
+                    addToCache(this.appWizard, { provider: this.provider, credentialsPrompted: true }, this.logger);
                 } catch (error) {
                     if (!isAxiosError(error)) {
                         this.logger.error(`Base application inbounds fetching failed: ${error}`);
@@ -386,10 +388,10 @@ export default class AdpFlpConfigGenerator extends Generator {
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
             {
-                name: t('yuiNavSteps.tileSettingsName', {
+                name: t('yuiNavSteps.tileSettingsName'),
+                description: t('yuiNavSteps.tileSettingsDescr', {
                     projectName: path.basename(this.projectRootPath)
-                }),
-                description: ''
+                })
             }
         ]);
     }

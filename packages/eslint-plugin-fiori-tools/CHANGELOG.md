@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 0.6.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.6.0
 
 ### Minor Changes

@@ -16,6 +16,9 @@
       "path": "../logger"
     },
     {
+      "path": "../nodejs-utils"
+    },
+    {
       "path": "../project-access"
     },
     {

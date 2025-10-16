@@ -1,5 +1,36 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/odata-annotation-core@0.2.9
+
+## 0.4.0
+
+### Minor Changes
+
+-   aa8bb7a: feat: Add missing referential constraint data to navigation property metadata elements.
+    feat: Add type facets with constraints to metadata elements.
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.8
+
+## 0.3.7
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.7
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.6
+
 ## 0.3.5
 
 ### Patch Changes

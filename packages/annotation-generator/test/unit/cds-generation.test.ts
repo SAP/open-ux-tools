@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
@@ -100,6 +100,31 @@ describe(`annotation generation (CDS)`, () => {
         };
         await generateAnnotations(fs, serviceParameters, options);
         const content = fs.read(annotationFilePathAbsolute);
+        expect(content).toMatchSnapshot();
+    });
+
+    test('missing navigation property in service', async () => {
+        const projectRoot = join(__dirname, '..', testDataFolder, 'cds-incidents');
+        const project = await getProject(projectRoot);
+        const fs = createEditor(createStore());
+        const appName = join('app', 'project1');
+        const editableFileRelative = join(appName, 'annotations.cds');
+
+        const serviceParameters: AnnotationServiceParameters = {
+            project,
+            serviceName: 'ProcessorService',
+            appName
+        };
+
+        const options: GenerateAnnotationsOptions = {
+            entitySetName: 'Incidents',
+            annotationFilePath: editableFileRelative,
+            addValueHelps: true,
+            addFacets: true,
+            addLineItems: true
+        };
+        await generateAnnotations(fs, serviceParameters, options);
+        const content = fs.read(join(projectRoot, editableFileRelative));
         expect(content).toMatchSnapshot();
     });
 });

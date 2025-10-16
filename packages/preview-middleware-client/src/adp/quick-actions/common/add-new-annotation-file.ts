@@ -1,22 +1,22 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import type { AnnotationDataSourceResponse } from '../../api-handler';
-import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
     NESTED_QUICK_ACTION_KIND,
     NestedQuickAction,
     NestedQuickActionChild
 } from '@sap-ux-private/control-property-editor-common';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { QuickActionDefinitionBase } from '../quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { getV2AppComponent } from '../fe-v2/utils';
-import { getV4AppComponent } from '../../../utils/fe-v4';
+import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getApplicationType } from '../../../utils/application';
+import { getV4AppComponent } from '../../../utils/fe-v4';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import type { AnnotationDataSourceResponse } from '../../api-handler';
+import { getDataSourceAnnotationFileMap } from '../../api-handler';
+import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { getV2AppComponent } from '../fe-v2/utils';
+import { QuickActionDefinitionBase } from '../quick-action-base';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 const ADD_NEW_ANNOTATION_FILE_TITLE = 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE';

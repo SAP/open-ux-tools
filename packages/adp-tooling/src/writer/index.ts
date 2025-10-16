@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
@@ -75,9 +75,10 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     }
 
     const fullConfig = setDefaults(config);
+    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
 
     writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
-    writeTemplateToFolder(baseTmplPath, join(basePath), fullConfig, fs);
+    writeTemplateToFolder(templatePath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
 

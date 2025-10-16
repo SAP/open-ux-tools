@@ -1,5 +1,11 @@
-import { join } from 'path';
-import type { ChartPromptsAnswer, FilterBarPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
+import { join } from 'node:path';
+import type {
+    ChartPromptsAnswer,
+    FilterBarPromptsAnswer,
+    TablePromptsAnswer,
+    PagePromptsAnswer,
+    RichTextEditorPromptsAnswer
+} from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -9,7 +15,9 @@ import type { Data } from 'ws';
 import {
     GET_QUESTIONS,
     SET_TABLE_QUESTIONS,
+    SET_PAGE_QUESTIONS,
     SET_CHART_QUESTIONS,
+    SET_RICH_TEXT_EDITOR_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
     PromptsType,
     GET_CHOICES,
@@ -142,6 +150,14 @@ async function handleAction(action: Actions): Promise<void> {
                         groups,
                         initialAnswers: initialAnswers as Partial<TablePromptsAnswer>
                     };
+                } else if (action.value === PromptsType.Page) {
+                    // Post processing
+                    responseAction = {
+                        type: SET_PAGE_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<PagePromptsAnswer>
+                    };
                 } else if (action.value === PromptsType.Chart) {
                     // Post processing
                     responseAction = {
@@ -157,6 +173,14 @@ async function handleAction(action: Actions): Promise<void> {
                         questions,
                         groups,
                         initialAnswers: initialAnswers as Partial<FilterBarPromptsAnswer>
+                    };
+                } else if (action.value === PromptsType.RichTextEditor) {
+                    // Post processing
+                    responseAction = {
+                        type: SET_RICH_TEXT_EDITOR_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<RichTextEditorPromptsAnswer>
                     };
                 }
                 if (responseAction) {

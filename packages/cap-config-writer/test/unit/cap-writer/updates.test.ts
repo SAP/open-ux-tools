@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { applyCAPUpdates } from '../../../src/cap-writer';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
 import type { Editor } from 'mem-fs-editor';
@@ -103,9 +103,10 @@ describe('Test applyCAPUpdates updates files correctly', () => {
         const packageJsonPath = join(capService.projectPath, 'package.json');
         const packageJson = fs.readJSON(packageJsonPath) as Package;
         const scripts = packageJson.scripts;
-        // package json file should be updated with scripts only where watch command uses projectName since enableNPMWorkspaces is not provided
+        // watch script should be updated to the new format as enableNPMWorkspaces now defaults to true
         expect(scripts).toEqual({
-            'watch-test-cap-app1': 'cds watch --open test-cap-app1/webapp/index.html?sap-ui-xx-viewCache=false'
+            'watch-test-cap-app1':
+                'cds watch --open test-cap-app1-id/index.html?sap-ui-xx-viewCache=false --livereload false'
         });
         // tsconfig.json file should be updated
         const tsConfigPath = join(settings.appRoot, 'tsconfig.json');
@@ -120,7 +121,7 @@ describe('Test applyCAPUpdates updates files correctly', () => {
         // sapux array should not be deleted from app package json since enableNPMWorkspaces is not provided
         const appPackageJson = fs.readJSON(appPackageJsonPath) as Package;
         const sapUxArray = appPackageJson.sapux;
-        expect(sapUxArray).toBeDefined();
+        expect(sapUxArray).not.toBeDefined();
     });
 
     test('applyCAPUpdates updates specific files for CAP Node js projects when CdsUi5Plugin is not enabled but enableNPMWorkspaces is enabled', async () => {
@@ -174,12 +175,5 @@ describe('Test applyCAPUpdates updates files correctly', () => {
             'int-test': 'test command',
             start: 'start command'
         });
-        // pom.xml file should be updated
-        const pomXmlPath = join(settings.appRoot, 'pom.xml');
-        expect(fs.read(pomXmlPath).toString()).toContain('spring-boot-maven-plugin');
-        // application.yaml file should be updated
-        const applicationYamlPath = join(capService.projectPath, 'srv/src/main/resources', 'application.yaml');
-        const applicationYaml = fs.read(applicationYamlPath).toString();
-        expect(applicationYaml).toContain('spring:\n  web.resources.static-locations: file:./app/');
     });
 });

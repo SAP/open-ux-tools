@@ -10,8 +10,8 @@ import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
-import os from 'os';
-import { join } from 'path';
+import os from 'node:os';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -441,31 +441,16 @@ describe('getQuestions', () => {
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.enableVirtualEndpoints })])
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
         expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Use Virtual Endpoints for Local Preview"`
         );
 
-        // CAP project with cds-ui5 plugin enabled
-        questions = await getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: true });
+        // CAP project with cds version
+        questions = await getQuestions([], {}, mockCdsInfo);
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
-
-        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is no
-        questions = await getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
-        enableVirtualEndpointsQuestion = questions.find(
-            (question) => question.name === promptNames.enableVirtualEndpoints
-        );
-        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
-
-        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is yes
-        questions = await getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
-        enableVirtualEndpointsQuestion = questions.find(
-            (question) => question.name === promptNames.enableVirtualEndpoints
-        );
-        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
+        expect(enableVirtualEndpointsQuestion).toBeDefined();
 
         // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
         questions = await getQuestions(
@@ -476,7 +461,7 @@ describe('getQuestions', () => {
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(false);
+        expect(enableVirtualEndpointsQuestion).toBe(undefined);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
@@ -583,10 +568,6 @@ describe('getQuestions', () => {
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         // default
         expect(enableTypeScriptQuestion?.default).toEqual(false);
-        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
-
-        // when
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         const mockCdsInfoFalse = {
             hasCdsUi5Plugin: false,
             isCdsUi5PluginEnabled: false,
@@ -596,33 +577,7 @@ describe('getQuestions', () => {
         enableTypeScriptQuestion = (await getQuestions([], undefined, mockCdsInfoFalse)).find(
             (question) => question.name === promptNames.enableTypeScript
         );
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
-
-        enableTypeScriptQuestion = (
-            await getQuestions([], undefined, {
-                hasCdsUi5Plugin: true,
-                isCdsUi5PluginEnabled: true,
-                isWorkspaceEnabled: true,
-                hasMinCdsVersion: true
-            })
-        ).find((question) => question.name === promptNames.enableTypeScript);
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
-        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
-
-        enableTypeScriptQuestion = (
-            await getQuestions([], undefined, {
-                hasCdsUi5Plugin: false,
-                isCdsUi5PluginEnabled: false,
-                isWorkspaceEnabled: false,
-                hasMinCdsVersion: true
-            })
-        ).find((question) => question.name === promptNames.enableTypeScript);
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
-        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
-            message:
-                'The CAP project will be updated to use NPM workspaces. This is a requirement for generating with TypeScript.',
-            severity: 1
-        });
+        expect(enableTypeScriptQuestion).toBe(undefined);
     });
 
     test('getQuestions, advanced prompt grouping', async () => {

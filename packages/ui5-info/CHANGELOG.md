@@ -1,5 +1,29 @@
 # @sap-ux/ui5-info
 
+## 0.13.0
+
+### Minor Changes
+
+-   bba16a6: EINVALs error fix for Windows UI5 versions.
+
+## 0.12.4
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
+## 0.12.3
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
+## 0.12.2
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
 ## 0.12.1
 
 ### Patch Changes

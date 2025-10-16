@@ -1,5 +1,35 @@
 # @sap-ux/ui-components
 
+## 1.26.13
+
+### Patch Changes
+
+-   6debb89: style update for disabled combobox option
+
+## 1.26.12
+
+### Patch Changes
+
+-   4c448a7: UIDialog: updated interface to support multiple elements within the footer
+
+## 1.26.11
+
+### Patch Changes
+
+-   7f652f3: Update Icons for Page and Building Block
+
+## 1.26.10
+
+### Patch Changes
+
+-   904f8e3: Change Help Action icon to blue.
+
+## 1.26.9
+
+### Patch Changes
+
+-   e660064: add an alert red color uidefaultbutton
+
 ## 1.26.8
 
 ### Patch Changes

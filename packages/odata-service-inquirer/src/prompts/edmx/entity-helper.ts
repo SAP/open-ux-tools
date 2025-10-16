@@ -5,6 +5,15 @@ import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/v
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
+import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
+import {
+    filterAggregateTransformations,
+    hasAggregateTransformations,
+    hasAggregateTransformationsForEntitySet,
+    transformationsRequiredForAnalyticalTable,
+    hasRecursiveHierarchyForEntitySet,
+    findEntitySetByName
+} from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
     entitySetName: string;
@@ -86,7 +95,7 @@ function getNavigationPropertyForParameterisedEntity(
  * Returns the entity choice options for use in a list inquirer prompt.
  *
  * @param edmx metadata string
- * @param options
+ * @param options Configuration options for entity filtering and selection
  * @param options.entitySetFilter
  *     `filterDraftEnabled` : Only draft enabled entities wil be returned when true, useful for Form Object Page app generation.
  *     `filterAggregateTransformationsOnly` : Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set,
@@ -111,7 +120,7 @@ export function getEntityChoices(
     let odataVersion: OdataVersion | undefined;
     try {
         convertedMetadata = convert(parse(edmx));
-        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
@@ -194,7 +203,7 @@ export function getNavigationEntityChoices(
     mainEntityName: string
 ): ListChoiceOptions<NavigationEntityAnswer>[] {
     const choices: ListChoiceOptions[] = [];
-    const mainEntitySet = metadata.entitySets.find((entitySet) => entitySet.name === mainEntityName);
+    const mainEntitySet = findEntitySetByName(metadata, mainEntityName);
 
     let navProps: NavigationProperty[] = [];
     if (odataVersion === OdataVersion.v4) {
@@ -220,22 +229,6 @@ export function getNavigationEntityChoices(
 }
 
 /**
- * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
- * This can be found within the entity set annotations or the entity type annotations.
- *
- * @param entitySets the entity sets to filter
- * @returns the filtered entity sets
- */
-export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
-    return entitySets.filter((entitySet) => {
-        return (
-            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
-            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
-        );
-    });
-}
-
-/**
  * Returns only entities that have a type property of 'HasDraftEnabled'.
  *
  * @param entitySets the entity sets to filter by draft enabled entities
@@ -246,4 +239,105 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
         const entitySetTypeProperties = entitySet.entityType.entityProperties;
         return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
     });
+}
+
+/**
+ * Determines if AnalyticalTable should be used based on entity annotations and service type.
+ *
+ * AnalyticalTable is used when entity has hierarchical and analytical data together, for CAP services with analytical data,
+ * or for non-CAP services with complete analytical transformations.
+ *
+ * @param entitySet The entity set to check for annotations.
+ * @param isCapService Whether the service is a CAP service (affects analytical requirements).
+ * @returns True if AnalyticalTable should be used, false otherwise.
+ */
+function shouldUseAnalyticalTable(entitySet: EntitySet, isCapService: boolean): boolean {
+    // Evaluate annotations once to avoid multiple iterations
+    const hasAnalytical = hasAggregateTransformations(entitySet);
+    const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
+
+    // No analytical data means no need for AnalyticalTable
+    if (!hasAnalytical) {
+        return false;
+    }
+
+    // If entity has both analytical and hierarchical data, always use AnalyticalTable
+    if (hasHierarchy) {
+        return true;
+    }
+
+    // For CAP services, analytical annotations are sufficient
+    if (isCapService) {
+        return true;
+    }
+
+    // For non-CAP services, require complete analytical transformations
+    return hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable);
+}
+
+/**
+ * Get the default table type based on the template type and previous answers.
+ *
+ * @param templateType the template type of the application to be generated from the prompt answers
+ * @param metadata the metadata (edmx) string of the service
+ * @param odataVersion the OData version of the service
+ * @param isCapService whether the service is a CAP service or not
+ * @param mainEntitySetName the name of the main entity set
+ * @param currentTableType the current table type selected by the user
+ * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
+ */
+export function getDefaultTableType(
+    templateType: TemplateType,
+    metadata: ConvertedMetadata,
+    odataVersion: OdataVersion,
+    isCapService: boolean,
+    mainEntitySetName?: string,
+    currentTableType?: TableType
+): { tableType: TableType; setAnalyticalTableDefault: boolean } {
+    let tableType: TableType;
+    let setAnalyticalTableDefault = false;
+
+    // Find the entity set once for all annotation checks
+    const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
+
+    if (entitySet) {
+        if (
+            (templateType === 'lrop' || templateType === 'worklist') &&
+            odataVersion === OdataVersion.v4 &&
+            shouldUseAnalyticalTable(entitySet, isCapService)
+        ) {
+            // Use AnalyticalTable for entities with analytical data based on optimized annotation evaluation
+            tableType = 'AnalyticalTable';
+            setAnalyticalTableDefault = true;
+        } else if (
+            (templateType === 'lrop' || templateType === 'worklist') &&
+            odataVersion === OdataVersion.v4 &&
+            hasRecursiveHierarchyForEntitySet(entitySet)
+        ) {
+            // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
+            tableType = 'TreeTable';
+        } else if (templateType === 'alp') {
+            // For ALP, use AnalyticalTable as default
+            tableType = 'AnalyticalTable';
+        } else if (currentTableType) {
+            // If the user has already selected a table type use it
+            tableType = currentTableType;
+        } else {
+            // Default to ResponsiveTable for other cases
+            tableType = 'ResponsiveTable';
+        }
+    } else if (templateType === 'alp') {
+        // For ALP, use AnalyticalTable as default even if entity set is not found
+        tableType = 'AnalyticalTable';
+    } else if (currentTableType) {
+        // If the user has already selected a table type use it
+        tableType = currentTableType;
+    } else {
+        // Default to ResponsiveTable for other cases
+        tableType = 'ResponsiveTable';
+    }
+    return {
+        tableType,
+        setAnalyticalTableDefault
+    };
 }

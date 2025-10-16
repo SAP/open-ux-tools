@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { relative } from 'node:path';
 import type { Command } from 'commander';
 import { enableCdsUi5Plugin } from '@sap-ux/cap-config-writer';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
@@ -11,6 +11,7 @@ import { runNpmInstallCommand } from '../../common';
  */
 export function addAddCdsPluginUi5Command(cmd: Command): void {
     cmd.command('cds-plugin-ui5 [path]')
+        .description('Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 integration.')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only, do not write or install; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')

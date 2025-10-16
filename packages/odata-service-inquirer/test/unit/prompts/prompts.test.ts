@@ -4,6 +4,7 @@ import { getQuestions } from '../../../src/prompts';
 import { DatasourceType } from '../../../src/types';
 import * as utils from '../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Workaround to for spyOn TypeError: Jest cannot redefine property

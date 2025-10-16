@@ -4,6 +4,7 @@ import { getNewSystemQuestions } from '../../../../src/prompts/datasources/sap-s
 import type { ConnectedSystem } from '../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
 import * as abapOnBtpQuestions from '../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -120,10 +121,6 @@ describe('questions', () => {
                     "value": "cloudFoundry",
                   },
                   {
-                    "name": "Upload a Service Key File",
-                    "value": "serviceKey",
-                  },
-                  {
                     "name": "Use Reentrance Ticket",
                     "value": "reentranceTicket",
                   },
@@ -143,18 +140,6 @@ describe('questions', () => {
                 },
                 "message": "System URL",
                 "name": "abapOnBtp:newSystemUrl",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
-                  "mandatory": true,
-                },
-                "guiType": "file-browser",
-                "message": "Service Key File Path",
-                "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],

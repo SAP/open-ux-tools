@@ -2,6 +2,7 @@ import type { AuthenticationType } from '@sap-ux/store';
 export interface UI5ProxyConfigTarget {
     path: string | string[];
     url: string;
+    pathReplace?: string;
 }
 
 export interface UI5ProxyConfig {
@@ -37,7 +38,11 @@ export interface FioriToolsProxyConfigUI5 {
 export interface FioriToolsProxyConfig {
     backend?: FioriToolsProxyConfigBackend[];
     ui5?: Partial<FioriToolsProxyConfigUI5>;
+    /**
+     * @deprecated Use ignoreCertErrors (plural) instead
+     */
     ignoreCertError?: boolean;
+    ignoreCertErrors?: boolean;
 }
 
 export interface MockserverService {

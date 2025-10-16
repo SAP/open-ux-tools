@@ -5,21 +5,21 @@ import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
-import { readFileSync } from 'fs';
-import { join, posix } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
 import type { EnhancedRequest } from '../../../src/base/flp';
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
-import { promises } from 'fs';
+import { promises } from 'node:fs';
 import { getWebappPath } from '@sap-ux/project-access';
-import path from 'path';
+import path from 'node:path';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
@@ -146,8 +146,8 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': {
                     id: 'my.id',
-                    title: '{i18n>myDifferentTitle}',
-                    description: '{{i18n>myDifferentDescription}}'
+                    title: '{{myDifferentTitle}}',
+                    description: '{{myDifferentDescription}}'
                 }
             } as Manifest;
             await flp.init(manifest);
@@ -176,7 +176,7 @@ describe('FlpSandbox', () => {
             });
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
-                'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
+                'sap.app': { id: 'my.id', title: '{{myTitle}}', description: '{{myDescription}}' }
             } as Manifest;
             await flp.init(manifest);
             expect(projectAccessMock).toHaveBeenCalled();
@@ -186,7 +186,7 @@ describe('FlpSandbox', () => {
         test('i18n manifest with unknown propertyI18nKey', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
-                'sap.app': { id: 'my.id', title: '{i18n>myOtherTitle}', description: '{{i18n>myOtherDescription}}' }
+                'sap.app': { id: 'my.id', title: '{{myOtherTitle}}', description: '{{myOtherDescription}}' }
             } as Manifest;
             await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
@@ -197,6 +197,17 @@ describe('FlpSandbox', () => {
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('i18n key more that a word', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(
+                readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8')
+            ) as Manifest;
+            manifest['sap.app'].description = '{{my.custom.key.Description}}';
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+            expect(logger.warn).toHaveBeenCalledWith('Failed to load i18n properties bundle');
         });
 
         test('ui5Theme', async () => {
@@ -384,7 +395,11 @@ describe('FlpSandbox', () => {
                 );
 
                 test('test/flp.html UI5 2.x', async () => {
-                    const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -396,7 +411,25 @@ describe('FlpSandbox', () => {
 
                 test('test/flp.html UI5 legacy-free', async () => {
                     const jsonSpy = () =>
-                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+                        });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html UI5 1.76.0 from npmjs', async () => {
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'myApp',
+                            libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -408,7 +441,10 @@ describe('FlpSandbox', () => {
 
                 test('test/flp.html UI5 snapshot', async () => {
                     const jsonSpy = () =>
-                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -453,7 +489,10 @@ describe('FlpSandbox', () => {
                 if (enableEnhancedHomePage) {
                     test('test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0', async () => {
                         const jsonSpy = () =>
-                            Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
+                            Promise.resolve({
+                                name: 'SAPUI5 Distribution',
+                                libraries: [{ name: 'sap.ui.core', version: '1.120.0' }]
+                            });
                         fetchMock.mockResolvedValue({
                             json: jsonSpy,
                             text: jest.fn(),
@@ -496,7 +535,11 @@ describe('FlpSandbox', () => {
         });
 
         test('rta with developerMode=true UI5 version 2.x', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),
@@ -692,7 +735,11 @@ describe('FlpSandbox', () => {
         });
 
         test('test/flp.html UI5 1.71 with asyncHints.requests', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] });
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.71.0' }]
+                });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),

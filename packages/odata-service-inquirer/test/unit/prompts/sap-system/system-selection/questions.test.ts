@@ -23,6 +23,7 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -580,12 +581,12 @@ describe('Test system selection prompts', () => {
         );
     });
 
-    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys, RefreshToken)', async () => {
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const validateServiceInfoSpy = jest.spyOn(connectValidator, 'validateServiceInfo');
-        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys, refreshToken: '123refreshToken456' };
+        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys };
         backendSystems.push(backendSystemServiceKeysClone);
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemServiceKeysClone);
@@ -597,11 +598,7 @@ describe('Test system selection prompts', () => {
                 system: backendSystemServiceKeysClone
             } as SystemSelectionAnswerType)
         ).toBe(true);
-        expect(validateServiceInfoSpy).toHaveBeenCalledWith(
-            backendSystemServiceKeysClone.serviceKeys,
-            undefined,
-            backendSystemServiceKeysClone.refreshToken
-        );
+        expect(validateServiceInfoSpy).toHaveBeenCalledWith(backendSystemServiceKeysClone.serviceKeys, undefined);
     });
 
     test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {

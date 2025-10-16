@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/inquirer-common",
     "description": "Commonly used shared functionality and types to support inquirer modules.",
-    "version": "0.7.28",
+    "version": "0.8.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -31,14 +31,16 @@
     ],
     "dependencies": {
         "@sap/cf-tools": "3.2.2",
+        "@sap-ux/annotation-converter": "0.10.2",
         "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/edmx-parser": "0.9.1",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "axios": "1.8.2",
+        "axios": "1.12.2",
         "chalk": "4.1.2",
         "figures": "3.2.0",
         "fuzzy": "0.1.3",
@@ -48,6 +50,7 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "@sap-ux/vocabularies-types": "0.13.0",
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer": "8.2.6",
         "@types/semver": "7.5.4",

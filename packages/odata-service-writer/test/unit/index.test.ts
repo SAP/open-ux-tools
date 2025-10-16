@@ -1,13 +1,13 @@
 import type { EdmxAnnotationsInfo, OdataService } from '../../src';
 import { generate, update, remove, OdataVersion, ServiceType } from '../../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { enhanceData } from '../../src/data';
 import cloneDeep from 'lodash/cloneDeep';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import { t } from '../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
 
@@ -129,7 +129,7 @@ describe('generate', () => {
             const packagePath = join(root, 'package.json');
             fs.writeJSON(packagePath, {});
             const ui5YamlWithMiddleware = (await UI5Config.newInstance(''))
-                .addFioriToolsProxydMiddleware({ ui5: {} })
+                .addFioriToolsProxyMiddleware({ ui5: {} })
                 .toString();
             fs.write(join(root, 'ui5.yaml'), ui5YamlWithMiddleware);
             await generate(root, config, fs);
@@ -196,7 +196,7 @@ describe('generate', () => {
     describe('different valid input', () => {
         let fs: Editor;
         beforeEach(async () => {
-            const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+            const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxyMiddleware({ ui5: {} }).toString();
             // generate required files
             fs = create(createStorage());
             fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
@@ -452,7 +452,7 @@ describe('generate', () => {
                     - name: fiori-tools-proxy
                       afterMiddleware: compression
                       configuration:
-                        ignoreCertError: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                        ignoreCertErrors: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                         ui5:
                           path:
                             - /resources
@@ -572,7 +572,7 @@ describe('generate', () => {
             });
             test('/sap path is not used for preview settings', async () => {
                 const ui5Yaml = (await UI5Config.newInstance(''))
-                    .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+                    .addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
                     .toString();
                 fs.write(ui5Yaml, join('', 'ui5.yaml'));
                 // "/sap" entry already exists, it should not be used
@@ -887,7 +887,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -904,7 +904,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -933,7 +933,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1033,7 +1033,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost/updated
@@ -1050,7 +1050,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost/updated
@@ -1079,7 +1079,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost/updated
@@ -1180,7 +1180,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1198,7 +1198,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1226,7 +1226,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1386,7 +1386,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1403,7 +1403,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1432,7 +1432,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1538,7 +1538,7 @@ describe('update', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     backend:
                       - path: /sap
                         url: https://localhost
@@ -1568,10 +1568,10 @@ describe('update', () => {
 async function getSingleServiceMock(): Promise<Editor> {
     const fs = create(createStorage());
     const ui5Yaml = (await UI5Config.newInstance(''))
-        .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+        .addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
         .toString();
     const ui5LocalYaml = (await UI5Config.newInstance(''))
-        .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+        .addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
         .addMockServerMiddleware(
             testDir,
             join(testDir, 'webapp'),
@@ -1584,7 +1584,7 @@ async function getSingleServiceMock(): Promise<Editor> {
         )
         .toString();
     const ui5MockYaml = (await UI5Config.newInstance(''))
-        .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+        .addFioriToolsProxyMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
         .addMockServerMiddleware(
             testDir,
             join(testDir, 'webapp'),

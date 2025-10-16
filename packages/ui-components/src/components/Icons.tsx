@@ -175,7 +175,9 @@ export enum UiIcons {
     WorldArrow = 'WorldArrow',
     WorldWarning = 'WorldWarning',
     ZoomIn = 'ZoomIn',
-    ZoomOut = 'ZoomOut'
+    ZoomOut = 'ZoomOut',
+    BuildingBlocks = 'BuildingBlocks',
+    Page = 'Page'
 }
 
 export function initIcons(): void {
@@ -1225,13 +1227,13 @@ export function initIcons(): void {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M11.5 9C13.9853 9 16 6.98528 16 4.5C16 2.01472 13.9853 0 11.5 0C9.01472 0 7 2.01472 7 4.5C7 5.18742 7.15414 5.83884 7.42974 6.42158L7 9L9.57842 8.57026C10.1612 8.84586 10.8126 9 11.5 9ZM12 2.5C12 2.77614 11.7761 3 11.5 3C11.2239 3 11 2.77614 11 2.5C11 2.22386 11.2239 2 11.5 2C11.7761 2 12 2.22386 12 2.5ZM11 4.5C11 4.22386 11.2239 4 11.5 4C11.7761 4 12 4.22386 12 4.5V6.5C12 6.77614 11.7761 7 11.5 7C11.2239 7 11 6.77614 11 6.5V4.5Z"
-                        fill={COLORS.default}
+                        fill={COLORS.info}
                     />
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M5.37139 1.14855L6.7622 1.70487C6.593 1.99105 6.44899 2.29388 6.33323 2.61032L5.5 2.27703V12.1405C5.58212 12.1617 5.66322 12.1882 5.74278 12.2201L9.5 13.723V9.62506C9.81986 9.74997 10.1543 9.84581 10.5 9.90931V13.723L14 12.323V9.40029C14.3578 9.21739 14.6929 8.99647 15 8.74284V12.323C15 12.7319 14.751 13.0996 14.3714 13.2514L10.3714 14.8514C10.133 14.9468 9.86702 14.9468 9.62861 14.8514L5.37139 13.1486C5.13298 13.0532 4.86702 13.0532 4.62861 13.1486L1.37139 14.4514C0.714527 14.7142 0 14.2304 0 13.523V3.67703C0 3.26812 0.248951 2.90041 0.628609 2.74855L4.62861 1.14855C4.86702 1.05319 5.13298 1.05319 5.37139 1.14855ZM4.5 2.27703L1 3.67703L1 13.523L4.25722 12.2201C4.33678 12.1882 4.41788 12.1617 4.5 12.1405V2.27703Z"
-                        fill={COLORS.default}
+                        fill={COLORS.info}
                     />
                 </svg>
             ),
@@ -1990,6 +1992,53 @@ export function initIcons(): void {
                         fill={COLORS.default}
                         d="M1,16 C0.44771525,16 0,15.5522847 0,15 L0,1 C0,0.44771525 0.44771525,0 1,0 L15,0 C15.5522847,0 16,0.44771525 16,1 L16,15 C16,15.5522847 15.5522847,16 15,16 L1,16 Z M5,11 L1,11 L1,15 L5,15 L5,11 Z M10,11 L6,11 L6,15 L10,15 L10,11 Z M15,11 L11,11 L11,15 L15,15 L15,11 Z M5,6 L1,6 L1,10 L5,10 L5,6 Z M10,6 L6,6 L6,10 L10,10 L10,6 Z M15,6 L11,6 L11,10 L15,10 L15,6 Z M5,1 L1,1 L1,5 L5,5 L5,1 Z M6,1 L6,5 L10,5 L10,1 L6,1 Z M11,5 L15,5 L15,1 L11,1 L11,5 Z"
                     />
+                </svg>
+            ),
+            [UiIcons.BuildingBlocks]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8.5" y="11.5" width="7" height="3" rx="0.5" stroke={COLORS.default} />
+                    <rect x="4.5" y="6.5" width="7" height="3" rx="0.5" stroke={COLORS.default} />
+                    <rect x="8.5" y="1.5" width="7" height="3" rx="0.5" stroke={COLORS.default} />
+                    <rect x="0.5" y="11.5" width="6" height="3" rx="0.5" stroke={COLORS.default} />
+                    <path
+                        fill={COLORS.default}
+                        d="M16 7H14V9H16V10H14C13.4477 10 13 9.55228 13 9V7C13 6.44772 13.4477 6 14 6H16V7Z"
+                    />
+                    <path
+                        fill={COLORS.default}
+                        d="M2 6C2.55228 6 3 6.44772 3 7V9L2.99512 9.10254C2.94379 9.60667 2.51768 10 2 10H0V9H2V7H0V6H2Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.Page]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M1 15H1.875V16H1L0.897461 15.9951C0.393331 15.9438 0 15.5177 0 15V14.125H1V15Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M5.375 16H3.625V15H5.375V16Z" fill={COLORS.default} />
+                    <path d="M8.875 16H7.125V15H8.875V16Z" fill={COLORS.default} />
+                    <path d="M12.375 16H10.625V15H12.375V16Z" fill={COLORS.default} />
+                    <path d="M16 15C16 15.5523 15.5523 16 15 16H14.125V15H15V14.125H16V15Z" fill={COLORS.default} />
+                    <path d="M5 13H4V11H5V13Z" fill={COLORS.default} />
+                    <path d="M1 12.375H0V10.625H1V12.375Z" fill={COLORS.default} />
+                    <path d="M16 12.375H15V10.625H16V12.375Z" fill={COLORS.default} />
+                    <path d="M5 9H4V7H5V9Z" fill={COLORS.default} />
+                    <path d="M1 8.875H0V7.125H1V8.875Z" fill={COLORS.default} />
+                    <path d="M16 8.875H15V7.125H16V8.875Z" fill={COLORS.default} />
+                    <path d="M1 4H1.875V5H1V5.375H0V3.625H1V4Z" fill={COLORS.default} />
+                    <path d="M16 5.375H15V5H14.125V4H15V3.625H16V5.375Z" fill={COLORS.default} />
+                    <path d="M5.375 5H3.625V4H5.375V5Z" fill={COLORS.default} />
+                    <path d="M8.875 5H7.125V4H8.875V5Z" fill={COLORS.default} />
+                    <path d="M12.375 5H10.625V4H12.375V5Z" fill={COLORS.default} />
+                    <path
+                        d="M1.875 1H1V1.875H0V1C0 0.482323 0.393331 0.0562144 0.897461 0.00488281L1 0H1.875V1Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M15 0C15.5523 0 16 0.447715 16 1V1.875H15V1H14.125V0H15Z" fill={COLORS.default} />
+                    <path d="M5.375 1H3.625V0H5.375V1Z" fill={COLORS.default} />
+                    <path d="M8.875 1H7.125V0H8.875V1Z" fill={COLORS.default} />
+                    <path d="M12.375 1H10.625V0H12.375V1Z" fill={COLORS.default} />
                 </svg>
             ),
             [UiIcons.Tags]: (

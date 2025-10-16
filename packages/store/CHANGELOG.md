@@ -1,5 +1,29 @@
 # @sap-ux/store
 
+## 1.2.0
+
+### Minor Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
+## 1.1.5
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
+## 1.1.4
+
+### Patch Changes
+
+-   77c1459: fix for returning systems after recovery
+
+## 1.1.3
+
+### Patch Changes
+
+-   c6a0062: improve backend system recovery when file read fails
+
 ## 1.1.2
 
 ### Patch Changes

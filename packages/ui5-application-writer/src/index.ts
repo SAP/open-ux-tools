@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { UI5Config, getEsmTypesVersion, getPreviewMiddlewareConfig, getTypesPackage } from '@sap-ux/ui5-config';
@@ -58,7 +58,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addFioriToolsProxydMiddleware({
+    ui5Config.addFioriToolsProxyMiddleware({
         ui5: {
             url: ui5App.ui5?.frameworkUrl
         }

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
@@ -183,22 +183,18 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addFioriToolsProxydMiddleware({});
+        ui5LocalConfig.addFioriToolsProxyMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
     if (ffApp.service?.capService) {
-        const enableCdsUi5Plugin =
-            !!ffApp?.appOptions?.typescript || !!ffApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: ffApp.package.name ?? '',
             appId: ffApp.app.id,
             sapux: ffApp.appOptions?.sapux,
-            enableTypescript: ffApp.appOptions?.typescript,
-            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-            enableCdsUi5Plugin: enableCdsUi5Plugin,
-            enableNPMWorkspaces: enableCdsUi5Plugin
+            enableCdsUi5Plugin: ffApp.appOptions?.addCdsUi5Plugin,
+            enableTypescript: ffApp.appOptions?.typescript
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, ffApp.service.capService, settings);

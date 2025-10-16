@@ -4,7 +4,7 @@ import { getLogger, traceChanges } from '../../tracing';
 import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate, FlexLayer } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
-import { join } from 'path';
+import { join } from 'node:path';
 
 /**
  * Add a new sub-command to generate SAP UI5 adaptation projects the given command.
@@ -13,6 +13,7 @@ import { join } from 'path';
  */
 export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
+        .description('Generate a new UI5 adaptation project with optional prompts and configuration.')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-y, --yes', 'use default values for all prompts')

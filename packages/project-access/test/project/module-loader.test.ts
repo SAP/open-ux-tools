@@ -1,5 +1,5 @@
-import { join } from 'path';
-import * as fsMock from 'fs';
+import { join } from 'node:path';
+import * as fsMock from 'node:fs';
 import * as promisesMock from 'fs/promises';
 // Needs to be done before importing getModule() to mock the module cache path
 const moduleCacheRoot = join(__dirname, '../test-data/module-loader');

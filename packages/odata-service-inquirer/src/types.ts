@@ -171,6 +171,8 @@ export const EntityPromptNames = {
     mainEntity: 'mainEntity',
     navigationEntity: 'navigationEntity',
     filterEntitySet: 'filterEntitySet',
+    addPageBuildingBlock: 'addPageBuildingBlock',
+    pageBuildingBlockTitle: 'pageBuildingBlockTitle',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
     addFEOPAnnotations: 'addFEOPAnnotations',
@@ -187,6 +189,16 @@ export interface EntitySelectionAnswers {
     [EntityPromptNames.mainEntity]?: EntityAnswer;
     [EntityPromptNames.navigationEntity]?: NavigationEntityAnswer;
     [EntityPromptNames.filterEntitySet]?: EntityAnswer;
+}
+
+/**
+ * Answers related to the Page Building Block prompt.
+ */
+export interface PageBuildingBlockAnswers {
+    /** Indicates if a Page Building Block should be addedn*/
+    [EntityPromptNames.addPageBuildingBlock]?: boolean;
+    /** The title for the Page Building Block, required if addPageBuildingBlock is true */
+    [EntityPromptNames.pageBuildingBlockTitle]?: string;
 }
 
 export interface TableConfigAnswers {
@@ -211,6 +223,7 @@ export interface AlpTableConfigAnswers {
  * Convienience alias type for the entity related answers
  */
 export type EntityRelatedAnswers = EntitySelectionAnswers &
+    PageBuildingBlockAnswers &
     TableConfigAnswers &
     AnnotationGenerationAnswers &
     AlpTableConfigAnswers;
@@ -394,4 +407,8 @@ export type EntityPromptOptions = {
      * Hides the table layout related prompts when true, default is false.
      */
     hideTableLayoutPrompts?: boolean;
+    /**
+     * Used to determine if the display page building block prompt should be displayed.
+     */
+    displayPageBuildingBlockPrompt?: boolean;
 };

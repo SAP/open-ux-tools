@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { relative } from 'node:path';
 import type { Command } from 'commander';
 import { prompt } from 'prompts';
 import { getWebappPath } from '@sap-ux/project-access';
@@ -15,6 +15,7 @@ import { runNpmInstallCommand } from '../../common';
  */
 export function addAddMockserverConfigCommand(cmd: Command): void {
     cmd.command('mockserver-config [path]')
+        .description('Add configuration for the mockserver module to enable local OData mocking.')
         .option('-i, --interactive', 'ask for config options, otherwise use defaults')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write or install; sets also --verbose')

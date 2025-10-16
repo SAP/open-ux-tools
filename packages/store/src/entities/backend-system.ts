@@ -16,7 +16,7 @@ export class BackendSystem {
     @serializable public readonly client?: string;
     @serializable public readonly userDisplayName?: string;
     @serializable public readonly systemType?: string;
-    @sensitiveData public readonly serviceKeys?: unknown;
+    public readonly serviceKeys?: unknown; /** No longer persisted but needed for backward compatibility reads */
     @sensitiveData public readonly refreshToken?: string;
     @sensitiveData public readonly username?: string;
     @sensitiveData public readonly password?: string;
@@ -61,7 +61,7 @@ export class BackendSystemKey implements EntityKey {
     private url: string;
     private client?: string;
 
-    public static from(system: BackendSystem): EntityKey {
+    public static from(system: BackendSystem): BackendSystemKey {
         return new BackendSystemKey({ url: system.url, client: system.client });
     }
 

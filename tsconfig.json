@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [
-      "ES2022",
+      "ES2023",
       "dom",
       "dom.iterable"
     ],
@@ -18,7 +18,7 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": true,
-    "target": "ES2022",
+    "target": "ES2023",
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": false
@@ -109,6 +109,9 @@
       "path": "packages/fiori-app-sub-generator"
     },
     {
+      "path": "packages/fiori-docs-embeddings"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
@@ -116,6 +119,9 @@
     },
     {
       "path": "packages/fiori-generator-shared"
+    },
+    {
+      "path": "packages/fiori-mcp-server"
     },
     {
       "path": "packages/fiori-tools-settings"
@@ -278,6 +284,9 @@
     },
     {
       "path": "examples/ui-prompting-examples"
+    },
+    {
+      "path": "tests/integration/adaptation-editor"
     }
   ]
 }

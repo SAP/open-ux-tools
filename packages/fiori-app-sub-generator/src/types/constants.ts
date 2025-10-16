@@ -5,9 +5,8 @@ export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';
 
 export const enum SapSystemSourceType {
-    SCP = 'abapOnBtp',
-    ON_PREM = 'onPrem',
-    S4HC = 's4hc'
+    ABAP_CLOUD = 'abapCloud',
+    ON_PREM = 'onPrem'
 }
 
 export const PLATFORMS = {
@@ -105,6 +104,8 @@ export const FPM_DEFAULT_PAGE_NAME = 'Main';
 // App gen specific (not writer specific) supported UI5 versions
 export const minSupportedUi5Version = '1.65.0';
 export const minSupportedUi5VersionV4 = '1.84.0';
+// The minimum UI5 version required for page building block feature
+export const minUi5VersionForPageBuildingBlock = '1.136.0';
 export const defaultNavActionTile = 'tile';
 export const defaultNavActionDisplay = 'display';
 

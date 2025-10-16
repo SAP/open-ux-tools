@@ -1,35 +1,21 @@
+import { MessageBarType, showInfoCenterMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import IconPoolMock from 'mock/sap/ui/core/IconPool';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { fetchMock, sapMock } from 'mock/window';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
+import type Component from 'sap/ui/core/Component';
+import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
+import { Window } from 'types/global';
+import * as apiHandler from '../../../src/adp/api-handler';
 import {
     init,
+    loadI18nResourceBundle,
     registerComponentDependencyPaths,
     registerSAPFonts,
-    setI18nTitle,
     resetAppState,
-    loadI18nResourceBundle
+    setI18nTitle
 } from '../../../src/flp/init';
-import IconPoolMock from 'mock/sap/ui/core/IconPool';
-import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
-import * as apiHandler from '../../../src/adp/api-handler';
-import { fetchMock, sapMock } from 'mock/window';
-import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import type { Scenario } from '@sap-ux-private/control-property-editor-common';
-import VersionInfo from 'mock/sap/ui/VersionInfo';
-import { CommunicationService } from '../../../src/cpe/communication-service';
-import type Component from 'sap/ui/core/Component';
-import { Window } from 'types/global';
-
-jest.mock('../../../src/i18n', () => {
-    return {
-        ...jest.requireActual('../../../src/i18n'),
-        getTextBundle: async () => {
-            return {
-                hasText: jest.fn().mockReturnValueOnce(true),
-                getText: jest
-                    .fn()
-                    .mockReturnValueOnce('The application was reloaded because of changes in a higher layer.')
-            };
-        }
-    };
-});
 
 Object.defineProperty(window, 'location', {
     value: {
@@ -171,6 +157,8 @@ describe('flp/init', () => {
                     throw new Error('Error');
                 }
             });
+            CommunicationService.sendAction = jest.fn();
+
             try {
                 await registerComponentDependencyPaths(['/'], new URLSearchParams());
             } catch (error) {
@@ -239,7 +227,11 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
+            CommunicationService.sendAction = jest.fn();
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
             expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
@@ -251,7 +243,10 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
 
             // testing the nested callbacks
             const mockService = {
@@ -280,7 +275,10 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.71.60' }]
+            });
 
             // testing the nested callbacks
             const mockService = {
@@ -315,7 +313,10 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.9' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.120.9' }]
+            });
 
             await init({ customInit: customInit });
 
@@ -325,7 +326,10 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 2.0.0', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '2.0.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+            });
 
             await init({ customInit: customInit });
 
@@ -335,7 +339,10 @@ describe('flp/init', () => {
         });
 
         test('custom init module configured & ui5 version is legacy-free', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0-legacy-free' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+            });
 
             await init({});
 
@@ -349,20 +356,25 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
 
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
-
-            // Mocking `sap.ui.require` to throw the correct error structure
-            sapMock.ui.require.mockImplementation((libs, callback) => {
-                if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
-                    callback({}); // WorkspaceConnector
-                    return;
-                }
-                callback(async () => {
-                    throw 'Reload triggered';
-                }, {});
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.84.50' }]
             });
 
-            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction');
+            const reloadComplete = new Promise((resolve) => {
+                // Mocking `sap.ui.require` to throw the correct error structure
+                sapMock.ui.require.mockImplementation(async (libs, callback) => {
+                    if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
+                        callback({}); // WorkspaceConnector
+                        return;
+                    }
+                    await callback(() => Promise.reject('Reload triggered'));
+                    resolve(undefined);
+                });
+            });
+
+            CommunicationService.sendAction = jest.fn();
+
             await init({ flex: JSON.stringify(flexSettings) });
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
                 .calls[0][0] as () => Promise<void>;
@@ -375,22 +387,24 @@ describe('flp/init', () => {
 
             await rendererCb();
 
-            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => Promise<void>;
-            await loadedCb({ getParameter: () => {} });
+            // Wait for the reload to complete before continue with the test cases.
+            await reloadComplete;
 
-            expect(sendActionSpy).toHaveBeenCalled();
-            expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
-                type: '[ext] show-dialog-message',
-                payload: {
-                    message: 'The application was reloaded because of changes in a higher layer.',
-                    shouldHideIframe: false
-                }
-            });
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Adaptation Initialization Failed',
+                    description: expect.any(String),
+                    type: MessageBarType.error
+                })
+            );
             expect(reloadSpy).toHaveBeenCalled();
         });
 
         test('cardGenerator mode is enabled', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.124.50' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.124.50' }]
+            });
             const mockComponentInstance = {} as Component;
             const mockService = {
                 attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
@@ -415,7 +429,10 @@ describe('flp/init', () => {
         });
 
         test('enhancedHomePage mode is enabled', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.106.0' }]
+            });
             await init({ enhancedHomePage: true });
 
             expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();

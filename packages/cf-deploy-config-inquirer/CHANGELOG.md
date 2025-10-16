@@ -1,5 +1,173 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.25
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
+## 0.5.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.51
+
+## 0.5.23
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+
+## 0.5.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.5.21
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.5.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.5.19
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/btp-utils@1.1.4
+
+## 0.5.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/inquirer-common@0.7.45
+
+## 0.5.16
+
+### Patch Changes
+
+-   Updated dependencies [9872384]
+    -   @sap-ux/inquirer-common@0.7.44
+    -   @sap-ux/btp-utils@1.1.2
+
+## 0.5.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.43
+
+## 0.5.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.42
+
+## 0.5.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.41
+
+## 0.5.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.40
+
+## 0.5.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.39
+
+## 0.5.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.38
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/btp-utils@1.1.1
+
+## 0.5.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.5.7
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.31
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.5.0
+
+### Minor Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+
 ## 0.4.1
 
 ### Patch Changes

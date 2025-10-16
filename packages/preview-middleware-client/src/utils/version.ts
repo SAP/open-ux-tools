@@ -1,24 +1,29 @@
 import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
+import { sendInfoCenterMessage } from './info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 type SingleVersionInfo =
     | {
-        name: string;
-        version: string;
-    }
-    | undefined;
+          name: string;
+          version: string;
+      };
 
 export type Ui5VersionInfo = {
     major: number;
     minor: number;
     patch?: number;
     label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn?: boolean;
 };
 
 /**
  * Default minimal supported UI5 version
  */
-const minVersionInfo = {
+export const minVersionInfo = {
     major: 1,
     minor: 71
 } as Readonly<Ui5VersionInfo>;
@@ -29,9 +34,12 @@ const minVersionInfo = {
  * @throws Error if the version info is invalid
  */
 function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
-    if(isNaN(versionInfo.major) ||
-       isNaN(versionInfo.minor) ||
-       isNaN(versionInfo.patch ?? 0)) {
+    if (Number.isNaN(versionInfo.major) || Number.isNaN(versionInfo.minor) || Number.isNaN(versionInfo.patch ?? 0)) {
+        void sendInfoCenterMessage({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+            description: { key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION' },
+            type: MessageBarType.error
+        });
         throw new Error('Invalid version info');
     }
 }
@@ -46,19 +54,27 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
  * @returns Ui5VersionInfo
  */
 export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui5VersionInfo> {
-    let version = ((await VersionInfo.load({ library })) as SingleVersionInfo)?.version;
+    const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
+    let version = versionInfo?.libraries?.find((lib) => lib.name === library)?.version;
+    const isCdn = versionInfo?.name === 'SAPUI5 Distribution';
     if (!version) {
         Log.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
         version = '1.130.0';
+        await sendInfoCenterMessage({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+            description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: [version] },
+            type: MessageBarType.error
+        });
     }
-    const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+    const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
     const label = version.split(/-(.*)/s)?.[1];
 
     return {
         major,
         minor,
         patch,
-        label
+        label,
+        isCdn
     } satisfies Ui5VersionInfo;
 }
 
@@ -83,8 +99,8 @@ export function isLowerThanMinimalUi5Version(
         ui5VersionInfo.major < minUi5VersionInfo.major ||
         (ui5VersionInfo.major === minUi5VersionInfo.major && ui5VersionInfo.minor < minUi5VersionInfo.minor) ||
         (ui5VersionInfo.major === minUi5VersionInfo.major &&
-        ui5VersionInfo.minor === minUi5VersionInfo.minor &&
-        (ui5VersionInfo?.patch ?? 0) < (minUi5VersionInfo?.patch ?? 0))
+            ui5VersionInfo.minor === minUi5VersionInfo.minor &&
+            (ui5VersionInfo?.patch ?? 0) < (minUi5VersionInfo?.patch ?? 0))
     );
 }
 
@@ -113,10 +129,11 @@ export function isVersionEqualOrHasNewerPatch(
 }
 
 /**
- * Get UI5 version validation message.
- * @param ui5VersionInfo to be mentioned in the message
- * @returns string with validation message.
+ * Returns the fully qualified UI5 version string - major and minor version concatenated.
+ *
+ * @param {Ui5VersionInfo} ui5VersionInfo - The ui5 version info object containing major and minor version.
+ * @returns {string} The fully qualified UI5 version string.
  */
-export function getUI5VersionValidationMessage(ui5VersionInfo: Ui5VersionInfo): string {
-    return `The current SAPUI5 version set for this Adaptation project is ${ui5VersionInfo.major}.${ui5VersionInfo.minor}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${minVersionInfo.major}.${minVersionInfo.minor}`;
+export function getFullyQualifiedUi5Version(ui5VersionInfo: Ui5VersionInfo): string {
+    return `${ui5VersionInfo.major}.${ui5VersionInfo.minor}`;
 }

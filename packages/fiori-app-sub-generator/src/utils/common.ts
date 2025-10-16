@@ -1,5 +1,5 @@
 import { convert } from '@sap-ux/annotation-converter';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import { isAbapEnvironmentOnBtp, isAppStudio } from '@sap-ux/btp-utils';
 import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import { checkCdsUi5PluginEnabled, getAppLaunchText } from '@sap-ux/cap-config-writer';
@@ -10,18 +10,24 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType, OdataVersion, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
+import {
+    DatasourceType,
+    OdataVersion,
+    type ConnectedSystem,
+    type EntityRelatedAnswers
+} from '@sap-ux/odata-service-inquirer';
 import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-service-writer';
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types';
-import { ApiHubType, SapSystemSourceType } from '../types';
+import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
+import { getBackendSystemType } from '@sap-ux/store';
 
 /**
  * Parse the specified edmx string for validitiy and return the ODataVersion of the specified edmx string.
@@ -75,13 +81,23 @@ export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | un
 }
 
 /**
- * Gets the min supported version of UI5 for the floorplan and odata version specified.
+ * Gets the minimum supported UI5 version for the specified OData version, floorplan, and entity configuration.
+ * For FPM floorplans with page building blocks, enforces a minimum version of 1.136.0.
  *
- * @param version - odata version
- * @param floorplan - floorplan value
- * @returns min supported version
+ * @param version - The OData version.
+ * @param floorplan - The floorplan type.
+ * @param entityRelatedConfig - entity related configuration.
+ * @returns The minimum supported UI5 version as a string.
  */
-export function getMinSupportedUI5Version(version: OdataVersion, floorplan: Floorplan): string {
+export function getMinSupportedUI5Version(
+    version: OdataVersion,
+    floorplan: Floorplan,
+    entityRelatedConfig?: Partial<EntityRelatedAnswers>
+): string {
+    if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
+        return minUi5VersionForPageBuildingBlock;
+    }
+
     let minUI5Version: string | undefined;
     if (floorplan && floorplan !== FloorplanFF.FF_SIMPLE) {
         const templateType = FloorplanAttributes[floorplan].templateType as FETemplateType;
@@ -115,7 +131,7 @@ export async function getCdsUi5PluginInfo(
     cdsVersionInfo?: CdsVersionInfo
 ): Promise<CdsUi5PluginInfo | undefined> {
     // If the project is a Java project, do not pass cdsVersionInfo.
-    // This ensures that hasMinCdsVersion is false for Java project, preventing getEnableNPMWorkspacesPrompt from being invoked for Java projects.
+    // This ensures that hasMinCdsVersion is false for Java project, preventing certain prompts (e.g typescript, virtual endpoints) from being invoked for Java projects.
     const cdsVersion = (await isCapJavaProject(capProjectPath)) ? undefined : cdsVersionInfo;
     const capCdsInfo = await checkCdsUi5PluginEnabled(capProjectPath, fs, true, cdsVersion);
     return capCdsInfo === false ? undefined : (capCdsInfo as CdsUi5PluginInfo);
@@ -150,33 +166,32 @@ export async function getCdsAnnotations(
 }
 
 /**
- * Determine if the specified connected system is hosted on BTP.
- * If a backend system uses service keys, or a destination is an ABAP environment on BTP, then it is considered to be hosted on BTP.
+ * Determine if the specified connected system is ABAP cloud.
  *
  * @param connectedSystem - The connected system object.
- * @returns {boolean} `true` if the connected system is hosted on BTP, otherwise `false`.
+ * @returns {boolean} `true` if the connected system is ABAP cloud, otherwise `false`.
  */
-export function isBTPHosted(connectedSystem?: ConnectedSystem): boolean {
-    return (
-        !!connectedSystem?.backendSystem?.serviceKeys ||
-        (connectedSystem?.destination ? isAbapEnvironmentOnBtp(connectedSystem.destination) : false)
-    );
+export function isAbapCloud(connectedSystem?: ConnectedSystem): boolean {
+    if (connectedSystem?.backendSystem) {
+        return getBackendSystemType(connectedSystem.backendSystem) === 'AbapCloud';
+    }
+    return connectedSystem?.destination ? isAbapEnvironmentOnBtp(connectedSystem.destination) : false;
 }
 
 /**
  * Retrieves the data source label.
  *
  * @param {DatasourceType} source - The data source type (`DatasourceType.sapSystem` or `DatasourceType.businessHub`).
- * @param scp
+ * @param abapCloud - Indicates if the SAP system is an ABAP Cloud system (BTP or S4HC).
  * @param {ApiHubType} apiHubType - The API hub type for business hubs.
  * @returns {string} The formatted data source label.
  */
-export function getReadMeDataSourceLabel(source: DatasourceType, scp = false, apiHubType?: ApiHubType): string {
+export function getReadMeDataSourceLabel(source: DatasourceType, abapCloud = false, apiHubType?: ApiHubType): string {
     let dataSourceLabel: string | undefined;
     if (source === DatasourceType.sapSystem) {
         const labelDatasourceType = t(`readme.label.datasourceType.${DatasourceType.sapSystem}`);
         const labelSystemType = t(
-            `readme.label.sapSystemType.${scp ? SapSystemSourceType.SCP : SapSystemSourceType.ON_PREM}`
+            `readme.label.sapSystemType.${abapCloud ? SapSystemSourceType.ABAP_CLOUD : SapSystemSourceType.ON_PREM}`
         );
         dataSourceLabel = `${labelDatasourceType} (${labelSystemType})`;
     } else if (source === DatasourceType.businessHub && apiHubType === ApiHubType.apiHubEnterprise) {
@@ -299,4 +314,29 @@ export async function getAnnotations(
             xml: annotations.Definitions
         };
     }
+}
+
+/**
+ * Restore the loggers for the service provider if they are missing.
+ * This is necessary because the service provider may have been serialized and deserialized, which can lead to missing loggers which contain circular refs.
+ * Not doing this will result in the loggers being undefined when trying to access them, and calling services will throw.
+ *
+ * @param logger - The logger instance to be restored.
+ * @param serviceProvider - The service provider object that may have missing loggers.
+ * @returns The service provider with restored loggers.
+ */
+export function restoreServiceProviderLoggers(
+    logger: Logger,
+    serviceProvider?: ServiceProvider
+): ServiceProvider | undefined {
+    // Restore the loggers if missing.
+    for (const service in (serviceProvider as any)?.services) {
+        if ((serviceProvider as any).services?.[service].log && !(serviceProvider as any).services[service].log.info) {
+            (serviceProvider as any).services[service].log = logger;
+        }
+    }
+    if (serviceProvider?.log && !serviceProvider.log.info) {
+        serviceProvider.log = logger;
+    }
+    return serviceProvider;
 }

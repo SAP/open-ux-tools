@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test entity prompts getEntityQuestions should return the questions when no options specified 1`] = `
 [
@@ -236,7 +236,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "when": [Function],
   },
   {
-    "default": "",
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Leading property that decides between either a recursive hierarchy or data aggregation.",

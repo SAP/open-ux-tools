@@ -1,6 +1,6 @@
 //import prompts from 'prompts';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
-import { addOptionsForEmbeddedBSP, convertAppDescriptorToManifest, promptUserPass } from '../../src/ext/bsp';
+import { addOptionsForEmbeddedBSP, promptUserPass } from '../../src/ext/bsp';
 
 // mock required btp-utils functions
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -22,14 +22,6 @@ describe('bsp', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    test('convertAppDescriptorToManifest', () => {
-        const rewrite = convertAppDescriptorToManifest('/my/bsp');
-        expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
-        expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
-        expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
-        expect(rewrite('/test')).toBe('/test');
     });
 
     describe('promptUserPass', () => {
@@ -59,14 +51,13 @@ describe('bsp', () => {
 
     describe('addOptionsForEmbeddedBSP', () => {
         test('standard scenario', async () => {
-            const oldPathRewrite = jest.fn().mockReturnValue('/mocked');
-            const options: Options = { pathRewrite: oldPathRewrite };
+            const options: Options = {};
             await addOptionsForEmbeddedBSP('/my/bsp', options, logger);
 
             expect(options.router).toBeDefined();
             expect(
                 (options.router as Function)({
-                    path: '/my/bsp/manifest.appdescr',
+                    url: '/my/bsp/manifest.appdescr',
                     protocol: 'http',
                     headers: {
                         host: 'local.example'
@@ -75,11 +66,6 @@ describe('bsp', () => {
             ).toBe('http://local.example');
 
             expect(options.auth).toBeDefined();
-
-            expect(options.pathRewrite).toBeDefined();
-            expect(options.pathRewrite).not.toBe(oldPathRewrite);
-            (options.pathRewrite as Function)('test');
-            expect(oldPathRewrite).toHaveBeenCalled();
         });
 
         test('no existing options', async () => {
@@ -87,7 +73,14 @@ describe('bsp', () => {
             await addOptionsForEmbeddedBSP('/my/bsp', options, logger);
 
             expect(options.router).toBeDefined();
-            expect(options.pathRewrite).toBeDefined();
+            expect(options.auth).toBeDefined();
+        });
+
+        test('case insensitive bsp path', async () => {
+            const options: Options = {};
+            await addOptionsForEmbeddedBSP('/my/bSp', options, logger);
+
+            expect(options.router).toBeDefined();
             expect(options.auth).toBeDefined();
         });
     });

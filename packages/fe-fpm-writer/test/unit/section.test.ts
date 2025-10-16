@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomSection, getManifestRoot } from '../../src/section';
 import type { CustomSection } from '../../src/section/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
@@ -340,7 +340,7 @@ describe('CustomSection', () => {
                 },
                 {
                     name: 'absolute position',
-                    position: 196,
+                    position: 190,
                     endOfLines: 8
                 }
             ];
@@ -398,6 +398,25 @@ describe('CustomSection', () => {
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
+            });
+        });
+
+        describe('Typescript section', () => {
+            test('Generate with handler, all properties', async () => {
+                const testCustomSection: CustomSection = {
+                    ...customSection,
+                    eventHandler: true,
+                    typescript: true
+                };
+                await generateCustomSection(testDir, { ...testCustomSection }, fs);
+                const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const settings = (
+                    updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+                )['settings'];
+                expect(settings.content).toMatchSnapshot();
+
+                expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+                expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.ts'))).toMatchSnapshot();
             });
         });
 

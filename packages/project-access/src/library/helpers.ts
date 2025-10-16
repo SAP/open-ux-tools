@@ -1,4 +1,4 @@
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import { ui5Libs } from './constants';
 import {
     ReuseLibType,
@@ -10,7 +10,7 @@ import {
 } from '../types';
 import { findFiles, readJSON } from '../file';
 import { FileName } from '../constants';
-import { existsSync, promises as fs } from 'fs';
+import { existsSync, promises as fs } from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
 import { getI18nPropertiesPaths } from '../project/i18n';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';

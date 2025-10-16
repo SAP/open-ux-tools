@@ -2,8 +2,17 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse, relative } from 'path';
-import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
+import { join, parse, relative } from 'node:path';
+import {
+    BuildingBlockType,
+    type BuildingBlock,
+    type BuildingBlockConfig,
+    type BuildingBlockMetaPath,
+    type CustomColumn,
+    type RichTextEditor,
+    bindingContextAbsolute,
+    type TemplateConfig
+} from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -15,6 +24,10 @@ import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
+import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
+import { getOrAddNamespace } from './prompts/utils/xml';
+import { i18nNamespaces, translate } from '../i18n';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -51,11 +64,36 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
+
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    const { content: manifest } = await getManifest(basePath, fs);
-    const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
-    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, xmlDocument, templateDocument, fs);
+    const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
+        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
+    const templateConfig: TemplateConfig = {
+        hasAggregation,
+        aggregationNamespace
+    };
+    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
+
+    if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+        const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        if (minUI5Version && lt(minUI5Version, '1.117.0')) {
+            const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
+            throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);
+        }
+        getOrAddNamespace(xmlDocument, 'sap.fe.macros.richtexteditor', 'richtexteditor');
+    }
+
+    fs = updateViewFile(
+        basePath,
+        viewOrFragmentPath,
+        updatedAggregationPath,
+        xmlDocument,
+        templateDocument,
+        fs,
+        config.replace
+    );
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
@@ -71,6 +109,124 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
+}
+
+/**
+ * Updates aggregation path for table columns based on XML document structure.
+ *
+ * @param {Document} xmlDocument - The XML document to analyze
+ * @param {string} aggregationPath - The current aggregation path
+ * @param {CustomColumn} buildingBlockData - The building block data with embedded fragment
+ * @returns {object} Object containing the updated aggregation path
+ */
+function updateAggregationPathForTableColumns(
+    xmlDocument: Document,
+    aggregationPath: string,
+    buildingBlockData: CustomColumn
+): { updatedAggregationPath: string; hasTableColumns: boolean } {
+    if (!buildingBlockData.embededFragment) {
+        return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
+    }
+
+    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+    const hasColumnsAggregation = xpathSelect("//*[local-name()='columns']", xmlDocument);
+    if (hasColumnsAggregation && Array.isArray(hasColumnsAggregation) && hasColumnsAggregation.length > 0) {
+        return {
+            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:columns`,
+            hasTableColumns: true
+        };
+    } else {
+        const useDefaultAggregation = xpathSelect("//*[local-name()='Column']", xmlDocument);
+        if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
+            return { updatedAggregationPath: aggregationPath, hasTableColumns: true };
+        }
+    }
+
+    return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
+}
+
+/**
+ * Processes custom column building block configuration.
+ *
+ * @param {BuildingBlock} buildingBlockData - The building block data
+ * @param {Document} xmlDocument - The XML document
+ * @param {string} manifestPath - The manifest file path
+ * @param {Manifest} manifest - The manifest object
+ * @param {string} aggregationPath - The aggregation path
+ * @param {Editor} fs - The memfs editor instance
+ * @returns {object} Object containing updated aggregation path and processed building block data
+ */
+function processBuildingBlock<T extends BuildingBlock>(
+    buildingBlockData: T,
+    xmlDocument: Document,
+    manifestPath: string,
+    manifest: Manifest,
+    aggregationPath: string,
+    fs: Editor
+): {
+    updatedAggregationPath: string;
+    processedBuildingBlockData: T;
+    hasAggregation: boolean;
+    aggregationNamespace: string;
+} {
+    let updatedAggregationPath = aggregationPath;
+    let hasAggregation = false;
+    let aggregationNamespace = 'macrosTable';
+
+    if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
+        const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
+        const viewPath = join(
+            embededFragment.path,
+            `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
+        );
+
+        // Apply event handler
+        if (buildingBlockData.embededFragment.eventHandler) {
+            buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
+                fs,
+                buildingBlockData.embededFragment,
+                buildingBlockData.embededFragment.eventHandler,
+                {
+                    controllerSuffix: false,
+                    typescript: buildingBlockData.embededFragment.typescript
+                }
+            );
+        }
+        buildingBlockData.embededFragment.content = getDefaultFragmentContent(
+            'Sample Text',
+            buildingBlockData.embededFragment.eventHandler
+        );
+        if (!fs.exists(viewPath)) {
+            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
+        }
+        // check xmlDocument for macrosTable element
+        const tableColumnsResult = updateAggregationPathForTableColumns(
+            xmlDocument,
+            aggregationPath,
+            buildingBlockData
+        );
+        updatedAggregationPath = tableColumnsResult.updatedAggregationPath;
+        hasAggregation = tableColumnsResult.hasTableColumns;
+
+        aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
+    }
+
+    return {
+        updatedAggregationPath,
+        processedBuildingBlockData: buildingBlockData,
+        hasAggregation,
+        aggregationNamespace
+    };
+}
+
+/**
+ * Type guard to check if the building block data is a custom column.
+ *
+ * @param {BuildingBlock} data - The building block data to check
+ * @returns {boolean} True if the data is a custom column
+ */
+function isCustomColumn(data: BuildingBlock): data is CustomColumn {
+    return data.buildingBlockType === BuildingBlockType.CustomColumn;
 }
 
 /**
@@ -103,21 +259,6 @@ function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Docu
 
     return viewDocument;
 }
-/**
- * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
- *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @returns {string} the macros namespace
- */
-function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
-        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
-    }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
-}
 
 /**
  * Method returns default values for metadata path.
@@ -144,17 +285,19 @@ function getDefaultMetaPath(applyContextPath: boolean, usePlaceholders?: boolean
  * @param {boolean} applyContextPath - whether to apply contextPath.
  * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @param {boolean} targetProperty - Whether to construct metaPath using targetProperty.
  * @returns {MetadataPath} Resolved metadata path information.
  */
 function getMetaPath(
     applyContextPath: boolean,
     metaPath?: BuildingBlockMetaPath,
-    usePlaceholders?: boolean
+    usePlaceholders?: boolean,
+    targetProperty?: string
 ): MetadataPath {
     if (!metaPath) {
         return getDefaultMetaPath(applyContextPath, usePlaceholders);
     }
-    const { bindingContextType = 'absolute', alwaysAbsolutePath = true } = metaPath;
+    const { bindingContextType = bindingContextAbsolute, alwaysAbsolutePath = true } = metaPath;
     let { entitySet, qualifier } = metaPath;
     entitySet = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
@@ -166,9 +309,19 @@ function getMetaPath(
             contextPath: qualifierParts.length ? `/${entitySet}/${qualifierParts.join('/')}` : `/${entitySet}`
         };
     }
+
+    if (targetProperty) {
+        const isAbsolute = bindingContextType === bindingContextAbsolute;
+        // Example usage:
+        // Absolute: entitySet = "Travel", targetProperty = "Status" => "/Travel/Status"
+        // Relative: entitySet = "_Agency", targetProperty = "AgencyType" => "_Agency/AgencyType"
+        const prefix = isAbsolute ? '/' : '';
+        return { metaPath: `${prefix}${entitySet}/${targetProperty}` };
+    }
+
     return {
         metaPath:
-            bindingContextType === 'absolute' || alwaysAbsolutePath
+            bindingContextType === bindingContextAbsolute || alwaysAbsolutePath
                 ? `/${entitySet}/${qualifierOrPlaceholder}`
                 : qualifierOrPlaceholder
     };
@@ -182,6 +335,7 @@ function getMetaPath(
  * @param {Manifest} manifest - the manifest content
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {string} the template xml file content
  */
 function getTemplateContent<T extends BuildingBlock>(
@@ -189,7 +343,8 @@ function getTemplateContent<T extends BuildingBlock>(
     viewDocument: Document | undefined,
     manifest: Manifest | undefined,
     fs: Editor,
-    usePlaceholders?: boolean
+    usePlaceholders?: boolean,
+    templateConfig?: TemplateConfig
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
@@ -197,11 +352,17 @@ function getTemplateContent<T extends BuildingBlock>(
         // Special handling for chart - while runtime does not support approach without contextPath
         // or for equal or below UI5 v1.96.0 contextPath is applied
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
+        let targetProperty: string | undefined;
+        if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+            // Get target property for RichTextEditor building block
+            targetProperty = (buildingBlockData as RichTextEditor).targetProperty;
+        }
+
         const applyContextPath =
             buildingBlockData.buildingBlockType === BuildingBlockType.Chart ||
             !!(minUI5Version && lt(minUI5Version, '1.97.0'));
         // Convert object based metapath to string
-        const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders);
+        const metadataPath = getMetaPath(applyContextPath, buildingBlockData.metaPath, usePlaceholders, targetProperty);
         buildingBlockData = { ...buildingBlockData, metaPath: metadataPath.metaPath };
         if (!buildingBlockData.contextPath && metadataPath.contextPath) {
             buildingBlockData.contextPath = metadataPath.contextPath;
@@ -214,8 +375,9 @@ function getTemplateContent<T extends BuildingBlock>(
     return render(
         fs.read(templateFilePath),
         {
-            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
-            data: buildingBlockData
+            macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
+            data: buildingBlockData,
+            config: templateConfig
         },
         {}
     );
@@ -225,12 +387,13 @@ function getTemplateContent<T extends BuildingBlock>(
  * Method returns the manifest content for the required dependency library.
  *
  * @param {Editor} fs - the memfs editor instance
+ * @param {string} library - the dependency library
  * @returns {Promise<string>} Manifest content for the required dependency library.
  */
-export async function getManifestContent(fs: Editor): Promise<string> {
+export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'): Promise<string> {
     // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
     const templatePath = getTemplatePath('/building-block/common/manifest.json');
-    return render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } });
+    return render(fs.read(templatePath), { libraries: { [library]: {} } });
 }
 
 /**
@@ -240,15 +403,24 @@ export async function getManifestContent(fs: Editor): Promise<string> {
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
  * @param  {Manifest} manifest - the manifest content
+ * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {Document} the template xml file document
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
     fs: Editor,
-    manifest: Manifest | undefined
+    manifest: Manifest | undefined,
+    templateConfig: TemplateConfig
 ): Document {
-    const templateContent = getTemplateContent(buildingBlockData, viewDocument, manifest, fs);
+    const templateContent = getTemplateContent(
+        buildingBlockData,
+        viewDocument,
+        manifest,
+        fs,
+        undefined,
+        templateConfig
+    );
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
@@ -273,6 +445,8 @@ function getTemplateDocument<T extends BuildingBlock>(
  * @param {Document} viewDocument - the view xml document
  * @param {Document} templateDocument - the template xml document
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {boolean} [replace] - If true, replaces the target element with the template xml document;
+ * if false, appends the source node.
  * @returns {Editor} the updated memfs editor instance
  */
 function updateViewFile(
@@ -281,7 +455,8 @@ function updateViewFile(
     aggregationPath: string,
     viewDocument: Document,
     templateDocument: Document,
-    fs: Editor
+    fs: Editor,
+    replace: boolean = false
 ): Editor {
     const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
 
@@ -290,8 +465,11 @@ function updateViewFile(
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
-        targetNode.appendChild(sourceNode);
-
+        if (replace) {
+            targetNode.parentNode?.replaceChild(sourceNode, targetNode);
+        } else {
+            targetNode.appendChild(sourceNode);
+        }
         // Serialize and format new view xml document
         const newXmlContent = new XMLSerializer().serializeToString(viewDocument);
         fs.write(join(basePath, viewPath), format(newXmlContent));

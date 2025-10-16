@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomHeaderSection } from '../../src/section';
 import type { HeaderSectionEditProperty } from '../../src/section/types';
 import { RequestGroupId, type CustomHeaderSection, DesignTime } from '../../src/section/types';

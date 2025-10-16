@@ -1,4 +1,79 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Building Blocks CustomColumn building block CustomColumn detects macros:columns elements correctly: generate-custom-column-without-macros-columns 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table>
+                <macros:columns>
+                    <macros:Column/>
+                    <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                    </macrosTable:Column>
+                </macros:columns>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks CustomColumn building block generate CustomColumn without macros:columns - should not update aggregation path: generate-custom-column-without-macros-columns 1`] = `
+Object {
+  "generate-custom-column-without-macros-columns/webapp/ext/fragment/CustomColumnTitle2.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "generate-custom-column-without-macros-columns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table>
+                <macros:columns>
+                    <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                    </macrosTable:Column>
+                </macros:columns>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-column-without-macros-columns/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
 
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
@@ -1053,6 +1128,12 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks generate Page building block with replace target locator set: generate-page-block 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\"/>
+</mvc:View>"
+`;
+
 exports[`Building Blocks generate building block with \`sap.fe.templates\` dependency: generate-filter-bar-templates-library-only 1`] = `
 Object {
   "../../../../unit/sample/building-block/webapp-prompts/webapp/ext/main/Main.view.xml": Object {
@@ -1150,4 +1231,22 @@ exports[`Building Blocks generate building block, no fs 1`] = `
         </content>
     </Page>
 </mvc:View>"
+`;
+
+exports[`Building Blocks generates Rich Text Editor building block with absolute binding context: generate-rich-text-editor-block 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <Text text=\\"Custom section\\"/>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/testEntitySet/testProperty\\" id=\\"testRichTextEditor\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks throws error for Rich Text Editor building block if UI5 version is below 1.117.0: generate-rich-text-editor-block 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <Text text=\\"Custom section\\"/>
+        <macros:RichTextEditorWithMetadata metaPath=\\"_testNavigation/testProperty\\" id=\\"testRichTextEditor\\"/>
+    </VBox>
+</core:FragmentDefinition>"
 `;

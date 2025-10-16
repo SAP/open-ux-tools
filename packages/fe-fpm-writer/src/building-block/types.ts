@@ -1,3 +1,5 @@
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
+
 /**
  * Building block type.
  *
@@ -7,7 +9,10 @@ export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     Field = 'field',
-    Table = 'table'
+    Page = 'page',
+    Table = 'table',
+    CustomColumn = 'custom-column',
+    RichTextEditor = 'rich-text-editor'
 }
 
 /**
@@ -17,13 +22,20 @@ export enum BuildingBlockType {
  * relative - gets annotation path qualifiers in navigation path 1 level deep.
  */
 export type BindingContextType = 'absolute' | 'relative';
+export const bindingContextAbsolute: BindingContextType = 'absolute';
+export const bindingContextRelative: BindingContextType = 'relative';
+
+export type TemplateConfig = {
+    hasAggregation?: boolean;
+    aggregationNamespace: string;
+};
 
 /**
  * Represents a building block metaPath object.
  */
 export interface BuildingBlockMetaPath {
     entitySet: string;
-    qualifier: string;
+    qualifier?: string;
     bindingContextType?: BindingContextType;
     /**
      * Always generate absolute paths.
@@ -386,6 +398,55 @@ export interface Table extends BuildingBlock {
 }
 
 /**
+ * Building block used to create a page.
+ * The page building block allows configuration of the title, and description.
+ *
+ * @example
+ * <macro:Page title="My Page Title" description="My Page Description" />
+ * @extends {BuildingBlock}
+ */
+export interface Page extends BuildingBlock {
+    /**
+     * The title of the page.
+     */
+    title?: string;
+
+    /**
+     * The description of the page.
+     */
+    description?: string;
+}
+
+export interface CustomColumn extends BuildingBlock {
+    title: string;
+    width?: string;
+    columnKey?: string;
+    position?: Position;
+    embededFragment?: EmbededFragment;
+}
+
+export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
+
+/**
+ * Building block used to create a rich text editor based on the metadata provided by OData V4.
+ * MetaPath construction example: metaPath="/EntitySet/targetProperty"
+ *
+ * @example
+ *  <macros:RichTextEditorWithMetadata metaPath="_Agency/AgencyID" id="RichTextEditor2">
+ *       <macros:buttonGroups>
+ *          <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic,underline"/>
+ *      </macros:buttonGroups>
+ *  </macros:RichTextEditorWithMetadata>
+ * @extends {BuildingBlock}
+ */
+export interface RichTextEditor extends BuildingBlock {
+    /**
+     * Property used to construct the metaPath for Rich Text Editor, e.g. "/EntitySet/targetProperty".
+     */
+    targetProperty?: string;
+}
+
+/**
  * Input configuration for the generate function.
  */
 export interface BuildingBlockConfig<T extends BuildingBlock> {
@@ -411,4 +472,10 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      * @default true
      */
     allowAutoAddDependencyLib?: boolean;
+
+    /**
+     * If true, replaces the element selected by aggregationPath in the view with the page building block.
+     * If false or undefined, the page building block will be appended.
+     */
+    replace?: boolean;
 }

@@ -1,9 +1,12 @@
-import type { SystemLookup } from '@sap-ux/adp-tooling';
-import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
+import fs from 'node:fs';
+
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { getMtaServices, isExternalLoginEnabled, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
+import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
-import { resolveNodeModuleGenerator } from '../../extension-project';
 
 interface JsonInputParams {
     projectName: string;
@@ -12,25 +15,33 @@ interface JsonInputParams {
     system: string;
 }
 
+interface ValidateExtensibilityExtParams {
+    value: boolean;
+    isApplicationSupported: boolean;
+    hasSyncViews: boolean;
+    isExtensibilityExtInstalled: boolean;
+}
+
 /**
- * Validates whether the extensibility sub-generator is available and sets it up if necessary.
- * If the generator is not found, an error message is returned advising on the necessary action.
+ * Validates whether the extensibility extension is available. If the extension is not found,
+ * an error message is returned advising on the necessary action.
  *
- * @param {boolean} value - A confirm flag indicating whether user wants to continue creating an extension project.
- * @param {boolean} isApplicationSupported - Whether the selected application is supported.
- * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
+ * @param {ValidateExtensibilityExtParams} params - The validation parameters.
+ * @param {boolean} params.value - A confirm flag indicating whether user wants to continue creating an extension project.
+ * @param {boolean} params.isApplicationSupported - Whether the selected application is supported.
+ * @param {boolean} params.hasSyncViews - Whether synchronized views exist for the app.
+ * @param {boolean} params.isExtensibilityExtInstalled - Whether the extensibility extension is installed.
  * @returns {boolean | string} Returns true if app is supported and contains sync views, or an error message if not.
  */
-export function validateExtensibilityGenerator(
-    value: boolean,
-    isApplicationSupported: boolean,
-    hasSyncViews: boolean
-): boolean | string {
+export function validateExtensibilityExtension({
+    value,
+    isApplicationSupported,
+    hasSyncViews,
+    isExtensibilityExtInstalled
+}: ValidateExtensibilityExtParams): boolean | string {
     if (value) {
-        const generator = resolveNodeModuleGenerator();
-
-        if (!generator) {
-            return t('error.extensibilityGenNotFound');
+        if (!isExtensibilityExtInstalled) {
+            return t('error.extensibilityExtensionNotFound');
         }
 
         return true;
@@ -60,7 +71,7 @@ export async function validateJsonInput(
     isCustomerBase: boolean,
     { projectName, targetFolder, namespace, system }: JsonInputParams
 ): Promise<void> {
-    let validationResult = validateProjectName(projectName, targetFolder, isCustomerBase);
+    let validationResult = validateProjectName(projectName, targetFolder, isCustomerBase, false);
     if (isString(validationResult)) {
         throw new Error(validationResult);
     }
@@ -74,4 +85,86 @@ export async function validateJsonInput(
     if (!systemEndpoint) {
         throw new Error(t('error.systemNotFound', { system }));
     }
+}
+
+/**
+ * Validates the environment.
+ *
+ * @param {string} value - The value to validate.
+ * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
+ * @param {any} vscode - The vscode instance.
+ * @returns {Promise<string | boolean>} Returns true if the environment is valid, otherwise returns an error message.
+ */
+export async function validateEnvironment(
+    value: string,
+    isCFLoggedIn: boolean,
+    vscode: any
+): Promise<string | boolean> {
+    if (value === 'CF' && !isCFLoggedIn) {
+        return t('error.cfNotLoggedIn');
+    }
+
+    if (value === 'CF' && !isAppStudio()) {
+        const isExtLoginEnabled = await isExternalLoginEnabled(vscode);
+        if (!isExtLoginEnabled) {
+            return t('error.cfLoginCannotBeDetected');
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Validates the project path.
+ *
+ * @param {string} projectPath - The path to the project.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
+ */
+export async function validateProjectPath(projectPath: string, logger: ToolsLogger): Promise<string | boolean> {
+    const validationResult = validateEmptyString(projectPath);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (!fs.existsSync(projectPath)) {
+        return t('error.projectDoesNotExist');
+    }
+
+    if (!isMtaProject(projectPath)) {
+        return t('error.projectDoesNotExistMta');
+    }
+
+    try {
+        const services = await getMtaServices(projectPath, logger);
+        if (services.length < 1) {
+            return t('error.noAdaptableBusinessServiceFoundInMta');
+        }
+    } catch (e) {
+        logger?.error(`Failed to get MTA services: ${e.message}`);
+        return t('error.noAdaptableBusinessServiceFoundInMta');
+    }
+
+    return true;
+}
+
+/**
+ * Validate business solution name.
+ *
+ * @param {string} value - Value to validate.
+ * @returns {string | boolean} Validation result.
+ */
+export function validateBusinessSolutionName(value: string): string | boolean {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    const parts = String(value)
+        .split('.')
+        .filter((p) => p.length > 0);
+    if (parts.length < 2) {
+        return t('error.businessSolutionNameInvalid');
+    }
+    return true;
 }

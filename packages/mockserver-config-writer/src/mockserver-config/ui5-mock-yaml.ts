@@ -1,4 +1,4 @@
-import { join, posix, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
@@ -212,7 +212,7 @@ async function generateNewUi5MockYamlConfig(
     );
     ui5MockYaml.setMetadata({ name: appId });
     ui5MockYaml.setType('application');
-    ui5MockYaml.addFioriToolsProxydMiddleware({ ui5: {} });
+    ui5MockYaml.addFioriToolsProxyMiddleware({ ui5: {} });
     ui5MockYaml.addFioriToolsAppReloadMiddleware();
     ui5MockYaml.addMockServerMiddleware(basePath, webappPath, dataSourcesConfig, annotationsConfig);
     return ui5MockYaml;

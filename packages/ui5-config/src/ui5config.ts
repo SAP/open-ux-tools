@@ -27,7 +27,7 @@ import {
 import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
-import { join, posix, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'node:path';
 import { readFile } from 'fs/promises';
 import yaml from 'js-yaml';
 
@@ -197,6 +197,15 @@ export class UI5Config {
     }
 
     /**
+     * Get the UI5 framework from the yaml.
+     *
+     * @returns the ui5 framework.
+     */
+    public getUi5Framework(): Ui5Document['framework'] | undefined {
+        return this.document.getMap({ path: 'framework' }).toJSON();
+    }
+
+    /**
      * Adds a UI5 Framework entry to the yaml file.
      *
      * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5
@@ -260,7 +269,7 @@ export class UI5Config {
     }
 
     /**
-     * Adds a instance of the Fiori tools app-reload middleware to the config.
+     * Adds an instance of the Fiori tools app-reload middleware to the config.
      *
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -274,19 +283,22 @@ export class UI5Config {
     }
 
     /**
-     * Adds a instance of the Fiori tools proxy middleware to the config.
+     * Adds an instance of the Fiori tools proxy middleware to the config.
      *
      * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
      * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
+    public addFioriToolsProxyMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
+        // Support both old and new property names for backward compatibility
+        const resolvedIgnoreCertErrors = proxyConfig?.ignoreCertErrors ?? proxyConfig?.ignoreCertError ?? false; // NOSONAR
+
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
             proxyConfig.backend,
             proxyConfig.ui5,
             afterMiddleware,
-            proxyConfig.ignoreCertError
+            resolvedIgnoreCertErrors
         );
         this.document.appendTo({
             path: 'server.customMiddleware',
@@ -318,13 +330,13 @@ export class UI5Config {
      * Adds a backend configuration to an existing fiori-tools-proxy middleware keeping any existing 'fiori-tools-proxy' backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param backend config of backend that is to be proxied
-     * @param ignoreCertError if true some certificate errors are ignored
+     * @param ignoreCertErrors if true some certificate errors are ignored
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addBackendToFioriToolsProxydMiddleware(
+    public addBackendToFioriToolsProxyMiddleware(
         backend: FioriToolsProxyConfigBackend,
-        ignoreCertError: boolean = false
+        ignoreCertErrors: boolean = false
     ): this {
         const configuration = this.getFioriToolsProxyMiddlewareConfiguration();
         const proxyMiddlewareConfig = configuration.toJSON() as FioriToolsProxyConfig;
@@ -333,9 +345,20 @@ export class UI5Config {
             value: backend,
             comments
         });
-        if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
-            configuration.set('ignoreCertError', ignoreCertError);
+
+        // Support both old and new property names for backward compatibility
+        const currentIgnoreCertErrors =
+            proxyMiddlewareConfig?.ignoreCertErrors ?? proxyMiddlewareConfig?.ignoreCertError ?? false; // NOSONAR
+
+        if (currentIgnoreCertErrors !== ignoreCertErrors) {
+            configuration.set('ignoreCertErrors', ignoreCertErrors);
+            // Remove the deprecated property if it exists
+            //prettier-ignore
+            if (proxyMiddlewareConfig?.ignoreCertError !== undefined) { // NOSONAR
+                configuration.delete('ignoreCertError');
+            }
         }
+
         // Add new entry to existing backend configurations in yaml, avoid duplicates
         if (proxyMiddlewareConfig?.backend) {
             if (!proxyMiddlewareConfig?.backend.find((existingBackend) => existingBackend.path === backend.path)) {
@@ -360,7 +383,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public updateBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): this {
+    public updateBackendToFioriToolsProxyMiddleware(backend: FioriToolsProxyConfigBackend): this {
         const configuration = this.getFioriToolsProxyMiddlewareConfiguration();
         const proxyMiddlewareConfig = configuration.toJSON() as FioriToolsProxyConfig;
         const comments = getBackendComments(backend);
@@ -388,7 +411,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeBackendFromFioriToolsProxydMiddleware(path: string): this {
+    public removeBackendFromFioriToolsProxyMiddleware(path: string): this {
         const fioriToolsProxyMiddleware = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
         if (!fioriToolsProxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
@@ -419,8 +442,8 @@ export class UI5Config {
      * @param path Path of the backend.
      * @returns {FioriToolsProxyConfigBackend} the backend configuration
      */
-    public getBackendConfigFromFioriToolsProxydMiddleware(path: string): FioriToolsProxyConfigBackend | undefined {
-        const backendConfigs: FioriToolsProxyConfigBackend[] = this.getBackendConfigsFromFioriToolsProxydMiddleware();
+    public getBackendConfigFromFioriToolsProxyMiddleware(path: string): FioriToolsProxyConfigBackend | undefined {
+        const backendConfigs: FioriToolsProxyConfigBackend[] = this.getBackendConfigsFromFioriToolsProxyMiddleware();
         return backendConfigs.find((backendConfig) => backendConfig.path === path);
     }
 
@@ -429,7 +452,7 @@ export class UI5Config {
      *
      * @returns {FioriToolsProxyConfigBackend[]} the backend configurations
      */
-    public getBackendConfigsFromFioriToolsProxydMiddleware(): FioriToolsProxyConfigBackend[] {
+    public getBackendConfigsFromFioriToolsProxyMiddleware(): FioriToolsProxyConfigBackend[] {
         let backendConfigs: FioriToolsProxyConfigBackend[];
         try {
             const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
@@ -455,7 +478,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUi5ToFioriToolsProxydMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
+    public addUi5ToFioriToolsProxyMiddleware(ui5: FioriToolsProxyConfigUI5): this {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
@@ -467,7 +490,7 @@ export class UI5Config {
     }
 
     /**
-     * Adds a instance of the mockserver middleware to the config.
+     * Adds an instance of the mockserver middleware to the config.
      *
      * @param basePath - path to project root, where package.json and ui5.yaml is
      * @param webappPath - path to webapp folder, where manifest.json is
@@ -591,6 +614,7 @@ export class UI5Config {
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
      * @param exclude optional list of files that are to be excluded from the deployment configuration
      * @param index if true a standalone index.html is generated during deployment
+     * @param lrep optional lrep namespace to be used for the deployment configuration
      * @param comments optional comments that are added to the task
      * @returns this UI5Config instance
      * @memberof UI5Config
@@ -601,6 +625,7 @@ export class UI5Config {
         fioriTools = true,
         exclude?: string[],
         index = false,
+        lrep?: string,
         comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.document.appendTo({
@@ -612,8 +637,13 @@ export class UI5Config {
             value: '/localService/**'
         });
 
-        const configuration: { target: AbapTarget; app: BspApp | Adp; exclude: string[] | undefined; index?: boolean } =
-            { target, app, exclude };
+        const configuration: {
+            target: AbapTarget;
+            app: BspApp | Adp;
+            exclude: string[] | undefined;
+            index?: boolean;
+            lrep?: string;
+        } = { target, app, exclude, lrep };
 
         if (index) {
             configuration['index'] = true;

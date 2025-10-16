@@ -17,6 +17,11 @@ export interface ProviderConfiguration {
      * https://datatracker.ietf.org/doc/html/rfc6265#section-4.2
      */
     cookies: string;
+
+    /**
+     * Allow a logger to be set by calls to provider creation
+     */
+    logger?: Logger;
 }
 
 export interface ServiceProviderExtension {
@@ -33,11 +38,41 @@ export interface ServiceProviderExtension {
  * Basic service provider class containing generic functionality to create and keep service instances as well as logging
  */
 export class ServiceProvider extends Axios implements ServiceProviderExtension {
-    public readonly log: Logger = new ToolsLogger();
+    public _log: Logger = new ToolsLogger();
 
     public readonly cookies: Cookies = new Cookies();
 
     protected readonly services: { [path: string]: Service } = {};
+
+    /**
+     *
+     * @param providerConfig
+     */
+    constructor(providerConfig?: AxiosRequestConfig & Partial<ProviderConfiguration>) {
+        super(providerConfig);
+        if (providerConfig?.logger) {
+            this._log = providerConfig.logger;
+        }
+    }
+
+    /**
+     * Set the logger for the service provider. Loggers may need to be restored after serialization/deserialization since they contain circular references.
+     * Note calling this will overwrite loggers sets via ProviderConfiguration.
+     *
+     * @param logger - Logger instance to be set
+     */
+    public set log(logger: Logger) {
+        this._log = logger;
+    }
+
+    /**
+     * Get the logger for the service provider.
+     *
+     * @returns Logger instance
+     */
+    public get log(): Logger {
+        return this._log;
+    }
 
     /**
      * Create a service instance or return an existing one for the given path.
@@ -60,10 +95,11 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
      */
     protected generateServiceConfig(path: string): AxiosRequestConfig {
         const config = Object.assign({}, this.defaults);
+        const headers = Object.assign(this.defaults.headers?.common ?? {}, { Cookie: this.cookies.toString() });
         return {
             ...config,
             baseURL: this.defaults.baseURL + path,
-            headers: this.defaults.headers?.common ?? {}
+            headers
         };
     }
 

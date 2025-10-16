@@ -2,7 +2,7 @@
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(".");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries(["sap/ui/fl"]);
     sap.ui.require(["sap/ui/fl/FakeLrepConnector"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {

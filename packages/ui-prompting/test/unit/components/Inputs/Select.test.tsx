@@ -262,6 +262,47 @@ describe('Select', () => {
                 expect(onChangeFn).toHaveBeenCalled();
                 expect(onChangeFn).toHaveBeenCalledWith('select', '');
             });
+
+            it('renders and associates label from default name prop when no message is provided', async () => {
+                const onChangeFn = jest.fn();
+                render(<Select {...creatableProps} onChange={onChangeFn} />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+
+                // Wait for the label to resolve to "select"
+                const labeledElements = await screen.findAllByLabelText('select');
+                expect(labeledElements.length).toBeGreaterThan(0);
+                const inputElement = labeledElements.find((el) => el.tagName === 'INPUT');
+                expect(inputElement).toBeDefined();
+            });
+
+            it('renders and associates label from message string prop', async () => {
+                const onChangeFn = jest.fn();
+                const msg = 'String Test Message';
+                render(<Select {...creatableProps} onChange={onChangeFn} message={msg} />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+
+                // Wait for the label to resolve to "String Test Message"
+                const labeledElements = await screen.findAllByLabelText('String Test Message');
+                expect(labeledElements.length).toBeGreaterThan(0);
+                const inputElement = labeledElements.find((el) => el.tagName === 'INPUT');
+                expect(inputElement).toBeDefined();
+            });
+
+            it('renders and associates label from async message function', async () => {
+                const onChangeFn = jest.fn();
+                const msg = () => 'Dynamic Test Message';
+                render(<Select {...creatableProps} onChange={onChangeFn} message={msg} />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+
+                // Wait for the label to resolve to "Dynamic Test Message"
+                const labeledElements = await screen.findAllByLabelText('Dynamic Test Message');
+                expect(labeledElements.length).toBeGreaterThan(0);
+                const inputElement = labeledElements.find((el) => el.tagName === 'INPUT');
+                expect(inputElement).toBeDefined();
+            });
         });
 
         describe('No options', () => {
@@ -338,11 +379,50 @@ describe('Select', () => {
         });
     });
 
-    it('Auto select single option', () => {
+    it('Auto-selects the option with checked=true as the default value', () => {
         const onChangeFn = jest.fn();
         render(<Select {...props} onChange={onChangeFn} choices={[{ name: 'Dummy', value: 111 }]} />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         expect(onChangeFn).toHaveBeenCalledWith('select', 111);
+    });
+
+    it('Select checked value as default', async () => {
+        const onChangeFn = jest.fn();
+        const promptsWithChecked = {
+            ...props,
+            choices: [
+                { name: 'testText0', value: 'testValue0' },
+                { name: 'testText1', value: 'testValue1', checked: true }
+            ]
+        };
+        render(<Select {...promptsWithChecked} onChange={onChangeFn} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue1');
+    });
+
+    it('displays disabled option with tooltip in Select component', async () => {
+        const onChangeFn = jest.fn();
+        const propmtsWithDisabled = {
+            ...props,
+            choices: [
+                { name: 'testText0', value: 'testValue0' },
+                { name: 'testText1', value: 'testValue1', disabled: true, title: 'Option is disabled' }
+            ]
+        };
+        render(<Select {...propmtsWithDisabled} onChange={onChangeFn} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+
+        // Open dropdown
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+
+        const options = screen.queryAllByRole('option');
+        expect(options).toHaveLength(2);
+
+        expect(options[1].textContent).toBe('testText1');
+        expect(options[1].title).toBe('Option is disabled');
     });
 });

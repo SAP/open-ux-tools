@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { generatePreviewFiles } from '@sap-ux/preview-middleware';
-import { isAbsolute, join } from 'path';
+import { isAbsolute, join } from 'node:path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -15,6 +15,7 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
  */
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
+        .description('Add HTML files for local preview and testing, using the preview middleware configuration.')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')

@@ -46,11 +46,14 @@ export interface AbapSystemChoice {
     url?: string;
     client?: string;
     isDefault?: boolean;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
 }
 
 /**
  * Enumeration of prompt names used by
+ *
+ * N.B. as these prompts are merged with CF prompts (see `promptNames` in packages/cf-deploy-config-inquirer/src/types.ts),
+ * ensure that the names are unique across both files.
  */
 export enum promptNames {
     destination = 'destination',
@@ -77,7 +80,7 @@ export enum promptNames {
     transportFromList = 'transportFromList',
     transportManual = 'transportManual',
     index = 'index',
-    overwrite = 'overwrite'
+    overwriteAbapConfig = 'overwriteAbapConfig'
 }
 
 /**
@@ -208,7 +211,7 @@ type abapPromptOptions = {
     [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;
     [promptNames.transportManual]: TransportManualPromptOptions & CommonPromptOptions;
     [promptNames.transportCreated]: TransportCreatedPromptOptions & CommonPromptOptions;
-    [promptNames.overwrite]: OverwritePromptOptions & CommonPromptOptions;
+    [promptNames.overwriteAbapConfig]: OverwritePromptOptions & CommonPromptOptions;
     [promptNames.index]: IndexPromptOptions & CommonPromptOptions;
     [promptNames.packageAutocomplete]: PackageAutocompletePromptOptions & CommonPromptOptions;
     [promptNames.transportInputChoice]: TransportInputChoicePromptOptions & CommonPromptOptions;
@@ -252,7 +255,7 @@ export interface AbapDeployConfigAnswers {
 export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers {
     clientChoice?: string;
     username?: string;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
     packageInputChoice?: PackageInputChoices;
     packageManual?: string;
     packageAutocomplete?: string;

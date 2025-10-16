@@ -18,7 +18,7 @@ function buildStartNoFLPCommand(localOnly: boolean, searchParams?: URLSearchPara
     const searchParamString = searchParams?.toString();
     const searchParam = searchParamString ? `?${searchParamString}` : '';
     if (localOnly) {
-        return `echo \\"${t('info.mockOnlyWarning')}\\"`;
+        return `echo \\"${t('logMessages.info.mockOnlyWarning')}\\"`;
     }
     return `fiori run --open "/index.html${searchParam}"`;
 }
@@ -51,7 +51,7 @@ function buildParams(searchParams?: URLSearchParams, flpAppId?: string): string 
  */
 function buildStartCommand(localOnly: boolean, params: string, startFile?: string): string {
     if (localOnly) {
-        return `echo \\"${t('info.mockOnlyWarning')}\\"`;
+        return `echo \\"${t('logMessages.info.mockOnlyWarning')}\\"`;
     }
     return `fiori run --open "${startFile ?? SCRIPT_FLP_SANDBOX}${params}"`;
 }
@@ -63,10 +63,14 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * When virtual endpoints are used, the search parameters are injected at runtime.
  *
  * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command.
+ * @param {string} [flpAppId] - The FLP application ID to use as the anchor in the preview URL.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(addSearchParams: boolean): string {
-    const previewAppAnchor = '#app-preview';
+function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId?: string): string {
+    let previewAppAnchor = '#app-preview';
+    if (addSearchParams && flpAppId) {
+        previewAppAnchor = `#${flpAppId}`;
+    }
     let urlParam = '';
     if (addSearchParams) {
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
@@ -129,8 +133,8 @@ export function getPackageScripts({
     }
 
     scripts['start-variants-management'] = localOnly
-        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(!supportVirtualEndpoints);
+        ? `echo \\"${t('logMessages.info.mockOnlyWarning')}\\"`
+        : getVariantPreviewAppScript(!supportVirtualEndpoints, flpAppId);
 
     return scripts;
 }

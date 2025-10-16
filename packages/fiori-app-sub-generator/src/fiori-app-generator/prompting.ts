@@ -9,7 +9,8 @@ import {
     type OdataServicePromptOptions,
     OdataVersion,
     promptNames as odataServiceInquirerPromptNames,
-    prompt as promptOdataService
+    prompt as promptOdataService,
+    type EntityRelatedAnswers
 } from '@sap-ux/odata-service-inquirer';
 import { ClientFactory } from '@sap-ux/telemetry';
 import type {
@@ -22,7 +23,7 @@ import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from
 import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
 import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';
@@ -80,6 +81,7 @@ type PromptUI5AppAnswersOptions = {
     projectName?: Project['name'];
     targetFolder?: Project['targetFolder'];
     service: Partial<Service>;
+    entityRelatedConfig?: Partial<EntityRelatedAnswers>;
     promptSettings?: UI5ApplicationPromptOptions;
     floorplan: Floorplan;
     promptExtension?: UI5ApplicationPromptOptions;
@@ -96,12 +98,21 @@ type PromptUI5AppAnswersOptions = {
  * @param param0.promptSettings
  * @param param0.floorplan
  * @param param0.promptExtension
+ * @param param0.entityRelatedConfig
  * @param yeomanUiStepConfig
  * @param adapter
  * @returns
  */
 export async function promptUI5ApplicationAnswers(
-    { service, projectName, targetFolder, promptSettings, floorplan, promptExtension }: PromptUI5AppAnswersOptions,
+    {
+        service,
+        projectName,
+        targetFolder,
+        promptSettings,
+        floorplan,
+        promptExtension,
+        entityRelatedConfig
+    }: PromptUI5AppAnswersOptions,
     yeomanUiStepConfig: YeomanUiStepConfig[],
     adapter: Adapter
 ): Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }> {
@@ -115,15 +126,16 @@ export async function promptUI5ApplicationAnswers(
         inquirerAdapter = adapter;
     }
 
-    const promptOptions = await createUI5ApplicationPromptOptions(
+    const promptOptions = await createUI5ApplicationPromptOptions({
         service,
-        yeomanUiStepConfig,
+        appGenStepConfigList: yeomanUiStepConfig,
         floorplan,
         projectName,
         targetFolder,
         promptSettings,
-        promptExtension
-    );
+        promptExtension,
+        entityRelatedConfig
+    });
     const ui5AppAnswers: UI5ApplicationAnswers = await promptUI5App(
         inquirerAdapter,
         promptOptions,
@@ -195,35 +207,46 @@ export async function promptOdataServiceAnswers(
     return service;
 }
 
+export type Ui5PromptOptions = PromptUI5AppAnswersOptions & {
+    appGenStepConfigList: YeomanUiStepConfig[];
+};
+
 /**
  * Creates the `UIApplicationPromptOptions`.
  * Note that setting 'default', the default prompt value or function, or 'hide', whether the prompt should be shown,
  * to `undefined` should mean that the setting is ignored by the prompt.
  *
- * @param service
- * @param appGenStepConfigList
- * @param floorplan
- * @param projectName
- * @param targetFolder
- * @param promptSettings
- * @param extensions
+ * @param {object} ui5PromptOptions - Options for configuring the UI5 application prompt.
+ * @param {Partial<Service>} ui5PromptOptions.service - The service configuration.
+ * @param {YeomanUiStepConfig[]} ui5PromptOptions.appGenStepConfigList - The list of Yeoman UI step configurations.
+ * @param {Floorplan} ui5PromptOptions.floorplan - The selected floorplan type.
+ * @param {string} [ui5PromptOptions.projectName] - The name of the project.
+ * @param {string} [ui5PromptOptions.targetFolder] - The target folder for the project.
+ * @param {UI5ApplicationPromptOptions} [ui5PromptOptions.promptSettings] - Additional prompt settings.
+ * @param {UI5ApplicationPromptOptions} [ui5PromptOptions.promptExtension] - Extension prompt settings.
+ * @param {Partial<EntityRelatedAnswers>} [ui5PromptOptions.entityRelatedConfig] - Entity-related configuration.
  * @returns {Promise<UI5ApplicationPromptOptions>} prompt options that may be used to configure UI5 application prompting
  */
 export async function createUI5ApplicationPromptOptions(
-    service: Partial<Readonly<Service>>,
-    appGenStepConfigList: YeomanUiStepConfig[],
-    floorplan: Floorplan,
-    projectName?: Project['name'],
-    targetFolder?: Project['targetFolder'],
-    promptSettings?: UI5ApplicationPromptOptions,
-    extensions?: UI5ApplicationPromptOptions
+    ui5PromptOptions: Ui5PromptOptions
 ): Promise<UI5ApplicationPromptOptions> {
+    const {
+        service,
+        appGenStepConfigList,
+        floorplan,
+        projectName,
+        targetFolder,
+        promptSettings,
+        promptExtension: extensions,
+        entityRelatedConfig
+    } = ui5PromptOptions;
+
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
         hide: promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.hide ?? false,
         minUI5Version:
             promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
-            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
+            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan, entityRelatedConfig),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
         useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };

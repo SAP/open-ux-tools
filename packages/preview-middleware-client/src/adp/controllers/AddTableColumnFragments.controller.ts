@@ -23,23 +23,24 @@ import { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
 /** sap.ui.layout */
 import { type SimpleForm } from 'sap/ui/layout/form';
 
-import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
-import { getResourceModel, getTextBundle } from '../../i18n';
 import { CommunicationService } from '../../cpe/communication-service';
+import { getResourceModel } from '../../i18n';
 
-import ControlUtils from '../control-utils';
-import CommandExecutor from '../command-executor';
-import { getFragments } from '../api-handler';
-import BaseDialog from './BaseDialog.controller';
-import { notifyUser } from '../utils';
-import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller';
-import { ValueState } from 'sap/ui/core/library';
 import Input from 'sap/m/Input';
-import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import Control from 'sap/ui/core/Control';
+import { ValueState } from 'sap/ui/core/library';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { setAdditionalChangeInfoForChangeFile } from '../../utils/additional-change-info';
+import { getError } from '../../utils/error';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
+import { getFragments } from '../api-handler';
+import CommandExecutor from '../command-executor';
+import ControlUtils from '../control-utils';
+import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller';
+import BaseDialog from './BaseDialog.controller';
 
 const radix = 10;
 
@@ -102,9 +103,9 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
+        await super.onCreateBtnPressHandler();
 
         const columnFragmentName = this.model.getProperty('/newColumnFragmentName');
         const cellFragmentName = this.model.getProperty('/newCellFragmentName');
@@ -125,15 +126,14 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
         await this.createFragmentChange(fragmentData);
 
-        const textKey = 'ADP_ADD_TWO_FRAGMENTS_WITH_TEMPLATE_NOTIFICATION';
-        const bundle = await getTextBundle();
-        notifyUser(
-            bundle.getText(
-                textKey,
-                fragmentData.fragments.map((item) => item.fragmentName)
-            ),
-            8000
-        );
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            description: {
+                key: 'ADP_ADD_TWO_FRAGMENTS_WITH_TEMPLATE_NOTIFICATION',
+                params: [columnFragmentName, cellFragmentName]
+            },
+            type: MessageBarType.info
+        });
 
         this.handleDialogClose();
     }
@@ -151,7 +151,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
-            return parseInt(key, radix);
+            return Number.parseInt(key, radix);
         });
 
         this.model.setProperty('/selectedControlName', selectedControlName);
@@ -173,7 +173,13 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
             const { fragments } = await getFragments();
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            this.handleError(e);
+            const error = getError(e);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_GET_FRAGMENTS_FAILURE_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
         }
 
         this.model.setProperty('/index', indexArray);

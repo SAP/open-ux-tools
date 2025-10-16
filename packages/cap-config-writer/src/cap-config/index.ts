@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
@@ -7,6 +7,7 @@ import { addCdsPluginUi5, enableWorkspaces, ensureMinCdsVersion } from './packag
 
 /**
  * Enable workspace and cds-plugin-ui5 for given CAP project.
+ * If the minimum required version for @sap/cds is not met, it will update to the minimum required for cds-plugin-ui5.
  *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance

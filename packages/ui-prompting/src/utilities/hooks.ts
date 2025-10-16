@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
-import type { Answers, ChoiceOptions } from 'inquirer';
+import type { Answers, ChoiceOptions, AsyncDynamicQuestionProperty } from 'inquirer';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -66,6 +66,29 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
         setOptions(options);
     }, [question, choices]);
     return options;
+}
+
+/**
+ * Hook to resolve a prompt message, supporting both static and dynamic messages.
+ * If a message function is provided, it will be called with the current answers
+ * and the resolved message will be returned. Otherwise, returns an empty string.
+ *
+ * @param message - Function that returns a string or Promise<string> based on answers
+ * @param answers - Current answers object to pass to message
+ * @returns The resolved message string
+ */
+export function usePromptMessage(message?: AsyncDynamicQuestionProperty<string, Answers>, answers?: any): string {
+    const [resolvedMessage, setResolvedMessage] = useState<string>('');
+    useEffect(() => {
+        if (typeof message === 'function') {
+            Promise.resolve(message(answers ?? {}))
+                .then((msg) => setResolvedMessage(msg ?? ''))
+                .catch(() => setResolvedMessage(''));
+        } else if (typeof message === 'string') {
+            setResolvedMessage(message);
+        }
+    }, [message, answers]);
+    return resolvedMessage;
 }
 
 /**
@@ -175,7 +198,7 @@ export function useAnswers(
     questions: PromptQuestion[],
     externalAnswers?: Answers,
     onInitialChange?: (value: Answers) => void
-): [Answers, (value: Answers) => void] {
+): [Answers, (value: Answers | ((prev: Answers) => Answers)) => void] {
     const currentExternalAnswers = useRef<Answers>({});
     const [localAnswers, setLocalAnswers] = useState(() => {
         // Initial value
@@ -200,7 +223,12 @@ export function useAnswers(
         }
     }, [questions, externalAnswers]);
 
-    return [localAnswers, setLocalAnswers];
+    return [
+        localAnswers,
+        (value: Answers | ((prev: Answers) => Answers)) => {
+            setLocalAnswers((prev) => (typeof value === 'function' ? value(prev) : value));
+        }
+    ];
 }
 
 let GENERATED_PROMPT_ID_INDEX = 0;

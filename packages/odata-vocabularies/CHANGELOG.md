@@ -1,5 +1,50 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.17
+
+### Patch Changes
+
+-   ccb5285: vocabulary update
+
+## 0.4.16
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
+## 0.4.15
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/odata-annotation-core-types@0.5.0
+
+## 0.4.14
+
+### Patch Changes
+
+-   9872384: Upgrade axios module
+
+## 0.4.13
+
+### Patch Changes
+
+-   Updated dependencies [1f18878]
+    -   @sap-ux/odata-annotation-core-types@0.4.6
+
+## 0.4.12
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
+## 0.4.11
+
+### Patch Changes
+
+-   Updated dependencies [c7db726]
+    -   @sap-ux/odata-annotation-core-types@0.4.5
+
 ## 0.4.10
 
 ### Patch Changes
