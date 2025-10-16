@@ -169,7 +169,7 @@ export function generateJsonSpec(cmd: Command) {
 }
 
 /**
- * Return the version from package.json.
+ * Return the version from the package.json file.
  *
  *  @returns - version from package.json
  */
