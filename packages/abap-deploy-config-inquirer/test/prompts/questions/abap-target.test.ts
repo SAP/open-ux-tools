@@ -239,7 +239,7 @@ describe('getAbapTargetPrompts', () => {
                     "client": "102",
                     "isAbapCloud": true,
                     "isDefault": false,
-                    "name": "target2 (ABAP Cloud) [mockUser2]",
+                    "name": "target2 [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
                   },
