@@ -1,5 +1,15 @@
 # @sap-ux/create
 
+## 0.13.136
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.30
+-   @sap-ux/adp-tooling@0.16.4
+-   @sap-ux/flp-config-inquirer@0.4.39
+-   @sap-ux/preview-middleware@0.23.27
+-   @sap-ux/app-config-writer@0.6.45
+
 ## 0.13.135
 
 ### Patch Changes

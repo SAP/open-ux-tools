@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+    -   @sap-ux/adp-tooling@0.16.4
+
 ## 0.5.5
 
 ### Patch Changes
