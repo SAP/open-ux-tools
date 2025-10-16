@@ -41,6 +41,7 @@ export function handleCreateFioriCommand(argv: string[]): void {
  * @returns - commander program
  */
 function getCommanderProgram(): Command {
+    const logger = getLogger();
     const program = new Command();
     const version = getVersion();
     program.description(`Configure features for Fiori applications and projects. (${version})`);
@@ -52,9 +53,11 @@ function getCommanderProgram(): Command {
   'npx --yes @sap-ux/create@latest add html --simulate'     Simulate adding HTML files for local preview and testing to an existing project.\n`
     );
     program.option('--generateJsonSpec', 'Output the command structure as JSON');
-    program.action(async (options) => {
+    program.action((options) => {
         if (options.generateJsonSpec) {
-            console.log(generateJsonSpec(program));
+            logger.info(generateJsonSpec(program));
+        } else if (options.V || options.version) {
+            logger.info(version);
         } else {
             program.outputHelp();
         }
@@ -106,9 +109,6 @@ function getCommanderProgram(): Command {
     );
     program.addCommand(changeCommands);
 
-    // Override exit so calling this command without arguments does not result in an exit code 1, which causes an error message when running from npm init
-    program.exitOverride();
-
     return program;
 }
 
@@ -120,7 +120,7 @@ function getCommanderProgram(): Command {
  */
 function getFeatureSummary(commands: Command[]): string {
     const subCommandNames = commands.map((cmd) => cmd.name());
-    return subCommandNames.slice(0, 3).join(', ');
+    return subCommandNames.slice(0, 99).join(', ');
 }
 
 /**

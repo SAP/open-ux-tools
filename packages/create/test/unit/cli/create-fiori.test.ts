@@ -38,7 +38,7 @@ describe('Test handleCreateFioriCommand()', () => {
 
         // Result check
         expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('create-fiori [options] [command]'));
-        expect(mockLogger.debug).toHaveBeenCalledWith(expect.objectContaining({ code: 'commander.help' }));
+        expect(mockLogger.debug).not.toHaveBeenCalled();
         expect(mockLogger.error).not.toHaveBeenCalled();
     });
 });
