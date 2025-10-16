@@ -35,8 +35,8 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
         "view:promptfoo": "promptfoo view -y",
-        "test:promptfoo": "promptfoo eval --config test/integration/scenarious/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/intergration.txt",
-        "test:promptfooMultiple": "promptfoo eval --config test/integration/scenarious/promptfooconfig.yaml --max-concurrency 1 --repeat 5 --output reports/intergration.txt"
+        "test:promptfoo": "promptfoo eval --config test/integration/scenarios/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
+        "test:promptfoo:multiple": "npm run test:promptfoo -- --repeat 5"
     },
     "files": [
         "LICENSE",

@@ -1,0 +1,11 @@
+config:
+    project: 'lrop'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Add object page to parent page BookingObjectPage. Application in {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:customAssert
+      config:
+          file: webapp/manifest.json
+          snapshot: add-op-page

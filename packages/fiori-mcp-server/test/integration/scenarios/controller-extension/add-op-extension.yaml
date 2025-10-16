@@ -2,10 +2,10 @@ config:
     project: 'lrop'
 vars:
     appPath: '{{PROJECT_PATH}}'
-    query: 'Add object page to BookingObjectPage in application with appPath: {{appPath}}'
+    query: 'Add a controller extension for the ObjectPage type and name it dummy. Application in {{appPath}}'
 assert:
     - type: javascript
       value: file://../assertions/snapshots.ts:customAssert
       config:
+          snapshot: add-op-extension
           file: webapp/manifest.json
-          snapshot: add-op-page
