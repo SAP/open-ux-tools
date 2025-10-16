@@ -83,64 +83,20 @@
         "routing": {
             "routes": [
                 {
-                    "name": "TravelList",
+                    "name": "BookingList",
                     "pattern": ":?query:",
-                    "target": "TravelList"
-                },
-                {
-                    "pattern": "Travel({TravelKey}):?query:",
-                    "name": "TravelObjectPage",
-                    "target": "TravelObjectPage"
-                },
-                {
-                    "name": "Travel__BookingObjectPage",
-                    "pattern": "Travel({TravelKey})/_Booking({_BookingKey}):?query:",
-                    "target": "Travel__BookingObjectPage"
+                    "target": "BookingList"
                 }
             ],
             "targets": {
-                "TravelList": {
+                "BookingList": {
                     "type": "Component",
-                    "id": "TravelList",
+                    "id": "BookingList",
                     "name": "sap.fe.templates.ListReport",
                     "options": {
                         "settings": {
-                            "navigation": {
-                                "Travel": {
-                                    "detail": {
-                                        "route": "TravelObjectPage"
-                                    }
-                                }
-                            },
-                            "contextPath": "/Travel"
-                        }
-                    }
-                },
-                "TravelObjectPage": {
-                    "type": "Component",
-                    "id": "TravelObjectPage",
-                    "name": "sap.fe.templates.ObjectPage",
-                    "options": {
-                        "settings": {
-                            "contextPath": "/Travel",
-                            "navigation": {
-                                "_Booking": {
-                                    "detail": {
-                                        "route": "Travel__BookingObjectPage"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "Travel__BookingObjectPage": {
-                    "type": "Component",
-                    "id": "Travel__BookingObjectPage",
-                    "name": "sap.fe.templates.ObjectPage",
-                    "options": {
-                        "settings": {
                             "navigation": {},
-                            "contextPath": "/Travel/_Booking"
+                            "contextPath": "/Booking"
                         }
                     }
                 }

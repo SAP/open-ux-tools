@@ -1,0 +1,11 @@
+config:
+    project: 'lrop'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Enable initial load for list report table. Application in {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../../assertions/snapshots.ts:customAssert
+      config:
+          snapshot: initial-load
+          file: webapp/manifest.json
