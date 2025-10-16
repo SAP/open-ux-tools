@@ -34,11 +34,8 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
-        "view": "promptfoo view -y",
-        "test:demoRootConfig": "promptfoo eval --config test/integration/demos/root-config/config.yaml --max-concurrency 1",
-        "test:addPage": "promptfoo eval --config test/integration/demos/separate-configs/add-page.yaml",
-        "test:listFunc": "promptfoo eval --config test/integration/demos/separate-configs/list-functionalities.yaml",
-        "test:enableFcl": "promptfoo eval --config test/integration/demos/separate-configs/enable-fcl.yaml --output test/test.txt"
+        "view:promptfoo": "promptfoo view -y",
+        "test:promptfoo": "promptfoo eval --config test/integration/demos/root-config/config.yaml --max-concurrency 1 --repeat 3 --output reports/result.txt",
     },
     "files": [
         "LICENSE",
