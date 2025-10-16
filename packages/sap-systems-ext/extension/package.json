@@ -40,8 +40,7 @@
         "onCommand:sap.ux.tools.sapSystems.show",
         "onCommand:sap.ux.tools.sapSystems.launchAppGen"
     ],
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
@@ -67,7 +66,7 @@
                 {
                     "id": "open-ux-tools-sap-systems",
                     "title": "SAP Systems",
-                    "icon": "resources/icon-sap-fiori-tools.svg"
+                    "icon": "resources/icon-sidebar-plug-systems.svg"
                 }
             ]
         },
