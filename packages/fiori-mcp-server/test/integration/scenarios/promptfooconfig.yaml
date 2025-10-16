@@ -11,8 +11,7 @@ tests:
     - file://./pages/delete-page.yaml
     - file://./pages/add-first-lr-page.yaml
     # Controller extensions
-    - file://./controller-extension/add-op-extension.yaml
-    - file://./controller-extension/add-page-extension.yaml
+    - file://./controller-extension/add-extension.yaml
     # Properties
     - file://./properties/enable-fcl.yaml
     - file://./properties/disable-fcl.yaml
