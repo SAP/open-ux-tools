@@ -2,7 +2,11 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices } from '@sap-ux/inquirer-common';
+import {
+    searchChoices,
+    getRecursiveHierarchyQualifierForEntitySet,
+    findEntitySetByName
+} from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n';
@@ -285,6 +289,7 @@ function getTableLayoutQuestions(
                     templateType,
                     metadata,
                     odataVersion,
+                    isCapService,
                     prevAnswers?.mainEntity?.entitySetName,
                     prevAnswers?.tableType
                 );
@@ -312,7 +317,14 @@ function getTableLayoutQuestions(
                 breadcrumb: true,
                 mandatory: true
             },
-            default: '',
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                // Auto-populate qualifier from RecursiveHierarchy annotation if available
+                if (prevAnswers?.mainEntity?.entitySetName) {
+                    const entitySet = findEntitySetByName(metadata, prevAnswers.mainEntity.entitySetName);
+                    return entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : '';
+                }
+                return '';
+            },
             validate: (input: string) => {
                 if (!input) {
                     return t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning');

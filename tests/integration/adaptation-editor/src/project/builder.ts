@@ -1,12 +1,12 @@
 import { mkdir, readFile, rm, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import type { Manifest } from '@sap-ux/project-access';
 import { YamlDocument } from '@sap-ux/yaml';
 import template from './templates/manifest-fe-v2.json';
 import feV4ManifestTemplate from './templates/manifest-fe-v4.json';
 import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V4 } from './projects';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 
 export interface ProjectParameters {
     id: string;

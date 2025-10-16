@@ -3,7 +3,7 @@ import http from 'http';
 import { ConnectionError, TimeoutError } from '../error';
 import { prettyPrintTimeInMs } from '../../abap/message';
 import { redirectErrorHtml, redirectSuccessHtml } from '../static';
-import type { ABAPSystem } from './abap-system';
+import type { ABAPVirtualHostProvider } from './abap-virtual-host-provider';
 
 interface Redirect {
     server: http.Server;
@@ -20,7 +20,7 @@ export interface SetupRedirectOptions {
     resolve;
     reject;
     timeout: number;
-    backend: ABAPSystem;
+    backend: ABAPVirtualHostProvider;
     logger: Logger;
 }
 
@@ -46,7 +46,7 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
     };
 
     const timer = setTimeout(handleTimeout, timeout);
-    server = http.createServer((req, res) => {
+    server = http.createServer((req, res): void => {
         const reqUrl = new URL(req.url, `http://${req.headers.host}`);
         if (reqUrl.pathname === REDIRECT_PATH) {
             if (timer) {
@@ -55,10 +55,16 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
             const reentranceTicket = reqUrl.searchParams.get('reentrance-ticket')?.toString();
             if (reentranceTicket) {
                 logger.debug('Got reentrance ticket: ' + reentranceTicket);
-                res.writeHead(200, { 'Content-Type': 'text/html' });
-                res.end(Buffer.from(redirectSuccessHtml(backend.logoffUrl())));
+                backend
+                    .logoffUrl()
+                    .then((url) => {
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end(Buffer.from(redirectSuccessHtml(url)));
+                    })
+                    .catch(() => {});
                 server.close();
-                resolve({ reentranceTicket, apiUrl: backend.apiHostname() });
+                // return the backend for convienience
+                resolve({ reentranceTicket, backend });
             } else {
                 logger.error('Error getting reentrance ticket');
                 logger.debug(req);

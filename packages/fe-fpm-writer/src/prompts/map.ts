@@ -5,14 +5,16 @@ import {
     getTableBuildingBlockPrompts,
     getPageBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
-    getBuildingBlockTypePrompts
+    getBuildingBlockTypePrompts,
+    getRichTextEditorBuildingBlockPrompts
 } from '../building-block/prompts/questions';
 import type {
     ChartPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
     FilterBarPromptsAnswer,
-    BuildingBlockTypePromptsAnswer
+    BuildingBlockTypePromptsAnswer,
+    RichTextEditorPromptsAnswer
 } from '../building-block/prompts/questions';
 import { generateBuildingBlock, getSerializedFileContent } from '../building-block';
 
@@ -21,6 +23,7 @@ type AnswerMapping = {
     [PromptsType.Table]: TablePromptsAnswer;
     [PromptsType.Page]: PagePromptsAnswer;
     [PromptsType.FilterBar]: FilterBarPromptsAnswer;
+    [PromptsType.RichTextEditor]: RichTextEditorPromptsAnswer;
     [PromptsType.BuildingBlocks]: BuildingBlockTypePromptsAnswer;
 };
 
@@ -35,13 +38,15 @@ export type SupportedPrompts =
     | BasePrompt<PromptsType.Table>
     | BasePrompt<PromptsType.FilterBar>
     | BasePrompt<PromptsType.Page>
-    | BasePrompt<PromptsType.BuildingBlocks>;
+    | BasePrompt<PromptsType.BuildingBlocks>
+    | BasePrompt<PromptsType.RichTextEditor>;
 
 export type SupportedGeneratorPrompts =
     | BasePrompt<PromptsType.Chart>
     | BasePrompt<PromptsType.Table>
     | BasePrompt<PromptsType.Page>
-    | BasePrompt<PromptsType.FilterBar>;
+    | BasePrompt<PromptsType.FilterBar>
+    | BasePrompt<PromptsType.RichTextEditor>;
 
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
 
@@ -56,13 +61,15 @@ export const PromptsQuestionsMap: SupportedPromptsMap = {
     [PromptsType.Table]: getTableBuildingBlockPrompts,
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
     [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts,
-    [PromptsType.Page]: getPageBuildingBlockPrompts
+    [PromptsType.Page]: getPageBuildingBlockPrompts,
+    [PromptsType.RichTextEditor]: getRichTextEditorBuildingBlockPrompts
 };
 
 export const PromptsGeneratorsMap = {
     [PromptsType.Chart]: generateBuildingBlock,
     [PromptsType.Table]: generateBuildingBlock,
     [PromptsType.FilterBar]: generateBuildingBlock,
+    [PromptsType.RichTextEditor]: generateBuildingBlock,
     [PromptsType.Page]: generateBuildingBlock
 };
 
@@ -70,6 +77,7 @@ export const PromptsCodePreviewMap = {
     [PromptsType.Chart]: getSerializedFileContent,
     [PromptsType.Table]: getSerializedFileContent,
     [PromptsType.FilterBar]: getSerializedFileContent,
+    [PromptsType.RichTextEditor]: getSerializedFileContent,
     [PromptsType.Page]: getSerializedFileContent
 };
 
@@ -77,4 +85,5 @@ export type SupportedGeneratorAnswers =
     | TablePromptsAnswer
     | ChartPromptsAnswer
     | FilterBarPromptsAnswer
-    | PagePromptsAnswer;
+    | PagePromptsAnswer
+    | RichTextEditorPromptsAnswer;

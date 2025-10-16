@@ -1,5 +1,29 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.13
+
+### Patch Changes
+
+-   Updated dependencies [ccb5285]
+    -   @sap-ux/odata-vocabularies@0.4.17
+    -   @sap-ux/cds-annotation-parser@0.2.20
+
+## 0.6.12
+
+### Patch Changes
+
+-   376daf5: chore update `@sap/ux-cds-compiler-facade` dependency
+
+## 0.6.11
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/cds-annotation-parser@0.2.19
+    -   @sap-ux/odata-annotation-core@0.2.9
+    -   @sap-ux/odata-vocabularies@0.4.16
+
 ## 0.6.10
 
 ### Patch Changes

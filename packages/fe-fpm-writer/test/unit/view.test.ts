@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomView } from '../../src';
 import type { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';

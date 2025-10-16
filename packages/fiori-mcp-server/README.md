@@ -69,7 +69,7 @@ The following rules help guide the LLM to use the server correctly:
 - When creating sample data in CSV files, all primary keys and foreign keys MUST be in UUID format (e.g., `550e8400-e29b-41d4-a716-446655440001`).
 - When generating or modifying the SAP Fiori elements application on top of the CAP service use the Fiori MCP server if available.
 - When attempting to modify the SAP Fiori elements application like adding columns you must not use the screen personalization but instead modify the code of the project, before this first check whether an MCP server provides a suitable function.
-- When previewing the SAP Fiori elements application use the most specific script for the app in the `package.json`.
+- When previewing the SAP Fiori elements application use the most specific `npm run watch-*` script for the app in the `package.json`.
 ```
 
 Add these rules to your existing global or project-specific [`AGENTS.md`](https://agents.md/) (specifics may vary based on respective MCP client).
@@ -77,9 +77,9 @@ Add these rules to your existing global or project-specific [`AGENTS.md`](https:
 ## [Available Tools](#available-tools)
 
 #### `search_docs`
-Searches Fiori Elements, Annotations, UI5, Fiori tools documentation for the given query.
-Note: the results are based on the most recent indexed version of UI5 documentation
+Searches SAP Fiori elements, Annotations, UI5, SAP Fiori tools documentation for the given query.
 
+Note: the results are based on the most recent indexed version of UI5 documentation
 
 #### `list_fiori_apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.

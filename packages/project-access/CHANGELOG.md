@@ -1,5 +1,28 @@
 # @sap-ux/project-access
 
+## 1.32.4
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+
+## 1.32.3
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/i18n@0.3.4
+
+## 1.32.2
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+
 ## 1.32.1
 
 ### Patch Changes

@@ -1,5 +1,137 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.91
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+    -   @sap-ux/adp-tooling@0.16.4
+    -   @sap-ux/flp-config-inquirer@0.4.39
+
+## 0.1.90
+
+### Patch Changes
+
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+    -   @sap-ux/flp-config-inquirer@0.4.38
+
+## 0.1.89
+
+### Patch Changes
+
+-   ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
+
+## 0.1.88
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+    -   @sap-ux/flp-config-inquirer@0.4.37
+
+## 0.1.87
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/adp-tooling@0.16.1
+    -   @sap-ux/flp-config-inquirer@0.4.36
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 0.1.86
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/adp-tooling@0.16.0
+    -   @sap-ux/flp-config-inquirer@0.4.35
+
+## 0.1.85
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+    -   @sap-ux/flp-config-inquirer@0.4.34
+
+## 0.1.84
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+-   @sap-ux/inquirer-common@0.7.50
+-   @sap-ux/flp-config-inquirer@0.4.33
+
+## 0.1.83
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.36
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/flp-config-inquirer@0.4.32
+-   @sap-ux/axios-extension@1.22.10
+-   @sap-ux/fiori-generator-shared@0.13.22
+-   @sap-ux/system-access@0.6.19
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.1.82
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/flp-config-inquirer@0.4.31
+    -   @sap-ux/adp-tooling@0.15.35
+
+## 0.1.81
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.34
+-   @sap-ux/flp-config-inquirer@0.4.30
+-   @sap-ux/fiori-generator-shared@0.13.21
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.1.80
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+    -   @sap-ux/flp-config-inquirer@0.4.29
+
+## 0.1.79
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.32
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/flp-config-inquirer@0.4.28
+-   @sap-ux/axios-extension@1.22.9
+-   @sap-ux/fiori-generator-shared@0.13.19
+-   @sap-ux/system-access@0.6.18
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.1.78
+
+### Patch Changes
+
+-   487296c: fix: Wrong navigation between steps in FLP Configuration generator for ADP
+
 ## 0.1.77
 
 ### Patch Changes

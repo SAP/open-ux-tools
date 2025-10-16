@@ -1,10 +1,10 @@
 import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 import { generateAppGenInfo, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types';
 import { DEFAULT_CAP_HOST } from '../types';
-import { getLaunchText, getReadMeDataSourceLabel, isBTPHosted, t } from '../utils';
+import { getLaunchText, getReadMeDataSourceLabel, isAbapCloud, t } from '../utils';
 
 /**
  * Writes app related information files - README.md & .appGenInfo.json.
@@ -36,7 +36,7 @@ export async function writeAppGenInfoFiles(
 
     const datasourceLabel = getReadMeDataSourceLabel(
         service.source,
-        isBTPHosted(service.connectedSystem),
+        isAbapCloud(service.connectedSystem),
         service.apiHubConfig?.apiHubType
     );
 

@@ -1,4 +1,4 @@
-import { realpathSync } from 'fs';
+import { realpathSync } from 'node:fs';
 
 let toUpperCase: boolean;
 

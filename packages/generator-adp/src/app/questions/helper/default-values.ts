@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 import { validateUI5VersionExists } from '@sap-ux/adp-tooling';
 

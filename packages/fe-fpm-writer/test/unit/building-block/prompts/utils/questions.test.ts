@@ -3,7 +3,7 @@ import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import {
@@ -16,11 +16,13 @@ import {
     getCAPServicePrompt,
     transformChoices,
     getEntityPrompt,
+    getTargetPropertiesPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentPathPrompt
 } from '../../../../../src/building-block/prompts/utils/questions';
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
-import { BuildingBlockType } from '../../../../../src';
+import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
+import * as promptHelpers from '../../../../../src/building-block/prompts/utils/prompt-helpers';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -41,6 +43,11 @@ jest.mock('@sap-ux/project-access', () => ({
     getCapServiceName: jest.fn().mockResolvedValue('mappedMainServiceName')
 }));
 
+jest.mock('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
+    ...jest.requireActual('../../../../../src/building-block/prompts/utils/prompt-helpers'),
+    getEntitySetOptions: jest.fn()
+}));
+
 describe('utils - questions', () => {
     let project: Project;
     let capProject: Project;
@@ -59,6 +66,12 @@ describe('utils - questions', () => {
         };
     });
 
+    beforeEach(() => {
+        (promptHelpers.getEntitySetOptions as jest.Mock).mockImplementation(
+            jest.requireActual('../../../../../src/building-block/prompts/utils/prompt-helpers').getEntitySetOptions
+        );
+    });
+
     test('entityPrompt', async () => {
         let entityPrompt = getEntityPrompt(context, {
             message: 'entity'
@@ -73,6 +86,149 @@ describe('utils - questions', () => {
             project: {} as unknown as Project
         });
         await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrow();
+    });
+
+    test('entityPrompt returns page context entity set for absolute binding', async () => {
+        const contextWithPageContextEntitySet = {
+            ...context,
+            options: {
+                pageContextEntitySet: 'I_CustomerContactOP'
+            }
+        };
+        const entityPrompt = getEntityPrompt(contextWithPageContextEntitySet, { message: 'entity' });
+        const answers = {
+            buildingBlockData: {
+                metaPath: {
+                    bindingContextType: bindingContextAbsolute
+                }
+            }
+        };
+        const choices = await (entityPrompt.choices as Choices)(answers);
+        expect(choices).toEqual(['I_CustomerContactOP']);
+    });
+
+    test('entityPrompt returns navigation properties for relative binding', async () => {
+        const contextWithPageContextEntitySet = {
+            ...context,
+            options: {
+                pageContextEntitySet: 'I_CustomerContactOP'
+            }
+        };
+        const entityPrompt = getEntityPrompt(contextWithPageContextEntitySet, { message: 'entity' });
+        const answers = {
+            buildingBlockData: {
+                metaPath: {
+                    bindingContextType: bindingContextRelative
+                }
+            }
+        };
+        const choices = await (entityPrompt.choices as Choices)(answers);
+        expect(choices).toEqual([
+            'to_CntctPersnDeptValueHelp',
+            'to_CntctPersnFuncValueHelp',
+            'to_CustomerToBusinessPartner'
+        ]);
+    });
+
+    test('getBindingContextTypePrompt uses choices passed in properties and overwrites default choices', async () => {
+        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+
+        const bindingContextPrompt = getBindingContextTypePrompt({
+            message: 'bindingContext',
+            choices: async () => {
+                return [
+                    { name: 'Absolute', value: bindingContextAbsolute },
+                    { name: 'Relative', value: bindingContextRelative, disabled: true }
+                ];
+            }
+        });
+
+        const choicesFn = bindingContextPrompt.choices as Choices;
+        expect(choicesFn).toBeDefined();
+
+        const choices = await choicesFn();
+        expect(choices).toEqual([
+            { name: 'Absolute', value: bindingContextAbsolute },
+            { name: 'Relative', value: bindingContextRelative, disabled: true }
+        ]);
+    });
+
+    test('entityPrompt fallback to empty array when no options returned', async () => {
+        const contextWithPageContextEntitySet = {
+            ...context,
+            options: {
+                pageContextEntitySet: 'I_CustomerContactOP'
+            }
+        };
+
+        // return empty array
+        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+        const entityPrompt = getEntityPrompt(contextWithPageContextEntitySet, { message: 'entity' });
+        const answers = {
+            buildingBlockData: {
+                metaPath: {
+                    bindingContextType: bindingContextRelative
+                }
+            }
+        };
+        const choices = await (entityPrompt.choices as Choices)(answers);
+        expect(choices).toEqual([]);
+    });
+
+    test('getTargetPropertiesPrompt returns all properties for absolute binding', async () => {
+        const contextWithPageContextEntitySet = {
+            ...context,
+            options: {
+                pageContextEntitySet: 'I_CustomerContactOP'
+            }
+        };
+        const entityPrompt = getTargetPropertiesPrompt(contextWithPageContextEntitySet, { message: 'entity' });
+        const answers = {
+            buildingBlockData: {
+                metaPath: {
+                    bindingContextType: bindingContextAbsolute,
+                    entitySet: 'I_CustomerContactOP'
+                }
+            }
+        };
+        const choices = await (entityPrompt.choices as Choices)(answers);
+        expect(choices).toEqual([
+            'BusinessPartnerCompany',
+            'BusinessPartnerPerson',
+            'ContactPersonDepartment',
+            'ContactPersonDepartmentName',
+            'ContactPersonFunction',
+            'ContactPersonFunctionName',
+            'Customer',
+            'EmailAddress',
+            'FirstName',
+            'FullName',
+            'LastName',
+            'MobilePhoneNumber',
+            'PartnerUUID',
+            'PhoneNumber',
+            'RelationshipNumber'
+        ]);
+    });
+
+    test('getTargetPropertiesPrompt returns properties for navigation entity set with relative binding', async () => {
+        const contextWithPageContextEntitySet = {
+            ...context,
+            options: {
+                pageContextEntitySet: 'I_CustomerContactOP'
+            }
+        };
+        const entityPrompt = getTargetPropertiesPrompt(contextWithPageContextEntitySet, { message: 'entity' });
+        const answers = {
+            buildingBlockData: {
+                metaPath: {
+                    bindingContextType: bindingContextRelative,
+                    entitySet: 'to_CntctPersnDeptValueHelp'
+                }
+            }
+        };
+        const choices = await (entityPrompt.choices as Choices)(answers);
+        expect(choices).toEqual(['ContactPersonDepartment', 'ContactPersonDepartmentName', 'Language']);
     });
 
     test('transformChoices', async () => {

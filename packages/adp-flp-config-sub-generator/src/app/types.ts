@@ -40,4 +40,5 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
 
 export interface State {
     provider?: AbapServiceProvider;
+    credentialsPrompted?: boolean;
 }

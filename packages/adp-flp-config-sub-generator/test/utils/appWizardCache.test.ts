@@ -10,6 +10,13 @@ import {
 
 const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
 
+// Removes the jest warning about an open handle (PIPEWRAP), which happens because
+// stdin keeps the stream open during tests.
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
 describe('appWizardCache', () => {
     let logger: any;
 
@@ -26,7 +33,7 @@ describe('appWizardCache', () => {
 
             initAppWizardCache(logger, appWizard);
 
-            expect(appWizard[ADP_FLP_CONFIG_CACHE]).toEqual({});
+            expect(appWizard[ADP_FLP_CONFIG_CACHE]).toEqual({ credentialsPrompted: false });
             expect(logger.debug).toHaveBeenCalledWith('AppWizard based cache initialized.');
         });
 

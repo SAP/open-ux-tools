@@ -1,8 +1,8 @@
 import type { Editor, FileMap } from 'mem-fs-editor';
-import { basename, dirname, extname, join, sep, posix } from 'path';
+import { basename, dirname, extname, join, sep, posix } from 'node:path';
 import { default as find, type FindError } from 'findit2';
 import { fileExists } from './file-access';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).

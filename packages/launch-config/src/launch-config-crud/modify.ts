@@ -1,12 +1,12 @@
 import type { Package } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { Arguments } from '../types';
 import { getIndexOfArgument } from './utils';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 
 const RUN_SCRIPT = 'run-script';
 
