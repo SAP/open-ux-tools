@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { prompt, inject } from 'prompts';
 import * as prompts from 'prompts';
 import type { PromptObject } from 'prompts';
@@ -94,7 +94,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             // First select destination or url
             expect(destinationOrUrlPrompt.name).toEqual('select');
             expect(destinationOrUrlPrompt.type()).toEqual('select');
-            expect(destinationOrUrlPrompt.message).toContain('SmartLinks configuration source {{-type}} {{-file}}');
+            expect(destinationOrUrlPrompt.message).toContain('SmartLinks configuration source ');
             expect(destinationOrUrlPrompt.choices).toMatchObject([
                 { title: 'Enter destination', value: 'destination' },
                 { title: 'Enter url', value: 'url' }

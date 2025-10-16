@@ -1,4 +1,4 @@
-import { basename, dirname, isAbsolute, join, parse, sep } from 'path';
+import { basename, dirname, isAbsolute, join, parse, sep } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type {
     AdaptationResults,

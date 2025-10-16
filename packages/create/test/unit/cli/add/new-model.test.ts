@@ -1,7 +1,7 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as projectAccess from '@sap-ux/project-access';

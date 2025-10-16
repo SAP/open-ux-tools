@@ -15,7 +15,7 @@ import * as ui5ApplicationInquirer from '@sap-ux/ui5-application-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import * as ui5Info from '@sap-ux/ui5-info';
 import 'jest-extended';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import {
     createUI5ApplicationPromptOptions,

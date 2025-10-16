@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'node:path';
 import type { CapProjectType, WorkspaceFolder } from '../../src';
 import {
     findAllApps,

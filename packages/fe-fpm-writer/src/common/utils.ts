@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
-import os from 'os';
-import { join } from 'path';
+import os from 'node:os';
+import { join } from 'node:path';
 import { coerce, minor } from 'semver';
 import { getWebappPath } from '@sap-ux/project-access';
 import { getTemplatePath } from '../templates';

@@ -1,5 +1,48 @@
 # @sap-ux/annotation-generator
 
+## 0.3.69
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.7.7
+
+## 0.3.68
+
+### Patch Changes
+
+-   Updated dependencies [1443680]
+    -   @sap-ux/fiori-annotation-api@0.7.6
+
+## 0.3.67
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/fiori-annotation-api@0.7.5
+
+## 0.3.66
+
+### Patch Changes
+
+-   Updated dependencies [376daf5]
+    -   @sap-ux/fiori-annotation-api@0.7.4
+
+## 0.3.65
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-annotation-api@0.7.3
+    -   @sap-ux/project-access@1.32.3
+
+## 0.3.64
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/fiori-annotation-api@0.7.2
+
 ## 0.3.63
 
 ### Patch Changes

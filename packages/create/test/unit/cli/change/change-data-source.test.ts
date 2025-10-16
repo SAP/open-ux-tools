@@ -10,8 +10,8 @@ import * as validations from '../../../../src/validation/validation';
 import * as adp from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const appManifest = readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.json'), 'utf-8');
 const descriptorVariant = JSON.parse(

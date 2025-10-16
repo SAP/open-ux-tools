@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';

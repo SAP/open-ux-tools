@@ -1,7 +1,7 @@
 import '@sap-ux/jest-file-matchers';
-import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'fs';
+import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import 'jest-extended';
-import { join } from 'path';
+import { join } from 'node:path';
 import yeomanTest from 'yeoman-test';
 import { FioriAppGeneratorHeadless } from '../../../src/app-headless';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';

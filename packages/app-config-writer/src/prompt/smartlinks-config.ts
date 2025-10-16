@@ -46,7 +46,7 @@ const addAppStudioQuestions = (questions: PromptObject[], target?: DeployTarget)
     questions.push({
         name: 'select',
         type: (prev) => (!prev ? 'select' : null),
-        message: t('questions.target'),
+        message: t('questions.target', { type: '', file: '' }),
         choices: [
             { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
             { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }

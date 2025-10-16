@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateAppGenInfo } from '../../src/app-gen-info';

@@ -5,7 +5,7 @@ import {
     getInstalledExtensions,
     getProcessVersions
 } from '../../src/checks/get-installed';
-import fs from 'fs';
+import fs from 'node:fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getLogger } from '../../src/logger';
 import type { Extension } from 'vscode';

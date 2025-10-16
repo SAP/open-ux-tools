@@ -1,5 +1,5 @@
 import { readFile } from 'fs-extra';
-import path, { dirname, join } from 'path';
+import path, { dirname, join } from 'node:path';
 import {
     getAnnotationNamespaces,
     removeAnnotationsFromCDSFiles,

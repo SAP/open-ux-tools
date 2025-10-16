@@ -1,5 +1,42 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.14
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/fiori-generator-shared@0.13.23
+
+## 0.12.13
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/fiori-generator-shared@0.13.22
+
+## 0.12.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.21
+
+## 0.12.11
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/yaml@0.17.1
+
+## 0.12.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/fiori-generator-shared@0.13.19
+
 ## 0.12.9
 
 ### Patch Changes

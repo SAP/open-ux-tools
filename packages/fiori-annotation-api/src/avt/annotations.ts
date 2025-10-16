@@ -166,6 +166,7 @@ function mergeAnnotation(
         target.value = source.value;
         target.origin = source.origin;
     } else if (source.collection) {
+        target.origin = source.origin;
         target.collection = source.collection;
         target.collectionOrigins = source.collectionOrigins;
     }
@@ -487,7 +488,7 @@ function createExpression(
         case 'Int':
             return {
                 type: 'Int',
-                Int: parseInt(value, 10)
+                Int: Number.parseInt(value, 10)
             };
         case 'Path':
             return {

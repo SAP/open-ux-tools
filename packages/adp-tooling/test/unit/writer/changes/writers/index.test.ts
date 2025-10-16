@@ -179,7 +179,7 @@ describe('ComponentUsagesWriter', () => {
                         name: mockData.component.name,
                         lazy: true,
                         settings: { key: 'value' },
-                        data: { key: 'value' }
+                        componentData: { key: 'value' }
                     }
                 }
             }),

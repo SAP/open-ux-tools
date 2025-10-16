@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import { getAppType, getWebappPath } from '@sap-ux/project-access';
 import { type DescriptorVariantContent, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';

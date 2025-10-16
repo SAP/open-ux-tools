@@ -1,0 +1,19 @@
+---
+specVersion: "2.2"
+type: application
+metadata:
+  name: <%= module %>
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      beforeTask: escapeNonAsciiCharacters
+      configuration:
+        appHostId: <%= appHostId %>
+        appName: <%= appName %>
+        appVersion: <%= appVersion %>
+        moduleName: <%= module %>
+        org: <%= org %>
+        space: <%= space %>
+        html5RepoRuntime: <%= html5RepoRuntime %>
+        sapCloudService: <%= sapCloudService %>
+        serviceInstanceName: <%= instanceName %>

@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';

@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as memfs from 'memfs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import yeomanTest from 'yeoman-test';
@@ -16,7 +16,7 @@ import { assertInboundsHasConfig } from './utils';
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');

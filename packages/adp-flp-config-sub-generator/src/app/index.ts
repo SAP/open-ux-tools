@@ -1,7 +1,7 @@
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
-import path, { join } from 'path';
+import path, { join } from 'node:path';
 import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
 import {
     getVariant,
@@ -388,10 +388,10 @@ export default class AdpFlpConfigGenerator extends Generator {
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
             {
-                name: t('yuiNavSteps.tileSettingsName', {
+                name: t('yuiNavSteps.tileSettingsName'),
+                description: t('yuiNavSteps.tileSettingsDescr', {
                     projectName: path.basename(this.projectRootPath)
-                }),
-                description: ''
+                })
             }
         ]);
     }

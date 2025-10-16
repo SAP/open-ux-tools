@@ -1,5 +1,5 @@
-import { relative } from 'path';
-import { fileURLToPath } from 'url';
+import { relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { toReferenceUri } from '@sap-ux/project-access';
@@ -472,7 +472,7 @@ export class CDSWriter implements ChangeHandler {
         const [astNode, parent] = reversePath;
         const segments = change.pointer.split('/');
         const lastIndex = segments.pop() ?? '';
-        const index = parseInt(lastIndex, 10);
+        const index = Number.parseInt(lastIndex, 10);
         if (Number.isNaN(index) || astNode?.type !== ANNOTATION_GROUP_TYPE || parent?.type !== TARGET_TYPE) {
             return;
         }
@@ -513,7 +513,7 @@ export class CDSWriter implements ChangeHandler {
         }
         const targetPointer = change.pointer.split('/').slice(0, 3).join('/');
 
-        const assignmentIndex = parseInt(lastIndex, 10);
+        const assignmentIndex = Number.parseInt(lastIndex, 10);
         if (Number.isNaN(assignmentIndex)) {
             return;
         }
@@ -985,7 +985,7 @@ function deleteValue(
             throw new ApiError(`${pointer} is not pointing to a collection element.`);
         }
         const content = getContainerContent(parent, comments, tokens);
-        const index = parseInt(lastIndex, 10);
+        const index = Number.parseInt(lastIndex, 10);
         const { startContentIndex } = findContentIndices(content, index);
         deleteBlock(edits, content, startContentIndex);
     } else if (
@@ -996,7 +996,7 @@ function deleteValue(
             throw new ApiError(`${pointer} is not pointing to a record property.`);
         }
         const content = getContainerContent(parent, comments, tokens);
-        const index = parseInt(lastIndex, 10);
+        const index = Number.parseInt(lastIndex, 10);
         const { startContentIndex } = findContentIndices(content, index, index, astNode.type);
         deleteBlock(edits, content, startContentIndex);
     } else if (parent.type === ANNOTATION_TYPE || parent.type === RECORD_PROPERTY_TYPE) {
@@ -1211,7 +1211,7 @@ function createElementRanges(document: CDSDocument, tokens: CompilerToken[], poi
         const segments = pointer.split('/');
         // remove /items/<index> suffix
         const containerPath = segments.slice(0, -2).join('/');
-        const index = parseInt(segments.slice(-1)[0], 10);
+        const index = Number.parseInt(segments.slice(-1)[0], 10);
         const list = acc.get(containerPath);
         if (list) {
             list.push(index);

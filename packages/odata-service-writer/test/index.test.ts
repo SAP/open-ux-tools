@@ -1,7 +1,7 @@
 import type { OdataService } from '../src/types';
 import { OdataVersion, ServiceType } from '../src/types';
 import { generate } from '../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
