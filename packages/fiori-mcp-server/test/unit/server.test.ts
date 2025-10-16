@@ -267,6 +267,31 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('get_fiori_rules', async () => {
+            const getFioriRulesSpy = jest.spyOn(tools, 'getFioriRules').mockReturnValue('# Rules for Fiori...');
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'get_fiori_rules',
+                    arguments: {}
+                }
+            });
+            expect(getFioriRulesSpy).toHaveBeenCalledTimes(1);
+            expect(result.content).toEqual([
+                {
+                    text: '# Rules for Fiori...',
+                    type: 'text'
+                }
+            ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'get_fiori_rules',
+                { tool: 'get_fiori_rules', functionalityId: undefined },
+                undefined
+            );
+        });
+
         test('Unknown tool', async () => {
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
