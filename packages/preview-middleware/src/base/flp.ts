@@ -1075,8 +1075,7 @@ export class FlpSandbox {
             if (typeof i18nConfig === 'string') {
                 i18nPath = i18nConfig;
             } else if (typeof i18nConfig === 'object' && i18nConfig !== null && 'bundleUrl' in i18nConfig) {
-                const { bundleUrl } = i18nConfig;
-                i18nPath = bundleUrl;
+                const { bundleUrl: i18nPath } = i18nConfig;
                 supportedLocales = i18nConfig.supportedLocales ?? [];
                 fallbackLocale = i18nConfig.fallbackLocale;
             } else {
