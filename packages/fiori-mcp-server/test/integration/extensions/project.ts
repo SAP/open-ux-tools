@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import { TestSuite, TestCase } from 'promptfoo';
+import { SNAPSHOTS_FOLDER_PATH } from '../types';
 
 interface HookContext {
     suite?: TestSuite;
@@ -13,11 +14,21 @@ interface TestProjectData {
     path: string;
 }
 
+const PROJECT_VARIABLE_NAME = 'project';
+
+interface TestConfigSetupFiles {
+    source: string;
+    target: string;
+}
+
+interface TestConfig {
+    [PROJECT_VARIABLE_NAME]: string;
+    setupFiles?: TestConfigSetupFiles[];
+}
+
 export enum ProjectName {
     lrop = 'lrop'
 }
-
-const PROJECT_VARIABLE_NAME = 'project';
 
 // Currently single EDMX project, but in future it also can contain other test projects and applications
 const TEST_PROJECTS: { [key: string]: TestProjectData } = {
@@ -29,14 +40,14 @@ const TEST_PROJECTS: { [key: string]: TestProjectData } = {
 };
 
 export async function setup(hookName: string, context: HookContext) {
+    const config =
+        typeof context.test === 'object' && 'config' in context.test ? (context.test.config as TestConfig) : undefined;
     let defaultVars = typeof context.test === 'object' ? context.test.vars : undefined;
     if (!defaultVars) {
         defaultVars = typeof context.suite?.defaultTest === 'object' ? context.suite.defaultTest.vars : undefined;
     }
     const projectName =
-        defaultVars && PROJECT_VARIABLE_NAME in defaultVars
-            ? (defaultVars[PROJECT_VARIABLE_NAME] as ProjectName)
-            : undefined;
+        config && PROJECT_VARIABLE_NAME in config ? (config[PROJECT_VARIABLE_NAME] as ProjectName) : undefined;
     if (!projectName || !(projectName in TEST_PROJECTS) || !defaultVars) {
         return;
     }
@@ -52,7 +63,7 @@ export async function setup(hookName: string, context: HookContext) {
         // }
         case 'beforeEach': {
             // Properate copy project before running test
-            copyFolder(project.originalPath, project.path);
+            copyProject(project.originalPath, project.path, config?.setupFiles);
             break;
         }
     }
@@ -64,6 +75,17 @@ function getProjectPath(name: ProjectName): string {
 
 function getProjectOriginalPath(name: ProjectName): string {
     return join(__dirname, `../projects/original`, name);
+}
+
+function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFiles[] = []): void {
+    // Copy whole project
+    copyFolder(source, dest);
+    // Overwrite files with passed setup files
+    for (const setupFile of setupFiles) {
+        const setupFilePath = join(SNAPSHOTS_FOLDER_PATH, setupFile.source);
+        const targetFilePath = join(dest, setupFile.target);
+        fs.copyFileSync(setupFilePath, targetFilePath);
+    }
 }
 
 /**

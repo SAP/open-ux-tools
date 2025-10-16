@@ -6,10 +6,10 @@ config:
           target: webapp/manifest.json
 vars:
     appPath: '{{PROJECT_PATH}}'
-    query: 'Add page with entity Booking in application with appPath: {{appPath}}'
+    query: 'Add list report page with entity Booking in application with appPath: {{appPath}}'
 assert:
     - type: javascript
       value: file://../../assertions/snapshots.ts:customAssert
       config:
           file: webapp/manifest.json
-          snapshot: add-first-page
+          snapshot: add-first-lr-page

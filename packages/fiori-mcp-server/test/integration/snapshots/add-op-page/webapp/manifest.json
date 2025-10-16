@@ -93,9 +93,9 @@
                     "target": "TravelObjectPage"
                 },
                 {
-                    "name": "BookingObjectPage",
-                    "pattern": "Booking({BookingKey}):?query:",
-                    "target": "BookingObjectPage"
+                    "name": "Travel__BookingObjectPage",
+                    "pattern": "Travel({TravelKey})/_Booking({_BookingKey}):?query:",
+                    "target": "Travel__BookingObjectPage"
                 }
             ],
             "targets": {
@@ -110,11 +110,6 @@
                                     "detail": {
                                         "route": "TravelObjectPage"
                                     }
-                                },
-                                "Booking": {
-                                    "detail": {
-                                        "route": "BookingObjectPage"
-                                    }
                                 }
                             },
                             "contextPath": "/Travel"
@@ -128,18 +123,24 @@
                     "options": {
                         "settings": {
                             "contextPath": "/Travel",
-                            "navigation": {}
+                            "navigation": {
+                                "_Booking": {
+                                    "detail": {
+                                        "route": "Travel__BookingObjectPage"
+                                    }
+                                }
+                            }
                         }
                     }
                 },
-                "BookingObjectPage": {
+                "Travel__BookingObjectPage": {
                     "type": "Component",
-                    "id": "BookingObjectPage",
+                    "id": "Travel__BookingObjectPage",
                     "name": "sap.fe.templates.ObjectPage",
                     "options": {
                         "settings": {
                             "navigation": {},
-                            "contextPath": "/Booking"
+                            "contextPath": "/Travel/_Booking"
                         }
                     }
                 }

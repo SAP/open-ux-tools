@@ -2,7 +2,7 @@ config:
     project: 'lrop'
 vars:
     appPath: '{{PROJECT_PATH}}'
-    query: 'Add Object page to BookingObjectPage in application with appPath: {{appPath}}'
+    query: 'Add object page to BookingObjectPage in application with appPath: {{appPath}}'
 assert:
     - type: javascript
       value: file://../../assertions/snapshots.ts:customAssert

@@ -9,7 +9,7 @@ tests:
     - file://./pages/add-op-page.yaml
     - file://./pages/add-cp-page.yaml
     - file://./pages/delete-page.yaml
-    - file://./pages/add-first-page.yaml
+    - file://./pages/add-first-lr-page.yaml
     # Properties
     - file://./properties/enable-fcl.yaml
     - file://./properties/disable-fcl.yaml
