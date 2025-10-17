@@ -5,7 +5,7 @@ vars:
     query: 'Add object page to parent page BookingObjectPage. Application in {{appPath}}'
 assert:
     - type: javascript
-      value: file://../assertions/snapshots.ts:customAssert
+      value: file://../assertions/snapshots.ts:validate
       config:
           file: webapp/manifest.json
           snapshot: add-op-page

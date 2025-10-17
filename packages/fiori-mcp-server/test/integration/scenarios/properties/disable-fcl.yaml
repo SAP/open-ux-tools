@@ -9,7 +9,7 @@ vars:
     query: 'Disable FCL. Application in {{appPath}}'
 assert:
   - type: javascript
-    value: file://../assertions/snapshots.ts:customAssert
+    value: file://../assertions/snapshots.ts:validate
     config:
       snapshot: fcl-disable
       file: webapp/manifest.json

@@ -5,7 +5,7 @@ vars:
     query: 'Add Custom page to BookingObjectPage witn name dummy in application with appPath: {{appPath}}'
 assert:
     - type: javascript
-      value: file://../assertions/snapshots.ts:customAssert
+      value: file://../assertions/snapshots.ts:validate
       config:
           file: webapp/manifest.json
           snapshot: add-cp-page

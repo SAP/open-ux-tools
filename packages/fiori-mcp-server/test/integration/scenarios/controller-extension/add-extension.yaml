@@ -5,7 +5,7 @@ vars:
     query: 'Add controller extension for TravelObjectPage, use name dummy. Application in {{appPath}}'
 assert:
     - type: javascript
-      value: file://../assertions/snapshots.ts:customAssert
+      value: file://../assertions/snapshots.ts:validate
       config:
           snapshot: add-page-extension
           file: webapp/manifest.json
