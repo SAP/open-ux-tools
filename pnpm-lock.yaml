@@ -383,7 +383,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@types/inquirer':
         specifier: 8.2.6
@@ -457,7 +457,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/abap-deploy-config-writer:
     dependencies:
@@ -582,7 +582,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/adp-tooling:
     dependencies:
@@ -628,9 +628,15 @@ importers:
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
+      '@sap/cf-tools':
+        specifier: 0.8.1
+        version: 0.8.1
       adm-zip:
         specifier: 0.5.10
         version: 0.5.10
+      axios:
+        specifier: 1.12.2
+        version: 1.12.2
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -638,8 +644,11 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -668,6 +677,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1065,7 +1077,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -1083,8 +1095,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/cf-deploy-config-sub-generator:
     dependencies:
@@ -1163,7 +1175,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/cf-deploy-config-writer:
     dependencies:
@@ -1605,7 +1617,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/deploy-tooling:
     dependencies:
@@ -1954,8 +1966,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -2028,19 +2040,25 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/fiori-docs-embeddings:
     devDependencies:
       '@lancedb/lancedb':
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@types/node':
         specifier: 20.0.0
         version: 20.0.0
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
+      fast-xml-parser:
+        specifier: ^4.3.4
+        version: 4.4.1
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -2242,6 +2260,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2390,8 +2411,8 @@ importers:
         specifier: 4.14.202
         version: 4.14.202
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/flp-config-sub-generator:
     dependencies:
@@ -2426,8 +2447,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
@@ -2479,7 +2500,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/generator-adp:
     dependencies:
@@ -2573,7 +2594,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/guided-answers-helper: {}
 
@@ -2972,7 +2993,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -3425,8 +3446,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
@@ -3478,7 +3499,7 @@ importers:
         version: 10.0.0
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -3496,10 +3517,10 @@ importers:
         version: 4.4.0
       yeoman-environment:
         specifier: 3.8.0
-        version: 3.8.0(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
+        version: 3.8.0(@types/node@18.11.9)(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/serve-static-middleware:
     dependencies:
@@ -3637,12 +3658,6 @@ importers:
       memfs:
         specifier: 3.4.13
         version: 3.4.13
-      ts-jest:
-        specifier: 29.4.1
-        version: 29.4.1(@babel/core@7.28.0)(babel-jest@30.0.1)(esbuild@0.25.6)(jest@30.1.1)(typescript@5.9.2)
-      ts-node:
-        specifier: 10.9.2
-        version: 10.9.2(@types/node@20.0.0)(typescript@5.9.2)
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
@@ -3956,8 +3971,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       jest-extended:
         specifier: 6.0.0
         version: 6.0.0(jest@30.1.1)(typescript@5.9.2)
@@ -3969,7 +3984,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/ui-service-sub-generator:
     dependencies:
@@ -4054,10 +4069,10 @@ importers:
         version: 5.0.5
       yeoman-environment:
         specifier: 3.8.0
-        version: 3.8.0(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
+        version: 3.8.0(@types/node@18.11.9)(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/ui5-application-inquirer:
     dependencies:
@@ -4078,7 +4093,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -4105,8 +4120,8 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/ui5-application-writer:
     dependencies:
@@ -4238,7 +4253,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@types/inquirer':
         specifier: 8.2.6
@@ -4247,8 +4262,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/ui5-library-reference-inquirer:
     dependencies:
@@ -4269,8 +4284,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/ui5-library-reference-sub-generator:
     dependencies:
@@ -4334,7 +4349,7 @@ importers:
         version: 3.0.7
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/ui5-library-reference-writer:
     dependencies:
@@ -4426,7 +4441,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
   packages/ui5-library-writer:
     dependencies:
@@ -4736,14 +4751,14 @@ packages:
     resolution: {integrity: sha512-TrRLIoSQVzfAJX9H1JeFjzAoDGcoK1IYX1UImfceTZpsyYfWr09Ss1aHW1y5TrrR3iq6RZLBwJ3E24uwPhwahw==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: false
 
   /@azure/abort-controller@2.0.0:
     resolution: {integrity: sha512-RP/mR/WJchR+g+nQFJGOec+nzeN/VvjlwbinccoqfhTsTHbb8X5+mLDp48kHT0ueyum0BNSwGm0kX0UZuIqTGg==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: false
 
   /@azure/core-auth@1.6.0:
@@ -4752,7 +4767,7 @@ packages:
     dependencies:
       '@azure/abort-controller': 2.0.0
       '@azure/core-util': 1.2.0
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: false
 
   /@azure/core-rest-pipeline@1.10.1:
@@ -4767,7 +4782,7 @@ packages:
       form-data: 4.0.4
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
-      tslib: 2.6.3
+      tslib: 2.8.1
       uuid: 8.3.2
     transitivePeerDependencies:
       - supports-color
@@ -4777,7 +4792,7 @@ packages:
     resolution: {integrity: sha512-I5CGMoLtX+pI17ZdiFJZgxMJApsK6jjfm85hpgp3oazCdq5Wxgh4wMr7ge/TTWW1B5WBuvIOI1fMU/FrOAMKrw==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: false
 
   /@azure/core-util@1.2.0:
@@ -4785,14 +4800,14 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@azure/abort-controller': 1.1.0
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: false
 
   /@azure/logger@1.0.4:
     resolution: {integrity: sha512-ustrPY8MryhloQj7OWGe+HrYx+aoiOxzbXTtgblbV3xwCqpzUK36phH3XNHQKj3EPonyFUuDTfR3qFhTEAuZEg==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: false
 
   /@azure/opentelemetry-instrumentation-azure-sdk@1.0.0-beta.5:
@@ -4804,7 +4819,7 @@ packages:
       '@opentelemetry/api': 1.7.0
       '@opentelemetry/core': 1.21.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/instrumentation': 0.41.2(@opentelemetry/api@1.7.0)
-      tslib: 2.6.3
+      tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -6548,7 +6563,7 @@ packages:
     resolution: {integrity: sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog==}
     dependencies:
       '@emnapi/wasi-threads': 1.0.1
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@emnapi/core@1.5.0:
@@ -6563,7 +6578,7 @@ packages:
   /@emnapi/runtime@1.3.1:
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@emnapi/runtime@1.5.0:
@@ -6577,7 +6592,7 @@ packages:
   /@emnapi/wasi-threads@1.0.1:
     resolution: {integrity: sha512-iIBu7mwkq4UQGeMEM8bLwNK962nXdhodeScX4slfQnRhEMMzvYivHhutCIk8uojvmASXXPC2WNEjwxFWk72Oqw==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@emnapi/wasi-threads@1.1.0:
@@ -7192,20 +7207,20 @@ packages:
     resolution: {integrity: sha512-dgOlVm4nXBWDLqijmvn4iAtyv1hVpQZjN6p0So74BW+7ASUTkQGe3lf8PHV/OjBiXfZa4qwONvmTQBGCheNU0w==}
     dependencies:
       '@fluentui/set-version': 8.2.23
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/dom-utilities@2.2.11:
     resolution: {integrity: sha512-2tXfg7/9PXu9nfU72/P3o3waHEFEQtHUfQbVexUaYqNNAxMj6sOfsqpUx4vd5nPgO+grSWrl+spqlLN2yej51w==}
     dependencies:
       '@fluentui/set-version': 8.2.11
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@fluentui/dom-utilities@2.3.7:
     resolution: {integrity: sha512-AaTR9BhJEF0i042NS1Ju8l95f24p2tBMq6jVVbUEDtYnKaxWnpv8R9eYjOwy8SDniQc1ino+BkolIgCVXXvDmw==}
     dependencies:
       '@fluentui/set-version': 8.2.23
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/font-icons-mdl2@8.5.50(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-04pRRmuBf9r/3cnBlIedF+SFk2UW7GdRQvdfKxoMuL4dDMLPqo4ruPkI/dz8Mp3EDERQU01XDWtBx11w9obmFQ==}
@@ -7213,7 +7228,7 @@ packages:
       '@fluentui/set-version': 8.2.23
       '@fluentui/style-utilities': 8.10.21(@types/react@16.14.55)(react@16.14.0)
       '@fluentui/utilities': 8.15.15(@types/react@16.14.55)(react@16.14.0)
-      tslib: 2.6.3
+      tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/react'
       - react
@@ -7230,25 +7245,25 @@ packages:
       '@fluentui/utilities': 8.15.15(@types/react@16.14.55)(react@16.14.0)
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/keyboard-key@0.4.23:
     resolution: {integrity: sha512-9GXeyUqNJUdg5JiQUZeGPiKnRzMRi9YEUn1l9zq6X/imYdMhxHrxpVZS12129cBfgvPyxt9ceJpywSfmLWqlKA==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/merge-styles@8.5.12:
     resolution: {integrity: sha512-ZnUo0YuMP7AYi68dkknFqVxopIAgbrUnqR/MZlemmRvBYyy1SMj1WQeHcoiLFA8mF8YKn7B+jxQgJbN2bfcrRw==}
     dependencies:
       '@fluentui/set-version': 8.2.11
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@fluentui/merge-styles@8.6.13:
     resolution: {integrity: sha512-IWgvi2CC+mcQ7/YlCvRjsmHL2+PUz7q+Pa2Rqk3a+QHN0V1uBvgIbKk5y/Y/awwDXy1yJHiqMCcDHjBNmS1d4A==}
     dependencies:
       '@fluentui/set-version': 8.2.23
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/react-focus@8.9.13(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-oUtY4F+tp0RmV0Wr30CoYFdTQEqHWKjU3/dYHPbI0xKH4emLrf8+sc0FAHJdeHH2rx4T1XSA807pm7YB4CQqWw==}
@@ -7263,7 +7278,7 @@ packages:
       '@fluentui/utilities': 8.15.15(@types/react@16.14.55)(react@16.14.0)
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/react-hooks@8.6.14(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-mM2bW7xIRGGx7thBXKDR64SaZB1tYwICdM9qpM/Jfiu0H+VPQhhhtMPJ+ImmG+DM8MxX9n5Su8ePo2QWtz9mYA==}
@@ -7290,7 +7305,7 @@ packages:
       '@fluentui/utilities': 8.15.15(@types/react@16.14.55)(react@16.14.0)
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/react-portal-compat-context@9.0.12(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-5AVXWX9GnbvwnJZYUb4LSIF7BsI/N8oTI6+7Yn0w6B3yaWykA8Menlz757X5tgVBjouEj4Eom+AoVvA7u8gPDA==}
@@ -7311,7 +7326,7 @@ packages:
       '@fluentui/set-version': 8.2.11
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@fluentui/react-window-provider@2.2.28(@types/react@16.14.55)(react@16.14.0):
@@ -7323,7 +7338,7 @@ packages:
       '@fluentui/set-version': 8.2.23
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/react@8.120.5(@types/react-dom@16.9.24)(@types/react@16.14.55)(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-Ca0zFi0/IkTvthMTyEQSvvUoRahDUa2SCyMMn4h1OzXrVvrap3q8GHfSanYbmRNPQIva+5O8mkvToRYN5UOm+w==}
@@ -7355,13 +7370,13 @@ packages:
   /@fluentui/set-version@8.2.11:
     resolution: {integrity: sha512-UI03tysau/adBO1a3q4uFZWQ3lfkiFcAWIFng4k5odWcCokfCm5IxA0urKqj5W5JRYdyoBUaq8QbcNGkFB4dCw==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@fluentui/set-version@8.2.23:
     resolution: {integrity: sha512-VPXaBsiaa3Xn/AY40nLU9bvDQ62lpMVnFzFTlQ8CbpdwrjxNlRxDUY5vRToNzp1+Zu5gD/+CgsXqIZGcry5L5w==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/style-utilities@8.10.21(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-tqdSQI1MAnNUPtNKKV9LeNqmEhBZL+lpV+m6Ngl6SDuR0aQkMkuo1jA9rPxNRLUf5+pbI8LrNQ4WiCWqYkV/QQ==}
@@ -7371,7 +7386,7 @@ packages:
       '@fluentui/theme': 2.6.59(@types/react@16.14.55)(react@16.14.0)
       '@fluentui/utilities': 8.15.15(@types/react@16.14.55)(react@16.14.0)
       '@microsoft/load-themed-styles': 1.10.295
-      tslib: 2.6.3
+      tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/react'
       - react
@@ -7387,7 +7402,7 @@ packages:
       '@fluentui/utilities': 8.15.15(@types/react@16.14.55)(react@16.14.0)
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@fluentui/utilities@8.13.18(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-/0rX9EzltLKwU1SS14VV7agWoOzruVTU3oagZq1QgFAvoj8qi7fNqvSX/VEeRy+0gmbsCkrEViUPkmC7drKzPg==}
@@ -7400,7 +7415,7 @@ packages:
       '@fluentui/set-version': 8.2.11
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@fluentui/utilities@8.15.15(@types/react@16.14.55)(react@16.14.0):
@@ -7415,7 +7430,7 @@ packages:
       '@fluentui/set-version': 8.2.23
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@formatjs/cli@2.15.0(ts-jest@29.4.1):
     resolution: {integrity: sha512-Hv7Z3xeGcgTpn1jA1/x7tc9UYbF9Udn/77xRf7E22Vn1mGJM/DftVqnpgLeNpd0d3xSftYw+rhaShNO19BsT6A==}
@@ -7435,7 +7450,7 @@ packages:
       json-stable-stringify: 1.1.1
       lodash: 4.17.21
       loud-rejection: 2.2.0
-      tslib: 2.6.3
+      tslib: 2.8.1
       typescript: 4.9.5
     transitivePeerDependencies:
       - ts-jest
@@ -7444,7 +7459,7 @@ packages:
   /@formatjs/ecma402-abstract@1.5.0:
     resolution: {integrity: sha512-wXv36yo+mfWllweN0Fq7sUs7PUiNopn7I0JpLTe3hGu6ZMR4CV7LqK1llhB18pndwpKoafQKb1et2DCJAOW20Q==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@formatjs/ts-transformer@2.13.0(ts-jest@29.4.1):
@@ -7457,7 +7472,7 @@ packages:
     dependencies:
       intl-messageformat-parser: 6.1.2
       ts-jest: 29.4.1(@babel/core@7.28.0)(babel-jest@30.0.1)(esbuild@0.25.6)(jest@30.1.1)(typescript@5.9.2)
-      tslib: 2.6.3
+      tslib: 2.8.1
       typescript: 4.9.5
     dev: true
 
@@ -7496,6 +7511,19 @@ packages:
   /@humanwhocodes/object-schema@2.0.2:
     resolution: {integrity: sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==}
     deprecated: Use @eslint/object-schema instead
+
+  /@inquirer/external-editor@1.0.2(@types/node@18.11.9):
+    resolution: {integrity: sha512-yy9cOoBnx58TlsPrIxauKIFQTiyH+0MK4e97y4sV9ERbI+zDxw7i2hxHLCIEGIE/8PPvDxGhgzIOTSOWcs6/MQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+    dependencies:
+      '@types/node': 18.11.9
+      chardet: 2.1.0
+      iconv-lite: 0.7.0
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -7556,7 +7584,7 @@ packages:
       slash: 3.0.0
     dev: true
 
-  /@jest/core@30.1.1(ts-node@10.9.2):
+  /@jest/core@30.1.1:
     resolution: {integrity: sha512-3ncU9peZ3D2VdgRkdZtUceTrDgX5yiDRwAFjtxNfU22IiZrpVWlv/FogzDLYSJQptQGfFo3PcHK86a2oG6WUGg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
@@ -7578,7 +7606,7 @@ packages:
       exit-x: 0.2.2
       graceful-fs: 4.2.11
       jest-changed-files: 30.0.5
-      jest-config: 30.1.1(@types/node@20.0.0)(ts-node@10.9.2)
+      jest-config: 30.1.1(@types/node@20.0.0)
       jest-haste-map: 30.1.0
       jest-message-util: 30.1.0
       jest-regex-util: 30.0.1
@@ -9314,6 +9342,16 @@ packages:
       antlr4: 4.9.3
     dev: true
 
+  /@sap/cf-tools@0.8.1:
+    resolution: {integrity: sha512-g5tAs7gGmY2fCJRmbmYDMFmVVj36j2mYUUTHzZYVXfZVuhbCfciPySEEV5HIpyQtdCfTTM/NbOFuanZLy78qag==}
+    dependencies:
+      comment-json: 4.1.0
+      fs-extra: 9.1.0
+      lodash: 4.17.21
+      properties-reader: 2.2.0
+      url: 0.11.0
+    dev: false
+
   /@sap/cf-tools@3.2.2:
     resolution: {integrity: sha512-hlz3KiHbKrQJdydacVbpBSufoiNDU7YEE5MnvTUOm0FabI+L+fp+b5RZqwSsurUtTm8RJzrHSUVXTqztyW13oA==}
     dependencies:
@@ -9861,7 +9899,7 @@ packages:
       flat-cache: 3.2.0
       micromatch: 4.0.8
       react-docgen-typescript: 2.2.2(typescript@5.6.2)
-      tslib: 2.6.3
+      tslib: 2.8.1
       typescript: 5.6.2
       webpack: 5.96.1(esbuild@0.19.2)
     transitivePeerDependencies:
@@ -9880,7 +9918,7 @@ packages:
       flat-cache: 3.2.0
       micromatch: 4.0.8
       react-docgen-typescript: 2.2.2(typescript@5.9.2)
-      tslib: 2.6.3
+      tslib: 2.8.1
       typescript: 5.9.2
       webpack: 5.96.1(esbuild@0.19.2)
     transitivePeerDependencies:
@@ -10053,7 +10091,7 @@ packages:
   /@swc/helpers@0.5.12:
     resolution: {integrity: sha512-KMZNXiGibsW9kvZAO1Pam2JPTDBm+KSHMMHWdsyI/1DbIZjT2A6Gy3hblVXUMEDvUAKq+e0vL0X0o54owWji7g==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /@swc/helpers@0.5.17:
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
@@ -10201,7 +10239,7 @@ packages:
   /@tybys/wasm-util@0.9.0:
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@types/adm-zip@0.5.5:
@@ -10611,7 +10649,6 @@ packages:
 
   /@types/node@18.11.9:
     resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
-    dev: true
 
   /@types/node@20.0.0:
     resolution: {integrity: sha512-cD2uPTDnQQCVpmRefonO98/PPijuOnnEy5oytWJFPY1N9aJCz2wJ5kSGWO+zJoed2cY2JxQh6yBuUq4vIn61hw==}
@@ -12003,7 +12040,7 @@ packages:
     engines: {node: '>=18.12.0'}
     dependencies:
       js-yaml: 3.14.0
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /@zkochan/js-yaml@0.0.7:
@@ -12582,14 +12619,14 @@ packages:
     resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /ast-types@0.16.1:
     resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /astral-regex@2.0.0:
@@ -12640,7 +12677,6 @@ packages:
   /at-least-node@1.0.0:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
-    dev: true
 
   /autoprefixer@10.4.7(postcss@8.5.1):
     resolution: {integrity: sha512-ypHju4Y2Oav95SipEcCcI5J7CGPuvz8oat7sUtYj3ClK44bldfvtvcxK6IEK++7rqB7YchDGzweZIBG+SD0ZAA==}
@@ -13348,7 +13384,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /camelcase@5.3.1:
@@ -13452,6 +13488,9 @@ packages:
 
   /chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
+
+  /chardet@2.1.0:
+    resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
 
   /check-dependency-version-consistency@5.0.0:
     resolution: {integrity: sha512-7UNH6QDgPHImF5TmmYH0mSpbnU5KhUT8Z+27hpW/fJM8VWnZpz6INh/olHmVPqFOUm3+lES4R8LwBLHrh9XJqg==}
@@ -13824,6 +13863,17 @@ packages:
   /commander@9.4.0:
     resolution: {integrity: sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==}
     engines: {node: ^12.20.0 || >=14}
+
+  /comment-json@4.1.0:
+    resolution: {integrity: sha512-WEghmVYaNq9NlWbrkzQTSsya9ycLyxJxpTQfZEan6a5Jomnjw18zS3Podf8q1Zf9BvonvQd/+Z7Z39L7KKzzdQ==}
+    engines: {node: '>= 6'}
+    dependencies:
+      array-timsort: 1.0.3
+      core-util-is: 1.0.3
+      esprima: 4.0.1
+      has-own-prop: 2.0.0
+      repeat-string: 1.6.1
+    dev: false
 
   /comment-json@4.2.3:
     resolution: {integrity: sha512-SsxdiOf064DWoZLH799Ata6u7iV658A11PlWtZATDlXPpKGJnbJZ5Z24ybixAi+LUUqJ/GKowAejtC5GFUG7Tw==}
@@ -14700,7 +14750,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /dot-prop@6.0.1:
@@ -16021,6 +16071,7 @@ packages:
 
   /fast-xml-parser@4.4.1:
     resolution: {integrity: sha512-xkjOecfnKGkSsOwtZ5Pz7Us/T6mrbPQrq0nh+aCO5V9nk5NLWmasAHumTKjiPJPWANe+kAZ84Jc8ooJkzZ88Sw==}
+    hasBin: true
     dependencies:
       strnum: 1.0.5
 
@@ -16470,7 +16521,6 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
-    dev: true
 
   /fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
@@ -17288,6 +17338,12 @@ packages:
     dependencies:
       safer-buffer: 2.1.2
 
+  /iconv-lite@0.7.0:
+    resolution: {integrity: sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      safer-buffer: 2.1.2
+
   /icss-utils@5.1.0(postcss@8.4.31):
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
     engines: {node: ^10 || ^12 || >= 14}
@@ -17415,7 +17471,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /inquirer-autocomplete-prompt@2.0.1(inquirer@8.2.6):
+  /inquirer-autocomplete-prompt@2.0.1(inquirer@8.2.7):
     resolution: {integrity: sha512-jUHrH0btO7j5r8DTQgANf2CBkTZChoVySD8zF/wp5fZCOLIuUbleXhf4ZY5jNBOc1owA3gdfWtfZuppfYBhcUg==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -17423,7 +17479,7 @@ packages:
     dependencies:
       ansi-escapes: 4.3.2
       figures: 3.2.0
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@18.11.9)
       picocolors: 1.1.1
       run-async: 2.4.1
       rxjs: 7.8.1
@@ -17447,6 +17503,29 @@ packages:
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
+    dev: false
+
+  /inquirer@8.2.7(@types/node@18.11.9):
+    resolution: {integrity: sha512-UjOaSel/iddGZJ5xP/Eixh6dY1XghiBw4XK13rCCIJcJfyhhoul/7KhLLUGtebEj6GDYM6Vnx/mVsjx2L/mFIA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@inquirer/external-editor': 1.0.2(@types/node@18.11.9)
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
+      cli-cursor: 3.1.0
+      cli-width: 3.0.0
+      figures: 3.2.0
+      lodash: 4.17.21
+      mute-stream: 0.0.8
+      ora: 5.4.1
+      run-async: 2.4.1
+      rxjs: 7.8.2
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      through: 2.3.8
+      wrap-ansi: 6.2.0
+    transitivePeerDependencies:
+      - '@types/node'
 
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
@@ -17474,7 +17553,7 @@ packages:
     resolution: {integrity: sha512-4GQDEPhl/ZMNDKwMsLqyw1LG2IAWjmLJXdmnRcHKeLQzpgtNYZI6lVw1279pqIkRk2MfKb9aDsVFzm565azK5A==}
     dependencies:
       '@formatjs/ecma402-abstract': 1.5.0
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /ip-address@9.0.5:
@@ -18070,7 +18149,7 @@ packages:
       node-notifier:
         optional: true
     dependencies:
-      '@jest/core': 30.1.1(ts-node@10.9.2)
+      '@jest/core': 30.1.1
       '@jest/test-result': 30.1.1
       '@jest/types': 30.0.5
       chalk: 4.1.2
@@ -18133,7 +18212,7 @@ packages:
       - supports-color
     dev: true
 
-  /jest-config@30.1.1(@types/node@20.0.0)(ts-node@10.9.2):
+  /jest-config@30.1.1(@types/node@20.0.0):
     resolution: {integrity: sha512-xuPGUGDw+9fPPnGmddnLnHS/mhKUiJOW7K65vErYmglEPKq65NKwSRchkQ7iv6gqjs2l+YNEsAtbsplxozdOWg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
@@ -18173,7 +18252,6 @@ packages:
       pretty-format: 30.0.5
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@20.0.0)(typescript@5.9.2)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -18778,7 +18856,7 @@ packages:
       node-notifier:
         optional: true
     dependencies:
-      '@jest/core': 30.1.1(ts-node@10.9.2)
+      '@jest/core': 30.1.1
       '@jest/types': 30.0.5
       import-local: 3.2.0
       jest-cli: 30.1.1(@types/node@18.11.9)
@@ -18821,6 +18899,7 @@ packages:
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
     dependencies:
       argparse: 2.0.1
 
@@ -19312,7 +19391,7 @@ packages:
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /lowercase-keys@3.0.0:
@@ -19989,7 +20068,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /nock@13.4.0:
@@ -21091,7 +21170,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /parent-module@1.0.1:
@@ -21174,7 +21253,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /path-browserify@1.0.1:
@@ -21696,6 +21775,13 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
+  /properties-reader@2.2.0:
+    resolution: {integrity: sha512-CgVcr8MwGoBKK24r9TwHfZkLLaNFHQ6y4wgT9w/XzdpacOOi5ciH4hcuLechSDAwXsfrGQtI2JTutY2djOx2Ow==}
+    engines: {node: '>=10'}
+    dependencies:
+      mkdirp: 1.0.4
+    dev: false
+
   /properties-reader@2.3.0:
     resolution: {integrity: sha512-z597WicA7nDZxK12kZqHr2TcvwNU1GCfA5UwfDY/HDp3hXPoPlb5rlEx9bwGTiJnc0OqbBTkU975jDToth8Gxw==}
     engines: {node: '>=14'}
@@ -21759,6 +21845,10 @@ packages:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
+
+  /punycode@1.3.2:
+    resolution: {integrity: sha512-RofWgt/7fL5wP1Y7fxE7/EmTLzQVnB0ycyibJ0OOHIlJqTNzglYFxVwETOcIoJqJmpDXJ9xImDv+Fq34F/d4Dw==}
+    dev: false
 
   /punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
@@ -21844,6 +21934,12 @@ packages:
       split-on-first: 1.1.0
       strict-uri-encode: 2.0.0
     dev: true
+
+  /querystring@0.2.0:
+    resolution: {integrity: sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==}
+    engines: {node: '>=0.4.x'}
+    deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+    dev: false
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -22317,7 +22413,7 @@ packages:
       esprima: 4.0.1
       source-map: 0.6.1
       tiny-invariant: 1.3.3
-      tslib: 2.6.3
+      tslib: 2.8.1
     dev: true
 
   /rechoir@0.6.2:
@@ -22792,7 +22888,7 @@ packages:
   /rxjs@7.8.2:
     resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
     dependencies:
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   /safe-array-concat@1.0.0:
     resolution: {integrity: sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==}
@@ -25223,6 +25319,13 @@ packages:
       querystringify: 2.2.0
       requires-port: 1.0.0
 
+  /url@0.11.0:
+    resolution: {integrity: sha512-kbailJa29QrtXnxgq+DdCEGlbTeYM2eJUxsz6vjZavrCYPMIFHMKQmSKYAIuUK2i7hgPm28a8piX5NTUtM/LKQ==}
+    dependencies:
+      punycode: 1.3.2
+      querystring: 0.2.0
+    dev: false
+
   /url@0.11.4:
     resolution: {integrity: sha512-oCwdVC7mTuWiPyjLUz/COz5TLk6wgp0RCsN+wHZ2Ekneac9w8uuV0njcbbie2ME+Vs+d6duwmYuR3HgQXs1fOg==}
     engines: {node: '>= 0.4'}
@@ -25414,7 +25517,7 @@ packages:
       joi: 17.11.0
       lodash: 4.17.21
       minimist: 1.2.8
-      rxjs: 7.8.1
+      rxjs: 7.8.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -26069,7 +26172,7 @@ packages:
       fd-slicer: 1.1.0
     dev: true
 
-  /yeoman-environment@3.8.0(mem-fs-editor@9.4.0)(mem-fs@2.1.0):
+  /yeoman-environment@3.8.0(@types/node@18.11.9)(mem-fs-editor@9.4.0)(mem-fs@2.1.0):
     resolution: {integrity: sha512-BPo3btCxefe8NzDMk59QRDNBXMC4Ra6SHhFfEsV2DTmAp/6ZoovMANlJiWrXu41rtFQBmjH/rT2tSiHGowt38w==}
     engines: {node: '>=12.10.0'}
     hasBin: true
@@ -26093,7 +26196,7 @@ packages:
       find-up: 5.0.0
       globby: 11.1.0
       grouped-queue: 2.0.0
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@18.11.9)
       is-scoped: 2.1.0
       lodash: 4.17.21
       log-symbols: 4.1.0
@@ -26113,6 +26216,7 @@ packages:
       textextensions: 5.16.0
       untildify: 4.0.0
     transitivePeerDependencies:
+      - '@types/node'
       - bluebird
       - supports-color
 
@@ -26140,14 +26244,14 @@ packages:
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0
-      yeoman-environment: 3.8.0(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
+      yeoman-environment: 3.8.0(@types/node@18.11.9)(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
     transitivePeerDependencies:
       - bluebird
       - encoding
       - mem-fs
       - supports-color
 
-  /yeoman-test@6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0):
+  /yeoman-test@6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0):
     resolution: {integrity: sha512-FpaLV5AiVFlYe4pizAB/QLWc+5BSyttk/TcFQfi/r8g/rz290uqEkV4waN3rHEvP/DCmoMNSJykKTZNWL2y07g==}
     engines: {node: '>=12.10.0'}
     peerDependencies:
@@ -26155,14 +26259,16 @@ packages:
       yeoman-environment: ^3.3.0
       yeoman-generator: '*'
     dependencies:
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@18.11.9)
       lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       sinon: 10.0.1
       temp-dir: 2.0.0
-      yeoman-environment: 3.8.0(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
+      yeoman-environment: 3.8.0(@types/node@18.11.9)(mem-fs-editor@9.4.0)(mem-fs@2.1.0)
       yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
+    transitivePeerDependencies:
+      - '@types/node'
     dev: true
 
   /yesno@0.4.0:

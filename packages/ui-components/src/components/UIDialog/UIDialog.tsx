@@ -19,7 +19,7 @@ export interface DialogProps extends IDialogProps {
     // Default is false
     closeButtonVisible?: boolean;
     // Custom footer using JSX element
-    footer?: React.ReactElement;
+    footer?: React.ReactElement | React.ReactElement[];
     // Header render in single or multi lines
     // Default is single line
     multiLineTitle?: boolean;

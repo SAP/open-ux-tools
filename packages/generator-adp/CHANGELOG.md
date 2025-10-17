@@ -1,5 +1,99 @@
 # @sap-ux/generator-adp
 
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+    -   @sap-ux/adp-tooling@0.16.4
+
+## 0.5.5
+
+### Patch Changes
+
+-   441be86: fix: Remove CF flow from the ADP Generator and fix template resolution problem
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+
+## 0.5.4
+
+### Patch Changes
+
+-   3d63709: fix: Project name appears twice under system and password prompts when cloud system is selected.
+
+## 0.5.3
+
+### Patch Changes
+
+-   ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/adp-tooling@0.16.1
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 0.5.0
+
+### Minor Changes
+
+-   247a5a9: feat: Add ADP Generator Cloud Foundry prompting code
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/adp-tooling@0.16.0
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 0.4.13
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+
+## 0.4.12
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+-   @sap-ux/inquirer-common@0.7.50
+
+## 0.4.11
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.36
+-   @sap-ux/odata-service-writer@0.27.25
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/axios-extension@1.22.10
+-   @sap-ux/fiori-generator-shared@0.13.22
+-   @sap-ux/project-input-validator@0.6.25
+-   @sap-ux/system-access@0.6.19
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.4.10
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/adp-tooling@0.15.35
+
 ## 0.4.9
 
 ### Patch Changes

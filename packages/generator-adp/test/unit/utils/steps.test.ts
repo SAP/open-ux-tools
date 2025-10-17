@@ -21,7 +21,7 @@ describe('Wizard Steps Utility', () => {
     });
 
     beforeEach(() => {
-        prompts = new Prompts(getWizardPages());
+        prompts = new Prompts(getWizardPages(false));
     });
 
     it('should add a new step when it does not exist', () => {
@@ -94,18 +94,21 @@ describe('updateFlpWizardSteps', () => {
     });
 
     beforeEach(() => {
-        prompts = new Prompts(getWizardPages());
+        prompts = new Prompts(getWizardPages(false));
     });
 
     describe('when hasBaseAppInbound is true (2 pages)', () => {
         it('should add both FLP pages when shouldAdd is true', () => {
-            updateFlpWizardSteps(true, prompts, 'TestProject', true);
+            const projectName = 'TestProject';
+            updateFlpWizardSteps(true, prompts, projectName, true);
 
             const steps = prompts['items'] as IPrompt[];
             const stepNames = steps.map((s) => s.name);
+            const tileSettingsStep = steps.find((s) => s.name === t('yuiNavSteps.tileSettingsName'));
 
-            expect(stepNames).toContain(t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' }));
+            expect(stepNames).toContain(t('yuiNavSteps.tileSettingsName'));
             expect(stepNames).toContain(t('yuiNavSteps.flpConfigName'));
+            expect(tileSettingsStep?.description).toBe(t('yuiNavSteps.tileSettingsDescr', { projectName }));
         });
 
         it('should remove both FLP pages when shouldAdd is false', () => {
@@ -118,7 +121,7 @@ describe('updateFlpWizardSteps', () => {
             const steps = prompts['items'] as IPrompt[];
             const stepNames = steps.map((s) => s.name);
 
-            expect(stepNames).not.toContain(t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' }));
+            expect(stepNames).not.toContain(t('yuiNavSteps.tileSettingsName'));
             expect(stepNames).not.toContain(t('yuiNavSteps.flpConfigName'));
         });
 
@@ -130,9 +133,7 @@ describe('updateFlpWizardSteps', () => {
             const stepNames = steps.map((s) => s.name);
 
             const deployConfigIdx = stepNames.indexOf(t('yuiNavSteps.deployConfigName'));
-            const tileSettingsIdx = stepNames.indexOf(
-                t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' })
-            );
+            const tileSettingsIdx = stepNames.indexOf(t('yuiNavSteps.tileSettingsName'));
 
             expect(tileSettingsIdx).toBe(deployConfigIdx + 1);
         });
@@ -143,28 +144,27 @@ describe('updateFlpWizardSteps', () => {
             const steps = prompts['items'] as IPrompt[];
             const stepNames = steps.map((s) => s.name);
 
-            const tileSettingsIdx = stepNames.indexOf(
-                t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' })
-            );
+            const tileSettingsIdx = stepNames.indexOf(t('yuiNavSteps.tileSettingsName'));
             const flpConfigIdx = stepNames.indexOf(t('yuiNavSteps.flpConfigName'));
 
             expect(flpConfigIdx).toBe(tileSettingsIdx + 1);
         });
 
         it('should handle multiple calls correctly', () => {
-            updateFlpWizardSteps(true, prompts, 'TestProject', true);
-            updateFlpWizardSteps(true, prompts, 'TestProject', true);
+            updateFlpWizardSteps(true, prompts, 'TestProject1', true);
+            updateFlpWizardSteps(true, prompts, 'TestProject2', true);
 
             const steps = prompts['items'] as IPrompt[];
             const stepNames = steps.map((s) => s.name);
 
             // Should only have one instance of each page
-            const tileSettingsCount = stepNames.filter(
-                (name) => name === t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' })
-            ).length;
+            const tileSettingsSteps = steps.filter(({ name }) => name === t('yuiNavSteps.tileSettingsName'));
             const flpConfigCount = stepNames.filter((name) => name === t('yuiNavSteps.flpConfigName')).length;
 
-            expect(tileSettingsCount).toBe(1);
+            expect(tileSettingsSteps.length).toBe(1);
+            expect(tileSettingsSteps[0].description).toEqual(
+                t('yuiNavSteps.tileSettingsDescr', { projectName: 'TestProject2' })
+            );
             expect(flpConfigCount).toBe(1);
         });
     });
@@ -176,7 +176,7 @@ describe('updateFlpWizardSteps', () => {
             const steps = prompts['items'] as IPrompt[];
             const stepNames = steps.map((s) => s.name);
 
-            expect(stepNames).not.toContain(t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' }));
+            expect(stepNames).not.toContain(t('yuiNavSteps.tileSettingsName'));
             expect(stepNames).toContain(t('yuiNavSteps.flpConfigName'));
         });
 
@@ -221,22 +221,23 @@ describe('updateFlpWizardSteps', () => {
     });
 
     describe('project name handling', () => {
-        it('should use the provided project name in tile settings page', () => {
+        it('should use the provided project name in the tile settings page description', () => {
             updateFlpWizardSteps(true, prompts, 'MyCustomProject', true);
 
             const steps = prompts['items'] as IPrompt[];
-            const stepNames = steps.map((s) => s.name);
+            const stepDescriptions = steps.map((s) => s.description);
 
-            expect(stepNames).toContain(t('yuiNavSteps.tileSettingsName', { projectName: 'MyCustomProject' }));
+            expect(stepDescriptions).toContain(t('yuiNavSteps.tileSettingsDescr', { projectName: 'MyCustomProject' }));
         });
 
         it('should handle empty project name', () => {
             updateFlpWizardSteps(true, prompts, '', true);
 
             const steps = prompts['items'] as IPrompt[];
-            const stepNames = steps.map((s) => s.name);
 
-            expect(stepNames).toContain(t('yuiNavSteps.tileSettingsName', { projectName: '' }));
+            const stepDescriptions = steps.map((s) => s.description);
+
+            expect(stepDescriptions).toContain(t('yuiNavSteps.tileSettingsDescr', { projectName: '' }));
         });
     });
 
@@ -264,9 +265,7 @@ describe('updateFlpWizardSteps', () => {
 
             const configIdx = stepNames.indexOf(t('yuiNavSteps.configurationName'));
             const attributesIdx = stepNames.indexOf(t('yuiNavSteps.projectAttributesName'));
-            const tileSettingsIdx = stepNames.indexOf(
-                t('yuiNavSteps.tileSettingsName', { projectName: 'TestProject' })
-            );
+            const tileSettingsIdx = stepNames.indexOf(t('yuiNavSteps.tileSettingsName'));
             const flpConfigIdx = stepNames.indexOf(t('yuiNavSteps.flpConfigName'));
 
             // Verify order: Configuration -> Project Attributes -> Tile Settings -> FLP Config

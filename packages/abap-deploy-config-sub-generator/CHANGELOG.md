@@ -1,5 +1,44 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.79
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.30
+-   @sap-ux/deploy-config-generator-shared@0.1.42
+
+## 0.1.78
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.29
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.42
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/abap-deploy-config-writer@0.2.22
+
+## 0.1.77
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.28
+-   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.1.76
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.27
+    -   @sap-ux/abap-deploy-config-writer@0.2.21
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/fiori-generator-shared@0.13.22
+    -   @sap-ux/deploy-config-generator-shared@0.1.41
+
 ## 0.1.75
 
 ### Patch Changes

@@ -162,3 +162,14 @@ export type ODataServiceTechnicalDetails = {
 };
 
 export type ValidationResponse = { severity: string; short_text: string; long_text: string };
+
+/**
+ * Type for '/sap/bc/adt/core/http/systeminformation' response type 'application/vnd.sap.adt.core.http.systeminformation.v1+json'
+ */
+export type SystemInfo = {
+    systemID: string;
+    userName: string;
+    userFullName: string;
+    client: string;
+    language: string;
+};
