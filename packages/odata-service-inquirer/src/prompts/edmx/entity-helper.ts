@@ -299,50 +299,39 @@ export function getDefaultTableType(
     mainEntitySetName?: string,
     currentTableType?: TableType
 ): { tableType: TableType; setAnalyticalTableDefault: boolean } {
-    let tableType: TableType;
-    let setAnalyticalTableDefault = false;
+    const setAnalyticalTableDefault = false;
 
     // Find the entity set once for all annotation checks
     const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
 
-    if (entitySet) {
+    // Early return for user-selected table type
+    if (currentTableType) {
+        return { tableType: currentTableType, setAnalyticalTableDefault };
+    }
+
+    // Handle ALP template with OData v2 - always use AnalyticalTable
+    if (templateType === 'alp' && odataVersion === OdataVersion.v2) {
+        return { tableType: 'AnalyticalTable', setAnalyticalTableDefault };
+    }
+
+    // Handle OData v4 specific logic
+    if (odataVersion === OdataVersion.v4 && entitySet) {
+        // Check for analytical data requirements
         if (
             (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') &&
-            odataVersion === OdataVersion.v4 &&
             shouldUseAnalyticalTable(entitySet, isCapService)
         ) {
-            // Use AnalyticalTable for entities with analytical data based on optimized annotation evaluation
-            tableType = 'AnalyticalTable';
-            setAnalyticalTableDefault = true;
-        } else if (
-            (templateType === 'lrop' || templateType === 'worklist') &&
-            odataVersion === OdataVersion.v4 &&
-            hasRecursiveHierarchyForEntitySet(entitySet)
-        ) {
-            // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
-            tableType = 'TreeTable';
-        } else if (odataVersion === OdataVersion.v2 && templateType === 'alp') {
-            // For ALP, use AnalyticalTable as default
-            tableType = 'AnalyticalTable';
-        } else if (currentTableType) {
-            // If the user has already selected a table type use it
-            tableType = currentTableType;
-        } else {
-            // Default to ResponsiveTable for other cases
-            tableType = 'ResponsiveTable';
+            // Use AnalyticalTable for entities with analytical data
+            return { tableType: 'AnalyticalTable', setAnalyticalTableDefault: true };
         }
-    } else if (odataVersion === OdataVersion.v2 && templateType === 'alp') {
-        // For ALP, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-    } else if (currentTableType) {
-        // If the user has already selected a table type use it
-        tableType = currentTableType;
-    } else {
-        // Default to ResponsiveTable for other cases
-        tableType = 'ResponsiveTable';
+
+        // Check for hierarchical data requirements
+        if ((templateType === 'lrop' || templateType === 'worklist') && hasRecursiveHierarchyForEntitySet(entitySet)) {
+            // Use TreeTable for entities with recursive hierarchy
+            return { tableType: 'TreeTable', setAnalyticalTableDefault };
+        }
     }
-    return {
-        tableType,
-        setAnalyticalTableDefault
-    };
+
+    // Default to ResponsiveTable for all other cases
+    return { tableType: 'ResponsiveTable', setAnalyticalTableDefault };
 }
