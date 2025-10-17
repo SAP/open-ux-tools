@@ -244,8 +244,8 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
 /**
  * Determines if AnalyticalTable should be used based on entity annotations and service type.
  *
- * AnalyticalTable is used when entity has hierarchical and analytical data together, for CAP services with analytical data,
- * or for non-CAP services with complete analytical transformations.
+ * AnalyticalTable is used when entity has hierarchical and analytical data together with complete transformations,
+ * for CAP services with analytical data, or for non-CAP services with complete analytical transformations.
  *
  * @param entitySet The entity set to check for annotations.
  * @param isCapService Whether the service is a CAP service (affects analytical requirements).
@@ -261,9 +261,14 @@ function shouldUseAnalyticalTable(entitySet: EntitySet, isCapService: boolean): 
         return false;
     }
 
-    // If entity has both analytical and hierarchical data, always use AnalyticalTable
+    // If entity has both analytical and hierarchical data, check requirements based on service type
     if (hasHierarchy) {
-        return true;
+        // For CAP services, any analytical annotations are sufficient even with hierarchy
+        if (isCapService) {
+            return true;
+        }
+        // For non-CAP services, require complete analytical transformations
+        return hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable);
     }
 
     // For CAP services, analytical annotations are sufficient
@@ -302,7 +307,7 @@ export function getDefaultTableType(
 
     if (entitySet) {
         if (
-            (templateType === 'lrop' || templateType === 'worklist') &&
+            (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') &&
             odataVersion === OdataVersion.v4 &&
             shouldUseAnalyticalTable(entitySet, isCapService)
         ) {
@@ -316,9 +321,6 @@ export function getDefaultTableType(
         ) {
             // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
             tableType = 'TreeTable';
-        } else if (templateType === 'alp') {
-            // For ALP, use AnalyticalTable as default
-            tableType = 'AnalyticalTable';
         } else if (currentTableType) {
             // If the user has already selected a table type use it
             tableType = currentTableType;
@@ -326,9 +328,6 @@ export function getDefaultTableType(
             // Default to ResponsiveTable for other cases
             tableType = 'ResponsiveTable';
         }
-    } else if (templateType === 'alp') {
-        // For ALP, use AnalyticalTable as default even if entity set is not found
-        tableType = 'AnalyticalTable';
     } else if (currentTableType) {
         // If the user has already selected a table type use it
         tableType = currentTableType;

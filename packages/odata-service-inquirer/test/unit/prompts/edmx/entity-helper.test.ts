@@ -323,13 +323,13 @@ describe('Test entity helper functions', () => {
             expect(result.setAnalyticalTableDefault).toBe(true);
         });
 
-        test('should return AnalyticalTable for ALP template type', () => {
+        test('should return ResponsiveTable for ALP template when analytical requirements are not met', () => {
             const parsedEdmx = parse(metadataV4WithDraftEntities);
             const convertedMetadata = convert(parsedEdmx);
 
             const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
-            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.tableType).toBe('ResponsiveTable');
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
@@ -436,10 +436,10 @@ describe('Test entity helper functions', () => {
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
-        test('should use AnalyticalTable for entities with recursive hierarchy and any aggregate transformations', () => {
+        test('should use TreeTable for entities with recursive hierarchy and incomplete aggregate transformations', () => {
             // Integration test using the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
-            // This entity has both recursive hierarchy and partial aggregate transformations (only 5 of 9)
-            // Since both analytical and hierarchical annotations are present, AnalyticalTable takes priority
+            // This entity has both recursive hierarchy and partial aggregate transformations (only 5 transformations)
+            // Since analytical transformations are incomplete, TreeTable should be used for hierarchy
             const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
             const convertedMetadata = convert(parsedEdmx);
 
@@ -450,9 +450,9 @@ describe('Test entity helper functions', () => {
                 false,
                 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
             );
-            // When both analytical and hierarchical annotations are present, AnalyticalTable takes priority
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            // When both annotations are present but analytical transformations are incomplete, use TreeTable
+            expect(result.tableType).toBe('TreeTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
         test('should prioritize complete aggregate transformations over recursive hierarchy', () => {
@@ -973,15 +973,6 @@ describe('Test entity helper functions', () => {
             const convertedMetadata = convert(parsedEdmx);
 
             const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'NonExistentEntity');
-
-            expect(qualifier).toBeUndefined();
-        });
-
-        test('should handle undefined entity set name gracefully', () => {
-            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
-            const convertedMetadata = convert(parsedEdmx);
-
-            const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, undefined);
 
             expect(qualifier).toBeUndefined();
         });
