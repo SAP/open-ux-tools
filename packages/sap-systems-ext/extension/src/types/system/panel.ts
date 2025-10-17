@@ -7,6 +7,7 @@ export interface PanelContext {
     backendSystem?: BackendSystem;
     systemStatusMessage?: string;
     isGuidedAnswersEnabled: boolean;
+    updateBackendSystem: (system: BackendSystem) => void;
     disposePanel: () => void;
     postMessage: (msg: unknown) => Thenable<boolean> | undefined;
 }

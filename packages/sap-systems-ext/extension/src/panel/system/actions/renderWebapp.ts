@@ -45,7 +45,7 @@ export async function renderWebApp(context: PanelContext): Promise<void> {
 function getSystemInfo(backendSystem?: BackendSystem): BackendSystem | undefined {
     let systemInfo: BackendSystem | undefined;
     if (backendSystem) {
-        systemInfo = { ...backendSystem, systemType: getBackendSystemType(backendSystem) };
+        systemInfo = { ...backendSystem, systemType: getBackendSystemType(backendSystem) ?? 'OnPrem' }; // fallback to OnPrem so that system info can be displayed
     }
     return systemInfo;
 }

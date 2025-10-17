@@ -73,7 +73,7 @@ function createNewPanel(
         name,
         url: systemConfig.url,
         client: systemConfig.client,
-        systemType: 'OnPrem' as SystemType
+        systemType: 'OnPrem' satisfies SystemType
     });
 
     return new SystemPanel({

@@ -97,6 +97,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
     }): Promise<undefined | E> {
         const serializableProps = getSerializableProperties<E>(entity);
         const sensitiveProps = getSensitiveDataProperties<E>(entity);
+        debugger;
 
         if (serializableProps.length > 0 && sensitiveProps.length > 0) {
             for (let i = 0; i < serializableProps.length; i = i + 1) {
@@ -110,6 +111,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
                 }
             }
         }
+        debugger;
 
         const serializable: E = pick(entity, ...serializableProps) as E;
 

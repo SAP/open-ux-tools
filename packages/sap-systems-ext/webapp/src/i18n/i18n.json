@@ -7,7 +7,8 @@
         "client": "Client",
         "username": "Username",
         "password": "Password",
-        "reentranceTicket": "Reentrance Ticket"
+        "reentranceTicket": "Reentrance Ticket",
+        "serviceKeys": "Service Keys"
     },
     "placeholders": {
         "typeOptions": "Click to display the list of options."

@@ -1,21 +1,9 @@
-import type { BackendSystem } from '@sap-ux/store';
 import type { TOptions } from 'i18next';
 import type { ConfirmationPromptType } from './constants';
 
 import { t } from './i18n';
 import { confirmationPromptMap } from './constants';
 import { window } from 'vscode';
-
-/**
- * Returns a display name for the backend system.
- *
- * @param system - The backend system object.
- * @returns - A string representing the display name of the system, including its type and user display name if available.
- */
-export function getDisplayName(system: BackendSystem): string {
-    const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    return `${system.name}${userDisplayName}`;
-}
 
 /**
  * Warning message displayed to confirm user's intent.

@@ -1,8 +1,7 @@
-import type { BackendSystem } from '@sap-ux/store';
 import type { UpdateSystem } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types/system';
+import { SystemService, type BackendSystem } from '@sap-ux/store';
 import { commands, window } from 'vscode';
-import { SystemService } from '@sap-ux/store';
 import { getBackendSystem, geti18nOpts, logTelemetryEvent, t } from '../../../utils';
 import { updateSystemStatus, validateSystemName } from '../utils';
 import {
@@ -90,7 +89,7 @@ async function updateHandler(
         newPanelMsg = t('info.systemUpdated', { system: newSystem.name });
     }
 
-    context.backendSystem = newSystem;
+    context.updateBackendSystem(newSystem);
 
     return newPanelMsg;
 }
@@ -147,8 +146,11 @@ async function saveSystem(
     systemExistsInStore: boolean,
     systemPanelViewType: SystemPanelViewType
 ): Promise<void> {
-    await new SystemService(SystemsLogger.logger).write(backendSystem, { force: systemExistsInStore });
-
+    // ensure the user display name is set to the username
+    const newBackendSystem = { ...backendSystem, userDisplayName: backendSystem.username };
+    await new SystemService(SystemsLogger.logger).write(newBackendSystem, {
+        force: systemExistsInStore
+    });
     const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));

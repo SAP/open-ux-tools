@@ -16,6 +16,7 @@ export function useSystemMain(): {
     defaultName: string;
     setName: (name: string | undefined) => void;
     setType: (systemType: SystemType) => void;
+    setAuthenticationType: (authenticationType: string | undefined) => void;
     setUrl: (url: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
@@ -54,10 +55,12 @@ export function useSystemMain(): {
     const [systemFields, setSystemFields] = useState({
         name: systemInfo?.name,
         systemType: systemInfo?.systemType,
+        authenticationType: systemInfo?.authenticationType,
         url: systemInfo?.url,
         client: systemInfo?.client,
         username: systemInfo?.username,
-        password: systemInfo?.password
+        password: systemInfo?.password,
+        serviceKeys: systemInfo?.serviceKeys
     });
 
     const defaultName = `${systemFields.url}`;
@@ -67,6 +70,11 @@ export function useSystemMain(): {
 
     const setType = useCallback(
         (systemType: SystemType) => setSystemFields((fields) => ({ ...fields, systemType })),
+        []
+    );
+
+    const setAuthenticationType = useCallback(
+        (authenticationType: string | undefined) => setSystemFields((fields) => ({ ...fields, authenticationType })),
         []
     );
 
@@ -94,10 +102,12 @@ export function useSystemMain(): {
         setSystemFields({
             name: systemInfo?.name,
             systemType: systemInfo?.systemType,
+            authenticationType: systemInfo?.authenticationType,
             url: systemInfo?.url,
             client: systemInfo?.client,
             username: systemInfo?.username,
-            password: systemInfo?.password
+            password: systemInfo?.password,
+            serviceKeys: systemInfo?.serviceKeys
         });
     }, [systemInfo]);
 
@@ -172,6 +182,7 @@ export function useSystemMain(): {
         defaultName,
         setName,
         setType,
+        setAuthenticationType,
         setUrl,
         setClient,
         setUsername,

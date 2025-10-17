@@ -26,12 +26,16 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
 
     public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
         let e: BackendSystem;
+        debugger;
         if (!(entity instanceof BackendSystem)) {
             // We need to use the correct class otherwise the annotations are not effective
             e = new BackendSystem({ ...(entity as BackendSystem) });
+            debugger;
         } else {
             e = entity;
+            debugger;
         }
+        debugger;
         return this.dataAccessor.write({
             entityName: this.entityName,
             id: BackendSystemKey.from(entity).getId(),

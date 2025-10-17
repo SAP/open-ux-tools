@@ -26,7 +26,7 @@ export function SystemHeader(): ReactElement {
                     {systemInfo?.systemType === 'OnPrem' && (
                         <div className="store-header-sub-heading">{t('titles.onPremSystem')}</div>
                     )}
-                    {(systemInfo?.systemType === 'BTP' || systemInfo?.systemType === 'S4HC') && (
+                    {systemInfo?.systemType === 'AbapCloud' && (
                         <div className="store-header-sub-heading">{t('titles.btpSystem')}</div>
                     )}
                 </>

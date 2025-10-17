@@ -4,7 +4,7 @@ import type { DisposeCallback, PanelContext } from '../../types/system';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
 import { extensions, type WebviewPanel, type Disposable } from 'vscode';
 import { t } from '../../utils';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { createWebviewPanel } from './utils';
 import { dispatchPanelAction } from './actions';
 import { GUIDED_ANSWERS_EXTENSION_ID } from '@sap-ux/guided-answers-helper';
@@ -16,9 +16,9 @@ import SystemsLogger from '../../utils/logger';
 export class SystemPanel implements Disposable {
     private panel?: WebviewPanel;
     private disposeCallback?: DisposeCallback;
+    private backendSystem?: BackendSystem;
     readonly extensionPath: string;
     readonly systemPanelViewType: SystemPanelViewType;
-    readonly backendSystem?: BackendSystem;
     readonly systemStatusMessage?: string;
     readonly isGuidedAnswersEnabled: boolean = !!extensions.getExtension(GUIDED_ANSWERS_EXTENSION_ID);
 
@@ -48,7 +48,10 @@ export class SystemPanel implements Disposable {
 
     public async reveal(): Promise<void> {
         if (!this.panel) {
-            const webappDirPath = join(this.extensionPath, 'dist', 'webapp');
+            const webappDirPath = process.env.SS_WEBAPP_PATH
+                ? resolve(this.extensionPath, process.env.SS_WEBAPP_PATH)
+                : join(this.extensionPath, 'dist', 'webapp');
+
             this.panel = await createWebviewPanel(
                 webappDirPath,
                 this.disposeCallback?.bind(this),
@@ -71,6 +74,7 @@ export class SystemPanel implements Disposable {
                     backendSystem: this.backendSystem,
                     systemStatusMessage: this.systemStatusMessage,
                     isGuidedAnswersEnabled: this.isGuidedAnswersEnabled,
+                    updateBackendSystem: this.updateBackendSystem.bind(this),
                     disposePanel: this.dispose.bind(this),
                     postMessage: this.panel.webview.postMessage.bind(this.panel.webview)
                 };
@@ -79,5 +83,14 @@ export class SystemPanel implements Disposable {
         } catch (e) {
             SystemsLogger.logger.error(t('error.panelActionDispatch', { error: (e as Error).message ?? String(e) }));
         }
+    }
+
+    /**
+     * Update the backend system in the panel context.
+     *
+     * @param system - backend system
+     */
+    private updateBackendSystem(system: BackendSystem): void {
+        this.backendSystem = system;
     }
 }

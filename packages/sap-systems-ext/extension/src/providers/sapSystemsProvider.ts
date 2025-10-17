@@ -1,7 +1,8 @@
 import type { TreeDataProvider, Command, ExtensionContext, Event } from 'vscode';
 import { SystemService, type BackendSystem } from '@sap-ux/store';
 import { commands, TreeItem, TreeItemCollapsibleState, Uri, EventEmitter } from 'vscode';
-import { getDisplayName, t } from '../utils';
+import { t } from '../utils';
+import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import { SystemCommands } from '../utils/constants';
 import SystemsLogger from '../utils/logger';
 
@@ -36,7 +37,7 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
 
         return systems
             .map((s: BackendSystem) => {
-                return { name: getDisplayName(s), url: s.url, client: s.client } as SapSystemTreeItem;
+                return { name: getBackendSystemDisplayName(s), url: s.url, client: s.client } as SapSystemTreeItem;
             })
             ?.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }));
     }

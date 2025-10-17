@@ -521,7 +521,10 @@
                 "--log=debug",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/sap-systems-ext/extension/"
             ],
-            "outFiles": ["${workspaceFolder}/packages/sap-systems-ext/extension/dist/**/*.js"]
+            "outFiles": ["${workspaceFolder}/packages/sap-systems-ext/extension/dist/**/*.js"],
+            "env": {
+                "SS_WEBAPP_PATH": "../webapp/dist"
+            }
         }
     ]
 }

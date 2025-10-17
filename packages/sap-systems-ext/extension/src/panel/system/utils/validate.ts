@@ -4,6 +4,7 @@ import SystemsLogger from '../../../utils/logger';
 
 /**
  * Validates the provided system information.
+ * Currently only checks that a URL is provided.
  *
  * @param input - system information to validate
  * @returns true if valid, otherwise a string with the validation error message

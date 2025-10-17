@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { BackendSystem, SystemType } from '@sap-ux/store';
-import { BTPSystem } from './BTPSystem';
+import { CloudSystem } from './CloudSystem';
 import { OnPremSystem } from './OnPremSystem';
 import { SystemName } from './SystemName';
 
@@ -29,7 +29,8 @@ export function SystemInfo({
     setIsDetailsValid
 }: SystemInfoProps): ReactElement {
     const systemType = systemInfo?.systemType as SystemType;
-    const showSystemName = systemType === 'OnPrem' || systemType === 'BTP' || systemType === 'S4HC';
+    const showSystemName = systemType === 'OnPrem' || systemType === 'AbapCloud';
+
     return (
         <div>
             {(() => {
@@ -54,8 +55,8 @@ export function SystemInfo({
                                 setIsDetailsValid={setIsDetailsValid}
                             />
                         )}
-                        {(systemType === 'BTP' || systemType === 'S4HC') && (
-                            <BTPSystem
+                        {systemType === 'AbapCloud' && (
+                            <CloudSystem
                                 systemInfo={systemInfo}
                                 setUrl={setUrl}
                                 setIsDetailsUpdated={setIsDetailsUpdated}

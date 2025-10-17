@@ -45,6 +45,7 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
 ): SystemState => {
     switch (action.type) {
         case SYSTEM_INFO:
+            debugger;
             return {
                 systemInfo: action.payload.systemInfo,
                 unSaved: action.payload.unSaved

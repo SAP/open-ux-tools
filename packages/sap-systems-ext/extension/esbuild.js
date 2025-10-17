@@ -34,11 +34,7 @@ const copyPrebuildsPlugin = {
     setup(build) {
         build.onEnd(async () => {
             const sourceModule = '@zowe/secrets-for-zowe-sdk';
-            const sourceDir = path.join(
-                require.resolve(sourceModule),
-                '../..',
-                'prebuilds'
-            );
+            const sourceDir = path.join(require.resolve(sourceModule), '../..', 'prebuilds');
             const targetDir = path.join(__dirname, 'prebuilds');
 
             if (fs.existsSync(sourceDir)) {
@@ -60,11 +56,7 @@ const copyWebappPlugin = {
     setup(build) {
         build.onEnd(async () => {
             const sourceModule = '@sap-ux/sap-systems-ext-webapp';
-            const sourceDir = path.join(
-                path.dirname(require.resolve(sourceModule)),
-               '..',
-                'dist'
-            );
+            const sourceDir = path.join(path.dirname(require.resolve(sourceModule)), '..', 'dist');
             const targetDir = path.join(__dirname, 'dist', 'webapp');
 
             if (fs.existsSync(sourceDir)) {
@@ -87,8 +79,10 @@ async function main() {
         sourcesContent: false,
         platform: 'node',
         outfile: 'dist/extension.js',
-        external: ['vscode', 
-            // '@zowe/secrets-for-zowe-sdk', 'jsonc-parser'
+        external: [
+            'vscode',
+            'jsonc-parser'
+            // '@zowe/secrets-for-zowe-sdk',
         ],
         logLevel: 'silent',
         plugins: [

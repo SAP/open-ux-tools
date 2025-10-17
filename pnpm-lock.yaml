@@ -3527,6 +3527,9 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../../axios-extension
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../../fiori-generator-shared
       '@sap-ux/guided-answers-helper':
         specifier: workspace:*
         version: link:../../guided-answers-helper
