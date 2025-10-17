@@ -321,6 +321,9 @@ export function getDefaultTableType(
         ) {
             // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
             tableType = 'TreeTable';
+        } else if (odataVersion === OdataVersion.v2 && templateType === 'alp') {
+            // For ALP, use AnalyticalTable as default
+            tableType = 'AnalyticalTable';
         } else if (currentTableType) {
             // If the user has already selected a table type use it
             tableType = currentTableType;
@@ -328,6 +331,9 @@ export function getDefaultTableType(
             // Default to ResponsiveTable for other cases
             tableType = 'ResponsiveTable';
         }
+    } else if (odataVersion === OdataVersion.v2 && templateType === 'alp') {
+        // For ALP, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
     } else if (currentTableType) {
         // If the user has already selected a table type use it
         tableType = currentTableType;

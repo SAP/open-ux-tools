@@ -333,6 +333,16 @@ describe('Test entity helper functions', () => {
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
+        test('should return AnalyticalTable for ALP template with OData v2', () => {
+            const parsedEdmx = parse(metadataV4WithDraftEntities);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false, 'Travel');
+
+            expect(result.tableType).toBe('AnalyticalTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
         test('should return current table type when provided', () => {
             const parsedEdmx = parse(metadataV4WithDraftEntities);
             const convertedMetadata = convert(parsedEdmx);
@@ -367,6 +377,16 @@ describe('Test entity helper functions', () => {
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, undefined);
 
             expect(result.tableType).toBe('ResponsiveTable');
+            expect(result.setAnalyticalTableDefault).toBe(false);
+        });
+
+        test('should return AnalyticalTable for ALP template with OData v2 when no entitySetName provided', () => {
+            const parsedEdmx = parse(metadataV4WithDraftEntities);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false, undefined);
+
+            expect(result.tableType).toBe('AnalyticalTable');
             expect(result.setAnalyticalTableDefault).toBe(false);
         });
 
