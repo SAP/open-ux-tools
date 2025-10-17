@@ -5,6 +5,8 @@ extensions:
 prompts:
     - '{{query}}'
 tests:
+    # List apps
+    - file://./list-apps/lrop.yaml
     # Pages
     - file://./pages/add-op-page.yaml
     - file://./pages/add-cp-page.yaml
