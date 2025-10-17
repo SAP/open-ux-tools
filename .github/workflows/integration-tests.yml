@@ -120,7 +120,7 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Download blob reports from GitHub Actions Artifacts
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v5
               with:
                   path: tests/integration/adaptation-editor/all-blob-reports
                   pattern: blob-report-*
