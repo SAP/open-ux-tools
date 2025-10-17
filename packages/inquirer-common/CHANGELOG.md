@@ -1,5 +1,18 @@
 # @sap-ux/inquirer-common
 
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+
+## 0.8.0
+
+### Minor Changes
+
+-   4053369: Determine the default table type based on the service capabilities. Auto-populate qualifier from RecursiveHierarchy annotation if available.
+
 ## 0.7.51
 
 ### Patch Changes
