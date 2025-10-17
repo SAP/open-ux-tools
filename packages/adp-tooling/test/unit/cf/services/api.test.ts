@@ -10,8 +10,8 @@ import {
     getBusinessServiceKeys,
     getFDCApps,
     getFDCRequestArguments,
-    createService,
-    createServiceByTags,
+    createServiceInstance,
+    getServiceNameByTags,
     createServices,
     getServiceInstanceKeys
 } from '../../../../src/cf/services/api';
@@ -306,7 +306,7 @@ describe('CF Services API', () => {
         });
     });
 
-    describe('createService', () => {
+    describe('createServiceInstance', () => {
         const plan = 'test-plan';
         const serviceInstanceName = 'test-service';
         const serviceName = 'test-offering';
@@ -318,7 +318,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(plan, serviceInstanceName, serviceName, { logger: mockLogger });
+            await createServiceInstance(plan, serviceInstanceName, serviceName, { logger: mockLogger });
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
@@ -337,7 +337,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createService(plan, serviceInstanceName, 'xsuaa', {
+            await createServiceInstance(plan, serviceInstanceName, 'xsuaa', {
                 xsSecurityProjectName: 'test-project',
                 logger: mockLogger
             });
@@ -355,7 +355,9 @@ describe('CF Services API', () => {
         test('should handle service creation failure', async () => {
             mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
 
-            await expect(createService(plan, serviceInstanceName, serviceName, { logger: mockLogger })).rejects.toThrow(
+            await expect(
+                createServiceInstance(plan, serviceInstanceName, serviceName, { logger: mockLogger })
+            ).rejects.toThrow(
                 t('error.failedToCreateServiceInstance', {
                     serviceInstanceName: serviceInstanceName,
                     error: 'Service creation failed'
@@ -367,7 +369,7 @@ describe('CF Services API', () => {
             mockReadFileSync.mockReturnValue('invalid json content');
 
             await expect(
-                createService(plan, serviceInstanceName, 'xsuaa', {
+                createServiceInstance(plan, serviceInstanceName, 'xsuaa', {
                     xsSecurityProjectName: 'test-project',
                     logger: mockLogger
                 })
@@ -379,13 +381,11 @@ describe('CF Services API', () => {
         });
     });
 
-    describe('createServiceByTags', () => {
+    describe('getServiceNameByTags', () => {
         const spaceGuid = 'test-space-guid';
-        const plan = 'test-plan';
-        const serviceInstanceName = 'test-service';
         const tags = ['test-tag'];
 
-        test('should create service by discovering service name using tags', async () => {
+        test('should get service name using tags', async () => {
             const mockServiceOfferings = {
                 resources: [
                     {
@@ -396,55 +396,30 @@ describe('CF Services API', () => {
             };
 
             mockRequestCfApi.mockResolvedValue(mockServiceOfferings);
-            mockCFToolsCliExecute.mockResolvedValue({
-                exitCode: 0,
-                stdout: 'Service created successfully',
-                stderr: ''
-            });
 
-            await createServiceByTags(spaceGuid, plan, serviceInstanceName, tags, { logger: mockLogger });
+            const serviceName = await getServiceNameByTags(spaceGuid, tags);
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
             );
-
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
-                'create-service',
-                'test-service-offering',
-                plan,
-                serviceInstanceName
-            ]);
+            expect(serviceName).toBe('test-service-offering');
         });
 
-        test('should handle service discovery failure when no service found', async () => {
+        test('should return empty string when no service found', async () => {
             const mockServiceOfferings = {
                 resources: []
             };
 
             mockRequestCfApi.mockResolvedValue(mockServiceOfferings);
-            mockCFToolsCliExecute.mockRejectedValue(new Error('Service not found'));
 
-            await expect(
-                createServiceByTags(spaceGuid, plan, serviceInstanceName, tags, { logger: mockLogger })
-            ).rejects.toThrow(
-                t('error.failedToCreateServiceInstance', {
-                    serviceInstanceName: serviceInstanceName,
-                    error: 'Service not found'
-                })
-            );
+            const serviceName = await getServiceNameByTags(spaceGuid, tags);
+            expect(serviceName).toBe('');
         });
 
         test('should handle API request failure', async () => {
             mockRequestCfApi.mockRejectedValue(new Error('API request failed'));
 
-            await expect(
-                createServiceByTags(spaceGuid, plan, serviceInstanceName, tags, { logger: mockLogger })
-            ).rejects.toThrow(
-                t('error.failedToCreateServiceInstance', {
-                    serviceInstanceName: serviceInstanceName,
-                    error: 'API request failed'
-                })
-            );
+            await expect(getServiceNameByTags(spaceGuid, tags)).rejects.toThrow('API request failed');
         });
     });
 

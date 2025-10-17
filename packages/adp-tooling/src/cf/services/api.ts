@@ -147,7 +147,7 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
  * @param {CreateServiceOptions} [options] - Additional options.
  * @returns {Promise<void>} The promise.
  */
-export async function createService(
+export async function createServiceInstance(
     plan: string,
     serviceInstanceName: string,
     serviceName: string,
@@ -188,38 +188,20 @@ export async function createService(
 }
 
 /**
- * Creates a service instance by discovering the service name using tags.
+ * Gets the service name by tags.
  *
  * @param {string} spaceGuid - The space GUID.
- * @param {string} plan - The service plan.
- * @param {string} serviceInstanceName - The service instance name.
  * @param {string[]} tags - The service tags for discovery.
- * @param {CreateServiceOptions} [options] - Additional options.
- * @returns {Promise<void>} The promise.
+ * @returns {Promise<string>} The service name.
  */
-export async function createServiceByTags(
-    spaceGuid: string,
-    plan: string,
-    serviceInstanceName: string,
-    tags: string[],
-    options?: CreateServiceOptions
-): Promise<void> {
-    const { logger } = options ?? {};
-
-    try {
-        const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
-            `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
-        );
-        const serviceOffering = json?.resources?.find(
-            (resource: CfServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
-        );
-        const serviceName = serviceOffering?.name ?? '';
-
-        return createService(plan, serviceInstanceName, serviceName, options);
-    } catch (e) {
-        logger?.error(e);
-        throw new Error(t('error.failedToCreateServiceInstance', { serviceInstanceName, error: e.message }));
-    }
+export async function getServiceNameByTags(spaceGuid: string, tags: string[]): Promise<string> {
+    const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
+        `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
+    );
+    const serviceOffering = json?.resources?.find(
+        (resource: CfServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
+    );
+    return serviceOffering?.name ?? '';
 }
 
 /**
@@ -244,7 +226,7 @@ export async function createServices(
     for (const resource of yamlContent.resources ?? []) {
         if (!excludeServices.has(resource?.parameters?.service ?? '')) {
             if (resource?.parameters?.service === 'xsuaa') {
-                await createService(
+                await createServiceInstance(
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
                     resource.parameters.service,
@@ -255,7 +237,7 @@ export async function createServices(
                     }
                 );
             } else {
-                await createService(
+                await createServiceInstance(
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
                     resource.parameters.service ?? '',

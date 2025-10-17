@@ -6,20 +6,22 @@ import type { Manifest } from '@sap-ux/project-access';
 
 import { initI18n, t } from '../../../../src/i18n';
 import type { CfAppParams, ServiceKeys, Uaa } from '../../../../src/types';
-import { createServiceByTags, getServiceInstanceKeys } from '../../../../src/cf/services/api';
+import { getServiceNameByTags, createServiceInstance, getServiceInstanceKeys } from '../../../../src/cf/services/api';
 import { downloadAppContent, downloadZip, getHtml5RepoCredentials, getToken } from '../../../../src/cf/app/html5-repo';
 
 jest.mock('axios');
 jest.mock('adm-zip');
 jest.mock('../../../../src/cf/services/api', () => ({
     ...jest.requireActual('../../../../src/cf/services/api'),
-    createServiceByTags: jest.fn(),
+    getServiceNameByTags: jest.fn(),
+    createServiceInstance: jest.fn(),
     getServiceInstanceKeys: jest.fn()
 }));
 
 const mockAxios = axios as jest.Mocked<typeof axios>;
 const mockAdmZip = AdmZip as jest.MockedClass<typeof AdmZip>;
-const mockCreateServiceByTags = createServiceByTags as jest.MockedFunction<typeof createServiceByTags>;
+const mockGetServiceNameByTags = getServiceNameByTags as jest.MockedFunction<typeof getServiceNameByTags>;
+const mockCreateServiceInstance = createServiceInstance as jest.MockedFunction<typeof createServiceInstance>;
 const mockGetServiceInstanceKeys = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
 
 describe('HTML5 Repository', () => {
@@ -165,23 +167,25 @@ describe('HTML5 Repository', () => {
                 },
                 mockLogger
             );
-            expect(mockCreateServiceByTags).not.toHaveBeenCalled();
+            expect(mockGetServiceNameByTags).not.toHaveBeenCalled();
+            expect(mockCreateServiceInstance).not.toHaveBeenCalled();
         });
 
         test('should create service when no credentials found', async () => {
             mockGetServiceInstanceKeys
                 .mockResolvedValueOnce({ credentials: [], serviceInstance: { guid: '', name: '' } })
                 .mockResolvedValueOnce(mockServiceKeys);
-            mockCreateServiceByTags.mockResolvedValue(undefined);
+            mockGetServiceNameByTags.mockResolvedValue('html5-apps-repo-rt');
+            mockCreateServiceInstance.mockResolvedValue(undefined);
 
             const result = await getHtml5RepoCredentials('test-space-guid', mockLogger);
 
             expect(result).toBe(mockServiceKeys);
-            expect(mockCreateServiceByTags).toHaveBeenCalledWith(
-                'test-space-guid',
+            expect(mockGetServiceNameByTags).toHaveBeenCalledWith('test-space-guid', ['html5-apps-repo-rt']);
+            expect(mockCreateServiceInstance).toHaveBeenCalledWith(
                 'app-runtime',
                 'html5-apps-repo-runtime',
-                ['html5-apps-repo-rt'],
+                'html5-apps-repo-rt',
                 {
                     logger: mockLogger
                 }
@@ -193,7 +197,8 @@ describe('HTML5 Repository', () => {
             mockGetServiceInstanceKeys
                 .mockResolvedValueOnce({ credentials: [], serviceInstance: { guid: '', name: '' } })
                 .mockResolvedValueOnce({ credentials: [], serviceInstance: { guid: '', name: '' } });
-            mockCreateServiceByTags.mockResolvedValue(undefined);
+            mockGetServiceNameByTags.mockResolvedValue('html5-apps-repo-rt');
+            mockCreateServiceInstance.mockResolvedValue(undefined);
 
             await expect(getHtml5RepoCredentials('test-space-guid', mockLogger)).rejects.toThrow(
                 t('error.cannotFindHtml5RepoRuntime')
