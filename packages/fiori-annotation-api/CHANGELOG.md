@@ -1,5 +1,28 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [ccb5285]
+    -   @sap-ux/odata-vocabularies@0.4.17
+    -   @sap-ux/cds-annotation-parser@0.2.20
+    -   @sap-ux/cds-odata-annotation-converter@0.6.13
+    -   @sap-ux/xml-odata-annotation-converter@0.4.1
+
+## 0.7.6
+
+### Patch Changes
+
+-   1443680: fix: wrong origin range for split annotations with collection values.
+
+## 0.7.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/cds-odata-annotation-converter@0.6.12
+
 ## 0.7.4
 
 ### Patch Changes

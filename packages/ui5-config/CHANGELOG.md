@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.8
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+
 ## 0.29.7
 
 ### Patch Changes

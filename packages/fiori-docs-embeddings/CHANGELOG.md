@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.3.0
+
+### Minor Changes
+
+-   e75b594: Add Fiori Development portal documentation to embeddings
+
+## 0.2.0
+
+### Minor Changes
+
+-   b5b6c9c: Add FPM Development portal documentation to embeddings
+
 ## 0.1.1
 
 ### Patch Changes

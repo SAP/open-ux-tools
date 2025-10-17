@@ -4,6 +4,17 @@ import { join } from 'node:path';
 const mockPipeline = jest.fn();
 const mockConnect = jest.fn();
 
+const mockLogger = {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn()
+};
+
+jest.mock('@sap-ux/logger', () => ({
+    ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
+}));
+
 jest.mock('@xenova/transformers', () => ({
     pipeline: mockPipeline
 }));
@@ -553,8 +564,8 @@ describe('EmbeddingBuilder', () => {
         it('should handle errors in buildEmbeddings gracefully', async () => {
             const builder = new EmbeddingBuilder();
 
-            // Mock console.error to avoid output during test
-            const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+            // Mock logger.error to avoid output during test
+            mockLogger.error.mockClear();
             const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
                 throw new Error('process.exit called');
             });
@@ -563,10 +574,8 @@ describe('EmbeddingBuilder', () => {
 
             await expect(builder.buildEmbeddings()).rejects.toThrow('process.exit called');
 
-            expect(consoleSpy).toHaveBeenCalled();
+            expect(mockLogger.error).toHaveBeenCalled();
             expect(exitSpy).toHaveBeenCalledWith(1);
-
-            consoleSpy.mockRestore();
             exitSpy.mockRestore();
         });
     });

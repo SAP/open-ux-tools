@@ -1,5 +1,16 @@
 # @sap-ux/axios-extension
 
+## 1.23.0
+
+### Minor Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/feature-toggle@0.3.2
+
 ## 1.22.10
 
 ### Patch Changes

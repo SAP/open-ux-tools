@@ -91,6 +91,12 @@ export async function generateCustomColumn(
     // merge with defaults
     const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest);
 
+    // add fragment
+    const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
+    if (completeColumn.control || !fs.exists(viewPath)) {
+        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
+    }
+
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.minUI5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
@@ -99,12 +105,6 @@ export async function generateCustomColumn(
         content: filledTemplate,
         tabInfo: customColumn.tabInfo
     });
-
-    // add fragment
-    const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
-    if (completeColumn.control || !fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
-    }
 
     return fs;
 }

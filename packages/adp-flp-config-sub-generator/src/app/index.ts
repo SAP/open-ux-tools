@@ -388,10 +388,10 @@ export default class AdpFlpConfigGenerator extends Generator {
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
             {
-                name: t('yuiNavSteps.tileSettingsName', {
+                name: t('yuiNavSteps.tileSettingsName'),
+                description: t('yuiNavSteps.tileSettingsDescr', {
                     projectName: path.basename(this.projectRootPath)
-                }),
-                description: ''
+                })
             }
         ]);
     }
