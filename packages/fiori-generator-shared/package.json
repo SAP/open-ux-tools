@@ -37,12 +37,12 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "os-name": "4.0.1",
-        "semver": "7.5.4"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "@types/semver": "7.5.2",
+        "@types/semver": "7.7.1",
         "@types/vscode": "1.73.1",
         "@types/yeoman-environment": "2.10.11",
         "@sap-ux/axios-extension": "workspace:*",
