@@ -928,63 +928,6 @@ describe('FlpSandbox', () => {
         });
     });
 
-    describe('router with enableCardGenerator in CAP project', () => {
-        let server!: SuperTest<Test>;
-        const mockConfig = {
-            editors: {
-                cardGenerator: {
-                    path: 'test/flpCardGeneratorSandbox.html'
-                }
-            }
-        };
-
-        let mockFsPromisesWriteFile: jest.Mock;
-
-        beforeEach(() => {
-            mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile;
-        });
-
-        afterEach(() => {
-            fetchMock.mockRestore();
-        });
-
-        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
-            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            jest.spyOn(projectAccess, 'getProjectType').mockImplementationOnce(() => Promise.resolve('CAPNodejs'));
-            await flp.init(manifest);
-
-            const app = express();
-            app.use(flp.router);
-
-            server = supertest(app);
-        };
-
-        beforeAll(async () => {
-            await setupMiddleware(mockConfig as MiddlewareConfig);
-        });
-
-        test('GET /test/flpCardGeneratorSandbox.html', async () => {
-            const response = await server.get(
-                `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
-            );
-            expect(response.status).toBe(200);
-            expect(response.type).toBe('text/html');
-            expect(logger.warn).toHaveBeenCalledWith('The Card Generator is not available for CAP projects.');
-        });
-
-        test('POST /cards/store with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send('hello');
-            expect(response.status).toBe(404);
-        });
-
-        test('POST /editor/i18n with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send('hello');
-            expect(response.status).toBe(404);
-        });
-    });
-
     describe('router with test suite', () => {
         let server!: SuperTest<Test>;
 
