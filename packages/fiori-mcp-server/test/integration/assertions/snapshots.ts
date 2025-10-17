@@ -3,7 +3,7 @@ import { basename, join, dirname } from 'path';
 import { diffJson, diffTrimmedLines } from 'diff';
 import type { Change } from 'diff';
 import { green, red } from 'chalk';
-import { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
+import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
 
 interface SnapshotData {
@@ -193,7 +193,9 @@ function validateSnapshot(snapshotData: SnapshotData, config: SnapshotConfigurat
  * @returns The value found at the given path, or `undefined` if any part of the path is invalid.
  */
 function getByPath(obj: unknown, path: (string | number)[]): unknown {
-    if (!Array.isArray(path)) return undefined;
+    if (!Array.isArray(path)) {
+        return undefined;
+    }
 
     let current: unknown = obj;
 
@@ -253,7 +255,9 @@ function deepContains(expected: unknown, actual: unknown, path = ''): string | u
         }
 
         const result = deepContains(expectedObj[key], actualObj[key], `${path}.${key}`);
-        if (result) return result;
+        if (result) {
+            return result;
+        }
     }
 
     // Ignore extra keys in `actual`

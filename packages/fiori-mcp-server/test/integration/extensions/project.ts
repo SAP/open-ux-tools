@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { join } from 'path';
-import { TestSuite, TestCase } from 'promptfoo';
+import type { TestSuite, TestCase } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
 
 /** Variable name used to identify project configuration in test config */

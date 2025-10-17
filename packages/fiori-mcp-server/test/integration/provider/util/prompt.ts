@@ -1,10 +1,10 @@
-import type { PromptFunction } from "promptfoo";
-import { z } from "zod";
-import { readFile } from "./file-access.js";
-import { validate } from "./validate.js";
+import type { PromptFunction } from 'promptfoo';
+import fs from 'fs/promises';
+import { z } from 'zod';
+import { validate } from './validate.js';
 
 const AbstractMessage = z.object({
-    role: z.enum(["system", "user"])
+    role: z.enum(['system', 'user'])
 });
 
 /**
@@ -22,8 +22,8 @@ const Message = z.union([FileTemplateMessage, InlineMessage]);
 type Message = z.infer<typeof Message>;
 
 const PromptConfigResponseFormat = z
-    .union([z.literal("text"), z.literal("json_object"), z.object({ json_schema: z.string() })])
-    .default("text");
+    .union([z.literal('text'), z.literal('json_object'), z.object({ json_schema: z.string() })])
+    .default('text');
 export type PromptConfigResponseFormat = z.infer<typeof PromptConfigResponseFormat>;
 
 export const PromptConfig = z.object({
@@ -33,14 +33,16 @@ export const PromptConfig = z.object({
 export type PromptConfig = z.infer<typeof PromptConfig>;
 
 function isFileTemplateMessage(message: Message): message is FileTemplateMessage {
-    return "template" in message;
+    return 'template' in message;
 }
 
 /**
  * Promptfoo prompt function that converts the ISLM prompt template format into Promptfoo template format.
  *
- * @param vars Configuration variables
- * @param config Prompt configuration
+ * @param options The options object.
+ * @param options.vars Configuration variables
+ * @param options.config Prompt configuration
+ * @returns Converted promptfoo template format.
  */
 const prompt: PromptFunction = async ({
     vars,
@@ -54,22 +56,24 @@ const prompt: PromptFunction = async ({
         throw new Error(`Invalid prompt configuration: ${cfg.message}`);
     }
 
-    const islmVars = Object.keys(vars).filter((v) => v.startsWith("ISLM_"));
+    const islmVars = Object.keys(vars).filter((v) => v.startsWith('ISLM_'));
 
     return await Promise.all(
         cfg.data.messages.map(async (message) => {
-            const template = isFileTemplateMessage(message) ? await readFile(message.template) : message.content;
+            const template = isFileTemplateMessage(message)
+                ? await fs.readFile(message.template, 'utf-8')
+                : message.content;
 
             // Replace ISLM variables in the prompt file with the corresponding values from vars
             const content = islmVars.reduce(
-                (content, islmVar) => content.replaceAll(`{${islmVar}}`, vars[islmVar] ?? ""),
+                (content, islmVar) => content.replaceAll(`{${islmVar}}`, vars[islmVar] ?? ''),
                 template
             );
 
             // check if there are unresolved ISLM variables left in the prompt file
             const unresolvedVars = Array.from(content.matchAll(/\{(ISLM_[^}]+)}/g)).map((match) => match[1]);
             if (unresolvedVars.length > 0) {
-                throw new Error(`Unresolved prompt variables: ${unresolvedVars.join(", ")}`);
+                throw new Error(`Unresolved prompt variables: ${unresolvedVars.join(', ')}`);
             }
 
             return { role: message.role, content };

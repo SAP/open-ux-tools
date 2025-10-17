@@ -1,5 +1,5 @@
 import { error, type Result, success } from './result';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 /**
  * Validates the given data against the provided Zod schema.

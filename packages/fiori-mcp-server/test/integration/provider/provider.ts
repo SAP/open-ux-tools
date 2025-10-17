@@ -1,4 +1,4 @@
-import { AzureOpenAiChatCallOptions, AzureOpenAiChatClient } from '@sap-ai-sdk/langchain';
+import { type AzureOpenAiChatCallOptions, AzureOpenAiChatClient } from '@sap-ai-sdk/langchain';
 import {
     type ApiProvider,
     type CallApiContextParams,
@@ -6,17 +6,17 @@ import {
     type ProviderResponse
 } from 'promptfoo';
 import { z } from 'zod';
+import fs from 'fs/promises';
 import type {
     AzureOpenAiCreateChatCompletionRequest,
     AzureOpenAiResponseFormatJsonSchemaSchema
 } from '@sap-ai-sdk/foundation-models/dist/azure-openai/client/inference/schema';
 import type { AIMessageChunk, MessageFieldWithRole } from '@langchain/core/messages';
-import { DynamicStructuredTool } from '@langchain/core/tools';
-import { Runnable } from '@langchain/core/runnables';
-import { BaseLanguageModelInput } from '@langchain/core/language_models/base';
+import type { DynamicStructuredTool } from '@langchain/core/tools';
+import type { Runnable } from '@langchain/core/runnables';
+import type { BaseLanguageModelInput } from '@langchain/core/language_models/base';
 import { getServiceKeyFromEnv } from './util/service-key';
 import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
-import { readFile } from './util/file-access';
 import { validate } from './util/validate';
 import { callTool, getTools } from './mcp-server';
 
@@ -115,7 +115,7 @@ export default class AICoreApiProvider implements ApiProvider {
                     // next try
                 }
                 if (!schema) {
-                    const schemaFile = await readFile(jsonSchema);
+                    const schemaFile = await fs.readFile(jsonSchema, 'utf-8');
                     schema = JSON.parse(schemaFile);
                 }
                 return {
