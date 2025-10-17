@@ -59,7 +59,7 @@
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@types/json-schema": "7.0.5",
-        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs": "1.1.5",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
