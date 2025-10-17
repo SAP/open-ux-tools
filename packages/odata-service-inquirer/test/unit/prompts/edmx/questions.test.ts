@@ -384,10 +384,17 @@ describe('Test entity prompts', () => {
         // If no prevAnswers, default to ResponsiveTable
         expect((tableType.default as Function)()).toEqual('ResponsiveTable');
 
-        // For ALP, use AnalyticalTable as default
+        // For ALP with entity that has complete analytical transformations, use AnalyticalTable as default
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'alp', false);
         tableType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
-        expect((tableType.default as Function)({})).toEqual('AnalyticalTable');
+        expect(
+            (tableType.default as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'SalesOrderItem',
+                    entitySetType: 'com.c_salesordermanage_sd_aggregate.SalesOrderItemType'
+                }
+            })
+        ).toEqual('AnalyticalTable');
 
         const hierarchyQualifier = questions.find(
             (question) => question.name === EntityPromptNames.hierarchyQualifier

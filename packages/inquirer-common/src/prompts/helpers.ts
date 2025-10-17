@@ -162,7 +162,6 @@ export const transformationsRequiredForAnalyticalTable = [
     'filter',
     'identity',
     'orderby',
-    'search',
     'skip',
     'top',
     'groupby',
@@ -213,13 +212,9 @@ export function filterAggregateTransformations(entitySets: EntitySet[]): EntityS
  */
 export function hasAggregateTransformationsForEntity(
     metadata: ConvertedMetadata,
-    entitySetName?: string,
+    entitySetName: string,
     requiredTransformations?: readonly string[]
 ): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-
     const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return false;
@@ -235,11 +230,7 @@ export function hasAggregateTransformationsForEntity(
  * @param entitySetName The entity set name to check for recursive hierarchy annotation.
  * @returns true if the entity set has Hierarchy.RecursiveHierarchy annotation, false otherwise.
  */
-export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-
+export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, entitySetName: string): boolean {
     const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return false;
@@ -255,14 +246,7 @@ export function hasRecursiveHierarchyForEntity(metadata: ConvertedMetadata, enti
  * @param entitySetName The entity set name to check for recursive hierarchy annotation.
  * @returns The qualifier string if found, undefined otherwise.
  */
-export function getRecursiveHierarchyQualifier(
-    metadata: ConvertedMetadata,
-    entitySetName?: string
-): string | undefined {
-    if (!entitySetName) {
-        return undefined;
-    }
-
+export function getRecursiveHierarchyQualifier(metadata: ConvertedMetadata, entitySetName: string): string | undefined {
     const entitySet = findEntitySetByName(metadata, entitySetName);
     if (!entitySet) {
         return undefined;
