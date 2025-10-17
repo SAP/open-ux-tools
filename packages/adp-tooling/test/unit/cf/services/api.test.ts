@@ -10,7 +10,7 @@ import {
     getBusinessServiceKeys,
     getFDCApps,
     getFDCRequestArguments,
-    createServiceWithName,
+    createService,
     createServiceByTags,
     createServices,
     getServiceInstanceKeys
@@ -306,7 +306,7 @@ describe('CF Services API', () => {
         });
     });
 
-    describe('createServiceWithName', () => {
+    describe('createService', () => {
         const plan = 'test-plan';
         const serviceInstanceName = 'test-service';
         const serviceName = 'test-offering';
@@ -318,7 +318,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServiceWithName(plan, serviceInstanceName, serviceName, { logger: mockLogger });
+            await createService(plan, serviceInstanceName, serviceName, { logger: mockLogger });
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
@@ -337,7 +337,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServiceWithName(plan, serviceInstanceName, 'xsuaa', {
+            await createService(plan, serviceInstanceName, 'xsuaa', {
                 xsSecurityProjectName: 'test-project',
                 logger: mockLogger
             });
@@ -355,9 +355,7 @@ describe('CF Services API', () => {
         test('should handle service creation failure', async () => {
             mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
 
-            await expect(
-                createServiceWithName(plan, serviceInstanceName, serviceName, { logger: mockLogger })
-            ).rejects.toThrow(
+            await expect(createService(plan, serviceInstanceName, serviceName, { logger: mockLogger })).rejects.toThrow(
                 t('error.failedToCreateServiceInstance', {
                     serviceInstanceName: serviceInstanceName,
                     error: 'Service creation failed'
@@ -369,7 +367,7 @@ describe('CF Services API', () => {
             mockReadFileSync.mockReturnValue('invalid json content');
 
             await expect(
-                createServiceWithName(plan, serviceInstanceName, 'xsuaa', {
+                createService(plan, serviceInstanceName, 'xsuaa', {
                     xsSecurityProjectName: 'test-project',
                     logger: mockLogger
                 })

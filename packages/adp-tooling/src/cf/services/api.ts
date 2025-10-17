@@ -139,7 +139,7 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
 }
 
 /**
- * Creates a service instance with a known service name.
+ * Creates a service instance.
  *
  * @param {string} plan - The service plan.
  * @param {string} serviceInstanceName - The service instance name.
@@ -147,7 +147,7 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
  * @param {CreateServiceOptions} [options] - Additional options.
  * @returns {Promise<void>} The promise.
  */
-export async function createServiceWithName(
+export async function createService(
     plan: string,
     serviceInstanceName: string,
     serviceName: string,
@@ -215,7 +215,7 @@ export async function createServiceByTags(
         );
         const serviceName = serviceOffering?.name ?? '';
 
-        return createServiceWithName(plan, serviceInstanceName, serviceName, options);
+        return createService(plan, serviceInstanceName, serviceName, options);
     } catch (e) {
         logger?.error(e);
         throw new Error(t('error.failedToCreateServiceInstance', { serviceInstanceName, error: e.message }));
@@ -244,7 +244,7 @@ export async function createServices(
     for (const resource of yamlContent.resources ?? []) {
         if (!excludeServices.has(resource?.parameters?.service ?? '')) {
             if (resource?.parameters?.service === 'xsuaa') {
-                await createServiceWithName(
+                await createService(
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
                     resource.parameters.service,
@@ -255,7 +255,7 @@ export async function createServices(
                     }
                 );
             } else {
-                await createServiceWithName(
+                await createService(
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
                     resource.parameters.service ?? '',
