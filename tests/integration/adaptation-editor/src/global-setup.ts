@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import express from 'express';
 import ZipFile from 'adm-zip';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { Server } from 'http';
 
 interface Change {
     changeType: string;
@@ -16,15 +17,18 @@ interface Change {
 /**
  * Global setup.
  *
- * It fetches maintained UI5 versions and add them to `process.env` variable.
+ * It sets up a mock ABAP backend server and returns the server instance.
+ *
+ * @param port - The port to run the server on (default: 3050)
+ * @param folder - for creating a copy of the fixtures folder (default: 'fixtures-copy')
+ * @returns The server instance
  */
-async function globalSetup(): Promise<void> {
+async function globalSetup(port: number = 3050, folder = 'fixtures-copy'): Promise<Server> {
     const app = express();
-    const port = 3050;
     const mapping: Record<string, Set<string>> = {};
 
     // Define the path to the static content
-    const staticPath = path.join(__dirname, '..', 'fixtures-copy');
+    const staticPath = path.join(__dirname, '..', folder);
 
     const mergedManifestCache = new Map<string, object>();
 
@@ -100,7 +104,7 @@ async function globalSetup(): Promise<void> {
 
                 const baseAppDirectory = `${variant.reference}`;
                 const manifestText = await readFile(
-                    join(__dirname, '..', 'fixtures-copy', `${variant.reference}`, 'webapp', 'manifest.json'),
+                    join(__dirname, '..', folder, `${variant.reference}`, 'webapp', 'manifest.json'),
                     'utf-8'
                 );
 
@@ -291,9 +295,11 @@ async function globalSetup(): Promise<void> {
     });
 
     // Start the server
-    app.listen(port, () => {
+    const server = app.listen(Number(port) || 3050, () => {
         console.log(`Mock ABAP backend is running on http://localhost:${port}`);
     });
+
+    return server;
 }
 
 export default globalSetup;
