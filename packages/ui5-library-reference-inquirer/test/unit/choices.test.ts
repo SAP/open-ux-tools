@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { getLibraryChoices, getProjectChoices } from '../../src/choices';
 import { Manifest, ReuseLibType } from '@sap-ux/project-access';
 

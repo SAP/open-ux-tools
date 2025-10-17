@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateControllerExtension } from '../../src';
 import type { ControllerExtension } from '../../src/controller-extension/types';
 import { ControllerExtensionPageType } from '../../src/controller-extension/types';

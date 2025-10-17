@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { showCollabDraftWarning } from '../../../../src/prompts/datasources/service-helpers/service-helpers';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { join } from 'path';
+import { join } from 'node:path';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 
 describe('Test service-helpers function `showCollabDraftWarning`', () => {

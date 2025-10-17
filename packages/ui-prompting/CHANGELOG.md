@@ -1,5 +1,26 @@
 # @sap-ux/ui-prompting
 
+## 0.5.4
+
+### Patch Changes
+
+-   6debb89: support for disabled options in Select choice lists
+-   Updated dependencies [6debb89]
+    -   @sap-ux/ui-components@1.26.13
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [4c448a7]
+    -   @sap-ux/ui-components@1.26.12
+
+## 0.5.2
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.5.1
 
 ### Patch Changes

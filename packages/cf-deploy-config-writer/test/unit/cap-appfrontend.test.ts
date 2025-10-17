@@ -1,5 +1,5 @@
 import * as projectAccess from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
@@ -10,7 +10,7 @@ import { DefaultMTADestination } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import fs from 'fs';
+import fs from 'node:fs';
 
 jest.mock('@sap/mta-lib', () => {
     return {

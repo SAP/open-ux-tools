@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { isAxiosError } from 'axios';
 
 /**

@@ -8,7 +8,7 @@ import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import memFs from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
 import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
 import {
@@ -222,7 +222,9 @@ describe('Test utils', () => {
         let result = getReadMeDataSourceLabel(source, true);
         const labelDatasourceType = t(`readme.label.datasourceType.${source}`);
 
-        expect(result).toBe(`${labelDatasourceType} (${t(`readme.label.sapSystemType.${SapSystemSourceType.SCP}`)})`);
+        expect(result).toBe(
+            `${labelDatasourceType} (${t(`readme.label.sapSystemType.${SapSystemSourceType.ABAP_CLOUD}`)})`
+        );
 
         result = getReadMeDataSourceLabel(source);
         expect(result).toBe(

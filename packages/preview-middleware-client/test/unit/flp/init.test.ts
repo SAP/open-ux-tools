@@ -227,7 +227,10 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             CommunicationService.sendAction = jest.fn();
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
@@ -240,7 +243,10 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
 
             // testing the nested callbacks
             const mockService = {
@@ -269,7 +275,10 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.71.60' }]
+            });
 
             // testing the nested callbacks
             const mockService = {
@@ -304,7 +313,10 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.9' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.120.9' }]
+            });
 
             await init({ customInit: customInit });
 
@@ -314,7 +326,10 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 2.0.0', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '2.0.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+            });
 
             await init({ customInit: customInit });
 
@@ -324,7 +339,10 @@ describe('flp/init', () => {
         });
 
         test('custom init module configured & ui5 version is legacy-free', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0-legacy-free' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+            });
 
             await init({});
 
@@ -338,7 +356,10 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
 
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.84.50' }]
+            });
 
             const reloadComplete = new Promise((resolve) => {
                 // Mocking `sap.ui.require` to throw the correct error structure
@@ -380,7 +401,10 @@ describe('flp/init', () => {
         });
 
         test('cardGenerator mode is enabled', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.124.50' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.124.50' }]
+            });
             const mockComponentInstance = {} as Component;
             const mockService = {
                 attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
@@ -405,7 +429,10 @@ describe('flp/init', () => {
         });
 
         test('enhancedHomePage mode is enabled', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.106.0' }]
+            });
             await init({ enhancedHomePage: true });
 
             expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();

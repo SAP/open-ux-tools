@@ -1,5 +1,5 @@
 import { readdir } from 'fs/promises';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import { expect } from '@sap-ux-private/playwright';
 import { lt, satisfies } from 'semver';

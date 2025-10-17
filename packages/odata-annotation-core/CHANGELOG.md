@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.9
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 0.2.8
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { PromptState } from '../prompts/prompt-state';
 import { t } from './i18n';

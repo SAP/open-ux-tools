@@ -8,7 +8,7 @@ import {
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { devspace } from '@sap/bas-sdk';
-import { networkInterfaces } from 'os';
+import { networkInterfaces } from 'node:os';
 import QRCode from 'qrcode';
 
 // Mock dependencies

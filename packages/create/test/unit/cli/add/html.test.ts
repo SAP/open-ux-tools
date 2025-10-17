@@ -4,7 +4,7 @@ import { addAddHtmlFilesCmd } from '../../../../src/cli/add/html';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('mem-fs-editor', () => {
     const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');

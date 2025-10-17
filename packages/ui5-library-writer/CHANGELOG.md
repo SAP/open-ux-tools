@@ -1,5 +1,22 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.22
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/project-access@1.32.4
+
+## 0.6.21
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+
 ## 0.6.20
 
 ### Patch Changes

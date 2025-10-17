@@ -1,4 +1,4 @@
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
 
 import { getCdsFiles } from '@sap/ux-cds-compiler-facade';
 

@@ -1,6 +1,6 @@
 import { downloadApp, extractZip, hasQfaJson } from '../../src/utils/download-utils';
 import AdmZip from 'adm-zip';
-import { join } from 'path';
+import { join } from 'node:path';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { PromptState } from '../../src/prompts/prompt-state';
 import { qfaJsonFileName } from '../../src/utils/constants';

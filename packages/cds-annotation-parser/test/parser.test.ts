@@ -11,8 +11,8 @@ import {
     getBase
 } from './utils';
 import type { Position } from '@sap-ux/text-document-utils';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { findAnnotationNode, getAstNodes, getNode, parse } from '../src';
 
 const testParser = async (testCasePath: string, valid = true): Promise<void> => {

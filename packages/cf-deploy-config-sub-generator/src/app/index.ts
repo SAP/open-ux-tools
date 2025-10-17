@@ -1,5 +1,5 @@
-import { join, dirname } from 'path';
-import { platform } from 'os';
+import { join, dirname } from 'node:path';
+import { platform } from 'node:os';
 import hasbin = require('hasbin');
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import {

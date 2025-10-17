@@ -1,6 +1,6 @@
 import { latestVersionString } from '@sap-ux/ui5-info';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
 import {

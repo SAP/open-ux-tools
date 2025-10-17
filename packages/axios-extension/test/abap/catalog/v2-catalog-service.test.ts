@@ -1,5 +1,5 @@
 import { createForAbap, ODataVersion, V2CatalogService, ServiceType } from '../../../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import nock from 'nock';
 
 describe('V2CatalogService', () => {
