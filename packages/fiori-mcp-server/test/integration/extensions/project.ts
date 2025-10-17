@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import { TestSuite, TestCase } from 'promptfoo';
-import { SNAPSHOTS_FOLDER_PATH } from '../types';
+import { FOLDER_PATHS } from '../types';
 
 interface HookContext {
     suite?: TestSuite;
@@ -35,7 +35,7 @@ const TEST_PROJECTS: { [key: string]: TestProjectData } = {
     [ProjectName.lrop]: {
         type: 'EDMX',
         originalPath: getProjectOriginalPath(ProjectName.lrop),
-        path: getProjectPath(ProjectName.lrop)
+        path: getCopiedProjectPath(ProjectName.lrop)
     }
 };
 
@@ -55,34 +55,26 @@ export async function setup(hookName: string, context: HookContext) {
     if (project) {
         defaultVars['PROJECT_PATH'] = project.path;
     }
-    switch (hookName) {
-        // case 'beforeAll': {
-        //     // Create 'PROJECT_PATH' variable with path to project/application
-        //     defaultVars['PROJECT_PATH'] = project.path;
-        //     break;
-        // }
-        case 'beforeEach': {
-            // Properate copy project before running test
-            copyProject(project.originalPath, project.path, config?.setupFiles);
-            break;
-        }
+    if (hookName === 'beforeEach') {
+        // Properate copy project before running test
+        copyProject(project.originalPath, project.path, config?.setupFiles);
     }
 }
 
-function getProjectPath(name: ProjectName): string {
-    return join(__dirname, `../projects/copy`, name);
+function getCopiedProjectPath(name: ProjectName): string {
+    return join(FOLDER_PATHS.copiedProjects, name);
 }
 
 function getProjectOriginalPath(name: ProjectName): string {
-    return join(__dirname, `../projects/original`, name);
+    return join(FOLDER_PATHS.originalProjects, name);
 }
 
 function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFiles[] = []): void {
     // Copy whole project
-    copyFolder(source, dest);
+    copyFolder(source, dest); 
     // Overwrite files with passed setup files
     for (const setupFile of setupFiles) {
-        const setupFilePath = join(SNAPSHOTS_FOLDER_PATH, setupFile.source);
+        const setupFilePath = join(FOLDER_PATHS.snapshots, setupFile.source);
         const targetFilePath = join(dest, setupFile.target);
         fs.copyFileSync(setupFilePath, targetFilePath);
     }

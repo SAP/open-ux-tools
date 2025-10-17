@@ -4,7 +4,7 @@ import { diffJson, diffTrimmedLines } from 'diff';
 import type { Change } from 'diff';
 import { green, red } from 'chalk';
 import { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
-import { SNAPSHOTS_FOLDER_PATH } from '../types';
+import { FOLDER_PATHS } from '../types';
 
 interface SnapshotData {
     content: {
@@ -30,7 +30,7 @@ function getProjectPath(vars: Record<string, string | object>): string | undefin
 }
 
 function getSnapshotData(projectPath: string, key: string, targetPath: string): SnapshotData {
-    let snapshotFolder = join(SNAPSHOTS_FOLDER_PATH, key);
+    let snapshotFolder = join(FOLDER_PATHS.snapshots, key);
     const relativeFolder = dirname(join(targetPath));
     if (relativeFolder) {
         snapshotFolder = join(snapshotFolder, relativeFolder);
