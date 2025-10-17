@@ -4,7 +4,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
 import { initI18n, addi18nResourceBundle } from './i18n';
-import { promptNames } from './types';
+import { promptNames, tileActions, tilePromptNames } from './types';
 import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
 import { getQuestions, getTileSettingsQuestions } from './prompts';
 import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types';
@@ -109,6 +109,8 @@ export {
     type FLPConfigPromptOptions,
     type FLPConfigQuestion,
     type TileSettingsAnswers,
+    tileActions,
+    tilePromptNames,
     getAdpFlpConfigPromptOptions,
     getAdpFlpInboundsWriterConfig,
     getTileSettingsQuestions

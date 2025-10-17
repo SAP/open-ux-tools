@@ -51,11 +51,8 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     }
 
     if (configWithDefaults.customConfig?.adp.environment === 'C' && configWithDefaults.flp) {
-        enhanceManifestChangeContentWithFlpConfig(
-            configWithDefaults.flp as InternalInboundNavigation,
-            configWithDefaults.app.id,
-            configWithDefaults.app.content
-        );
+        const configs = [configWithDefaults.flp];
+        enhanceManifestChangeContentWithFlpConfig(configs, configWithDefaults.app.id, configWithDefaults.app.content);
     }
 
     return configWithDefaults;

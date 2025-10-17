@@ -12,13 +12,13 @@ import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } fro
  * Generates and writes the inbound configuration to the manifest.appdescr_variant file.
  *
  * @param basePath - The base path of the project.
- * @param config - The inbound configuration properties.
+ * @param configs - The inbound configuration properties.
  * @param fs - Optional mem-fs editor instance.
  * @returns The mem-fs editor instance.
  */
 export async function generateInboundConfig(
     basePath: string,
-    config: InternalInboundNavigation,
+    configs: InternalInboundNavigation[],
     fs?: Editor
 ): Promise<Editor> {
     if (!fs) {
@@ -29,14 +29,17 @@ export async function generateInboundConfig(
 
     variant.content = removeInboundChangeTypes(variant.content);
 
-    if (!config?.inboundId) {
-        config.inboundId = `${variant.id}.InboundID`;
-    }
+    // Set default inbound IDs if missing
+    configs.forEach((config) => {
+        if (!config?.inboundId) {
+            config.inboundId = `${variant.id}.InboundID`;
+        }
+    });
 
-    enhanceInboundConfig(config, variant.id, variant.content as Content[]);
+    enhanceInboundConfig(configs, variant.id, variant.content as Content[]);
 
     await updateVariant(basePath, variant, fs);
-    await updateI18n(basePath, variant.id, config, fs);
+    await updateI18n(basePath, variant.id, configs, fs);
 
     return fs;
 }
@@ -73,17 +76,20 @@ export function getFlpI18nKeys(config: InternalInboundNavigation, appId: string)
  *
  * @param {string} basePath - The base path of the project.
  * @param {string} appId - The application ID used to generate i18n keys.
- * @param {InternalInboundNavigation} config - The inbound configuration properties.
+ * @param {InternalInboundNavigation[]} configs - The inbound configuration properties.
  * @param {Editor} fs - The mem-fs editor instance for file operations.
  * @returns {Promise<void>} A promise that resolves when the i18n file is updated.
  */
 export async function updateI18n(
     basePath: string,
     appId: string,
-    config: InternalInboundNavigation,
+    configs: InternalInboundNavigation[],
     fs: Editor
 ): Promise<void> {
-    const newEntries = getFlpI18nKeys(config, appId);
+    let newEntries: NewI18nEntry[] = [];
+    configs.forEach((config) => {
+        newEntries = newEntries.concat(getFlpI18nKeys(config, appId));
+    });
     const i18nPath = path.join(basePath, 'webapp', 'i18n', 'i18n.properties');
     const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
     await removeAndCreateI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);

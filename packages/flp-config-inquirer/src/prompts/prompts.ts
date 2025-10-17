@@ -71,12 +71,16 @@ export function getQuestions(
 /**
  * Generates a list of prompts for configuring tile settings in the FLP configuration.
  *
+ * @param {ManifestNamespace.Inbound} inbounds - Existing inbounds for the application.
  * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
  * @returns {YUIQuestion<TileSettingsAnswers>[] | FLPConfigQuestion[]} An array of questions for tile settings.
  */
-export function getTileSettingsQuestions(promptOptions?: FLPConfigPromptOptions): YUIQuestion<TileSettingsAnswers>[] {
+export function getTileSettingsQuestions(
+    inbounds: ManifestNamespace.Inbound,
+    promptOptions?: FLPConfigPromptOptions
+): YUIQuestion<TileSettingsAnswers>[] {
     const isCLI = getHostEnvironment() === hostEnvironment.cli;
-    const questions = getTileSettingsPrompts();
+    const questions = getTileSettingsPrompts(inbounds);
     if (!promptOptions?.existingFlpConfigInfo?.hide) {
         questions.unshift(getExistingFlpConfigInfoPrompt(isCLI) as YUIQuestion);
     }
