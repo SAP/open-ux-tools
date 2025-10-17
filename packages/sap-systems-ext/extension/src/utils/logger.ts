@@ -5,7 +5,7 @@ import type { Logger } from '@sap-ux/logger';
  * Logger utility for the SAP Systems extension.
  */
 export default class SystemsLogger {
-    private static _logger = new ExtensionLogger('Fiori tools - Stored Systems Extension');
+    private static _logger = new ExtensionLogger('SAP Systems Extension');
 
     /**
      * Get the logger.

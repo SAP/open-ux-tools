@@ -11,7 +11,7 @@
         "sourceMap": true,
         "module": "ES6"
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "test/**/*.ts", "test/**/*.tsx"],
     "references": [
         {
             "path": "../../store"

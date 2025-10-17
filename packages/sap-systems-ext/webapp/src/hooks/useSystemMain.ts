@@ -24,7 +24,7 @@ export function useSystemMain(): {
     testConnectionBtnDisabled: boolean;
     saveButtonDisabled?: boolean;
     showConnectionStatus: boolean;
-    showEditSystemStatus: boolean;
+    showUpdateSystemStatus: boolean;
     isDetailsUpdated: boolean;
     isDetailsValid: boolean;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
@@ -93,7 +93,7 @@ export function useSystemMain(): {
     const [testConnectionBtnDisabled, disableTestConnectionBtn] = useState(false);
     const [saveButtonDisabled, disableSaveButton] = useState(false);
     const [showConnectionStatus, setShowConnectionStatus] = useState(false);
-    const [showEditSystemStatus, setShowEditSystemStatus] = useState(false);
+    const [showUpdateSystemStatus, setshowUpdateSystemStatus] = useState(false);
     const [isDetailsUpdated, setIsDetailsUpdated] = useState(false);
     const [isDetailsValid, setIsDetailsValid] = useState(true);
 
@@ -113,7 +113,7 @@ export function useSystemMain(): {
 
     const resetStatus = () => {
         setShowConnectionStatus(false);
-        setShowEditSystemStatus(false);
+        setshowUpdateSystemStatus(false);
     };
 
     const isEmpty = (str?: string): boolean => !str || str.length === 0;
@@ -152,7 +152,7 @@ export function useSystemMain(): {
     useEffect(() => {
         if (connectionStatus) {
             setShowConnectionStatus(true);
-            setShowEditSystemStatus(false);
+            setshowUpdateSystemStatus(false);
             if (connectionStatus.connected) {
                 checkMandatoryFields();
                 setIsDetailsUpdated(false);
@@ -163,7 +163,7 @@ export function useSystemMain(): {
     useEffect(() => {
         setShowConnectionStatus(false);
         if (updateSystemStatus?.message) {
-            setShowEditSystemStatus(true);
+            setshowUpdateSystemStatus(true);
         }
     }, [updateSystemStatus]);
 
@@ -190,7 +190,7 @@ export function useSystemMain(): {
         testConnectionBtnDisabled,
         saveButtonDisabled,
         showConnectionStatus,
-        showEditSystemStatus,
+        showUpdateSystemStatus,
         isDetailsUpdated,
         isDetailsValid,
         setIsDetailsUpdated,

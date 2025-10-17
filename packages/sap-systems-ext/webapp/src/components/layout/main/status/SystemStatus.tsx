@@ -13,7 +13,7 @@ interface SystemStatusProps {
     connectionStatus?: ConnectionStatus;
     showConnectionStatus?: boolean;
     updateSystemStatus?: UpdateSystemStatus['payload'];
-    showEditSystemStatus?: boolean;
+    showUpdateSystemStatus?: boolean;
     guidedAnswerLink?: IActionCalloutDetail;
 }
 
@@ -22,7 +22,7 @@ export function SystemStatus({
     connectionStatus,
     showConnectionStatus,
     updateSystemStatus,
-    showEditSystemStatus,
+    showUpdateSystemStatus,
     guidedAnswerLink
 }: SystemStatusProps): ReactElement {
     const { t } = useTranslation();
@@ -45,8 +45,8 @@ export function SystemStatus({
         );
     };
 
-    const getCatalogMsgJsx = (version: string, count: number): JSX.Element => {
-        if (count > 0) {
+    const getCatalogMsgJsx = (version: string, count?: number): JSX.Element => {
+        if (count && count > 0) {
             return (
                 <div className="status-item">
                     <UIIcon className="status-icon" iconName={UiIcons.Info} />
@@ -94,13 +94,13 @@ export function SystemStatus({
                             {getCatalogMsgJsx('V4', connectionStatus.catalogResults.v4Request.count)}
                         </div>
                     )}
-                    {updateSystemStatus && showEditSystemStatus && updateSystemStatus.updateSuccess && (
+                    {updateSystemStatus && showUpdateSystemStatus && updateSystemStatus.updateSuccess && (
                         <div className="status-item">
                             <UIIcon className="status-icon" iconName={UiIcons.Info} />
                             <label className="system-status-info status-msg">{updateSystemStatus.message}</label>{' '}
                         </div>
                     )}
-                    {updateSystemStatus && showEditSystemStatus && !updateSystemStatus.updateSuccess && (
+                    {updateSystemStatus && showUpdateSystemStatus && !updateSystemStatus.updateSuccess && (
                         <div className="status-item">
                             <UIIcon className="status-icon" iconName={UiIcons.Error} />
                             <label className="system-status-error status-msg">{updateSystemStatus.message}</label>

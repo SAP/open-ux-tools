@@ -17,7 +17,7 @@ export function SystemMain(): ReactElement {
         systemInfo,
         systemUnSaved,
         showConnectionStatus,
-        showEditSystemStatus,
+        showUpdateSystemStatus,
         testConnectionBtnDisabled,
         saveButtonDisabled,
         isDetailsUpdated,
@@ -71,7 +71,7 @@ export function SystemMain(): ReactElement {
                         connectionStatus={connectionStatus}
                         showConnectionStatus={showConnectionStatus}
                         updateSystemStatus={updateSystemStatus}
-                        showEditSystemStatus={showEditSystemStatus}
+                        showUpdateSystemStatus={showUpdateSystemStatus}
                         guidedAnswerLink={guidedAnswerLink}
                     />
 

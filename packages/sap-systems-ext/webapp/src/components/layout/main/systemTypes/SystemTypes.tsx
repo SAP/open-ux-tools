@@ -18,7 +18,7 @@ export function SystemTypes({ setType }: SystemTypesProps): ReactElement {
             text: t('titles.onPremSystem')
         },
         {
-            key: 'BTP',
+            key: 'AbapCloud',
             text: t('titles.btpSystem')
         }
     ];

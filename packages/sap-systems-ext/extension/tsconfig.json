@@ -1,44 +1,38 @@
 {
-  "extends": "../../../tsconfig.json",
-  "compilerOptions": {
-    "sourceMap": true,
-    "outDir": "dist"
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.json"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ],
-  "references": [
-    {
-      "path": "../../axios-extension"
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "sourceMap": true,
+        "outDir": "dist"
     },
-    {
-      "path": "../../fiori-generator-shared"
-    },
-    {
-      "path": "../../guided-answers-helper"
-    },
-    {
-      "path": "../../logger"
-    },
-    {
-      "path": "../../store"
-    },
-    {
-      "path": "../../telemetry"
-    },
-    {
-      "path": "../../ui-components"
-    },
-    {
-      "path": "../types"
-    },
-    {
-      "path": "../webapp"
-    }
-  ]
+    "include": ["src/**/*.ts", "src/**/*.json", "package.json"],
+    "exclude": ["dist", "node_modules"],
+    "references": [
+        {
+            "path": "../../axios-extension"
+        },
+        {
+            "path": "../../fiori-generator-shared"
+        },
+        {
+            "path": "../../guided-answers-helper"
+        },
+        {
+            "path": "../../logger"
+        },
+        {
+            "path": "../../store"
+        },
+        {
+            "path": "../../telemetry"
+        },
+        {
+            "path": "../../ui-components"
+        },
+        {
+            "path": "../types"
+        },
+        {
+            "path": "../webapp"
+        }
+    ]
 }

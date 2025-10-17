@@ -3632,6 +3632,9 @@ importers:
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
+      jest-scss-transform:
+        specifier: 1.0.4
+        version: 1.0.4(babel-jest@30.0.1)
       react:
         specifier: 16.14.0
         version: 16.14.0

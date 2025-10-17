@@ -22,7 +22,7 @@ export async function renderWebApp(context: PanelContext): Promise<void> {
 
     // view the existing saved system
     if (systemInfo && panelViewType === SystemPanelViewType.View) {
-        await postMessage(updateSystemInfo({ systemInfo, unSaved: true }));
+        await postMessage(updateSystemInfo({ systemInfo, unSaved: false }));
         if (systemStatusMessage) {
             await postMessage(updateSystemStatus({ message: systemStatusMessage, updateSuccess: true }));
         }
