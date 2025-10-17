@@ -34,7 +34,7 @@
     "dependencies": {
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "fast-xml-parser": "4.4.1",
+        "fast-xml-parser": "4.5.3",
         "findit2": "2.2.3",
         "json-parse-even-better-errors": "4.0.0",
         "mem-fs": "2.1.0",
