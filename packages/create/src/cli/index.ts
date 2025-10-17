@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { Command } from 'commander';
+import { Command, type Option } from 'commander';
 import { getLogger } from '../tracing';
 import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';
@@ -41,34 +41,130 @@ export function handleCreateFioriCommand(argv: string[]): void {
  * @returns - commander program
  */
 function getCommanderProgram(): Command {
+    const logger = getLogger();
     const program = new Command();
     const version = getVersion();
     program.description(`Configure features for Fiori applications and projects. (${version})`);
+    program.addHelpText(
+        'after',
+        `\nExample Usage:
+  'npx --yes @sap-ux/create@latest add --help'              Get available subcommands for the 'add' command.
+  'npx --yes @sap-ux/create@latest add html --help'         Get available options for the 'add html' command.
+  'npx --yes @sap-ux/create@latest add html --simulate'     Execute the 'add html' command using the 'simulate' option.\n`
+    );
+    program.option('--generateJsonSpec', 'Output the command structure as JSON');
+    program.action((options) => {
+        if (options.generateJsonSpec) {
+            logger.info(generateJsonSpec(program));
+        } else if (options.V || options.version) {
+            logger.info(version);
+        } else {
+            program.outputHelp();
+        }
+    });
     program.version(version);
 
     // Handler for create-fiori generate <feature> ..
-    program.addCommand(getGenerateCommands());
+    const genCommands = getGenerateCommands();
+    genCommands.description(
+        `Generate adaptation projects.
+                    Available Subcommands: ${getFeatureSummary(genCommands.commands)}\n`
+    );
+    program.addCommand(genCommands);
 
     // Handler for create-fiori add <feature> ..
-    program.addCommand(getAddCommands());
+    const addCommands = getAddCommands();
+    addCommands.description(
+        `Add features to an SAP Fiori app.
+                    Available Subcommands: ${getFeatureSummary(addCommands.commands)}\n`
+    );
+    program.addCommand(addCommands);
 
     // Handler for create-fiori convert <feature> ..
-    program.addCommand(getConvertCommands());
+    const convertCommands = getConvertCommands();
+    convertCommands.description(
+        `Convert existing SAP Fiori applications.
+                    Available Subcommands: ${getFeatureSummary(convertCommands.commands)}\n`
+    );
+    program.addCommand(convertCommands);
 
     // Handler for create-fiori remove <feature> ..
-    program.addCommand(getRemoveCommands());
+    const removeCommands = getRemoveCommands();
+    removeCommands.description(
+        `Remove features from existing SAP Fiori applications.
+                    Available Subcommands: ${getFeatureSummary(removeCommands.commands)}\n`
+    );
+    program.addCommand(removeCommands);
 
     // Handler for create-fiori change <feature> ..
-    program.addCommand(getChangeCommands());
-
-    // Override exit so calling this command without arguments does not result in an exit code 1, which causes an error message when running from npm init
-    program.exitOverride();
+    const changeCommands = getChangeCommands();
+    changeCommands.description(
+        `Change existing adaptation projects.
+                    Available Subcommands: ${getFeatureSummary(changeCommands.commands)}`
+    );
+    program.addCommand(changeCommands);
 
     return program;
 }
 
 /**
- * Return the version from package.json.
+ * Return a summary of the subcommands from the provided commands.
+ *
+ * @param commands - List of commands
+ * @returns - Summary of the subcommands
+ */
+function getFeatureSummary(commands: Command[]): string {
+    const subCommandNames = commands.map((cmd) => cmd.name());
+    return subCommandNames.join(', ');
+}
+
+/**
+ * Parses a commander.Option object into a simpler format for the JSON spec.
+ *
+ * @param {Option} opt - The Commander Option object.
+ * @returns {object} A simplified option object.
+ */
+function parseOption(opt: Option) {
+    return {
+        name: opt.flags,
+        description: opt.description,
+        required: opt.required,
+        ...(opt.defaultValue !== undefined && { defaultValue: opt.defaultValue })
+    };
+}
+
+/**
+ * Recursively parses a commander.Command object and its subcommands.
+ *
+ * @param cmd - The Commander Command object to parse.
+ * @returns A structured object representing the command.
+ */
+function parseCommand(cmd: Command): {} {
+    const options = 'options' in cmd ? (cmd.options as Option[]) : [];
+    return {
+        name: cmd.name(),
+        description: cmd.description(),
+        ...(options?.length > 0 && { options: options.map(parseOption) }),
+        ...(cmd.commands?.length > 0 && { subcommands: cmd.commands.map(parseCommand) })
+    };
+}
+
+/**
+ * Generates the full MCP specification for a top-level commander program.
+ *
+ * @param cmd - The main Commander program instance.
+ * @returns A JSON string representing the CLI's capabilities.
+ */
+export function generateJsonSpec(cmd: Command) {
+    const spec = {
+        description: cmd.description(),
+        commands: cmd.commands.map(parseCommand)
+    };
+    return JSON.stringify(spec, null, 2);
+}
+
+/**
+ * Return the version from the package.json file.
  *
  *  @returns - version from package.json
  */
@@ -78,7 +174,7 @@ function getVersion(): string {
         version = JSON.parse(
             readFileSync(join(__dirname, '../../package.json'), { encoding: 'utf8' }).toString()
         ).version;
-    } catch (error: any) {
+    } catch (error) {
         const logger = getLogger();
         logger.warn(`Could not read version from 'package.json'`);
         logger.debug(error);
