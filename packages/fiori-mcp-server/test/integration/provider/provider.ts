@@ -230,7 +230,6 @@ export default class AICoreApiProvider implements ApiProvider {
                         tool_call_id: toolCall.id
                     });
                 } catch (e) {
-                    // ToDo - maybe fall without option to fix???
                     messages.push({
                         role: 'tool',
                         content: e.message,

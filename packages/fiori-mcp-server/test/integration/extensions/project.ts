@@ -1,4 +1,5 @@
-import fs from 'fs';
+import fs from 'fs/promises';
+import { existsSync } from 'fs';
 import { join } from 'path';
 import type { TestSuite, TestCase } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
@@ -80,7 +81,7 @@ export async function setup(hookName: string, context: HookContext): Promise<voi
     }
     if (hookName === 'beforeEach') {
         // Prepare copy project before running test
-        copyProject(project.originalPath, project.path, config?.setupFiles);
+        await copyProject(project.originalPath, project.path, config?.setupFiles);
     }
 }
 
@@ -112,14 +113,14 @@ function getProjectOriginalPath(name: ProjectName): string {
  * @param dest Destination directory path where project will be copied.
  * @param setupFiles Array of setup files to copy over the base project files.
  */
-function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFiles[] = []): void {
+async function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFiles[] = []): Promise<void> {
     // Copy whole project
-    copyFolder(source, dest);
+    await copyFolder(source, dest);
     // Overwrite files with passed setup files
     for (const setupFile of setupFiles) {
         const setupFilePath = join(FOLDER_PATHS.snapshots, setupFile.source);
         const targetFilePath = join(dest, setupFile.target);
-        fs.copyFileSync(setupFilePath, targetFilePath);
+        await fs.copyFile(setupFilePath, targetFilePath);
     }
 }
 
@@ -129,18 +130,18 @@ function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFi
  * @param source The absolute or relative path to the source directory.
  * @param dest The absolute or relative path to the destination directory.
  */
-function copyFolder(source: string, dest: string): void {
-    if (!fs.existsSync(dest)) {
-        fs.mkdirSync(dest, { recursive: true });
+async function copyFolder(source: string, dest: string): Promise<void> {
+    if (!existsSync(dest)) {
+        await fs.mkdir(dest, { recursive: true });
     }
-    const entries = fs.readdirSync(source, { withFileTypes: true });
+    const entries = await fs.readdir(source, { withFileTypes: true });
     for (const entry of entries) {
         const entrySource = join(source, entry.name);
         const entryDest = join(dest, entry.name);
         if (entry.isDirectory()) {
-            copyFolder(entrySource, entryDest);
+            await copyFolder(entrySource, entryDest);
         } else if (entry.isFile()) {
-            fs.copyFileSync(entrySource, entryDest);
+            await fs.copyFile(entrySource, entryDest);
         }
     }
 }

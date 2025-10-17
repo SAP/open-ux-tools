@@ -1,4 +1,5 @@
-import fs from 'fs';
+import fs from 'fs/promises';
+import { existsSync } from 'fs';
 import { basename, join, dirname } from 'path';
 import { diffJson, diffTrimmedLines } from 'diff';
 import type { Change } from 'diff';
@@ -34,14 +35,17 @@ interface SnapshotConfiguration {
  * @param context The assertion context, containing test variables and optional configuration.
  * @returns Result of assertion for promptfoo.
  */
-export function validate(_output: string, context: AssertionValueFunctionContext): AssertionValueFunctionResult {
+export async function validate(
+    _output: string,
+    context: AssertionValueFunctionContext
+): Promise<AssertionValueFunctionResult> {
     let reason = 'Unknown';
     let pass = false;
     const projectPath = getProjectPath(context.vars);
     const config = context.config ? getConfiguration(context.config) : undefined;
     if (projectPath && config) {
         try {
-            const snapshotData = getSnapshotData(projectPath, config.snapshot, config.file);
+            const snapshotData = await getSnapshotData(projectPath, config.snapshot, config.file);
             const compareResult = validateSnapshot(snapshotData, config);
             pass = !compareResult;
             if (!pass) {
@@ -108,31 +112,31 @@ function getConfiguration(config: Record<string, unknown>): SnapshotConfiguratio
  * @param targetPath The relative path to the file being compared.
  * @returns A `SnapshotData` object containing both source and snapshot contents.
  */
-function getSnapshotData(projectPath: string, key: string, targetPath: string): SnapshotData {
+async function getSnapshotData(projectPath: string, key: string, targetPath: string): Promise<SnapshotData> {
     let snapshotFolder = join(FOLDER_PATHS.snapshots, key);
     const relativeFolder = dirname(join(targetPath));
     if (relativeFolder) {
         snapshotFolder = join(snapshotFolder, relativeFolder);
     }
     // Make sure snapshot folder exists
-    if (!fs.existsSync(snapshotFolder)) {
-        fs.mkdirSync(snapshotFolder, { recursive: true });
+    if (!existsSync(snapshotFolder)) {
+        await fs.mkdir(snapshotFolder, { recursive: true });
     }
     // Check target file
     const filePath = join(projectPath, targetPath);
-    if (!fs.existsSync(filePath)) {
+    if (!existsSync(filePath)) {
         throw new Error(`${filePath} does not exists`);
     }
     const fileName = basename(filePath);
     const snapshotFile = join(snapshotFolder, fileName);
     let created = false;
-    if (!fs.existsSync(snapshotFile)) {
+    if (!existsSync(snapshotFile)) {
         // Write snapshot
-        fs.copyFileSync(filePath, snapshotFile);
+        await fs.copyFile(filePath, snapshotFile);
         created = true;
     }
-    const sourceContent = fs.readFileSync(filePath, 'utf8');
-    const snapshotContent = fs.readFileSync(snapshotFile, 'utf8');
+    const sourceContent = await fs.readFile(filePath, 'utf8');
+    const snapshotContent = await fs.readFile(snapshotFile, 'utf8');
     return {
         content: {
             snapshot: snapshotContent,
