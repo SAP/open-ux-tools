@@ -107,7 +107,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials.",
+            "authenticationFailedUpdateCredentials": "Authentication failed. Check your credentials are correct and try again.",
             "noStoredCredentials": "This stored system has no credentials. Please provide them. They will not be saved with system details."
         },
         "abapOnBTPType": {
@@ -258,6 +258,6 @@
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None",
-        "passwordStoreWarning": "Passwords are stored in the OS credential manager and protected by its security policies."
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
     }
 }
