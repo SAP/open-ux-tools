@@ -45,7 +45,6 @@
     "devDependencies": {
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
-        "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
@@ -56,7 +55,6 @@
         "fast-glob": "3.3.1",
         "i18next": "25.3.0",
         "normalize-path": "3.0.0",
-        "jsonc-parser": "3.2.0",
         "@types/normalize-path": "3.0.0",
         "@types/vscode": "1.73.1",
         "vscode-uri": "3.0.7",

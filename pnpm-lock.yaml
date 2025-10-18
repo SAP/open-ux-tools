@@ -3527,9 +3527,6 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../../axios-extension
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../../fiori-generator-shared
       '@sap-ux/guided-answers-helper':
         specifier: workspace:*
         version: link:../../guided-answers-helper
@@ -3566,9 +3563,6 @@ importers:
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
-      jsonc-parser:
-        specifier: 3.2.0
-        version: 3.2.0
       normalize-path:
         specifier: 3.0.0
         version: 3.0.0

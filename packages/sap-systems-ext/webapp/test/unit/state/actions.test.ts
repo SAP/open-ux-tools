@@ -6,10 +6,8 @@ describe('Store redux actions', () => {
         name: '',
         url: '',
         client: '',
-        credentials: {
-            username: '',
-            password: ''
-        }
+        username: '',
+        password: ''
     };
 
     test('Create "storeWebviewReady" action', () => {
@@ -23,7 +21,9 @@ describe('Store redux actions', () => {
     test('Create "updateSystemInfo" action', () => {
         const expectedAction = {
             type: types.UPDATE_SYSTEM,
-            payload: system
+            payload: {
+                system
+            }
         };
         const action = actions.updateSystem(system);
         expect(action).toEqual(expectedAction);

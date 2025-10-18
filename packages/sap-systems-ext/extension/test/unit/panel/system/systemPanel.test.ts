@@ -65,7 +65,8 @@ describe('Test the system panel class', () => {
                 systemStatusMessage: undefined,
                 isGuidedAnswersEnabled: false,
                 disposePanel: expect.any(Function),
-                postMessage: expect.any(Function)
+                postMessage: expect.any(Function),
+                updateBackendSystem: expect.any(Function)
             },
             { type: 'WEBVIEW_READY' }
         );

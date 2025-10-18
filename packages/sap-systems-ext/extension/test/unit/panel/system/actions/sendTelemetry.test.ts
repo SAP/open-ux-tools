@@ -18,6 +18,7 @@ describe('Test the fireGALinkClickedTelemetry action', () => {
 
         const panelContextGADisabled = {
             backendSystem: {} as any,
+            updateBackendSystem: jest.fn(),
             disposePanel: jest.fn(),
             isGuidedAnswersEnabled: false,
             postMessage: jest.fn(),
@@ -37,7 +38,8 @@ describe('Test the fireGALinkClickedTelemetry action', () => {
             disposePanel: jest.fn(),
             isGuidedAnswersEnabled: true,
             postMessage: jest.fn(),
-            panelViewType: SystemPanelViewType.View
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn()
         } as PanelContext;
 
         fireGALinkClickedTelemetry(panelContextGAEnabled);

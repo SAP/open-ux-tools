@@ -66,12 +66,10 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         // Prevent overwrite of existing entity with the same key unless explicitly forced
         const entityKey = BackendSystemKey.from(entity);
         const existingSystem = await this.read(BackendSystemKey.from(entity));
-        debugger;
+
         if (!options?.force && existingSystem) {
-            debugger;
             throw new Error(text('error.backendSystemEntityKeyExists', { entityKey: entityKey.getId() }));
         }
-        debugger;
         return this.dataProvider.write(entity);
     }
     public async delete(entity: BackendSystem): Promise<boolean> {

@@ -51,8 +51,8 @@ describe('errorMapping', () => {
             expect(msg).toContain('The system URL is using an expired security certificate.');
         });
         test('falls back for unknown', () => {
-            const msg = getErrorMessage(ERROR_TYPE.UNKNOWN, 'boom');
-            expect(msg).toContain('This SAP system failed to return any services: boom');
+            const msg = getErrorMessage(ERROR_TYPE.UNKNOWN);
+            expect(msg).toContain('This SAP system failed to return any services.');
         });
     });
 

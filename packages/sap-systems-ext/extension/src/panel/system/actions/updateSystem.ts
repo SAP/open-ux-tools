@@ -67,8 +67,10 @@ async function updateHandler(
 
     // Scenario 2: User is updating an existing system
     if (panelViewType === SystemPanelViewType.View && systemExistsInStore) {
-        // we need to determine is the current panel the one being updated
+        // we need to determine if the current panel is the one being updated
         if (compareSystems(context.backendSystem as BackendSystem, newSystem)) {
+            // Update the panel context's backend system to the new system details
+            context.updateBackendSystem(newSystem);
             await context.postMessage(
                 updateSystemStatus({
                     message: t('info.systemInfoUpdated'),
@@ -88,8 +90,6 @@ async function updateHandler(
         await new SystemService(SystemsLogger.logger).delete(context.backendSystem);
         newPanelMsg = t('info.systemUpdated', { system: newSystem.name });
     }
-
-    context.updateBackendSystem(newSystem);
 
     return newPanelMsg;
 }

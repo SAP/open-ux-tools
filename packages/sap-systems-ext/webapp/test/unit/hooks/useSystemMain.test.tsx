@@ -4,7 +4,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { useSystemMain } from '../../../src/hooks/useSystemMain';
 import { LoadingState } from '../../../src/types';
-import { BackendSystem } from '@sap-ux/store';
 
 type TestProps = { onResult: (result: ReturnType<typeof useSystemMain>) => void };
 function HookTestComponent({ onResult }: TestProps) {
@@ -25,17 +24,21 @@ describe('useSystemMain hook tests', () => {
     let hookResult: ReturnType<typeof useSystemMain> | undefined;
 
     const baseState = {
-        name: 'dummy system',
-        systemType: 'OnPrem',
-        authenticationType: 'basic',
-        url: 'http://dummy',
-        client: '000',
-        credentials: { username: 'user', password: 'pass', serviceKey: '' },
+        systemInfo: {
+            name: 'dummy system',
+            systemType: 'OnPrem',
+            authenticationType: 'basic',
+            url: 'http://dummy',
+            client: '000',
+            username: 'user',
+            password: 'pass',
+            serviceKey: ''
+        },
         loadingState: undefined,
         testConnectionLoadingState: undefined,
         connectionStatus: undefined,
         guidedAnswerLink: undefined,
-        editSystemStatus: undefined,
+        updateSystemStatus: undefined,
         addNewSapSystem: false,
         hideServiceKey: false,
         unSaved: false
@@ -43,76 +46,6 @@ describe('useSystemMain hook tests', () => {
 
     beforeEach(() => {
         hookResult = undefined;
-    });
-
-    describe('Cloud system effects', () => {
-        it('sets authType to ReentranceTicket when Cloud + addNewSapSystem + hideServiceKey', () => {
-            const store = mockStore({
-                ...baseState,
-                type: SystemType.Cloud,
-                authType: AuthenticationType.BasicAuth,
-                addNewSapSystem: true,
-                hideServiceKey: true
-            });
-
-            render(
-                <Provider store={store}>
-                    <HookTestComponent
-                        onResult={(result) => {
-                            hookResult = result;
-                        }}
-                    />
-                </Provider>
-            );
-
-            expect(hookResult?.systemInfo.authType).toBe(AuthenticationType.ReentranceTicket);
-            expect(hookResult?.systemInfo.url).toBe('http://dummy');
-            expect(hookResult?.systemInfo.client).toBe('000');
-        });
-
-        it('does not change authType when hideServiceKey is false', () => {
-            const store = mockStore({
-                ...baseState,
-                type: SystemType.Cloud,
-                authType: AuthenticationType.BasicAuth,
-                addNewSapSystem: true,
-                hideServiceKey: false
-            });
-
-            render(
-                <Provider store={store}>
-                    <HookTestComponent
-                        onResult={(result) => {
-                            hookResult = result;
-                        }}
-                    />
-                </Provider>
-            );
-
-            expect(hookResult?.systemInfo.authType).toBe(AuthenticationType.BasicAuth);
-        });
-
-        it('does not change authType when addNewSapSystem is false', () => {
-            const store = mockStore({
-                ...baseState,
-                type: SystemType.Cloud,
-                authType: AuthenticationType.BasicAuth,
-                addNewSapSystem: false,
-                hideServiceKey: true
-            });
-
-            render(
-                <Provider store={store}>
-                    <HookTestComponent
-                        onResult={(result) => {
-                            hookResult = result;
-                        }}
-                    />
-                </Provider>
-            );
-
-            expect(hookResult?.systemInfo.authType).toBe(AuthenticationType.BasicAuth);
-        });
     });
 
     describe('Button state management', () => {
@@ -163,7 +96,7 @@ describe('useSystemMain hook tests', () => {
         });
     });
 
-    describe('Connection status effects', () => {
+    describe('Connection and system status effects', () => {
         it('shows connection status when connectionStatus is set', () => {
             // Start with no connection status
             const store = mockStore(baseState);
@@ -198,7 +131,7 @@ describe('useSystemMain hook tests', () => {
             );
 
             expect(hookResult?.showConnectionStatus).toBe(true);
-            expect(hookResult?.showEditSystemStatus).toBe(false);
+            expect(hookResult?.showUpdateSystemStatus).toBe(false);
         });
 
         it('shows edit system status when editSystemStatus has message', () => {
@@ -217,7 +150,7 @@ describe('useSystemMain hook tests', () => {
             // Update store with editSystemStatus and rerender with new store instance
             const updatedStore = mockStore({
                 ...baseState,
-                editSystemStatus: { message: 'System saved', success: true }
+                updateSystemStatus: { message: 'System saved', updateSucess: true }
             });
 
             rerender(
@@ -231,7 +164,7 @@ describe('useSystemMain hook tests', () => {
             );
 
             expect(hookResult?.showConnectionStatus).toBe(false);
-            expect(hookResult?.showEditSystemStatus).toBe(true);
+            expect(hookResult?.showUpdateSystemStatus).toBe(true);
         });
     });
 
@@ -313,7 +246,7 @@ describe('useSystemMain hook tests', () => {
                 hookResult?.setName('new name');
             });
 
-            expect(hookResult?.systemInfo.name).toBe('new name');
+            expect(hookResult?.systemInfo?.name).toBe('new name');
         });
 
         it('setType updates systemInfo type', () => {
@@ -330,30 +263,10 @@ describe('useSystemMain hook tests', () => {
             );
 
             act(() => {
-                hookResult?.setType(SystemType.Cloud);
+                hookResult?.setType('AbapCloud');
             });
 
-            expect(hookResult?.systemInfo.type).toBe(SystemType.Cloud);
-        });
-
-        it('setAuthType updates systemInfo authType', () => {
-            const store = mockStore(baseState);
-
-            render(
-                <Provider store={store}>
-                    <HookTestComponent
-                        onResult={(result) => {
-                            hookResult = result;
-                        }}
-                    />
-                </Provider>
-            );
-
-            act(() => {
-                hookResult?.setAuthType(AuthenticationType.ReentranceTicket);
-            });
-
-            expect(hookResult?.systemInfo.authType).toBe(AuthenticationType.ReentranceTicket);
+            expect(hookResult?.systemInfo?.systemType).toBe('AbapCloud');
         });
     });
 
@@ -363,7 +276,7 @@ describe('useSystemMain hook tests', () => {
                 ...baseState,
                 name: 'test system',
                 url: 'http://test.com',
-                type: SystemType.OnPremise
+                type: 'OnPrem'
             });
 
             render(
@@ -390,8 +303,8 @@ describe('useSystemMain hook tests', () => {
                 ...baseState,
                 name: 'test system',
                 url: 'http://test.com',
-                type: SystemType.Cloud,
-                authType: AuthenticationType.ReentranceTicket
+                type: 'AbapCloud',
+                authType: 'reentranceTicket'
             });
 
             render(
@@ -416,8 +329,10 @@ describe('useSystemMain hook tests', () => {
         it('checkMandatoryFields disables save when mandatory fields are empty', () => {
             const store = mockStore({
                 ...baseState,
-                name: '',
-                url: ''
+                systemInfo: {
+                    name: '',
+                    url: ''
+                }
             });
 
             render(

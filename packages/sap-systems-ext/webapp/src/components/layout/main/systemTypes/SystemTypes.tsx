@@ -9,6 +9,13 @@ interface SystemTypesProps {
     setType: (type: SystemType) => void;
 }
 
+/**
+ * Renders the system types dropdown.
+ *
+ * @param props - system types props
+ * @param props.setType - function to set the system type
+ * @returns - the system types JSX element
+ */
 export function SystemTypes({ setType }: SystemTypesProps): ReactElement {
     const { t } = useTranslation();
 

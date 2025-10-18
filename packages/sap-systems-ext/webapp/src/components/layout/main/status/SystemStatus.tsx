@@ -17,6 +17,18 @@ interface SystemStatusProps {
     guidedAnswerLink?: IActionCalloutDetail;
 }
 
+/**
+ * Renders the system status component.
+ *
+ * @param props - system status props
+ * @param props.testConnectionState - the loading state of the test connection
+ * @param props.connectionStatus - the connection status object
+ * @param props.showConnectionStatus - flag indicating if the connection status should be shown
+ * @param props.updateSystemStatus - the update system status object
+ * @param props.showUpdateSystemStatus - flag indicating if the update system status should be shown
+ * @param props.guidedAnswerLink - the guided answer link details
+ * @returns - the system status JSX element
+ */
 export function SystemStatus({
     testConnectionState,
     connectionStatus,

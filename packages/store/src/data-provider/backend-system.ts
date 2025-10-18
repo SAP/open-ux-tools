@@ -1,11 +1,11 @@
 import type { ServiceOptions } from '../types';
 import type { DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
-import type { Logger } from '@sap-ux/logger';
-import { getBackendSystemType, type SystemType } from '../utils';
 import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
+import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
+import { getBackendSystemType } from '../utils';
 import { getFilesystemStore } from '../data-access/filesystem';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
@@ -26,16 +26,12 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
 
     public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
         let e: BackendSystem;
-        debugger;
         if (!(entity instanceof BackendSystem)) {
             // We need to use the correct class otherwise the annotations are not effective
             e = new BackendSystem({ ...(entity as BackendSystem) });
-            debugger;
         } else {
             e = entity;
-            debugger;
         }
-        debugger;
         return this.dataAccessor.write({
             entityName: this.entityName,
             id: BackendSystemKey.from(entity).getId(),
@@ -113,9 +109,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         let allSystemsHaveType = true;
 
         for (const [id, system] of Object.entries(systems)) {
-            const validSystemTypes: readonly SystemType[] = ['OnPrem', 'AbapCloud'];
-            // migrate only if the systemType is missing or invalid (may contain legacy types)
-            if (!system?.systemType || !validSystemTypes.includes(system.systemType as SystemType)) {
+            if (!system?.systemType) {
                 allSystemsHaveType = false;
                 await this.assignSystemType(id);
             }

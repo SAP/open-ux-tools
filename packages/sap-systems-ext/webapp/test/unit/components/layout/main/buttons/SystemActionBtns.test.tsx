@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import type { BackendSystem } from '@sap-ux/store';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { SystemActionBtns } from '../../../../../../src/components/layout/main/buttons/SystemActionBtns';
 import { actions } from '../../../../../../src/state';
-import { BackendSystem } from '@sap-ux/store';
 
 describe('<Buttons />', () => {
     const systemInfoOnPrem: BackendSystem = {

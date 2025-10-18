@@ -1,107 +1,84 @@
-import type { SystemState } from '../../src/types';
-import { LoadingState } from '../../src/types';
-import { getInitialState, reducer } from '../../src/state/reducers';
-import * as types from '@sap/ux-application-modeler-types';
-
-const dummySystem = {
-    name: 'dummySystem',
-    url: 'https://dummy/url/',
-    client: '000',
-    credentials: {
-        username: 'dummyUser',
-        password: 'dummyPass'
-    }
-};
+import type { SystemState } from '../../../src/types';
+import { LoadingState } from '../../../src/types';
+import { getInitialState, reducer } from '../../../src/state/reducers';
+import * as types from '@sap-ux/sap-systems-ext-types';
 
 const connectionStatus = {
     message: '',
     connected: true
 };
 
-const editStatus = {
+const updateStatus = {
     message: '',
-    savedSystemDetails: true
+    updateSuccess: true
 };
 
 describe('Test getInitialState', () => {
     test('getInitialState', () => {
         const intialState = getInitialState();
         expect(intialState).toStrictEqual({
-            name: '',
-            type: undefined,
-            url: '',
-            client: '',
-            credentials: {
-                username: '',
-                password: ''
-            },
+            systemInfo: undefined,
             unSaved: true,
             loadingState: LoadingState.Idle,
             testConnectionLoadingState: LoadingState.Idle,
             connectionStatus: {
                 message: '',
                 catalogResults: {
-                    v2Request: {
+                    v4Request: {
                         count: 0
                     },
-                    v4Request: {
+                    v2Request: {
                         count: 0
                     }
                 },
                 connected: false
             },
-            editSystemStatus: {
-                message: undefined,
-                savedSystemDetails: false
+            updateSystemStatus: {
+                message: '',
+                updateSuccess: false
             },
             addNewSapSystem: false,
-            guidedAnswerLink: undefined,
-            hideServiceKey: false
+            guidedAnswerLink: undefined
         });
     });
 });
 
-describe('Page Map redux actions', () => {
+describe('Test the reducer', () => {
     let systemState: SystemState;
 
     beforeEach(() => {
         systemState = {
-            name: '',
-            url: '',
-            client: '',
-            credentials: {
+            systemInfo: {
+                name: '',
+                url: '',
+                client: '',
                 username: '',
                 password: ''
             }
         };
     });
 
-    test('Action UPDATE_SYSTEM_INFO', () => {
-        const oAction: types.UpdateSystemInfo = {
-            type: types.UPDATE_SYSTEM_INFO,
-            payload: dummySystem
+    test('Action UPDATE_SYSTEM_STATUS', () => {
+        const oAction: types.UpdateSystemStatus = {
+            type: types.UPDATE_SYSTEM_STATUS,
+            payload: {
+                message: 'Update successful',
+                updateSuccess: true
+            }
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
 
-    test('Action UPDATE_BCP_SYSTEM_KEY', () => {
-        const oAction: types.UpdateBCPSystemKey = {
-            type: types.UPDATE_BCP_SYSTEM_KEY,
-            payload: { url: 'https://newurl', client: '001' }
+    test('Action SYSTEM_INFO_LOADING', () => {
+        const oAction: types.SystemInfoLoading = {
+            type: types.SYSTEM_INFO_LOADING
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
 
-    test('Action LOADING_SYSTEM_INFO', () => {
-        const oAction: types.LoadingSystemInfo = {
-            type: types.LOADING_SYSTEM_INFO
-        };
-        expect(reducer(systemState, oAction)).toMatchSnapshot();
-    });
-
-    test('Action LOADING_SYSTEM_INFO', () => {
-        const oAction: types.LoadingTestConnectionInfo = {
-            type: types.LOADING_TEST_SYSTEM_CONNECTION
+    test('Action TEST_CONNECTION_LOADING', () => {
+        const oAction: types.TestConnectionLoading = {
+            type: types.TEST_CONNECTION_LOADING
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
@@ -113,9 +90,9 @@ describe('Page Map redux actions', () => {
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
 
-    test('Action SYSTEM_CONNECTION_STATUS', () => {
-        const oAction: types.SystemConnectionStatus = {
-            type: types.SYSTEM_CONNECTION_STATUS,
+    test('Action TEST_CONNECTION_STATUS', () => {
+        const oAction: types.TestConnectionStatus = {
+            type: types.TEST_CONNECTION_STATUS,
             payload: {
                 connectionStatus
             }
@@ -123,20 +100,17 @@ describe('Page Map redux actions', () => {
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
 
-    test('Action SYSTEM_EDIT_STATUS', () => {
-        const oAction: types.EditSavedSystemStatus = {
-            type: types.SYSTEM_EDIT_STATUS,
-            payload: editStatus
+    test('Action UPDATE_SYSTEM_STATUS', () => {
+        const oAction: types.UpdateSystemStatus = {
+            type: types.UPDATE_SYSTEM_STATUS,
+            payload: updateStatus
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });
 
-    test('Action ADD_NEW_SAP_SYSTEM', () => {
-        const oAction: types.AddNewSapSystem = {
-            type: types.ADD_NEW_SAP_SYSTEM,
-            payload: {
-                hideServiceKey: false
-            }
+    test('Action CREATE_NEW_SYSTEM', () => {
+        const oAction: types.CreateNewSystem = {
+            type: types.CREATE_NEW_SYSTEM
         };
         expect(reducer(systemState, oAction)).toMatchSnapshot();
     });

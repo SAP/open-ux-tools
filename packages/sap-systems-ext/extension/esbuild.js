@@ -79,11 +79,7 @@ async function main() {
         sourcesContent: false,
         platform: 'node',
         outfile: 'dist/extension.js',
-        external: [
-            'vscode',
-            'jsonc-parser'
-            // '@zowe/secrets-for-zowe-sdk',
-        ],
+        external: ['vscode'],
         logLevel: 'silent',
         plugins: [
             copyPrebuildsPlugin,

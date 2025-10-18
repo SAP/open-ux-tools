@@ -13,6 +13,15 @@ interface CloudSystemProps {
     setIsDetailsUpdated: (isUpdated: boolean) => void;
 }
 
+/**
+ * Renders the cloud system details input fields.
+ *
+ * @param props - cloud system props
+ * @param props.systemInfo - the system information
+ * @param props.setUrl - function to set the URL
+ * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @returns - the cloud system JSX element
+ */
 export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: CloudSystemProps): ReactElement {
     const { t } = useTranslation();
 

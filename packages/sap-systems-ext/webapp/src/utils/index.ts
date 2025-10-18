@@ -12,7 +12,7 @@ declare let acquireVsCodeApi: () => (typeof window)['vscode'];
 export const initVsCodeApi = (): void => {
     try {
         window.vscode = acquireVsCodeApi();
-    } catch (e) {
-        console.error("Can't acquireVsCodeApi, seems I'm not running in VSCode web view");
+    } catch {
+        // Ignore errors in case not running in VS Code
     }
 };

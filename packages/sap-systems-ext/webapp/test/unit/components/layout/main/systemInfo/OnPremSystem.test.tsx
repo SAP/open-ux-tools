@@ -1,8 +1,8 @@
 import * as React from 'react';
+import type { BackendSystem } from '@sap-ux/store';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { OnPremSystem } from '../../../../../../src/components/layout/main/systemInfo/OnPremSystem';
-import { BackendSystem } from '@sap-ux/store';
 
 describe('<OnPremSystem />', () => {
     it('Test inputs', () => {
@@ -45,16 +45,15 @@ describe('<OnPremSystem />', () => {
         const urlInput = document.getElementById('sysUrl');
         const clientInput = document.getElementById('sysClient');
 
-        if (urlInput) {
-            fireEvent.change(urlInput, urlEvent);
-        }
-        if (clientInput) {
-            fireEvent.change(clientInput, clientEvent);
-        }
+        fireEvent.change(urlInput!, urlEvent);
+
+        fireEvent.change(clientInput!, clientEvent);
 
         expect(setUrl).toHaveBeenCalledWith(urlEvent.target.value);
         expect(setClient).toHaveBeenCalledWith('100');
         expect(setIsDetailsUpdated).toHaveBeenCalled();
         expect(setIsDetailsValid).toHaveBeenCalledWith(true);
+
+        fireEvent.change(urlInput!, { target: { value: 'invalid-url' } });
     });
 });

@@ -18,6 +18,18 @@ interface SystemActionBtnsProps {
     resetStatus: () => void;
 }
 
+/**
+ * Renders the jsx for external action buttons.
+ *
+ * @param props - external action buttons props
+ * @param props.systemInfo - the system information
+ * @param props.testConnectionBtnDisabled - flag indicating if the test connection button is disabled
+ * @param props.saveButtonDisabled - flag indicating if the save button is disabled
+ * @param props.isDetailsUpdated - flag indicating if the system details have been updated
+ * @param props.connectionStatus - the connection status object
+ * @param props.resetStatus - function to reset status messages
+ * @returns - the external action buttons JSX element
+ */
 export function SystemActionBtns({
     systemInfo,
     testConnectionBtnDisabled,
@@ -30,11 +42,11 @@ export function SystemActionBtns({
     const [showDialog, setShowDialog] = useState(false);
     const [sapSystemDetails, setSapSystemDetails] = useState({});
 
-    const onDismissModal = () => {
+    const onDismissModal = (): void => {
         setShowDialog(false);
     };
 
-    const onAcceptModal = () => {
+    const onAcceptModal = (): void => {
         actions.updateSystem(sapSystemDetails as BackendSystem);
         setShowDialog(false);
     };
@@ -78,7 +90,9 @@ export function SystemActionBtns({
                             disabled={testConnectionBtnDisabled}
                             onClick={(): void => {
                                 resetStatus();
-                                systemInfo && actions.testConnection(systemInfo);
+                                if (systemInfo) {
+                                    actions.testConnection(systemInfo);
+                                }
                             }}>
                             {t('buttons.testConnection')}
                         </UIDefaultButton>
@@ -88,7 +102,9 @@ export function SystemActionBtns({
                             primary
                             disabled={saveButtonDisabled}
                             onClick={(): void => {
-                                systemInfo && saveSystem(systemInfo, isDetailsUpdated);
+                                if (systemInfo) {
+                                    saveSystem(systemInfo, isDetailsUpdated);
+                                }
                             }}>
                             {t('buttons.save')}
                         </UIDefaultButton>

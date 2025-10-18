@@ -38,7 +38,6 @@ describe('Middleware', () => {
         // jsdom doesn't set proper orign for post message event. In middleware we check for window.origin, mock it here
         (window as { origin: string }).origin = '';
         // Receive message
-        // eslint-disable-next-line sonarjs/post-message
         window.postMessage({ type: 'WEBVIEW_READY' }, '*');
         // Check that message was dispatched
         setTimeout(() => {

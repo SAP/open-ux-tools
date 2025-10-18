@@ -46,7 +46,7 @@ describe('Test the SAP Systems provider', () => {
             expect(systems).toStrictEqual([
                 { name: 'System A [User1]', client: '100', url: 'https://system-a.com' },
                 { name: 'System B [User2]', client: '200', url: 'https://system-b.com' },
-                { name: 'System C', client: undefined, url: 'https://system-c.com' }
+                { name: 'System C (ABAP Cloud)', client: undefined, url: 'https://system-c.com' }
             ]);
         });
 

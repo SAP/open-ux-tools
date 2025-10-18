@@ -1,11 +1,11 @@
 import * as React from 'react';
+import type { AuthenticationType, SystemType } from '@sap-ux/store';
 import { render } from '@testing-library/react';
 import { fireEvent, screen } from '@testing-library/dom';
 import { LoadingState } from '../../../../../src/types';
 import { actions } from '../../../../../src/state';
 import { SystemMain } from '../../../../../src/components/layout/main/SystemMain';
 import { useSystemMain } from '../../../../../src/hooks/useSystemMain';
-import { AuthenticationType, SystemType } from '@sap-ux/store';
 
 jest.mock('../../../../../src/hooks/useSystemMain');
 

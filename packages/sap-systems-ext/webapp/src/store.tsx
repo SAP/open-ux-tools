@@ -15,7 +15,6 @@ initIcons();
 
 const rootElementId = 'root';
 
-// eslint-disable-next-line react/no-deprecated
 ReactDOM.render(
     (
         <React.StrictMode>

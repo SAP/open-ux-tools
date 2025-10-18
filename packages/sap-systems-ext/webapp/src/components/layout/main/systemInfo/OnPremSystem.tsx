@@ -17,6 +17,19 @@ interface OnPremSystemProps {
     setIsDetailsValid: (isValid: boolean) => void;
 }
 
+/**
+ * Renders the on-premise system details input fields.
+ *
+ * @param props - on-premise system props
+ * @param props.systemInfo - the system information
+ * @param props.setUrl - function to set the URL
+ * @param props.setClient - function to set the client
+ * @param props.setUsername - function to set the username
+ * @param props.setPassword - function to set the password
+ * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @param props.setIsDetailsValid - function to set the details valid flag
+ * @returns - the on-premise system JSX element
+ */
 export function OnPremSystem({
     systemInfo,
     setUrl,
@@ -28,17 +41,19 @@ export function OnPremSystem({
 }: OnPremSystemProps): ReactElement {
     const { t } = useTranslation();
 
-    const getUrlErrorMessage = (value: string) => {
+    const getUrlErrorMessage = (value: string): string | undefined => {
+        let urlMessage: string | undefined;
         try {
             const url = new URL(value);
             if (url.pathname && url.pathname !== '/') {
                 setIsDetailsValid(false);
-                return t('validations.urlPathWarning');
+                urlMessage = t('validations.urlPathWarning');
             }
             setIsDetailsValid(true);
         } catch {
-            return undefined;
+            // ignore
         }
+        return urlMessage;
     };
 
     return (

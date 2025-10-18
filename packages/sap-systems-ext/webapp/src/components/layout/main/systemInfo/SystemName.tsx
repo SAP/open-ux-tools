@@ -11,6 +11,15 @@ interface SystemNameProps {
     setIsDetailsUpdated: (isUpdated: boolean) => void;
 }
 
+/**
+ * Renders the system name input field.
+ *
+ * @param props - system name props
+ * @param props.systemName - the system name value
+ * @param props.setName - function to set the system name
+ * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @returns - the system name JSX element
+ */
 export function SystemName({ systemName, setName, setIsDetailsUpdated }: SystemNameProps): ReactElement {
     const { t } = useTranslation();
 

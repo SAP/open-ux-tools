@@ -18,6 +18,20 @@ interface SystemInfoProps {
     setIsDetailsValid: (isValid: boolean) => void;
 }
 
+/**
+ * Renders the system information input fields based on the system type.
+ *
+ * @param props - system information props
+ * @param props.systemInfo - the system information
+ * @param props.setName - function to set the system name
+ * @param props.setUrl - function to set the URL
+ * @param props.setClient - function to set the client
+ * @param props.setUsername - function to set the username
+ * @param props.setPassword - function to set the password
+ * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @param props.setIsDetailsValid - function to set the details valid flag
+ * @returns - the system information JSX element
+ */
 export function SystemInfo({
     systemInfo,
     setName,
@@ -33,38 +47,23 @@ export function SystemInfo({
 
     return (
         <div>
-            {(() => {
-                return (
-                    <>
-                        {showSystemName && (
-                            <SystemName
-                                systemName={systemInfo?.name}
-                                setName={setName}
-                                setIsDetailsUpdated={setIsDetailsUpdated}
-                            />
-                        )}
-
-                        {systemType === 'OnPrem' && (
-                            <OnPremSystem
-                                systemInfo={systemInfo}
-                                setUrl={setUrl}
-                                setClient={setClient}
-                                setUsername={setUsername}
-                                setPassword={setPassword}
-                                setIsDetailsUpdated={setIsDetailsUpdated}
-                                setIsDetailsValid={setIsDetailsValid}
-                            />
-                        )}
-                        {systemType === 'AbapCloud' && (
-                            <CloudSystem
-                                systemInfo={systemInfo}
-                                setUrl={setUrl}
-                                setIsDetailsUpdated={setIsDetailsUpdated}
-                            />
-                        )}
-                    </>
-                );
-            })()}
+            {showSystemName && (
+                <SystemName systemName={systemInfo?.name} setName={setName} setIsDetailsUpdated={setIsDetailsUpdated} />
+            )}
+            {systemType === 'OnPrem' && (
+                <OnPremSystem
+                    systemInfo={systemInfo}
+                    setUrl={setUrl}
+                    setClient={setClient}
+                    setUsername={setUsername}
+                    setPassword={setPassword}
+                    setIsDetailsUpdated={setIsDetailsUpdated}
+                    setIsDetailsValid={setIsDetailsValid}
+                />
+            )}
+            {systemType === 'AbapCloud' && (
+                <CloudSystem systemInfo={systemInfo} setUrl={setUrl} setIsDetailsUpdated={setIsDetailsUpdated} />
+            )}
         </div>
     );
 }

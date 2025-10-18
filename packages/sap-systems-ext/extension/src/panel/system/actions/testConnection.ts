@@ -31,7 +31,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
 
     const validationResult = validateSystemInfo(system);
     if (typeof validationResult === 'string') {
-        await postMessage(validationResult);
+        await postMessage(connectionStatusMsg({ connectionStatus: { connected: false, message: validationResult } }));
         return;
     }
 
@@ -48,8 +48,8 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
         } else {
             throw new Error(t('error.noServices'));
         }
-    } catch {
-        handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled);
+    } catch (e) {
+        handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
         logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
     }
 }
@@ -79,28 +79,36 @@ function postConnectionStatus(
  * @param postMessage - function to post message to the webview
  * @param catalog - catalog results containing service counts and errors
  * @param isGuidedAnswersEnabled - if Guided Answers is enabled
+ * @param error - the error that occurred
  * @returns - void
  */
 function handleCatalogError(
     postMessage: (msg: unknown) => void,
     catalog: CatalogServicesCounts,
-    isGuidedAnswersEnabled?: boolean
+    isGuidedAnswersEnabled?: boolean,
+    error?: Error
 ): void {
     logCatalogErrors(catalog);
 
-    const error = catalog.v2Request.error ?? catalog.v4Request.error;
-    if (!error) {
-        return postConnectionStatus(postMessage, false, undefined, t('error.noServices'));
+    const catalogResultError = catalog.v2Request.error ?? catalog.v4Request.error;
+    if (!catalogResultError) {
+        return postConnectionStatus(postMessage, false, undefined, error?.message);
     }
 
-    const errorType = getErrorType(error);
+    const errorType = getErrorType(catalogResultError);
     const guidedAnswerLink = createGALink(errorType, isGuidedAnswersEnabled);
 
     if (guidedAnswerLink) {
         logGATelemetry(GuidedAnswersLinkAction.LINK_CREATED, errorType, isGuidedAnswersEnabled);
     }
 
-    return postConnectionStatus(postMessage, false, undefined, getErrorMessage(errorType, error), guidedAnswerLink);
+    return postConnectionStatus(
+        postMessage,
+        false,
+        undefined,
+        getErrorMessage(errorType, catalogResultError),
+        guidedAnswerLink
+    );
 }
 
 /**

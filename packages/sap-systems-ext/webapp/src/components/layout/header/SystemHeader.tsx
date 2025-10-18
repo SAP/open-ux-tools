@@ -6,6 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 import '../../../styles/SystemHeader.scss';
 
+/**
+ * Renders the header.
+ *
+ * @returns - the header JSX element
+ */
 export function SystemHeader(): ReactElement {
     const systemInfo = useSelector((state: SystemState) => state.systemInfo);
     const addNewSapSystem = useSelector((state: SystemState) => state.addNewSapSystem);

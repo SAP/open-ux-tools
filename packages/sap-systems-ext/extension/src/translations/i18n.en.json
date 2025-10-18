@@ -1,6 +1,9 @@
 {
     "views": {
-        "client": "Client: {{client}}"
+        "client": "Client: {{client}}",
+        "systemType": {
+            "abapCloud": "ABAP Cloud"
+        }
     },
     "commands": {
         "openSystemDetails": "Open System Details"
@@ -37,7 +40,7 @@
         "systemInfo": "Error during processing of system information: {{- error}}",
         "systemKeyExists": "System (URL + Client) already exists",
         "systemUpdateFailure": "Failed to update system information: {{- error}}",
-        "noServices": "This SAP system failed to return any services: {{- error}}",
+        "noServices": "This SAP system failed to return any services.",
         "cert": {
             "urlValidation": "The system URL is using {{certError}} security certificate.",
             "expired": "an expired",

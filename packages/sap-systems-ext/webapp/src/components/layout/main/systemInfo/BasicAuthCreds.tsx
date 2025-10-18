@@ -13,6 +13,17 @@ interface BasicAuthCredsProps {
     setIsDetailsUpdated: (isUpdated: boolean) => void;
 }
 
+/**
+ * Renders the basic authentication credentials input fields.
+ *
+ * @param props - basic authentication credentials props
+ * @param props.username - the username value
+ * @param props.password - the password value
+ * @param props.setUsername - function to set the username
+ * @param props.setPassword - function to set the password
+ * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @returns - the basic authentication credentials JSX element
+ */
 export function BasicAuthCreds({
     username,
     password,

@@ -12,6 +12,14 @@ interface ExternalActionBtnsProps {
     systemUnSaved?: boolean;
 }
 
+/**
+ * Renders the jsx for external action buttons.
+ *
+ * @param props - external action buttons props
+ * @param props.systemInfo - the system information
+ * @param props.systemUnSaved - flag indicating if the system has unsaved changes
+ * @returns - the external action buttons JSX element
+ */
 export function ExternalActionBtns({ systemInfo, systemUnSaved }: ExternalActionBtnsProps): ReactElement {
     const { t } = useTranslation();
     // show export button only if the system is on-prem
@@ -27,7 +35,9 @@ export function ExternalActionBtns({ systemInfo, systemUnSaved }: ExternalAction
                                 id="exportBtn"
                                 iconProps={{ iconName: UiIcons.Export }}
                                 onClick={(): void => {
-                                    systemInfo && actions.exportSystem(systemInfo);
+                                    if (systemInfo) {
+                                        actions.exportSystem(systemInfo);
+                                    }
                                 }}>
                                 {t('buttons.exportSystem')}
                             </UIDefaultButton>
@@ -39,7 +49,9 @@ export function ExternalActionBtns({ systemInfo, systemUnSaved }: ExternalAction
                             id="fioriProjectBtn"
                             iconProps={{ iconName: UiIcons.Lightning }}
                             onClick={(): void => {
-                                systemInfo?.name && actions.createFioriProject(systemInfo.name);
+                                if (systemInfo?.name) {
+                                    actions.createFioriProject(systemInfo.name);
+                                }
                             }}>
                             {t('buttons.createFioriApp')}
                         </UIDefaultButton>

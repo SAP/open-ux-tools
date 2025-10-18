@@ -10,6 +10,11 @@ import { useSystemMain } from '../../../hooks';
 
 import '../../../styles/SystemMain.scss';
 
+/**
+ * Renders the main layout for the SAP System details.
+ *
+ * @returns - the SAP System main layout JSX element
+ */
 export function SystemMain(): ReactElement {
     const { t } = useTranslation();
 

@@ -111,14 +111,14 @@ export function useSystemMain(): {
         });
     }, [systemInfo]);
 
-    const resetStatus = () => {
+    const resetStatus = (): void => {
         setShowConnectionStatus(false);
         setshowUpdateSystemStatus(false);
     };
 
     const isEmpty = (str?: string): boolean => !str || str.length === 0;
 
-    const checkMandatoryFields = () => {
+    const checkMandatoryFields = (): void => {
         const { url, name } = systemFields;
         if (!isEmpty(url) && !isEmpty(name) && isDetailsUpdated && isDetailsValid) {
             disableSaveButton(false);
@@ -127,7 +127,7 @@ export function useSystemMain(): {
         }
     };
 
-    const disableAllButtons = (disable: boolean) => {
+    const disableAllButtons = (disable: boolean): void => {
         disableTestConnectionBtn(disable);
         disableSaveButton(disable);
     };
@@ -195,7 +195,7 @@ export function useSystemMain(): {
         isDetailsValid,
         setIsDetailsUpdated,
         setIsDetailsValid,
-        systemState: loadingState || LoadingState.Idle,
+        systemState: loadingState ?? LoadingState.Idle,
         testConnectionState: testConnectionLoadingState,
         connectionStatus,
         updateSystemStatus,

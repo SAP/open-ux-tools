@@ -12,6 +12,11 @@ import {
     CREATE_NEW_SYSTEM
 } from '@sap-ux/sap-systems-ext-types';
 
+/**
+ * Fetches the initial state for the system reducer.
+ *
+ * @returns - system initial state
+ */
 export function getInitialState(): SystemState {
     return {
         systemInfo: undefined,
@@ -45,7 +50,6 @@ export const reducer: Reducer<SystemState, ExtensionActions> = (
 ): SystemState => {
     switch (action.type) {
         case SYSTEM_INFO:
-            debugger;
             return {
                 systemInfo: action.payload.systemInfo,
                 unSaved: action.payload.unSaved
