@@ -6,8 +6,6 @@ import AppComponent from 'sap/fe/core/AppComponent';
 import { getV4AppComponent, getV4ApplicationPages } from '../../../utils/fe-v4';
 import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base';
 import { isA } from '../../../utils/core';
-import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
-import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { PageDescriptorV4 } from '../../controllers/AddSubpage.controller';
 
@@ -122,8 +120,8 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         metaModel: ODataMetaModelV4
     ): Promise<string | undefined> {
         if (
-            !isA<FEObjectPageComponent>('sap.fe.templates.ListReport.Component', component) &&
-            !isA<FEListReportComponent>('sap.fe.templates.ObjectPage.Component', component)
+            !isA('sap.fe.templates.ListReport.Component', component) &&
+            !isA('sap.fe.templates.ObjectPage.Component', component)
         ) {
             throw new Error('Unexpected type of page owner component');
         }

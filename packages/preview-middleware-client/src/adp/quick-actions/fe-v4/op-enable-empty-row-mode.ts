@@ -12,7 +12,7 @@ import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
 const CONTROL_TYPES = [MDC_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
-const UNSUPPORTED_TABLES = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
+const UNSUPPORTED_TABLES: (keyof TypeMap)[] = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
 
 const INLINE_CREATION_ROWS_MODE = 'InlineCreationRows';
 /**

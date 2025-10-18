@@ -6,7 +6,6 @@ import { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
 import { getControlById, isA } from '../../utils/core';
 
 import type { ControlTreeIndex } from '../types';
-import Component from 'sap/ui/core/Component';
 
 export interface FEAppPageInfo {
     page: FEAppPage;
@@ -18,7 +17,7 @@ export interface FEAppPagesMap {
 
 /**
  * Checks if control is visible in the page.
- * 
+ *
  * @param page - Page control.
  * @param controlId - UI5 control id.
  * @returns True if control is visible in the page.
@@ -28,10 +27,9 @@ export function pageHasControlId(page: Control, controlId: string): boolean {
     return !!controlDomElement && !!page?.getDomRef()?.contains(controlDomElement);
 }
 
-
 /**
  * Checks if control is a child element of the rootControl.
- * 
+ *
  * @param control - UI5 Control to be tested.
  * @param rootControl - UI5 root control.
  * @returns True if control is the child of the specified rootControl.
@@ -44,7 +42,7 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, rootContr
         }
         // if parent is a reusable component, use oContainer to find the parent
         if (
-            isA<Component>('sap.ui.core.Component', currentControl) &&
+            isA('sap.ui.core.Component', currentControl) &&
             (currentControl as unknown as { oContainer: Control })?.oContainer
         ) {
             currentControl = (currentControl as unknown as { oContainer: Control }).oContainer.getParent();
@@ -57,7 +55,7 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, rootContr
 
 /**
  * Find all controls in page that match the provided types.
- * 
+ *
  * @param controlIndex - Control tree index.
  * @param activePage - Active page control.
  * @param controlTypes - Relevant control types.
@@ -91,23 +89,24 @@ export function getRelevantControlFromActivePage<T extends UI5Element = UI5Eleme
     return relevantControls;
 }
 
-export function getParentContainer<T extends ManagedObject>(
+export function getParentContainer<T extends keyof TypeMap>(
     control: ManagedObject | null | undefined,
-    type: string
-): T | undefined {
+    type: T
+): TypeMap[typeof type] | undefined {
     let currentControl = control;
     while (currentControl) {
-        if (isA<T>(type, currentControl)) {
+        if (isA(type, currentControl)) {
             return currentControl;
         }
         // if parent is a reusable component, use oContainer to find the parent
+        // currentControl type somehow gets converted to "never" so we need to use type assertion here
         if (
-            isA<Component>('sap.ui.core.Component', currentControl) &&
+            isA('sap.ui.core.Component', currentControl as ManagedObject) &&
             (currentControl as unknown as { oContainer: Control })?.oContainer
         ) {
             currentControl = (currentControl as unknown as { oContainer: Control }).oContainer.getParent();
         } else {
-            currentControl = currentControl.getParent();
+            currentControl = (currentControl as ManagedObject).getParent();
         }
     }
     return undefined;

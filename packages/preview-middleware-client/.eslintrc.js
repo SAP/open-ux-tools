@@ -7,6 +7,7 @@ module.exports = {
     },
     rules: {
         'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
+        'no-undef': 'off',
         'valid-jsdoc': [
             'error',
             {
