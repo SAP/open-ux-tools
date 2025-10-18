@@ -147,11 +147,44 @@ type ApiData = {
     symbols: ApiSymbol[];
 } & Record<string, unknown>;
 
+interface AICoreCredentials {
+    url: string;
+    clientid: string;
+    clientsecret: string;
+    serviceurls: {
+        AI_API_URL: string;
+    };
+}
+
+interface TokenResponse {
+    access_token: string;
+}
+
+interface Configuration {
+    id: string;
+    name: string;
+}
+
+interface ConfigurationsResponse {
+    resources: Configuration[];
+}
+
+interface Deployment {
+    id: string;
+    configurationId: string;
+    status: string;
+    deploymentUrl: string;
+}
+
+interface DeploymentsResponse {
+    resources: Deployment[];
+}
+
 /**
  * HTTP AI Core LLM Client
  */
 class HTTPAICoreClient implements LLMClient {
-    private credentials: any;
+    private credentials?: AICoreCredentials;
     private token?: string;
     private deploymentUrl: Record<string, string> = {};
 
@@ -170,7 +203,7 @@ class HTTPAICoreClient implements LLMClient {
             }
         }
 
-        if (!this.token) {
+        if (!this.token && this.credentials) {
             const resp = await fetch(this.credentials.url + '/oauth/token?grant_type=client_credentials', {
                 method: 'POST',
                 headers: {
@@ -179,21 +212,21 @@ class HTTPAICoreClient implements LLMClient {
                     ).toString('base64')}`
                 }
             });
-            const tokenData = await resp.json();
-            this.token = (tokenData as any).access_token;
+            const tokenData = (await resp.json()) as TokenResponse;
+            this.token = tokenData.access_token;
         }
 
-        if (!this.deploymentUrl[payload.deployment_id]) {
+        if (!this.deploymentUrl[payload.deployment_id] && this.credentials) {
             const configurations = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations', {
                 headers: {
                     Authorization: `Bearer ${this.token}`,
                     'AI-Resource-Group': 'default'
                 }
             });
-            const configurationsData = await configurations.json();
+            const configurationsData = (await configurations.json()) as ConfigurationsResponse;
 
             const configName = 'embeddingsscript-' + payload.deployment_id;
-            const config = (configurationsData as any).resources.find((r: any) => r.name === configName);
+            const config = configurationsData.resources.find((r) => r.name === configName);
             let configurationId;
 
             if (config) {
@@ -213,8 +246,8 @@ class HTTPAICoreClient implements LLMClient {
                         'content-type': 'application/json'
                     }
                 });
-                const postConfigData = await postConfig.json();
-                configurationId = (postConfigData as any).id;
+                const postConfigData = (await postConfig.json()) as Configuration;
+                configurationId = postConfigData.id;
             }
 
             const deployments = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments', {
@@ -223,11 +256,9 @@ class HTTPAICoreClient implements LLMClient {
                     'AI-Resource-Group': 'default'
                 }
             });
-            const deploymentsData = await deployments.json();
+            const deploymentsData = (await deployments.json()) as DeploymentsResponse;
 
-            const deployment = (deploymentsData as any).resources.find(
-                (r: any) => r.configurationId === configurationId
-            );
+            const deployment = deploymentsData.resources.find((r) => r.configurationId === configurationId);
 
             if (!deployment) {
                 await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments', {
@@ -285,9 +316,10 @@ class LLM {
     async send(payload: LLMPayload): Promise<LLMResponse> {
         try {
             return await this.client.send(payload);
-        } catch (e: any) {
-            const err = new Error(e.body?.data?.error || e.body?.error || e.message || e);
-            (err as any).code = 'LLM';
+        } catch (e: unknown) {
+            const error = e as Error & { body?: { data?: { error?: string }; error?: string } };
+            const err = new Error(error.body?.data?.error || error.body?.error || error.message || String(e));
+            (err as Error & { code: string }).code = 'LLM';
             throw err;
         }
     }
@@ -535,18 +567,7 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
      * @returns True if file has a supported extension
      */
     private hasSupportedExtension(fileName: string): boolean {
-        const supportedExtensions = [
-            '.md'
-            // '.ts',
-            // '.js',
-            // '.xml',
-            // '.cds',
-            // '.json',
-            // '.html',
-            // '.properties',
-            // '.yaml',
-            // '.yml'
-        ];
+        const supportedExtensions = ['.md'];
         return supportedExtensions.some((ext) => fileName.endsWith(ext));
     }
 
