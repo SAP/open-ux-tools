@@ -12,6 +12,7 @@ const CalloutWithText = (props: { id: string }): JSX.Element => {
     const toggleCallout = (): void => {
         setCalloutVisible(!isCalloutVisible);
     };
+    const property = 'background';
     return (
         <div>
             <UIIconButton
@@ -20,23 +21,43 @@ const CalloutWithText = (props: { id: string }): JSX.Element => {
                 checked={isCalloutVisible}
                 onClick={toggleCallout}></UIIconButton>
             {isCalloutVisible && (
-                <UICallout
-                    target={`#${id}`}
-                    isBeakVisible={true}
-                    beakWidth={5}
-                    directionalHint={4}
-                    onDismiss={() => toggleCallout()}
-                    calloutWidth={300}
-                    calloutMinWidth={300}
-                    contentPadding={UICalloutContentPadding.Standard}>
-                    <div>
-                        lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris
-                        nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate
-                        velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident
-                        sunt in culpa qui officia deserunt
-                    </div>
+                <UICallout isBeakVisible={true} beakWidth={5} directionalHint={4} target={`#${id}`}>
+                    <div className="dummy">aaaaaa</div>
                 </UICallout>
+                // <UICallout
+                //     target={`#${id}`}
+                //     isBeakVisible={true}
+                //     beakWidth={5}
+                //     directionalHint={4}
+                //     onDismiss={() => toggleCallout()}
+                //     calloutWidth={300}
+                //     calloutMinWidth={300}
+                //     contentPadding={UICalloutContentPadding.Standard}
+                //     styles={{
+                //         root: {
+                //             [property]: 'red'
+                //         },
+                //         beak: {
+                //             [property]: 'green'
+                //         },
+                //         beakCurtain: {
+                //             [property]: 'blue'
+                //         },
+                //         calloutMain: {
+                //             [property]: 'yellow'
+                //         },
+                //         container: {
+                //             [property]: 'green'
+                //         }
+                //     }}>
+                //     <div>
+                //         lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut
+                //         labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris
+                //         nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate
+                //         velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident
+                //         sunt in culpa qui officia deserunt
+                //     </div>
+                // </UICallout>
             )}
         </div>
     );
