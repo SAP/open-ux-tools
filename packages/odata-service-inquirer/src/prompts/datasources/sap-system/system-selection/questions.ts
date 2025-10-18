@@ -209,23 +209,35 @@ export async function getSystemConnectionQuestions(
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                // Backend systems credentials may need to be updated
+                let message;
+                // Check for stored credentials or authentication failure message if a backend system is selected
                 if (
                     selectedSystem.type === 'backendSystem' &&
                     connectionValidator.systemAuthType === 'basic' &&
                     (await connectionValidator.isAuthRequired())
                 ) {
-                    return {
-                        message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
-                        severity: Severity.information
-                    };
+                    const backend = selectedSystem.system as BackendSystem;
+                    const missingCredentials = !backend.username || !backend.password;
+
+                    if (missingCredentials) {
+                        message = {
+                            message: t('prompts.systemSelection.noStoredCredentials'),
+                            severity: Severity.information
+                        };
+                    } else {
+                        message = {
+                            message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
+                            severity: Severity.information
+                        };
+                    }
                 }
                 if (connectionValidator.ignoreCertError) {
-                    return {
+                    message = {
                         message: t('warnings.certErrorIgnoredByNodeSetting'),
                         severity: Severity.warning
                     };
                 }
+                return message ? message : undefined;
             }
         } as ListQuestion<SystemSelectionAnswers>
     ];

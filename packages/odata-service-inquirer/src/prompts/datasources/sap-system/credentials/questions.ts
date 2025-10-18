@@ -125,6 +125,13 @@ export function getCredentialsPrompts<T extends Answers>(
                         severity: Severity.warning
                     };
                 }
+                // Only show password store warning if the system has stored credentials or if credentials are being newly saved
+                else if (PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated) {
+                    return {
+                        message: t('texts.passwordStoreWarning'),
+                        severity: Severity.information
+                    };
+                }
             }
         } as PasswordQuestion<T>
     ];
@@ -150,13 +157,14 @@ function updatePromptStateWithConnectedSystem(
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {
         const backendSystem = selectedSystem.system as BackendSystem;
+
         // Have the credentials changed..
         if (backendSystem.username !== username || backendSystem.password !== password) {
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
                 password,
                 userDisplayName: username,
-                newOrUpdated: true
+                newOrUpdated: backendSystem.username || backendSystem.password ? true : false
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.
