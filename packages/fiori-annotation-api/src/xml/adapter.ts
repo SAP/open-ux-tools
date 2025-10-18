@@ -29,9 +29,18 @@ import {
     createElementNode,
     Edm,
     Edmx,
-    createReference
+    createReference,
+    TEXT_TYPE,
+    Location
 } from '@sap-ux/odata-annotation-core-types';
-import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
+import {
+    getAliasInformation,
+    getAllNamespacesAndReferences,
+    getElementAttributeValue,
+    isElementWithName,
+    parseIdentifier,
+    toFullyQualifiedName
+} from '@sap-ux/odata-annotation-core';
 
 import type { Project } from '@sap-ux/project-access';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
@@ -63,6 +72,7 @@ import type { Comment } from './comments';
 import { collectUsedNamespaces } from './references';
 import { collectComments } from './comments';
 import { getNodeFromPointer } from './pointer';
+import type { ValueListReferences } from '../types/adapter';
 
 /**
  *
@@ -73,9 +83,14 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public fileCache: Map<string, string>;
 
     private documents = new Map<string, Document>();
+
+    /**
+     * Mapping from targets to value list references
+     */
+    private valueListReferences = new Map<string, ValueListReferences[]>();
     private metadata: MetadataElement[] = [];
 
-    private setFileCache(fileCache: Map<string, string>) {
+    private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
@@ -120,19 +135,22 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         this._compiledService = undefined;
         this.setFileCache(fileCache);
         const { ast: metadataDocument, comments: metadataComments } = parseFile(fileCache, this.service.metadataFile);
+        const metadataAnnotations = convertDocument(this.service.metadataFile.uri, metadataDocument);
         this.documents.set(this.service.metadataFile.uri, {
             uri: this.service.metadataFile.uri,
             comments: metadataComments,
             ast: metadataDocument,
-            annotationFile: convertDocument(this.service.metadataFile.uri, metadataDocument),
+            annotationFile: metadataAnnotations,
             usedNamespaces: new Set()
         });
 
+        this.collectValueListReferences(metadataAnnotations);
         for (const file of this.service.annotationFiles) {
             const { ast, comments } = parseFile(fileCache, file, false);
             const annotationFile = convertDocument(file.uri, ast);
             const usedNamespaces = new Set<string>();
             collectUsedNamespaces(annotationFile, usedNamespaces);
+            this.collectValueListReferences(annotationFile);
             this.documents.set(file.uri, {
                 uri: file.uri,
                 comments,
@@ -256,6 +274,15 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      */
     public serializeTarget(target: Target): string {
         return serializeTarget(target);
+    }
+
+    /**
+     * Returns a map of value list references.
+     *
+     * @returns Map of value list references.
+     */
+    public getValueListReferences(): Map<string, ValueListReferences[]> {
+        return this.valueListReferences;
     }
 
     private getUniqueNamespace(metadataNamespace: string): string {
@@ -639,6 +666,70 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 metadataReference.alias = metadataNamespace.alias;
             }
         }
+    }
+
+    private getValueListReferencesForTarget(target: string): ValueListReferences[] {
+        const cachedValue = this.valueListReferences.get(target);
+        if (cachedValue) {
+            return cachedValue;
+        }
+        const references: ValueListReferences[] = [];
+        this.valueListReferences.set(target, references);
+        return references;
+    }
+
+    private collectValueListReferences(annotationFile: AnnotationFile): void {
+        const aliasInfo = getAliasInfo(annotationFile, this.metadataService);
+        for (const target of annotationFile.targets) {
+            const targetName = toFullyQualifiedName(
+                aliasInfo.aliasMap,
+                annotationFile.namespace?.name ?? '',
+                parseIdentifier(target.name)
+            );
+            if (!targetName) {
+                // TODO: log warning (currently we do not have a mechanism for warnings)
+                continue;
+            }
+            for (const annotation of target.terms) {
+                const term = getElementAttributeValue(annotation, Edm.Term);
+                const fullyQualifiedTermName = toFullyQualifiedName(
+                    aliasInfo.aliasMap,
+                    annotationFile.namespace?.name ?? '',
+                    parseIdentifier(term)
+                );
+                const collection = annotation.content.find((element) => isElementWithName(element, Edm.Collection));
+
+                if (
+                    fullyQualifiedTermName === 'com.sap.vocabularies.Common.v1.ValueListReferences' &&
+                    isElementWithName(collection, Edm.Collection)
+                ) {
+                    this.addValueListReference(annotationFile.uri, targetName, annotation, collection.content);
+                }
+            }
+        }
+    }
+
+    private addValueListReference(uri: string, targetName: string, annotation: Element, content: ElementChild[]): void {
+        if (!annotation.range) {
+            return;
+        }
+        const references = content
+            .map((reference): string | undefined => {
+                if (isElementWithName(reference, Edm.String)) {
+                    const value = reference.content[0];
+                    if (value.type === TEXT_TYPE) {
+                        return value.text;
+                    }
+                }
+                return undefined;
+            })
+            .filter((value): value is string => typeof value === 'string');
+        const valueListReferences = this.getValueListReferencesForTarget(targetName);
+        valueListReferences.push({
+            annotation,
+            uris: references,
+            location: Location.create(uri, annotation.range)
+        });
     }
 }
 
