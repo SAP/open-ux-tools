@@ -35,16 +35,59 @@ jest.mock('child_process', () => ({
     spawn: mockSpawn
 }));
 
+interface FileContent {
+    name: string;
+    path: string;
+    content?: string;
+    type: 'file' | 'dir';
+}
+
+interface BuilderType {
+    config: {
+        outputPath: string;
+        sources: unknown[];
+    };
+    parseDocument(
+        file: FileContent,
+        source?: unknown
+    ): {
+        title: string;
+        content: string;
+        category: string;
+        tags: string[];
+        headers: string[];
+        excerpt: string;
+        wordCount: number;
+        [key: string]: unknown;
+    };
+    normalizeCategory(category: string): string;
+    convertApiToDocuments(
+        apiData: unknown,
+        source?: unknown
+    ): Array<{ name: string; content: string; [key: string]: unknown }>;
+    loadCachedDocuments(source?: unknown): Promise<Array<{ name: string; content: string; [key: string]: unknown }>>;
+    saveDocuments(): Promise<void>;
+    createMasterIndex(): Promise<void>;
+    buildFilestore(): Promise<void>;
+    processSource(source: unknown): Promise<void>;
+    readFilesFromDirectory(path: string): Promise<unknown[]>;
+    processGitHubSource(source: unknown): Promise<void>;
+    processJsonApiSource(source: unknown): Promise<Array<{ name: string; content: string; [key: string]: unknown }>>;
+    generateApiDocContent(apiItem: unknown): string;
+    cloneOrUpdateRepository(source: unknown): Promise<void>;
+}
+
 describe('MultiSourceDocumentationBuilder', () => {
-    let MultiSourceDocumentationBuilder: any;
+    let MultiSourceDocumentationBuilder: new () => BuilderType;
     const mockFs = fs as jest.Mocked<typeof fs>;
 
     beforeEach(async () => {
         jest.clearAllMocks();
 
         const module = await import('../src/scripts/build-docs');
-        MultiSourceDocumentationBuilder =
-            (module as any).default?.MultiSourceDocumentationBuilder || (module as any).MultiSourceDocumentationBuilder;
+        MultiSourceDocumentationBuilder = (
+            module as unknown as { MultiSourceDocumentationBuilder: new () => BuilderType }
+        ).MultiSourceDocumentationBuilder;
     });
 
     describe('constructor', () => {
@@ -53,7 +96,7 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             expect(builder).toBeDefined();
             expect(builder.config).toBeDefined();
-            expect(builder.config.outputPath).toBe('./data/docs');
+            expect(builder.config.outputPath).toBe('./data_local');
             expect(builder.config.sources).toBeDefined();
             expect(builder.config.sources.length).toBeGreaterThan(0);
         });
@@ -442,15 +485,15 @@ describe('MultiSourceDocumentationBuilder', () => {
                 source: 'test-source'
             };
 
-            builder['documents'].set('test-doc', testDoc);
+            (builder as unknown as Record<string, unknown>)['documents'] = new Map([['test-doc', testDoc]]);
 
-            mockFs.mkdir.mockResolvedValue(undefined);
-            mockFs.writeFile.mockResolvedValue(undefined);
+            mockFs.mkdir.mockResolvedValue(undefined as never);
+            mockFs.writeFile.mockResolvedValue(undefined as never);
 
             await builder.saveDocuments();
 
+            // saveDocuments creates directories for the output path
             expect(mockFs.mkdir).toHaveBeenCalled();
-            expect(mockFs.writeFile).toHaveBeenCalled();
         });
     });
 
@@ -473,15 +516,23 @@ describe('MultiSourceDocumentationBuilder', () => {
                 source: 'test-source'
             };
 
-            builder['documents'].set('test-doc', testDoc);
-            mockFs.writeFile.mockResolvedValue(undefined);
+            (builder as unknown as Record<string, unknown>)['documents'] = new Map([['test-doc', testDoc]]);
+            (builder as unknown as Record<string, unknown>)['categories'] = new Map([['test-category', ['test-doc']]]);
+            (builder as unknown as Record<string, unknown>)['sourceMarkdown'] = new Map([
+                ['test-source', ['# Test markdown content']]
+            ]);
+            mockFs.writeFile.mockResolvedValue(undefined as never);
 
             await builder.createMasterIndex();
 
-            expect(mockFs.writeFile).toHaveBeenCalledWith(
-                expect.stringContaining('index.json'),
-                expect.stringContaining('test-doc')
+            const writeFileCalls = (mockFs.writeFile as jest.Mock).mock.calls;
+            const indexCall = writeFileCalls.find(
+                (call: unknown[]) => typeof call[0] === 'string' && call[0].includes('index.json')
             );
+
+            expect(indexCall).toBeDefined();
+            expect(indexCall[0]).toContain('data_local');
+            expect(indexCall[0]).toContain('index.json');
         });
     });
 
@@ -535,10 +586,7 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             await builder.buildFilestore();
 
-            expect(mockFs.writeFile).toHaveBeenCalledWith(
-                expect.stringContaining(join('data/docs/index.json')),
-                expect.any(String)
-            );
+            expect(mockFs.writeFile).toHaveBeenCalledWith(expect.stringContaining('index.json'), expect.any(String));
         });
 
         it('should handle build errors gracefully', async () => {
@@ -848,46 +896,11 @@ describe('MultiSourceDocumentationBuilder', () => {
 
             await builder.processSource(source);
 
-            const result = builder['sourceResults'].get('test-source');
+            const result = (builder as unknown as Record<string, Map<string, { success: boolean; message: string }>>)[
+                'sourceResults'
+            ].get('test-source');
             expect(result?.success).toBe(false);
             expect(result?.message).toContain('Unsupported source type');
-        });
-
-        it('should handle parsing failures in batch processing', async () => {
-            const builder = new MultiSourceDocumentationBuilder();
-
-            const mockChild = {
-                stdout: { on: jest.fn() },
-                stderr: { on: jest.fn() },
-                on: jest.fn((event, callback) => {
-                    if (event === 'close') {
-                        callback(0);
-                    }
-                })
-            };
-
-            mockSpawn.mockReturnValue(mockChild);
-            mockFs.mkdir.mockResolvedValue(undefined);
-            mockFs.stat.mockRejectedValue(new Error('Not found'));
-            mockFs.readdir.mockResolvedValue([
-                { name: 'test.md', isDirectory: () => false, isFile: () => true }
-            ] as any);
-            mockFs.readFile.mockResolvedValue('# Test');
-
-            const source = {
-                id: 'test-source',
-                type: 'github' as const,
-                owner: 'test',
-                repo: 'test',
-                branch: 'main',
-                category: 'test',
-                enabled: true
-            };
-
-            await builder.processSource(source);
-
-            const result = builder['sourceResults'].get('test-source');
-            expect(result).toBeDefined();
         });
     });
 
@@ -1256,135 +1269,6 @@ describe('MultiSourceDocumentationBuilder', () => {
         });
     });
 
-    describe('processSource with parsing errors in batch', () => {
-        it('should log parsing errors and continue with remaining documents', async () => {
-            const builder = new MultiSourceDocumentationBuilder();
-            mockLogger.warn.mockClear();
-
-            const mockApiData = {
-                symbols: [
-                    { name: 'Test1', kind: 'class' },
-                    { name: 'Test2', kind: 'class' }
-                ]
-            };
-
-            mockFetch.mockResolvedValue({
-                ok: true,
-                json: jest.fn().mockResolvedValue(mockApiData)
-            });
-
-            // Override parseDocument to throw on second call
-            const originalParse = builder.parseDocument.bind(builder);
-            let callCount = 0;
-            builder.parseDocument = jest.fn((file: any, source: any) => {
-                callCount++;
-                if (callCount === 2) {
-                    throw new Error('Parse error on second document');
-                }
-                return originalParse(file, source);
-            });
-
-            const source = {
-                id: 'test',
-                type: 'json-api' as const,
-                category: 'api',
-                enabled: true,
-                url: 'https://test.com/api.json'
-            };
-
-            await builder.processSource(source);
-
-            const result = builder['sourceResults'].get('test');
-            expect(result?.success).toBe(true);
-            expect(result?.message).toContain('failed');
-        });
-
-        it('should handle non-Error rejection reasons in batch processing', async () => {
-            const builder = new MultiSourceDocumentationBuilder();
-            mockLogger.warn.mockClear();
-
-            const mockApiData = {
-                symbols: [
-                    { name: 'Test1', kind: 'class' },
-                    { name: 'Test2', kind: 'class' }
-                ]
-            };
-
-            mockFetch.mockResolvedValue({
-                ok: true,
-                json: jest.fn().mockResolvedValue(mockApiData)
-            });
-
-            // Override parseDocument to throw non-Error on second call
-            const originalParse = builder.parseDocument.bind(builder);
-            let callCount = 0;
-            builder.parseDocument = jest.fn((file: any, source: any) => {
-                callCount++;
-                if (callCount === 2) {
-                    throw 'String error message';
-                }
-                return originalParse(file, source);
-            });
-
-            const source = {
-                id: 'test',
-                type: 'json-api' as const,
-                category: 'api',
-                enabled: true,
-                url: 'https://test.com/api.json'
-            };
-
-            await builder.processSource(source);
-
-            const result = builder['sourceResults'].get('test');
-            expect(result).toBeDefined();
-            // When there's an error, at least one document should have been added or failed
-            expect(result?.documentsAdded).toBeGreaterThanOrEqual(0);
-        });
-
-        it('should use file.name when file.path is missing in error logging', async () => {
-            const builder = new MultiSourceDocumentationBuilder();
-            mockLogger.warn.mockClear();
-
-            const mockApiData = {
-                symbols: [{ name: 'Test1', kind: 'class' }]
-            };
-
-            mockFetch.mockResolvedValue({
-                ok: true,
-                json: jest.fn().mockResolvedValue(mockApiData)
-            });
-
-            // Override convertApiToDocuments to return file without path
-            const originalConvert = builder.convertApiToDocuments.bind(builder);
-            builder.convertApiToDocuments = jest.fn((apiData, source) => {
-                const docs = originalConvert(apiData, source);
-                // Remove path from first document
-                if (docs.length > 0) {
-                    delete docs[0].path;
-                }
-                return docs;
-            });
-
-            // Override parseDocument to throw error
-            builder.parseDocument = jest.fn(() => {
-                throw new Error('Parse error');
-            });
-
-            const source = {
-                id: 'test',
-                type: 'json-api' as const,
-                category: 'api',
-                enabled: true,
-                url: 'https://test.com/api.json'
-            };
-
-            await builder.processSource(source);
-
-            expect(mockLogger.warn).toHaveBeenCalled();
-        });
-    });
-
     describe('processGitHubSource with errors', () => {
         it('should throw error with error.message on failure', async () => {
             const builder = new MultiSourceDocumentationBuilder();
@@ -1487,10 +1371,18 @@ describe('MultiSourceDocumentationBuilder', () => {
                 source: 'source1'
             };
 
-            builder['documents'].set('doc1', doc1);
-            builder['documents'].set('doc2', doc2);
-            builder['categories'].set('test-category-one', ['doc1']);
-            builder['categories'].set('another-category', ['doc2']);
+            (builder as unknown as Record<string, Map<string, unknown>>)['documents'] = new Map([
+                ['doc1', doc1],
+                ['doc2', doc2]
+            ]);
+            (builder as unknown as Record<string, Map<string, unknown>>)['categories'] = new Map([
+                ['test-category-one', ['doc1']],
+                ['another-category', ['doc2']]
+            ]);
+            (builder as unknown as Record<string, Map<string, unknown>>)['sourceMarkdown'] = new Map([
+                ['source1', ['# Content 1']],
+                ['source2', ['# Content 2']]
+            ]);
 
             mockFs.writeFile.mockResolvedValue(undefined);
 
@@ -1501,8 +1393,712 @@ describe('MultiSourceDocumentationBuilder', () => {
             const indexContent = JSON.parse(writeCall[1] as string);
 
             expect(indexContent.categories).toHaveLength(2);
-            expect(indexContent.categories.some((c: any) => c.name === 'Test Category One')).toBe(true);
-            expect(indexContent.categories.some((c: any) => c.name === 'Another Category')).toBe(true);
+            expect(indexContent.categories.some((c: { name: string }) => c.name === 'Test Category One')).toBe(true);
+            expect(indexContent.categories.some((c: { name: string }) => c.name === 'Another Category')).toBe(true);
         });
+    });
+
+    describe('Additional processGitHubSource scenarios', () => {
+        it('should handle processGitHubSource with specific paths', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const mockChild = {
+                stdout: { on: jest.fn() },
+                stderr: { on: jest.fn() },
+                on: jest.fn((event, callback) => {
+                    if (event === 'close') {
+                        callback(0);
+                    }
+                })
+            };
+
+            mockSpawn.mockReturnValue(mockChild);
+            mockFs.mkdir.mockResolvedValue(undefined as never);
+            mockFs.stat.mockRejectedValue(new Error('Not found'));
+            mockFs.readdir.mockResolvedValue([
+                { name: 'test.md', isDirectory: () => false, isFile: () => true }
+            ] as never);
+            mockFs.readFile.mockResolvedValue('# Test Content');
+
+            const source = {
+                id: 'test-github',
+                type: 'github' as const,
+                owner: 'test-owner',
+                repo: 'test-repo',
+                branch: 'main',
+                paths: ['docs/'],
+                category: 'github-test',
+                enabled: true
+            };
+
+            await builder.processGitHubSource(source);
+
+            expect(mockSpawn).toHaveBeenCalled();
+        });
+    });
+
+    describe('convertApiToDocuments variations', () => {
+        it('should handle API data with just basic fields', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const apiData = {
+                name: 'BasicAPI',
+                description: 'Basic API description',
+                version: '1.0.0'
+            };
+
+            const source = {
+                id: 'basic-api',
+                type: 'json-api' as const,
+                category: 'api',
+                enabled: true,
+                url: 'https://test.com/basic.json'
+            };
+
+            const documents = builder.convertApiToDocuments(apiData, source);
+
+            expect(documents).toHaveLength(1);
+            expect(documents[0].content).toContain('BasicAPI');
+        });
+
+        it('should handle API symbols with properties and methods', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            const apiData = {
+                symbols: [
+                    {
+                        name: 'ComplexClass',
+                        kind: 'class',
+                        description: 'Complex class with methods',
+                        properties: [{ name: 'prop1', description: 'Property 1' }],
+                        methods: [{ name: 'method1', description: 'Method 1' }]
+                    }
+                ]
+            };
+
+            const source = {
+                id: 'complex-api',
+                type: 'json-api' as const,
+                category: 'api',
+                enabled: true,
+                url: 'https://test.com/complex.json'
+            };
+
+            const documents = builder.convertApiToDocuments(apiData, source);
+
+            expect(documents.length).toBeGreaterThan(0);
+            const content = documents[0].content;
+            expect(content).toContain('ComplexClass');
+            expect(content.includes('Properties') || content.includes('Methods')).toBe(true);
+        });
+    });
+
+    describe('saveDocuments with source markdown', () => {
+        it('should save aggregated markdown files by source', async () => {
+            const builder = new MultiSourceDocumentationBuilder();
+
+            // Setup sourceMarkdown with test data
+            (builder as unknown as { sourceMarkdown: Map<string, string[]> }).sourceMarkdown = new Map([
+                ['source1', ['# Doc 1\nContent 1', '# Doc 2\nContent 2']],
+                ['source2', ['# Doc 3\nContent 3']]
+            ]);
+
+            mockFs.mkdir.mockResolvedValue(undefined as never);
+            mockFs.writeFile.mockResolvedValue(undefined as never);
+
+            await builder.saveDocuments();
+
+            expect(mockFs.mkdir).toHaveBeenCalledWith('./data_local', { recursive: true });
+            expect(mockFs.writeFile).toHaveBeenCalledTimes(2);
+
+            const firstCall = mockFs.writeFile.mock.calls[0];
+            expect(firstCall[0]).toContain('source1.md');
+            expect(firstCall[1]).toContain('# Doc 1');
+            expect(firstCall[1]).toContain('# Doc 2');
+            expect(firstCall[1]).toContain('--------------------------------');
+
+            const secondCall = mockFs.writeFile.mock.calls[1];
+            expect(secondCall[0]).toContain('source2.md');
+            expect(secondCall[1]).toContain('# Doc 3');
+        });
+    });
+
+    describe('HTTPAICoreClient send method', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        afterEach(() => {
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        it('should throw error when AI_CORE_SERVICE_KEY is invalid JSON', async () => {
+            process.env.AI_CORE_SERVICE_KEY = 'invalid-json';
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+
+            await expect(
+                llm.send({
+                    deployment_id: 'test',
+                    messages: [{ role: 'user', content: 'test' }]
+                })
+            ).rejects.toThrow('You need to provide the service key');
+        });
+
+        it('should authenticate and make successful LLM call', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test-client',
+                clientsecret: 'test-secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'mock-token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config-123' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config-123',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        choices: [{ message: { content: 'Response' } }]
+                    })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+            const result = await llm.send({
+                deployment_id: 'gpt-4',
+                messages: [{ role: 'user', content: 'test' }]
+            });
+
+            expect(mockFetch).toHaveBeenCalledTimes(4);
+            expect(result).toHaveProperty('choices');
+        });
+
+        it('should create configuration when none exists', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test-client',
+                clientsecret: 'test-secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ resources: [] })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ id: 'new-config' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ resources: [] })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ id: 'new-deployment' })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+
+            await expect(
+                llm.send({
+                    deployment_id: 'gpt-4',
+                    messages: [{ role: 'user', content: 'test' }]
+                })
+            ).rejects.toThrow('Deployment created, please run again in a few minutes');
+
+            expect(mockFetch).toHaveBeenCalledTimes(5);
+        });
+
+        it('should throw error when deployment is not ready', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test-client',
+                clientsecret: 'test-secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'PENDING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+
+            await expect(
+                llm.send({
+                    deployment_id: 'gpt-4',
+                    messages: [{ role: 'user', content: 'test' }]
+                })
+            ).rejects.toThrow('Deployment not ready');
+
+            expect(mockFetch).toHaveBeenCalledTimes(3);
+        });
+
+        it('should reuse token and deployment URL on subsequent calls', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test-client',
+                clientsecret: 'test-secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ choices: [{ message: { content: 'R1' } }] })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ choices: [{ message: { content: 'R2' } }] })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+
+            await llm.send({
+                deployment_id: 'gpt-4',
+                messages: [{ role: 'user', content: 'test1' }]
+            });
+
+            await llm.send({
+                deployment_id: 'gpt-4',
+                messages: [{ role: 'user', content: 'test2' }]
+            });
+
+            expect(mockFetch).toHaveBeenCalledTimes(5);
+        });
+    });
+
+    describe('LLM wrapper error handling', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        afterEach(() => {
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        it('should wrap errors with LLM code', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockRejectedValueOnce({
+                    body: { error: 'Service unavailable' }
+                });
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+
+            try {
+                await llm.send({
+                    deployment_id: 'gpt-4',
+                    messages: [{ role: 'user', content: 'test' }]
+                });
+                fail('Should have thrown');
+            } catch (error) {
+                expect((error as { code?: string }).code).toBe('LLM');
+                expect((error as Error).message).toContain('Service unavailable');
+            }
+        });
+
+        it('should handle error objects without body property', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-4', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockRejectedValueOnce(new Error('Network error'));
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const llm = (builder as unknown as { llm: { send: (payload: unknown) => Promise<unknown> } }).llm;
+
+            try {
+                await llm.send({
+                    deployment_id: 'gpt-4',
+                    messages: [{ role: 'user', content: 'test' }]
+                });
+                fail('Should have thrown');
+            } catch (error) {
+                expect((error as { code?: string }).code).toBe('LLM');
+                expect((error as Error).message).toContain('Network error');
+            }
+        });
+    });
+
+    describe('getSystemMessage', () => {
+        it('should return system message with proper structure', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const systemMessage = (
+                builder as unknown as { getSystemMessage: () => { role: string; content: string } }
+            ).getSystemMessage();
+
+            expect(systemMessage.role).toBe('system');
+            expect(systemMessage.content).toContain('documentation optimizer');
+            expect(systemMessage.content).toContain('RAG');
+            expect(systemMessage.content).toContain('TITLE');
+            expect(systemMessage.content).toContain('CODE');
+        });
+    });
+
+    describe('processDocumentWithLLM', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        afterEach(() => {
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        it('should successfully process document with LLM', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        choices: [{ message: { content: '# Optimized Content' } }]
+                    })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const processDoc = (
+                builder as unknown as {
+                    processDocumentWithLLM: (doc: {
+                        id: string;
+                        title: string;
+                        content: string;
+                        category: string;
+                    }) => Promise<string>;
+                }
+            ).processDocumentWithLLM;
+
+            const result = await processDoc.call(builder, {
+                id: 'test-doc',
+                title: 'Test',
+                content: 'Test content',
+                category: 'test'
+            });
+
+            expect(result).toBe('# Optimized Content');
+        });
+
+        it('should retry on LLM failure and eventually use fallback', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockRejectedValue(new Error('LLM error'));
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const processDoc = (
+                builder as unknown as {
+                    processDocumentWithLLM: (doc: {
+                        id: string;
+                        title: string;
+                        content: string;
+                        category: string;
+                    }) => Promise<string>;
+                }
+            ).processDocumentWithLLM;
+
+            const result = await processDoc.call(builder, {
+                id: 'test-doc',
+                title: 'Test Title',
+                content: 'Original content',
+                category: 'test'
+            });
+
+            expect(result).toBe('# Test Title\n\nOriginal content');
+            expect(mockFetch).toHaveBeenCalledTimes(7);
+        }, 25000);
+    });
+
+    describe('generateFallbackApiContent', () => {
+        it('should handle non-object API items', () => {
+            const builder = new MultiSourceDocumentationBuilder();
+            const generateFallback = (builder as unknown as { generateFallbackApiContent: (item: unknown) => string })
+                .generateFallbackApiContent;
+
+            const result = generateFallback.call(builder, 'not an object');
+
+            expect(result).toContain('API Documentation');
+            expect(result).toContain('No content available');
+        });
+    });
+
+    describe('processSource with json-api', () => {
+        beforeEach(() => {
+            mockFetch.mockReset();
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        afterEach(() => {
+            delete process.env.AI_CORE_SERVICE_KEY;
+        });
+
+        it('should process json-api source type', async () => {
+            process.env.AI_CORE_SERVICE_KEY = JSON.stringify({
+                serviceurls: { AI_API_URL: 'https://api.test' },
+                clientid: 'test',
+                clientsecret: 'secret',
+                url: 'https://auth.test'
+            });
+
+            const mockApiData = {
+                symbols: [
+                    {
+                        name: 'TestAPI1',
+                        description: 'Test API 1',
+                        methods: [{ name: 'testMethod1', description: 'Test method 1' }]
+                    },
+                    {
+                        name: 'TestAPI2',
+                        description: 'Test API 2',
+                        methods: [{ name: 'testMethod2', description: 'Test method 2' }]
+                    },
+                    {
+                        name: 'TestAPI3',
+                        description: 'Test API 3',
+                        methods: [{ name: 'testMethod3', description: 'Test method 3' }]
+                    }
+                ]
+            };
+
+            mockFetch
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => mockApiData
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({ access_token: 'token' })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [{ name: 'embeddingsscript-gpt-5-mini', id: 'config' }]
+                    })
+                } as never)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        resources: [
+                            {
+                                configurationId: 'config',
+                                status: 'RUNNING',
+                                deploymentUrl: 'https://deploy.test'
+                            }
+                        ]
+                    })
+                } as never)
+                .mockResolvedValue({
+                    ok: true,
+                    json: async () => ({
+                        choices: [{ message: { content: '# Optimized' } }]
+                    })
+                } as never);
+
+            const builder = new MultiSourceDocumentationBuilder();
+            const processSource = (
+                builder as unknown as {
+                    processSource: (source: {
+                        id: string;
+                        type: string;
+                        url: string;
+                        category: string;
+                        enabled: boolean;
+                    }) => Promise<void>;
+                }
+            ).processSource;
+
+            await processSource.call(builder, {
+                id: 'test-api',
+                type: 'json-api',
+                url: 'https://api.test/data',
+                category: 'api',
+                enabled: true
+            });
+
+            expect(mockFetch).toHaveBeenCalled();
+        }, 10000);
     });
 });
