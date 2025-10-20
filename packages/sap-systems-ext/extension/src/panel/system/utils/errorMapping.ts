@@ -81,13 +81,14 @@ export function getErrorType(error: any): ERROR_TYPE {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const errorKey = error.code || error.message || error.name || error;
 
-    const matchedErrorType = Object.entries(errorTypeMatcher).find(({ 1: regexes }) => {
-        return !!regexes.find((exp: RegExp) => exp.test(errorKey));
-    }, {});
+    const matchedErrorType = Object.entries(errorTypeMatcher).find(([, regexes]) =>
+        regexes.some((exp) => exp.test(errorKey))
+    );
 
     if (matchedErrorType) {
         return matchedErrorType[0] as ERROR_TYPE;
     }
+
     return ERROR_TYPE.UNKNOWN;
 }
 

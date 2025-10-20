@@ -20,7 +20,7 @@ interface ExternalActionBtnsProps {
  * @param props.systemUnSaved - flag indicating if the system has unsaved changes
  * @returns - the external action buttons JSX element
  */
-export function ExternalActionBtns({ systemInfo, systemUnSaved }: ExternalActionBtnsProps): ReactElement {
+export function ExternalActionBtns({ systemInfo, systemUnSaved }: Readonly<ExternalActionBtnsProps>): ReactElement {
     const { t } = useTranslation();
     // show export button only if the system is on-prem
     const showExport = (systemInfo?.systemType as SystemType) === 'OnPrem';

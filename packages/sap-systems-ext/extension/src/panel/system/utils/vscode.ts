@@ -1,5 +1,5 @@
 import { Uri, window, type WorkspaceFolder } from 'vscode';
-import { join } from 'path';
+import { join } from 'node:path';
 
 /**
  * Displays the save dialog to the user.
@@ -13,7 +13,7 @@ export async function showFileSaveDialog(
     workspaceFolders?: readonly WorkspaceFolder[]
 ): Promise<Uri | undefined> {
     // replace forward slashes with underscores, and only allow alphanumeric characters, dots, and dashes in the file name
-    const sanitizedSystemName = systemName?.replace(/[:,]/g, '_').replace(/[^a-zA-Z0-9._-]+/g, '') ?? 'system';
+    const sanitizedSystemName = systemName?.replaceAll(/[:,]/g, '_').replaceAll(/[^a-zA-Z0-9._-]+/g, '') ?? 'system';
     const fileName = `${sanitizedSystemName}.json`;
     // If there are any workspace folders (0-N) the path will default to the [0] folder open
     // or else it will open the home directory

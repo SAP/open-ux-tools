@@ -36,7 +36,7 @@ export function SystemStatus({
     updateSystemStatus,
     showUpdateSystemStatus,
     guidedAnswerLink
-}: SystemStatusProps): ReactElement {
+}: Readonly<SystemStatusProps>): ReactElement {
     const { t } = useTranslation();
 
     const outputTabLogMsg = (isError?: boolean): JSX.Element => {

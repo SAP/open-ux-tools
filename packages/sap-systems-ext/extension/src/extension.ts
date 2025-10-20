@@ -12,4 +12,6 @@ export function activate(context: ExtensionContext): void {
     registerViews(context);
 }
 
-export function deactivate(): void {}
+export function deactivate(): void {
+    // do nothing
+}

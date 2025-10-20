@@ -41,7 +41,7 @@ export function SystemInfo({
     setPassword,
     setIsDetailsUpdated,
     setIsDetailsValid
-}: SystemInfoProps): ReactElement {
+}: Readonly<SystemInfoProps>): ReactElement {
     const systemType = systemInfo?.systemType as SystemType;
     const showSystemName = systemType === 'OnPrem' || systemType === 'AbapCloud';
 

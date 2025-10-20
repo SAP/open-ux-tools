@@ -30,7 +30,7 @@ export function BasicAuthCreds({
     setUsername,
     setPassword,
     setIsDetailsUpdated
-}: BasicAuthCredsProps): ReactElement {
+}: Readonly<BasicAuthCredsProps>): ReactElement {
     const { t } = useTranslation();
 
     return (

@@ -1,8 +1,8 @@
 import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
 import { BackendSystem, BackendSystemKey, SystemService, type SystemType } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
-import { platform } from 'os';
-import { readFileSync } from 'fs';
+import { platform } from 'node:os';
+import { readFileSync } from 'node:fs';
 import { confirmPrompt, logTelemetryEvent, t } from '../../utils';
 import {
     ConfirmationPromptType,

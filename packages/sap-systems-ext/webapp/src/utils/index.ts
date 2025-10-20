@@ -7,11 +7,11 @@ declare global {
     }
 }
 
-declare let acquireVsCodeApi: () => (typeof window)['vscode'];
+declare let acquireVsCodeApi: () => typeof globalThis.vscode;
 
 export const initVsCodeApi = (): void => {
     try {
-        window.vscode = acquireVsCodeApi();
+        globalThis.vscode = acquireVsCodeApi();
     } catch {
         // Ignore errors in case not running in VS Code
     }

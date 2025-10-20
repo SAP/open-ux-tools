@@ -10,12 +10,11 @@ import '../../../../styles/Buttons.scss';
 
 interface SystemActionBtnsProps {
     systemInfo?: BackendSystem;
-    systemUnSaved?: boolean;
     testConnectionBtnDisabled?: boolean;
     saveButtonDisabled?: boolean;
     isDetailsUpdated: boolean;
     connectionStatus?: ConnectionStatus;
-    resetStatus: () => void;
+    readonly resetStatus: () => void;
 }
 
 /**
@@ -37,7 +36,7 @@ export function SystemActionBtns({
     isDetailsUpdated,
     connectionStatus,
     resetStatus
-}: SystemActionBtnsProps): ReactElement {
+}: Readonly<SystemActionBtnsProps>): ReactElement {
     const { t } = useTranslation();
     const [showDialog, setShowDialog] = useState(false);
     const [sapSystemDetails, setSapSystemDetails] = useState({});

@@ -32,7 +32,6 @@ export async function renderWebApp(context: PanelContext): Promise<void> {
     // view the imported system
     if (systemInfo && panelViewType === SystemPanelViewType.Import) {
         await postMessage(updateSystemInfo({ systemInfo, unSaved: true }));
-        return;
     }
 }
 

@@ -20,7 +20,7 @@ interface SystemNameProps {
  * @param props.setIsDetailsUpdated - function to set the details updated flag
  * @returns - the system name JSX element
  */
-export function SystemName({ systemName, setName, setIsDetailsUpdated }: SystemNameProps): ReactElement {
+export function SystemName({ systemName, setName, setIsDetailsUpdated }: Readonly<SystemNameProps>): ReactElement {
     const { t } = useTranslation();
 
     return (

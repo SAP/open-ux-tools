@@ -4,7 +4,7 @@ import type { DisposeCallback, PanelContext } from '../../types/system';
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
 import { extensions, type WebviewPanel, type Disposable } from 'vscode';
 import { t } from '../../utils';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 import { createWebviewPanel } from './utils';
 import { dispatchPanelAction } from './actions';
 import { GUIDED_ANSWERS_EXTENSION_ID } from '@sap-ux/guided-answers-helper';

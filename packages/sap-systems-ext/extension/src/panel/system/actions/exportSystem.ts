@@ -1,7 +1,7 @@
 import type { SystemConfigFile, PanelContext } from '../../../types/system';
 import type { ExportSystem } from '@sap-ux/sap-systems-ext-types';
 import { window, workspace } from 'vscode';
-import { writeFileSync } from 'fs';
+import { writeFileSync } from 'node:fs';
 import { showFileSaveDialog } from '../utils';
 import { getBackendSystem, geti18nOpts, logTelemetryEvent, t } from '../../../utils';
 import { SystemAction, SystemActionStatus, SYSTEMS_EVENT } from '../../../utils/constants';

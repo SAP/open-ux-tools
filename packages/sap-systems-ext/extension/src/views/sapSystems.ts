@@ -1,4 +1,4 @@
-import type { FSWatcher } from 'fs';
+import type { FSWatcher } from 'node:fs';
 import { window, type ExtensionContext } from 'vscode';
 import { SapSystemsProvider } from '../providers';
 import { Entity, getFilesystemWatcherFor } from '@sap-ux/store';

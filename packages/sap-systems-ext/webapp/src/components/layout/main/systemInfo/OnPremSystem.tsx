@@ -38,7 +38,7 @@ export function OnPremSystem({
     setPassword,
     setIsDetailsUpdated,
     setIsDetailsValid
-}: OnPremSystemProps): ReactElement {
+}: Readonly<OnPremSystemProps>): ReactElement {
     const { t } = useTranslation();
 
     const getUrlErrorMessage = (value: string): string | undefined => {

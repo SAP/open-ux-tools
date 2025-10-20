@@ -4,14 +4,14 @@ import { initVsCodeApi } from '../utils';
 
 export const postMessageMiddleware: Middleware = (store: MiddlewareAPI) => {
     window.addEventListener('message', (event: MessageEvent) => {
-        if (event.origin === window.origin) {
+        if (event.origin === globalThis.origin) {
             if (event.data && typeof event.data.type === 'string') {
                 store.dispatch(event.data);
             }
         }
     });
 
-    if (!window.vscode) {
+    if (!globalThis.vscode) {
         initVsCodeApi();
     }
 
@@ -19,7 +19,7 @@ export const postMessageMiddleware: Middleware = (store: MiddlewareAPI) => {
         (action): Action => {
             action = next(action);
             if (action && typeof action.type === 'string' && WEB_APP_ACTION_TYPES_SET.has(action.type)) {
-                window.vscode?.postMessage(action);
+                globalThis.vscode?.postMessage(action);
             }
             return action;
         };

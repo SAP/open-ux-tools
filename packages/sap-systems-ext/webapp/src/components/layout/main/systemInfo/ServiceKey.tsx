@@ -15,7 +15,7 @@ export interface ServiceKeyProps {
  * @param props.serviceKey - the service key value
  * @returns - the service key JSX element
  */
-export function ServiceKey({ serviceKey }: ServiceKeyProps): ReactElement {
+export function ServiceKey({ serviceKey }: Readonly<ServiceKeyProps>): ReactElement {
     const { t } = useTranslation();
 
     return (

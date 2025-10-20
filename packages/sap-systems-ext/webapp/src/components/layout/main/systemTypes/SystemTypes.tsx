@@ -6,7 +6,7 @@ import { UIDropdown } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 interface SystemTypesProps {
-    setType: (type: SystemType) => void;
+    readonly setType: (type: SystemType) => void;
 }
 
 /**
@@ -16,7 +16,7 @@ interface SystemTypesProps {
  * @param props.setType - function to set the system type
  * @returns - the system types JSX element
  */
-export function SystemTypes({ setType }: SystemTypesProps): ReactElement {
+export function SystemTypes({ setType }: Readonly<SystemTypesProps>): ReactElement {
     const { t } = useTranslation();
 
     const systemTypeOptions: UIDropdownOption[] = [

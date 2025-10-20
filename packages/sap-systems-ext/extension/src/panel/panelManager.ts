@@ -5,7 +5,7 @@ import type { Disposable } from 'vscode';
  * It allows adding, retrieving, checking existence, creating and deleting panels.
  */
 export class PanelManager<T extends Disposable> {
-    private panels = new Map<string, T>();
+    readonly panels = new Map<string, T>();
 
     get(key: string): T | undefined {
         return this.panels.get(key);

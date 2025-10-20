@@ -22,7 +22,7 @@ interface CloudSystemProps {
  * @param props.setIsDetailsUpdated - function to set the details updated flag
  * @returns - the cloud system JSX element
  */
-export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: CloudSystemProps): ReactElement {
+export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
 
     const authType = systemInfo?.authenticationType as AuthenticationType;

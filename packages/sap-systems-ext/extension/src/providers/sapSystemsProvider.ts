@@ -15,7 +15,7 @@ interface SapSystemTreeItem extends TreeItem {
  * Tree data provider for stored SAP systems.
  */
 export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
-    private context: ExtensionContext;
+    readonly context: ExtensionContext;
 
     /**
      * Constructor for the SapSystemsProvider.
@@ -118,6 +118,7 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
             return systems;
         } catch (error) {
             SystemsLogger.logger.error(t('error.loadingSystems'));
+            SystemsLogger.logger.debug((error as Error).message);
             return [];
         } finally {
             await commands.executeCommand('setContext', 'sap.ux.tools.sapSystems.treeLoading', false);
