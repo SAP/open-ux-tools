@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.13.140
+
+### Patch Changes
+
+-   20edaf3: feat: add help description to root level commands
+
 ## 0.13.139
 
 ### Patch Changes
