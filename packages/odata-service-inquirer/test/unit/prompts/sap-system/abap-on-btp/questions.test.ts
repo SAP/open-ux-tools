@@ -7,10 +7,9 @@ import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { PromptState } from '../../../../../src/utils';
-import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap-system/validators';
 import type { ConnectedSystem } from '../../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import * as utils from '../../../../../src/utils';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -374,5 +373,21 @@ describe('questions', () => {
         expect(await ((systemUrlPrompt as InputQuestion).validate as Function)('http:/s4hc:1234')).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
         expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
+    });
+
+    test('Reentrance ticket (system url) prompt should use validate that an existing system with the same url exists', async () => {
+        const backendSystemReentrance: BackendSystem = {
+            name: 'http://s4hc:1234',
+            url: 'http:/s4hc:1234',
+            authenticationType: 'reentranceTicket'
+        };
+        jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue(backendSystemReentrance);
+
+        connectionValidatorMock.validity.authenticated = true;
+        const newSystemQuestions = getAbapOnBTPSystemQuestions();
+        const systemUrlPrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtp:newSystemUrl');
+        expect(await ((systemUrlPrompt as InputQuestion).validate as Function)('http:/s4hc:1234')).toEqual(
+            t('prompts.validationMessages.backendSystemExistsWarning', { backendName: backendSystemReentrance.name })
+        );
     });
 });
