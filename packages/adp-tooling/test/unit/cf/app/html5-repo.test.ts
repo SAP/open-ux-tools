@@ -185,6 +185,7 @@ describe('HTML5 Repository', () => {
                 ['html5-apps-repo-rt'],
                 undefined,
                 undefined,
+                undefined,
                 mockLogger
             );
             expect(mockGetServiceInstanceKeys).toHaveBeenCalledTimes(2);

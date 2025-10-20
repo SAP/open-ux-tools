@@ -42,6 +42,7 @@ export async function generateCf(
             spaceGuid: cf.space.GUID
         },
         fs,
+        config.options?.templatePathOverwrite,
         logger
     );
 

@@ -1,5 +1,30 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.10
+
+### Patch Changes
+
+-   6debb89: incorrect entity list rich text editor fix
+
+## 0.39.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.7.7
+
+## 0.39.8
+
+### Patch Changes
+
+-   43dc48c: Add custom columns for building blocks
+
+## 0.39.7
+
+### Patch Changes
+
+-   Updated dependencies [1443680]
+    -   @sap-ux/fiori-annotation-api@0.7.6
+
 ## 0.39.6
 
 ### Patch Changes

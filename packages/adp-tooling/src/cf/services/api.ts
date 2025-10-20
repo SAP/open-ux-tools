@@ -143,6 +143,7 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
  * @param {object} [security] - Security configuration.
  * @param {string | null} security.filePath - The security file path.
  * @param {string} [security.xsappname] - The XS app name.
+ * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} [logger] - The logger.
  */
 export async function createService(
@@ -155,6 +156,7 @@ export async function createService(
         filePath: string | null;
         xsappname?: string;
     },
+    templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
     try {
@@ -176,7 +178,9 @@ export async function createService(
         if (filePath) {
             let xsSecurity = null;
             try {
-                const filePath = path.resolve(__dirname, '../../../templates/cf/xs-security.json');
+                const baseTmplPath = path.join(__dirname, '../../../templates');
+                const templatePath = templatePathOverwrite ?? baseTmplPath;
+                const filePath = path.resolve(templatePath, 'cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
                 xsSecurity = JSON.parse(xsContent) as unknown as { xsappname?: string };
                 xsSecurity.xsappname = xsappname;
@@ -204,6 +208,7 @@ export async function createService(
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
  * @param {string} spaceGuid - The space GUID.
+ * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
  */
@@ -213,6 +218,7 @@ export async function createServices(
     initialServices: string[],
     timestamp: string,
     spaceGuid: string,
+    templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
     const excludeServices = new Set([...initialServices, 'portal', 'html5-apps-repo']);
@@ -228,6 +234,7 @@ export async function createServices(
                     [],
                     resource.parameters.service,
                     { filePath: xsSecurityPath, xsappname: xsSecurityProjectName },
+                    templatePathOverwrite,
                     logger
                 );
             } else {
@@ -238,6 +245,7 @@ export async function createServices(
                     [],
                     resource.parameters.service,
                     { filePath: null, xsappname: xsSecurityProjectName },
+                    templatePathOverwrite,
                     logger
                 );
             }

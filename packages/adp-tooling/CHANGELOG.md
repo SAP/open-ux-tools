@@ -1,5 +1,57 @@
 # @sap-ux/adp-tooling
 
+## 0.16.7
+
+### Patch Changes
+
+-   233259c: fix: Remove sap-appvar-id parameter from FLP configuration changes for ADP
+
+## 0.16.6
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.8.2
+
+## 0.16.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.1
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
+## 0.16.3
+
+### Patch Changes
+
+-   441be86: fix: Remove CF flow from the ADP Generator and fix template resolution problem
+
+## 0.16.2
+
+### Patch Changes
+
+-   3e4bf96: axios update 1.12.2
+
+## 0.16.1
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.7.51
+
 ## 0.16.0
 
 ### Minor Changes
