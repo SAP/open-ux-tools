@@ -2,14 +2,17 @@ import type { SystemCommandContext } from '../../../../src/types/system';
 import { showSystemsCommandHandler } from '../../../../src/commands/system/show';
 import { PanelManager, type SystemPanel } from '../../../../src/panel';
 import { initI18n } from '../../../../src/utils';
+import { BackendSystemKey } from '@sap-ux/store';
 import * as vscodeMod from 'vscode';
 
 const systemServiceReadMock = jest.fn();
+const systemServiceGetAllMock = jest.fn();
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
     SystemService: jest.fn().mockImplementation(() => ({
-        read: systemServiceReadMock
+        read: systemServiceReadMock,
+        getAll: systemServiceGetAllMock
     }))
 }));
 
@@ -25,6 +28,10 @@ describe('Test the show system command handler', () => {
 
     beforeAll(async () => {
         await initI18n();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     it('should show the system panel for the specific system', async () => {
@@ -81,5 +88,51 @@ describe('Test the show system command handler', () => {
         await handler({ url: 'https://example.com', client: '100' });
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith('Error executing command to view system details.');
+    });
+
+    it('should pick a system when no system is provided', async () => {
+        const panelManager = new PanelManager<SystemPanel>();
+        const getOrCreateNewPanelSpy = jest.spyOn(panelManager, 'getOrCreateNewPanel');
+        const showQuickPickSpy = jest.spyOn(vsCodeWindow, 'showQuickPick');
+        const mockContext = {
+            panelManager,
+            extContext: {
+                extensionPath: '/mock/extension/path'
+            }
+        } as SystemCommandContext;
+        const testSystem = { ...backendSystem, name: 'Test System' };
+        systemServiceGetAllMock.mockResolvedValue([backendSystem, testSystem]);
+        systemServiceReadMock.mockResolvedValue(testSystem);
+        showQuickPickSpy.mockResolvedValueOnce({
+            label: 'Test System',
+            systemKey: new BackendSystemKey({ url: 'https://example.com', client: '100' })
+        } as any);
+
+        const handler = showSystemsCommandHandler(mockContext);
+        await handler();
+
+        expect(showQuickPickSpy).toHaveBeenCalled();
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith('https://example.com/100', expect.any(Function));
+    });
+
+    it('should handle no selection in the system picker', async () => {
+        const panelManager = new PanelManager<SystemPanel>();
+        const mockContext = {
+            panelManager,
+            extContext: {
+                extensionPath: '/mock/extension/path'
+            }
+        } as SystemCommandContext;
+        const showQuickPickSpy = jest.spyOn(vsCodeWindow, 'showQuickPick');
+        const showErrorMessageSpy = jest.spyOn(vsCodeWindow, 'showErrorMessage');
+
+        systemServiceGetAllMock.mockResolvedValue([backendSystem]);
+        showQuickPickSpy.mockResolvedValueOnce(undefined);
+
+        const handler = showSystemsCommandHandler(mockContext);
+        await handler();
+
+        expect(showQuickPickSpy).toHaveBeenCalled();
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('No SAP system selected.');
     });
 });

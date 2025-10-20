@@ -6,7 +6,8 @@
         }
     },
     "commands": {
-        "openSystemDetails": "Open System Details"
+        "openSystemDetails": "Open System Details",
+        "quickpickPlaceholder": "Select an SAP system to view details"
     },
     "confirmationPrompt": {
         "yes": "Yes",
@@ -56,7 +57,8 @@
         "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}",
         "viewSystemDetails": "Error executing command to view system details.",
         "noFileSelected": "No file selected for import.",
-        "panelActionDispatch": "Error dispatching panel action: {{- error}}"
+        "panelActionDispatch": "Error dispatching panel action: {{- error}}",
+        "noneSelected": "No SAP system selected."
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",

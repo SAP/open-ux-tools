@@ -94,7 +94,7 @@
             {
                 "command": "sap.ux.tools.sapSystems.delete",
                 "title": "Delete SAP System",
-                "category": "SAP Systems",
+                "category": "SAP",
                 "icon": {
                     "light": "resources/light/icon-trash-light.svg",
                     "dark": "resources/dark/icon-trash-dark.svg"
@@ -103,7 +103,7 @@
             {
                 "command": "sap.ux.tools.sapSystems.import",
                 "title": "Import SAP System",
-                "category": "SAP Systems",
+                "category": "SAP",
                 "icon": {
                     "light": "resources/light/icon-import-light.svg",
                     "dark": "resources/dark/icon-import-dark.svg"
@@ -112,7 +112,7 @@
             {
                 "command": "sap.ux.tools.sapSystems.create",
                 "title": "Add SAP System",
-                "category": "SAP Systems",
+                "category": "SAP",
                 "icon": {
                     "light": "resources/light/icon-add-light.svg",
                     "dark": "resources/dark/icon-add-dark.svg"
@@ -121,7 +121,7 @@
             {
                 "command": "sap.ux.tools.sapSystems.refresh",
                 "title": "Refresh SAP Systems",
-                "category": "SAP Systems",
+                "category": "SAP",
                 "icon": {
                     "light": "resources/light/icon-refresh-light.svg",
                     "dark": "resources/dark/icon-refresh-dark.svg"
@@ -130,12 +130,12 @@
             {
                 "command": "sap.ux.tools.sapSystems.show",
                 "title": "Show SAP System Details",
-                "category": "SAP Systems"
+                "category": "SAP"
             },
             {
                 "command": "sap.ux.tools.sapSystems.launchAppGen",
                 "title": "Launch Application Generator",
-                "category": "SAP Systems"
+                "category": "SAP"
             }
         ],
         "menus": {

@@ -170,6 +170,7 @@ const window = {
     showInformationMessage: () => {},
     showErrorMessage: () => {},
     showWarningMessage: () => {},
+    showQuickPick: jest.fn(),
     createWebviewPanel: jest.fn().mockImplementation(() => {
         return {
             webview: {
