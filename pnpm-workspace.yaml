@@ -5,4 +5,3 @@ packages:
     - 'tests/fixtures/projects/mock'
     - 'types'
     - '!**/test/**'
-    - 'packages/sap-systems-ext/*'

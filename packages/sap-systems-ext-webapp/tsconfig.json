@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig.json",
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "incremental": true,
         "outDir": "dist",
@@ -14,13 +14,13 @@
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "test/**/*.ts", "test/**/*.tsx"],
     "references": [
         {
-            "path": "../../store"
+            "path": "../sap-systems-ext-types"
         },
         {
-            "path": "../../ui-components"
+            "path": "../store"
         },
         {
-            "path": "../types"
+            "path": "../ui-components"
         }
     ]
 }

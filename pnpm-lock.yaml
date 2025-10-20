@@ -3522,32 +3522,32 @@ importers:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
-  packages/sap-systems-ext/extension:
+  packages/sap-systems-ext:
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
-        version: link:../../axios-extension
+        version: link:../axios-extension
       '@sap-ux/guided-answers-helper':
         specifier: workspace:*
-        version: link:../../guided-answers-helper
+        version: link:../guided-answers-helper
       '@sap-ux/logger':
         specifier: workspace:*
-        version: link:../../logger
+        version: link:../logger
       '@sap-ux/sap-systems-ext-types':
         specifier: workspace:*
-        version: link:../types
+        version: link:../sap-systems-ext-types
       '@sap-ux/sap-systems-ext-webapp':
         specifier: workspace:*
-        version: link:../webapp
+        version: link:../sap-systems-ext-webapp
       '@sap-ux/store':
         specifier: workspace:*
-        version: link:../../store
+        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
-        version: link:../../telemetry
+        version: link:../telemetry
       '@sap-ux/ui-components':
         specifier: workspace:*
-        version: link:../../ui-components
+        version: link:../ui-components
       '@types/normalize-path':
         specifier: 3.0.0
         version: 3.0.0
@@ -3579,16 +3579,16 @@ importers:
         specifier: 3.0.7
         version: 3.0.7
 
-  packages/sap-systems-ext/types:
+  packages/sap-systems-ext-types:
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
-        version: link:../../store
+        version: link:../store
       '@sap-ux/ui-components':
         specifier: workspace:*
-        version: link:../../ui-components
+        version: link:../ui-components
 
-  packages/sap-systems-ext/webapp:
+  packages/sap-systems-ext-webapp:
     devDependencies:
       '@esbuild-plugins/node-modules-polyfill':
         specifier: 0.2.2
@@ -3598,13 +3598,13 @@ importers:
         version: 1.6.1(react-redux@7.2.9)(react@16.14.0)
       '@sap-ux/sap-systems-ext-types':
         specifier: workspace:*
-        version: link:../types
+        version: link:../sap-systems-ext-types
       '@sap-ux/store':
         specifier: workspace:*
-        version: link:../../store
+        version: link:../store
       '@sap-ux/ui-components':
         specifier: workspace:*
-        version: link:../../ui-components
+        version: link:../ui-components
       '@testing-library/dom':
         specifier: 9.3.3
         version: 9.3.3

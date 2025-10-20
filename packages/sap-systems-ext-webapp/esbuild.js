@@ -1,4 +1,4 @@
-const { esbuildOptionsBrowser, build } = require('../../../esbuildConfig');
+const { esbuildOptionsBrowser, build } = require('../../esbuildConfig');
 const NodeModulesPolyfills = require('@esbuild-plugins/node-modules-polyfill');
 const alias = require('esbuild-plugin-alias');
 

@@ -517,13 +517,11 @@
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
-            "args": [
-                "--log=debug",
-                "--extensionDevelopmentPath=${workspaceFolder}/packages/sap-systems-ext/extension/"
-            ],
-            "outFiles": ["${workspaceFolder}/packages/sap-systems-ext/extension/dist/**/*.js"],
+            "args": ["--log=debug", "--extensionDevelopmentPath=${workspaceFolder}/packages/sap-systems-ext/"],
+            "outFiles": ["${workspaceFolder}/packages/sap-systems-ext/dist/**/*.js"],
             "env": {
-                "SS_WEBAPP_PATH": "../webapp/dist"
+                "SS_WEBAPP_PATH": "../sap-systems-ext-webapp/dist",
+                "SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY": "true"
             }
         }
     ]

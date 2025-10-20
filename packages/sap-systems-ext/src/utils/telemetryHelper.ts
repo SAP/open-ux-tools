@@ -129,11 +129,15 @@ export abstract class TelemetryHelper {
         appPath?: string
     ): Promise<void> {
         const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryData);
-        await ClientFactory.getTelemetryClient().reportEvent(
-            telemetryEvent,
-            SampleRate.NoSampling,
-            appPath ? { appPath } : undefined
-        );
+        try {
+            await ClientFactory.getTelemetryClient().reportEvent(
+                telemetryEvent,
+                SampleRate.NoSampling,
+                appPath ? { appPath } : undefined
+            );
+        } catch (error) {
+            SystemsLogger.logger.error(t('telemetry.sendError', { error }));
+        }
     }
 
     /**

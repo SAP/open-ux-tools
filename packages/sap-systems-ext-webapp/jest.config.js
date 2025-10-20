@@ -1,4 +1,4 @@
-const config = require('../../../jest.base');
+const config = require('../../jest.base');
 config.testEnvironment = 'jsdom';
 config.collectCoverageFrom = ['src/**/*.{ts,tsx}'];
 config.transform = {

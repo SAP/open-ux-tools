@@ -14,7 +14,7 @@ describe('Test the fireGALinkClickedTelemetry action', () => {
     });
 
     it('should call the log telemetry event function with correct data', async () => {
-        const logTelemetryEventSpy = jest.spyOn(panelActionUtils, 'logTelemetryEvent');
+        const logTelemetryEventSpy = jest.spyOn(panelActionUtils.TelemetryHelper, 'sendTelemetry');
 
         const panelContextGADisabled = {
             backendSystem: {} as any,

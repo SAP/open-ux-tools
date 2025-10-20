@@ -66,6 +66,7 @@
     },
     "telemetry": {
         "unknownOs": "Unknown",
-        "initializeError": "Error initializing telemetry settings: {{- error}}"
+        "initializeError": "Error initializing telemetry settings: {{- error}}",
+        "sendError": "Error sending telemetry data: {{- error}}"
     }
 }
