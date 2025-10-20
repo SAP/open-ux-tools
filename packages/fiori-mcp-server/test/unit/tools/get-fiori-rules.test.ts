@@ -1,4 +1,4 @@
-import { getFioriRules } from '../../../src/tools/get-fiori-rules';
+import { getFioriRules } from '../../../src/rules/get-fiori-rules';
 
 describe('getFioriRules', () => {
     test('should return Fiori rules content as string', () => {

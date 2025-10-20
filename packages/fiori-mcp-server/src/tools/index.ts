@@ -9,7 +9,7 @@ export { listFioriApps } from './list-fiori-apps';
 export { listFunctionalities } from './list-functionalities';
 export { getFunctionalityDetails } from './get-functionality-details';
 export { executeFunctionality } from './execute-functionality';
-export { getFioriRules } from './get-fiori-rules';
+export { getFioriRules } from '../rules/get-fiori-rules';
 
 export const tools = [
     {
@@ -81,7 +81,7 @@ export const tools = [
                     - Data model requirements (entities, navigation properties, UUIDs)
                     - Sample data format requirements
                     - Preview and testing guidelines
-                    You SHOULD use this tool when starting any Fiori application creation or modification task.`,
+                    You MUST use this tool when starting any Fiori application creation or modification task.`,
         inputSchema: {
             type: 'object',
             properties: {},

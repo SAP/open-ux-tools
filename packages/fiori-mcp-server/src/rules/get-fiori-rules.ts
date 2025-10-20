@@ -1,4 +1,4 @@
-import fioriRulesContent from '../fiori-rules.md';
+import fioriRulesContent from './fiori-rules.md';
 
 /**
  * Returns the Fiori rules content bundled at build time.
