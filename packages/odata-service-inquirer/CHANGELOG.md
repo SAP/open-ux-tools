@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.3
+
+### Patch Changes
+
+-   7b89529: Fix for existing system url/client validation shown in wrong prompt (abap-on-prem)
+
 ## 2.9.2
 
 ### Patch Changes
