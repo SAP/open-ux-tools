@@ -281,32 +281,28 @@ function shouldUseAnalyticalTable(entitySet: EntitySet, isCapService: boolean): 
 }
 
 /**
- * Get the default table type based on the template type and previous answers.
+ * Get the default table type based on the template type and entity capabilities.
  *
- * @param templateType the template type of the application to be generated from the prompt answers
+ * @param templateType the template type of the application to be generated
  * @param metadata the metadata (edmx) string of the service
  * @param odataVersion the OData version of the service
  * @param isCapService whether the service is a CAP service or not
  * @param mainEntitySetName the name of the main entity set
- * @param currentTableType the current table type selected by the user
- * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
+ * @returns the optimal table type for the given entity
  */
 export function getDefaultTableType(
     templateType: TemplateType,
     metadata: ConvertedMetadata,
     odataVersion: OdataVersion,
     isCapService: boolean,
-    mainEntitySetName?: string,
-    currentTableType?: TableType
-): { tableType: TableType; setAnalyticalTableDefault: boolean } {
-    const setAnalyticalTableDefault = false;
-
+    mainEntitySetName?: string
+): TableType {
     // Find the entity set once for all annotation checks
     const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
 
     // Handle ALP template with OData v2 - always use AnalyticalTable
     if (templateType === 'alp' && odataVersion === OdataVersion.v2) {
-        return { tableType: 'AnalyticalTable', setAnalyticalTableDefault };
+        return 'AnalyticalTable';
     }
 
     // Handle OData v4 specific logic
@@ -317,20 +313,15 @@ export function getDefaultTableType(
 
         // Check for analytical data requirements
         if (canUseAnalytical && hasAnalyticalCapabilities) {
-            return { tableType: 'AnalyticalTable', setAnalyticalTableDefault: true };
+            return 'AnalyticalTable';
         }
 
         // Check for hierarchical data requirements
         if ((templateType === 'lrop' || templateType === 'worklist') && hasHierarchy) {
-            return { tableType: 'TreeTable', setAnalyticalTableDefault };
+            return 'TreeTable';
         }
     }
 
-    // If we have a current table type and no strong reason to override it, preserve it
-    if (currentTableType) {
-        return { tableType: currentTableType, setAnalyticalTableDefault };
-    }
-
     // Default fallback to ResponsiveTable
-    return { tableType: 'ResponsiveTable' as TableType, setAnalyticalTableDefault };
+    return 'ResponsiveTable';
 }

@@ -272,7 +272,9 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
+        // Variables to manage analytical table defaults across prompts
         let setAnalyticalTableDefault = false;
+        let lastEvaluatedEntity: string | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -285,16 +287,26 @@ function getTableLayoutQuestions(
             },
             choices: tableTypeChoices,
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                const tableTypeDefault = getDefaultTableType(
-                    templateType,
-                    metadata,
-                    odataVersion,
-                    isCapService,
-                    prevAnswers?.mainEntity?.entitySetName,
-                    prevAnswers?.tableType
-                );
-                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
-                return tableTypeDefault.tableType;
+                const currentEntity = prevAnswers?.mainEntity?.entitySetName;
+
+                // Only re-evaluate if entity has changed or no previous selection exists
+                if (currentEntity !== lastEvaluatedEntity || !prevAnswers?.tableType) {
+                    const defaultTableType = getDefaultTableType(
+                        templateType,
+                        metadata,
+                        odataVersion,
+                        isCapService,
+                        currentEntity
+                    );
+
+                    // Update tracking variables
+                    lastEvaluatedEntity = currentEntity;
+                    setAnalyticalTableDefault = defaultTableType === 'AnalyticalTable';
+                    return defaultTableType;
+                }
+
+                // Entity hasn't changed and user has a selection - preserve their choice
+                return prevAnswers.tableType;
             },
             additionalMessages: (tableType: TableType) => {
                 if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {

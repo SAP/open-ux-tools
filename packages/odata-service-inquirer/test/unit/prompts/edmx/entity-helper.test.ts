@@ -319,8 +319,7 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'SalesOrderItem');
 
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            expect(result).toBe('AnalyticalTable');
         });
 
         test('should return ResponsiveTable for ALP template when analytical requirements are not met', () => {
@@ -329,8 +328,7 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should return AnalyticalTable for ALP template with OData v2', () => {
@@ -339,25 +337,16 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false, 'Travel');
 
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('AnalyticalTable');
         });
 
         test('should return current table type when provided', () => {
             const parsedEdmx = parse(metadataV4WithDraftEntities);
             const convertedMetadata = convert(parsedEdmx);
 
-            const result = getDefaultTableType(
-                'lrop',
-                convertedMetadata,
-                OdataVersion.v4,
-                false,
-                'Travel',
-                'ResponsiveTable'
-            );
+            const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should return ResponsiveTable as default fallback', () => {
@@ -366,28 +355,25 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should handle undefined entitySetName gracefully', () => {
             const parsedEdmx = parse(metadataV4WithDraftEntities);
             const convertedMetadata = convert(parsedEdmx);
 
-            const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, undefined);
+            const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false);
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should return AnalyticalTable for ALP template with OData v2 when no entitySetName provided', () => {
             const parsedEdmx = parse(metadataV4WithDraftEntities);
             const convertedMetadata = convert(parsedEdmx);
 
-            const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false, undefined);
+            const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false);
 
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('AnalyticalTable');
         });
 
         test('should handle non-existent entitySetName gracefully', () => {
@@ -396,8 +382,7 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'NonExistentEntity');
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should prioritize aggregate transformations in lrop v4', () => {
@@ -406,8 +391,7 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'SalesOrderItem');
 
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            expect(result).toBe('AnalyticalTable');
         });
 
         test('should not use AnalyticalTable for non-v4 metadata with aggregate transformations', () => {
@@ -422,8 +406,7 @@ describe('Test entity helper functions', () => {
                 'SEPMRA_C_PD_Product'
             );
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should not use AnalyticalTable for non-lrop/worklist templates with aggregate transformations', () => {
@@ -432,8 +415,7 @@ describe('Test entity helper functions', () => {
 
             const result = getDefaultTableType('fpm', convertedMetadata, OdataVersion.v4, false, 'SalesOrderItem');
 
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('ResponsiveTable');
         });
 
         test('should return TreeTable for entities with recursive hierarchy annotation', () => {
@@ -452,8 +434,7 @@ describe('Test entity helper functions', () => {
             };
 
             const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity');
-            expect(result.tableType).toBe('TreeTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('TreeTable');
         });
 
         test('should use TreeTable for entities with recursive hierarchy and incomplete aggregate transformations', () => {
@@ -471,8 +452,7 @@ describe('Test entity helper functions', () => {
                 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
             );
             // When both annotations are present but analytical transformations are incomplete, use TreeTable
-            expect(result.tableType).toBe('TreeTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            expect(result).toBe('TreeTable');
         });
 
         test('should prioritize complete aggregate transformations over recursive hierarchy', () => {
@@ -519,8 +499,7 @@ describe('Test entity helper functions', () => {
                 'TestEntityWithBoth'
             );
             // Complete aggregate transformations should take priority over recursive hierarchy
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return AnalyticalTable for CAP services with ApplySupported annotation', () => {
@@ -545,9 +524,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For CAP services, should use AnalyticalTable even with partial transformations
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return ResponsiveTable for non-CAP services with partial transformations', () => {
@@ -572,9 +550,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For non-CAP services, should not use AnalyticalTable with partial transformations
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity', undefined);
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
 
         it('should return AnalyticalTable for CAP services with ApplySupported annotation in entity type', () => {
@@ -599,16 +576,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For CAP services, should use AnalyticalTable when ApplySupported exists in entity type with transformations
-            const result = getDefaultTableType(
-                'worklist',
-                mockMetadata,
-                OdataVersion.v4,
-                true,
-                'TestEntity',
-                undefined
-            );
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            const result = getDefaultTableType('worklist', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return ResponsiveTable for CAP services without ApplySupported annotation', () => {
@@ -627,16 +596,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For CAP services without ApplySupported, should return ResponsiveTable
-            const result = getDefaultTableType(
-                'worklist',
-                mockMetadata,
-                OdataVersion.v4,
-                true,
-                'TestEntity',
-                undefined
-            );
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('worklist', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
 
         it('should return ResponsiveTable for CAP services with empty ApplySupported annotation', () => {
@@ -659,16 +620,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For CAP services with empty ApplySupported (no transformations), should return ResponsiveTable
-            const result = getDefaultTableType(
-                'worklist',
-                mockMetadata,
-                OdataVersion.v4,
-                true,
-                'TestEntity',
-                undefined
-            );
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('worklist', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
 
         it('should return AnalyticalTable for non-CAP services with all required transformations', () => {
@@ -703,16 +656,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For non-CAP services, should use AnalyticalTable when all required transformations are present
-            const result = getDefaultTableType(
-                'worklist',
-                mockMetadata,
-                OdataVersion.v4,
-                false,
-                'TestEntity',
-                undefined
-            );
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            const result = getDefaultTableType('worklist', mockMetadata, OdataVersion.v4, false, 'TestEntity');
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return ResponsiveTable for non-CAP services with partial transformations', () => {
@@ -737,16 +682,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For non-CAP services with only partial transformations, should return ResponsiveTable
-            const result = getDefaultTableType(
-                'worklist',
-                mockMetadata,
-                OdataVersion.v4,
-                false,
-                'TestEntity',
-                undefined
-            );
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('worklist', mockMetadata, OdataVersion.v4, false, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
 
         it('should return ResponsiveTable for CAP services without ApplySupported annotation', () => {
@@ -765,9 +702,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For CAP services without ApplySupported, should use ResponsiveTable
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
 
         it('should return AnalyticalTable when both analytical and hierarchical annotations are present (CAP service)', () => {
@@ -796,9 +732,8 @@ describe('Test entity helper functions', () => {
             };
 
             // When both analytical and hierarchical annotations are present, should prefer AnalyticalTable
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return AnalyticalTable when both analytical and hierarchical annotations are present (non-CAP service)', () => {
@@ -836,9 +771,8 @@ describe('Test entity helper functions', () => {
             };
 
             // When both analytical and hierarchical annotations are present, should prefer AnalyticalTable over TreeTable
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity', undefined);
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity');
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return AnalyticalTable when both analytical and hierarchical annotations are present (worklist template)', () => {
@@ -867,16 +801,8 @@ describe('Test entity helper functions', () => {
             };
 
             // Should work for worklist template as well
-            const result = getDefaultTableType(
-                'worklist',
-                mockMetadata,
-                OdataVersion.v4,
-                true,
-                'TestEntity',
-                undefined
-            );
-            expect(result.tableType).toBe('AnalyticalTable');
-            expect(result.setAnalyticalTableDefault).toBe(true);
+            const result = getDefaultTableType('worklist', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('AnalyticalTable');
         });
 
         it('should return TreeTable when only hierarchical annotation is present', () => {
@@ -899,9 +825,8 @@ describe('Test entity helper functions', () => {
             };
 
             // When only hierarchical annotation is present, should return TreeTable
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity', undefined);
-            expect(result.tableType).toBe('TreeTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v4, false, 'TestEntity');
+            expect(result).toBe('TreeTable');
         });
 
         it('should not apply combined condition for non-lrop/worklist templates', () => {
@@ -930,9 +855,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For non-lrop/worklist templates, the combined condition should not apply
-            const result = getDefaultTableType('fpm', mockMetadata, OdataVersion.v4, true, 'TestEntity', undefined);
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('fpm', mockMetadata, OdataVersion.v4, true, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
 
         it('should not apply combined condition for OData v2', () => {
@@ -961,9 +885,8 @@ describe('Test entity helper functions', () => {
             };
 
             // For OData v2, the combined condition should not apply
-            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v2, true, 'TestEntity', undefined);
-            expect(result.tableType).toBe('ResponsiveTable');
-            expect(result.setAnalyticalTableDefault).toBe(false);
+            const result = getDefaultTableType('lrop', mockMetadata, OdataVersion.v2, true, 'TestEntity');
+            expect(result).toBe('ResponsiveTable');
         });
     });
 

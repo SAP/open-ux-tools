@@ -362,12 +362,20 @@ describe('Test entity prompts', () => {
             severity: Severity.information
         });
 
-        // If the user has already selected a table type, return it
+        // If the user has already selected a table type for the same entity, return it
+        // First call establishes the entity
+        (tableType.default as Function)({
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            }
+        });
+        // Second call with same entity and existing table type should preserve user choice
         const prevAnswersWithTableType = {
             [EntityPromptNames.tableType]: 'GridTable',
             [EntityPromptNames.mainEntity]: {
-                entitySetName: 'Customer',
-                entitySetType: 'com.c_salesordermanage_sd_aggregate.Customer'
+                entitySetName: 'SEPMRA_C_PD_Product', // Same entity as above
+                entitySetType: 'SEPMRA_C_PD_ProductType'
             }
         };
         expect((tableType.default as Function)(prevAnswersWithTableType)).toEqual('GridTable');
