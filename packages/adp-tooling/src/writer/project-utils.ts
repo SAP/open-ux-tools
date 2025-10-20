@@ -193,7 +193,7 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
  * Writes a ui5.yaml file for CF project within a specified folder in the project directory.
  *
  * @param {string} projectPath - The root path of the project.
- * @param {AdpWriterConfig} data - The data to be populated in the template file.
+ * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
@@ -214,10 +214,10 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
 }
 
 /**
- * Writes a ui5.yaml file for CF project within a specified folder in the project directory.
+ * Writes a ui5-build.yaml file for CF project within a specified folder in the project directory.
  *
  * @param {string} projectPath - The root path of the project.
- * @param {AdpWriterConfig} data - The data to be populated in the template file.
+ * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
