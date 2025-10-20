@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.16.7
+
+### Patch Changes
+
+-   233259c: fix: Remove sap-appvar-id parameter from FLP configuration changes for ADP
+
 ## 0.16.6
 
 ### Patch Changes
