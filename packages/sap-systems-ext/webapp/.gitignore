@@ -25,4 +25,4 @@ yarn-error.log*
 .eslintcache
 
 stat.json
-esbuild-stat.json
+esbuild-stats.json

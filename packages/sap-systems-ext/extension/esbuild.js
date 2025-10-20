@@ -79,14 +79,15 @@ async function main() {
         sourcesContent: false,
         platform: 'node',
         outfile: 'dist/extension.js',
-        external: ['vscode', 'jsonc-parser'],
+        external: ['vscode'],
         logLevel: 'silent',
         plugins: [
             copyPrebuildsPlugin,
             copyWebappPlugin,
             /* add to the end of plugins array */
             esbuildProblemMatcherPlugin
-        ]
+        ],
+        mainFields: ["module", "main"],
     });
     if (watch) {
         await ctx.watch();
