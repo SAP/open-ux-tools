@@ -458,10 +458,8 @@ function updateViewFile(
     fs: Editor,
     replace: boolean = false
 ): Editor {
-    const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
-
-    // Find target aggregated element and append template as child
-    const targetNodes = xpathSelect(aggregationPath, viewDocument);
+    // Resolve target nodes (with fallback for default namespace steps)
+    const targetNodes = selectTargetNodes(aggregationPath, viewDocument);
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
@@ -477,6 +475,42 @@ function updateViewFile(
         throw new Error(`Aggregation control not found ${aggregationPath}.`);
     }
     return fs;
+}
+
+/**
+ * Selects nodes for the provided aggregation path. If the initial namespace-aware XPath returns
+ * no results, it retries by rewriting any unprefixed path segments into a namespace-agnostic
+ * local-name() predicate so that elements in a default namespace (e.g. <VBox>) can still be matched.
+ *
+ * @param {string} aggregationPath - Original aggregation XPath expression
+ * @param {Document} viewDocument - XML view/fragment document
+ * @returns {Node[]} Array of matched nodes (empty if none)
+ */
+function selectTargetNodes(aggregationPath: string, viewDocument: Document): Node[] {
+    const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
+    let nodes = xpathSelect(aggregationPath, viewDocument) as Node[];
+    const needsFallback = (!nodes || !Array.isArray(nodes) || nodes.length === 0) && aggregationPath.includes('/');
+    if (needsFallback) {
+        const fallbackPath = aggregationPath
+            .split('/')
+            .map((segment) => {
+                if (!segment || segment.startsWith('*') || segment.includes(':')) {
+                    return segment; // Leave wildcards or prefixed segments untouched
+                }
+                const match = segment.match(/^([A-Za-z_][\w.-]*)(.*)$/);
+                if (!match) {
+                    return segment;
+                }
+                const [, name, rest] = match;
+                return `*[local-name() = '${name}']${rest}`;
+            })
+            .join('/');
+        const fallbackNodes = xpathSelect(fallbackPath, viewDocument) as Node[];
+        if (fallbackNodes && Array.isArray(fallbackNodes) && fallbackNodes.length > 0) {
+            nodes = fallbackNodes;
+        }
+    }
+    return Array.isArray(nodes) ? nodes : [];
 }
 
 /**
