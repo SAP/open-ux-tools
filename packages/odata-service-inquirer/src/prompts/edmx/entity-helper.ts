@@ -304,11 +304,6 @@ export function getDefaultTableType(
     // Find the entity set once for all annotation checks
     const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
 
-    // Early return for user-selected table type
-    if (currentTableType) {
-        return { tableType: currentTableType, setAnalyticalTableDefault };
-    }
-
     // Handle ALP template with OData v2 - always use AnalyticalTable
     if (templateType === 'alp' && odataVersion === OdataVersion.v2) {
         return { tableType: 'AnalyticalTable', setAnalyticalTableDefault };
@@ -316,22 +311,26 @@ export function getDefaultTableType(
 
     // Handle OData v4 specific logic
     if (odataVersion === OdataVersion.v4 && entitySet) {
+        const canUseAnalytical = templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp';
+        const hasAnalyticalCapabilities = shouldUseAnalyticalTable(entitySet, isCapService);
+        const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
+
         // Check for analytical data requirements
-        if (
-            (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') &&
-            shouldUseAnalyticalTable(entitySet, isCapService)
-        ) {
-            // Use AnalyticalTable for entities with analytical data
+        if (canUseAnalytical && hasAnalyticalCapabilities) {
             return { tableType: 'AnalyticalTable', setAnalyticalTableDefault: true };
         }
 
         // Check for hierarchical data requirements
-        if ((templateType === 'lrop' || templateType === 'worklist') && hasRecursiveHierarchyForEntitySet(entitySet)) {
-            // Use TreeTable for entities with recursive hierarchy
+        if ((templateType === 'lrop' || templateType === 'worklist') && hasHierarchy) {
             return { tableType: 'TreeTable', setAnalyticalTableDefault };
         }
     }
 
-    // Default to ResponsiveTable for all other cases
-    return { tableType: 'ResponsiveTable', setAnalyticalTableDefault };
+    // If we have a current table type and no strong reason to override it, preserve it
+    if (currentTableType) {
+        return { tableType: currentTableType, setAnalyticalTableDefault };
+    }
+
+    // Default fallback to ResponsiveTable
+    return { tableType: 'ResponsiveTable' as TableType, setAnalyticalTableDefault };
 }
