@@ -1,5 +1,17 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.30
+
+## 0.13.24
+
+### Patch Changes
+
+-   d4dabbd: Fix for label for Abap cloud returned as empty string
+
 ## 0.13.23
 
 ### Patch Changes
