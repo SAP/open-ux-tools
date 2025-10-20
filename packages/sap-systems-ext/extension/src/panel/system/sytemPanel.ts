@@ -42,7 +42,7 @@ export class SystemPanel implements Disposable {
         this.systemStatusMessage = systemStatusMessage;
     }
 
-    public async dispose(): Promise<void> {
+    public dispose(): void {
         this.panel?.dispose();
     }
 
