@@ -4,8 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"prestart": "npm run build",
 		"start": "fiori run --open /test/flp.html#app-preview",
-		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
+		"build": "npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../<%= module %>.zip *",
 		"clean": "npx rimraf <%= module %>.zip dist",
 		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup"
