@@ -4,7 +4,7 @@ import { activate } from '../../src/extension';
 import type { ExtensionContext } from 'vscode';
 
 describe('Test the extension activate/deactivate', () => {
-    it('should register commands and views with the extension context', () => {
+    it('should register commands and views with the extension context', async () => {
         // Mock the ExtensionContext
         const mockContext = {
             subscriptions: [] as any[]
@@ -13,7 +13,7 @@ describe('Test the extension activate/deactivate', () => {
         const registerViewsSpy = jest.spyOn(views, 'registerViews').mockImplementationOnce(() => {});
         const registerCommandsSpy = jest.spyOn(commands, 'registerCommands').mockImplementationOnce(() => {});
 
-        activate(mockContext);
+        await activate(mockContext);
 
         expect(registerViewsSpy).toHaveBeenCalledWith(mockContext);
         expect(registerCommandsSpy).toHaveBeenCalledWith(mockContext);

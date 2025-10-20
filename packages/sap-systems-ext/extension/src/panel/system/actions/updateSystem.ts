@@ -2,7 +2,7 @@ import type { UpdateSystem } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types/system';
 import { SystemService, type BackendSystem } from '@sap-ux/store';
 import { commands, window } from 'vscode';
-import { getBackendSystem, geti18nOpts, logTelemetryEvent, t } from '../../../utils';
+import { getBackendSystem, geti18nOpts, TelemetryHelper, t } from '../../../utils';
 import { updateSystemStatus, validateSystemName } from '../utils';
 import {
     SystemAction,
@@ -115,7 +115,8 @@ async function postSavingError(
         })
     );
 
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status: systemExistsInStore ? SystemActionStatus.UPDATED_FAIL : SystemActionStatus.CREATED_FAIL,
         systemType
@@ -155,7 +156,8 @@ async function saveSystem(
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status: systemExistsInStore ? SystemActionStatus.UPDATED_SUCCESS : SystemActionStatus.CREATED_SUCCESS,
         systemType: backendSystem.systemType || 'unknown'

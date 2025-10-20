@@ -79,7 +79,7 @@ async function main() {
         sourcesContent: false,
         platform: 'node',
         outfile: 'dist/extension.js',
-        external: ['vscode'],
+        external: ['vscode', 'jsonc-parser'],
         logLevel: 'silent',
         plugins: [
             copyPrebuildsPlugin,

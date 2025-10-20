@@ -1,6 +1,6 @@
 import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
 import { commands, window } from 'vscode';
-import { logTelemetryEvent, t } from '../../utils';
+import { TelemetryHelper, t } from '../../utils';
 import {
     fioriToolsAppModAppGenLaunchCmd,
     launchAppGenCmdType,
@@ -45,7 +45,8 @@ export const launchAppGenCommandHandler =
  * @param status - the status of the launch action
  */
 function logTelemetry(status: SystemActionStatus): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status
     });

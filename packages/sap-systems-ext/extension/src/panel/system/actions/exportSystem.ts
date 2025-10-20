@@ -3,7 +3,7 @@ import type { ExportSystem } from '@sap-ux/sap-systems-ext-types';
 import { window, workspace } from 'vscode';
 import { writeFileSync } from 'node:fs';
 import { showFileSaveDialog } from '../utils';
-import { getBackendSystem, geti18nOpts, logTelemetryEvent, t } from '../../../utils';
+import { getBackendSystem, geti18nOpts, TelemetryHelper, t } from '../../../utils';
 import { SystemAction, SystemActionStatus, SYSTEMS_EVENT } from '../../../utils/constants';
 import SystemsLogger from '../../../utils/logger';
 
@@ -65,7 +65,8 @@ function errorHandler(errorMsg: string): void {
  * @param status - the status of the export action
  */
 function logTelemetry(status: SystemActionStatus): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status
     });

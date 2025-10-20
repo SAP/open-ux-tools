@@ -3,7 +3,7 @@ import { BackendSystem, BackendSystemKey, SystemService, type SystemType } from 
 import { window, workspace } from 'vscode';
 import { platform } from 'node:os';
 import { readFileSync } from 'node:fs';
-import { confirmPrompt, logTelemetryEvent, t } from '../../utils';
+import { confirmPrompt, TelemetryHelper, t } from '../../utils';
 import {
     ConfirmationPromptType,
     SystemAction,
@@ -148,7 +148,8 @@ function readConfig(filePath: string): SystemConfig | undefined {
  * @param status - the import action status
  */
 function logImportTelemetry(status: SystemActionStatus): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status
     });

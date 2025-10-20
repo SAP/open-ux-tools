@@ -2,7 +2,7 @@ import type { StoredSystemViewNode, SystemCommandContext } from '../../types/sys
 import { BackendSystemKey, SystemService, type BackendSystem } from '@sap-ux/store';
 import { window } from 'vscode';
 import { SystemPanel } from '../../panel';
-import { logTelemetryEvent, t } from '../../utils';
+import { TelemetryHelper, t } from '../../utils';
 import { SystemAction, LaunchViewStatus, SystemPanelViewType, SYSTEMS_EVENT } from '../../utils/constants';
 import SystemsLogger from '../../utils/logger';
 
@@ -106,7 +106,8 @@ function openSystemPanel(
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     panel.reveal();
 
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.VIEW_LAUNCHED,
         status: LaunchViewStatus.SUCCEED
     });
@@ -116,7 +117,8 @@ function openSystemPanel(
  * Logs telemetry for failed attempt to open system details panel.
  */
 function logTelemetryFailure(): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.VIEW_LAUNCHED,
         status: LaunchViewStatus.FAILED
     });

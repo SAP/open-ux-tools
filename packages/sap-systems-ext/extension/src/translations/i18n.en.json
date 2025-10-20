@@ -63,5 +63,9 @@
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",
         "systemNameExists": "System name is already in use"
+    },
+    "telemetry": {
+        "unknownOs": "Unknown",
+        "initializeError": "Error initializing telemetry settings: {{- error}}"
     }
 }

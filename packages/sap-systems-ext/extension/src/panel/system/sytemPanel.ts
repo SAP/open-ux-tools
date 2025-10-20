@@ -15,12 +15,12 @@ import SystemsLogger from '../../utils/logger';
  */
 export class SystemPanel implements Disposable {
     private panel?: WebviewPanel;
-    private disposeCallback?: DisposeCallback;
     private backendSystem?: BackendSystem;
     readonly extensionPath: string;
     readonly systemPanelViewType: SystemPanelViewType;
     readonly systemStatusMessage?: string;
     readonly isGuidedAnswersEnabled: boolean = !!extensions.getExtension(GUIDED_ANSWERS_EXTENSION_ID);
+    readonly disposeCallback?: DisposeCallback;
 
     constructor({
         extensionPath,

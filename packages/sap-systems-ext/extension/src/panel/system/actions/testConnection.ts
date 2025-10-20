@@ -12,7 +12,7 @@ import {
     loadingTestConnectionInfo,
     validateSystemInfo
 } from '../utils';
-import { logTelemetryEvent, t } from '../../../utils';
+import { TelemetryHelper, t } from '../../../utils';
 import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT, TestConnectionStatus } from '../../../utils/constants';
 import SystemsLogger from '../../../utils/logger';
 
@@ -160,7 +160,8 @@ function logServiceSummary(systemName: string, v2Count?: number, v4Count?: numbe
  * @param systemType - the type of the system
  */
 function logTestTelemetry(status: TestConnectionStatus, systemType = 'unknown'): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.TEST_CONNECTION,
         status,
         systemType
@@ -175,7 +176,8 @@ function logTestTelemetry(status: TestConnectionStatus, systemType = 'unknown'):
  * @param isGuidedAnswersEnabled - if Guided Answers is enabled
  */
 function logGATelemetry(status: GuidedAnswersLinkAction, errorType = '', isGuidedAnswersEnabled?: boolean): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.GUIDED_ANSWERS,
         status,
         errorType,

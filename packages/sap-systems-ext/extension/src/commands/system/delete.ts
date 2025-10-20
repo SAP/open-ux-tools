@@ -2,7 +2,7 @@ import type { StoredSystemViewNode, SystemCommandContext } from '../../types/sys
 import type { PanelManager, SystemPanel } from '../../panel';
 import { BackendSystemKey, SystemService, type BackendSystem } from '@sap-ux/store';
 import { window } from 'vscode';
-import { t, confirmPrompt, logTelemetryEvent, geti18nOpts } from '../../utils';
+import { t, confirmPrompt, TelemetryHelper, geti18nOpts } from '../../utils';
 import { ConfirmationPromptType, SYSTEMS_EVENT, SystemAction, SystemActionStatus } from '../../utils/constants';
 import SystemsLogger from '../../utils/logger';
 
@@ -75,7 +75,8 @@ function deletionFailureHandler(system: BackendSystem): void {
  * @param systemType - the type of the system (optional)
  */
 function logTelemetry(status: SystemActionStatus, systemType = ''): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status,
         systemType

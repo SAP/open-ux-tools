@@ -1,5 +1,5 @@
 import type { PanelContext } from '../../../types/system';
-import { logTelemetryEvent } from '../../../utils';
+import { TelemetryHelper } from '../../../utils';
 import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT } from '../../../utils/constants';
 
 /**
@@ -8,7 +8,8 @@ import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT } from '../../../u
  * @param context - panel context
  */
 export function fireGALinkClickedTelemetry(context: PanelContext): void {
-    logTelemetryEvent(SYSTEMS_EVENT, {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.GUIDED_ANSWERS,
         status: GuidedAnswersLinkAction.LINK_CLICKED,
         isGuidedAnswersEnabled: context.isGuidedAnswersEnabled ? 'true' : 'false'
