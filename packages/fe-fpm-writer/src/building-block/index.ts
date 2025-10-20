@@ -461,7 +461,7 @@ function updateViewFile(
     // Resolve target nodes (with fallback for default namespace steps)
     const targetNodes = selectTargetNodes(aggregationPath, viewDocument);
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
-        const targetNode = targetNodes[0] as Node;
+        const targetNode = targetNodes[0];
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
         if (replace) {
             targetNode.parentNode?.replaceChild(sourceNode, targetNode);
@@ -486,7 +486,7 @@ function updateViewFile(
  * @param {Document} viewDocument - XML view/fragment document
  * @returns {Node[]} Array of matched nodes (empty if none)
  */
-function selectTargetNodes(aggregationPath: string, viewDocument: Document): Node[] {
+export function selectTargetNodes(aggregationPath: string, viewDocument: Document): Node[] {
     const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
     let nodes = xpathSelect(aggregationPath, viewDocument) as Node[];
     if (isEmptyNodeResult(nodes) && aggregationPath.includes('/')) {
