@@ -50,8 +50,15 @@ export async function getFlexUISupportedSystem(
  * @returns {string | undefined} System UI5 version.
  */
 export async function getSystemUI5Version(provider: AbapServiceProvider): Promise<string | undefined> {
-    const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
-    return service?.getUI5Version();
+    try {
+        const ui5VersionService = provider.getUI5VersionService();
+        // We await here because in case of any exception from the new api we want
+        // to fallback to the legacy api - UI5RtVersionService.getUI5Version().
+        return await ui5VersionService.getUI5Version();
+    } catch {
+        const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+        return ui5RtVersionService?.getUI5Version();
+    }
 }
 
 /**
