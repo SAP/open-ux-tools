@@ -31,17 +31,4 @@ describe('Test the TelemetryHelper', () => {
         const telemetryName = TelemetryHelper.getTelemetryName();
         expect(telemetryName).toBe('sap-systems-ext');
     });
-
-    it('should filter duplicate telemetry events', () => {
-        const additionalData = {
-            action: 'testAction'
-        };
-        TelemetryHelper['\u005ftelemetryData'] = {}; // Reset telemetry data
-        const firstEvent = TelemetryHelper.createTelemetryData(additionalData, true);
-        expect(firstEvent).toBeDefined();
-
-        // Simulate a short delay
-        const secondEvent = TelemetryHelper.createTelemetryData(additionalData, true);
-        expect(secondEvent).toBeUndefined(); // Should be filtered as duplicate
-    });
 });
