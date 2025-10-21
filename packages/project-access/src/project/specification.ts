@@ -107,6 +107,10 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
             logger
         });
         const distTags = JSON.parse(distTagsString) as Record<string, string>;
+        if ('error' in distTags) {
+            // Loading contains error
+            throw new Error(distTagsString);
+        }
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
         const uniqueVersions = new Set(Object.values(distTags));
 
