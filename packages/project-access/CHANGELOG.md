@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.32.5
+
+### Patch Changes
+
+-   c5d7915: Improve method `getSpecification` - retry loading specification `specification-dist-tags.json` if the initial load contains an error.
+
 ## 1.32.4
 
 ### Patch Changes
