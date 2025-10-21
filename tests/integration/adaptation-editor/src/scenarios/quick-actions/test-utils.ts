@@ -11,6 +11,18 @@ interface Changes {
 }
 
 /**
+ * Creates a locator for a button element with description for better test reporting.
+ *
+ * @param page - Page or FrameLocator to search within
+ * @param name - Name of the button to locate
+ * @param context - Context description for the button (e.g., 'Quick Actions Panel')
+ * @returns Locator for the button with added description
+ */
+export function getButtonLocator(page: Page | FrameLocator, name: string, context: string): Locator {
+    return page.getByRole('button', { name }).describe(`\`${name}\` button in the ${context}`);
+}
+
+/**
  * Class representing a List Report in the Adaptation Editor.
  */
 export class ListReport {
@@ -183,157 +195,134 @@ export class TableSettings {
 class QuickActionPanel {
     private readonly page: Page;
     private readonly context: string = `Quick Actions Panel`;
+
+    /**
+     * Helper method to get a button locator with description.
+     *
+     * @param name - Button name/label
+     * @returns Locator with description
+     */
+    private getButtonLocator(name: string): Locator {
+        return getButtonLocator(this.page, name, this.context);
+    }
+
     /**
      * @returns Locator for the button to add a controller to the page.
      */
     get addControllerToPage(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Add Controller to Page' })
-            .describe('`Add Controller to Page` in the Quick Actions Panel');
+        return this.getButtonLocator('Add Controller to Page');
     }
 
     /**
      * @returns Locator for the button to show the page controller.
      */
     get showPageController(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Show Page Controller' })
-            .describe('`Show Page Controller` in the Quick Actions Panel');
+        return this.getButtonLocator('Show Page Controller');
     }
 
     /**
      * @returns Locator for the button to show the local annotation file.
      */
     get showLocalAnnotationFile(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Show Local Annotation File' })
-            .describe('`Show Local Annotation File` in the Quick Actions Panel');
+        return this.getButtonLocator('Show Local Annotation File');
     }
 
     /**
      * @returns Locator for the button to enable the "Clear" button in the filter bar.
      */
     get enableClearButton(): Locator {
-        return this.page
-            .getByRole('button', { name: `Enable "Clear" Button in Filter Bar` })
-            .describe('`Enable "Clear" Button in Filter Bar`in the Quick Actions Panel');
+        return this.getButtonLocator('Enable "Clear" Button in Filter Bar');
     }
 
     /**
      * @returns Locator for the button to disable the "Clear" button in the filter bar.
      */
     get disableClearButton(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Disable "Clear" Button in Filter Bar' })
-            .describe('`Disable "Clear" Button in Filter Bar` in the Quick Actions Panel');
+        return this.getButtonLocator('Disable "Clear" Button in Filter Bar');
     }
 
     /**
      * @returns Locator for the button to enable the semantic date range in the filter bar.
      */
     get enableSemanticDateRange(): Locator {
-        this.page.getByTestId('btn-sub').describe('Subscribe button');
-        return this.page
-            .getByRole('button', { name: 'Enable Semantic Date Range in Filter Bar' })
-            .describe('`Enable Semantic Date Range in Filter Bar` in the Quick Actions Panel');
+        return this.getButtonLocator('Enable Semantic Date Range in Filter Bar');
     }
 
     /**
      * @returns Locator for the button to disable the semantic date range in the filter bar.
      */
     get disableSemanticDateRange(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Disable Semantic Date Range in Filter Bar' })
-            .describe('`Disable Semantic Date Range in Filter Bar` in the Quick Actions Panel');
+        return this.getButtonLocator('Disable Semantic Date Range in Filter Bar');
     }
 
     /**
      * @returns Locator for the button to change table columns.
      */
     get changeTableColumns(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Change Table Columns' })
-            .describe('`Change Table Columns` in the Quick Actions Panel');
+        return this.getButtonLocator('Change Table Columns');
     }
     /**
      * @returns Locator for the button to change Table Actions.
      */
     get changeTableActions(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Change Table Actions' })
-            .describe('`Change Table Actions` in the Quick Actions Panel');
+        return this.getButtonLocator('Change Table Actions');
     }
 
     /**
      * @returns Locator for the button to add a custom table action.
      */
     get addCustomTableAction(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Add Custom Table Action' })
-            .describe('`Add Custom Table Action` in the Quick Actions Panel');
+        return this.getButtonLocator('Add Custom Table Action');
     }
 
     /**
      * @returns Locator for the button to add a custom table column.
      */
     get addCustomTableColumn(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Add Custom Table Column' })
-            .describe('`Add Custom Table Column` in the Quick Actions Panel');
+        return this.getButtonLocator('Add Custom Table Column');
     }
 
     /**
      * @returns Locator for the button to enable variant management in tables and charts.
      */
     get enableVariantManagementInTablesAndCharts(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Enable Variant Management in Tables and Charts' })
-            .describe('`Enable Variant Management in Tables and Charts` in the Quick Actions Panel');
+        return this.getButtonLocator('Enable Variant Management in Tables and Charts');
     }
     /**
      * @returns Locator for the button to enable variant management in tables.
      */
     get enableOPVariantManagementInTable(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Enable Variant Management in Tables' })
-            .describe('`Enable Variant Management in Tables` in the Quick Actions Panel');
+        return this.getButtonLocator('Enable Variant Management in Tables');
     }
     /**
      * @returns Locator for the button to enable empty row mode for tables.
      */
     get enableEmptyRowMode(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Enable Empty Row Mode for Tables' })
-            .describe('`Enable Empty Row Mode for Tables` in the Quick Actions Panel');
+        return this.getButtonLocator('Enable Empty Row Mode for Tables');
     }
     /**
      * @returns Locator for the button to Add Header Field.
      */
     get addHeaderField(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Add Header Field' })
-            .describe('`Add Header Field` in the Quick Actions Panel');
+        return this.getButtonLocator('Add Header Field');
     }
     /**
      * @returns Locator for the button to Add Custom Section.
      */
     get addCustomSection(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Add Custom Section' })
-            .describe('`Add Custom Section` in the Quick Actions Panel');
+        return this.getButtonLocator('Add Custom Section');
     }
     /**
      * @returns Locator for the button to Add Local Annotation File.
      */
     get addLocalAnnotationFile(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Add Local Annotation File' })
-            .describe('`Add Local Annotation File` in the Quick Actions Panel');
+        return this.getButtonLocator('Add Local Annotation File');
     }
 
     /**
+     * Constructor for QuickActionPanel.
      *
-     * @param page
+     * @param page - Page object.
      */
     constructor(page: Page) {
         this.page = page;
@@ -345,33 +334,30 @@ class QuickActionPanel {
  */
 class Toolbar {
     private readonly page: Page;
+    private readonly context: string = 'toolBar';
     /**
      * @returns Locator for the "Save" button.
      */
     get saveButton(): Locator {
-        return this.page.getByRole('button', { name: 'Save' }).describe('`Save` button in the toolBar');
+        return getButtonLocator(this.page, 'Save', this.context);
     }
     /**
      * @returns Locator for the "Save and Reload" button.
      */
     get saveAndReloadButton(): Locator {
-        return this.page
-            .getByRole('button', { name: 'Save and Reload' })
-            .describe('`Save and Reload` button in the toolBar');
+        return getButtonLocator(this.page, 'Save and Reload', this.context);
     }
     /**
      * @returns Locator for the "UI Adaptation" mode button.
      */
     get uiAdaptationModeButton(): Locator {
-        return this.page
-            .getByRole('button', { name: 'UI Adaptation' })
-            .describe('`UI Adaptation` button in the toolBar');
+        return getButtonLocator(this.page, 'UI Adaptation', this.context);
     }
     /**
      * @returns Locator for the "Navigation" mode button.
      */
     get navigationModeButton(): Locator {
-        return this.page.getByRole('button', { name: 'Navigation' }).describe('`Navigation` button in the toolBar');
+        return getButtonLocator(this.page, 'Navigation', this.context);
     }
 
     /**
@@ -395,10 +381,13 @@ class Toolbar {
  */
 class ChangesPanel {
     private readonly page: Page;
+    private readonly context: string = 'Changes Panel';
+
     /**
      * @returns Locator for the "Reload" button.
      */
     get reloadButton(): Locator {
+        // This was using 'link' role before, so we need a special case for it
         return this.page.getByRole('link', { name: 'Reload' }).describe('`Reload` link in the Changes Panel');
     }
     /**

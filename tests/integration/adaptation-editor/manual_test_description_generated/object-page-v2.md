@@ -21,7 +21,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Enable Empty Row Mode for Tables` in the Quick Actions Panel
+6. Click `Enable Empty Row Mode for Tables` button in the Quick Actions Panel
 7. Click `Save and Reload` button in the toolBar
 8. Check `Save` button in the toolbar is disabled
 9. Verify changes:
@@ -58,7 +58,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Change Table Actions` in the Quick Actions Panel
+6. Click `Change Table Actions` button in the Quick Actions Panel
 7. Check `SearchField - fiori.elements.v2.0::sap.suite.ui.generic.template.ObjectPage.view.Details::RootEntity--toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection::Table::Toolbar::SearchField, Button - Create, Button - Delete` exist in the `Rearrange Toolbar Content` dialog
 8. Hover over row `1` and click on Move down button in the row of `Rearrange Toolbar Content` table
 9. Check `Button - Create, SearchField - fiori.elements.v2.0::sap.suite.ui.generic.template.ObjectPage.view.Details::RootEntity--toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection::Table::Toolbar::SearchField, Button - Delete` exist in the `Rearrange Toolbar Content` dialog
@@ -77,7 +77,7 @@
 2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click `UI Adaptation` button in the toolBar
-5. Click `Add Controller to Page` in the Quick Actions Panel
+5. Click `Add Controller to Page` button in the Quick Actions Panel
 6. Fill `Controller Name` field with `TestController` in the dialog `Extend With Controller`
 7. Click on `Create` button in the dialog `Extend With Controller`
 8. Click `Save` button in the toolBar
@@ -104,7 +104,7 @@
 
 
 10. Click `Reload` link in the Changes Panel
-11. Click `Show Page Controller` in the Quick Actions Panel
+11. Click `Show Page Controller` button in the Quick Actions Panel
 12. Check file name `adp.fiori.elements.v2/changes/coding/TestController.js` is visible in dialog
 13. Check `Open in VS Code` button visible in dialog.
 
@@ -119,7 +119,7 @@
 2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click `UI Adaptation` button in the toolBar
-5. Click `Add Custom Table Action` in the Quick Actions Panel
+5. Click `Add Custom Table Action` button in the Quick Actions Panel
 6. Fill `Fragment Name` field with `op-table-action` in the dialog `Add Custom Table Action`
 7. Click on `Create` button in the dialog `Add Custom Table Action`
 8. Click `Save and Reload` button in the toolBar
@@ -164,7 +164,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Change Table Columns` in the Quick Actions Panel
+6. Click `Change Table Columns` button in the Quick Actions Panel
 7. Check `String Property, Date Property` exist in the `View Settings` dialog
 
 ---
@@ -179,7 +179,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Add Custom Table Column` in the Quick Actions Panel
+6. Click `Add Custom Table Column` button in the Quick Actions Panel
 7. Fill `Column Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
 8. Fill `Cell Fragment Name` field with `table-cell` in the dialog `Add Custom Table Column`
 9. Click on `Create` button in the dialog `Add Custom Table Column`
@@ -259,7 +259,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Add Header Field` in the Quick Actions Panel
+6. Click `Add Header Field` button in the Quick Actions Panel
 7. Fill `Fragment Name` field with `op-header-field` in the dialog `Add Header Field`
 8. Click on `Create` button in the dialog `Add Header Field`
 9. Click `Save and Reload` button in the toolBar
@@ -309,7 +309,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Add Custom Section` in the Quick Actions Panel
+6. Click `Add Custom Section` button in the Quick Actions Panel
 7. Fill `Fragment Name` field with `op-section` in the dialog `Add Custom Section`
 8. Click on `Create` button in the dialog `Add Custom Section`
 9. Click `Save and Reload` button in the toolBar

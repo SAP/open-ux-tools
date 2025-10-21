@@ -14,7 +14,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Enable Variant Management in Tables` in the Quick Actions Panel
+6. Click `Enable Variant Management in Tables` button in the Quick Actions Panel
 7. Click `Save and Reload` button in the toolBar
 8. Check `Save` button in the toolbar is disabled
 9. Verify changes:

@@ -14,7 +14,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Change Table Columns` in the Quick Actions Panel
+6. Click `Change Table Columns` button in the Quick Actions Panel
 7. Check `String Property, Date Property` exist in the `View Settings` dialog
 
 ---

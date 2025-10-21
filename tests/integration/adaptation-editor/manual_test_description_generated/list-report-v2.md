@@ -19,7 +19,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Check `Clear` Button in the List Report filter bar is hidden
-3. Click `Enable "Clear" Button in Filter Bar`in the Quick Actions Panel
+3. Click `Enable "Clear" Button in Filter Bar` button in the Quick Actions Panel
 4. Check `Clear` Button in the List Report filter bar is visible
 5. Click `Save` button in the toolBar
 6. Check `Save` button in the toolbar is disabled
@@ -39,7 +39,7 @@
 ```
 
 
-8. Click `Disable "Clear" Button in Filter Bar` in the Quick Actions Panel
+8. Click `Disable "Clear" Button in Filter Bar` button in the Quick Actions Panel
 9. Check `Clear` Button in the List Report filter bar is hidden
 10. Click `Save` button in the toolBar
 11. Check `Save` button in the toolbar is disabled
@@ -68,7 +68,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Click `Add Controller to Page` in the Quick Actions Panel
+2. Click `Add Controller to Page` button in the Quick Actions Panel
 3. Fill `Controller Name` field with `TestController` in the dialog `Extend With Controller`
 4. Click on `Create` button in the dialog `Extend With Controller`
 5. Click `Save` button in the toolBar
@@ -95,7 +95,7 @@
 
 
 7. Click `Reload` link in the Changes Panel
-8. Click `Show Page Controller` in the Quick Actions Panel
+8. Click `Show Page Controller` button in the Quick Actions Panel
 9. Check filename `adp.fiori.elements.v2/changes/coding/TestController.js` is visible
 10. Check `Open in VS Code` button is visible
 
@@ -107,7 +107,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Click `Change Table Columns` in the Quick Actions Panel
+2. Click `Change Table Columns` button in the Quick Actions Panel
 3. Check `String Property, Boolean Property, Currency` exist in the `View Settings` dialog
 
 ---
@@ -118,7 +118,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Click `Add Custom Table Action` in the Quick Actions Panel
+2. Click `Add Custom Table Action` button in the Quick Actions Panel
 3. Fill `Fragment Name` field with `table-action` in the dialog `Add Custom Table Action`
 4. Click on `Create` button in the dialog `Add Custom Table Action`
 5. Click `Save and Reload` button in the toolBar
@@ -163,7 +163,7 @@
 2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click `UI Adaptation` button in the toolBar
-5. Click `Add Custom Table Column` in the Quick Actions Panel
+5. Click `Add Custom Table Column` button in the Quick Actions Panel
 6. Fill `Column Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
 7. Fill `Cell Fragment Name` field with `table-cell` in the dialog `Add Custom Table Column`
 8. Click on `Create` button in the dialog `Add Custom Table Column`
@@ -245,7 +245,7 @@
 3. Click on value help button of `Date Property` filter
 4. Check semantic date `Yesterday` visible in filter
 5. Click `UI Adaptation` button in the toolBar
-6. Click `Disable Semantic Date Range in Filter Bar` in the Quick Actions Panel
+6. Click `Disable Semantic Date Range in Filter Bar` button in the Quick Actions Panel
 7. Click `Save and Reload` button in the toolBar
 8. Verify changes:
 
@@ -270,7 +270,7 @@
 9. Click `Navigation` button in the toolBar
 10. Click on value help button of `Date Property` filter
 11. Click `UI Adaptation` button in the toolBar
-12. Click `Enable Semantic Date Range in Filter Bar` in the Quick Actions Panel
+12. Click `Enable Semantic Date Range in Filter Bar` button in the Quick Actions Panel
 13. Click `Save and Reload` button in the toolBar
 14. Verify changes:
 
@@ -301,7 +301,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Click `Enable Variant Management in Tables and Charts` in the Quick Actions Panel
+2. Click `Enable Variant Management in Tables and Charts` button in the Quick Actions Panel
 3. Click `Save and Reload` button in the toolBar
 4. Check `Save` button in the toolbar is disabled
 5. Verify changes:
@@ -336,7 +336,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Click `Change Table Actions` in the Quick Actions Panel
+2. Click `Change Table Actions` button in the Quick Actions Panel
 3. Check `Button - Create, Button - Delete, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
 4. Hover over row `2` and click on `Move up` button in the row of `Rearrange Toolbar Content` table
 5. Check `Button - Delete, Button - Create, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
@@ -354,7 +354,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `UI Adaptation` button in the toolBar
-3. Click `Add Local Annotation File` in the Quick Actions Panel
+3. Click `Add Local Annotation File` button in the Quick Actions Panel
 4. Click `Save and Reload` button in the toolBar
 5. Check `Save` button in the toolbar is disabled
 6. Verify changes:
@@ -397,7 +397,7 @@
 ```
 
 
-7. Click `Show Local Annotation File` in the Quick Actions Panel
+7. Click `Show Local Annotation File` button in the Quick Actions Panel
 8. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_<UNIQUE_ID>.xml` is visible in the dialog
 9. Check button `Show File in VSCode` is visible in the dialog
 
