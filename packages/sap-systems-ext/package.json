@@ -29,7 +29,7 @@
         "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
         "check-types": "tsc --noEmit",
         "lint": "eslint . --ext .ts",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors",
         "ide-ext:package": "vsce package"
     },
     "activationEvents": [
@@ -54,6 +54,7 @@
         "@types/normalize-path": "3.0.0",
         "@types/vscode": "1.73.1",
         "@zowe/secrets-for-zowe-sdk": "8.1.2",
+        "cross-env": "7.0.3",
         "fast-glob": "3.3.1",
         "i18next": "25.3.0",
         "jsonc-parser": "3.2.0",

@@ -3557,6 +3557,9 @@ importers:
       '@zowe/secrets-for-zowe-sdk':
         specifier: 8.1.2
         version: 8.1.2
+      cross-env:
+        specifier: 7.0.3
+        version: 7.0.3
       fast-glob:
         specifier: 3.3.1
         version: 3.3.1
