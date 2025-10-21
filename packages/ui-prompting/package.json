@@ -63,7 +63,7 @@
         "css-loader": "6.8.1",
         "eslint-plugin-react": "7.33.2",
         "eslint-plugin-storybook": "0.6.15",
-        "jest-environment-jsdom": "30.0.1",
+        "jest-environment-jsdom": "29.7.0",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "6.2.0",
         "react": "16.14.0",
