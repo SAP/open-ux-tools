@@ -190,7 +190,6 @@ export default class ManualTestCaseReporter implements Reporter {
         // write the consolidated test -> project config mapping JSON
         try {
             const outPath = join(process.cwd(), 'test-project-map.json');
-            // Ensure a stable, serializable object - clone to avoid accidental references
             const toWrite = JSON.parse(JSON.stringify(this.projectConfigMap ?? {}));
             await writeFile(outPath, JSON.stringify(toWrite, null, 2), { encoding: 'utf-8' });
             console.log(`Project config map written to ${outPath}`);
