@@ -560,7 +560,7 @@ export class FlpSandbox {
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
-                this.logger.error(error);
+                this.logger.debug(error);
             }
         }
         if (!version) {
