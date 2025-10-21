@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.5
+
+### Patch Changes
+
+-   06bc541: Check Transformations for Analytical default table.
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+
 ## 2.9.4
 
 ### Patch Changes
