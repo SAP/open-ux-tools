@@ -59,7 +59,7 @@
     "devDependencies": {
         "@jest/types": "30.0.1",
         "@types/fs-extra": "9.0.13",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.12",
         "@types/vscode": "1.73.1",
         "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@types/yeoman-environment": "2.10.11",

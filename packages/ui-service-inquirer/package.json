@@ -48,7 +48,7 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.12",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-test": "4.0.6",

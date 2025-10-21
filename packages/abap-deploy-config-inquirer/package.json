@@ -45,7 +45,7 @@
     },
     "devDependencies": {
         "axios": "1.12.2",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.12",
         "@types/inquirer-autocomplete-prompt": "2.0.2"
     }
 }

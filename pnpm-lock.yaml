@@ -262,8 +262,8 @@ importers:
         specifier: 8.4.2
         version: 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.6.2)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -386,8 +386,8 @@ importers:
         version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -557,8 +557,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/vscode':
         specifier: 1.73.1
         version: 1.73.1
@@ -675,8 +675,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -1089,8 +1089,8 @@ importers:
         specifier: 3.2.2
         version: 3.2.2
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -1147,8 +1147,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -1461,8 +1461,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1507,8 +1507,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1583,8 +1583,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -1803,8 +1803,8 @@ importers:
         specifier: 3.1.2
         version: 3.1.2
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2003,8 +2003,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2405,8 +2405,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2460,8 +2460,8 @@ importers:
         specifier: workspace:*
         version: link:../nodejs-utils
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2566,8 +2566,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/uuid':
         specifier: 10.0.0
         version: 10.0.0
@@ -2693,8 +2693,8 @@ importers:
         specifier: 0.13.0
         version: 0.13.0
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -3020,8 +3020,8 @@ importers:
         specifier: 0.13.0
         version: 0.13.0
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -3468,8 +3468,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -3847,8 +3847,8 @@ importers:
         specifier: 12.1.5
         version: 12.1.5(react-dom@16.14.0)(react@16.14.0)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/react':
         specifier: 16.14.55
         version: 16.14.55
@@ -3956,8 +3956,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -4108,8 +4108,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -4256,8 +4256,8 @@ importers:
         version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
@@ -4281,8 +4281,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.12
+        version: 8.2.12
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.11.9)
@@ -10473,7 +10473,14 @@ packages:
   /@types/inquirer-autocomplete-prompt@2.0.2:
     resolution: {integrity: sha512-Y7RM1dY3KVg11JnFkaQkTT+2Cgmn9K8De/VtrTT2a5grGIoMfkQuYM5Sss+65oiuqg1h1cTsKHG8pkoPsASdbQ==}
     dependencies:
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.12
+    dev: true
+
+  /@types/inquirer@8.2.12:
+    resolution: {integrity: sha512-YxURZF2ZsSjU5TAe06tW0M3sL4UI9AMPA6dd8I72uOtppzNafcY38xkYgCZ/vsVOAyNdzHmvtTpLWilOrbP0dQ==}
+    dependencies:
+      '@types/through': 0.0.30
+      rxjs: 7.8.2
     dev: true
 
   /@types/inquirer@8.2.6:
@@ -10923,7 +10930,7 @@ packages:
     resolution: {integrity: sha512-kIDgoiuPnL9HGHwa2t6h4FiUgYFb411/okY0nKhRKw+IMsRxMOWzQUFhZ/CKQvwXvKoCjFTj+MZI2KXAKxVmug==}
     dependencies:
       '@types/diff': 5.0.9
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.12
       '@types/mem-fs': 1.1.2
       '@types/node': 18.11.9
       '@types/text-table': 0.2.2
@@ -10966,7 +10973,7 @@ packages:
     dependencies:
       '@types/debug': 4.1.12
       '@types/ejs': 3.1.2
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.12
       '@types/mem-fs-editor': 7.0.1
       '@types/node': 18.11.9
       '@types/yeoman-environment': 2.10.11
