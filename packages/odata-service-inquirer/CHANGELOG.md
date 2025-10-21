@@ -1,5 +1,41 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.4
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/project-input-validator@0.6.27
+    -   @sap-ux/telemetry@0.6.31
+    -   @sap-ux/inquirer-common@0.8.3
+
+## 2.9.3
+
+### Patch Changes
+
+-   7b89529: Fix for existing system url/client validation shown in wrong prompt (abap-on-prem)
+
+## 2.9.2
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/fiori-generator-shared@0.13.25
+    -   @sap-ux/telemetry@0.6.30
+    -   @sap-ux/inquirer-common@0.8.2
+
+## 2.9.1
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/inquirer-common@0.8.1
+
 ## 2.9.0
 
 ### Minor Changes
