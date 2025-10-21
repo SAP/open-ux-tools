@@ -13,7 +13,7 @@ export const mockTargetSystems = [
         client: '102',
         userDisplayName: 'mockUser2',
         authenticationType: AuthenticationType.ReentranceTicket,
-        systemType: 'ABAPCloud'
+        systemType: 'AbapCloud'
     },
     {
         name: 'target3',

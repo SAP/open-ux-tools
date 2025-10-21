@@ -1,5 +1,79 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.42
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/annotation-generator@0.3.70
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/cap-config-writer@0.12.17
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/launch-config@0.10.30
+    -   @sap-ux/odata-service-inquirer@2.9.4
+    -   @sap-ux/odata-service-writer@0.27.26
+    -   @sap-ux/telemetry@0.6.31
+    -   @sap-ux/ui5-application-inquirer@0.15.23
+    -   @sap-ux/fiori-elements-writer@2.7.27
+    -   @sap-ux/fiori-freestyle-writer@2.4.54
+
+## 0.7.41
+
+### Patch Changes
+
+-   Updated dependencies [7b89529]
+    -   @sap-ux/odata-service-inquirer@2.9.3
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/fiori-generator-shared@0.13.25
+    -   @sap-ux/odata-service-inquirer@2.9.2
+    -   @sap-ux/telemetry@0.6.30
+    -   @sap-ux/cap-config-writer@0.12.16
+    -   @sap-ux/fiori-elements-writer@2.7.26
+    -   @sap-ux/fiori-freestyle-writer@2.4.53
+    -   @sap-ux/ui5-application-inquirer@0.15.22
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/cap-config-writer@0.12.15
+    -   @sap-ux/fiori-elements-writer@2.7.25
+    -   @sap-ux/fiori-freestyle-writer@2.4.52
+    -   @sap-ux/odata-service-inquirer@2.9.1
+    -   @sap-ux/ui5-application-inquirer@0.15.21
+
+## 0.7.38
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/odata-service-inquirer@2.9.0
+    -   @sap-ux/ui5-application-inquirer@0.15.20
+
+## 0.7.37
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.7.24
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.36
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.69
+-   @sap-ux/fiori-elements-writer@2.7.23
+-   @sap-ux/odata-service-inquirer@2.8.13
+
 ## 0.7.35
 
 ### Patch Changes

@@ -299,17 +299,6 @@ function getInboundChangeContentWithNewInboundID(
         ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
-    content.inbound[flpConfiguration.inboundId].signature.parameters['sap-appvar-id'] = {
-        required: true,
-        filter: {
-            value: appId,
-            format: 'plain'
-        },
-        launcherValue: {
-            value: appId
-        }
-    };
-
     return content;
 }
 

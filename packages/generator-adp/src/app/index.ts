@@ -190,7 +190,9 @@ export default class extends Generator {
         this.options = opts;
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
-        this.isExtensionInstalled = isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
+        this.isExtensionInstalled = isInternalFeaturesSettingEnabled()
+            ? isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext')
+            : false;
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);

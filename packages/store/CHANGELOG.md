@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.2.1
+
+### Patch Changes
+
+-   f8c596d: Reverts removal of @sensitiveData for service keys property of backend systems
+
 ## 1.2.0
 
 ### Minor Changes

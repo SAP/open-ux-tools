@@ -69,7 +69,7 @@ The following rules help guide the LLM to use the server correctly:
 - When creating sample data in CSV files, all primary keys and foreign keys MUST be in UUID format (e.g., `550e8400-e29b-41d4-a716-446655440001`).
 - When generating or modifying the SAP Fiori elements application on top of the CAP service use the Fiori MCP server if available.
 - When attempting to modify the SAP Fiori elements application like adding columns you must not use the screen personalization but instead modify the code of the project, before this first check whether an MCP server provides a suitable function.
-- When previewing the SAP Fiori elements application use the most specific script for the app in the `package.json`.
+- When previewing the SAP Fiori elements application use the most specific `npm run watch-*` script for the app in the `package.json`.
 ```
 
 Add these rules to your existing global or project-specific [`AGENTS.md`](https://agents.md/) (specifics may vary based on respective MCP client).
@@ -99,6 +99,37 @@ Gets the required parameters and detailed information for a specific functionali
 
 #### `execute_functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
+
+
+## [Telemetry](#telemetry)
+
+You can enable and disable the collection of analytics. By default, non-personally identifiable information is used to help understand how you use the product to improve the Fiori MCP Server. In case you want to opt-out there exist two ways to disable the telemetry.
+
+### Method 1: Configuration File
+
+Create or change the file `~/.fioritools/telemetrysettings.json`:
+
+```json
+{
+  "telemetrysettings": {
+    "telemetrySetting": {
+      "enableTelemetry": false
+    }
+  }
+}
+```
+
+Set `enableTelemetry` to `false` to disable telemetry collection.
+
+### Method 2: Environment Variable
+
+Set the environment variable `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` to `true`:
+
+```bash
+export SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true
+```
+
+Setting this environment variable will disable the telemetry client.
 
 ## Code of Conduct
 
