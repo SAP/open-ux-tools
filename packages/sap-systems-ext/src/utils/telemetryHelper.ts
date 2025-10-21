@@ -23,7 +23,6 @@ export interface TelemetryData {
  */
 export abstract class TelemetryHelper {
     private static _telemetryData: TelemetryData;
-    private static _previousEventTimestamp: number;
 
     /**
      * Returns the telemetry data.
@@ -60,19 +59,11 @@ export abstract class TelemetryHelper {
      * Creates telemetry data and adds default telemetry props.
      *
      * @param additionalData - set additional properties to be reported by telemetry
-     * @param filterDups - filters duplicates by returning undefined if it's suspected to be a repeated event based on previous telemetry data & timestamp (1 second)
      * @returns telemetry data
      */
     public static createTelemetryData<T extends TelemetryProperties>(
-        additionalData?: Partial<T>,
-        filterDups = false
+        additionalData?: Partial<T>
     ): TelemetryData | undefined {
-        const currentTimestamp = Date.now();
-        if (!this._previousEventTimestamp) {
-            filterDups = false; // can't filter duplicates if no previous event timestamp
-            this._previousEventTimestamp = currentTimestamp;
-        }
-
         if (!this._telemetryData) {
             let osVersionName = t('telemetry.unknownOs');
             try {
@@ -81,20 +72,11 @@ export abstract class TelemetryHelper {
                 // no matched os name, possible beta or unreleased version
             }
             this._telemetryData = {
-                Platform: 'VSCode',
+                Platform: 'VSCode', // only VSCode is supported
                 OperatingSystem: osVersionName
             };
         }
-        if (filterDups) {
-            const newTelemData = { ...this._telemetryData, ...additionalData };
-            if (
-                Math.abs(this._previousEventTimestamp - currentTimestamp) < 1000 &&
-                JSON.stringify(newTelemData) === JSON.stringify(this._telemetryData)
-            ) {
-                return undefined;
-            }
-        }
-        this._previousEventTimestamp = currentTimestamp;
+
         this._telemetryData = Object.assign(this._telemetryData, additionalData);
 
         return this._telemetryData;
