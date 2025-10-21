@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.2.5
+
+### Patch Changes
+
+-   8b7171e: chore: readme update - how to disable telemetry
+
 ## 0.2.4
 
 ### Patch Changes
