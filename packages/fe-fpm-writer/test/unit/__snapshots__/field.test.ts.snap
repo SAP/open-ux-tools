@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CustomField with fragmentFile 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomFieldFragment",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField with fragmentFile 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"NewCustomField\\" />
+</core:FragmentDefinition>"
+`;
