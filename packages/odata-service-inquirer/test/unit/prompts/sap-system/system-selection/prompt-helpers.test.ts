@@ -1,7 +1,7 @@
 import { listDestinations } from '@sap-ux/btp-utils';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
+import type { BackendSystemSelection } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import {
-    BackendSystemSelection,
     CfAbapEnvServiceChoice,
     createSystemChoices,
     findDefaultSystemSelectionIndex,

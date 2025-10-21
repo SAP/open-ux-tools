@@ -50,7 +50,7 @@ jest.mock('@sap-ux/store', () => ({
                     systemType: 'BTP'
                 }
             ];
-            return Promise.resolve(systems.find(s => s.url === key.url));
+            return Promise.resolve(systems.find((s) => s.url === key.url));
         })
     }))
 }));
