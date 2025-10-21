@@ -9,14 +9,14 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Enable Variant Management in Tables`
-7. Click on button `Save and Reload`
-8. Check `Save` button is disabled
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Enable Variant Management in Tables` in the Quick Actions Panel
+7. Click `Save and Reload` button in the toolBar
+8. Check `Save` button in the toolbar is disabled
 9. Verify changes:
 
 **Change(s)**

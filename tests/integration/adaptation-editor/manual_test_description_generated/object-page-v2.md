@@ -16,14 +16,14 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Enable Empty Row Mode for Tables`
-7. Click on button `Save and Reload`
-8. Check `Save` button is disabled
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Enable Empty Row Mode for Tables` in the Quick Actions Panel
+7. Click `Save and Reload` button in the toolBar
+8. Check `Save` button in the toolbar is disabled
 9. Verify changes:
 
 **Change(s)**
@@ -53,17 +53,17 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Change Table Actions`
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Change Table Actions` in the Quick Actions Panel
 7. Check `SearchField - fiori.elements.v2.0::sap.suite.ui.generic.template.ObjectPage.view.Details::RootEntity--toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection::Table::Toolbar::SearchField, Button - Create, Button - Delete` exist in the `Rearrange Toolbar Content` dialog
 8. Hover over row `1` and click on Move down button in the row of `Rearrange Toolbar Content` table
 9. Check `Button - Create, SearchField - fiori.elements.v2.0::sap.suite.ui.generic.template.ObjectPage.view.Details::RootEntity--toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection::Table::Toolbar::SearchField, Button - Delete` exist in the `Rearrange Toolbar Content` dialog
 10. Click on `OK` button of the dialog `Rearrange Toolbar Content`
-11. Click on button `Save`
+11. Click `Save` button in the toolBar
 12. Check saved changes stack contains `1` `Toolbar Content Move Change` change(s)
 
 ---
@@ -73,14 +73,14 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
-4. Click on button `UI Adaptation`
-5. Click on button `Add Controller to Page`
-6. Fill `Controller Name` field with `TestController` in dialog `Extend With Controller`
-7. Click on `Create` button in dialog `Extend With Controller`
-8. Click on button `Save`
+4. Click `UI Adaptation` button in the toolBar
+5. Click `Add Controller to Page` in the Quick Actions Panel
+6. Fill `Controller Name` field with `TestController` in the dialog `Extend With Controller`
+7. Click on `Create` button in the dialog `Extend With Controller`
+8. Click `Save` button in the toolBar
 9. Verify changes:
 
 **Coding**
@@ -103,8 +103,8 @@
 ```
 
 
-10. Click on link `Reload`
-11. Click on button `Show Page Controller`
+10. Click `Reload` link in the Changes Panel
+11. Click `Show Page Controller` in the Quick Actions Panel
 12. Check file name `adp.fiori.elements.v2/changes/coding/TestController.js` is visible in dialog
 13. Check `Open in VS Code` button visible in dialog.
 
@@ -115,15 +115,15 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
-4. Click on button `UI Adaptation`
-5. Click on button `Add Custom Table Action`
-6. Fill `Fragment Name` field with `op-table-action` in dialog `Add Custom Table Action`
-7. Click on `Create` button in dialog `Add Custom Table Action`
-8. Click on button `Save and Reload`
-9. Check `Save` button is disabled
+4. Click `UI Adaptation` button in the toolBar
+5. Click `Add Custom Table Action` in the Quick Actions Panel
+6. Fill `Fragment Name` field with `op-table-action` in the dialog `Add Custom Table Action`
+7. Click on `Create` button in the dialog `Add Custom Table Action`
+8. Click `Save and Reload` button in the toolBar
+9. Check `Save` button in the toolbar is disabled
 10. Verify changes:
 
 **Fragment(s)**
@@ -159,12 +159,12 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Change Table Columns`
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Change Table Columns` in the Quick Actions Panel
 7. Check `String Property, Date Property` exist in the `View Settings` dialog
 
 ---
@@ -174,17 +174,17 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Add Custom Table Column`
-7. Fill `Column Fragment Name` field with `table-column` in dialog `Add Custom Table Column`
-8. Fill `Cell Fragment Name` field with `table-cell` in dialog `Add Custom Table Column`
-9. Click on `Create` button in dialog `Add Custom Table Column`
-10. Click on button `Save and Reload`
-11. Check `Save` button is disabled
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Add Custom Table Column` in the Quick Actions Panel
+7. Fill `Column Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
+8. Fill `Cell Fragment Name` field with `table-cell` in the dialog `Add Custom Table Column`
+9. Click on `Create` button in the dialog `Add Custom Table Column`
+10. Click `Save and Reload` button in the toolBar
+11. Check `Save` button in the toolbar is disabled
 12. Verify changes:
 
 **Fragment(s)**
@@ -254,16 +254,16 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Add Header Field`
-7. Fill `Fragment Name` field with `op-header-field` in dialog `Add Header Field`
-8. Click on `Create` button in dialog `Add Header Field`
-9. Click on button `Save and Reload`
-10. Check `Save` button is disabled
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Add Header Field` in the Quick Actions Panel
+7. Fill `Fragment Name` field with `op-header-field` in the dialog `Add Header Field`
+8. Click on `Create` button in the dialog `Add Header Field`
+9. Click `Save and Reload` button in the toolBar
+10. Check `Save` button in the toolbar is disabled
 11. Verify changes:
 
 **Fragment(s)**
@@ -304,16 +304,16 @@
 
 ### Steps
 
-1. Check that UIAdaptation mode is enabled
-2. Click on button `Navigation`
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
-5. Click on button `UI Adaptation`
-6. Click on button `Add Custom Section`
-7. Fill `Fragment Name` field with `op-section` in dialog `Add Custom Section`
-8. Click on `Create` button in dialog `Add Custom Section`
-9. Click on button `Save and Reload`
-10. Check `Save` button is disabled
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Add Custom Section` in the Quick Actions Panel
+7. Fill `Fragment Name` field with `op-section` in the dialog `Add Custom Section`
+8. Click on `Create` button in the dialog `Add Custom Section`
+9. Click `Save and Reload` button in the toolBar
+10. Check `Save` button in the toolbar is disabled
 11. Verify changes:
 
 **Fragment(s)**

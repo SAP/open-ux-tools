@@ -13,11 +13,11 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
         const editor = new AdaptationEditorShell(page, ui5Version);
 
         await editor.reloadCompleted();
-        await expect(lr.clearButton, `Check \`Clear\` Button is hidden`).toBeHidden();
+        await expect(lr.clearButton, `Check \`Clear\` Button in the List Report filter bar is hidden`).toBeHidden();
 
         await editor.quickActions.enableClearButton.click();
 
-        await expect(lr.clearButton, `Check \`Clear\` Button is visible`).toBeVisible();
+        await expect(lr.clearButton, `Check \`Clear\` Button in the List Report filter bar is visible`).toBeVisible();
 
         await editor.toolbar.saveButton.click();
 
@@ -34,7 +34,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
 
         await editor.quickActions.disableClearButton.click();
 
-        await expect(lr.clearButton, `Check \`Clear\` Button is hidden`).toBeHidden();
+        await expect(lr.clearButton, `Check \`Clear\` Button in the List Report filter bar is hidden`).toBeHidden();
         await editor.toolbar.saveButton.click();
 
         await editor.toolbar.isDisabled();

@@ -26,7 +26,7 @@ export class ListReport {
      * @returns Locator for the "Clear" button.
      */
     get clearButton(): Locator {
-        return this.frame.getByRole('button', { name: 'Clear' });
+        return this.frame.getByRole('button', { name: 'Clear' }).describe('Clear button in the List Report filter bar');
     }
     /**
      * Returns a locator for the specified table row in the List Report.
@@ -182,118 +182,153 @@ export class TableSettings {
  */
 class QuickActionPanel {
     private readonly page: Page;
-
+    private readonly context: string = `Quick Actions Panel`;
     /**
      * @returns Locator for the button to add a controller to the page.
      */
     get addControllerToPage(): Locator {
-        return this.page.getByRole('button', { name: 'Add Controller to Page' });
+        return this.page
+            .getByRole('button', { name: 'Add Controller to Page' })
+            .describe('`Add Controller to Page` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to show the page controller.
      */
     get showPageController(): Locator {
-        return this.page.getByRole('button', { name: 'Show Page Controller' });
+        return this.page
+            .getByRole('button', { name: 'Show Page Controller' })
+            .describe('`Show Page Controller` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to show the local annotation file.
      */
     get showLocalAnnotationFile(): Locator {
-        return this.page.getByRole('button', { name: 'Show Local Annotation File' });
+        return this.page
+            .getByRole('button', { name: 'Show Local Annotation File' })
+            .describe('`Show Local Annotation File` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to enable the "Clear" button in the filter bar.
      */
     get enableClearButton(): Locator {
-        return this.page.getByRole('button', { name: `Enable "Clear" Button in Filter Bar` });
+        return this.page
+            .getByRole('button', { name: `Enable "Clear" Button in Filter Bar` })
+            .describe('`Enable "Clear" Button in Filter Bar`in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to disable the "Clear" button in the filter bar.
      */
     get disableClearButton(): Locator {
-        return this.page.getByRole('button', { name: 'Disable "Clear" Button in Filter Bar' });
+        return this.page
+            .getByRole('button', { name: 'Disable "Clear" Button in Filter Bar' })
+            .describe('`Disable "Clear" Button in Filter Bar` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to enable the semantic date range in the filter bar.
      */
     get enableSemanticDateRange(): Locator {
-        return this.page.getByRole('button', { name: 'Enable Semantic Date Range in Filter Bar' });
+        this.page.getByTestId('btn-sub').describe('Subscribe button');
+        return this.page
+            .getByRole('button', { name: 'Enable Semantic Date Range in Filter Bar' })
+            .describe('`Enable Semantic Date Range in Filter Bar` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to disable the semantic date range in the filter bar.
      */
     get disableSemanticDateRange(): Locator {
-        return this.page.getByRole('button', { name: 'Disable Semantic Date Range in Filter Bar' });
+        return this.page
+            .getByRole('button', { name: 'Disable Semantic Date Range in Filter Bar' })
+            .describe('`Disable Semantic Date Range in Filter Bar` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to change table columns.
      */
     get changeTableColumns(): Locator {
-        return this.page.getByRole('button', { name: 'Change Table Columns' });
+        return this.page
+            .getByRole('button', { name: 'Change Table Columns' })
+            .describe('`Change Table Columns` in the Quick Actions Panel');
     }
     /**
      * @returns Locator for the button to change Table Actions.
      */
     get changeTableActions(): Locator {
-        return this.page.getByRole('button', { name: 'Change Table Actions' });
+        return this.page
+            .getByRole('button', { name: 'Change Table Actions' })
+            .describe('`Change Table Actions` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to add a custom table action.
      */
     get addCustomTableAction(): Locator {
-        return this.page.getByRole('button', { name: 'Add Custom Table Action' });
+        return this.page
+            .getByRole('button', { name: 'Add Custom Table Action' })
+            .describe('`Add Custom Table Action` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to add a custom table column.
      */
     get addCustomTableColumn(): Locator {
-        return this.page.getByRole('button', { name: 'Add Custom Table Column' });
+        return this.page
+            .getByRole('button', { name: 'Add Custom Table Column' })
+            .describe('`Add Custom Table Column` in the Quick Actions Panel');
     }
 
     /**
      * @returns Locator for the button to enable variant management in tables and charts.
      */
     get enableVariantManagementInTablesAndCharts(): Locator {
-        return this.page.getByRole('button', { name: 'Enable Variant Management in Tables and Charts' });
+        return this.page
+            .getByRole('button', { name: 'Enable Variant Management in Tables and Charts' })
+            .describe('`Enable Variant Management in Tables and Charts` in the Quick Actions Panel');
     }
     /**
      * @returns Locator for the button to enable variant management in tables.
      */
     get enableOPVariantManagementInTable(): Locator {
-        return this.page.getByRole('button', { name: 'Enable Variant Management in Tables' });
+        return this.page
+            .getByRole('button', { name: 'Enable Variant Management in Tables' })
+            .describe('`Enable Variant Management in Tables` in the Quick Actions Panel');
     }
     /**
      * @returns Locator for the button to enable empty row mode for tables.
      */
     get enableEmptyRowMode(): Locator {
-        return this.page.getByRole('button', { name: 'Enable Empty Row Mode for Tables' });
+        return this.page
+            .getByRole('button', { name: 'Enable Empty Row Mode for Tables' })
+            .describe('`Enable Empty Row Mode for Tables` in the Quick Actions Panel');
     }
     /**
      * @returns Locator for the button to Add Header Field.
      */
     get addHeaderField(): Locator {
-        return this.page.getByRole('button', { name: 'Add Header Field' });
+        return this.page
+            .getByRole('button', { name: 'Add Header Field' })
+            .describe('`Add Header Field` in the Quick Actions Panel');
     }
     /**
      * @returns Locator for the button to Add Custom Section.
      */
     get addCustomSection(): Locator {
-        return this.page.getByRole('button', { name: 'Add Custom Section' });
+        return this.page
+            .getByRole('button', { name: 'Add Custom Section' })
+            .describe('`Add Custom Section` in the Quick Actions Panel');
     }
     /**
      * @returns Locator for the button to Add Local Annotation File.
      */
     get addLocalAnnotationFile(): Locator {
-        return this.page.getByRole('button', { name: 'Add Local Annotation File' });
+        return this.page
+            .getByRole('button', { name: 'Add Local Annotation File' })
+            .describe('`Add Local Annotation File` in the Quick Actions Panel');
     }
 
     /**
@@ -314,25 +349,29 @@ class Toolbar {
      * @returns Locator for the "Save" button.
      */
     get saveButton(): Locator {
-        return this.page.getByRole('button', { name: 'Save' });
+        return this.page.getByRole('button', { name: 'Save' }).describe('`Save` button in the toolBar');
     }
     /**
      * @returns Locator for the "Save and Reload" button.
      */
     get saveAndReloadButton(): Locator {
-        return this.page.getByRole('button', { name: 'Save and Reload' });
+        return this.page
+            .getByRole('button', { name: 'Save and Reload' })
+            .describe('`Save and Reload` button in the toolBar');
     }
     /**
      * @returns Locator for the "UI Adaptation" mode button.
      */
     get uiAdaptationModeButton(): Locator {
-        return this.page.getByRole('button', { name: 'UI Adaptation' });
+        return this.page
+            .getByRole('button', { name: 'UI Adaptation' })
+            .describe('`UI Adaptation` button in the toolBar');
     }
     /**
      * @returns Locator for the "Navigation" mode button.
      */
     get navigationModeButton(): Locator {
-        return this.page.getByRole('button', { name: 'Navigation' });
+        return this.page.getByRole('button', { name: 'Navigation' }).describe('`Navigation` button in the toolBar');
     }
 
     /**
@@ -341,7 +380,7 @@ class Toolbar {
      * @returns Promise that resolves when the "Save" button is verified to be disabled.
      */
     async isDisabled(): Promise<void> {
-        return await expect(this.saveButton, `Check \`Save\` button is disabled`).toBeDisabled();
+        return await expect(this.saveButton, `Check \`Save\` button in the toolbar is disabled`).toBeDisabled();
     }
 
     /**
@@ -360,7 +399,7 @@ class ChangesPanel {
      * @returns Locator for the "Reload" button.
      */
     get reloadButton(): Locator {
-        return this.page.getByRole('link', { name: 'Reload' });
+        return this.page.getByRole('link', { name: 'Reload' }).describe('`Reload` link in the Changes Panel');
     }
     /**
      * @param page - Page object for the Changes Panel.
@@ -449,7 +488,7 @@ export class AdpDialog {
      */
     async fillField(fieldName: string, value: string): Promise<void> {
         const title = await this.getName();
-        await test.step(`Fill \`${fieldName}\` field with \`${value}\` in dialog \`${title}\``, async () => {
+        await test.step(`Fill \`${fieldName}\` field with \`${value}\` in the dialog \`${title}\``, async () => {
             const field = this.frame.getByRole('textbox', { name: fieldName });
             await field.fill(value);
         });
@@ -457,7 +496,7 @@ export class AdpDialog {
 
     async clickCreateButton(): Promise<void> {
         const title = await this.getName();
-        await test.step(`Click on \`Create\` button in dialog \`${title}\``, async () => {
+        await test.step(`Click on \`Create\` button in the dialog \`${title}\``, async () => {
             await this.createButton.click();
         });
     }

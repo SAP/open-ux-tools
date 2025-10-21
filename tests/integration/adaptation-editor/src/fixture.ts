@@ -184,7 +184,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         );
         await expect(
             page.getByRole('button', { name: 'UI Adaptation' }),
-            'Check that UIAdaptation mode is enabled'
+            'Check `UIAdaptation` mode in the toolbar is enabled'
         ).toBeEnabled({
             timeout: 15_000
         });
