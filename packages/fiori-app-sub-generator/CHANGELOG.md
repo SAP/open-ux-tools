@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.44
+
+### Patch Changes
+
+-   fbe6acc: Fix for updated systems not saved
+
 ## 0.7.43
 
 ### Patch Changes
