@@ -21,7 +21,7 @@ describe('Test registering the systems commands', () => {
         expect(subs.length).toBe(1);
 
         expect(vscodeCommandsRegisterSpy).toHaveBeenCalledWith(
-            'sap.ux.storedSystens.openOutputChannel',
+            'sap.ux.tools.sapSystems.openOutputChannel',
             expect.any(Function)
         );
     });

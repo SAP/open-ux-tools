@@ -14,7 +14,7 @@ export enum SystemCommands {
  * VSCode command identifiers for extension related actions.
  */
 export enum ExtensionCommands {
-    OpenOutputChannel = 'sap.ux.storedSystens.openOutputChannel'
+    OpenOutputChannel = 'sap.ux.tools.sapSystems.openOutputChannel'
 }
 
 /**

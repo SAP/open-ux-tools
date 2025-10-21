@@ -23,7 +23,7 @@ describe('Test registering commands', () => {
         registerCommands(mockContext);
 
         expect(vscodeCommandsRegisterSpy).toHaveBeenCalledWith(
-            'sap.ux.storedSystens.openOutputChannel',
+            'sap.ux.tools.sapSystems.openOutputChannel',
             expect.any(Function)
         );
         expect(registerSystemViewCommandsSpy).toHaveBeenCalledWith(mockContext);

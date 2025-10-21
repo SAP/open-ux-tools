@@ -9,7 +9,7 @@ import SystemsLogger from '../../utils/logger';
 export function registerExtensionCommands(context: ExtensionContext): void {
     const disposables = [
         // Command to open the output channel for the SAP Systems extension
-        commands.registerCommand('sap.ux.storedSystens.openOutputChannel', () => {
+        commands.registerCommand('sap.ux.tools.sapSystems.openOutputChannel', () => {
             SystemsLogger.show();
         })
     ];

@@ -27,7 +27,7 @@ describe('Test the executeCommands actions', () => {
         const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand');
 
         await openOutputChannel();
-        expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.storedSystens.openOutputChannel');
+        expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems.openOutputChannel');
     });
 
     it('should open the guided answers extension', async () => {
