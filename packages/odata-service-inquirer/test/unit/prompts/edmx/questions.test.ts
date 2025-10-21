@@ -362,12 +362,20 @@ describe('Test entity prompts', () => {
             severity: Severity.information
         });
 
-        // If the user has already selected a table type, return it
+        // If the user has already selected a table type for the same entity, return it
+        // First call establishes the entity
+        (tableType.default as Function)({
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            }
+        });
+        // Second call with same entity and existing table type should preserve user choice
         const prevAnswersWithTableType = {
             [EntityPromptNames.tableType]: 'GridTable',
             [EntityPromptNames.mainEntity]: {
-                entitySetName: 'Customer',
-                entitySetType: 'com.c_salesordermanage_sd_aggregate.Customer'
+                entitySetName: 'SEPMRA_C_PD_Product', // Same entity as above
+                entitySetType: 'SEPMRA_C_PD_ProductType'
             }
         };
         expect((tableType.default as Function)(prevAnswersWithTableType)).toEqual('GridTable');
@@ -384,10 +392,17 @@ describe('Test entity prompts', () => {
         // If no prevAnswers, default to ResponsiveTable
         expect((tableType.default as Function)()).toEqual('ResponsiveTable');
 
-        // For ALP, use AnalyticalTable as default
+        // For ALP with entity that has complete analytical transformations, use AnalyticalTable as default
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'alp', false);
         tableType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
-        expect((tableType.default as Function)({})).toEqual('AnalyticalTable');
+        expect(
+            (tableType.default as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'SalesOrderItem',
+                    entitySetType: 'com.c_salesordermanage_sd_aggregate.SalesOrderItemType'
+                }
+            })
+        ).toEqual('AnalyticalTable');
 
         const hierarchyQualifier = questions.find(
             (question) => question.name === EntityPromptNames.hierarchyQualifier
