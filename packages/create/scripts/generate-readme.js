@@ -1,0 +1,159 @@
+const { execSync } = require('node:child_process');
+const fs = require('node:fs');
+
+/**
+ * Static installation section of the README.
+ */
+const STATIC_INSTALL_SECTION = `# [Installation](#installation)
+
+\`\`\`sh
+npm init @sap-ux@latest
+# or
+npx @sap-ux/create@latest
+\`\`\`
+To avoid downloading and installing the module every time it is used, you might consider installing it globally or add it as \`devDependency\` to a project. Once installed, you can run it using
+
+\`\`\`sh
+# globally installed
+sap-ux
+# locally
+npx sap-ux
+\`\`\`
+
+---
+
+`;
+
+/**
+ * Static basic usage section of the README.
+ */
+const STATIC_USAGE_SECTION = `# [Basic usage](#basic-usage)
+
+\`\`\`sh
+npx sap-ux [command] [sub-command] /path/to/project
+\`\`\`
+\`Note:\` If the project path is not provided, the current working directory will be used.
+
+---
+
+`;
+
+/**
+ * Executes the CLI command to get its JSON specification.
+ *
+ * @returns The parsed JSON specification object.
+ */
+function getJsonSpec() {
+    const output = execSync('node dist/index.js --generateJsonSpec', { encoding: 'utf8' });
+    return JSON.parse(output);
+}
+
+/**
+ * Creates a URL-friendly anchor string from a command path.
+ *
+ * @param commandPath - The array of command names leading to the command.
+ * @returns The anchor string.
+ */
+function generateAnchor(commandPath) {
+    return commandPath.join('-');
+}
+
+/**
+ * Renders the options list for a command into a Markdown bulleted list.
+ *
+ * @param options - The array of option objects.
+ * @returns A Markdown string representing the options.
+ */
+function renderOptions(options) {
+    if (!options || options.length === 0) return '';
+
+    return options.map(opt => {
+        let md = `- \`${opt.name}\``;
+        if (opt.required) md += ' _(required)_';
+        md += ` - ${opt.description}`;
+        if (opt.defaultValue !== undefined) {
+            md += ` _(default: ${JSON.stringify(opt.defaultValue)})_`;
+        }
+        return md;
+    }).join('\n');
+}
+
+/**
+ * Recursively renders a command and all its subcommands.
+ *
+ * @param cmd - The command object from the JSON spec.
+ * @param parentPath - The array of parent command names leading to this command.
+ * @returns An array of Markdown strings for the command and its subcommands.
+ */
+function renderCommandAndSubcommands(cmd, parentPath) {
+    const currentPath = [...parentPath, cmd.name];
+    const fullCommandName = currentPath.join(' ');
+    const anchor = generateAnchor(currentPath);
+
+    let md = `## [\`${fullCommandName}\`](#${anchor})\n\n`;
+    md += `${cmd.description}\n\n`;
+
+    if (cmd.options && cmd.options.length > 0) {
+        md += `**Options:**\n${renderOptions(cmd.options)}\n\n`;
+    }
+
+    const commandDocs = [md];
+    let subCommandDocs = [];
+    const subcommands = cmd.subcommands || [];
+
+    subcommands.forEach(sub => {
+        subCommandDocs = subCommandDocs.concat(
+            renderCommandAndSubcommands(sub, currentPath)
+        );
+    });
+
+    return commandDocs.concat(subCommandDocs);
+}
+
+/**
+ * Generates the full README content from the CLI specification.
+ *
+ * @param spec - The JSON specification object.
+ * @returns The complete README content as a Markdown string.
+ */
+function generateReadme(spec) {
+    // --- 1. Header ---
+    let md = `# \`@sap-ux/create\` CLI Reference\n\n`;
+    md += `${spec.description}\n\n`;
+
+    // --- 2. Static Installation Section ---
+    md += STATIC_INSTALL_SECTION;
+
+    // --- 3. Static Basic Usage Section ---
+    md += STATIC_USAGE_SECTION;
+
+    // --- 4. Generated Commands Section ---
+    md += `# [Commands](#commands)\n\n`;
+
+    let allCommandDocs = [];
+    const rootPath = [spec.name];
+    const topLevelCommands = spec.commands || spec.subcommands || [];
+
+    topLevelCommands.forEach(cmd => {
+        allCommandDocs = allCommandDocs.concat(
+            renderCommandAndSubcommands(cmd, rootPath)
+        );
+    });
+
+    md += allCommandDocs.join('---\n\n');
+
+    return md;
+}
+
+// Main execution
+try {
+    const spec = getJsonSpec();
+    const readme = generateReadme(spec);
+    fs.writeFileSync('README.md', readme, 'utf8');
+    console.log('✅ README.md generated successfully.');
+} catch (error) {
+    console.error('❌ Failed to generate README:', error.message);
+    if (error.stdout) {
+        console.error('CLI Output:', error.stdout);
+    }
+}
