@@ -192,7 +192,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                             'table-action.fragment.xml': expect.stringMatching(
                                 new RegExp(`<!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- add your xml here -->
     <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
 </core:FragmentDefinition>
 `)
@@ -251,14 +251,14 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                         fragments: expect.objectContaining({
                             'table-cell.fragment.xml': expect.stringMatching(
                                 new RegExp(`<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- add your xml here -->
     <Text id="cell-text-[a-z0-9]+" text="Sample data" />
 </core:FragmentDefinition>`)
                             ),
                             'table-column.fragment.xml': expect.stringMatching(
                                 new RegExp(`<!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- add your xml here -->
      <Column id="column-[a-z0-9]+"
         width="12em"
         hAlign="Left"
