@@ -43,6 +43,8 @@
       }
     },
     "sap.ui5": {
+      "async": true,
+      "manifestFirst": true,
       "flexEnabled": true,
       "dependencies": {
         "minUI5Version": "1.71.0",
@@ -50,7 +52,9 @@
           "sap.m": {},
           "sap.ui.core": {},
           "sap.ushell": {},
-          "sap.fe.templates": {}
+          "sap.fe.templates": {},
+          "sap.fe.macros": {},
+          "sap.ui.mdc": {}
         }
       },
       "contentDensities": {

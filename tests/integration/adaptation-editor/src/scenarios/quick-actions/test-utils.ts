@@ -51,6 +51,7 @@ export class ListReport {
  */
 export class TableSettings {
     private readonly frame: FrameLocator;
+    private feVersion: 'fev2' | 'fev4';
     /**
      * @returns Locator for the dialog containing table settings.
      */
@@ -67,6 +68,9 @@ export class TableSettings {
      * @returns Locator for the table settings dialog.
      */
     get actionSettingsDialog(): Locator {
+        if (this.feVersion === 'fev4') {
+            return this.frame.getByRole('dialog', { name: 'Toolbar Configuration' });
+        }
         return this.frame.getByLabel('Rearrange Toolbar Content');
     }
     /**
@@ -81,6 +85,25 @@ export class TableSettings {
      * @returns {Promise<string[]>} An array of visible texts from the first column.
      */
     async getActionSettingsTexts(): Promise<string[]> {
+        if (this.feVersion === 'fev4') {
+            const rows = this.actionSettingsDialog.locator('tbody > tr');
+            const count = await rows.count();
+            const texts: string[] = [];
+            for (let i = 0; i < count; i++) {
+                const row = rows.nth(i);
+                // skip group/header rows
+                const roleDesc = await row.getAttribute('aria-roledescription');
+                if (roleDesc === 'Group Row') {
+                    continue;
+                }
+                const bdi = row.locator('bdi');
+                if ((await bdi.count()) === 0) {
+                    continue;
+                }
+                texts.push((await bdi.first().innerText()).trim());
+            }
+            return texts;
+        }
         const rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
         const count = await rows.count();
         const texts: string[] = [];
@@ -96,9 +119,16 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move up.
      */
     async moveActionUp(index: number): Promise<void> {
-        const rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
-        await rows.nth(index).hover();
-        await rows.nth(index).getByRole('button', { name: 'Move Up' }).click();
+        let rows;
+        let modifiedIndex = index;
+        if (this.feVersion === 'fev4') {
+            modifiedIndex = index + 1; // adjust for header row
+            rows = this.actionSettingsDialog.locator('tbody > tr');
+        } else {
+            rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        }
+        await rows.nth(modifiedIndex).hover();
+        await rows.nth(modifiedIndex).getByRole('button', { name: 'Move Up' }).click();
     }
     /**
      * Moves an action down by clicking the "Move Down" button in the specified row.
@@ -106,15 +136,23 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move down.
      */
     async moveActionDown(index: number): Promise<void> {
-        const rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        let rows;
+        if (this.feVersion === 'fev4') {
+            rows = this.actionSettingsDialog.locator('tbody > tr');
+        } else {
+            rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        }
+
         await rows.nth(index).hover();
         await rows.nth(index).getByRole('button', { name: 'Move Down' }).click();
     }
     /**
      * @param frame - FrameLocator for the dialog.
+     * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
      */
-    constructor(frame: FrameLocator) {
+    constructor(frame: FrameLocator, feVersion: 'fev2' | 'fev4' = 'fev2') {
         this.frame = frame;
+        this.feVersion = feVersion;
     }
 }
 
@@ -235,6 +273,12 @@ class QuickActionPanel {
      */
     get addLocalAnnotationFile(): Locator {
         return this.page.getByRole('button', { name: 'Add Local Annotation File' });
+    }
+    /**
+     * @returns Locator for the button to Add Subpage.
+     */
+    get addSubPage(): Locator {
+        return this.page.getByRole('button', { name: 'Add Subpage' });
     }
 
     /**

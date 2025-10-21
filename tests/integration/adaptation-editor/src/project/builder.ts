@@ -5,7 +5,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import { YamlDocument } from '@sap-ux/yaml';
 import template from './templates/manifest-fe-v2.json';
 import feV4ManifestTemplate from './templates/manifest-fe-v4.json';
-import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V4 } from './projects';
+import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V4, FIORI_ELEMENTS_V4 } from './projects';
 import { existsSync } from 'node:fs';
 
 export interface ProjectParameters {
@@ -107,14 +107,21 @@ export function createV4Manifest(userParameters: ProjectParameters, workerId: st
     result['sap.app'].sourceTemplate!.version = '1.0.0';
     result['sap.app'].sourceTemplate!.toolsId = id;
     const listTarget = `${entitySet}List`;
-
+    const detailTarget = `${entitySet}ObjectPage`;
     result['sap.ui5']!.routing = {
-        config: {},
+        config: {
+            async: true
+        },
         routes: [
             {
                 'pattern': ':?query:',
                 'name': listTarget,
                 'target': listTarget
+            },
+            {
+                'pattern': `${entitySet}({key}):?query:`,
+                'name': detailTarget,
+                'target': detailTarget
             }
         ],
         targets: {
@@ -124,7 +131,26 @@ export function createV4Manifest(userParameters: ProjectParameters, workerId: st
                 name: 'sap.fe.templates.ListReport',
                 options: {
                     settings: {
-                        contextPath: `/${entitySet}`
+                        contextPath: `/${entitySet}`,
+                        navigation: {
+                            [entitySet]: {
+                                detail: {
+                                    route: detailTarget
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            [detailTarget]: {
+                type: 'Component',
+                id: detailTarget,
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        contextPath: `/${entitySet}`,
+                        editableHeaderContent: false,
+                        entitySet: entitySet
                     }
                 }
             }
@@ -216,7 +242,7 @@ export function createPackageJson(id: string): string {
 }
 
 export async function generateFeV4Project(
-    projectConfig: typeof FIORI_ELEMENTS_V2,
+    projectConfig: typeof FIORI_ELEMENTS_V4,
     workerId: string,
     ui5Version: string
 ): Promise<string> {
@@ -242,7 +268,7 @@ export async function generateFeV4Project(
         writeFile(join(root, 'package.json'), createPackageJson(id + workerId)),
         writeFile(join(root, 'webapp', 'manifest.json'), manifestContent),
         writeFile(join(root, 'webapp', 'Component.js'), createV4Component(projectConfig, workerId)),
-        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
+        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service-v4.cds'), 'utf-8')),
         writeFile(
             join(root, 'data', 'RootEntity.json'),
             JSON.stringify(
@@ -476,12 +502,13 @@ export async function generateAdpProject(
     if (existsSync(join(root, 'webapp', 'changes'))) {
         await rm(join(root, 'webapp', 'changes'), { recursive: true });
     }
+    const serviceFileName = projectConfig.baseApp.kind === 'fe-v4' ? 'service-v4.cds' : 'service.cds';
 
     await Promise.all([
         writeFile(join(root, 'ui5.yaml'), yamlContent),
         writeFile(join(root, 'package.json'), createPackageJson(id + '.' + workerId)),
         writeFile(join(root, 'webapp', 'manifest.appdescr_variant'), appDescriptorVariant),
-        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
+        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', serviceFileName), 'utf-8')),
         writeFile(
             join(root, 'data', 'RootEntity.json'),
             JSON.stringify(
