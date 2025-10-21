@@ -108,7 +108,7 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
         });
         const distTags = JSON.parse(distTagsString) as Record<string, string>;
         if ('error' in distTags) {
-            // Loading contains error
+            // Abort writing cache: received error in dist-tags response
             throw new Error(distTagsString);
         }
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
