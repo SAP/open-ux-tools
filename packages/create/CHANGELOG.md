@@ -1,5 +1,46 @@
 # @sap-ux/create
 
+## 0.13.140
+
+### Patch Changes
+
+-   20edaf3: feat: add help description to root level commands
+
+## 0.13.139
+
+### Patch Changes
+
+-   Updated dependencies [233259c]
+    -   @sap-ux/adp-tooling@0.16.7
+    -   @sap-ux/flp-config-inquirer@0.4.42
+    -   @sap-ux/preview-middleware@0.23.30
+    -   @sap-ux/app-config-writer@0.6.46
+
+## 0.13.138
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.32
+-   @sap-ux/adp-tooling@0.16.6
+-   @sap-ux/app-config-writer@0.6.46
+-   @sap-ux/preview-middleware@0.23.29
+-   @sap-ux/system-access@0.6.21
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/flp-config-inquirer@0.4.41
+-   @sap-ux/abap-deploy-config-writer@0.2.23
+-   @sap-ux/cap-config-writer@0.12.16
+
+## 0.13.137
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.31
+-   @sap-ux/cap-config-writer@0.12.15
+-   @sap-ux/flp-config-inquirer@0.4.40
+-   @sap-ux/adp-tooling@0.16.5
+-   @sap-ux/preview-middleware@0.23.28
+-   @sap-ux/app-config-writer@0.6.45
+
 ## 0.13.136
 
 ### Patch Changes

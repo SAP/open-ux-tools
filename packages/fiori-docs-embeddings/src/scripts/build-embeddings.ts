@@ -12,7 +12,6 @@ interface ProgressCallback {
 }
 
 interface EmbeddingConfig {
-    docsPath: string;
     embeddingsPath: string;
     model: string;
     chunkSize: number;
@@ -32,11 +31,6 @@ interface Document {
     lastModified: string;
     wordCount: number;
     excerpt: string;
-}
-
-interface DocumentIndex {
-    totalDocuments: number;
-    documents: Record<string, string>;
 }
 
 interface Chunk {
@@ -100,7 +94,6 @@ class EmbeddingBuilder {
 
     constructor() {
         this.config = {
-            docsPath: './data/docs',
             embeddingsPath: './data/embeddings',
             model: 'Xenova/all-MiniLM-L6-v2',
             chunkSize: 2000, // Much larger chunks to reduce count
@@ -143,27 +136,7 @@ class EmbeddingBuilder {
     }
 
     async loadDocuments(): Promise<void> {
-        this.logger.info('\n📚 Loading documents from filestore...');
-
-        const indexPath = path.join(this.config.docsPath, 'index.json');
-        const index: DocumentIndex = JSON.parse(await fs.readFile(indexPath, 'utf-8'));
-
-        this.logger.info(`Found ${index.totalDocuments} documents in index`);
-
-        for (const [docId, docPath] of Object.entries(index.documents)) {
-            try {
-                const fullPath = path.join(this.config.docsPath, docPath);
-                const docContent = await fs.readFile(fullPath, 'utf-8');
-                const doc: Document = JSON.parse(docContent);
-                this.documents.push(doc);
-            } catch (error) {
-                this.logger.warn(`Failed to load document ${docId}: ${error.message}`);
-            }
-        }
-
-        this.logger.info(`✓ Loaded ${this.documents.length} documents from filestore`);
-
-        // Load local markdown documents from data_local
+        this.logger.info('\n📚 Loading documents...');
         await this.loadLocalDocuments();
     }
 
@@ -172,8 +145,6 @@ class EmbeddingBuilder {
      * These files use -------------------------------- as chunk delimiters.
      */
     async loadLocalDocuments(): Promise<void> {
-        this.logger.info('\n📘 Loading local documents from data_local...');
-
         const dataLocalPath = './data_local';
 
         try {
@@ -186,7 +157,7 @@ class EmbeddingBuilder {
                 await this.processLocalMarkdownFile(dataLocalPath, file);
             }
 
-            this.logger.info(`✓ Loaded local documents (total: ${this.documents.length} documents now)`);
+            this.logger.info(`✓ Loaded ${this.documents.length} documents`);
         } catch (error) {
             this.logger.warn(`Failed to read data_local directory: ${error.message}`);
         }
