@@ -110,13 +110,13 @@ UIAdaptation*.html
 		]
 	},
 	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
+		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.16\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
+		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
+		\\"bestzip\\": \\"^2.2.1\\",
+		\\"rimraf\\": \\"^5.0.5\\"
 	}
 }
 ",
@@ -357,13 +357,13 @@ UIAdaptation*.html
 		]
 	},
 	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
+		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.16\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
+		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
+		\\"bestzip\\": \\"^2.2.1\\",
+		\\"rimraf\\": \\"^5.0.5\\"
 	}
 }
 ",
@@ -609,13 +609,13 @@ UIAdaptation*.html
 		]
 	},
 	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
+		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.16\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
+		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
+		\\"bestzip\\": \\"^2.2.1\\",
+		\\"rimraf\\": \\"^5.0.5\\"
 	}
 }
 ",
@@ -830,13 +830,13 @@ UIAdaptation*.html
 		]
 	},
 	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
+		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.16\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
+		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
+		\\"bestzip\\": \\"^2.2.1\\",
+		\\"rimraf\\": \\"^5.0.5\\"
 	}
 }
 ",
@@ -1113,13 +1113,13 @@ UIAdaptation*.html
 		]
 	},
 	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
+		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.16\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
+		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
+		\\"bestzip\\": \\"^2.2.1\\",
+		\\"rimraf\\": \\"^5.0.5\\"
 	}
 }
 ",
@@ -1339,13 +1339,13 @@ UIAdaptation*.html
 		]
 	},
 	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
+		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.16\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
+		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
+		\\"bestzip\\": \\"^2.2.1\\",
+		\\"rimraf\\": \\"^5.0.5\\"
 	}
 }
 ",
