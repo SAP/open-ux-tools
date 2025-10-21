@@ -36,29 +36,67 @@ describe('getFlexUISupportedSystem', () => {
 });
 
 describe('getSystemUI5Version', () => {
-    it('should return the UI5 version from the service', async () => {
+    it('should return the UI5 version from the new api', async () => {
         const version = '1.135.0';
-        const dummyService = {
+        const nextService = {
             getUI5Version: jest.fn().mockResolvedValue(version)
         };
+        const legacyService = {
+            getUI5Version: jest.fn()
+        };
         const provider = {
-            getAdtService: jest.fn().mockResolvedValue(dummyService)
+            getUI5VersionService: jest.fn().mockReturnValue(nextService),
+            getAdtService: jest.fn().mockResolvedValue(legacyService)
         } as unknown as AbapServiceProvider;
 
         const result = await getSystemUI5Version(provider);
 
+        expect(provider.getUI5VersionService).toHaveBeenCalled();
+        expect(nextService.getUI5Version).toHaveBeenCalled();
+        expect(result).toBe(version);
+
+        expect(provider.getAdtService).not.toHaveBeenCalled();
+        expect(legacyService.getUI5Version).not.toHaveBeenCalled();
+    });
+
+    it('should return the UI5 version from the legacy service when the new api throws', async () => {
+        const version = '1.135.0';
+        const nextApiError = new Error('Failed to retreive UI5 version');
+        const nextService = {
+            getUI5Version: jest.fn().mockRejectedValue(nextApiError)
+        };
+        const legacyService = {
+            getUI5Version: jest.fn().mockResolvedValue(version)
+        };
+        const provider = {
+            getUI5VersionService: jest.fn().mockReturnValue(nextService),
+            getAdtService: jest.fn().mockResolvedValue(legacyService)
+        } as unknown as AbapServiceProvider;
+
+        const result = await getSystemUI5Version(provider);
+
+        expect(provider.getUI5VersionService).toHaveBeenCalled();
+        await expect(nextService.getUI5Version.mock.results[0].value).rejects.toThrow(nextApiError);
+
         expect(provider.getAdtService).toHaveBeenCalledWith(UI5RtVersionService);
-        expect(dummyService.getUI5Version).toHaveBeenCalled();
+        expect(legacyService.getUI5Version).toHaveBeenCalled();
         expect(result).toBe(version);
     });
 
-    it('should return undefined if the service is not available', async () => {
+    it('should return undefined if the legacy service is not available and the new api throws', async () => {
+        const nextApiError = new Error('Failed to retreive UI5 version');
+        const nextService = {
+            getUI5Version: jest.fn().mockRejectedValue(nextApiError)
+        };
         const provider = {
+            getUI5VersionService: jest.fn().mockReturnValue(nextService),
             getAdtService: jest.fn().mockResolvedValue(undefined)
         } as unknown as AbapServiceProvider;
 
         const result = await getSystemUI5Version(provider);
 
+        expect(provider.getUI5VersionService).toHaveBeenCalled();
+        await expect(nextService.getUI5Version.mock.results[0].value).rejects.toThrow(nextApiError);
         expect(result).toBeUndefined();
     });
 });

@@ -44,7 +44,8 @@ export async function getFlexUISupportedSystem(
 }
 
 /**
- * Fetches system UI5 Version from UI5RtVersionService.
+ * Fetches system UI5 Version from the UI5VersionService, if the request throws
+ * fallback to the legacy api introduced in the UI5RtVersionService.
  *
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
  * @returns {string | undefined} System UI5 version.

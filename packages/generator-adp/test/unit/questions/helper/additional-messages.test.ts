@@ -30,7 +30,7 @@ describe('additional-messages', () => {
             const result = getSystemAdditionalMessages({ isOnPremise: false, isUIFlex: false }, false);
             expect(result).toEqual({
                 message: t('error.notDeployableNotFlexEnabledSystemError'),
-                severity: Severity.error
+                severity: Severity.warning
             });
         });
 
