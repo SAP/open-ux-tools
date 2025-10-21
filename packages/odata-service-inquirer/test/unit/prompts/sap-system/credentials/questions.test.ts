@@ -94,6 +94,82 @@ describe('Test credentials prompts', () => {
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
     });
 
+    test('should prefill username from selected backend system if available', async () => {
+        const connectionValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
+        const userNamePrompt = credentialsPrompts.find(
+            (question) => question.name === systemUsernamePromptName
+        ) as InputQuestion;
+
+        const backendSystemWithUsername: BackendSystem = {
+            name: 'http://abap.on.prem:1234',
+            url: 'http://abap.on.prem:1234',
+            username: 'user1',
+            password: 'password1',
+            client: '001'
+        };
+
+        const answersWithBackendSystem = {
+            [promptNames.systemSelection]: {
+                type: 'backendSystem',
+                system: backendSystemWithUsername
+            }
+        };
+
+        expect(userNamePrompt.default?.(answersWithBackendSystem as Record<string, unknown>)).toBe(
+            backendSystemWithUsername.username
+        );
+
+        const backendSystemWithoutUsername: BackendSystem = {
+            name: 'http://abap.on.prem:1234',
+            url: 'http://abap.on.prem:1234',
+            client: '001'
+        };
+
+        const answersWithoutBackendSystem = {
+            [promptNames.systemSelection]: {
+                type: 'backendSystem',
+                system: backendSystemWithoutUsername
+            }
+        };
+
+        expect(userNamePrompt.default?.(answersWithoutBackendSystem as Record<string, unknown>)).toBe('');
+    });
+
+    test('should not prefill username if selected system is not a backend system or username is not available', async () => {
+        const connectionValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
+        const userNamePrompt = credentialsPrompts.find(
+            (question) => question.name === systemUsernamePromptName
+        ) as InputQuestion;
+
+        const answersWithDestination = {
+            [promptNames.systemSelection]: {
+                type: 'destination',
+                system: {
+                    Name: 'dest1',
+                    Host: 'http://dest1.com'
+                } as Destination
+            }
+        };
+
+        expect(userNamePrompt.default?.(answersWithDestination as Record<string, unknown>)).toBe('');
+    });
+
     test('should validate username/password using ConnectionValidator', async () => {
         const connectionValidator = new ConnectionValidator();
         connectionValidatorMock.validity = {
@@ -268,5 +344,47 @@ describe('Test credentials prompts', () => {
                 [newSystemPromptNames.newSystemType]: 'abapOnPrem'
             } as NewSystemAnswers)
         ).toBeUndefined();
+    });
+
+    test('should show additional store information warning about operating system credential storage policies', async () => {
+        const connectionValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.validatedUrl = 'http://abap01:1234';
+        connectionValidatorMock.ignoreCertError = false;
+
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
+        const passwordPrompt = credentialsPrompts.find(
+            (question) => question.name === systemPasswordPromptName
+        ) as PasswordQuestion;
+
+        // Set up a connected system with newOrUpdated flag
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: serviceProviderMock as ServiceProvider,
+            backendSystem: {
+                name: 'test-system',
+                url: 'http://test.system:1234',
+                username: 'testuser',
+                password: 'testpass',
+                client: '001',
+                newOrUpdated: true
+            }
+        };
+
+        // Should show password store warning when system is new or updated
+        expect(passwordPrompt.additionalMessages?.('123')).toEqual({
+            message: t('texts.passwordStoreWarning'),
+            severity: Severity.information
+        });
+
+        // Should not show message when system is not marked as new/updated
+        if (PromptState.odataService.connectedSystem?.backendSystem) {
+            PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = false;
+        }
+        expect(passwordPrompt.additionalMessages?.('123')).toBeUndefined();
     });
 });

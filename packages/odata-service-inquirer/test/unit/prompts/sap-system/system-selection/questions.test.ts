@@ -2,6 +2,7 @@ import type { AbapServiceProvider, ServiceProvider, V2CatalogService, V4CatalogS
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { WebIDEAdditionalData, WebIDEUsage } from '@sap-ux/btp-utils';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { SystemService, BackendSystem } from '@sap-ux/store';
@@ -23,7 +24,6 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -36,6 +36,13 @@ const backendSystemBasic: BackendSystem = {
     username: 'user1',
     password: 'password1',
     systemType: 'OnPrem'
+};
+
+const backendSystemBasicNoCreds: promptHelpers.BackendSystemSelection = {
+    name: 'http://abap.on.prem:1234',
+    url: 'http://abap.on.prem:1234',
+    username: 'user1',
+    hasStoredCredentials: false
 };
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
@@ -428,6 +435,29 @@ describe('Test system selection prompts', () => {
         );
         expect(await (usernamePrompt?.when as Function)()).toBe(true);
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
+    });
+
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic) - no stored credentials', async () => {
+        // If no stored credentials and auth is required, auth fails but hasStoredCredentials is set to false -  message: t('prompts.systemSelection.noStoredCredentials'),
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+
+        // Setup the connection validator mock to simulate the required conditions
+        connectionValidatorMock.systemAuthType = 'basic';
+        isAuthRequiredMock.mockResolvedValue(true);
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+
+        const result = await systemSelectionPrompt.additionalMessages?.({
+            type: 'backendSystem',
+            system: backendSystemBasicNoCreds
+        } as SystemSelectionAnswerType);
+
+        expect(result).toEqual({
+            message: t('prompts.systemSelection.noStoredCredentials'),
+            severity: Severity.information
+        });
     });
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket)', async () => {
