@@ -61,7 +61,7 @@ export class BackendSystemKey implements EntityKey {
     private url: string;
     private client?: string;
 
-    public static from(system: BackendSystem): EntityKey {
+    public static from(system: BackendSystem): BackendSystemKey {
         return new BackendSystemKey({ url: system.url, client: system.client });
     }
 

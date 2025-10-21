@@ -1,5 +1,3 @@
-jest.disableAutomock();
-
 import { PerformanceMeasurementAPI } from '../../src/base/performance/api';
 import type { Measurement as IMeasurement, PerformanceMeasurement } from '../../src/base/performance/types';
 import { EntryType } from '../../src/base/performance/types';

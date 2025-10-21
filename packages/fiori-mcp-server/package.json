@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.2.3",
+    "version": "0.2.5",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -20,9 +20,10 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build-dev": "tsc",
+        "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings --main-fields=module,main src/index.ts",
+        "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
         "build-compile": "tsc --noEmit",
-        "build-bundle": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings --main-fields=module,main src/index.ts",
+        "build-bundle": "pnpm run build-esbuild-base --minify",
         "build": "npm-run-all build-compile build-bundle",
         "watch": "tsc --watch",
         "bundle": "npm-run-all build tgz:package tgz:rename",

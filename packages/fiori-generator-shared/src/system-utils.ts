@@ -1,31 +1,15 @@
-/**
- * Relevant values for display extended system properties to the UI
- */
-export enum Suffix {
-    S4HC = 'S4HC',
-    BTP = 'BTP'
-}
+import { t } from './i18n';
+import type { BackendSystem } from '@sap-ux/store';
 
 /**
- * Escape any special RegExp character that we want to use literally.
+ * Creates and returns a display name for the system, appending the system type and user display name if available.
  *
- * @param str string input
- * @returns string a cleansed version of the input
+ * @param system the backend system to create a display name for
+ * @returns the display name for the system
  */
-function escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
-/**
- * Trim, cleanse and return a system name appended with the appropriate suffix i.e. BTP | S4HC.
- *
- * @param systemName name of the system
- * @param suffix the appropriate suffix appended, BTP | S4HC
- * @returns string return an escaped string, appended with the appropriate suffix
- */
-function addSuffix(systemName: string, suffix: Suffix): string {
-    const suffixStr = ` (${suffix})`;
-    return RegExp(`${escapeRegExp(suffixStr)}$`).exec(systemName.trim()) ? systemName : `${systemName} (${suffix})`;
+export function getBackendSystemDisplayName(system: BackendSystem): string {
+    const systemTypeName = getSystemDisplayName(system.name, system.userDisplayName, system.systemType);
+    return systemTypeName;
 }
 
 /**
@@ -33,24 +17,26 @@ function addSuffix(systemName: string, suffix: Suffix): string {
  *
  * @param systemName - system name
  * @param displayUsername - display username
- * @param isBtp - is BTP
- * @param isS4HC - is S/4 Hana Cloud
+ * @param systemType - Backend system type (as string) or undefined
  * @returns system display name
  */
-export function getSystemDisplayName(
-    systemName: string,
-    displayUsername?: string,
-    isBtp = false,
-    isS4HC = false
-): string {
+export function getSystemDisplayName(systemName: string, displayUsername?: string, systemType?: string): string {
     const userDisplayName = displayUsername ? ` [${displayUsername}]` : '';
-    let systemDisplayName: string;
-    if (isBtp) {
-        systemDisplayName = addSuffix(systemName, Suffix.BTP);
-    } else if (isS4HC) {
-        systemDisplayName = addSuffix(systemName, Suffix.S4HC);
-    } else {
-        systemDisplayName = systemName;
+    return `${systemName}${getSystemTypeLabel(systemType)}${userDisplayName}`;
+}
+
+/**
+ * Returns the formatted system type name for the given backend system.
+ *
+ * @param systemType the system type to get the parenthesised name for
+ * @returns system type name formatted as a string, e.g. " (ABAP Cloud)".
+ */
+function getSystemTypeLabel(systemType?: string): string {
+    let systemTypeName = ''; // for on prem we do not show the system type
+    const abapCloudLabel = ` (${t('texts.systemTypeLabel.abapCloud')})`;
+    // Legacy store system types will now display as ABAP Cloud
+    if (systemType === 'AbapCloud' || systemType === 'S4HC' || systemType === 'BTP') {
+        systemTypeName = abapCloudLabel;
     }
-    return `${systemDisplayName}${userDisplayName}`;
+    return systemTypeName;
 }
