@@ -81,7 +81,7 @@ describe('questions', () => {
                 "validate": [Function],
               },
               {
-                "default": "",
+                "default": [Function],
                 "guiOptions": {
                   "mandatory": true,
                 },

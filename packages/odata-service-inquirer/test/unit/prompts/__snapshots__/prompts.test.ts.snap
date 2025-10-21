@@ -43,9 +43,11 @@ exports[`getQuestions getQuestions 1`] = `
         "name": "storedSystem1",
         "value": {
           "system": {
+            "hasStoredCredentials": true,
             "name": "storedSystem1",
             "systemType": "OnPrem",
             "url": "http://url1",
+            "username": "user1",
           },
           "type": "backendSystem",
         },
@@ -54,9 +56,11 @@ exports[`getQuestions getQuestions 1`] = `
         "name": "storedSystem2 (ABAP Cloud)",
         "value": {
           "system": {
+            "hasStoredCredentials": false,
             "name": "storedSystem2",
             "systemType": "BTP",
             "url": "http://url2",
+            "username": undefined,
           },
           "type": "backendSystem",
         },
@@ -79,7 +83,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
-    "default": "",
+    "default": [Function],
     "guiOptions": {
       "mandatory": true,
     },
@@ -164,7 +168,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
-    "default": "",
+    "default": [Function],
     "guiOptions": {
       "mandatory": true,
     },

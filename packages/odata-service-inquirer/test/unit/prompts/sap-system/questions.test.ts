@@ -55,7 +55,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
-                "default": "",
+                "default": [Function],
                 "guiOptions": {
                   "mandatory": true,
                 },

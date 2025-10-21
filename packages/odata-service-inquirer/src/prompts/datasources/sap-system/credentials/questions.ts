@@ -9,7 +9,7 @@ import { promptNames } from '../../../../types';
 import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ValidationResult } from '../../../types';
-import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
+import type { SystemSelectionAnswerType, BackendSystemSelection } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
 
 export enum BasicCredentialsPromptNames {
@@ -53,7 +53,15 @@ export function getCredentialsPrompts<T extends Answers>(
             guiOptions: {
                 mandatory: true
             },
-            default: '',
+            default: (answers: T) => {
+                // Prefill username from the selected backend system if available
+                const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
+                if (selectedSystem?.type === 'backendSystem') {
+                    const backendSystem = selectedSystem.system as BackendSystemSelection;
+                    return backendSystem.username || '';
+                }
+                return '';
+            },
             validate: (user: string) => user?.length > 0
         } as InputQuestion<T>,
         {
@@ -112,6 +120,13 @@ export function getCredentialsPrompts<T extends Answers>(
                 return valResult;
             },
             additionalMessages: (password: string, answers: T) => {
+                if (PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated) {
+                    return {
+                        message: t('texts.passwordStoreWarning'),
+                        severity: Severity.information
+                    };
+                }
+
                 // Since the odata service URL prompt has its own credentials prompts its safe to assume
                 // that `ignoreCertError` when true means that the user has set the node setting to ignore cert errors and
                 // not that the user has chosen to ignore the cert error for this specific connection (this is only supported by the odata service URL prompts).
@@ -123,13 +138,6 @@ export function getCredentialsPrompts<T extends Answers>(
                     return {
                         message: t('warnings.certErrorIgnoredByNodeSetting'),
                         severity: Severity.warning
-                    };
-                }
-                // Only show password store warning if the system has stored credentials or if credentials are being newly saved
-                else if (PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated) {
-                    return {
-                        message: t('texts.passwordStoreWarning'),
-                        severity: Severity.information
                     };
                 }
             }
@@ -156,15 +164,21 @@ function updatePromptStateWithConnectedSystem(
     };
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {
-        const backendSystem = selectedSystem.system as BackendSystem;
+        const backendSystem = selectedSystem.system as BackendSystemSelection;
 
         // Have the credentials changed..
         if (backendSystem.username !== username || backendSystem.password !== password) {
+            // Determine if this is a temporary credentials scenario or an update scenario
+            const isTemporaryCredentials = !backendSystem.hasStoredCredentials;
+
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
                 password,
                 userDisplayName: username,
-                newOrUpdated: backendSystem.username || backendSystem.password ? true : false
+                // Only set newOrUpdated to true if the system had existing credentials (auth error scenario)
+                // For systems without credentials, set temporaryCredentials flag instead
+                newOrUpdated: !isTemporaryCredentials,
+                temporaryCredentials: isTemporaryCredentials
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.

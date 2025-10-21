@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { type BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -27,9 +27,14 @@ export type NewSystemChoice = typeof NewSystemChoice;
 export const CfAbapEnvServiceChoice = 'cfAbapEnvService';
 export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
 
+// Local extension of BackendSystem to include credential information
+export interface BackendSystemSelection extends BackendSystem {
+    hasStoredCredentials?: boolean;
+}
+
 export type SystemSelectionAnswerType = {
     type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
-    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
+    system: Destination | BackendSystemSelection | NewSystemChoice | CfAbapEnvServiceChoice;
 };
 
 /**
@@ -72,6 +77,9 @@ export async function connectWithBackendSystem(
                 convertODataVersionType(requiredOdataVersion)
             );
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
+            // Check if the system has stored credentials
+            const hasStoredCredentials = !!(backendSystem.username && backendSystem.password);
+
             let errorType;
             ({ valResult: connectValResult, errorType } = await connectionValidator.validateAuth(
                 backendSystem.url,
@@ -85,17 +93,18 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (
-                errorType === ERROR_TYPE.AUTH &&
-                typeof backendSystem.username === 'string' &&
-                typeof backendSystem.password === 'string'
-            ) {
+            if (errorType === ERROR_TYPE.AUTH && hasStoredCredentials) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', {
                         systemName: backendSystem.name,
                         error: connectValResult
                     })
                 );
+                (backendSystem as BackendSystemSelection).hasStoredCredentials = true;
+                return true;
+            } else if (errorType === ERROR_TYPE.AUTH && !hasStoredCredentials) {
+                // 1f there are no stored credentials, we defer validation to the credentials prompt but do not log an error here.
+                (backendSystem as BackendSystemSelection).hasStoredCredentials = false;
                 return true;
             }
         }
@@ -242,15 +251,36 @@ export async function createSystemChoices(
         // Cache the backend systems
         PromptState.backendSystemsCache = backendSystems;
 
-        systemChoices = backendSystems.map((system) => {
-            return {
-                name: getBackendSystemDisplayName(system),
-                value: {
-                    system,
-                    type: 'backendSystem'
-                } as SystemSelectionAnswerType
-            };
-        });
+        systemChoices = await Promise.all(
+            backendSystems.map(async (system) => {
+                // Check if the system has stored credentials by reading it with sensitive data
+                const systemWithCredentials = await new SystemService(LoggerHelper.logger).read(
+                    BackendSystemKey.from(system) as BackendSystemKey
+                );
+                const hasStoredCredentials =
+                    typeof systemWithCredentials?.username === 'string' &&
+                    systemWithCredentials.username.length > 0 &&
+                    typeof systemWithCredentials?.password === 'string' &&
+                    systemWithCredentials.password.length > 0;
+                let systemSelection: BackendSystemSelection = { ...system };
+
+                if (system.authenticationType === 'basic' || !system.authenticationType) {
+                    systemSelection = {
+                        ...systemSelection,
+                        hasStoredCredentials,
+                        username: systemWithCredentials?.username || system.username
+                    };
+                }
+
+                return {
+                    name: getBackendSystemDisplayName(system),
+                    value: {
+                        system: systemSelection,
+                        type: 'backendSystem'
+                    } as SystemSelectionAnswerType
+                };
+            })
+        );
         newSystemChoice = {
             name: t('prompts.systemSelection.newSystemChoiceLabel'),
             value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType

@@ -1,6 +1,7 @@
 import { listDestinations } from '@sap-ux/btp-utils';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 import {
+    BackendSystemSelection,
     CfAbapEnvServiceChoice,
     createSystemChoices,
     findDefaultSystemSelectionIndex,
@@ -10,12 +11,13 @@ import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 
-const backendSystemBasic: BackendSystem = {
+const backendSystemBasic: BackendSystemSelection = {
     name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem'
+    systemType: 'OnPrem',
+    hasStoredCredentials: true
 };
 
 const backendSystemReentrance: BackendSystem = {
@@ -44,6 +46,11 @@ jest.mock('@sap-ux/store', () => ({
     // Mock store access
     SystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValueOnce(backendSystems),
+        read: jest.fn().mockImplementation((key) => {
+            // Mock read to return systems with credentials
+            const system = backendSystems.find((s) => s.url === key.url);
+            return Promise.resolve(system);
+        }),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })
