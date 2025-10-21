@@ -156,7 +156,18 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
         logger?.debug(`Specification dist-tags not found at '${specificationDistTagPath}'. Trying to refresh.`);
         await refreshSpecificationDistTags({ logger });
     }
-    const specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    let specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    // Validate the current dist-tags file
+    if (
+        'error' in specificationDistTags &&
+        !(distTag in specificationDistTags) &&
+        !('latest' in specificationDistTags)
+    ) {
+        // Refresh if dist-tags are invalid
+        logger?.debug(`Specification dist-tags file has error at '${specificationDistTagPath}'. Trying to refresh.`);
+        await refreshSpecificationDistTags({ logger });
+        specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    }
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;
     return version;
 }
