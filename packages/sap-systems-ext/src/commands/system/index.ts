@@ -23,7 +23,7 @@ export const commandHandlers: Record<string, SystemCommandHandler> = {
  *
  * @param context - the extension context
  */
-export const registerSystemCommands = (context: ExtensionContext): void => {
+export const registerSystemViewCommands = (context: ExtensionContext): void => {
     const panelManager = new PanelManager<SystemPanel>();
 
     const systemCommandContext: SystemCommandContext = {

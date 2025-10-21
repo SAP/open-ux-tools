@@ -1,6 +1,6 @@
 import type { ExtensionContext } from 'vscode';
-import { registerSystemViewCommands } from '../../../../src/commands/system';
 import * as vscodeMod from 'vscode';
+import { registerExtensionCommands } from '../../../../src/commands/extension';
 
 describe('Test registering the systems commands', () => {
     it('should register all system commands', () => {
@@ -15,10 +15,14 @@ describe('Test registering the systems commands', () => {
             return { dispose: () => {} };
         });
 
-        registerSystemViewCommands(mockContext);
+        registerExtensionCommands(mockContext);
 
         const subs = mockContext.subscriptions;
+        expect(subs.length).toBe(1);
 
-        expect(subs.length).toBe(6);
+        expect(vscodeCommandsRegisterSpy).toHaveBeenCalledWith(
+            'sap.ux.storedSystens.openOutputChannel',
+            expect.any(Function)
+        );
     });
 });

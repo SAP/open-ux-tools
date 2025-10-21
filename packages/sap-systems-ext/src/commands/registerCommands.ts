@@ -1,6 +1,6 @@
-import { commands, type ExtensionContext } from 'vscode';
-import { registerSystemCommands } from './system';
-import SystemsLogger from '../utils/logger';
+import type { ExtensionContext } from 'vscode';
+import { registerSystemViewCommands } from './system';
+import { registerExtensionCommands } from './extension';
 
 /**
  * Register all commands for the extension.
@@ -8,16 +8,6 @@ import SystemsLogger from '../utils/logger';
  * @param context - the extension context
  */
 export function registerCommands(context: ExtensionContext): void {
-    registerExtensionCommands();
-    registerSystemCommands(context);
-}
-
-/**
- * Registers extension-level commands.
- */
-function registerExtensionCommands(): void {
-    // Command to open the output channel for the SAP Systems extension
-    commands.registerCommand('sap.ux.storedSystens.openOutputChannel', () => {
-        SystemsLogger.show();
-    });
+    registerExtensionCommands(context);
+    registerSystemViewCommands(context);
 }

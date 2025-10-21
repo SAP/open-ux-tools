@@ -29,7 +29,7 @@
         "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
         "check-types": "tsc --noEmit",
         "lint": "eslint . --ext .ts",
-        "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors --silent",
         "ide-ext:package": "vsce package"
     },
     "activationEvents": [

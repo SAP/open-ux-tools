@@ -10,8 +10,8 @@ describe('Test registering commands', () => {
             subscriptions: [] as any[]
         } as ExtensionContext;
 
-        const registerSystemCommandsSpy = jest
-            .spyOn(systemCommands, 'registerSystemCommands')
+        const registerSystemViewCommandsSpy = jest
+            .spyOn(systemCommands, 'registerSystemViewCommands')
             .mockImplementationOnce(() => {});
 
         const cmds = vscodeMod.commands;
@@ -26,6 +26,6 @@ describe('Test registering commands', () => {
             'sap.ux.storedSystens.openOutputChannel',
             expect.any(Function)
         );
-        expect(registerSystemCommandsSpy).toHaveBeenCalledWith(mockContext);
+        expect(registerSystemViewCommandsSpy).toHaveBeenCalledWith(mockContext);
     });
 });
