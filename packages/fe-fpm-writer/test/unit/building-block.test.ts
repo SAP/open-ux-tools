@@ -13,8 +13,6 @@ import {
 } from '../../src/building-block/types';
 import { i18nNamespaces, translate } from '../../src/i18n';
 import { Placement } from '../../src/common/types';
-import { selectTargetNodes } from '../../src/building-block';
-import { DOMParser } from '@xmldom/xmldom';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -1194,21 +1192,6 @@ describe('Building Blocks', () => {
             expect(fragmentContent).toContain('<Text text="Sample Text"');
 
             await writeFilesForDebugging(fs);
-        });
-
-        test('selectTargetNodes works correctly for CustomColumn', async () => {
-            const document = new DOMParser()
-                .parseFromString(`<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros" xmlns:macrosTable="sap.fe.macros.table">
-    <VBox>
-        <Text text="Customsec"/>
-        <macros:Table id="Table" metaPath="_Booking/@com.sap.vocabularies.UI.v1.LineItem#tableMacro">
-        </macros:Table>
-    </VBox>
-</core:FragmentDefinition>`);
-            const aggregationPath = `/core:FragmentDefinition/VBox[1]/*[2]`;
-            const targetNodes = selectTargetNodes(aggregationPath, document);
-            expect(targetNodes.length).toBe(1);
-            expect(targetNodes[0].nodeName).toBe('macros:Table');
         });
     });
     test('generates Rich Text Editor building block with absolute binding context', async () => {

@@ -25,7 +25,7 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
-import { getOrAddNamespace } from './prompts/utils/xml';
+import { getOrAddNamespace, selectTargetNodes } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 
@@ -475,66 +475,6 @@ function updateViewFile(
         throw new Error(`Aggregation control not found ${aggregationPath}.`);
     }
     return fs;
-}
-
-/**
- * Selects nodes for the provided aggregation path. If the initial namespace-aware XPath returns
- * no results, it retries by rewriting any unprefixed path segments into a namespace-agnostic
- * local-name() predicate so that elements in a default namespace (e.g. <VBox>) can still be matched.
- *
- * @param {string} aggregationPath - Original aggregation XPath expression
- * @param {Document} viewDocument - XML view/fragment document
- * @returns {Node[]} Array of matched nodes (empty if none)
- */
-export function selectTargetNodes(aggregationPath: string, viewDocument: Document): Node[] {
-    const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
-    let nodes = xpathSelect(aggregationPath, viewDocument) as Node[];
-    if (isEmptyNodeResult(nodes) && aggregationPath.includes('/')) {
-        const fallbackPath = buildFallbackAggregationPath(aggregationPath);
-        const fallbackNodes = xpathSelect(fallbackPath, viewDocument) as Node[];
-        if (!isEmptyNodeResult(fallbackNodes)) {
-            nodes = fallbackNodes;
-        }
-    }
-    return Array.isArray(nodes) ? nodes : [];
-}
-
-/**
- * Determines if XPath result nodes are empty or invalid.
- *
- * @param nodes Potential array of nodes returned from XPath selection
- * @returns true if nodes is not an array or has length 0
- */
-function isEmptyNodeResult(nodes: unknown): boolean {
-    return !nodes || !Array.isArray(nodes) || nodes.length === 0;
-}
-
-/**
- * Builds a namespace-agnostic fallback XPath by converting unprefixed path segments
- * into local-name() predicates while leaving wildcards, prefixed segments, and long segments intact.
- *
- * @param aggregationPath Original aggregation path
- * @returns Fallback XPath expression
- */
-function buildFallbackAggregationPath(aggregationPath: string): string {
-    return aggregationPath
-        .split('/')
-        .map((segment) => {
-            if (!segment || segment.startsWith('*') || segment.includes(':')) {
-                return segment;
-            }
-            if (segment.length > 200) {
-                return segment;
-            }
-            const nameMatch = /^[A-Za-z_][\w.-]*/.exec(segment);
-            if (!nameMatch) {
-                return segment;
-            }
-            const name = nameMatch[0];
-            const rest = segment.substring(name.length);
-            return `*[local-name() = '${name}']${rest}`;
-        })
-        .join('/');
 }
 
 /**

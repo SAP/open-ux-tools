@@ -2,9 +2,12 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { isElementIdAvailable, getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml';
+import {
+    isElementIdAvailable,
+    getOrAddNamespace,
+    selectTargetNodes
+} from '../../../../../src/building-block/prompts/utils/xml';
 import { DOMParser } from '@xmldom/xmldom';
-import { BuildingBlockType } from '../../../../../src/building-block/types';
 
 describe('utils - xml', () => {
     let fs: Editor;
@@ -176,5 +179,20 @@ describe('getOrAddNamespace', () => {
         const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
+    });
+
+    test('selectTargetNodes works correctly for CustomColumn', async () => {
+        const document = new DOMParser()
+            .parseFromString(`<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros" xmlns:macrosTable="sap.fe.macros.table">
+        <VBox>
+            <Text text="Customsec"/>
+            <macros:Table id="Table" metaPath="_Booking/@com.sap.vocabularies.UI.v1.LineItem#tableMacro">
+            </macros:Table>
+        </VBox>
+    </core:FragmentDefinition>`);
+        const aggregationPath = `/core:FragmentDefinition/VBox[1]/*[2]`;
+        const targetNodes = selectTargetNodes(aggregationPath, document);
+        expect(targetNodes.length).toBe(1);
+        expect(targetNodes[0].nodeName).toBe('macros:Table');
     });
 });
