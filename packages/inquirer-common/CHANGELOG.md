@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.8.4
+
+### Patch Changes
+
+-   06bc541: Check Transformations for Analytical default table.
+
 ## 0.8.3
 
 ### Patch Changes

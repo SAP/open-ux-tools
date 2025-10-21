@@ -272,7 +272,9 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
+        // Variables to manage analytical table defaults across prompts
         let setAnalyticalTableDefault = false;
+        let selectedEntity: EntityAnswer | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -285,19 +287,31 @@ function getTableLayoutQuestions(
             },
             choices: tableTypeChoices,
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                const tableTypeDefault = getDefaultTableType(
-                    templateType,
-                    metadata,
-                    odataVersion,
-                    isCapService,
-                    prevAnswers?.mainEntity?.entitySetName,
-                    prevAnswers?.tableType
-                );
-                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
-                return tableTypeDefault.tableType;
+                const currentEntity = prevAnswers?.mainEntity;
+
+                // Only re-evaluate if entity has changed or no previous selection exists
+                if (currentEntity?.entitySetName !== selectedEntity?.entitySetName || !prevAnswers?.tableType) {
+                    const defaultTableType = getDefaultTableType(
+                        templateType,
+                        metadata,
+                        odataVersion,
+                        isCapService,
+                        currentEntity?.entitySetName
+                    );
+
+                    // Update tracking variables
+                    selectedEntity = currentEntity;
+                    setAnalyticalTableDefault = defaultTableType === 'AnalyticalTable';
+                    return defaultTableType;
+                }
+
+                // Entity hasn't changed and user has a selection - preserve their choice
+                // Reset the analytical table default flag since this is user's choice, not system default
+                setAnalyticalTableDefault = false;
+                return prevAnswers.tableType;
             },
-            additionalMessages: (tableType: TableType) => {
-                if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {
+            additionalMessages: () => {
+                if (setAnalyticalTableDefault) {
                     return {
                         message: t('prompts.tableType.analyticalTableDefault'),
                         severity: Severity.information
