@@ -8,8 +8,8 @@ describe('Test SystemUtils', () => {
             ['System1', 'User1', undefined, 'System1 [User1]'],
 
             // ABAP Cloud
-            ['System1', undefined, 'ABAPCloud', 'System1 (ABAP Cloud)'],
-            ['System1', 'User1', 'ABAPCloud', 'System1 (ABAP Cloud) [User1]'],
+            ['System1', undefined, 'AbapCloud', 'System1 (ABAP Cloud)'],
+            ['System1', 'User1', 'AbapCloud', 'System1 (ABAP Cloud) [User1]'],
 
             // Legacy stored BTP scenario
             ['System2', undefined, 'BTP', 'System2 (ABAP Cloud)'],
