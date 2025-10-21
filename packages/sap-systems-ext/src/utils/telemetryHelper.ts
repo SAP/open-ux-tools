@@ -67,7 +67,7 @@ export abstract class TelemetryHelper {
         additionalData?: Partial<T>,
         filterDups = false
     ): TelemetryData | undefined {
-        const currentTimestamp = new Date().getTime();
+        const currentTimestamp = Date.now();
         if (!this._previousEventTimestamp) {
             filterDups = false; // can't filter duplicates if no previous event timestamp
             this._previousEventTimestamp = currentTimestamp;
