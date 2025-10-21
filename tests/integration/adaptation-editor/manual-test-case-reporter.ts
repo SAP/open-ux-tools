@@ -110,7 +110,7 @@ export default class ManualTestCaseReporter implements Reporter {
             /^locator\.textContent/,
             /^locator\.count/,
             /^Click on in Application Preview$/,
-            /^Query count getByTestId\(\'saved-changes-stack\'\)/, 
+            /^Query count getByTestId\(\'saved-changes-stack\'\)/,
             /^Verifying Changes.../,
             /^page\.goto\(/,
             /^Create context$/,
