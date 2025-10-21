@@ -154,7 +154,7 @@ export async function runPostGenerationTasks(
         });
         // No need to await, we cannot recover anyway
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        storeService.write(service.backendSystem);
+        storeService.write(service.backendSystem, { force: true });
     } else if (
         service.backendSystem?.newOrUpdated === false &&
         hostEnv !== hostEnvironment.bas &&
