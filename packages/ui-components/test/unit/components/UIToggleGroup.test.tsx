@@ -1,13 +1,14 @@
 import * as React from 'react';
-import * as Enzym from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 import { UIToggleGroup } from '../../../src/components/UIToggleGroup/index';
 import type { UIToggleGroupProps } from '../../../src/components/UIToggleGroup/index';
 
 describe('<UIToggleGroup />', () => {
     let toggleGroupProps: UIToggleGroupProps;
-    let toggleGroupInstance: UIToggleGroup;
-    let wrapper: Enzym.ReactWrapper<UIToggleGroupProps, {}, UIToggleGroup>;
+    let renderResult: ReturnType<typeof render>;
+    let container: HTMLElement;
 
     beforeEach(() => {
         toggleGroupProps = Object.freeze({
@@ -32,25 +33,27 @@ describe('<UIToggleGroup />', () => {
     });
 
     afterEach(() => {
-        wrapper.unmount();
+        if (renderResult) {
+            renderResult.unmount();
+        }
     });
 
     it('Should render a UIToggleGroup component', () => {
         const testProps = Object.assign({}, toggleGroupProps);
-        const Proxy = (defaultProps: UIToggleGroupProps): JSX.Element => <UIToggleGroup {...defaultProps} />;
-        wrapper = Enzym.mount<UIToggleGroup>(<Proxy {...testProps} />);
+        renderResult = render(<UIToggleGroup {...testProps} />);
+        container = renderResult.container;
 
-        expect(wrapper.find('div.ui-toggle-group').length).toEqual(1);
+        expect(container.querySelectorAll('div.ui-toggle-group').length).toEqual(1);
     });
 
     it('Should render a UIToggleGroup component with label', () => {
         const testProps = Object.assign({}, toggleGroupProps, {
             label: 'test'
         });
-        const Proxy = (defaultProps: UIToggleGroupProps): JSX.Element => <UIToggleGroup {...defaultProps} />;
-        wrapper = Enzym.mount<UIToggleGroup>(<Proxy {...testProps} />);
+        renderResult = render(<UIToggleGroup {...testProps} />);
+        container = renderResult.container;
 
-        expect(wrapper.find('label.ui-toggle-group-label').length).toEqual(1);
+        expect(container.querySelectorAll('label.ui-toggle-group-label').length).toEqual(1);
     });
 
     it('Should render a UIToggleGroup component with labelId', () => {
@@ -59,31 +62,32 @@ describe('<UIToggleGroup />', () => {
             labelId: 'test1',
             ariaLabel: 'ariaTest'
         });
-        const Proxy = (defaultProps: UIToggleGroupProps): JSX.Element => <UIToggleGroup {...defaultProps} />;
-        wrapper = Enzym.mount<UIToggleGroup>(<Proxy {...testProps} />);
+        renderResult = render(<UIToggleGroup {...testProps} />);
+        container = renderResult.container;
 
-        expect(wrapper.find('div.ui-toggle-group').prop('aria-labelledby')).toEqual('test1');
-        expect(wrapper.find('label.ui-toggle-group-label').prop('id')).toEqual('test1');
-        expect(wrapper.find('label.ui-toggle-group-label').prop('aria-label')).toEqual('ariaTest');
+        const toggleGroup = container.querySelector('div.ui-toggle-group');
+        const label = container.querySelector('label.ui-toggle-group-label');
+        expect(toggleGroup?.getAttribute('aria-labelledby')).toEqual('test1');
+        expect(label?.getAttribute('id')).toEqual('test1');
+        expect(label?.getAttribute('aria-label')).toEqual('ariaTest');
     });
 
     it('Should render a UIToggleGroup component - click options', () => {
+        const onChange = jest.fn();
         const testProps = Object.assign({}, toggleGroupProps, {
             label: 'test',
             labelId: 'test1',
             ariaLabel: 'ariaTest',
-            onChange: jest.fn()
+            onChange
         });
-        const Proxy = (defaultProps: UIToggleGroupProps): JSX.Element => <UIToggleGroup {...defaultProps} />;
-        wrapper = Enzym.mount<UIToggleGroup>(<Proxy {...testProps} />);
+        renderResult = render(<UIToggleGroup {...testProps} />);
+        container = renderResult.container;
 
-        toggleGroupInstance = wrapper.find('UIToggleGroup').instance() as UIToggleGroup;
-        const spyOnChange = jest.spyOn(toggleGroupInstance.props, 'onChange');
-        expect(wrapper.find('button').length).toEqual(3);
+        const buttons = container.querySelectorAll('button');
+        expect(buttons.length).toEqual(3);
 
-        const btn1 = wrapper.find('button').first();
-        btn1.simulate('click');
-        expect(spyOnChange).toHaveBeenCalledWith('high', true);
+        fireEvent.click(buttons[0]);
+        expect(onChange).toHaveBeenCalledWith('high', true);
     });
 
     it('Should render a UIToggleGroup component - focus options', () => {
@@ -93,17 +97,15 @@ describe('<UIToggleGroup />', () => {
             ariaLabel: 'ariaTest',
             onChange: jest.fn()
         });
-        const Proxy = (defaultProps: UIToggleGroupProps): JSX.Element => <UIToggleGroup {...defaultProps} />;
-        wrapper = Enzym.mount<UIToggleGroup>(<Proxy {...testProps} />);
+        renderResult = render(<UIToggleGroup {...testProps} />);
+        container = renderResult.container;
 
-        toggleGroupInstance = wrapper.find('UIToggleGroup').instance() as UIToggleGroup;
-        const spyOnFocus = jest.spyOn(toggleGroupInstance, 'onFocus');
-        toggleGroupInstance.forceUpdate();
+        const buttons = container.querySelectorAll('button');
 
-        const btn1 = wrapper.find('button').first();
-        btn1.simulate('focus', {});
-
-        expect(spyOnFocus).toHaveBeenCalled();
+        // Focus should work without error - the component handles internal state
+        expect(() => fireEvent.focus(buttons[0])).not.toThrow();
+        // Verify the button has the focused class after focus
+        expect(buttons[0].className).toContain('ui-toggle-group-option--focused');
     });
 
     it('Should render a UIToggleGroup component - blur options', () => {
@@ -113,16 +115,15 @@ describe('<UIToggleGroup />', () => {
             ariaLabel: 'ariaTest',
             onChange: jest.fn()
         });
-        const Proxy = (defaultProps: UIToggleGroupProps): JSX.Element => <UIToggleGroup {...defaultProps} />;
-        wrapper = Enzym.mount<UIToggleGroup>(<Proxy {...testProps} />);
+        renderResult = render(<UIToggleGroup {...testProps} />);
+        container = renderResult.container;
 
-        toggleGroupInstance = wrapper.find('UIToggleGroup').instance() as UIToggleGroup;
-        const spyOnBlur = jest.spyOn(toggleGroupInstance, 'onBlur');
-        toggleGroupInstance.forceUpdate();
+        const buttons = container.querySelectorAll('button');
+        fireEvent.focus(buttons[0]);
 
-        const btn1 = wrapper.find('button').first();
-        btn1.simulate('blur', {});
-
-        expect(spyOnBlur).toHaveBeenCalled();
+        // Blur should work without error - the component handles internal state
+        expect(() => fireEvent.blur(buttons[0])).not.toThrow();
+        // After blur, no button should have the focused class
+        expect(buttons[0].className).not.toContain('ui-toggle-group-option--focused');
     });
 });
