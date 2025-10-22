@@ -1,5 +1,18 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.47
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/fiori-elements-writer@2.7.29
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/odata-service-inquirer@2.9.8
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/ui5-application-inquirer@0.15.26
+
 ## 0.7.46
 
 ### Patch Changes

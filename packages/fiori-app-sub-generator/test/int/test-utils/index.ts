@@ -36,7 +36,7 @@ export function cleanTestDir(path: string): void {
             console.log(err);
         }
     } else {
-        rimraf.sync(path);
+        rimraf.rimrafSync(path);
     }
 }
 /**
