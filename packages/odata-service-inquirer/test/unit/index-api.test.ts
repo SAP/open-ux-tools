@@ -7,7 +7,6 @@ import * as prompts from '../../src/prompts';
 import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
-import { Service } from '../../../fiori-mcp-server/src/tools/functionalities/page/service';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property

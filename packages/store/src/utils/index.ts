@@ -1,5 +1,5 @@
 import { homedir } from 'node:os';
-import path from 'node:path';
+import { join } from 'node:path';
 import { plural } from 'pluralize';
 
 /** Pick the properties listed and return a new object with a shallow-copy */
@@ -40,11 +40,11 @@ export enum SapDevTools {
 }
 
 export const getFioriToolsDirectory = (): string => {
-    return path.join(homedir(), FioriToolsSettings.dir);
+    return join(homedir(), FioriToolsSettings.dir);
 };
 
 export const getSapDevToolsDirectory = (): string => {
-    return path.join(homedir(), SapDevTools.dir);
+    return join(homedir(), SapDevTools.dir);
 };
 
 /**

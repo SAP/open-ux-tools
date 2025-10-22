@@ -35,16 +35,16 @@ describe('BackendSystem service', () => {
             const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValue(true);
             const service = getInstance(logger);
             expect(service).toBeInstanceOf(SystemService);
-            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.migrated'));
+            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.systemsMigrated'));
         });
 
         it('should create .migrated file after migration', () => {
             const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false).mockReturnValueOnce(true);
             const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync').mockImplementation(() => {});
             getInstance(logger);
-            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.migrated'));
+            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.systemsMigrated'));
             expect(writeFileSyncSpy).toHaveBeenCalledWith(
-                expect.stringContaining('.migrated'),
+                expect.stringContaining('.systemsMigrated'),
                 expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
             );
         });
