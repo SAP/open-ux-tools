@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
@@ -28,11 +27,12 @@ import {
     isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { EventName } from '../telemetryEvents';
@@ -65,7 +65,6 @@ import {
     type AttributePromptOptions,
     type JsonInput
 } from './types';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 
 const generatorTitle = 'Adaptation Project';
@@ -174,7 +173,7 @@ export default class extends Generator {
     /**
      * Indicates if the CF feature is enabled.
      */
-    private isCfFeatureEnabled: boolean;
+    private readonly isCfFeatureEnabled: boolean;
 
     /**
      * Creates an instance of the generator.
