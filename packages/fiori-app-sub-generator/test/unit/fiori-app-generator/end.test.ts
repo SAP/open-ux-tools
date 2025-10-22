@@ -108,7 +108,7 @@ describe('runPostGenerationTasks', () => {
             logger,
             entityName: 'system'
         });
-        expect(storeServiceWriteMock).toHaveBeenCalledWith(service.backendSystem);
+        expect(storeServiceWriteMock).toHaveBeenCalledWith(service.backendSystem, { force: true });
     });
 
     it('should show information message for cap projects', async () => {
