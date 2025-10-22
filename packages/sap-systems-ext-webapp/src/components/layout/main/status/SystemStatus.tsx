@@ -43,14 +43,13 @@ export function SystemStatus({
         return (
             <>
                 <span>
-                    {t('systemStatus.openOutputChannel.check')}{' '}
+                    {t('systemStatus.openOutputChannel.forMoreInfo')}
                     <UILink
                         onClick={actions.openOutputChannel}
                         id="outputLink"
                         className={isError ? 'output-link-error' : 'output-link-warn'}>
                         {t('systemStatus.openOutputChannel.outputTab')}
                     </UILink>{' '}
-                    {t('systemStatus.openOutputChannel.moreDetails')}{' '}
                 </span>
                 <span dangerouslySetInnerHTML={{ __html: t('systemStatus.increaseLogLevel') }} />
             </>

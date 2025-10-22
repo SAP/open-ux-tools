@@ -27,11 +27,10 @@
         "catalogCount": "The OData {{version}} catalog call returned {{count}} services.",
         "catalogUnavailable": "The OData {{version}} catalog service is not available.",
         "openOutputChannel": {
-            "check": "Check the",
-            "outputTab": "output tab",
-            "moreDetails": "for more details."
+            "forMoreInfo": "For more information, check the ",
+            "outputTab": "OUTPUT tab"
         },
-        "increaseLogLevel": "To see further details, you need to increase the log level to <b>Debug</b>."
+        "increaseLogLevel": "For more information, you need to increase the log level to <b>Debug</b>."
     },
 
     "dialog": {
