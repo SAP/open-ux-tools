@@ -2286,7 +2286,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.0
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -9200,6 +9200,10 @@ packages:
       - debug
       - typescript
     dev: true
+
+  /@sap-ux/fiori-docs-embeddings@0.4.0:
+    resolution: {integrity: sha512-JVW0nqA6qRVAfCHF9zIoEe6FCe2ZvZvzTYWzu7aVztM9SC1EY52vvPdrjOFV/ThHXWqXM/XfY20pwOXJkTrd8A==}
+    dev: false
 
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
@@ -167,13 +168,13 @@ export default class extends Generator {
      */
     private cfServicesAnswers: CfServicesAnswers;
     /**
-     * Indicates if the extension is installed.
-     */
-    private readonly isExtensionInstalled: boolean;
-    /**
      * Indicates if CF is installed.
      */
     private cfInstalled: boolean;
+    /**
+     * Indicates if the CF feature is enabled.
+     */
+    private isCfFeatureEnabled: boolean;
 
     /**
      * Creates an instance of the generator.
@@ -191,9 +192,9 @@ export default class extends Generator {
         this.options = opts;
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
-        this.isExtensionInstalled = isInternalFeaturesSettingEnabled()
-            ? isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext')
-            : false;
+
+        this.isCfFeatureEnabled = isFeatureEnabled('sap.ux.appGenerator.testBetaFeatures.adpCfExperimental');
+        this.logger.debug(`isCfFeatureEnabled: ${this.isCfFeatureEnabled}`);
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
@@ -234,7 +235,7 @@ export default class extends Generator {
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
         if (!this.jsonInput) {
-            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isExtensionInstalled;
+            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isCfFeatureEnabled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
@@ -452,7 +453,7 @@ export default class extends Generator {
      * Sets the target environment and updates related state accordingly.
      */
     private async _determineTargetEnv(): Promise<void> {
-        const hasRequiredExtensions = this.isExtensionInstalled && this.cfInstalled;
+        const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
 
         if (isAppStudio() && hasRequiredExtensions) {
             await this._promptForTargetEnvironment();

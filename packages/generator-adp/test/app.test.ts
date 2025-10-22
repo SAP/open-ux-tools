@@ -29,7 +29,7 @@ import {
 } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { isCli, isExtensionInstalled, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
@@ -53,7 +53,8 @@ import {
 
 jest.mock('@sap-ux/feature-toggle', () => ({
     ...jest.requireActual('@sap-ux/feature-toggle'),
-    isInternalFeaturesSettingEnabled: jest.fn()
+    isInternalFeaturesSettingEnabled: jest.fn(),
+    isFeatureEnabled: jest.fn()
 }));
 
 jest.mock('../src/app/questions/helper/default-values.ts', () => ({
@@ -278,6 +279,7 @@ const isLoggedInCfMock = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf
 const mockIsInternalFeaturesSettingEnabled = isInternalFeaturesSettingEnabled as jest.MockedFunction<
     typeof isInternalFeaturesSettingEnabled
 >;
+const mockIsFeatureEnabled = isFeatureEnabled as jest.MockedFunction<typeof isFeatureEnabled>;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -290,7 +292,8 @@ describe('Adaptation Project Generator Integration Test', () => {
         beforeEach(() => {
             fs.mkdirSync(testOutputDir, { recursive: true });
             mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
-            isExtensionInstalledMock.mockReturnValueOnce(false).mockReturnValueOnce(true);
+            mockIsFeatureEnabled.mockReturnValue(false);
+            isExtensionInstalledMock.mockReturnValueOnce(true);
             loadAppsMock.mockResolvedValue(apps);
             jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
             jest.spyOn(ConfigPrompter.prototype, 'ui5', 'get').mockReturnValue({
