@@ -261,6 +261,7 @@ export interface CommonAdditionalChangeInfoProperties {
     templateName?: string;
     targetAggregation?: string;
     controlType?: string;
+    viewName?: string;
 }
 
 export interface ManifestChangeProperties {
