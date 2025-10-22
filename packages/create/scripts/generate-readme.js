@@ -2,36 +2,27 @@ const { execSync } = require('node:child_process');
 const fs = require('node:fs');
 
 /**
- * Static installation section of the README.
- */
-const STATIC_INSTALL_SECTION = `# [Installation](#installation)
-
-\`\`\`sh
-npm init @sap-ux@latest
-# or
-npx @sap-ux/create@latest
-\`\`\`
-To avoid downloading and installing the module every time it is used, you might consider installing it globally or add it as \`devDependency\` to a project. Once installed, you can run it using
-
-\`\`\`sh
-# globally installed
-sap-ux
-# locally
-npx sap-ux
-\`\`\`
-
----
-
-`;
-
-/**
  * Static basic usage section of the README.
  */
-const STATIC_USAGE_SECTION = `# [Basic usage](#basic-usage)
+const STATIC_USAGE_SECTION = `# [Usage](#usage)
+
+It is recommended to use the cli via \`npx\` to always get the latest version without the need to install or update it manually. You can run it using:
 
 \`\`\`sh
-npx sap-ux [command] [sub-command] /path/to/project
+npx -y @sap-ux/create@latest [command] [sub-command] /path/to/project
 \`\`\`
+
+If you prefer to download the module, you can install it globally or add it as \`devDependency\` to a project. Once installed, you can run it using
+
+\`\`\`sh
+# install globally
+npm i -g @sap-ux@latest
+# or install as devDependency
+npm i -D @sap-ux/create@latest
+# then run
+sap-ux [command] [sub-command] /path/to/project
+\`\`\`
+
 \`Note:\` If the project path is not provided, the current working directory will be used.
 
 ---
@@ -121,13 +112,10 @@ function generateReadme(spec) {
     let md = `# \`@sap-ux/create\` CLI Reference\n\n`;
     md += `${spec.description}\n\n`;
 
-    // --- 2. Static Installation Section ---
-    md += STATIC_INSTALL_SECTION;
-
-    // --- 3. Static Basic Usage Section ---
+    // --- 2. Static Usage Section ---
     md += STATIC_USAGE_SECTION;
 
-    // --- 4. Generated Commands Section ---
+    // --- 3. Generated Commands Section ---
     md += `# [Commands](#commands)\n\n`;
 
     let allCommandDocs = [];

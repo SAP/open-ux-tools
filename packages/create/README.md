@@ -1,30 +1,26 @@
 # `@sap-ux/create` CLI Reference
 
-Configure features for Fiori applications and projects. (0.13.142)
+Configure features for Fiori applications and projects (0.13.142).
 
-# [Installation](#installation)
+# [Usage](#usage)
 
-```sh
-npm init @sap-ux@latest
-# or
-npx @sap-ux/create@latest
-```
-To avoid downloading and installing the module every time it is used, you might consider installing it globally or add it as `devDependency` to a project. Once installed, you can run it using
+It is recommended to use the cli via `npx` to always get the latest version without the need to install or update it manually. You can run it using:
 
 ```sh
-# globally installed
-sap-ux
-# locally
-npx sap-ux
+npx -y @sap-ux/create@latest [command] [sub-command] /path/to/project
 ```
 
----
-
-# [Basic usage](#basic-usage)
+If you prefer to download the module, you can install it globally or add it as `devDependency` to a project. Once installed, you can run it using
 
 ```sh
-npx sap-ux [command] [sub-command] /path/to/project
+# install globally
+npm i -g @sap-ux@latest
+# or install as devDependency
+npm i -D @sap-ux/create@latest
+# then run
+sap-ux [command] [sub-command] /path/to/project
 ```
+
 `Note:` If the project path is not provided, the current working directory will be used.
 
 ---
