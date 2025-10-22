@@ -56,7 +56,7 @@ const listDestinationsMock = listDestinations as jest.Mock;
 
 describe('Test ABAP headless generator', () => {
     beforeAll(async () => {
-        rimraf.sync(OUTPUT_DIR);
+        rimraf.rimrafSync(OUTPUT_DIR);
         await copy(INPUT_APP_DIR_ABAP, OUTPUT_DIR);
         // This is a hack to ensure it only returns CLI in all situations
         process.stdin.isTTY = true;
@@ -75,7 +75,7 @@ describe('Test ABAP headless generator', () => {
         try {
             if (readdirSync(OUTPUT_DIR).length === 0) {
                 console.log('Removing test output folder');
-                rimraf.sync(OUTPUT_DIR);
+                rimraf.rimrafSync(OUTPUT_DIR);
             }
         } catch {
             // do nothing
