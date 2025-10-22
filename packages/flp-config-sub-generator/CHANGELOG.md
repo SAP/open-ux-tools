@@ -1,5 +1,18 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.49
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/flp-config-inquirer@0.4.47
+    -   @sap-ux/inquirer-common@0.8.6
+    -   @sap-ux/app-config-writer@0.6.49
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+    -   @sap-ux/fiori-generator-shared@0.13.27
+
 ## 0.3.48
 
 ### Patch Changes

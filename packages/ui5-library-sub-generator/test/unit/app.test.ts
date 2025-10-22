@@ -132,7 +132,7 @@ describe('Test generator methods', () => {
     jest.setTimeout(20000);
 
     afterEach(() => {
-        rimraf.sync(testOutputDir);
+        rimraf.rimrafSync(testOutputDir);
     });
 
     it('should call getDefaultTargetFolder', async () => {

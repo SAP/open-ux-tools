@@ -5,7 +5,12 @@
     "projectType": "library",
     "targets": {
         "build": {
-            "cache": false
+            "cache": true,
+            "outputs": [
+                "{projectRoot}/data/index.js",
+                "{projectRoot}/data/embeddings",
+                "{projectRoot}/data/search"
+            ]
         }
     }
 }
