@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.0
+
+### Minor Changes
+
+-   27585ad: Pre-process document sources with LLM and to clean-up an optimize for RAG code generation.
+
+## 0.3.0
+
+### Minor Changes
+
+-   e75b594: Add Fiori Development portal documentation to embeddings
+
 ## 0.2.0
 
 ### Minor Changes

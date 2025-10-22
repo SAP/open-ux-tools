@@ -1,5 +1,69 @@
 # @sap-ux/preview-middleware
 
+## 0.23.34
+
+### Patch Changes
+
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+
+## 0.23.33
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/adp-tooling@0.16.10
+    -   @sap-ux/system-access@0.6.21
+
+## 0.23.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.9
+
+## 0.23.31
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/adp-tooling@0.16.8
+    -   @sap-ux/system-access@0.6.21
+
+## 0.23.30
+
+### Patch Changes
+
+-   Updated dependencies [233259c]
+    -   @sap-ux/adp-tooling@0.16.7
+
+## 0.23.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.6
+-   @sap-ux/system-access@0.6.21
+
+## 0.23.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.5
+
+## 0.23.27
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.4
+
+## 0.23.26
+
+### Patch Changes
+
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+
 ## 0.23.25
 
 ### Patch Changes

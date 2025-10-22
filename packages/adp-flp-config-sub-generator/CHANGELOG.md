@@ -1,5 +1,95 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.98
+
+### Patch Changes
+
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+    -   @sap-ux/flp-config-inquirer@0.4.46
+
+## 0.1.97
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/adp-tooling@0.16.10
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/flp-config-inquirer@0.4.45
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/inquirer-common@0.8.5
+
+## 0.1.96
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+    -   @sap-ux/adp-tooling@0.16.9
+    -   @sap-ux/flp-config-inquirer@0.4.44
+
+## 0.1.95
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/adp-tooling@0.16.8
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/flp-config-inquirer@0.4.43
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/inquirer-common@0.8.3
+
+## 0.1.94
+
+### Patch Changes
+
+-   Updated dependencies [233259c]
+    -   @sap-ux/adp-tooling@0.16.7
+    -   @sap-ux/flp-config-inquirer@0.4.42
+
+## 0.1.93
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/adp-tooling@0.16.6
+    -   @sap-ux/fiori-generator-shared@0.13.25
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/flp-config-inquirer@0.4.41
+    -   @sap-ux/inquirer-common@0.8.2
+
+## 0.1.92
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/flp-config-inquirer@0.4.40
+    -   @sap-ux/inquirer-common@0.8.1
+    -   @sap-ux/adp-tooling@0.16.5
+
+## 0.1.91
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+    -   @sap-ux/adp-tooling@0.16.4
+    -   @sap-ux/flp-config-inquirer@0.4.39
+
+## 0.1.90
+
+### Patch Changes
+
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+    -   @sap-ux/flp-config-inquirer@0.4.38
+
 ## 0.1.89
 
 ### Patch Changes

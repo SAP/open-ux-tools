@@ -38,10 +38,10 @@ export async function generateCf(
             moduleName: app.id,
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
-            businessService: cf.businessService,
-            spaceGuid: cf.space.GUID
+            businessService: cf.businessService
         },
         fs,
+        config.options?.templatePathOverwrite,
         logger
     );
 

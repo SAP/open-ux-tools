@@ -17,27 +17,16 @@ import { addAddVariantsConfigCommand } from './variants-config';
  */
 export function getAddCommands(): Command {
     const addCommands = new Command('add');
-    // create-fiori add mockserver-config
     addAddMockserverConfigCommand(addCommands);
-    // create-fiori add smartlinks-config
     addAddSmartLinksConfigCommand(addCommands);
-    // create-fiori add cds-plugin-ui5
     addAddCdsPluginUi5Command(addCommands);
-    // create-fiori add inbound-navigation-config
     addInboundNavigationConfigCommand(addCommands);
-    // create-fiori add cards-editor
     addCardsEditorConfigCommand(addCommands);
-    // create-fiori add model
     addNewModelCommand(addCommands);
-    // create-fiori add annotations-to-odata
     addAnnotationsToOdataCommand(addCommands);
-    // create-fiori add html
     addAddHtmlFilesCmd(addCommands);
-    // create-fiori add component-usages
     addComponentUsagesCommand(addCommands);
-    // create-fiori add deploy-config
     addDeployConfigCommand(addCommands);
-    // create-fiori add variants-config
     addAddVariantsConfigCommand(addCommands);
     return addCommands;
 }

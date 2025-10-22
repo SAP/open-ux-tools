@@ -167,11 +167,11 @@ server:
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 1`] = `
 "{
   "fileName": "manifest",
-  "layer": "CUSTOMER_BASE",
+  "layer": "VENDOR",
   "fileType": "appdescr_variant",
   "reference": "test-app-id",
-  "id": "customer.app.variant",
-  "namespace": "apps/test-app-id/appVariants/customer.app.variant/",
+  "id": "app.variant",
+  "namespace": "apps/test-app-id/appVariants/app.variant/",
   "version": "0.1.0",
   "content": [
     {
@@ -194,8 +194,11 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 2`] = `
 "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
+
+# This is the resource bundle for App Title
+#__ldi.translation.uuid=mocked-uuid
 #XTIT: Application name
-customer.app.variant_sap.app.title=App Title"
+app.variant_sap.app.title=App Title"
 `;
 
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 3`] = `
