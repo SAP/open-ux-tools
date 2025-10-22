@@ -1,5 +1,25 @@
 # @sap-ux/inquirer-common
 
+## 0.8.5
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.27
+-   @sap-ux/telemetry@0.6.32
+
+## 0.8.4
+
+### Patch Changes
+
+-   06bc541: Check Transformations for Analytical default table.
+
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.26
+-   @sap-ux/telemetry@0.6.31
+
 ## 0.8.2
 
 ### Patch Changes
