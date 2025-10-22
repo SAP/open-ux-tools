@@ -14,5 +14,5 @@ export interface Service<Entity, EntityKey> {
     getAll(options?: ServiceRetrievalOptions): Promise<Entity[] | []>;
 }
 
-export { SystemService } from './backend-system';
-export { ApiHubSettingsService } from './api-hub';
+export type { SystemService } from './backend-system';
+export type { ApiHubSettingsService } from './api-hub';
