@@ -27,7 +27,7 @@ export function getButtonLocator(page: Page | FrameLocator, name: string, contex
  */
 export class ListReport {
     private readonly frame: FrameLocator;
-    private readonly ui5Version: string;
+    private readonly feVersion: 'fev2' | 'fev4';
     /**
      * @returns Locator for the "Go" button.
      */
@@ -78,6 +78,9 @@ export class ListReport {
      * @returns Locator for the table title/header.
      */
     get tableTitle(): Locator {
+        if (this.feVersion === 'fev4') {
+            return this.frame.locator('.sapMListHdr .sapMTitle');
+        }
         return this.frame.locator('.sapMTitle.sapUiCompSmartTableHeader');
     }
 
@@ -92,9 +95,11 @@ export class ListReport {
 
     /**
      * @param frame - FrameLocator for the List Report.
+     * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
      */
-    constructor(frame: FrameLocator) {
+    constructor(frame: FrameLocator, feVersion: 'fev2' | 'fev4' = 'fev2') {
         this.frame = frame;
+        this.feVersion = feVersion;
     }
 }
 
@@ -207,6 +212,19 @@ export class TableSettings {
         }\` table`, async () => {
             await rows.nth(index).hover();
             await rows.nth(index).getByRole('button', { name: 'Move Down' }).click();
+        });
+    }
+    /**
+     * Checks given elements are visible.
+     *
+     * @param texts - list of texts to checked.
+     */
+    async expectItemsToBeVisible(texts: string[]): Promise<void> {
+        const textsList = texts.join(', ');
+        await test.step(`Check \`${textsList}\` exist in the \`${this.dialogName}\` dialog`, async () => {
+            for (const text of texts) {
+                await expect(this.dialog.getByText(text)).toBeVisible();
+            }
         });
     }
 }
