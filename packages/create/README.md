@@ -68,7 +68,7 @@ Add features to an SAP Fiori app.
 
 ## [` add mockserver-config`](#-add-mockserver-config)
 
-Add configuration for the mockserver module to enable local OData mocking.
+Add the necessary configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver to enable local OData mocking.
 
 **Options:**
 - `-i, --interactive` - ask for config options, otherwise use defaults
@@ -90,7 +90,7 @@ Add a smartLinks configuration to a project for cross-app navigation.
 
 ## [` add cds-plugin-ui5`](#-add-cds-plugin-ui5)
 
-Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 integration.
+Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 Server integration.
 
 **Options:**
 - `-n, --skip-install` - skip npm install step
@@ -112,7 +112,7 @@ Add Fiori Launchpad inbound navigation configuration to a project.
 
 ## [` add cards-editor`](#-add-cards-editor)
 
-Add a cards editor configuration to a project, enabling card generation.
+Add the necessary configuration to an existing yaml file and the script to package.json for cards generation. It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.
 
 **Options:**
 - `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
@@ -132,7 +132,7 @@ Add a new OData service and UI5 model to an existing adaptation project.
 
 ## [` add annotations`](#-add-annotations)
 
-Add annotations to the OData service of an adaptation project.
+Adds an annotation to the OData Source of the base application in an adaptation project.
 
 **Options:**
 - `-s, --simulate` - simulate only do not write or install
@@ -142,7 +142,7 @@ Add annotations to the OData service of an adaptation project.
 
 ## [` add html`](#-add-html)
 
-Add HTML files for local preview and testing, using the preview middleware configuration.
+Add html files for local preview and testing to the project. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 **Options:**
 - `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
@@ -153,7 +153,7 @@ Add HTML files for local preview and testing, using the preview middleware confi
 
 ## [` add component-usages`](#-add-component-usages)
 
-Add component usages to an adaptation project, updating the manifest accordingly.
+Add the component usages to an adaptation project.
 
 **Options:**
 - `-s, --simulate` - simulate only do not write or install
@@ -162,7 +162,7 @@ Add component usages to an adaptation project, updating the manifest accordingly
 
 ## [` add deploy-config`](#-add-deploy-config)
 
-Add or update ABAP deployment configuration files for the project.
+Prompt for ABAP deployment configuration details and add/update the project files accordingly.
 
 **Options:**
 - `-t, --target <string>` _(required)_ - target for deployment; ABAP or Cloud Foundry (not yet implemented)
@@ -175,7 +175,7 @@ Add or update ABAP deployment configuration files for the project.
 
 ## [` add variants-config`](#-add-variants-config)
 
-Add configuration and scripts for variant management.
+Add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 **Options:**
 - `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
@@ -194,7 +194,7 @@ Convert existing SAP Fiori applications.
 
 ## [` convert preview-config`](#-convert-preview-config)
 
-Convert an app to use virtual preview endpoints and update configuration files.
+Executed in the root folder of an app, it will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
 
 **Options:**
 - `-s, --simulate <boolean>` _(required)_ - simulate only do not write
@@ -213,7 +213,7 @@ Remove features from existing SAP Fiori applications.
 
 ## [` remove mockserver-config`](#-remove-mockserver-config)
 
-Remove the configuration for the mockserver module from a project.
+Removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver.
 
 **Options:**
 - `-v, --verbose` - show verbose information
@@ -230,7 +230,7 @@ Change existing adaptation projects.
 
 ## [` change data-source`](#-change-data-source)
 
-Change the OData source of the base application in an adaptation project.
+Replace the OData Source of the base application in an adaptation project.
 
 **Options:**
 - `-s, --simulate` - simulate only do not write or install
