@@ -65,7 +65,7 @@ export default function init(
 
     // Do health check to all available oData service instances.
     const oDataHealthCheckStartTime = Date.now();
-    const oDataHealthChecker = new ODataHealthChecker();
+    const oDataHealthChecker = new ODataHealthChecker(rta);
     oDataHealthChecker
         .getHealthStatus()
         .then((healthStatus) =>

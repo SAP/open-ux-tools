@@ -41,15 +41,8 @@ export interface AnnotationFileDetails {
     annotationPathFromRoot: string | undefined;
 }
 
-export type ODataVersion = 'v2' | 'v4' | undefined;
-
 export interface AnnotationDataSourceMap {
-    [key: string]: {
-        serviceUrl: string;
-        annotationDetails: AnnotationFileDetails;
-        metadataReadErrorMsg: string;
-        oDataVersion: ODataVersion;
-    };
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails; metadataReadErrorMsg: string };
 }
 
 export interface AnnotationDataSourceResponse {

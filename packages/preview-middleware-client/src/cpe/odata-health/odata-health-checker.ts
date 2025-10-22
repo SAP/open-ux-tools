@@ -1,10 +1,15 @@
 import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
-import { getDataSourceAnnotationFileMap, ODataVersion } from '../../adp/api-handler';
+import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status';
 
 /**
- * Describes an OData service instance for health checking.
+ * The OData version type.
+ */
+type ODataVersion = 'v2' | 'v4';
+
+/**
+ * Describes an OData service instance.
  */
 interface ODataServiceInfo {
     /**
@@ -15,30 +20,68 @@ interface ODataServiceInfo {
      * The OData protocol version ('v2' or 'v4').
      */
     oDataVersion: ODataVersion;
-    /**
-     * Optional error message from backend metadata retrieval.
-     */
-    metadataReadErrorMsg: string | undefined;
 }
 
 /**
- * Use this class to do a health check for an OData service, supports both v2 and v4
- * format. This health checker ensures not only that $metadata is valid, but also that UI5
+ * Represents the OData service data source from the manifest.
+ */
+interface DataSource {
+    uri: string;
+    type: string;
+    settings: {
+        odataVersion?: ODataVersion;
+        localUri: string;
+    };
+}
+
+type DataSourceRecord = Record<string, DataSource>;
+
+/**
+ * Use this class to do a health check for all available OData services, supports both v2 and v4
+ * format. This health checker ensures not only that $metadata is valid, but also that the UI5 framework
  * itself can consume the service via its models.
  */
 export class ODataHealthChecker {
     /**
+     * The OData type.
+     */
+    private static readonly ODATA_TYPE: string = 'OData';
+
+    /**
+     * The default OData version.
+     */
+    private static readonly DEFAULT_ODATA_VERSION: ODataVersion = 'v2';
+
+    /**
+     * Use this helper function to filter the OData data source items from the manifest.
+     * @param src The service data source.
+     * @returns True if the data source represents an OData service.
+     */
+    private isOdataService = (src: DataSource): boolean => src.type === ODataHealthChecker.ODATA_TYPE;
+
+    /**
+     * Use this helper function to map the OData data source to the internal structure
+     * used in this class.
+     * @param src The OData service data source.
+     * @returns The OData service info object.
+     */
+    private toOdataServiceInfo = (src: DataSource): ODataServiceInfo => ({
+        serviceUrl: src.uri,
+        oDataVersion: src.settings.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
+    });
+
+    constructor(private rta: RuntimeAuthoring) {}
+
+    /**
      * Does a health check to all available OData services.
      *
-     * @returns {Promise<ODataHealthStatus[]>} Resolves with array containing the health
+     * @returns Resolves with an array containing the health
      * status for each OData service.
      */
     async getHealthStatus(): Promise<ODataHealthStatus[]> {
-        const services = await this.getServices();
+        const services = this.getServices();
         const metadataPromises = await Promise.allSettled(
-            services.map(({ serviceUrl, oDataVersion, metadataReadErrorMsg }) =>
-                this.getServiceMetadata(serviceUrl, oDataVersion, metadataReadErrorMsg)
-            )
+            services.map(({ serviceUrl, oDataVersion }) => this.getServiceMetadata(serviceUrl, oDataVersion))
         );
 
         return metadataPromises.map((metadataPromise, idx) =>
@@ -49,31 +92,21 @@ export class ODataHealthChecker {
     }
 
     /**
-     * This method does strong health check (with ODataModel). This ensures not only
-     * that $metadata is valid, but also that UI5 itself can consume the service via its models.
-     * Some services may have valid $metadata but still fail in UI5’s ODataModel
+     * This method does a strong health check (with the ODataModel). This ensures not only
+     * that the $metadata is valid, but also that the UI5 framework itself can consume the service via its models.
+     * Some services may have valid $metadata but still fail in the UI5’s ODataModel
      * (e.g., weird annotations, CORS issues, etc.).
      *
-     * @param {string} serviceUrl - The OData service url.
-     * @param {ODataVersion} oDataVersion - The OData version.
-     * @param {string|undefined} metadataReadErrorMsg - Any backend error message during the metadata retreival in the backend.
-     * The metadata is used to determine the oData version and send that version back to the client.
-     * @returns {Promise<any>} Rsolved with valid metadata.
+     * @param serviceUrl The OData service url.
+     * @param oDataVersion The OData version.
+     * @returns Rsolved with valid metadata.
      */
-    private async getServiceMetadata(
-        serviceUrl: string,
-        oDataVersion: ODataVersion,
-        metadataReadErrorMsg: string | undefined
-    ): Promise<ODataMetadata> {
+    private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
         switch (oDataVersion) {
             case 'v2':
                 return this.getServiceV2Metadata(serviceUrl);
             case 'v4':
                 return this.getServiceV4Metadata(serviceUrl);
-            default: {
-                const errorDetails = metadataReadErrorMsg ? ` ${metadataReadErrorMsg}` : '';
-                throw new Error(`Unable to read OData version from the metadata xml.${errorDetails}`);
-            }
         }
     }
 
@@ -108,12 +141,11 @@ export class ODataHealthChecker {
             );
     }
 
-    private async getServices(): Promise<ODataServiceInfo[]> {
-        const { annotationDataSourceMap } = await getDataSourceAnnotationFileMap();
-        return Object.values(annotationDataSourceMap).map(({ serviceUrl, oDataVersion, metadataReadErrorMsg }) => ({
-            serviceUrl,
-            oDataVersion,
-            metadataReadErrorMsg
-        }));
+    private getServices(): ODataServiceInfo[] {
+        const manifest = this.rta.getRootControlInstance().getManifest();
+        const dataSources = (manifest ?? {})['sap.app']?.dataSources as unknown as DataSourceRecord;
+        return Object.values(dataSources ?? {})
+            .filter(this.isOdataService)
+            .map(this.toOdataServiceInfo);
     }
 }

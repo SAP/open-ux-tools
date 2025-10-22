@@ -6,40 +6,98 @@ import ODataModel4, {
     oDataRequestObjectSpy,
     oDataDestroySpy as oDataV4DestroySpy
 } from 'mock/sap/ui/model/odata/v4/ODataModel';
-import * as apiHandler from '../../../../src/adp/api-handler';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ODataHealthChecker } from '../../../../src/cpe/odata-health/odata-health-checker';
 import { ODataDownStatus, ODataUpStatus } from '../../../../src/cpe/odata-health/odata-health-status';
 
-// Mock the api-handler module
-jest.mock('../../../../src/adp/api-handler');
+type ODataVersion = 'v2' | 'v4';
+
+interface DataSource {
+    uri: string;
+    type: string;
+    settings: {
+        odataVersion?: ODataVersion;
+        localUri: string;
+    };
+}
+
+type DataSourceRecord = Record<string, DataSource>;
+
+type Manifest = {
+    'sap.app': {
+        dataSources: DataSourceRecord;
+    };
+};
 
 describe('ODataHealthChecker', () => {
+    const MANIFEST_WITH_HEALTHY_SERVICES: Manifest = {
+        'sap.app': {
+            dataSources: {
+                service1: {
+                    uri: 'http://localhost:8080/service1',
+                    type: 'OData',
+                    settings: {
+                        localUri: '/service1'
+                    }
+                },
+                service2: {
+                    uri: 'http://localhost:8080/service2',
+                    type: 'OData',
+                    settings: {
+                        odataVersion: 'v4' as const,
+                        localUri: '/service2'
+                    }
+                },
+                annotationsService: {
+                    uri: 'http://localhost:8080/annotations',
+                    type: 'ODataAnnotation',
+                    settings: {
+                        localUri: '/annotations'
+                    }
+                }
+            }
+        }
+    };
+
+    const MANIFEST_WITH_UNHEALTHY_SERVICE: Manifest = {
+        'sap.app': {
+            dataSources: {
+                workingService: {
+                    uri: 'http://localhost:8080/working',
+                    type: 'OData',
+                    settings: {
+                        odataVersion: 'v2' as const,
+                        localUri: '/working'
+                    }
+                },
+                failingService: {
+                    uri: 'http://localhost:8080/failing',
+                    type: 'OData',
+                    settings: {
+                        odataVersion: 'v2' as const,
+                        localUri: '/failing'
+                    }
+                }
+            }
+        }
+    };
+
     let healthChecker: ODataHealthChecker;
-    let mockGetDataSourceAnnotationFileMap: jest.SpyInstance;
+    const getManifestMock: jest.Mock = jest.fn();
+    const rtaMock: jest.Mocked<RuntimeAuthoring> = {
+        getRootControlInstance: () => ({
+            getManifest: getManifestMock
+        })
+    } as unknown as jest.Mocked<RuntimeAuthoring>;
 
     beforeEach(() => {
-        healthChecker = new ODataHealthChecker();
-        mockGetDataSourceAnnotationFileMap = jest.spyOn(apiHandler, 'getDataSourceAnnotationFileMap');
+        healthChecker = new ODataHealthChecker(rtaMock);
         jest.clearAllMocks();
     });
 
     describe('getHealthStatus', () => {
         it('should return health status for all services', async () => {
-            // Arrange
-            const mockServices = {
-                annotationDataSourceMap: {
-                    service1: {
-                        serviceUrl: 'http://localhost:8080/service1',
-                        oDataVersion: 'v2' as const
-                    },
-                    service2: {
-                        serviceUrl: 'http://localhost:8080/service2',
-                        oDataVersion: 'v4' as const
-                    }
-                }
-            };
-
-            mockGetDataSourceAnnotationFileMap.mockResolvedValue(mockServices);
+            getManifestMock.mockReturnValue(MANIFEST_WITH_HEALTHY_SERVICES);
 
             // Mock successful metadata loading for both services
             oDataMetadataLoadedSpy.mockResolvedValue({ version: 'v2', metadata: 'test' });
@@ -74,21 +132,7 @@ describe('ODataHealthChecker', () => {
         });
 
         it('should handle mixed success and failure scenarios', async () => {
-            // Arrange
-            const mockServices = {
-                annotationDataSourceMap: {
-                    workingService: {
-                        serviceUrl: 'http://localhost:8080/working',
-                        oDataVersion: 'v2' as const
-                    },
-                    failingService: {
-                        serviceUrl: 'http://localhost:8080/failing',
-                        oDataVersion: 'v2' as const
-                    }
-                }
-            };
-
-            mockGetDataSourceAnnotationFileMap.mockResolvedValue(mockServices);
+            getManifestMock.mockReturnValue(MANIFEST_WITH_UNHEALTHY_SERVICE);
             oDataMetadataLoadedSpy
                 .mockResolvedValueOnce({ metadata: 'success' })
                 .mockRejectedValueOnce(new Error('Service unavailable'));
@@ -105,41 +149,21 @@ describe('ODataHealthChecker', () => {
         });
 
         it('should handle empty service list', async () => {
-            // Arrange
-            mockGetDataSourceAnnotationFileMap.mockResolvedValue({
-                annotationDataSourceMap: {}
-            });
-
-            // Act
-            const result = await healthChecker.getHealthStatus();
-
-            // Assert
+            getManifestMock.mockReturnValue({});
+            let result = await healthChecker.getHealthStatus();
             expect(result).toHaveLength(0);
-        });
 
-        it('should handle error during OData version retrieval', async () => {
-            // Arrange
-            const metadataReadErrorMsg = 'Failed to read metadata on the server.';
-            const mockServices = {
-                annotationDataSourceMap: {
-                    errorService: {
-                        serviceUrl: 'http://localhost:8080/error',
-                        metadataReadErrorMsg
-                    }
+            getManifestMock.mockReturnValue({ 'sap.app': {} });
+            result = await healthChecker.getHealthStatus();
+            expect(result).toHaveLength(0);
+
+            getManifestMock.mockReturnValue({
+                'sap.app': {
+                    dataSources: {}
                 }
-            };
-
-            mockGetDataSourceAnnotationFileMap.mockResolvedValue(mockServices);
-
-            // Act
-            const result = await healthChecker.getHealthStatus();
-            const versionRetreivalErrorMessage = (result[0] as ODataDownStatus).errorMessage;
-
-            // Assert
-            expect(result[0].serviceUrl).toBe('http://localhost:8080/error');
-            expect(versionRetreivalErrorMessage).toBe(
-                `Unable to read OData version from the metadata xml. ${metadataReadErrorMsg}`
-            );
+            });
+            result = await healthChecker.getHealthStatus();
+            expect(result).toHaveLength(0);
         });
     });
 });
