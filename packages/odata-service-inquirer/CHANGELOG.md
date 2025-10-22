@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.7
+
+### Patch Changes
+
+-   1b5d459: Fixes creds prompt shown when sap client invalid (on-prem url/client only)
+
 ## 2.9.6
 
 ### Patch Changes
