@@ -107,6 +107,9 @@ export function getAbapOnPremSystemQuestions(
                             client
                         );
                         if (existingBackend) {
+                            // Prevents further prompts by setting the client to invalid
+                            // This is a temp workaround until multiple systems with the same url/client key is supported
+                            sapClientRef.isValid = false;
                             return t('prompts.validationMessages.backendSystemExistsWarning', {
                                 backendName: existingBackend.name
                             });
