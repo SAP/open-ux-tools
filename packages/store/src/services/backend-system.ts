@@ -102,7 +102,7 @@ export function getInstance(logger: Logger, options: ServiceOptions = {}): Syste
  */
 function ensureSettingsMigrated(): void {
     const sapDevToolsDir = getSapDevToolsDirectory();
-    const migrationFlag = join(sapDevToolsDir, '.migrated');
+    const migrationFlag = join(sapDevToolsDir, '.systemsMigrated');
 
     if (existsSync(migrationFlag)) {
         return;
