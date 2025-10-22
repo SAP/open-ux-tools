@@ -11,7 +11,9 @@ import { findProjectRoot, getProjectType } from '@sap-ux/project-access';
  */
 export function addCardsEditorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')
-        .description('Add the necessary configuration to an existing yaml file and the script to package.json for cards generation. It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.')
+        .description(
+            'Add the necessary configuration to an existing yaml file and the script to package.json for cards generation. It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.'
+        )
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
