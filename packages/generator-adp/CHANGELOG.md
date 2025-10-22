@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.5.13
+
+### Patch Changes
+
+-   27fb53e: fix: CF integration tests and sonar issues
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+
 ## 0.5.12
 
 ### Patch Changes

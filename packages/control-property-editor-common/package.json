@@ -23,7 +23,7 @@
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
         "npm-run-all2": "6.2.0",
-        "rimraf": "5.0.5",
+        "rimraf": "6.0.1",
         "ts-jest": "29.4.5"
     },
     "files": [
