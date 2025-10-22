@@ -2,7 +2,7 @@ import { expect } from '@sap-ux-private/playwright';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V4 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, readChanges, TableSettings } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
 import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
@@ -18,15 +18,14 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         },
         async ({ page, previewFrame, projectCopy, ui5Version }) => {
             const dialog = new AdpDialog(previewFrame, ui5Version);
-            const lr = new ListReport(previewFrame);
+            const lr = new ListReport(previewFrame, 'fev4');
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
-            await lr.locatorForListReportTableRow(0).click();
+            await lr.clickOnGoButton();
+            await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await editor.reloadCompleted();
             // wait until the quick actions label is rendered in the preview
             await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
             await editor.quickActions.addCustomTableColumn.click();
@@ -36,46 +35,43 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await editor.toolbar.saveAndReloadButton.click();
 
             await expect(editor.toolbar.saveButton).toBeDisabled();
-
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        fragments: expect.objectContaining({
-                            'table-column.fragment.xml': expect.stringMatching(
-                                new RegExp(`<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'addXML',
+                        content: {
+                            targetAggregation: 'columns',
+                            index: 3,
+                            fragmentPath: 'fragments/table-column.fragment.xml'
+                        }
+                    }
+                ],
+                fragments: {
+                    'table-column.fragment.xml': `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
     <table:Column
         id="column-[a-z0-9]+"
         width="10%"
         header="New Column">
         <Text id="text-[a-z0-9]+" text="Sample data"/>
     </table:Column>
-</core:FragmentDefinition>`)
-                            )
-                        }),
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'addXML',
-                                content: expect.objectContaining({
-                                    targetAggregation: 'columns',
-                                    index: 3,
-                                    fragmentPath: 'fragments/table-column.fragment.xml'
-                                })
-                            })
-                        ])
-                    })
-                );
+</core:FragmentDefinition>`
+                }
+            });
 
             await editor.reloadCompleted();
 
-            await expect(previewFrame.getByRole('columnheader', { name: 'New column' }).locator('bdi')).toBeVisible();
+            await expect(
+                previewFrame.getByRole('columnheader', { name: 'New column' }).locator('bdi'),
+                `Check Column Name is \`New Column\``
+            ).toBeVisible();
             if (satisfies(ui5Version, '<1.120.0')) {
                 await expect(previewFrame.getByRole('cell', { name: 'Sample data' }).first()).toBeVisible();
             } else {
-                await expect(previewFrame.getByRole('gridcell', { name: 'Sample data' }).first()).toBeVisible();
+                await expect(
+                    previewFrame.getByRole('gridcell', { name: 'Sample data' }).first(),
+                    `Check Column Data is \`Sample data\``
+                ).toBeVisible();
             }
         }
     );
@@ -89,11 +85,11 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         },
         async ({ page, projectCopy, previewFrame, ui5Version }) => {
             const editor = new AdaptationEditorShell(page, ui5Version);
-            const lr = new ListReport(previewFrame);
+            const lr = new ListReport(previewFrame, 'fev4');
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.goButton.click();
-            await lr.locatorForListReportTableRow(0).click();
+            await lr.clickOnGoButton();
+            await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
@@ -101,29 +97,22 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
 
             await editor.toolbar.saveAndReloadButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
-
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'appdescr_fe_changePageConfiguration',
-                                content: expect.objectContaining({
-                                    page: 'RootEntityObjectPage',
-                                    entityPropertyChange: expect.objectContaining({
-                                        propertyPath: 'variantManagement',
-                                        operation: 'UPSERT',
-                                        propertyValue: 'Control'
-                                    })
-                                })
-                            })
-                        ])
-                    })
-                );
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                propertyPath: 'variantManagement',
+                                operation: 'UPSERT',
+                                propertyValue: 'Control'
+                            }
+                        }
+                    }
+                ]
+            });
             // TODO: Check QA state disabled and check the message to be "'This option has been disabled because variant management is already enabled for tables and charts'"
         }
     );
@@ -137,40 +126,34 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         },
         async ({ page, projectCopy, previewFrame, ui5Version }) => {
             const editor = new AdaptationEditorShell(page, ui5Version);
-            const lr = new ListReport(previewFrame);
+            const lr = new ListReport(previewFrame, 'fev4');
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.goButton.click();
-            await lr.locatorForListReportTableRow(0).click();
+            await lr.clickOnGoButton();
+            await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
             await editor.quickActions.enableEmptyRowMode.click();
             await editor.toolbar.saveAndReloadButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'appdescr_fe_changePageConfiguration',
-                                content: expect.objectContaining({
-                                    page: 'RootEntityObjectPage',
-                                    entityPropertyChange: expect.objectContaining({
-                                        propertyPath:
-                                            'controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/tableSettings/creationMode/name',
-                                        operation: 'UPSERT',
-                                        propertyValue: 'InlineCreationRows'
-                                    })
-                                })
-                            })
-                        ])
-                    })
-                );
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/tableSettings/creationMode/name',
+                                operation: 'UPSERT',
+                                propertyValue: 'InlineCreationRows'
+                            }
+                        }
+                    }
+                ]
+            });
 
             // TODO check the button disabled state and the message
         }
@@ -185,35 +168,27 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         },
         async ({ page, previewFrame, ui5Version }) => {
             const editor = new AdaptationEditorShell(page, ui5Version);
-            const lr = new ListReport(previewFrame);
-            const tableSettings = new TableSettings(previewFrame, 'fev4');
+            const lr = new ListReport(previewFrame, 'fev4');
+            const tableSettings = new TableSettings(previewFrame, 'Toolbar Configuration', 'fev4');
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
-            await lr.locatorForListReportTableRow(0).click();
+            await lr.clickOnGoButton();
+            await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
-            // await page.waitForTimeout(3000); // wait for the quick actions to be ready
             await editor.quickActions.changeTableActions.click();
-
-            let actionTexts = await tableSettings.getActionSettingsTexts();
-
-            expect(actionTexts).toEqual(['Basic Search', 'Approve', 'Cancel', 'Delete']);
+            await tableSettings.expectItemsToBeVisible(['Basic Search', 'Approve', 'Callback', 'Delete']);
 
             await tableSettings.moveActionUp(1);
 
-            actionTexts = await tableSettings.getActionSettingsTexts();
-            expect(actionTexts).toEqual(['Approve', 'Basic Search', 'Cancel', 'Delete']);
-
-            await tableSettings.actionSettingsDialog.getByRole('button').filter({ hasText: 'OK' }).click();
+            await tableSettings.expectItemsToBeVisible(['Approve', 'Basic Search', 'Cancel', 'Delete']);
+            await tableSettings.dialog.getByRole('button').filter({ hasText: 'OK' }).click();
 
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
 
-            await expect(page.getByTestId('saved-changes-stack')).toBeVisible();
-            const changes = await page.getByTestId('saved-changes-stack').getByText('Move Action Change').all();
-            expect(changes.length).toBe(1);
+            await editor.changesPanel.expectSavedChangesStack(page, 'Move Action Change', 1);
         }
     );
 
@@ -227,12 +202,12 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         },
         async ({ page, previewFrame, ui5Version, projectCopy }) => {
             const editor = new AdaptationEditorShell(page, ui5Version);
-            const lr = new ListReport(previewFrame);
+            const lr = new ListReport(previewFrame, 'fev4');
             const dialog = new AdpDialog(previewFrame, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
-            await lr.locatorForListReportTableRow(0).click();
+            await lr.clickOnGoButton();
+            await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
@@ -241,38 +216,32 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'appdescr_fe_addNewPage',
-                                content: expect.objectContaining({
-                                    sourcePage: expect.objectContaining({
-                                        id: 'RootEntityObjectPage',
-                                        navigationSource: 'toFirstAssociatedEntity'
-                                    }),
-                                    targetPage: {
-                                        type: 'Component',
-                                        id: 'FirstAssociatedEntityObjectPage',
-                                        name: 'sap.fe.templates.ObjectPage',
-                                        routePattern:
-                                            'RootEntity({key})/toFirstAssociatedEntity({FirstAssociatedEntityKey}):?query:',
-                                        settings: expect.objectContaining({
-                                            contextPath: '/FirstAssociatedEntity',
-                                            editableHeaderContent: false,
-                                            entitySet: 'FirstAssociatedEntity'
-                                        })
-                                    }
-                                })
-                            })
-                        ])
-                    })
-                );
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_addNewPage',
+                        content: {
+                            sourcePage: {
+                                id: 'RootEntityObjectPage',
+                                navigationSource: 'toFirstAssociatedEntity'
+                            },
+                            targetPage: {
+                                type: 'Component',
+                                id: 'FirstAssociatedEntityObjectPage',
+                                name: 'sap.fe.templates.ObjectPage',
+                                routePattern:
+                                    'RootEntity({key})/toFirstAssociatedEntity({FirstAssociatedEntityKey}):?query:',
+                                settings: {
+                                    contextPath: '/FirstAssociatedEntity',
+                                    editableHeaderContent: false,
+                                    entitySet: 'FirstAssociatedEntity'
+                                }
+                            }
+                        }
+                    }
+                ]
+            });
         }
     );
 });

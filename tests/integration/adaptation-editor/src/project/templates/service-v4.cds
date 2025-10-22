@@ -31,8 +31,8 @@ service Service {
             Label : 'Approve',
         },  {
             $Type : 'UI.DataFieldForAction',
-            Action : 'Service.cancelRootEntity',
-            Label : 'Cancel',
+            Action : 'Service.callBack',
+            Label : 'Callback',
         }]
     @Capabilities.FilterRestrictions : {
         FilterExpressionRestrictions : [
@@ -60,8 +60,8 @@ service Service {
             Label : 'Approve',
         },  {
             $Type : 'UI.DataFieldForAction',
-            Action : 'Service.cancelRootEntity',
-            Label : 'Cancel',
+            Action : 'Service.callBack',
+            Label : 'Callback',
         }]
   entity FirstAssociatedEntity {
     key ID              : Integer       @Common.Label: 'Identifier';
@@ -73,6 +73,6 @@ service Service {
         root : Association to RootEntity;
   }
   action approveRootEntity (ID : Integer) returns String;
-  action cancelRootEntity (ID : Integer) returns String;
+  action callBack (ID : Integer) returns String;
 
 }
