@@ -38,10 +38,11 @@ const mockAxiosError403 = {
     message: 'Request failed with status code 403'
 } as AxiosError;
 
-jest.mock('../../../../../src/utils/store', () => ({
+jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    getBackendSystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValueOnce(backendSystems),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
