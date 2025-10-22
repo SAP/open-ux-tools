@@ -7,6 +7,7 @@ import {
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FlexUISupportedSystem } from '../types';
 import { filterAndMapInboundsToManifest } from '../base/helper';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 const FILTER = {
     'scheme': 'http://www.sap.com/adt/categories/ui_flex',
@@ -48,15 +49,20 @@ export async function getFlexUISupportedSystem(
  * fallback to the legacy api introduced in the UI5RtVersionService.
  *
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
+ * @param {ToolsLogger} logger - The logger instance.
  * @returns {string | undefined} System UI5 version.
  */
-export async function getSystemUI5Version(provider: AbapServiceProvider): Promise<string | undefined> {
+export async function getSystemUI5Version(
+    provider: AbapServiceProvider,
+    logger: ToolsLogger
+): Promise<string | undefined> {
     try {
         const ui5VersionService = provider.getUI5VersionService();
-        // We await here because in case of any exception from the new api we want
-        // to fallback to the legacy api - UI5RtVersionService.getUI5Version().
         return await ui5VersionService.getUI5Version();
-    } catch {
+    } catch (error) {
+        logger.debug(
+            `Could not fetch the system UI5 version: ${error.message}. Try to fetch the UI5 version with the adt api.`
+        );
         const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
         return ui5RtVersionService?.getUI5Version();
     }

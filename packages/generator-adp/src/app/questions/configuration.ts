@@ -691,11 +691,9 @@ export class ConfigPrompter {
     private async loadUI5Versions(): Promise<void> {
         let version: string | undefined;
         try {
-            version = await getSystemUI5Version(this.abapProvider);
-        } catch {
-            // Do nothing. The systemVersion field will be later set to undefined.
-            // If systemVersion field is undefined then the system version was not
-            // loaded successfuly, we display a warning in that case in the generator.
+            version = await getSystemUI5Version(this.abapProvider, this.logger);
+        } catch (error) {
+            this.logger.debug(`Could not fetch the system UI5 version: ${error.message}.`);
         }
 
         this.systemVersion = checkSystemVersionPattern(version);

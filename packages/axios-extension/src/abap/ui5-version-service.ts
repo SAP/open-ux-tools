@@ -10,17 +10,8 @@ interface UI5VersionInfo {
 }
 
 /**
- * Exception thrown when the get UI5 version api call succeed but does not provide
- * a valid version.
- */
-class UI5VersionError extends Error {
-    constructor() {
-        super('UI5 version not provided.');
-    }
-}
-
-/**
- * The service implements a request for getting the UI5 framework version on ABAP system.
+ * The service implements a request for getting the UI5 framework version on ABAP system
+ * with the bootstrap api.
  */
 export class UI5VersionService extends Axios implements Service {
     /**
@@ -34,28 +25,20 @@ export class UI5VersionService extends Axios implements Service {
     public log: Logger;
 
     /**
-     * Util method used to parse json string as a javascript plain object.
-     *
-     * @param data The json data as a string.
-     * @returns The parsed javascript object.
-     */
-    private readonly toJSON = (data: string): unknown => JSON.parse(data);
-
-    /**
      * The method returns a valid version of the UI5 framework on the ABAP system
-     *  or throws an error if the version is not provided, malformed or there are connectivity
-     *  issues or server errors.
+     * or throws an error if the version is not provided, malformed or there are
+     * connectivity issues or server errors.
      *
      * @returns The UI5 version on the ABAP system.
      */
     public async getUI5Version(): Promise<string> {
         try {
             const response = await this.get<UI5VersionInfo>('/bootstrap_info.json', {
-                transformResponse: this.toJSON
+                transformResponse: (data) => JSON.parse(data)
             });
             const { Version: version } = response.data;
             if (!version) {
-                throw new UI5VersionError();
+                throw new Error('UI5 version not provided.');
             }
             return version;
         } catch (error) {
