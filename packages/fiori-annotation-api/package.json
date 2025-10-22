@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-annotation-api",
-    "version": "0.7.5",
+    "version": "0.7.9",
     "description": "Library that provides API for reading and writing annotations in SAP Fiori elements projects.",
     "publisher": "SAPSE",
     "author": "SAP SE",

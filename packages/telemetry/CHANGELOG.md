@@ -1,5 +1,36 @@
 # @sap-ux/telemetry
 
+## 0.6.32
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+
+## 0.6.31
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+
+## 0.6.30
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/ui5-config@0.29.8
+
+## 0.6.29
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/ui5-config@0.29.8
+
 ## 0.6.28
 
 ### Patch Changes

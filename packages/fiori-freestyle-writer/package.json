@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "2.4.50",
+    "version": "2.4.55",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

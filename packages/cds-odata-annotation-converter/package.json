@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/cds-odata-annotation-converter"
     },
-    "version": "0.6.12",
+    "version": "0.6.13",
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",

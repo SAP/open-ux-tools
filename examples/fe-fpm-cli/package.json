@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fe-fpm-cli",
-    "version": "0.1.44",
+    "version": "0.1.50",
     "description": "A simple CLI to prompt required information to create a building block using the fe-fpm-writer module's prompt and generate functions.",
     "license": "Apache-2.0",
     "private": true,

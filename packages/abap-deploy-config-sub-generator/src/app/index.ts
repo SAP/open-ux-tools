@@ -228,9 +228,9 @@ export default class extends DeploymentGenerator {
                 client: this.answers.client,
                 destination: this.answers.destination
             }));
-        this.answers.isS4HC =
-            this.options.isS4HC ||
-            this.answers.isS4HC ||
+        this.answers.isAbapCloud =
+            this.options.isAbapCloud ||
+            this.answers.isAbapCloud ||
             (await determineS4HCFromTarget({
                 url: this.answers.url,
                 client: this.answers.client,
@@ -290,7 +290,7 @@ export default class extends DeploymentGenerator {
         if (this.abort || this.answers.overwrite === false) {
             return;
         }
-        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isS4HC, this.fs);
+        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isAbapCloud, this.fs);
         await generateAbapDeployConfig(
             this.destinationPath(),
             {
@@ -299,7 +299,7 @@ export default class extends DeploymentGenerator {
                     client: this.answers.client,
                     scp: this.answers.scp,
                     destination: this.answers.destination,
-                    authenticationType: this.answers.isS4HC ? AuthenticationType.ReentranceTicket : undefined // only reentrance ticket is relevant for writing to deploy config
+                    authenticationType: this.answers.isAbapCloud ? AuthenticationType.ReentranceTicket : undefined
                 },
                 app: {
                     name: this.answers.ui5AbapRepo,

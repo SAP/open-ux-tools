@@ -1,5 +1,157 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.46
+
+### Patch Changes
+
+-   Updated dependencies [1b5d459]
+    -   @sap-ux/odata-service-inquirer@2.9.7
+
+## 0.7.45
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/annotation-generator@0.3.71
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/cap-config-writer@0.12.18
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/launch-config@0.10.31
+    -   @sap-ux/odata-service-inquirer@2.9.6
+    -   @sap-ux/odata-service-writer@0.27.27
+    -   @sap-ux/telemetry@0.6.32
+    -   @sap-ux/ui5-application-inquirer@0.15.25
+    -   @sap-ux/fiori-elements-writer@2.7.28
+    -   @sap-ux/fiori-freestyle-writer@2.4.55
+
+## 0.7.44
+
+### Patch Changes
+
+-   fbe6acc: Fix for updated systems not saved
+
+## 0.7.43
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/odata-service-inquirer@2.9.5
+    -   @sap-ux/ui5-application-inquirer@0.15.24
+
+## 0.7.42
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/annotation-generator@0.3.70
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/cap-config-writer@0.12.17
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/launch-config@0.10.30
+    -   @sap-ux/odata-service-inquirer@2.9.4
+    -   @sap-ux/odata-service-writer@0.27.26
+    -   @sap-ux/telemetry@0.6.31
+    -   @sap-ux/ui5-application-inquirer@0.15.23
+    -   @sap-ux/fiori-elements-writer@2.7.27
+    -   @sap-ux/fiori-freestyle-writer@2.4.54
+
+## 0.7.41
+
+### Patch Changes
+
+-   Updated dependencies [7b89529]
+    -   @sap-ux/odata-service-inquirer@2.9.3
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/fiori-generator-shared@0.13.25
+    -   @sap-ux/odata-service-inquirer@2.9.2
+    -   @sap-ux/telemetry@0.6.30
+    -   @sap-ux/cap-config-writer@0.12.16
+    -   @sap-ux/fiori-elements-writer@2.7.26
+    -   @sap-ux/fiori-freestyle-writer@2.4.53
+    -   @sap-ux/ui5-application-inquirer@0.15.22
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/cap-config-writer@0.12.15
+    -   @sap-ux/fiori-elements-writer@2.7.25
+    -   @sap-ux/fiori-freestyle-writer@2.4.52
+    -   @sap-ux/odata-service-inquirer@2.9.1
+    -   @sap-ux/ui5-application-inquirer@0.15.21
+
+## 0.7.38
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/odata-service-inquirer@2.9.0
+    -   @sap-ux/ui5-application-inquirer@0.15.20
+
+## 0.7.37
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.7.24
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.36
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.69
+-   @sap-ux/fiori-elements-writer@2.7.23
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.35
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.7.22
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.34
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.68
+-   @sap-ux/fiori-elements-writer@2.7.21
+-   @sap-ux/odata-service-inquirer@2.8.13
+
+## 0.7.33
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/odata-service-inquirer@2.8.13
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/telemetry@0.6.29
+    -   @sap-ux/cap-config-writer@0.12.14
+    -   @sap-ux/fiori-elements-writer@2.7.20
+    -   @sap-ux/fiori-freestyle-writer@2.4.51
+    -   @sap-ux/ui5-application-inquirer@0.15.19
+
+## 0.7.32
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.8.12
+-   @sap-ux/ui5-application-inquirer@0.15.18
+
 ## 0.7.31
 
 ### Patch Changes

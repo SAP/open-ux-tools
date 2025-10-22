@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-sub-generator",
     "description": "Generator for creating UI5 libraries",
-    "version": "0.1.57",
+    "version": "0.1.65",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

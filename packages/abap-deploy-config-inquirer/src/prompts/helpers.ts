@@ -17,7 +17,7 @@ import {
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
-import { getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
+import { getBackendSystemDisplayName, getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
@@ -38,32 +38,6 @@ function getDestinationChoices(destinations: Destinations = {}): AbapSystemChoic
             };
         });
     return systemChoices;
-}
-
-/**
- * Returns the display name for the backend system.
- *
- * @param options options for display name
- * @param options.backendSystem backend system
- * @param options.includeUserName include user name in the display name
- * @returns backend display name
- */
-function getBackendDisplayName({
-    backendSystem,
-    includeUserName = true
-}: {
-    backendSystem: BackendSystem;
-    includeUserName?: boolean;
-}): string {
-    const userDisplayName = includeUserName && backendSystem.userDisplayName ? `${backendSystem.userDisplayName}` : '';
-    const systemDisplayName = getSystemDisplayName(
-        backendSystem.name,
-        userDisplayName,
-        !!backendSystem.serviceKeys,
-        backendSystem.authenticationType === AuthenticationType.ReentranceTicket
-    );
-
-    return systemDisplayName;
 }
 
 /**
@@ -102,12 +76,12 @@ async function getBackendTargetChoices(
             }
             return {
                 name: isDefault
-                    ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
-                    : getBackendDisplayName({ backendSystem: system }) ?? '',
+                    ? `${getBackendSystemDisplayName(system)} (Source system)`
+                    : getBackendSystemDisplayName(system) ?? '',
                 value: system.url,
                 isDefault,
-                scp: !!system.serviceKeys,
-                isS4HC: system.authenticationType === AuthenticationType.ReentranceTicket,
+                scp: !!system.serviceKeys, // legacy service key store entries
+                isAbapCloud: system.authenticationType === AuthenticationType.ReentranceTicket,
                 client: system.client
             };
         });
@@ -123,13 +97,14 @@ async function getBackendTargetChoices(
             name: `${getSystemDisplayName(
                 systemName,
                 user,
-                target.scp,
-                target.authenticationType === AuthenticationType.ReentranceTicket
+                target.scp || target.authenticationType === AuthenticationType.ReentranceTicket
+                    ? 'ABAPCloud'
+                    : undefined // scp is retained for legacy apps yamls that contain this value
             )} (Source system)`,
             value: target.url,
             isDefault: true,
             scp: target.scp,
-            isS4HC: target.authenticationType === AuthenticationType.ReentranceTicket,
+            isAbapCloud: target.authenticationType === AuthenticationType.ReentranceTicket,
             client: target.client
         });
     }

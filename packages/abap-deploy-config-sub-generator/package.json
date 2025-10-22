@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-sub-generator"
     },
-    "version": "0.1.77",
+    "version": "0.1.84",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {

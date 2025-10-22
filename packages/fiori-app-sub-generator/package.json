@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-app-sub-generator",
     "description": "A yeoman (sub) generator that can generate Fiori applications. Not for standalone use.",
-    "version": "0.7.31",
+    "version": "0.7.46",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

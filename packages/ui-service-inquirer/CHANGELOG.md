@@ -1,5 +1,91 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.36
+
+### Patch Changes
+
+-   Updated dependencies [1b5d459]
+    -   @sap-ux/odata-service-inquirer@2.9.7
+
+## 0.2.35
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.0
+-   @sap-ux/odata-service-inquirer@2.9.6
+-   @sap-ux/telemetry@0.6.32
+-   @sap-ux/abap-deploy-config-inquirer@1.6.35
+-   @sap-ux/inquirer-common@0.8.5
+
+## 0.2.34
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/odata-service-inquirer@2.9.5
+    -   @sap-ux/inquirer-common@0.8.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.34
+
+## 0.2.33
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.0
+-   @sap-ux/odata-service-inquirer@2.9.4
+-   @sap-ux/telemetry@0.6.31
+-   @sap-ux/abap-deploy-config-inquirer@1.6.33
+-   @sap-ux/inquirer-common@0.8.3
+
+## 0.2.32
+
+### Patch Changes
+
+-   Updated dependencies [7b89529]
+    -   @sap-ux/odata-service-inquirer@2.9.3
+
+## 0.2.31
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.32
+-   @sap-ux/odata-service-inquirer@2.9.2
+-   @sap-ux/telemetry@0.6.30
+-   @sap-ux/inquirer-common@0.8.2
+
+## 0.2.30
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.31
+-   @sap-ux/inquirer-common@0.8.1
+-   @sap-ux/odata-service-inquirer@2.9.1
+
+## 0.2.29
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/odata-service-inquirer@2.9.0
+    -   @sap-ux/inquirer-common@0.8.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.30
+
+## 0.2.28
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.29
+    -   @sap-ux/odata-service-inquirer@2.8.13
+    -   @sap-ux/telemetry@0.6.29
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 0.2.27
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.8.12
+
 ## 0.2.26
 
 ### Patch Changes

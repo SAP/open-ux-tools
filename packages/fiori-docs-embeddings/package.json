@@ -1,11 +1,11 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.2.0",
+    "version": "0.4.0",
     "description": "SAP Fiori documentation indexing",
     "private": false,
     "scripts": {
         "build-compile": "tsc --noEmit",
-        "build": "npm-run-all -l -s build-compile update-docs-script update-embeddings-script",
+        "build": "npm-run-all -l -s build-compile update-embeddings-script",
         "update-docs-script": "tsx src/scripts/build-docs.ts",
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
         "update-docs": "npm-run-all -l -s clean-data update-docs-script",

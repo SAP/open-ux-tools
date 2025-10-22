@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-inquirer",
     "description": "Generator for creating UI Service",
-    "version": "0.2.26",
+    "version": "0.2.36",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
