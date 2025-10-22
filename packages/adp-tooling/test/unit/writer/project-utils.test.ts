@@ -52,7 +52,7 @@ const cfData = {
         title: 'Original App Title'
     },
     cf: {
-        url: 'https://cf.example.com',
+        url: '/cf.example.com',
         org: { Name: 'test-org', GUID: 'org-guid' },
         space: { Name: 'test-space', GUID: 'space-guid' },
         html5RepoRuntimeGuid: 'runtime-guid',
