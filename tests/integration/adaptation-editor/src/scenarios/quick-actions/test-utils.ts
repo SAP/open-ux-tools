@@ -606,42 +606,6 @@ export async function readChanges(root: string): Promise<Changes> {
 }
 
 /**
- * Compare changes against expected changes and create appropriate matchers.
- *
- * @param projectCopy path to projectCopy to check for changes
- * @param expected The actual changes object from test results
- * @returns An expect matcher for use in tests
- */
-export async function expectChanges(projectCopy: string, expected: Partial<Changes>): Promise<void> {
-    const matcher: Record<string, any> = {};
-
-    // Process file-based properties (fragments, annotations, coding) in a single pattern
-    const fileBasedProperties: (keyof Changes)[] = ['fragments', 'annotations', 'coding'];
-
-    for (const prop of fileBasedProperties) {
-        if (expected[prop]) {
-            const matchers: Record<string, any> = {};
-            for (const [filename, content] of Object.entries(expected[prop])) {
-                matchers[filename] = expect.stringMatching(new RegExp(content));
-            }
-            matcher[prop] = expect.objectContaining(matchers);
-        }
-    }
-
-    // Handle changes array with deep conversion
-    if (expected.changes) {
-        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
-        matcher.changes = expect.arrayContaining(changeMatchers);
-    }
-
-    await expect
-        .poll(async () => readChanges(projectCopy), {
-            message: 'make sure change file is created'
-        })
-        .toEqual(matcher);
-}
-
-/**
  * Recursively convert an object to expect matchers.
  *
  * @param obj Object to convert to expect matchers
@@ -666,10 +630,6 @@ function convertToExpectMatchers(obj: any): unknown {
             // Recursively convert nested objects/arrays
             if (value !== null && typeof value === 'object') {
                 result[key] = convertToExpectMatchers(value) as any;
-            }
-            // Convert strings to stringMatching
-            else if (typeof value === 'string') {
-                result[key] = expect.stringMatching(value);
             }
             // Keep other primitive types as is
             else {
@@ -710,6 +670,12 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
             }
             matcher[prop] = expect.objectContaining(matchers);
         }
+    }
+
+    // Handle changes array with deep conversion
+    if (expected.changes) {
+        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
+        matcher.changes = expect.arrayContaining(changeMatchers);
     }
 
     await test.step(description, async () => {
