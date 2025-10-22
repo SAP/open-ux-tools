@@ -7,7 +7,6 @@ import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
 test.describe(`@quick-actions @fe-v4 @list-report`, () => {
-    test.setTimeout(5 * 60 * 10000);
     test(
         '1. Enable/Disable clear filter bar button',
         {
