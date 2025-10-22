@@ -27,5 +27,8 @@
     "choices": {
         "replaceOriginalTile": "Replace Base Application's Existing Tiles",
         "addNewTile": "Add a New Tile"
+    },
+    "additionalMessages": {
+        "replaceScenarioInfo": "Selecting this option will replace existing tiles from the base application. Please make sure that you create a new IAM app of type 'UI Adaptation' and add it to a custom business catalog. In the business role, add your custom business catalog and deactivate the original IAM app."
     }
 }

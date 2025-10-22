@@ -14,7 +14,13 @@ import {
     getTileSettingsPrompts
 } from './questions';
 import { promptNames } from '../types';
-import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from '../types';
+import type {
+    ExistingInboundRef,
+    FLPConfigPromptOptions,
+    FLPConfigQuestion,
+    TileSettingsAnswers,
+    OnActionSelect
+} from '../types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
@@ -73,14 +79,16 @@ export function getQuestions(
  *
  * @param {ManifestNamespace.Inbound} inbounds - Existing inbounds for the application.
  * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
+ * @param {OnActionSelect} onActionSelect - Callback function to handle changes in tile settings.
  * @returns {YUIQuestion<TileSettingsAnswers>[] | FLPConfigQuestion[]} An array of questions for tile settings.
  */
 export function getTileSettingsQuestions(
     inbounds: ManifestNamespace.Inbound,
-    promptOptions?: FLPConfigPromptOptions
+    promptOptions?: FLPConfigPromptOptions,
+    onActionSelect?: OnActionSelect
 ): YUIQuestion<TileSettingsAnswers>[] {
     const isCLI = getHostEnvironment() === hostEnvironment.cli;
-    const questions = getTileSettingsPrompts(inbounds);
+    const questions = getTileSettingsPrompts(inbounds, onActionSelect);
     if (!promptOptions?.existingFlpConfigInfo?.hide) {
         questions.unshift(getExistingFlpConfigInfoPrompt(isCLI) as YUIQuestion);
     }

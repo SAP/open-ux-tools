@@ -175,3 +175,7 @@ export interface TileSettingsAnswers {
     [tilePromptNames.tileHandlingAction]: string;
     [tilePromptNames.copyFromExisting]: boolean;
 }
+
+export type OnActionSelect = (
+    answer: TileSettingsAnswers['tileHandlingAction']
+) => Promise<boolean | string | undefined> | boolean | string | undefined;
