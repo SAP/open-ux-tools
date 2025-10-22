@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.16.11
+
+### Patch Changes
+
+-   27fb53e: fix: CF integration tests and sonar issues
+
 ## 0.16.10
 
 ### Patch Changes

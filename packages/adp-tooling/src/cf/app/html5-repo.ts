@@ -5,7 +5,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import { createService, getServiceInstanceKeys } from '../services/api';
+import { getServiceNameByTags, getServiceInstanceKeys, createServiceInstance } from '../services/api';
 import type { HTML5Content, ServiceKeys, Uaa, CfAppParams } from '../../types';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
@@ -75,16 +75,10 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             logger
         );
         if (!serviceKeys?.credentials?.length) {
-            await createService(
-                spaceGuid,
-                'app-runtime',
-                HTML5_APPS_REPO_RUNTIME,
-                ['html5-apps-repo-rt'],
-                undefined,
-                undefined,
-                undefined,
+            const serviceName = await getServiceNameByTags(spaceGuid, ['html5-apps-repo-rt']);
+            await createServiceInstance('app-runtime', HTML5_APPS_REPO_RUNTIME, serviceName, {
                 logger
-            );
+            });
             serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
             if (!serviceKeys?.credentials?.length) {
                 logger.debug(t('error.noUaaCredentialsFoundForHtml5Repo'));
