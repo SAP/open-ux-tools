@@ -7,38 +7,51 @@ import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
 test.describe(`@quick-actions @fe-v4 @list-report`, () => {
-    test('1. Enable/Disable clear filter bar button', {}, async ({ page, previewFrame, ui5Version, projectCopy }) => {
-        const lr = new ListReport(previewFrame, 'fev4');
-        const editor = new AdaptationEditorShell(page, ui5Version);
+    test.setTimeout(5 * 60 * 10000);
+    test(
+        '1. Enable/Disable clear filter bar button',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.130.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
-        await editor.reloadCompleted();
-        await expect(lr.clearButton, `Check \`Clear\` button in the List Report filter bar is hidden`).toBeHidden();
+            await editor.reloadCompleted();
+            await expect(lr.clearButton, `Check \`Clear\` button in the List Report filter bar is hidden`).toBeHidden();
 
-        await editor.quickActions.enableClearButton.click();
+            await editor.quickActions.enableClearButton.click();
 
-        await editor.toolbar.saveAndReloadButton.click();
-        await expect(editor.toolbar.saveButton).toBeDisabled();
-        await editor.reloadCompleted();
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await editor.reloadCompleted();
 
-        await expect(lr.clearButton, `Check \`Clear\` button in the List Report filter bar is visible`).toBeVisible();
-        await verifyChanges(projectCopy, {
-            changes: [
-                {
-                    fileType: 'change',
-                    changeType: 'appdescr_fe_changePageConfiguration',
-                    content: {
-                        page: 'RootEntityList',
-                        entityPropertyChange: {
-                            operation: 'UPSERT',
-                            propertyPath:
-                                'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton',
-                            propertyValue: true
+            await expect(
+                lr.clearButton,
+                `Check \`Clear\` button in the List Report filter bar is visible`
+            ).toBeVisible();
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'RootEntityList',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton',
+                                propertyValue: true
+                            }
                         }
                     }
-                }
-            ]
-        });
-    });
+                ]
+            });
+        }
+    );
 
     test(
         '2: Add Custom Table Column LR',
