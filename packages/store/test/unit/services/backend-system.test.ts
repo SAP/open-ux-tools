@@ -1,10 +1,22 @@
-import { SystemService } from '../../../src/services/backend-system';
+import { getInstance, SystemService } from '../../../src/services/backend-system';
 import { BackendSystem, BackendSystemKey } from '../../../src';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { initI18n, text } from '../../../src/i18n';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import * as nodeFs from 'node:fs';
 
 jest.mock('../../../src/data-provider/backend-system');
+
+jest.mock('node:fs', () => {
+    const originalFs = jest.requireActual('node:fs');
+    return {
+        ...originalFs,
+        existsSync: jest.fn().mockReturnValue(false),
+        copyFileSync: jest.fn(),
+        writeFileSync: jest.fn(),
+        mkdirSync: jest.fn()
+    };
+});
 
 describe('BackendSystem service', () => {
     beforeAll(async () => {
@@ -12,6 +24,31 @@ describe('BackendSystem service', () => {
     });
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
+
+    describe('getInstance', () => {
+        it('creates an instance of SystemService', () => {
+            const service = getInstance(logger, { baseDirectory: 'some_directory' });
+            expect(service).toBeInstanceOf(SystemService);
+        });
+
+        it('should check and return for already existing .migrated file', () => {
+            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValue(true);
+            const service = getInstance(logger);
+            expect(service).toBeInstanceOf(SystemService);
+            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.migrated'));
+        });
+
+        it('should create .migrated file after migration', () => {
+            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false).mockReturnValueOnce(true);
+            const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync').mockImplementation(() => {});
+            getInstance(logger);
+            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.migrated'));
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(
+                expect.stringContaining('.migrated'),
+                expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+            );
+        });
+    });
 
     describe('delete', () => {
         it('delegates to data provider', async () => {

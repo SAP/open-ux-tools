@@ -1,11 +1,19 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Service, ServiceRetrievalOptions } from '.';
 import type { DataProvider } from '../data-provider';
+import type { ServiceOptions } from '../types';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
-import type { ServiceOptions } from '../types';
+import { existsSync, copyFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { getFioriToolsDirectory, getSapDevToolsDirectory, getEntityFileName } from '../utils';
+import { Entity } from '../constants';
 
+/**
+ * Should not be used directly, use factory method `getService` instead.
+ * Data integrity cannot be guaranteed when using this class directly.
+ */
 export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;
     private readonly logger: Logger;
@@ -14,6 +22,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         this.logger = logger;
         this.dataProvider = new SystemDataProvider(this.logger, options);
     }
+
     public async partialUpdate(
         key: BackendSystemKey,
         entity: Partial<BackendSystem>
@@ -81,5 +90,31 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 }
 
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
+    if (!options.baseDirectory) {
+        ensureSettingsMigrated();
+        options.baseDirectory = getSapDevToolsDirectory();
+    }
     return new SystemService(logger, options);
+}
+
+/**
+ * Ensure settings are migrated from the old fiori tools directory to the new sap development tools directory.
+ */
+function ensureSettingsMigrated(): void {
+    const sapDevToolsDir = getSapDevToolsDirectory();
+    const migrationFlag = join(sapDevToolsDir, '.migrated');
+
+    if (existsSync(migrationFlag)) {
+        return;
+    }
+
+    const systemFileName = getEntityFileName(Entity.BackendSystem);
+    const legacyPath = join(getFioriToolsDirectory(), systemFileName);
+    const newPath = join(sapDevToolsDir, systemFileName);
+
+    if (existsSync(legacyPath)) {
+        mkdirSync(dirname(newPath), { recursive: true });
+        copyFileSync(legacyPath, newPath);
+        writeFileSync(migrationFlag, new Date().toISOString());
+    }
 }

@@ -3,8 +3,8 @@ import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 
-jest.mock('@sap-ux/store', () => ({
-    SystemService: jest.fn().mockImplementation(() => ({
+jest.mock('../../../../src/utils/store', () => ({
+    getBackendSystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'new system' } as BackendSystem])
     }))
 }));

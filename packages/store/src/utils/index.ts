@@ -1,5 +1,6 @@
 import { homedir } from 'node:os';
 import path from 'node:path';
+import { plural } from 'pluralize';
 
 /** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {
@@ -34,9 +35,31 @@ export enum FioriToolsSettings {
     dir = '.fioritools'
 }
 
+export enum SapDevTools {
+    dir = '.sapdevelopmenttools'
+}
+
 export const getFioriToolsDirectory = (): string => {
     return path.join(homedir(), FioriToolsSettings.dir);
 };
+
+export const getSapDevToolsDirectory = (): string => {
+    return path.join(homedir(), SapDevTools.dir);
+};
+
+/**
+ * Trims, lowercases and returns plural if a non-empty string
+ *
+ * @param s
+ */
+export function toPersistenceName(s: string): string | undefined {
+    const t = s?.trim().toLowerCase();
+    return t && plural(t);
+}
+
+export function getEntityFileName(entityName: string): string {
+    return toPersistenceName(entityName) + '.json';
+}
 
 export * from './app-studio';
 export * from './backend';

@@ -1,10 +1,9 @@
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { suggestSystemName } from '../../../../src/prompts/datasources/sap-system/prompt-helpers';
 
-jest.mock('@sap-ux/store', () => ({
+jest.mock('../../../../src/utils/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getBackendSystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'system1' }, { name: 'system2' }, { name: 'system2 (1)' }])
     }))
 }));

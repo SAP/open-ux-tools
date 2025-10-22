@@ -23,7 +23,6 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -70,11 +69,10 @@ const systemServiceMock = {
     read: systemServiceReadMock
 } as Partial<SystemService>;
 
-jest.mock('@sap-ux/store', () => ({
+jest.mock('../../../../../src/utils/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => systemServiceMock)
+    getBackendSystemService: jest.fn().mockImplementation(() => systemServiceMock)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({

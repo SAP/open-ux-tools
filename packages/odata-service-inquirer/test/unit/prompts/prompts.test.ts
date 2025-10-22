@@ -4,7 +4,6 @@ import { getQuestions } from '../../../src/prompts';
 import { DatasourceType } from '../../../src/types';
 import * as utils from '../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -16,10 +15,10 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
-jest.mock('@sap-ux/store', () => ({
+jest.mock('../../../src/utils/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getBackendSystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',

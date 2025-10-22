@@ -6,10 +6,9 @@ import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap
 import { PromptState } from '../../../../../src/utils';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 
-jest.mock('@sap-ux/store', () => ({
+jest.mock('../../../../../src/utils/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getBackendSystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'http://abap.on.prem:1234' }])
     }))
 }));
