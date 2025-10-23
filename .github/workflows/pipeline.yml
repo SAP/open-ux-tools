@@ -62,9 +62,9 @@ jobs:
             - name: Package SAP Systems VSCode extension
               if: steps.check_changeset_files.outputs.files_exists == 'true' && matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
               run: |
-                  if grep -R "@sap-ux/sap-systems-ext" .changeset/*.md >/dev/null 2>&1; then
+                  if grep -R "sap-ux-sap-systems-ext" .changeset/*.md >/dev/null 2>&1; then
                     echo "sap-systems-ext referenced in changeset. Packaging extension..."
-                    pnpm --filter @sap-ux/sap-systems-ext ide-ext:package
+                    pnpm --filter sap-ux-sap-systems-ext ide-ext:package
                   else
                     echo "sap-systems-ext not referenced in changeset. Skipping packaging."
                   fi
