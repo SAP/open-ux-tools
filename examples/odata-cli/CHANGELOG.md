@@ -1,5 +1,11 @@
 # @sap-ux/odata-cli
 
+## 0.17.17
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+
 ## 0.17.16
 
 ### Patch Changes

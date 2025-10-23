@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.66
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+-   @sap-ux/inquirer-common@0.8.6
+-   @sap-ux/system-access@0.6.22
+
 ## 0.16.65
 
 ### Patch Changes

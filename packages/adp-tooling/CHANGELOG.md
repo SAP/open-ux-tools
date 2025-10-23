@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.16.12
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/inquirer-common@0.8.6
+    -   @sap-ux/system-access@0.6.22
+
 ## 0.16.11
 
 ### Patch Changes
