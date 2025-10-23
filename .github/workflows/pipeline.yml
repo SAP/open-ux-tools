@@ -207,11 +207,27 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+            - name: Create GitHub Release (sap-systems-ext)
+              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              uses: softprops/action-gh-release@v1
+              with:
+                  tag_name: sap-systems-ext@${{ env.EXT_VERSION }}
+                  name: sap-systems-ext v${{ env.EXT_VERSION }}
+                  body: "VSCode SAP Systems extension v${{ env.EXT_VERSION }} release."
+                  draft: false
+                  prerelease: false
+                  generate_release_notes: true
+                  files: packages/sap-systems-ext/*.vsix
+                  fail_on_unmatched_files: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
             - name: Prepare Slack notification message (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
               run: |
+                # Random delimiter required to support multi-line environment variable value
                 EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
                 echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
+                # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
                 echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
                 echo "$EOF" >> $GITHUB_ENV
             - name: Prepare Slack notification message (extension release only)
