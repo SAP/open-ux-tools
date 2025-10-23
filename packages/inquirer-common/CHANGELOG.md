@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/fiori-generator-shared@0.13.27
+
 ## 0.8.5
 
 ### Patch Changes
