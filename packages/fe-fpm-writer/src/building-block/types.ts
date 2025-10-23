@@ -393,7 +393,7 @@ export interface Page extends BuildingBlock {
  * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.filterBar.FilterField
  * @example
  * <macros:filterFields>
- *    <macros:FilterField key="TotalPrice">
+ *    <macros:FilterField key="TotalPrice" label="Total Price" anchor="SomeOtherFilter" placement="After">
  *       <core:Fragment fragmentName="sap.fe.core.fpmExplorer.filterBarCustom.CustomRangeFilter" type="XML" />
  *    </macros:FilterField>
  * </macros:filterFields>
@@ -407,7 +407,7 @@ export interface CustomFilterField extends BuildingBlock {
     /**
      * The property name of the FilterField.
      */
-    key: string;
+    filterFieldKey?: string;
     /**
      * The text that will be displayed for this FilterField.
      */

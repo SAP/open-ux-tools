@@ -1,5 +1,5 @@
 <% if (!config?.hasAggregation) { %><<%- macrosNamespace %>:filterFields><% } %>
-    <<%- config?.aggregationNamespace %>:FilterField key="<%- data.key %>">
+    <<%- config?.aggregationNamespace %>:FilterField key="<%- data.filterFieldKey %>" label="<%- data.label %>">
 		<core:Fragment fragmentName="<%- data.embededFragment.ns %>.<%- data.embededFragment.name %>" type="XML" />
 	</<%- config?.aggregationNamespace %>:FilterField>
 <% if (!config?.hasAggregation) { %></<%- macrosNamespace %>:filterFields><% } %>
