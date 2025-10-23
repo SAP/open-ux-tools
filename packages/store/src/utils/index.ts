@@ -36,7 +36,7 @@ export enum FioriToolsSettings {
 }
 
 export enum SapDevTools {
-    dir = '.sapdevelopmenttools'
+    dir = '.saptools'
 }
 
 export const getFioriToolsDirectory = (): string => {

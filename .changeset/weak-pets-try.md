@@ -3,4 +3,4 @@
 '@sap-ux/odata-service-inquirer': patch
 ---
 
-migrate backend system file from .fioritools to .sapdevelopmenttools
+migrate backend system file from .fioritools to .saptools
