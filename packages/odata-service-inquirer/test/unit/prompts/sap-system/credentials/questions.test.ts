@@ -1,7 +1,7 @@
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import { type Destination, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
-import { type BackendSystem } from '@sap-ux/store';
+import { type BackendSystem, SystemService } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getCredentialsPrompts } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
@@ -10,6 +10,15 @@ import type { NewSystemAnswers } from '../../../../../src/prompts/datasources/sa
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { PromptState } from '../../../../../src/utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+
+// Mock SystemService
+const mockSystemServiceRead = jest.fn();
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
+    SystemService: jest.fn().mockImplementation(() => ({
+        read: mockSystemServiceRead
+    }))
+}));
 
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 let odataServiceMock: Partial<ODataService> | undefined;
@@ -48,6 +57,7 @@ describe('Test credentials prompts', () => {
     beforeEach(() => {
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.isAuthRequired = isAuthRequiredMock;
+        mockSystemServiceRead.mockReset();
         connectionValidatorMock.validity = {};
     });
 
@@ -113,8 +123,12 @@ describe('Test credentials prompts', () => {
             url: 'http://abap.on.prem:1234',
             username: 'user1',
             password: 'password1',
+            userDisplayName: 'user1',
             client: '001'
         };
+
+        // Mock the SystemService to return the system with username
+        mockSystemServiceRead.mockResolvedValue(backendSystemWithUsername);
 
         const answersWithBackendSystem = {
             [promptNames.systemSelection]: {
@@ -123,7 +137,7 @@ describe('Test credentials prompts', () => {
             }
         };
 
-        expect(userNamePrompt.default?.(answersWithBackendSystem as Record<string, unknown>)).toBe(
+        expect(await userNamePrompt.default?.(answersWithBackendSystem as Record<string, unknown>)).toBe(
             backendSystemWithUsername.username
         );
 
@@ -140,7 +154,7 @@ describe('Test credentials prompts', () => {
             }
         };
 
-        expect(userNamePrompt.default?.(answersWithoutBackendSystem as Record<string, unknown>)).toBe('');
+        expect(await userNamePrompt.default?.(answersWithoutBackendSystem as Record<string, unknown>)).toBe('');
     });
 
     test('should not prefill username if selected system is not a backend system or username is not available', async () => {
@@ -167,7 +181,7 @@ describe('Test credentials prompts', () => {
             }
         };
 
-        expect(userNamePrompt.default?.(answersWithDestination as Record<string, unknown>)).toBe('');
+        expect(await userNamePrompt.default?.(answersWithDestination as Record<string, unknown>)).toBe('');
     });
 
     test('should validate username/password using ConnectionValidator', async () => {
@@ -378,7 +392,7 @@ describe('Test credentials prompts', () => {
         // Should show password store warning when system is new or updated
         expect(passwordPrompt.additionalMessages?.('123')).toEqual({
             message: t('texts.passwordStoreWarning'),
-            severity: Severity.information
+            severity: Severity.warning
         });
 
         // Should not show message when system is not marked as new/updated

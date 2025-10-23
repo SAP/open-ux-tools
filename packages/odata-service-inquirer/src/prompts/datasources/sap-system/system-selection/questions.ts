@@ -20,7 +20,6 @@ import { getSystemServiceQuestion } from '../service-selection/questions';
 import { validateServiceUrl } from '../validators';
 import {
     type SystemSelectionAnswerType,
-    type BackendSystemSelection,
     connectWithBackendSystem,
     connectWithDestination,
     createSystemChoices,
@@ -217,10 +216,7 @@ export async function getSystemConnectionQuestions(
                     connectionValidator.systemAuthType === 'basic' &&
                     (await connectionValidator.isAuthRequired())
                 ) {
-                    const backend = selectedSystem.system as BackendSystemSelection;
-                    const missingCredentials = !backend.hasStoredCredentials;
-
-                    if (missingCredentials) {
+                    if (!PromptState.hasStoredCredentials) {
                         message = {
                             message: t('prompts.systemSelection.noStoredCredentials'),
                             severity: Severity.information

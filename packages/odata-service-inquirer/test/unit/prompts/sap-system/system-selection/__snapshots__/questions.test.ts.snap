@@ -131,7 +131,6 @@ exports[`Test system selection prompts should return system selection prompts an
         "name": "http://abap.on.prem:1234",
         "value": {
           "system": {
-            "hasStoredCredentials": false,
             "name": "http://abap.on.prem:1234",
             "password": "password1",
             "systemType": "OnPrem",

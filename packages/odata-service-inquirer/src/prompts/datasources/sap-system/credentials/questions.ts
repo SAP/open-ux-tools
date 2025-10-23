@@ -2,14 +2,15 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
-import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
 import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
+import LoggerHelper from '../../../logger-helper';
 import type { ValidationResult } from '../../../types';
-import type { SystemSelectionAnswerType, BackendSystemSelection } from '../system-selection/prompt-helpers';
+import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
 
 export enum BasicCredentialsPromptNames {
@@ -53,12 +54,23 @@ export function getCredentialsPrompts<T extends Answers>(
             guiOptions: {
                 mandatory: true
             },
-            default: (answers: T) => {
+            default: async (answers: T) => {
                 // Prefill username from the selected backend system if available
                 const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
                 if (selectedSystem?.type === 'backendSystem') {
-                    const backendSystem = selectedSystem.system as BackendSystemSelection;
-                    return backendSystem.username || '';
+                    const selectedBackendSystem = selectedSystem.system as BackendSystem;
+                    if (selectedBackendSystem?.userDisplayName) {
+                        try {
+                            // Read system with credentials to get the stored username, since we won't assume that displayName = username
+                            const systemWithCredentials = await new SystemService(LoggerHelper.logger).read(
+                                BackendSystemKey.from(selectedBackendSystem) as BackendSystemKey
+                            );
+                            return systemWithCredentials?.username || '';
+                        } catch (error) {
+                            // If reading fails, return empty string
+                            return '';
+                        }
+                    }
                 }
                 return '';
             },
@@ -123,7 +135,7 @@ export function getCredentialsPrompts<T extends Answers>(
                 if (PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated) {
                     return {
                         message: t('texts.passwordStoreWarning'),
-                        severity: Severity.information
+                        severity: Severity.warning
                     };
                 }
 
@@ -164,21 +176,18 @@ function updatePromptStateWithConnectedSystem(
     };
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {
-        const backendSystem = selectedSystem.system as BackendSystemSelection;
+        const backendSystem = selectedSystem.system as BackendSystem;
 
         // Have the credentials changed..
         if (backendSystem.username !== username || backendSystem.password !== password) {
-            // Determine if this is a temporary credentials scenario or an update scenario
-            const isTemporaryCredentials = !backendSystem.hasStoredCredentials;
+            // Get the hasStoredCredentials from PromptState to determine if it's temp creds scenario or new/updated
+            const hasStoredCredentials = PromptState.hasStoredCredentials || false;
 
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
                 password,
                 userDisplayName: username,
-                // Only set newOrUpdated to true if the system had existing credentials (auth error scenario)
-                // For systems without credentials, set temporaryCredentials flag instead
-                newOrUpdated: !isTemporaryCredentials,
-                temporaryCredentials: isTemporaryCredentials
+                newOrUpdated: hasStoredCredentials
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.

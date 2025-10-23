@@ -38,12 +38,10 @@ const backendSystemBasic: BackendSystem = {
     systemType: 'OnPrem'
 };
 
-const backendSystemBasicNoCreds: promptHelpers.BackendSystemSelection = {
+const backendSystemBasicNoCreds: BackendSystem = {
     name: 'http://abap.on.prem:1234',
-    url: 'http://abap.on.prem:1234',
-    username: 'user1',
-    hasStoredCredentials: false
-};
+    url: 'http://abap.on.prem:1234'
+} as BackendSystem;
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
@@ -445,6 +443,9 @@ describe('Test system selection prompts', () => {
         // Setup the connection validator mock to simulate the required conditions
         connectionValidatorMock.systemAuthType = 'basic';
         isAuthRequiredMock.mockResolvedValue(true);
+
+        // Set PromptState to indicate no stored credentials
+        PromptState.hasStoredCredentials = false;
 
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;

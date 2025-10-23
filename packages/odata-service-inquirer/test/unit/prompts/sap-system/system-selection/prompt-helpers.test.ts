@@ -1,6 +1,5 @@
 import { listDestinations } from '@sap-ux/btp-utils';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import type { BackendSystemSelection } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import {
     CfAbapEnvServiceChoice,
     createSystemChoices,
@@ -11,13 +10,12 @@ import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 
-const backendSystemBasic: BackendSystemSelection = {
+const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem',
-    hasStoredCredentials: true
+    systemType: 'OnPrem'
 };
 
 const backendSystemReentrance: BackendSystem = {

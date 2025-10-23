@@ -43,11 +43,9 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "name": "storedSystem1",
         "value": {
           "system": {
-            "hasStoredCredentials": true,
             "name": "storedSystem1",
             "systemType": "OnPrem",
             "url": "http://url1",
-            "username": "user1",
           },
           "type": "backendSystem",
         },
@@ -56,11 +54,9 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "name": "storedSystem2 (ABAP Cloud)",
         "value": {
           "system": {
-            "hasStoredCredentials": false,
             "name": "storedSystem2",
             "systemType": "BTP",
             "url": "http://url2",
-            "username": undefined,
           },
           "type": "backendSystem",
         },
