@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor Common",
     "description": "A common module for Control Property Editor react app and ui5",
     "license": "Apache-2.0",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "main": "dist/index.js",
     "repository": {
         "type": "git",
@@ -23,7 +23,7 @@
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
         "npm-run-all2": "6.2.0",
-        "rimraf": "5.0.5",
+        "rimraf": "6.0.1",
         "ts-jest": "29.4.1"
     },
     "files": [

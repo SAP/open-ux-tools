@@ -1,5 +1,19 @@
 # @sap-ux/create
 
+## 0.13.145
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/adp-tooling@0.16.12
+    -   @sap-ux/flp-config-inquirer@0.4.47
+    -   @sap-ux/preview-middleware@0.23.35
+    -   @sap-ux/app-config-writer@0.6.49
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.36
+    -   @sap-ux/system-access@0.6.22
+    -   @sap-ux/abap-deploy-config-writer@0.2.26
+
 ## 0.13.144
 
 ### Patch Changes

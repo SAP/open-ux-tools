@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.16.11",
+    "version": "0.16.12",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -79,7 +79,7 @@
         "dotenv": "16.3.1",
         "express": "4.21.2",
         "nock": "13.4.0",
-        "rimraf": "5.0.5",
+        "rimraf": "6.0.1",
         "supertest": "7.1.4"
     },
     "engines": {

@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.13
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
 ## 0.39.12
 
 ### Patch Changes

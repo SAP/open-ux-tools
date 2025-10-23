@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cf-deploy-config-inquirer",
     "description": "Prompts module that can provide prompts for cf deployment config writer",
-    "version": "0.5.30",
+    "version": "0.5.31",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
