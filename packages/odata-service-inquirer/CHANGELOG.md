@@ -1,5 +1,31 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.8
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+-   @sap-ux/inquirer-common@0.8.6
+-   @sap-ux/fiori-generator-shared@0.13.27
+
+## 2.9.7
+
+### Patch Changes
+
+-   1b5d459: Fixes creds prompt shown when sap client invalid (on-prem url/client only)
+
+## 2.9.6
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/project-input-validator@0.6.28
+    -   @sap-ux/telemetry@0.6.32
+    -   @sap-ux/inquirer-common@0.8.5
+
 ## 2.9.5
 
 ### Patch Changes

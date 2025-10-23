@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.13
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
+## 0.39.12
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/fiori-annotation-api@0.7.9
+
 ## 0.39.11
 
 ### Patch Changes

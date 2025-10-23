@@ -151,6 +151,16 @@ describe('Test refreshSpecificationDistTags()', () => {
         await refreshSpecificationDistTags({ logger });
         expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('NPM_ERROR'));
     });
+
+    test('Refresh specification dist tags - error in response. Contains code and summary.', async () => {
+        const refreshResponse = '{"error": {"code": "ENOTFOUND", "summary": "Request to uri failed."}}';
+        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce(refreshResponse);
+        const logger = getMockLogger();
+        await refreshSpecificationDistTags({ logger });
+        expect(logger.error).toHaveBeenCalledWith(
+            `Error refreshing specification dist-tags: Error: ${refreshResponse}`
+        );
+    });
 });
 
 function getMockLogger(): Logger {
