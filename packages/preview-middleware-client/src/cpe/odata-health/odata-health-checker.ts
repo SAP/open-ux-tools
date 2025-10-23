@@ -2,6 +2,7 @@ import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status';
+import Log from 'sap/base/Log';
 
 /**
  * The OData version type.
@@ -57,7 +58,7 @@ export class ODataHealthChecker {
      * @param src The service data source.
      * @returns True if the data source represents an OData service.
      */
-    private isOdataService = (src: DataSource): boolean => src.type === ODataHealthChecker.ODATA_TYPE;
+    private readonly isOdataService = (src: DataSource): boolean => src.type === ODataHealthChecker.ODATA_TYPE;
 
     /**
      * Use this helper function to map the OData data source to the internal structure
@@ -65,12 +66,12 @@ export class ODataHealthChecker {
      * @param src The OData service data source.
      * @returns The OData service info object.
      */
-    private toOdataServiceInfo = (src: DataSource): ODataServiceInfo => ({
+    private readonly toOdataServiceInfo = (src: DataSource): ODataServiceInfo => ({
         serviceUrl: src.uri,
         oDataVersion: src.settings.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
     });
 
-    constructor(private rta: RuntimeAuthoring) {}
+    constructor(private readonly rta: RuntimeAuthoring) {}
 
     /**
      * Does a health check to all available OData services.
@@ -79,10 +80,15 @@ export class ODataHealthChecker {
      * status for each OData service.
      */
     async getHealthStatus(): Promise<ODataHealthStatus[]> {
+        const oDataHealthCheckStartTime = Date.now();
+
         const services = this.getServices();
         const metadataPromises = await Promise.allSettled(
             services.map(({ serviceUrl, oDataVersion }) => this.getServiceMetadata(serviceUrl, oDataVersion))
         );
+
+        const oDataHelathCheckDurationInSec = ((Date.now() - oDataHealthCheckStartTime) / 1000).toFixed(2);
+        Log.info(`OData service health check took ${oDataHelathCheckDurationInSec} sec.`);
 
         return metadataPromises.map((metadataPromise, idx) =>
             metadataPromise.status === 'fulfilled'
@@ -143,7 +149,7 @@ export class ODataHealthChecker {
 
     private getServices(): ODataServiceInfo[] {
         const manifest = this.rta.getRootControlInstance().getManifest();
-        const dataSources = (manifest ?? {})['sap.app']?.dataSources as unknown as DataSourceRecord;
+        const dataSources = manifest?.['sap.app']?.dataSources as unknown as DataSourceRecord;
         return Object.values(dataSources ?? {})
             .filter(this.isOdataService)
             .map(this.toOdataServiceInfo);

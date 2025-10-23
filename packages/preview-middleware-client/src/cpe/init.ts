@@ -64,7 +64,6 @@ export default function init(
     ];
 
     // Do health check to all available oData service instances.
-    const oDataHealthCheckStartTime = Date.now();
     const oDataHealthChecker = new ODataHealthChecker(rta);
     oDataHealthChecker
         .getHealthStatus()
@@ -89,11 +88,7 @@ export default function init(
                 description: getError(error).message,
                 type: MessageBarType.error
             })
-        )
-        .finally(() => {
-            const oDataHelathCheckDurationInSec = ((Date.now() - oDataHealthCheckStartTime) / 1000).toFixed(2);
-            Log.info(`OData service health check took ${oDataHelathCheckDurationInSec} sec.`);
-        });
+        );
 
     try {
         loadDefaultLibraries();
