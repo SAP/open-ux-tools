@@ -216,7 +216,8 @@ export async function getSystemConnectionQuestions(
                     connectionValidator.systemAuthType === 'basic' &&
                     (await connectionValidator.isAuthRequired())
                 ) {
-                    if (!PromptState.hasStoredCredentials) {
+                    const noCredentials = !PromptState.hasStoredCredentials;
+                    if (noCredentials) {
                         message = {
                             message: t('prompts.systemSelection.noStoredCredentials'),
                             severity: Severity.information
@@ -234,7 +235,7 @@ export async function getSystemConnectionQuestions(
                         severity: Severity.warning
                     };
                 }
-                return message ? message : undefined;
+                return message ?? undefined;
             }
         } as ListQuestion<SystemSelectionAnswers>
     ];

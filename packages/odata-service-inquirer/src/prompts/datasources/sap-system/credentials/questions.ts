@@ -62,16 +62,11 @@ export function getCredentialsPrompts<T extends Answers>(
                 if (selectedSystem?.type === 'backendSystem') {
                     const selectedBackendSystem = selectedSystem.system as BackendSystem;
                     if (selectedBackendSystem?.userDisplayName) {
-                        try {
-                            // Read system with credentials to get the stored username, since we won't assume that displayName = username
-                            const systemWithCredentials = await new SystemService(LoggerHelper.logger).read(
-                                BackendSystemKey.from(selectedBackendSystem) as BackendSystemKey
-                            );
-                            return systemWithCredentials?.username || '';
-                        } catch (error) {
-                            // If reading fails, return empty string
-                            return '';
-                        }
+                        // Read system with credentials to get the stored username, since we won't assume that displayName = username
+                        const systemWithCredentials = await new SystemService(LoggerHelper.logger).read(
+                            BackendSystemKey.from(selectedBackendSystem) as BackendSystemKey
+                        );
+                        return systemWithCredentials?.username || '';
                     }
                 }
                 return '';
