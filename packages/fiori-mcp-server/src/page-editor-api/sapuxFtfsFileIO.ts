@@ -94,7 +94,10 @@ export class SapuxFtfsFileIO {
         // Import project using specification API
         return specification.importProject({
             manifest: manifest,
-            annotations: annotationData
+            annotations: annotationData,
+            flex: [],
+            fragments: [],
+            views: []
         });
     }
 
