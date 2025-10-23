@@ -7,7 +7,7 @@ import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
 import { existsSync, copyFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { getFioriToolsDirectory, getSapDevToolsDirectory, getEntityFileName } from '../utils';
+import { getFioriToolsDirectory, getSapToolsDirectory, getEntityFileName } from '../utils';
 import { Entity } from '../constants';
 
 /**
@@ -92,7 +92,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
     if (!options.baseDirectory) {
         ensureSettingsMigrated();
-        options.baseDirectory = getSapDevToolsDirectory();
+        options.baseDirectory = getSapToolsDirectory();
     }
     return new SystemService(logger, options);
 }
@@ -101,7 +101,7 @@ export function getInstance(logger: Logger, options: ServiceOptions = {}): Syste
  * Ensure settings are migrated from the old fiori tools directory to the new sap development tools directory.
  */
 function ensureSettingsMigrated(): void {
-    const sapDevToolsDir = getSapDevToolsDirectory();
+    const sapDevToolsDir = getSapToolsDirectory();
     const migrationFlag = join(sapDevToolsDir, '.systemsMigrated');
 
     if (existsSync(migrationFlag)) {

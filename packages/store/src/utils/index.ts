@@ -35,7 +35,7 @@ export enum FioriToolsSettings {
     dir = '.fioritools'
 }
 
-export enum SapDevTools {
+export enum SapTools {
     dir = '.saptools'
 }
 
@@ -43,8 +43,8 @@ export const getFioriToolsDirectory = (): string => {
     return join(homedir(), FioriToolsSettings.dir);
 };
 
-export const getSapDevToolsDirectory = (): string => {
-    return join(homedir(), SapDevTools.dir);
+export const getSapToolsDirectory = (): string => {
+    return join(homedir(), SapTools.dir);
 };
 
 /**
