@@ -1,6 +1,7 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.0.1",
+    "version": "0.0.0",
+    "private": true,
     "displayName": "SAP Systems Extension",
     "description": "SAP Systems Visual Studio Code Extension",
     "main": "./dist/extension.js",
