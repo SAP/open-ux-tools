@@ -7,7 +7,7 @@ export interface Files {
 
 /**
  * Merges old and new flex changes, processing conflicts and generating files to be written.
- * 
+ *
  * @param path - The file system path to the changes folder where change files will be stored
  * @param oldChanges - Array of existing flex change files with their content and metadata
  * @param newChangesStrings - Optional array of new flex changes serialized as JSON strings
@@ -41,7 +41,7 @@ export function mergeChanges(path: string, oldChanges: FlexChangeFile[], newChan
 /**
  * Converts an array of serialized change strings into typed FlexChange objects.
  * Filters out any invalid changes that cannot be parsed.
- * 
+ *
  * @param changeStrings - Array of serialized flex changes as JSON strings
  * @returns Array of parsed FlexChange objects, excluding any that failed to parse
  */
@@ -59,7 +59,7 @@ function convertFlexChanges(changeStrings: string[] = []): FlexChange[] {
 /**
  * Parses a single serialized flex change string into a FlexChange object.
  * Safely handles JSON parsing errors by returning undefined for invalid input.
- * 
+ *
  * @param change - A single serialized flex change as a JSON string
  * @returns The parsed FlexChange object, or undefined if parsing fails
  */
@@ -90,7 +90,7 @@ function isMatchingChange(change1: FlexChange, change2: FlexChange): boolean {
 /**
  * Removes all old flex changes that target the same element and property as the new change.
  * This prevents duplicate changes from accumulating when multiple changes affect the same property.
- * 
+ *
  * @param oldChanges - Array of parsed flex change files to search through and modify
  * @param newChange - The new flex change that should replace matching old changes
  */
@@ -109,7 +109,7 @@ function deleteOldFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: Fle
 /**
  * Adds parsed change files to the files collection for writing to the filesystem.
  * Each change file is mapped to its target file path within the changes folder.
- * 
+ *
  * @param path - The base path to the changes folder where files will be written
  * @param changeFiles - Array of parsed flex change files to be added
  * @param files - Target object that maps file paths to change objects for writing
@@ -125,7 +125,7 @@ function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], fil
 /**
  * Parses the JSON content of flex change files into structured objects.
  * Safely handles parsing errors by skipping invalid files and continuing with valid ones.
- * 
+ *
  * @param changeFiles - Optional array of flex change files with serialized content
  * @returns Array of parsed change files with both metadata and parsed change objects
  */
@@ -149,7 +149,7 @@ function parseChangeFilesContent(changeFiles?: FlexChangeFile[]): ParsedFlexChan
  * Processes a new flex change against existing changes to handle conflicts and duplicates.
  * Determines whether the new change should be skipped (if identical to existing) or should
  * replace existing changes. Preserves original file names when overwriting existing changes.
- * 
+ *
  * @param oldChanges - Array of existing parsed flex changes to compare against
  * @param newChange - The new flex change to process and potentially merge
  * @returns True if the new change should be skipped (no further processing needed), false otherwise
