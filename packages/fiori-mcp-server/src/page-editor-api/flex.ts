@@ -6,10 +6,12 @@ export interface Files {
 }
 
 /**
- * Merge an array of serialized flex changes (delete, modify, keep)
- * @param path - path to changes folder
- * @param oldChangesStrings - array of serialized flex changes
- * @param newChangesStrings - array of serialized flex changes
+ * Merges old and new flex changes, processing conflicts and generating files to be written.
+ * 
+ * @param path - The file system path to the changes folder where change files will be stored
+ * @param oldChanges - Array of existing flex change files with their content and metadata
+ * @param newChangesStrings - Optional array of new flex changes serialized as JSON strings
+ * @returns An object mapping file paths to change objects that should be written to disk
  */
 export function mergeChanges(path: string, oldChanges: FlexChangeFile[], newChangesStrings?: string[]): Files {
     const files: Files = {};
@@ -37,8 +39,11 @@ export function mergeChanges(path: string, oldChanges: FlexChangeFile[], newChan
 }
 
 /**
- * Convert array of string changes to typed array of flex changes
- * @param changeStrings - array of serialized changes as strings
+ * Converts an array of serialized change strings into typed FlexChange objects.
+ * Filters out any invalid changes that cannot be parsed.
+ * 
+ * @param changeStrings - Array of serialized flex changes as JSON strings
+ * @returns Array of parsed FlexChange objects, excluding any that failed to parse
  */
 function convertFlexChanges(changeStrings: string[] = []): FlexChange[] {
     const changes: FlexChange[] = [];
@@ -52,8 +57,11 @@ function convertFlexChanges(changeStrings: string[] = []): FlexChange[] {
 }
 
 /**
- * Convert array of string changes to typed array of flex changes
- * @param changeStrings - array of serialized changes as strings
+ * Parses a single serialized flex change string into a FlexChange object.
+ * Safely handles JSON parsing errors by returning undefined for invalid input.
+ * 
+ * @param change - A single serialized flex change as a JSON string
+ * @returns The parsed FlexChange object, or undefined if parsing fails
  */
 function parseFlexChange(change: string): FlexChange | undefined {
     try {
@@ -80,9 +88,11 @@ function isMatchingChange(change1: FlexChange, change2: FlexChange): boolean {
 }
 
 /**
- * Deletes multiple occurences of old flexChanges in case a new flexChange is created
- * @param oldChanges - array of serialized flex changes
- * @param newChange - newly created flexChange
+ * Removes all old flex changes that target the same element and property as the new change.
+ * This prevents duplicate changes from accumulating when multiple changes affect the same property.
+ * 
+ * @param oldChanges - Array of parsed flex change files to search through and modify
+ * @param newChange - The new flex change that should replace matching old changes
  */
 function deleteOldFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: FlexChange) {
     for (let index = oldChanges.length - 1; index >= 0; index--) {
@@ -97,10 +107,12 @@ function deleteOldFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: Fle
 }
 
 /**
- * Adds changeFiles to files object
- * @param path - path to changes folder
- * @param changeFiles - array of serialized flex changes
- * @param files - object containing list of flexChanges to be written
+ * Adds parsed change files to the files collection for writing to the filesystem.
+ * Each change file is mapped to its target file path within the changes folder.
+ * 
+ * @param path - The base path to the changes folder where files will be written
+ * @param changeFiles - Array of parsed flex change files to be added
+ * @param files - Target object that maps file paths to change objects for writing
  */
 function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], files: Files): void {
     if (changeFiles) {
@@ -111,8 +123,11 @@ function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], fil
 }
 
 /**
- * Parses fileContent of change files
- * @param changeFiles - array of serialized flex changes
+ * Parses the JSON content of flex change files into structured objects.
+ * Safely handles parsing errors by skipping invalid files and continuing with valid ones.
+ * 
+ * @param changeFiles - Optional array of flex change files with serialized content
+ * @returns Array of parsed change files with both metadata and parsed change objects
  */
 function parseChangeFilesContent(changeFiles?: FlexChangeFile[]): ParsedFlexChangeFile[] {
     const parsedChangeFiles: ParsedFlexChangeFile[] = [];
@@ -131,10 +146,13 @@ function parseChangeFilesContent(changeFiles?: FlexChangeFile[]): ParsedFlexChan
 }
 
 /**
- * Removes oldFlexChanges if a new flexChange is created and preserves fileName if flexChange exists
- * @param oldChanges - array of serialized flex changes
- * @param newChange - newly created flexChange
- * @returns {Promise<boolean>} true if further processing is not required
+ * Processes a new flex change against existing changes to handle conflicts and duplicates.
+ * Determines whether the new change should be skipped (if identical to existing) or should
+ * replace existing changes. Preserves original file names when overwriting existing changes.
+ * 
+ * @param oldChanges - Array of existing parsed flex changes to compare against
+ * @param newChange - The new flex change to process and potentially merge
+ * @returns True if the new change should be skipped (no further processing needed), false otherwise
  */
 function processFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: FlexChange): boolean {
     const oldChangesFiltered: ParsedFlexChangeFile[] =
