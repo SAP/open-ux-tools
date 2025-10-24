@@ -1,6 +1,7 @@
 import type {
     v4,
     ExportParametersV4Type,
+    ExportConfigParameters,
     ExportResults,
     PageConfig,
     File,
@@ -15,6 +16,10 @@ import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import type { Store } from 'mem-fs';
 import { getManifest, getUI5Version, readAnnotationFiles, readFlexChanges } from './project';
 import { logger } from '../utils/logger';
+import { mergeChanges } from './flex';
+import type { Files } from './flex';
+import { existsSync } from 'node:fs';
+import { readdir, unlink, mkdir, readFile, writeFile } from 'node:fs/promises';
 
 export interface PageData {
     pageId: string;
@@ -174,9 +179,10 @@ export class SapuxFtfsFileIO {
         if (!manifest) {
             return;
         }
+        const odataVersion = manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion;
         const specification = await this.getSpecification();
         const schemaType = pageData.pageType === PageTypeV4.ObjectPage ? SchemaType.ObjectPage : SchemaType.ListReport;
-        const params: ExportParametersV4Type = {
+        const params = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
                 jsonSchema: JSON.parse(pageData.schema),
@@ -187,14 +193,14 @@ export class SapuxFtfsFileIO {
                     config: pageData.config
                 } as v4.PageV4
             }
-        } as unknown as ExportParametersV4Type;
-
-        const result = specification.exportConfig({
-            v4: params
-        });
+        };
+        const exportConfig = (odataVersion === '2.0' ? { v2: params } : { v4: params }) as ExportConfigParameters;
+        const result = specification.exportConfig(exportConfig);
         if (result.manifestChangeIndicator === 'Updated') {
             await this.appAccess.updateManifestJSON(result.manifest);
         }
+        // Update flex changes
+        await this.writeFlexChanges(result.flexChanges);
         return result;
     }
 
@@ -242,5 +248,68 @@ export class SapuxFtfsFileIO {
             //empty callback, do nothing.
         });
         return Object.keys(fsEditor.dump());
+    }
+
+    /**
+     * Writes updated Flex Changes(from specification export call) to the filesystem.
+     *
+     * @param flexChanges Optional array of incoming flex change JSON strings.
+     * @returns A promise that resolves to an array of file paths that were updated or created.
+     */
+    private async writeFlexChanges(flexChanges?: string[]): Promise<string[]> {
+        const changesPath = this.appAccess.app.changes;
+        const oldChangeFiles = await readFlexChanges(this.appAccess);
+        // Calculate
+        const mergedChangeFiles = mergeChanges(changesPath, oldChangeFiles, flexChanges);
+        // Remove deleted flex change FileSystem
+        await this.removeDeprecateFlexFiles(mergedChangeFiles);
+        // Check if flex changes files exists and changes folder does not exist
+        if (Object.keys(mergedChangeFiles).length > 0 && !existsSync(join(changesPath))) {
+            await mkdir(changesPath);
+        }
+        // Write updated flex files
+        const changes: string[] = [];
+        for (const filePath in mergedChangeFiles) {
+            let oldContent = '';
+            if (existsSync(filePath)) {
+                oldContent = await readFile(filePath, 'utf8');
+            }
+            const fileContent = JSON.stringify(mergedChangeFiles[filePath], undefined, 4);
+            const isFileChanged = fileContent !== oldContent;
+            if (isFileChanged) {
+                await writeFile(filePath, fileContent);
+                changes.push(filePath);
+            }
+        }
+        return changes;
+    }
+
+    /**
+     * Removes deprecated (outdated) flex change files from the filesystem.
+     *
+     * @param files An object where keys represent current flex change file paths.
+     * @returns A promise that resolves when cleanup is complete.
+     */
+    private async removeDeprecateFlexFiles(files: Files): Promise<void> {
+        const latestFiles = Object.keys(files);
+        // Read directory files and prepare array of files
+        try {
+            const directoryPath = this.appAccess.app.changes;
+            let directoryFiles = await readdir(directoryPath);
+            // Use relative path with changes folder
+            directoryFiles = directoryFiles.map((fileName) => join(directoryPath, fileName));
+            // Find deprecated files
+            const deprecatedFiles = directoryFiles.filter((directoryFile) => !latestFiles.includes(directoryFile));
+            // Delete deprecated files
+            for (const deprecatedFile of deprecatedFiles) {
+                try {
+                    await unlink(deprecatedFile);
+                } catch (error) {
+                    continue;
+                }
+            }
+        } catch (error) {
+            return;
+        }
     }
 }

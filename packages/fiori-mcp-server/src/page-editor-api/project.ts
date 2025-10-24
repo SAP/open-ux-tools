@@ -8,7 +8,7 @@ import {
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import type { FileData } from '@sap/ux-specification/dist/types/src';
 import { existsSync } from 'node:fs';
-import { readFile, readdir } from 'fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { FlexChangeFile } from './types';
 
