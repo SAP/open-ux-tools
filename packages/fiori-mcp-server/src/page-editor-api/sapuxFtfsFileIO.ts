@@ -13,7 +13,7 @@ import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import type { Store } from 'mem-fs';
-import { getManifest, getUI5Version, readAnnotationFiles } from './project';
+import { getManifest, getUI5Version, readAnnotationFiles, readFlexChanges } from './project';
 import { logger } from '../utils/logger';
 
 export interface PageData {
@@ -91,13 +91,12 @@ export class SapuxFtfsFileIO {
         }
         const specification = await this.getSpecification();
         const annotationData = await readAnnotationFiles(this.appAccess);
+        const changeFiles = await readFlexChanges(this.appAccess);
         // Import project using specification API
         return specification.importProject({
             manifest: manifest,
             annotations: annotationData,
-            flex: [],
-            fragments: [],
-            views: []
+            flex: changeFiles.map((changeFile) => changeFile.fileContent)
         });
     }
 

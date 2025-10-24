@@ -40,6 +40,9 @@ describe('executeFunctionality', () => {
             .mockImplementation(async (rootPath: string): Promise<openUxProjectAccessDependency.ApplicationAccess> => {
                 return {
                     getAppId: () => 'dummy-id',
+                    app: {
+                        changes: 'changes'
+                    },
                     project: {
                         root: 'root',
                         apps: {

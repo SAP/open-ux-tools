@@ -8,8 +8,9 @@ import {
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import type { FileData } from '@sap/ux-specification/dist/types/src';
 import { existsSync } from 'node:fs';
-import { readFile } from 'fs/promises';
+import { readFile, readdir } from 'fs/promises';
 import { join } from 'node:path';
+import type { FlexChangeFile } from './types';
 
 /**
  * Method returns main service of the application.
@@ -126,4 +127,26 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
     }
 
     return ui5Version ?? 'latest';
+}
+
+/**
+ * Reads all flex change files from the application's "changes" directory.
+ *
+ * @param appAccess - application access object.
+ * @returns A promise that resolves to an array of flex change files.
+ */
+export async function readFlexChanges(appAccess: ApplicationAccess): Promise<FlexChangeFile[]> {
+    const changes: FlexChangeFile[] = [];
+    const changesFolderPath = appAccess.app.changes;
+    if (changesFolderPath && existsSync(changesFolderPath)) {
+        const files = await readdir(changesFolderPath);
+        for (const file of files) {
+            const change = await readFile(join(changesFolderPath, file), 'utf8');
+            changes.push({
+                physicalFileName: file,
+                fileContent: change
+            });
+        }
+    }
+    return changes;
 }

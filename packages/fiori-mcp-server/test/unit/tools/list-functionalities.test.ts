@@ -21,11 +21,14 @@ describe('listFunctionalities', () => {
     );
     beforeEach(async () => {
         importProjectMock = jest.fn().mockResolvedValue([]);
-        getManifestSpy.mockResolvedValue({});
+        getManifestSpy.mockResolvedValue({ manifest: true });
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'dummy-id',
+                app: {
+                    changes: 'changes'
+                },
                 project: {
                     root: 'root',
                     apps: {
@@ -83,6 +86,33 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         expect(result.functionalities).toMatchSnapshot();
+        expect(importProjectMock).toHaveBeenCalledWith({
+            manifest: { manifest: true },
+            annotations: [],
+            flex: []
+        });
+    });
+
+    test('call with valid app and flex changes', async () => {
+        jest.spyOn(projectUtils, 'readFlexChanges').mockResolvedValue([
+            {
+                physicalFileName: 'file1',
+                fileContent: 'change1'
+            },
+            {
+                physicalFileName: 'file2',
+                fileContent: 'change2'
+            }
+        ]);
+        mockSpecificationImport(importProjectMock);
+        await listFunctionalities({
+            appPath
+        });
+        expect(importProjectMock).toHaveBeenCalledWith({
+            manifest: { manifest: true },
+            annotations: [],
+            flex: ['change1', 'change2']
+        });
     });
 
     test('Error during reading functionalities', async () => {
