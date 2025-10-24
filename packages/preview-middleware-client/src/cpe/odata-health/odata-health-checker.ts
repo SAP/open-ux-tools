@@ -7,7 +7,7 @@ import Log from 'sap/base/Log';
 /**
  * The OData version type.
  */
-type ODataVersion = 'v2' | 'v4';
+type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0';
 
 /**
  * Describes an OData service instance.
@@ -18,7 +18,7 @@ interface ODataServiceInfo {
      */
     serviceUrl: string;
     /**
-     * The OData protocol version ('v2' or 'v4').
+     * The OData protocol version.
      */
     oDataVersion: ODataVersion;
 }
@@ -110,8 +110,10 @@ export class ODataHealthChecker {
     private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
         switch (oDataVersion) {
             case 'v2':
+            case '2.0':
                 return this.getServiceV2Metadata(serviceUrl);
             case 'v4':
+            case '4.0':
                 return this.getServiceV4Metadata(serviceUrl);
         }
     }

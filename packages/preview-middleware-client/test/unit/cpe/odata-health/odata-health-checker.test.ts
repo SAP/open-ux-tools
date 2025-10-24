@@ -10,7 +10,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ODataHealthChecker } from '../../../../src/cpe/odata-health/odata-health-checker';
 import { ODataDownStatus, ODataUpStatus } from '../../../../src/cpe/odata-health/odata-health-status';
 
-type ODataVersion = 'v2' | 'v4';
+type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0';
 
 interface DataSource {
     uri: string;
@@ -66,7 +66,7 @@ describe('ODataHealthChecker', () => {
                     uri: 'http://localhost:8080/working',
                     type: 'OData',
                     settings: {
-                        odataVersion: 'v2' as const,
+                        odataVersion: '2.0' as const,
                         localUri: '/working'
                     }
                 },
