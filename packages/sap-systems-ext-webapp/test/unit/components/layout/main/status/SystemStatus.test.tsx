@@ -27,7 +27,7 @@ describe('<SystemStaus />', () => {
         expect(screen.getByText('The OData V2 catalog call returned 2450 services.')).toBeInTheDocument();
         expect(screen.getByText('The OData V4 catalog service is not available.')).toBeInTheDocument();
 
-        const showOutputChannelBtn = screen.getByText('OUTPUT tab');
+        const showOutputChannelBtn = screen.getByText('OUTPUT tab.');
 
         showOutputChannelBtn.click();
         expect(openOutputChannelSpy).toHaveBeenCalledTimes(1);
