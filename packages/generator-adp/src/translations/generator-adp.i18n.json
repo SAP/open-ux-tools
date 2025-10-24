@@ -107,6 +107,6 @@
         "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}."
     },
     "validators": {
-        "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You will be able to create and edit adaptation projects using the newest version but it will not be usable on this system until the system`s SAPUI5 version is upgraded to version 1.71 or higher."
+        "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You are able to create and edit adaptation projects that use the latest SAPUI5 version, but they are not usable on this system until the system's SAPUI5 version is upgraded to version 1.71 or higher."
     }
 }
