@@ -19,7 +19,8 @@
     "files": [
         "dist",
         "resources",
-        "prebuilds"
+        "prebuilds",
+        "LICENSE"
     ],
     "scripts": {
         "vscode:prepublish": "pnpm run package",
