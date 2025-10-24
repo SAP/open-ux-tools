@@ -6,10 +6,12 @@ import { GeneratorTypes } from '../types';
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
  *
+ * @param {boolean} shouldShowTargetEnv - Whether to show the target environment page.
  * @returns {IPrompt[]} The list of static wizard steps to show initially.
  */
-export function getWizardPages(): IPrompt[] {
+export function getWizardPages(shouldShowTargetEnv: boolean): IPrompt[] {
     return [
+        ...(shouldShowTargetEnv ? [{ name: 'Target Environment', description: '' }] : []),
         {
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')
@@ -19,6 +21,25 @@ export function getWizardPages(): IPrompt[] {
             description: t('yuiNavSteps.projectAttributesDescr')
         }
     ];
+}
+
+/**
+ * Updates the CF wizard steps.
+ *
+ * @param {boolean} isCFEnv - Whether the target environment is Cloud Foundry.
+ * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
+ */
+export function updateCfWizardSteps(isCFEnv: boolean, prompts: YeomanUiSteps): void {
+    if (isCFEnv) {
+        prompts.splice(1, prompts['items'].length - 1, [
+            { name: 'Project Path', description: 'Provide path to MTA project.' },
+            {
+                name: t('yuiNavSteps.projectAttributesName'),
+                description: t('yuiNavSteps.projectAttributesDescr')
+            },
+            { name: 'Application Details', description: 'Setup application details.' }
+        ]);
+    }
 }
 
 /**
@@ -37,8 +58,8 @@ export function getFlpPages(showTileSettingsPage: boolean, projectName: string):
     ];
     if (showTileSettingsPage) {
         pages.unshift({
-            name: t('yuiNavSteps.tileSettingsName', { projectName }),
-            description: ''
+            name: t('yuiNavSteps.tileSettingsName'),
+            description: t('yuiNavSteps.tileSettingsDescr', { projectName })
         });
     }
 
@@ -110,10 +131,14 @@ export function updateWizardSteps(
 
         // Page already there → move it
         if (existingIdx !== -1) {
+            // Update step description
+            const existingStep = pages[existingIdx];
+            existingStep.description = step.description;
+
             if (existingIdx === targetIdx) {
                 return;
             }
-            const [existingStep] = pages.splice(existingIdx, 1);
+            pages.splice(existingIdx, 1);
             prompts.splice(targetIdx > existingIdx ? targetIdx - 1 : targetIdx, 0, [existingStep]);
             return;
         }

@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.32.6
+
+### Patch Changes
+
+-   ea0a942: Improve function `refreshSpecificationDistTags` - prevent caching `specification-dist-tags.json` if an error is returned in the JSON from `npm view @sap/ux-specification dist-tags --json`
+
+## 1.32.5
+
+### Patch Changes
+
+-   c5d7915: Improve method `getSpecification` - retry loading specification `specification-dist-tags.json` if the initial load contains an error.
+
+## 1.32.4
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+
 ## 1.32.3
 
 ### Patch Changes

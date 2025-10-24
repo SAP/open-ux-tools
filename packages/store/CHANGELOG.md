@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 1.2.1
+
+### Patch Changes
+
+-   f8c596d: Reverts removal of @sensitiveData for service keys property of backend systems
+
+## 1.2.0
+
+### Minor Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
 ## 1.1.5
 
 ### Patch Changes

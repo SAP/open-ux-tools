@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 1`] = `
+exports[`Adaptation Project Generator Integration Test ABAP Environment should create adaptation project from json correctly 1`] = `
 "{
   "fileName": "manifest",
   "layer": "CUSTOMER_BASE",
@@ -22,7 +22,7 @@ exports[`Adaptation Project Generator Integration Test should create adaptation 
 "
 `;
 
-exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 2`] = `
+exports[`Adaptation Project Generator Integration Test ABAP Environment should create adaptation project from json correctly 2`] = `
 "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
@@ -30,7 +30,7 @@ customer.my.app_sap.app.title=My app title
 "
 `;
 
-exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 3`] = `
+exports[`Adaptation Project Generator Integration Test ABAP Environment should create adaptation project from json correctly 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: "3.1"
@@ -79,7 +79,7 @@ server:
 "
 `;
 
-exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 1`] = `
+exports[`Adaptation Project Generator Integration Test ABAP Environment should generate an onPremise adaptation project successfully 1`] = `
 "{
   "fileName": "manifest",
   "layer": "CUSTOMER_BASE",
@@ -107,7 +107,7 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
 "
 `;
 
-exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 2`] = `
+exports[`Adaptation Project Generator Integration Test ABAP Environment should generate an onPremise adaptation project successfully 2`] = `
 "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
@@ -115,7 +115,7 @@ customer.app.variant_sap.app.title=App Title
 "
 `;
 
-exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 3`] = `
+exports[`Adaptation Project Generator Integration Test ABAP Environment should generate an onPremise adaptation project successfully 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: "3.1"
@@ -161,5 +161,197 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: 1.134.1
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 1`] = `
+"{
+  "fileName": "manifest",
+  "layer": "VENDOR",
+  "fileType": "appdescr_variant",
+  "reference": "test-app-id",
+  "id": "app.variant",
+  "namespace": "apps/test-app-id/appVariants/app.variant/",
+  "version": "0.1.0",
+  "content": [
+    {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
+        "minUI5Version": "1.134.1"
+      }
+    },
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    }
+  ]
+}
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 2`] = `
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
+
+# This is the resource bundle for App Title
+#__ldi.translation.uuid=mocked-uuid
+#XTIT: Application name
+app.variant_sap.app.title=App Title"
+`;
+
+exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 3`] = `
+"---
+specVersion: "2.2"
+type: application
+metadata:
+  name: app.variant
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      beforeTask: escapeNonAsciiCharacters
+      configuration:
+        appHostId: test-app-host-id
+        appName: test-app-name
+        appVersion: test-app-version
+        moduleName: app.variant
+        org: org-guid
+        space: space-guid
+        html5RepoRuntime: test-guid
+        sapCloudService: test-solution
+        serviceInstanceName: test-service"
+`;
+
+exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 4`] = `
+"ID: mta-project
+version: 1.0.0
+modules:
+  - name: mta-project-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: mta-project_uaa
+        parameters:
+          service-key:
+            name: mta-project-uaa-key
+      - name: mta-project_html_repo_host
+        parameters:
+          service-key:
+            name: mta-project-html_repo_host-key
+      - name: mta-project-destination
+        parameters:
+          content-target: true
+      - name: test-service
+        parameters:
+          service-key:
+            name: test-service-key
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: test-solution-mta-project-html_repo_host
+              ServiceInstanceName: mta-project-html5_app_host
+              ServiceKeyName: mta-project-html_repo_host-key
+              sap.cloud.service: test-solution
+            - Name: test-solution-uaa-mta-project
+              ServiceInstanceName: mta-project_1234567890-xsuaa
+              ServiceKeyName: mta-project_uaa-key
+              Authentication: OAuth2UserTokenExchange
+              sap.cloud.service: test-solution
+            - Name: test-service-service_instance_name
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: test-service
+              ServiceKeyName: test-service-key
+          existing_destinations_policy: update
+  - name: mta-project_ui_deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: mta-project_html_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - test-app-id.zip
+          name: test-app-id
+          target-path: resources/
+  - name: test-app-id
+    type: html5
+    path: test-app-id
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      supported-platforms: []
+resources:
+  - name: test-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      service-name: test-destination-service
+  - name: mta-project_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: mta-project-html5_app_host
+  - name: mta-project_uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      path: ./xs-security.json
+      service-plan: application
+      service-name: mta-project_1234567890-xsuaa
+  - name: mta-project-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: mta-project-destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+_schema-version: '3.3'
+description: Test MTA Project for CF Writer Tests
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 5`] = `
+"{
+	"name": "app.variant",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
+		"zip": "cd dist && npx bestzip ../app.variant.zip *",
+		"clean": "npx rimraf app.variant.zip dist",
+		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup"
+	},
+	"repository": {
+		"type": "git",
+		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
+	},
+	"ui5": {
+		"dependencies": [
+			"@sap/ui5-builder-webide-extension",
+			"@ui5/task-adaptation"
+		]
+	},
+	"devDependencies": {
+		"@sap/ui5-builder-webide-extension": "1.0.x",
+		"@sapui5/ts-types": "^1.85.1",
+		"@ui5/cli": "^3.0.0",
+		"@ui5/task-adaptation": "^1.0.x",
+		"bestzip": "2.1.4",
+		"rimraf": "3.0.2"
+	}
+}
 "
 `;

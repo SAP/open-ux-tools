@@ -1,5 +1,91 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.6
+
+## 0.6.8
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.28
+-   @sap-ux/inquirer-common@0.8.5
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+
+## 0.6.6
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.27
+-   @sap-ux/inquirer-common@0.8.3
+
+## 0.6.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.2
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.1
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.51
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 0.6.0
+
+### Minor Changes
+
+-   28f024c: Only show maintained UI5 versions in the Reusable Library Generator.
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [bba16a6]
+    -   @sap-ux/ui5-info@0.13.0
+    -   @sap-ux/inquirer-common@0.7.50
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.25
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.5.4
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
 ## 0.5.3
 
 ### Patch Changes

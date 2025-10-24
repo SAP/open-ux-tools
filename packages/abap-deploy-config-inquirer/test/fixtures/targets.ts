@@ -1,4 +1,4 @@
-import { AuthenticationType } from '@sap-ux/store';
+import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 
 export const mockTargetSystems = [
     {
@@ -12,7 +12,8 @@ export const mockTargetSystems = [
         url: 'https://mock.url.target2.com',
         client: '102',
         userDisplayName: 'mockUser2',
-        authenticationType: AuthenticationType.ReentranceTicket
+        authenticationType: AuthenticationType.ReentranceTicket,
+        systemType: 'AbapCloud'
     },
     {
         name: 'target3',

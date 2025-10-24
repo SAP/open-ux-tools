@@ -45,7 +45,9 @@ export function getCredentialsPrompts<T extends Answers>(
         {
             when: async () => {
                 authRequired = await connectionValidator.isAuthRequired();
-                return connectionValidator.systemAuthType === 'basic' && authRequired;
+                return (
+                    connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)
+                );
             },
             type: 'input',
             name: usernamePromptName,
@@ -57,7 +59,8 @@ export function getCredentialsPrompts<T extends Answers>(
             validate: (user: string) => user?.length > 0
         } as InputQuestion<T>,
         {
-            when: () => !!(connectionValidator.systemAuthType === 'basic' && authRequired),
+            when: () =>
+                !!(connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)),
             type: 'password',
             guiOptions: {
                 mandatory: true,
@@ -74,7 +77,7 @@ export function getCredentialsPrompts<T extends Answers>(
                         connectionValidator.validatedUrl &&
                         answers?.[usernamePromptName] &&
                         password &&
-                        (sapClient?.isValid || !sapClient)
+                        (!sapClient || sapClient.isValid)
                     )
                 ) {
                     return false;
