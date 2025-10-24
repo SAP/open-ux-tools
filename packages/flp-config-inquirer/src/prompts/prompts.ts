@@ -11,16 +11,11 @@ import {
     getParameterStringPrompt,
     getIconPrompt,
     getExistingFlpConfigInfoPrompt,
-    getTileSettingsPrompts
+    getTileSettingsPrompts,
+    getConfirmReplacePrompt
 } from './questions';
 import { promptNames } from '../types';
-import type {
-    ExistingInboundRef,
-    FLPConfigPromptOptions,
-    FLPConfigQuestion,
-    TileSettingsAnswers,
-    OnActionSelect
-} from '../types';
+import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from '../types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
@@ -61,7 +56,8 @@ export function getQuestions(
             promptOptions?.[promptNames.subTitle]
         ),
         [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
-        [promptNames.additionalParameters]: getParameterStringPrompt()
+        [promptNames.additionalParameters]: getParameterStringPrompt(),
+        [promptNames.confirmReplace]: getConfirmReplacePrompt(inbounds ?? {})
     };
 
     const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)
@@ -77,18 +73,12 @@ export function getQuestions(
 /**
  * Generates a list of prompts for configuring tile settings in the FLP configuration.
  *
- * @param {ManifestNamespace.Inbound} inbounds - Existing inbounds for the application.
  * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
- * @param {OnActionSelect} onActionSelect - Callback function to handle changes in tile settings.
  * @returns {YUIQuestion<TileSettingsAnswers>[] | FLPConfigQuestion[]} An array of questions for tile settings.
  */
-export function getTileSettingsQuestions(
-    inbounds: ManifestNamespace.Inbound,
-    promptOptions?: FLPConfigPromptOptions,
-    onActionSelect?: OnActionSelect
-): YUIQuestion<TileSettingsAnswers>[] {
+export function getTileSettingsQuestions(promptOptions?: FLPConfigPromptOptions): YUIQuestion<TileSettingsAnswers>[] {
     const isCLI = getHostEnvironment() === hostEnvironment.cli;
-    const questions = getTileSettingsPrompts(inbounds, onActionSelect);
+    const questions = getTileSettingsPrompts();
     if (!promptOptions?.existingFlpConfigInfo?.hide) {
         questions.unshift(getExistingFlpConfigInfoPrompt(isCLI) as YUIQuestion);
     }

@@ -10,7 +10,8 @@
         "icon": "Icon",
         "existingFLPConfig": "This project already has a SAP Fiori launchpad configuration. If you create a new configuration, it will overwrite the existing one.",
         "tileHandlingAction": "Choose a Tile Handling Action",
-        "copyFromExisting": "Copy Configurations from an Existing Inbound?"
+        "copyFromExisting": "Copy Configurations from an Existing Inbound?",
+        "confirmReplace": "Selecting this option will replace all {{count}} existing tiles of the base application. Please make sure to create a new IAM app of type \"UI Adaptation\" and add it to a custom business catalog. In the business role, add your custom business catalog and deactivate the original IAM app. Do you want to proceed?"
     },
     "tooltips": {
         "inboundId": "Choose the inbound ID to be used to set the SAP Fiori launchpad tile configuration.",
@@ -27,8 +28,5 @@
     "choices": {
         "replaceOriginalTile": "Replace Base Application's Existing Tiles",
         "addNewTile": "Add a New Tile"
-    },
-    "additionalMessages": {
-        "replaceScenarioInfo": "Selecting this option will replace existing tiles from the base application. Please make sure that you create a new IAM app of type 'UI Adaptation' and add it to a custom business catalog. In the business role, add your custom business catalog and deactivate the original IAM app."
     }
 }

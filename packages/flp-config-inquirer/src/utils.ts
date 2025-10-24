@@ -30,7 +30,8 @@ export function getAdpFlpConfigPromptOptions(
             existingFlpConfigInfo: { hide: hideExistingFlpConfigInfo },
             action: { executeDuplicateValidation: true },
             inboundId: { hide: true },
-            overwrite: { hide: true }
+            overwrite: { hide: true },
+            confirmReplace: { hide: true }
         };
     }
     // If the user chooses to replace the original tile, are not required and are taken from the existing selected inbound
@@ -40,7 +41,11 @@ export function getAdpFlpConfigPromptOptions(
             overwrite: { hide: true },
             semanticObject: { hide: true },
             action: { hide: true, showTooltip: true },
-            additionalParameters: { hide: true }
+            additionalParameters: { hide: true },
+            inboundId: { hide: true },
+            title: { hide: true },
+            subTitle: { hide: true },
+            icon: { hide: true }
         };
     }
 
@@ -49,7 +54,8 @@ export function getAdpFlpConfigPromptOptions(
         existingFlpConfigInfo: { hide: true },
         semanticObject: { showTooltip: true },
         action: { executeDuplicateValidation: true, showTooltip: true },
-        overwrite: { hide: true }
+        overwrite: { hide: true },
+        confirmReplace: { hide: true }
     };
 }
 
