@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.1
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
 ## 0.4.0
 
 ### Minor Changes

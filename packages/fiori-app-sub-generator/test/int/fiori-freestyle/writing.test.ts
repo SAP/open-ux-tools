@@ -44,7 +44,7 @@ describe('Freestyle generation', () => {
 
     afterEach(() => {
         // remove specific generated app folder
-        rimraf.sync(join(testDir, testProjectName));
+        rimraf.rimrafSync(join(testDir, testProjectName));
     });
 
     it('Test Freestyle Simple Floorplan v2', async () => {

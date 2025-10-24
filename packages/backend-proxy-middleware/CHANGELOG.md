@@ -1,5 +1,12 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.5
+
+### Patch Changes
+
+-   9a9c43c: Fixes preview with legacy apps and service keys systems
+    -   @sap-ux/axios-extension@1.23.1
+
 ## 0.10.4
 
 ### Patch Changes
