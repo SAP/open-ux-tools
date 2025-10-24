@@ -1,5 +1,3 @@
 dist
-config/appPaths.js
 jest.config.js
-lint-staged.config.js
 reports/

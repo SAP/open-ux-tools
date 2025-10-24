@@ -1,8 +1,0 @@
-test/
-config/
-reports/
-esbuild.js
-tsconfig*.json
-
-*.tsbuildinfo
-**/*.tsbuildinfo

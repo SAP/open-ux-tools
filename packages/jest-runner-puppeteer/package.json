@@ -30,7 +30,7 @@
     },
     "devDependencies": {
         "chalk": "4.1.2",
-        "jest-environment-node": "30.0.1",
+        "jest-environment-node": "30.2.0",
         "mkdirp": "1.0.4",
         "puppeteer-core": "22.15.0",
         "which": "2.0.2"
