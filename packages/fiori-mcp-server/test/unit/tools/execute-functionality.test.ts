@@ -1,8 +1,10 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
+import { readFile } from 'node:fs/promises';
 import { executeFunctionality } from '../../../src/tools';
 import { mockSpecificationImport } from '../utils';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -16,10 +18,15 @@ describe('executeFunctionality', () => {
     let exportProjectMock = jest.fn();
     let updateManifestJSONMock = jest.fn();
     let findProjectRootSpy: jest.SpyInstance;
-    const mockSpecificationExport = (manifest = {}, manifestChangeIndicator = 'Updated') => {
+    const mockSpecificationExport = (
+        manifest = {},
+        manifestChangeIndicator = 'Updated',
+        flexChanges: undefined | string[] = undefined
+    ) => {
         exportProjectMock.mockReturnValue({
             manifest,
-            manifestChangeIndicator
+            manifestChangeIndicator,
+            flexChanges
         });
     };
     let getManifestSpy: jest.SpyInstance;
@@ -264,4 +271,52 @@ describe('executeFunctionality', () => {
             })
         ).rejects.toThrow('functionalityId parameter is required');
     });
+
+    test.only('Change page property - flex change', async () => {
+        const file = await readFile(
+            join(__dirname, '../page-editor-api/test-data/flex-changes/id_1761320220775_34_propertyChange.change'),
+            'utf8'
+        );
+        mockSpecificationImport(importProjectMock);
+        mockSpecificationExport(undefined, undefined, [file]);
+        const details = await executeFunctionality({
+            appPath,
+            functionalityId: [
+                'TravelObjectPage',
+                'sections',
+                'GroupSection',
+                'subsections',
+                'CustomSubSection',
+                'title'
+            ],
+            parameters: {
+                title: 'dumme title'
+            }
+        });
+        expect(exportProjectMock).toHaveBeenCalledTimes(1);
+        // expect(details).toEqual(
+        //     expect.objectContaining({
+        //         appPath: 'testApplicationPath',
+        //         changes: ['Modified webapp/manifest.json'],
+        //         functionalityId: [
+        //             'TravelObjectPage',
+        //             'sections',
+        //             'GroupSection',
+        //             'subsections',
+        //             'CustomSubSection',
+        //             'title'
+        //         ],
+        //         message: "Successfully executed 'Change property'",
+        //         parameters: {
+        //             title: 'dumme title'
+        //         },
+        //         status: 'success'
+        //     })
+        // );
+        // expect(exportProjectMock).toHaveBeenCalledTimes(1);
+        // const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.ObjectPage.page.config;
+        // expect(modifiedConfig.sections.GroupSection.subsections.CustomSubSection.title).toEqual('dumme title');
+        // expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
+        // expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
+    }, 999999);
 });

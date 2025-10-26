@@ -1,5 +1,7 @@
 import type { FlexChangeFile, FlexChange, ParsedFlexChangeFile } from './types';
 import { join, parse } from 'path';
+import { existsSync } from 'node:fs';
+import { readdir, unlink, mkdir, readFile, writeFile } from 'node:fs/promises';
 
 export interface Files {
     [name: string]: object;
@@ -36,6 +38,64 @@ export function mergeChanges(path: string, oldChanges: FlexChangeFile[], newChan
     writeChangeFiles(path, oldChangesParsed, files);
 
     return files;
+}
+
+/**
+ * Writes updated Flex Changes(from specification export call) to the filesystem.
+ *
+ * @param flexChanges Optional array of incoming flex change JSON strings.
+ * @returns A promise that resolves to an array of file paths that were updated or created.
+ */
+export async function writeFlexChanges(changesPath: string, mergedChangeFiles: Files): Promise<string[]> {
+    // Remove deleted flex change FileSystem
+    await removeDeprecateFlexFiles(changesPath, mergedChangeFiles);
+    // Check if flex changes files exists and changes folder does not exist
+    if (Object.keys(mergedChangeFiles).length > 0 && !existsSync(join(changesPath))) {
+        await mkdir(changesPath);
+    }
+    // Write updated flex files
+    const changes: string[] = [];
+    for (const filePath in mergedChangeFiles) {
+        let oldContent = '';
+        if (existsSync(filePath)) {
+            oldContent = await readFile(filePath, 'utf8');
+        }
+        const fileContent = JSON.stringify(mergedChangeFiles[filePath], undefined, 4);
+        const isFileChanged = fileContent !== oldContent;
+        if (isFileChanged) {
+            await writeFile(filePath, fileContent);
+            changes.push(filePath);
+        }
+    }
+    return changes;
+}
+
+/**
+ * Removes deprecated (outdated) flex change files from the filesystem.
+ *
+ * @param files An object where keys represent current flex change file paths.
+ * @returns A promise that resolves when cleanup is complete.
+ */
+async function removeDeprecateFlexFiles(changesPath: string, files: Files): Promise<void> {
+    const latestFiles = Object.keys(files);
+    // Read directory files and prepare array of files
+    try {
+        let directoryFiles = await readdir(changesPath);
+        // Use relative path with changes folder
+        directoryFiles = directoryFiles.map((fileName) => join(changesPath, fileName));
+        // Find deprecated files
+        const deprecatedFiles = directoryFiles.filter((directoryFile) => !latestFiles.includes(directoryFile));
+        // Delete deprecated files
+        for (const deprecatedFile of deprecatedFiles) {
+            try {
+                await unlink(deprecatedFile);
+            } catch (error) {
+                continue;
+            }
+        }
+    } catch (error) {
+        return;
+    }
 }
 
 /**
