@@ -24,7 +24,7 @@ export const serveStaticMiddleware = (
 
     // For compatibility reasons also serve srcPath w/o '/resources'
     paths.forEach(pathConfig=> {
-        if (pathConfig.path.startsWith('/resources')) {
+        if (pathConfig.path !== '/resources' && pathConfig.path.startsWith('/resources')) {
             const compatibilityPath = {
                 ...pathConfig,
                 path: pathConfig.path.replace('/resources', '')
