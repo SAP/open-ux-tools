@@ -110,6 +110,10 @@ describe('flp/init', () => {
         });
 
         test('single app, one reuse lib', async () => {
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
             manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
             fetchMock.mockResolvedValueOnce({ json: () => manifest });

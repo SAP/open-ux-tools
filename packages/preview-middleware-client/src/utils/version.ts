@@ -3,7 +3,7 @@ import Log from 'sap/base/Log';
 import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
-type SingleVersionInfo =
+export type SingleVersionInfo =
     | {
           name: string;
           version: string;

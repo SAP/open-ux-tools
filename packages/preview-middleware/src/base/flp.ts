@@ -157,7 +157,8 @@ export class FlpSandbox {
     ): Promise<void> {
         this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
         this.createFlexHandler();
-        this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
+        //todo: override this.flpConfig.libs (and log) for CAP projects because it makes only sense for EDMX backends?
+        this.flpConfig.libs ??= this.projectType === 'EDMXBackend';
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
         this.adp = adp;
@@ -617,16 +618,6 @@ export class FlpSandbox {
                 appDependencies.asyncHints.requests = [];
             }
         }
-    }
-
-    /**
-     * Try finding a locate-reuse-libs script in the project.
-     *
-     * @returns the location of the locate-reuse-libs script or undefined.
-     */
-    private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = await this.project.byGlob('**/locate-reuse-libs.js');
-        return files.length > 0;
     }
 
     /**
