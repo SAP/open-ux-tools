@@ -280,8 +280,11 @@ export async function enhanceConfigForSystem(
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
-            // sending a request to the backend to get token
-            await provider.getAtoInfo();
+            // sending a request to the backend to get cookies
+            const ato = await provider.getAtoInfo();
+            if (ato) {
+                proxyOptions.headers['cookie'] = provider.cookies.toString();
+            }
         } else {
             throw new Error('Cannot connect to ABAP Environment on BTP using OAuth without service keys.');
         }

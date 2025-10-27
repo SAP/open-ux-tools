@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.34
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
 ## 0.3.33
 
 ### Patch Changes
