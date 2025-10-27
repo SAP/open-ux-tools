@@ -4,6 +4,7 @@ import { readdir, mkdir } from 'node:fs/promises';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
+import { logger } from '../utils/logger';
 
 /**
  * Internal interface to work with flex changes. This is not the full specification of a flex change,
@@ -140,10 +141,12 @@ async function removeDeprecateFlexFiles(changesPath: string, files: FlexChangeFi
             try {
                 await fs.delete(deprecatedFile);
             } catch (error) {
+                logger.error(`Failed to delete deprecated file: ${deprecatedFile}`);
                 continue;
             }
         }
     } catch (error) {
+        logger.error('Error while removing deprecated flex change files');
         return;
     }
 }
@@ -177,7 +180,7 @@ function parseFlexChange(change: string): FlexChange | undefined {
     try {
         return JSON.parse(change) as FlexChange;
     } catch (error) {
-        // do nothing
+        logger.error(`Error while prsing flex change file`);
     }
 }
 
@@ -242,14 +245,12 @@ function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], fil
 function parseChangeFilesContent(changeFiles?: { [key: string]: string }): ParsedFlexChangeFile[] {
     const parsedChangeFiles: ParsedFlexChangeFile[] = [];
     for (const name in changeFiles) {
-        try {
-            const change = JSON.parse(changeFiles[name]);
+        const change = parseFlexChange(changeFiles[name]);
+        if (change) {
             parsedChangeFiles.push({
                 filename: name,
                 change
             });
-        } catch (error) {
-            // do nothing
         }
     }
     return parsedChangeFiles;
