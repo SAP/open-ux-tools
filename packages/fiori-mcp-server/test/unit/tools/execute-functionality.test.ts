@@ -293,7 +293,7 @@ describe('executeFunctionality', () => {
             'utf8'
         );
         mockSpecificationImport(importProjectMock);
-        mockSpecificationExport(undefined, undefined, [file]);
+        mockSpecificationExport(undefined, 'NoChange', [file]);
         const details = await executeFunctionality({
             appPath,
             functionalityId: [
@@ -319,7 +319,7 @@ describe('executeFunctionality', () => {
         expect(details).toEqual(
             expect.objectContaining({
                 appPath: 'testApplicationPath',
-                changes: ['Modified webapp/manifest.json', `Modified ${flexChangeFileName}`],
+                changes: [`Modified ${flexChangeFileName}`],
                 functionalityId: [
                     'TravelObjectPage',
                     'sections',

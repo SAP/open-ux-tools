@@ -109,7 +109,9 @@ async function generateChanges(
         resolveParameterValue(propertyPath, parametersValue, changedParameterInfo)
     );
     // problem -> result?.manifestChangeIndicator does not return changed indicator when we change fcl
-    changes.push('Modified webapp/manifest.json');
+    if (exportResult?.manifestChangeIndicator !== 'NoChange' || !exportResult?.flexChanges?.length) {
+        changes.push('Modified webapp/manifest.json');
+    }
     if (exportResult?.flexChanges) {
         changes.push(...exportResult.flexChanges.map((flexChange) => `Modified ${flexChange}`));
     }
