@@ -3,7 +3,7 @@ import Log from 'sap/base/Log';
 import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
-export type SingleVersionInfo =
+type SingleVersionInfo =
     | {
           name: string;
           version: string;
@@ -137,3 +137,18 @@ export function isVersionEqualOrHasNewerPatch(
 export function getFullyQualifiedUi5Version(ui5VersionInfo: Ui5VersionInfo): string {
     return `${ui5VersionInfo.major}.${ui5VersionInfo.minor}`;
 }
+
+/** Retrieve the SAPUI5 delivered namespaces for the current UI5 version.
+ *
+ * @returns Promise of an array of SAPUI5 delivered namespaces
+ */
+export const getUI5Libs = (() => {
+    let cachedLibs: string[] | undefined;
+    return async function (): Promise<string[]> {
+        if (!cachedLibs) {
+            const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
+            cachedLibs = versionInfo?.libraries.map(lib => lib.name) ?? [];
+        }
+        return cachedLibs;
+    };
+})();

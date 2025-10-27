@@ -10,12 +10,11 @@ import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initCdm from './initCdm';
 import initConnectors from './initConnectors';
-import { getUi5Version, isLowerThanMinimalUi5Version, type Ui5VersionInfo, type SingleVersionInfo } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version, type Ui5VersionInfo, getUI5Libs } from '../utils/version';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
-import VersionInfo from 'sap/ui/VersionInfo';
 import type { Manifest } from '@sap-ux/project-access';
 
 type AppIndexData = Record<
@@ -28,21 +27,6 @@ type AppIndexData = Record<
         }[];
     }
 >;
-
-/** Retrieve the SAPUI5 delivered namespaces for the current UI5 version.
- *
- * @returns Promise of an array of SAPUI5 delivered namespaces
- */
-const getUI5Libs = (() => {
-    let cachedLibs: string[] | undefined;
-    return async function (): Promise<string[]> {
-        if (!cachedLibs) {
-            const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
-            cachedLibs = versionInfo?.libraries.map(lib => lib.name) ?? [];
-        }
-        return cachedLibs;
-    };
-})();
 
 /**
  * Check whether the given keys are custom libraries, and if yes, add them to the map.
