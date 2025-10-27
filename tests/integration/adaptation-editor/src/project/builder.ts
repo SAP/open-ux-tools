@@ -98,6 +98,11 @@ export function createV2Manifest(userParameters: ProjectParameters, workerId: st
     return result;
 }
 
+/**
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A manifest object for the project.
+ */
 export function createV4Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
     const result = structuredClone(feV4ManifestTemplate) as Manifest;
@@ -209,6 +214,11 @@ export function createComponent(userParameters: ProjectParameters, workerId: str
 );`;
 }
 
+/**
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A string representation of the UI5 component definition.
+ */
 export function createV4Component(userParameters: ProjectParameters, workerId: string): string {
     const { id } = getProjectParametersWithDefaults(userParameters);
     return `sap.ui.define(["sap/fe/core/AppComponent"], function (Component) {
@@ -241,6 +251,12 @@ export function createPackageJson(id: string): string {
 `;
 }
 
+/**
+ * @param projectConfig - The project configuration.
+ * @param workerId - The unique worker ID for the project.
+ * @param ui5Version - The UI5 version to be used.
+ * @returns The root path of the generated project.
+ */
 export async function generateFeV4Project(
     projectConfig: typeof FIORI_ELEMENTS_V4,
     workerId: string,

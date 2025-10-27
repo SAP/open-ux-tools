@@ -298,6 +298,12 @@ async function globalSetup(): Promise<void> {
     });
 }
 
+/**
+ * Get required V4 libs from manifest routing targets.
+ *
+ * @param manifest - The manifest object.
+ * @returns An array of library objects with name and optional lazy loading flag.
+ */
 function getV4Libs(manifest: Record<string, any>): Array<{ name: string; lazy?: boolean }> {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     let libs: { name: string; lazy?: boolean }[] = [];
