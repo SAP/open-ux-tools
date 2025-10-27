@@ -161,7 +161,9 @@ export class FlpSandbox {
             this.flpConfig.libs ??= true;
         } else {
             this.flpConfig.libs = false;
-            this.logger.warn(`'flp.libs' disabled because the current project type is not EDMX. 'flp.libs' only works for EDMX backends.`);
+            this.logger.warn(
+                `'flp.libs' disabled because the current project type is not EDMX. 'flp.libs' only works for EDMX backends.`
+            );
         }
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
