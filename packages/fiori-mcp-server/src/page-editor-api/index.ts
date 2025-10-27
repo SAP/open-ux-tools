@@ -9,4 +9,3 @@ export {
     findByPath
 } from './parser';
 export * from './project';
-export * from './types';

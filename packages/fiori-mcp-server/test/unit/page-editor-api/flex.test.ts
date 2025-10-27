@@ -3,16 +3,16 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { mergeChanges, writeFlexChanges } from '../../../src/page-editor-api/flex';
+import type { FlexChange, FlexChangeFiles } from '../../../src/page-editor-api/flex';
 import { generateFlexChanges } from '../utils';
 import { readFile } from 'node:fs/promises';
-import type { FlexChange } from '../../../src/page-editor-api';
 
 describe('flex', () => {
     const changesPath = join(__dirname, 'test-data', 'flex-changes');
     describe('Test writeFlexChanges()', () => {
         const existingFilePath1 = join(__dirname, 'test-data/flex-changes/id_1761320220775_1_propertyChange.change');
         const existingFilePath2 = join(__dirname, 'test-data/flex-changes/id_1761320220775_2_propertyChange.change');
-        const existingFiles: { [key: string]: object } = {};
+        const existingFiles: FlexChangeFiles = {};
         beforeAll(async () => {
             existingFiles[existingFilePath1] = JSON.parse(await readFile(existingFilePath1, 'utf8'));
             existingFiles[existingFilePath2] = JSON.parse(await readFile(existingFilePath2, 'utf8'));
@@ -33,7 +33,7 @@ describe('flex', () => {
             const fileName = 'id_1761320220775_3_propertyChange';
             const flexChange = generateFlexChanges(fileName, {
                 'property': 'visible',
-                'newValue': false
+                'newValue': 'false'
             });
             const newFilePath = join(changesPath, fileName);
             const editor = await writeFlexChanges(
@@ -93,14 +93,14 @@ describe('flex', () => {
             const newFilePath = join(changesPath, fileName);
             const flexChange = generateFlexChanges(fileName, {
                 'property': 'visible',
-                'newValue': false
+                'newValue': 'false'
             });
             const changes = mergeChanges(changesPath, existingFiles, [JSON.stringify(flexChange)]);
             expect(Object.keys(changes)).toEqual([`${newFilePath}.change`, existingFilePath1, existingFilePath2]);
             const change = changes[`${newFilePath}.change`] as FlexChange;
             expect(change.content).toEqual({
                 'property': 'visible',
-                'newValue': false
+                'newValue': 'false'
             });
         });
 

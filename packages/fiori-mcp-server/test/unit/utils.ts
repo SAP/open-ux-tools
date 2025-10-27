@@ -7,6 +7,7 @@ import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'node:fs';
 import { execSync } from 'child_process';
+import type { FlexChange } from '../../src/page-editor-api/flex';
 
 const getDataFile = (
     dataSourceUri: string,
@@ -138,33 +139,17 @@ export function npmInstall(projectPath: string): void {
 
 export function generateFlexChanges(
     fileName: string,
-    content: { property: string; newValue?: unknown; newBinding?: unknown },
+    content: { newValue?: string; property: string; newBinding?: string },
     fileType = 'change',
     changeType = 'propertyChange'
-): object {
+): FlexChange {
     return {
         fileName,
         fileType,
         changeType,
-        moduleName: '',
-        reference: 'project',
-        packageName: '',
         content,
         'selector': {
-            'id': 'project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID',
-            'idIsLocal': false,
-            'type': 'sap.m.Column'
-        },
-        layer: 'VENDOR',
-        texts: {},
-        namespace: 'apps/project/changes/',
-        projectId: 'project',
-        creation: 1000,
-        originalLanguage: '',
-        oDataInformation: {},
-        dependentSelector: {},
-        jsOnly: false,
-        variantReference: '',
-        appDescriptorChange: false
+            'id': 'project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID'
+        }
     };
 }

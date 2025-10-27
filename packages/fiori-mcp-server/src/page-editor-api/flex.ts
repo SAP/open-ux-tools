@@ -1,4 +1,3 @@
-import type { FlexChange, ParsedFlexChangeFile } from './types';
 import { join, parse } from 'path';
 import { existsSync } from 'node:fs';
 import { readdir, mkdir } from 'node:fs/promises';
@@ -6,8 +5,33 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 
-export interface Files {
-    [name: string]: object;
+/**
+ * Internal interface to work with flex changes. This is not the full specification of a flex change,
+ * it comprises just the essential parts that we need to work with flex changes, like the filename,
+ * property name and selector. We need these to compare old versus new flex changes and write them
+ * to the file system
+ */
+export interface FlexChange {
+    fileName: string;
+    selector: {
+        id: string;
+    };
+    fileType: string;
+    changeType: string;
+    content: {
+        newValue?: string;
+        property: string;
+        newBinding?: string;
+    };
+}
+
+export interface FlexChangeFiles {
+    [name: string]: FlexChange;
+}
+
+interface ParsedFlexChangeFile {
+    filename: string;
+    change: FlexChange;
 }
 
 /**
@@ -34,8 +58,8 @@ export function mergeChanges(
         [key: string]: string;
     },
     newChangesStrings?: string[]
-): Files {
-    const files: Files = {};
+): FlexChangeFiles {
+    const files: FlexChangeFiles = {};
     const oldChangesParsed = parseChangeFilesContent(oldChanges);
     const newChanges = convertFlexChanges(newChangesStrings);
 
@@ -67,7 +91,11 @@ export function mergeChanges(
  * @param fs - The optional mem-fs editor instance. If not provided, a new instance is created.
  * @returns A promise that resolves to an array of file paths that were updated or created.
  */
-export async function writeFlexChanges(changesPath: string, changeFiles: Files, fs?: Editor): Promise<Editor> {
+export async function writeFlexChanges(
+    changesPath: string,
+    changeFiles: FlexChangeFiles,
+    fs?: Editor
+): Promise<Editor> {
     fs = getFsInstance(fs);
     // Remove deleted flex change FileSystem
     await removeDeprecateFlexFiles(changesPath, changeFiles, fs);
@@ -100,7 +128,7 @@ export async function writeFlexChanges(changesPath: string, changeFiles: Files, 
  * @param fs - The mem-fs editor instance.
  * @returns A promise that resolves when cleanup is complete.
  */
-async function removeDeprecateFlexFiles(changesPath: string, files: Files, fs: Editor): Promise<void> {
+async function removeDeprecateFlexFiles(changesPath: string, files: FlexChangeFiles, fs: Editor): Promise<void> {
     const latestFiles = Object.keys(files);
     // Read directory files and prepare array of files
     try {
@@ -198,10 +226,10 @@ function deleteOldFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: Fle
  * @param changeFiles - Array of parsed flex change files to be added
  * @param files - Target object that maps file paths to change objects for writing
  */
-function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], files: Files): void {
+function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], files: FlexChangeFiles): void {
     if (changeFiles) {
         changeFiles.forEach((element: ParsedFlexChangeFile) => {
-            files[join(path, `${element.physicalFileName}`)] = element.change;
+            files[join(path, `${element.filename}`)] = element.change;
         });
     }
 }
@@ -219,8 +247,7 @@ function parseChangeFilesContent(changeFiles?: { [key: string]: string }): Parse
         try {
             const change = JSON.parse(changeFiles[name]);
             parsedChangeFiles.push({
-                physicalFileName: name,
-                fileContent: changeFiles[name],
+                filename: name,
                 change
             });
         } catch (error) {
@@ -257,7 +284,7 @@ function processFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: FlexC
                 return true;
             }
 
-            newChange.fileName = parse(oldChangesFiltered[0]?.physicalFileName).name;
+            newChange.fileName = parse(oldChangesFiltered[0]?.filename).name;
             // delete the old change, new change will overwrite the file with the new content
             const oldChangeIndex = oldChanges.findIndex((oldChange) => isMatchingChange(newChange, oldChange.change));
             oldChanges.splice(oldChangeIndex, 1);
