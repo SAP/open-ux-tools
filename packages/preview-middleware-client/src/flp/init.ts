@@ -16,16 +16,7 @@ import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import VersionInfo from 'sap/ui/VersionInfo';
-
-interface Manifest {
-    ['sap.ui5']?: {
-        dependencies?: {
-            libs: Record<string, unknown>;
-            components: Record<string, unknown>;
-        };
-        componentUsages?: Record<string, { name: string }>;
-    };
-}
+import type { Manifest } from '@sap-ux/project-access';
 
 type AppIndexData = Record<
     string,

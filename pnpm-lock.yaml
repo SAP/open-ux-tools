@@ -3250,6 +3250,9 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sapui5/types':
         specifier: 1.120.5
         version: 1.120.5
