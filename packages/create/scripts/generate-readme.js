@@ -120,7 +120,7 @@ function generateReadme(spec) {
 
     let allCommandDocs = [];
     const rootPath = [spec.name];
-    const topLevelCommands = spec.commands || spec.subcommands || [];
+    const topLevelCommands = spec.commands || [];
 
     topLevelCommands.forEach(cmd => {
         allCommandDocs = allCommandDocs.concat(
