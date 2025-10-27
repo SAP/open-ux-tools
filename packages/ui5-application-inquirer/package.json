@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-application-inquirer",
     "description": "Prompts module that can prompt users for inputs required for UI5 application writing",
-    "version": "0.15.25",
+    "version": "0.15.26",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
