@@ -88,8 +88,7 @@ export function getExistingFlpConfigInfoPrompt(isCLI: boolean): FLPConfigQuestio
  * Creates the 'icon' prompt for FLP configuration.
  *
  * @param {IconPromptOptions} [options] - Optional configuration for the icon prompt, including default values.
- * @returns {FLPConfigQuesti8910
- * on} The prompt configuration for the icon.
+ * @returns {FLPConfigQuestion} The prompt configuration for the icon.
  */
 export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
     return {
@@ -112,15 +111,13 @@ export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
 /**
  * Creates the 'confirmReplace' prompt for confirming tile replacement.
  *
- * @param {ManifestNamespace.Inbound} inbounds - Existing inbounds for the application.
  * @returns {FLPConfigQuestion} The prompt configuration for confirming tile replacement.
  */
-export function getConfirmReplacePrompt(inbounds: ManifestNamespace.Inbound): FLPConfigQuestion {
-    const inboundsNumber = Object.keys(inbounds).length;
+export function getConfirmReplacePrompt(): FLPConfigQuestion {
     return {
         type: 'confirm',
         name: promptNames.confirmReplace,
-        message: t('prompts.confirmReplace', { count: inboundsNumber }),
+        message: t('prompts.confirmReplace'),
         default: false,
         guiOptions: {
             hint: t('tooltips.confirmReplace'),

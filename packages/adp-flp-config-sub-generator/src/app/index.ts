@@ -24,7 +24,8 @@ import {
     getTileSettingsQuestions,
     type FLPConfigAnswers,
     type TileSettingsAnswers,
-    tilePromptNames
+    tilePromptNames,
+    tileActions
 } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType, type IPrompt } from '@sap-devx/yeoman-ui-types';
 import {
@@ -145,7 +146,7 @@ export default class AdpFlpConfigGenerator extends Generator {
 
         this.tileSettingsAnswers = await this._promptTileActions();
 
-        if (this.tileSettingsAnswers?.[tilePromptNames.tileHandlingAction] === 'replace') {
+        if (this.tileSettingsAnswers?.[tilePromptNames.tileHandlingAction] === tileActions.REPLACE) {
             this._setupReplacePage();
         }
 
@@ -276,11 +277,14 @@ export default class AdpFlpConfigGenerator extends Generator {
         }
     }
 
+    /**
+     * Sets up the FLP configuration page to display current tile entries.
+     */
     private _setupReplacePage(): void {
         const tileEntries = this.inbounds
             ? Object.entries(this.inbounds).map(([inboundId, inboundData]) => {
-                  const title = inboundData.title || 'No title available';
-                  return `  • Inbound ID: ${inboundId}\n  • Title: ${title}`;
+                  const title = inboundData.title ?? '';
+                  return t('yuiNavSteps.flpConfigReplaceTile', { inboundId, title });
               })
             : [];
 
@@ -290,7 +294,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.prompts.splice(flpConfigPageIndex, 1, [
             {
                 name: t('yuiNavSteps.flpConfigName'),
-                description: `Current tiles:\n${tileEntries.join('\n\n')}`
+                description: t('yuiNavSteps.flpConfigReplaceCurrentTiles', { currentTiles: tileEntries.join('\n\n') })
             }
         ]);
     }
