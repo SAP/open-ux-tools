@@ -141,12 +141,12 @@ async function removeDeprecateFlexFiles(changesPath: string, files: FlexChangeFi
             try {
                 await fs.delete(deprecatedFile);
             } catch (error) {
-                logger.error(`Failed to delete deprecated file: ${deprecatedFile}`);
+                logger.error(`Failed to delete deprecated file "${deprecatedFile}": ${error}`);
                 continue;
             }
         }
     } catch (error) {
-        logger.error('Error while removing deprecated flex change files');
+        logger.error(`Error while removing deprecated flex change files: ${error}`);
         return;
     }
 }
@@ -180,7 +180,7 @@ function parseFlexChange(change: string): FlexChange | undefined {
     try {
         return JSON.parse(change) as FlexChange;
     } catch (error) {
-        logger.error(`Error while prsing flex change file`);
+        logger.error(`Error while prsing flex change file: ${error}`);
     }
 }
 
