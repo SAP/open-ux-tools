@@ -60,7 +60,7 @@ async function addKeys(dependency: Record<string, unknown>, customLibs: Record<s
  * @param compUsages ComponentUsage from the manifest
  * @param customLibs map containing the required custom libraries
  */
-async function getComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): Promise<void> {
+async function addComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): Promise<void> {
     const compNames = Object.values(compUsages).map((usage) => usage.name);
     await addCustomKeys(compNames, customLibs);
 }
@@ -88,7 +88,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                         }
                     }
                     if (manifest['sap.ui5']?.componentUsages) {
-                        await getComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
+                        await addComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
             })
