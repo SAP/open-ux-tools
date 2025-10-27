@@ -7,6 +7,7 @@ import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'node:fs';
 import { execSync } from 'child_process';
+import type { FlexChange } from '../../src/page-editor-api/flex';
 
 const getDataFile = (
     dataSourceUri: string,
@@ -134,4 +135,21 @@ export function npmInstall(projectPath: string): void {
         console.error('npm install failed:', error);
         throw error;
     }
+}
+
+export function generateFlexChanges(
+    fileName: string,
+    content: { newValue?: string; property: string; newBinding?: string },
+    fileType = 'change',
+    changeType = 'propertyChange'
+): FlexChange {
+    return {
+        fileName,
+        fileType,
+        changeType,
+        content,
+        'selector': {
+            'id': 'project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID'
+        }
+    };
 }
