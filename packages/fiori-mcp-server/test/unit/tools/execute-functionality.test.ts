@@ -4,7 +4,10 @@ import { executeFunctionality } from '../../../src/tools';
 import { mockSpecificationImport } from '../utils';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
+import * as flexUtils from '../../../src/page-editor-api/flex';
 import { join } from 'node:path';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -31,6 +34,7 @@ describe('executeFunctionality', () => {
     };
     let getManifestSpy: jest.SpyInstance;
     let createApplicationAccessSpy: jest.SpyInstance;
+    let writeFlexChangesSpy: jest.SpyInstance;
     beforeEach(async () => {
         getManifestSpy = jest
             .spyOn(projectUtils, 'getManifest')
@@ -38,6 +42,7 @@ describe('executeFunctionality', () => {
         findProjectRootSpy = jest
             .spyOn(openUxProjectAccessDependency, 'findProjectRoot')
             .mockImplementation(async (path: string): Promise<string> => path);
+        writeFlexChangesSpy = jest.spyOn(flexUtils, 'writeFlexChanges');
         importProjectMock = jest.fn().mockResolvedValue([]);
         exportProjectMock = jest.fn();
         updateManifestJSONMock = jest.fn();
@@ -272,9 +277,19 @@ describe('executeFunctionality', () => {
         ).rejects.toThrow('functionalityId parameter is required');
     });
 
-    test.only('Change page property - flex change', async () => {
+    test('Change page property - flex change', async () => {
+        const flexChangeFileName = 'id_1761320220775_2_propertyChange.change';
+        const fsEditor = create(createStorage());
+        const commitSpy = jest.spyOn(fsEditor, 'commit');
+        jest.spyOn(fsEditor, 'dump').mockReturnValue({
+            [flexChangeFileName]: {
+                contents: '',
+                state: 'modified'
+            }
+        });
+        writeFlexChangesSpy.mockResolvedValue(fsEditor);
         const file = await readFile(
-            join(__dirname, '../page-editor-api/test-data/flex-changes/id_1761320220775_34_propertyChange.change'),
+            join(__dirname, '../page-editor-api/test-data/flex-changes', flexChangeFileName),
             'utf8'
         );
         mockSpecificationImport(importProjectMock);
@@ -290,33 +305,35 @@ describe('executeFunctionality', () => {
                 'title'
             ],
             parameters: {
-                title: 'dumme title'
+                title: 'dummy title'
             }
         });
+        // Check executions
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
-        // expect(details).toEqual(
-        //     expect.objectContaining({
-        //         appPath: 'testApplicationPath',
-        //         changes: ['Modified webapp/manifest.json'],
-        //         functionalityId: [
-        //             'TravelObjectPage',
-        //             'sections',
-        //             'GroupSection',
-        //             'subsections',
-        //             'CustomSubSection',
-        //             'title'
-        //         ],
-        //         message: "Successfully executed 'Change property'",
-        //         parameters: {
-        //             title: 'dumme title'
-        //         },
-        //         status: 'success'
-        //     })
-        // );
-        // expect(exportProjectMock).toHaveBeenCalledTimes(1);
-        // const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.ObjectPage.page.config;
-        // expect(modifiedConfig.sections.GroupSection.subsections.CustomSubSection.title).toEqual('dumme title');
-        // expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
-        // expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
-    }, 999999);
+        expect(writeFlexChangesSpy).toHaveBeenCalledTimes(1);
+        expect(writeFlexChangesSpy).toHaveBeenCalledWith('changes', {
+            [join('changes', 'id_1761320220775_34_propertyChange.change')]: JSON.parse(file)
+        });
+        expect(commitSpy).toHaveBeenCalledTimes(1);
+        // Check details
+        expect(details).toEqual(
+            expect.objectContaining({
+                appPath: 'testApplicationPath',
+                changes: ['Modified webapp/manifest.json', `Modified ${flexChangeFileName}`],
+                functionalityId: [
+                    'TravelObjectPage',
+                    'sections',
+                    'GroupSection',
+                    'subsections',
+                    'CustomSubSection',
+                    'title'
+                ],
+                message: "Successfully executed 'Change property'",
+                parameters: {
+                    title: 'dummy title'
+                },
+                status: 'success'
+            })
+        );
+    });
 });
