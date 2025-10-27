@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.32.7
+
+### Patch Changes
+
+-   d895232: feat: add new API method `readFlexChanges` to read change files from a specified folder path
+
 ## 1.32.6
 
 ### Patch Changes
