@@ -106,14 +106,14 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                 if (manifest) {
                     if (manifest['sap.ui5']?.dependencies) {
                         if (manifest['sap.ui5'].dependencies.libs) {
-                            addKeys(manifest['sap.ui5'].dependencies.libs, result);
+                            await addKeys(manifest['sap.ui5'].dependencies.libs, result);
                         }
                         if (manifest['sap.ui5'].dependencies.components) {
-                            addKeys(manifest['sap.ui5'].dependencies.components, result);
+                            await addKeys(manifest['sap.ui5'].dependencies.components, result);
                         }
                     }
                     if (manifest['sap.ui5']?.componentUsages) {
-                        getComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
+                        await getComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
             })
