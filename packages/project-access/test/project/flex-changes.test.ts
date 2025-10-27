@@ -18,7 +18,7 @@ describe('Test readFlexChanges()', () => {
         const files = await readFlexChanges(changesPath, memFs);
         expect(Object.keys(files).sort()).toEqual([
             'id_1761320220775_1_propertyChange.change',
-            'id_1761320220775_34_propertyChange.change'
+            'id_1761320220775_2_propertyChange.change'
         ]);
         expect(files['id_1761320220775_1_propertyChange.change']).toEqual(
             await memFs.read(join(changesPath, 'id_1761320220775_1_propertyChange.change'))

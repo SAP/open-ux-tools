@@ -1,13 +1,13 @@
 {
     "fileName": "id_1761320220775_34_propertyChange",
     "fileType": "change",
-    "changeType": "propertyChange",
+    "changeType": "propertyBindingChange",
     "moduleName": "",
     "reference": "project",
     "packageName": "",
     "content": {
         "property": "width",
-        "newValue": "30px"
+        "newBinding": "{width}"
     },
     "selector": {
         "id": "project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID",
