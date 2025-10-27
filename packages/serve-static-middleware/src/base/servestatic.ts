@@ -23,15 +23,17 @@ export const serveStaticMiddleware = (
     const router = Router();
 
     // For compatibility reasons also serve srcPath w/o '/resources'
-    paths.forEach((pathConfig) => {
+    const compatibilityPaths: typeof paths = [];
+    for (const pathConfig of paths) {
         if (pathConfig.path !== '/resources' && pathConfig.path.startsWith('/resources')) {
             const compatibilityPath = {
                 ...pathConfig,
                 path: pathConfig.path.replace('/resources', '')
             };
-            paths.push(compatibilityPath);
+            compatibilityPaths.push(compatibilityPath);
         }
-    });
+    }
+    paths.push(...compatibilityPaths);
 
     for (const pathConfig of paths) {
         const localOptions = resolveServeStaticOptions(pathConfig);

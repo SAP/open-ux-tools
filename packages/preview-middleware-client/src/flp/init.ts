@@ -52,12 +52,12 @@ const getUI5Libs = (() => {
  */
 async function addCustomKeys(keys: string[], customLibs: Record<string, true>): Promise<void> {
     const ui5Libs = await getUI5Libs();
-    keys.forEach((key) => {
+    for (const key of keys) {
         // ignore libs or Components that use SAPUI5 delivered namespaces
         if (!ui5Libs.includes(key)) {
             customLibs[key] = true;
         }
-    });
+    }
 }
 
 /**
