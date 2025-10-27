@@ -94,16 +94,10 @@ describe('listFunctionalities', () => {
     });
 
     test('call with valid app and flex changes', async () => {
-        jest.spyOn(projectUtils, 'readFlexChanges').mockResolvedValue([
-            {
-                physicalFileName: 'file1',
-                fileContent: 'change1'
-            },
-            {
-                physicalFileName: 'file2',
-                fileContent: 'change2'
-            }
-        ]);
+        jest.spyOn(openUxProjectAccessDependency, 'readFlexChanges').mockResolvedValue({
+            file1: 'change1',
+            file2: 'change2'
+        });
         mockSpecificationImport(importProjectMock);
         await listFunctionalities({
             appPath

@@ -1,10 +1,23 @@
-import type { FlexChangeFile, FlexChange, ParsedFlexChangeFile } from './types';
+import type { FlexChange, ParsedFlexChangeFile } from './types';
 import { join, parse } from 'path';
 import { existsSync } from 'node:fs';
-import { readdir, unlink, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { readdir, mkdir } from 'node:fs/promises';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
 export interface Files {
     [name: string]: object;
+}
+
+/**
+ * Returns a mem-fs editor instance. If an instance is not provided, a new one is created.
+ *
+ * @param {Editor} [fs] - An optional mem-fs editor instance.
+ * @returns {Editor} - The mem-fs editor instance.
+ */
+function getFsInstance(fs?: Editor): Editor {
+    return fs ?? create(createStorage());
 }
 
 /**
@@ -15,7 +28,13 @@ export interface Files {
  * @param newChangesStrings - Optional array of new flex changes serialized as JSON strings
  * @returns An object mapping file paths to change objects that should be written to disk
  */
-export function mergeChanges(path: string, oldChanges: FlexChangeFile[], newChangesStrings?: string[]): Files {
+export function mergeChanges(
+    path: string,
+    oldChanges: {
+        [key: string]: string;
+    },
+    newChangesStrings?: string[]
+): Files {
     const files: Files = {};
     const oldChangesParsed = parseChangeFilesContent(oldChanges);
     const newChanges = convertFlexChanges(newChangesStrings);
@@ -43,40 +62,45 @@ export function mergeChanges(path: string, oldChanges: FlexChangeFile[], newChan
 /**
  * Writes updated Flex Changes(from specification export call) to the filesystem.
  *
- * @param flexChanges Optional array of incoming flex change JSON strings.
+ * @param changesPath Path to changes folder.
+ * @param changeFiles Optional array of incoming flex change JSON strings.
+ * @param fs - The optional mem-fs editor instance. If not provided, a new instance is created.
  * @returns A promise that resolves to an array of file paths that were updated or created.
  */
-export async function writeFlexChanges(changesPath: string, mergedChangeFiles: Files): Promise<string[]> {
+export async function writeFlexChanges(changesPath: string, changeFiles: Files, fs?: Editor): Promise<Editor> {
+    fs = getFsInstance(fs);
     // Remove deleted flex change FileSystem
-    await removeDeprecateFlexFiles(changesPath, mergedChangeFiles);
+    await removeDeprecateFlexFiles(changesPath, changeFiles, fs);
     // Check if flex changes files exists and changes folder does not exist
-    if (Object.keys(mergedChangeFiles).length > 0 && !existsSync(join(changesPath))) {
+    if (Object.keys(changeFiles).length > 0 && !existsSync(join(changesPath))) {
         await mkdir(changesPath);
     }
     // Write updated flex files
     const changes: string[] = [];
-    for (const filePath in mergedChangeFiles) {
+    for (const filePath in changeFiles) {
         let oldContent = '';
         if (existsSync(filePath)) {
-            oldContent = await readFile(filePath, 'utf8');
+            oldContent = await fs.read(filePath);
         }
-        const fileContent = JSON.stringify(mergedChangeFiles[filePath], undefined, 4);
+        const fileContent = JSON.stringify(changeFiles[filePath], undefined, 4);
         const isFileChanged = fileContent !== oldContent;
         if (isFileChanged) {
-            await writeFile(filePath, fileContent);
+            await fs.write(filePath, fileContent);
             changes.push(filePath);
         }
     }
-    return changes;
+    return fs;
 }
 
 /**
  * Removes deprecated (outdated) flex change files from the filesystem.
  *
+ * @param changesPath Path to changes folder.
  * @param files An object where keys represent current flex change file paths.
+ * @param fs The mem-fs editor instance.
  * @returns A promise that resolves when cleanup is complete.
  */
-async function removeDeprecateFlexFiles(changesPath: string, files: Files): Promise<void> {
+async function removeDeprecateFlexFiles(changesPath: string, files: Files, fs: Editor): Promise<void> {
     const latestFiles = Object.keys(files);
     // Read directory files and prepare array of files
     try {
@@ -88,7 +112,7 @@ async function removeDeprecateFlexFiles(changesPath: string, files: Files): Prom
         // Delete deprecated files
         for (const deprecatedFile of deprecatedFiles) {
             try {
-                await unlink(deprecatedFile);
+                await fs.delete(deprecatedFile);
             } catch (error) {
                 continue;
             }
@@ -189,19 +213,20 @@ function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], fil
  * @param changeFiles - Optional array of flex change files with serialized content
  * @returns Array of parsed change files with both metadata and parsed change objects
  */
-function parseChangeFilesContent(changeFiles?: FlexChangeFile[]): ParsedFlexChangeFile[] {
+function parseChangeFilesContent(changeFiles?: { [key: string]: string }): ParsedFlexChangeFile[] {
     const parsedChangeFiles: ParsedFlexChangeFile[] = [];
-    changeFiles?.forEach((element: FlexChangeFile) => {
+    for (const name in changeFiles) {
         try {
-            const change = JSON.parse(element.fileContent);
+            const change = JSON.parse(changeFiles[name]);
             parsedChangeFiles.push({
-                ...element,
+                physicalFileName: name,
+                fileContent: changeFiles[name],
                 change
             });
         } catch (error) {
             // do nothing
         }
-    });
+    }
     return parsedChangeFiles;
 }
 

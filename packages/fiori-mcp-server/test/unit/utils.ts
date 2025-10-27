@@ -135,3 +135,36 @@ export function npmInstall(projectPath: string): void {
         throw error;
     }
 }
+
+export function generateFlexChanges(
+    fileName: string,
+    content: { property: string; newValue?: unknown; newBinding?: unknown },
+    fileType = 'change',
+    changeType = 'propertyChange'
+): object {
+    return {
+        fileName,
+        fileType,
+        changeType,
+        moduleName: '',
+        reference: 'project',
+        packageName: '',
+        content,
+        'selector': {
+            'id': 'project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID',
+            'idIsLocal': false,
+            'type': 'sap.m.Column'
+        },
+        layer: 'VENDOR',
+        texts: {},
+        namespace: 'apps/project/changes/',
+        projectId: 'project',
+        creation: 1000,
+        originalLanguage: '',
+        oDataInformation: {},
+        dependentSelector: {},
+        jsOnly: false,
+        variantReference: '',
+        appDescriptorChange: false
+    };
+}
