@@ -1,5 +1,38 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.4.33
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.72
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.85
+    -   @sap-ux/inquirer-common@0.8.6
+    -   @sap-ux/odata-service-inquirer@2.9.8
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+    -   @sap-ux/fiori-generator-shared@0.13.27
+
+## 0.4.32
+
+### Patch Changes
+
+-   Updated dependencies [1b5d459]
+    -   @sap-ux/odata-service-inquirer@2.9.7
+
+## 0.4.31
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.84
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.71
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/odata-service-inquirer@2.9.6
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+    -   @sap-ux/inquirer-common@0.8.5
+
 ## 0.4.30
 
 ### Patch Changes
