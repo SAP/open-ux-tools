@@ -28,15 +28,16 @@ describe('FLP Configuration Functions', () => {
     const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
     const variant = JSON.parse(readFileSync(mockPath, 'utf-8'));
     const appId = 'F0291';
-    const config = {
-        title: 'new_title',
-        subTitle: 'new_subTitle',
-        inboundId: 'displayBank',
-        additionalParameters: '{"param1":"value1","param2":"value2"}',
-        addInboundId: false,
-        semanticObject: 'SomeSemanticObject',
-        action: 'SomeAction'
-    } as InternalInboundNavigation;
+    const config = [
+        {
+            title: 'new_title',
+            subTitle: 'new_subTitle',
+            inboundId: 'displayBank',
+            additionalParameters: '{"param1":"value1","param2":"value2"}',
+            semanticObject: 'SomeSemanticObject',
+            action: 'SomeAction'
+        }
+    ] as InternalInboundNavigation[];
 
     let fs: ReturnType<typeof create>;
 
@@ -51,10 +52,42 @@ describe('FLP Configuration Functions', () => {
         it('should generate and write inbound configuration to the manifest', async () => {
             getVariantMock.mockReturnValue(variant);
 
-            await generateInboundConfig(basePath, config, fs);
+            const returnedEditor = await generateInboundConfig(basePath, config, fs);
 
             expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
-            expect(fs.writeJSON).toHaveBeenCalledWith(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
+            expect(returnedEditor.writeJSON).toHaveBeenCalledWith(
+                join(basePath, 'webapp', 'manifest.appdescr_variant'),
+                variant
+            );
+            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
+                join(basePath, 'webapp', 'i18n', 'i18n.properties'),
+                expect.any(Array),
+                expect.any(Array),
+                basePath,
+                fs
+            );
+        });
+
+        it('should generate and write inbound configuration to the manifest - multiple inbounds', async () => {
+            getVariantMock.mockReturnValue(variant);
+            const configs = [
+                ...config,
+                {
+                    title: 'another_title',
+                    subTitle: 'another_subTitle',
+                    inboundId: 'editBank',
+                    additionalParameters: '{"paramA":"valueA","paramB":"valueB"}',
+                    semanticObject: 'AnotherSemanticObject',
+                    action: 'AnotherAction'
+                }
+            ] as InternalInboundNavigation[];
+            const returnedEditor = await generateInboundConfig(basePath, configs, fs);
+
+            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
+            expect(returnedEditor.writeJSON).toHaveBeenCalledWith(
+                join(basePath, 'webapp', 'manifest.appdescr_variant'),
+                variant
+            );
             expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
@@ -81,42 +114,42 @@ describe('FLP Configuration Functions', () => {
         });
 
         it('should generate a new inbound ID if not provided', async () => {
-            const newConfig = { ...config, inboundId: undefined } as unknown as InternalInboundNavigation;
+            const newConfig = [{ ...config, inboundId: undefined }] as unknown as InternalInboundNavigation[];
 
             getVariantMock.mockReturnValue(variant);
 
             await generateInboundConfig(basePath, newConfig, fs);
 
-            expect(newConfig.inboundId).toBe(`${variant.id}.InboundID`);
+            expect(newConfig[0].inboundId).toBe(`${variant.id}.InboundID`);
         });
     });
 
     describe('getFlpI18nKeys', () => {
         it('should generate i18n keys for FLP configuration', () => {
-            const keys = getFlpI18nKeys(config, appId);
+            const keys = getFlpI18nKeys(config[0], appId);
 
             expect(keys).toEqual([
                 {
-                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`,
-                    value: config.title,
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config[0].inboundId}.title`,
+                    value: config[0].title,
                     annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
                 },
                 {
-                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`,
-                    value: config.subTitle,
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config[0].inboundId}.subTitle`,
+                    value: config[0].subTitle,
                     annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Subtitle' }
                 }
             ]);
         });
 
         it('should not include subtitle key if subtitle is not provided', () => {
-            const newConfig = { ...config, subTitle: undefined };
-            const keys = getFlpI18nKeys(newConfig, appId);
+            const newConfig = [{ ...config[0], subTitle: undefined }] as unknown as InternalInboundNavigation[];
+            const keys = getFlpI18nKeys(newConfig[0], appId);
 
             expect(keys).toEqual([
                 {
-                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`,
-                    value: config.title,
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config[0].inboundId}.title`,
+                    value: config[0].title,
                     annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
                 }
             ]);
@@ -128,13 +161,13 @@ describe('FLP Configuration Functions', () => {
             const i18nPath = join(basePath, 'webapp', 'i18n', 'i18n.properties');
             const expectedEntries = [
                 {
-                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`,
-                    value: config.title,
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config[0].inboundId}.title`,
+                    value: config[0].title,
                     annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
                 },
                 {
-                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`,
-                    value: config.subTitle,
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config[0].inboundId}.subTitle`,
+                    value: config[0].subTitle,
                     annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Subtitle' }
                 }
             ];
