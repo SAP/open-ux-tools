@@ -6,7 +6,8 @@ import { existsSync } from 'node:fs';
 /**
  * Reads all flex change files from the changes directory.
  *
- * @param changesPath - path to changes directory
+ * @param changesPath - path to changes directory.
+ * @param memFs - optional mem-fs-editor instance.
  * @returns A promise that resolves to an array of flex change files.
  */
 export async function readFlexChanges(changesPath: string, memFs?: Editor): Promise<{ [key: string]: string }> {

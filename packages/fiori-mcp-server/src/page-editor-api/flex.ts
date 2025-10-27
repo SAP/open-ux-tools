@@ -62,8 +62,8 @@ export function mergeChanges(
 /**
  * Writes updated Flex Changes(from specification export call) to the filesystem.
  *
- * @param changesPath Path to changes folder.
- * @param changeFiles Optional array of incoming flex change JSON strings.
+ * @param changesPath - Path to changes folder.
+ * @param changeFiles - Optional array of incoming flex change JSON strings.
  * @param fs - The optional mem-fs editor instance. If not provided, a new instance is created.
  * @returns A promise that resolves to an array of file paths that were updated or created.
  */
@@ -95,9 +95,9 @@ export async function writeFlexChanges(changesPath: string, changeFiles: Files, 
 /**
  * Removes deprecated (outdated) flex change files from the filesystem.
  *
- * @param changesPath Path to changes folder.
- * @param files An object where keys represent current flex change file paths.
- * @param fs The mem-fs editor instance.
+ * @param changesPath - Path to changes folder.
+ * @param files - An object where keys represent current flex change file paths.
+ * @param fs - The mem-fs editor instance.
  * @returns A promise that resolves when cleanup is complete.
  */
 async function removeDeprecateFlexFiles(changesPath: string, files: Files, fs: Editor): Promise<void> {
@@ -158,8 +158,8 @@ function parseFlexChange(change: string): FlexChange | undefined {
 /**
  * Determines whether two FlexChange objects represent matching changes.
  *
- * @param change1 The first change object to compare.
- * @param change2 The second change object to compare.
+ * @param change1 - The first change object to compare.
+ * @param change2 - The second change object to compare.
  * @returns `true` if the two changes match according to the criteria above, otherwise `false`.
  */
 function isMatchingChange(change1: FlexChange, change2: FlexChange): boolean {
