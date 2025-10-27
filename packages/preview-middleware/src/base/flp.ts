@@ -157,8 +157,12 @@ export class FlpSandbox {
     ): Promise<void> {
         this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
         this.createFlexHandler();
-        //todo: override this.flpConfig.libs (and log) for CAP projects because it makes only sense for EDMX backends?
-        this.flpConfig.libs ??= this.projectType === 'EDMXBackend';
+        if (this.projectType === 'EDMXBackend') {
+            this.flpConfig.libs ??= true;
+        } else {
+            this.flpConfig.libs = false;
+            this.logger.warn(`'flp.libs' disabled because the current project type is not EDMX. 'flp.libs' only works for EDMX backends.`);
+        }
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
         this.adp = adp;
