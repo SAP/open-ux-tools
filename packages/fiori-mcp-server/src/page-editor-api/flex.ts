@@ -1,4 +1,4 @@
-import { join, parse } from 'path';
+import { join, parse } from 'node:path';
 import { existsSync } from 'node:fs';
 import { readdir, mkdir } from 'node:fs/promises';
 import { create as createStorage } from 'mem-fs';
@@ -89,7 +89,7 @@ export function mergeChanges(
  * @param changesPath - Path to changes folder.
  * @param changeFiles - Optional array of incoming flex change JSON strings.
  * @param fs - The optional mem-fs editor instance. If not provided, a new instance is created.
- * @returns A promise that resolves to an array of file paths that were updated or created.
+ * @returns A promise that resolves mem-fs editor instance.
  */
 export async function writeFlexChanges(
     changesPath: string,
@@ -104,7 +104,6 @@ export async function writeFlexChanges(
         await mkdir(changesPath);
     }
     // Write updated flex files
-    const changes: string[] = [];
     for (const filePath in changeFiles) {
         let oldContent = '';
         if (existsSync(filePath)) {
@@ -114,7 +113,6 @@ export async function writeFlexChanges(
         const isFileChanged = fileContent !== oldContent;
         if (isFileChanged) {
             await fs.write(filePath, fileContent);
-            changes.push(filePath);
         }
     }
     return fs;
@@ -228,9 +226,9 @@ function deleteOldFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: Fle
  */
 function writeChangeFiles(path: string, changeFiles: ParsedFlexChangeFile[], files: FlexChangeFiles): void {
     if (changeFiles) {
-        changeFiles.forEach((element: ParsedFlexChangeFile) => {
+        for (const element of changeFiles) {
             files[join(path, `${element.filename}`)] = element.change;
-        });
+        }
     }
 }
 
@@ -267,8 +265,9 @@ function parseChangeFilesContent(changeFiles?: { [key: string]: string }): Parse
  * @returns True if the new change should be skipped (no further processing needed), false otherwise
  */
 function processFlexChanges(oldChanges: ParsedFlexChangeFile[], newChange: FlexChange): boolean {
-    const oldChangesFiltered: ParsedFlexChangeFile[] =
-        oldChanges && oldChanges.filter((oldChange) => isMatchingChange(newChange, oldChange.change));
+    const oldChangesFiltered: ParsedFlexChangeFile[] = oldChanges?.filter((oldChange) =>
+        isMatchingChange(newChange, oldChange.change)
+    );
     if (oldChangesFiltered && oldChangesFiltered.length > 0) {
         if (oldChangesFiltered.length === 1) {
             const oldChange = oldChangesFiltered[0].change;
