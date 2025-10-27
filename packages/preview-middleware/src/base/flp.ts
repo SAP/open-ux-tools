@@ -160,10 +160,12 @@ export class FlpSandbox {
         if (this.projectType === 'EDMXBackend') {
             this.flpConfig.libs ??= true;
         } else {
+            if (this.flpConfig.libs === true) {
+                this.logger.warn(
+                    `'flp.libs' disabled because the current project type is not EDMX. 'flp.libs' only works for EDMX backends.`
+                );
+            }
             this.flpConfig.libs = false;
-            this.logger.warn(
-                `'flp.libs' disabled because the current project type is not EDMX. 'flp.libs' only works for EDMX backends.`
-            );
         }
         const id = manifest['sap.app']?.id ?? '';
         this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
@@ -1116,7 +1118,7 @@ function serializeDataAttributes(attributes: Map<string, string>, indent = '', p
 }
 
 /**
- * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ * Creates an attribute string that can be added to bootstrap script in an HTML file.
  *
  * @param config ui5 configuration options
  * @returns attribute string
