@@ -10,13 +10,14 @@ import type {
     Application,
     PageType
 } from '@sap/ux-specification/dist/types/src';
-import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
+import { DirName, SchemaType, PageTypeV4, FileName, FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { readFlexChanges } from '@sap-ux/project-access';
 import { getManifest, getUI5Version, readAnnotationFiles } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
 export interface PageData {
     pageId: string;
@@ -180,6 +181,8 @@ export class SapuxFtfsFileIO {
             }
         };
         const exportConfig = (odataVersion === '2.0' ? { v2: params } : { v4: params }) as ExportConfigParameters;
+        exportConfig.ui5Version = await getUI5Version(this.appAccess);
+        exportConfig.layer = isInternalFeaturesSettingEnabled() ? FlexChangeLayer.Vendor : FlexChangeLayer.Customer;
         const result = specification.exportConfig(exportConfig);
         if (result.manifestChangeIndicator === 'Updated') {
             await this.appAccess.updateManifestJSON(result.manifest);
