@@ -3,5 +3,5 @@
 '@sap-ux/fiori-app-sub-generator': patch
 ---
 
-Adds warning to password input and info to backend system choice, tracks if backend system has stored creds, stores credentials only if both already present.  
+Adds a system store warning to password input, add new prompt (default false) whether to store the new system / existing system on reauth, pre-fill username for reauth
 

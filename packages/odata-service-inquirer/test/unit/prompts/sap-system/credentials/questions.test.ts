@@ -1,7 +1,7 @@
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import { type Destination, WebIDEUsage } from '@sap-ux/btp-utils';
-import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
-import { type BackendSystem, SystemService } from '@sap-ux/store';
+import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import { type BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getCredentialsPrompts } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
@@ -429,5 +429,88 @@ describe('Test credentials prompts', () => {
             message: t('texts.passwordStoreWarning'),
             severity: Severity.warning
         });
+    });
+
+    test('should show store credentials prompt when conditions are met and hide when conditions are not met', async () => {
+        const connectionValidator = new ConnectionValidator();
+        const storeCredentialsPromptName = `${promptNamespace}:storeSystemCredentials`;
+
+        // Setup for showing the prompt
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
+        connectionValidatorMock.serviceProvider = serviceProviderMock;
+
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
+        const usernamePrompt = credentialsPrompts.find(
+            (question) => question.name === systemUsernamePromptName
+        ) as InputQuestion;
+        const storeCredentialsPrompt = credentialsPrompts.find(
+            (question) => question.name === storeCredentialsPromptName
+        ) as ConfirmQuestion;
+
+        await (usernamePrompt?.when as Function)(); // Trigger username prompt to set authRequired flag
+
+        const answersWithPassword = { [systemPasswordPromptName]: 'password123' };
+        expect(await (storeCredentialsPrompt?.when as Function)(answersWithPassword)).toBe(true);
+
+        const answersWithoutPassword = { [systemPasswordPromptName]: '' };
+        expect(await (storeCredentialsPrompt?.when as Function)(answersWithoutPassword)).toBe(false);
+
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(false);
+        await (usernamePrompt?.when as Function)(); // Re-trigger to update authRequired
+        expect(await (storeCredentialsPrompt?.when as Function)(answersWithPassword)).toBe(false);
+    });
+
+    test('should update backend system newOrUpdated flag based on user choice in store credentials prompt', async () => {
+        const connectionValidator = new ConnectionValidator();
+        const storeCredentialsPromptName = `${promptNamespace}:storeSystemCredentials`;
+
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.serviceProvider = serviceProviderMock;
+
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
+        const storeCredentialsPrompt = credentialsPrompts.find(
+            (question) => question.name === storeCredentialsPromptName
+        ) as ConfirmQuestion;
+
+        // Setup connected system with backend system
+        const mockBackendSystem: BackendSystem = {
+            name: 'test-system',
+            url: 'http://test.system:1234',
+            username: 'testuser',
+            password: 'testpass',
+            client: '001'
+        };
+
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: serviceProviderMock as ServiceProvider,
+            backendSystem: mockBackendSystem
+        };
+
+        // Choose yes
+        expect(await (storeCredentialsPrompt?.validate as Function)(true)).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated).toBe(true);
+
+        // Choose no
+        expect(await (storeCredentialsPrompt?.validate as Function)(false)).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated).toBe(false);
+
+        // No updates if not backend system
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: serviceProviderMock as ServiceProvider
+        };
+
+        expect(await (storeCredentialsPrompt?.validate as Function)(true)).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.backendSystem).toBeUndefined();
     });
 });
