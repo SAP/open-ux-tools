@@ -30,11 +30,11 @@ export async function generateInboundConfig(
     variant.content = removeInboundChangeTypes(variant.content);
 
     // Set default inbound IDs if missing
-    configs.forEach((config) => {
+    for (const config of configs) {
         if (!config?.inboundId) {
             config.inboundId = `${variant.id}.InboundID`;
         }
-    });
+    }
 
     enhanceInboundConfig(configs, variant.id, variant.content as Content[]);
 
@@ -87,9 +87,9 @@ export async function updateI18n(
     fs: Editor
 ): Promise<void> {
     let newEntries: NewI18nEntry[] = [];
-    configs.forEach((config) => {
+    for (const config of configs) {
         newEntries = newEntries.concat(getFlpI18nKeys(config, appId));
-    });
+    }
     const i18nPath = path.join(basePath, 'webapp', 'i18n', 'i18n.properties');
     const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
     await removeAndCreateI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);

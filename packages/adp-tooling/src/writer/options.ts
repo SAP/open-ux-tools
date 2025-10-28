@@ -314,10 +314,10 @@ export function enhanceManifestChangeContentWithFlpConfig(
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    flpConfigurations.forEach((flpConfig, index) => {
+    for (const [index, flpConfig] of flpConfigurations.entries()) {
         const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
         if (!inboundChangeContent) {
-            return;
+            continue;
         }
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',
@@ -341,5 +341,5 @@ export function enhanceManifestChangeContentWithFlpConfig(
 
             manifestChangeContent.push(removeOtherInboundsChange);
         }
-    });
+    }
 }
