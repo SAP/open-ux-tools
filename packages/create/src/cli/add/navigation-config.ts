@@ -92,7 +92,16 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
             return;
         }
 
-        await generateConfig(basePath, answers as FLPConfigAnswers, variant, fs, tileSettingsAnswers);
+        await generateConfig(
+            basePath,
+            {
+                flpConfigAnswers: answers as FLPConfigAnswers,
+                tileSettingsAnswers
+            },
+            variant,
+            fs,
+            inbounds
+        );
 
         if (!simulate) {
             fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
@@ -163,14 +172,11 @@ async function getUserAnswers(
     if (!isAdp) {
         promptOptions = {
             inboundId: { hide: true },
-            additionalParameters: { hide: true }
+            additionalParameters: { hide: true },
+            confirmReplace: { hide: true }
         };
     } else {
         promptOptions = getAdpFlpConfigPromptOptions(tileSettingsAnswers as TileSettingsAnswers, inbounds);
-    }
-
-    if (isAdp && tileSettingsAnswers?.tileHandlingAction === tileActions.REPLACE) {
-        return undefined;
     }
 
     const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, promptOptions));
@@ -187,23 +193,34 @@ async function getUserAnswers(
  * Generates the inbound navigation configuration for the given project.
  *
  * @param {string} basePath - The path to the application root.
- * @param {FLPConfigAnswers} answers - The user-provided configuration answers.
+ * @param {object} answers - The user-provided answers.
+ * @param {FLPConfigAnswers} answers.flpConfigAnswers - The user-provided configuration answers.
+ * @param {TileSettingsAnswers} [answers.tileSettingsAnswers] - The answers for tile settings.
  * @param {Variant} variant - The descriptor variant information.
  * @param {Editor} fs - The mem-fs editor instance.
- * @param {TileSettingsAnswers} [tileSettingsAnswers] - The answers for tile settings.
+ * @param {ManifestNamespace.Inbound} [inbounds] - Base application inbounds
  * @returns {Promise<void>} A promise that resolves when the configuration is generated.
  */
 async function generateConfig(
     basePath: string,
-    answers: FLPConfigAnswers,
+    answers: {
+        flpConfigAnswers: FLPConfigAnswers;
+        tileSettingsAnswers?: TileSettingsAnswers;
+    },
     variant: Variant,
     fs: Editor,
-    tileSettingsAnswers?: TileSettingsAnswers
+    inbounds?: ManifestNamespace.Inbound
 ): Promise<void> {
+    const { flpConfigAnswers, tileSettingsAnswers } = answers;
     if (variant.isAdp) {
-        const config = getAdpFlpInboundsWriterConfig(answers, variant.content.layer, tileSettingsAnswers);
+        const config = getAdpFlpInboundsWriterConfig(
+            flpConfigAnswers,
+            variant.content.layer,
+            tileSettingsAnswers,
+            inbounds
+        );
         await generateInboundConfig(basePath, config as InternalInboundNavigation[], fs);
     } else {
-        await generateInboundNavigationConfig(basePath, answers as FLPConfigAnswers, true, fs);
+        await generateInboundNavigationConfig(basePath, flpConfigAnswers, true, fs);
     }
 }
