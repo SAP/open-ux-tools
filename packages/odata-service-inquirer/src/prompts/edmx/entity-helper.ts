@@ -8,11 +8,9 @@ import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
-    hasAggregateTransformations,
-    hasAggregateTransformationsForEntitySet,
-    transformationsRequiredForAnalyticalTable,
     hasRecursiveHierarchyForEntitySet,
-    findEntitySetByName
+    findEntitySetByName,
+    shouldUseAnalyticalTable
 } from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
@@ -239,45 +237,6 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
         const entitySetTypeProperties = entitySet.entityType.entityProperties;
         return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
     });
-}
-
-/**
- * Determines if AnalyticalTable should be used based on entity annotations and service type.
- *
- * AnalyticalTable is used when entity has hierarchical and analytical data together with complete transformations,
- * for CAP services with analytical data, or for non-CAP services with complete analytical transformations.
- *
- * @param entitySet The entity set to check for annotations.
- * @param isCapService Whether the service is a CAP service (affects analytical requirements).
- * @returns True if AnalyticalTable should be used, false otherwise.
- */
-function shouldUseAnalyticalTable(entitySet: EntitySet, isCapService: boolean): boolean {
-    // Evaluate annotations once to avoid multiple iterations
-    const hasAnalytical = hasAggregateTransformations(entitySet);
-    const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
-
-    // No analytical data means no need for AnalyticalTable
-    if (!hasAnalytical) {
-        return false;
-    }
-
-    // If entity has both analytical and hierarchical data, check requirements based on service type
-    if (hasHierarchy) {
-        // For CAP services, any analytical annotations are sufficient even with hierarchy
-        if (isCapService) {
-            return true;
-        }
-        // For non-CAP services, require complete analytical transformations
-        return hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable);
-    }
-
-    // For CAP services, analytical annotations are sufficient
-    if (isCapService) {
-        return true;
-    }
-
-    // For non-CAP services, require complete analytical transformations
-    return hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable);
 }
 
 /**

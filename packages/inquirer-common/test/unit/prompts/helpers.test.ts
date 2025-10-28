@@ -16,7 +16,8 @@ import {
     getRecursiveHierarchyQualifier,
     hasAggregateTransformationsForEntity,
     transformationsRequiredForAnalyticalTable,
-    findEntitySetByName
+    findEntitySetByName,
+    shouldUseAnalyticalTable
 } from '../../../src/prompts/helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -1333,6 +1334,320 @@ describe('helpers', () => {
 
             const result = findEntitySetByName(mockMetadata, 'TestEntity');
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('shouldUseAnalyticalTable', () => {
+        describe('Basic analytical data detection', () => {
+            it('should return false when entity has no analytical data', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    entityType: {
+                        annotations: {}
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(false);
+            });
+
+            it('should return true for CAP services with analytical annotations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['filter', 'groupby']
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+            });
+
+            it('should return false for non-CAP services with incomplete transformations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['filter', 'groupby'] // Missing required transformations
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
+
+            it('should return true for non-CAP services with complete transformations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': transformationsRequiredForAnalyticalTable
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(true);
+            });
+        });
+
+        describe('Hierarchical data with analytical data', () => {
+            it('should return true for CAP services with both analytical and hierarchical data', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['filter', 'groupby'] // Incomplete transformations
+                            }
+                        }
+                    },
+                    entityType: {
+                        annotations: {
+                            'Hierarchy': {
+                                'RecursiveHierarchy': {
+                                    NodeProperty: { $PropertyPath: 'NodeId' },
+                                    ParentNavigationProperty: { $NavigationPropertyPath: 'Parent' }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+            });
+
+            it('should return false for non-CAP services with hierarchical data but incomplete transformations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['filter', 'groupby'] // Incomplete transformations
+                            }
+                        }
+                    },
+                    entityType: {
+                        annotations: {
+                            'Hierarchy': {
+                                'RecursiveHierarchy': {
+                                    NodeProperty: { $PropertyPath: 'NodeId' },
+                                    ParentNavigationProperty: { $NavigationPropertyPath: 'Parent' }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
+
+            it('should return true for non-CAP services with hierarchical data and complete transformations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': transformationsRequiredForAnalyticalTable
+                            }
+                        }
+                    },
+                    entityType: {
+                        annotations: {
+                            'Hierarchy': {
+                                'RecursiveHierarchy': {
+                                    NodeProperty: { $PropertyPath: 'NodeId' },
+                                    ParentNavigationProperty: { $NavigationPropertyPath: 'Parent' }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(true);
+            });
+        });
+
+        describe('Entity type annotations', () => {
+            it('should work with analytical annotations in entity type', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    entityType: {
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    'Transformations': ['filter', 'groupby']
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
+
+            it('should work with hierarchical annotations in entity type', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    entityType: {
+                        annotations: {
+                            'Aggregation': {
+                                'ApplySupported': {
+                                    'Transformations': ['filter', 'groupby']
+                                }
+                            },
+                            'Hierarchy': {
+                                'RecursiveHierarchy': {
+                                    NodeProperty: { $PropertyPath: 'NodeId' },
+                                    ParentNavigationProperty: { $NavigationPropertyPath: 'Parent' }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
+        });
+
+        describe('Edge cases', () => {
+            it('should handle missing annotations gracefully', () => {
+                const entitySet: any = {
+                    name: 'TestEntity'
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(false);
+            });
+
+            it('should handle empty transformations array', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': []
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(false);
+            });
+
+            it('should handle qualified hierarchy annotations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['filter', 'groupby']
+                            }
+                        }
+                    },
+                    entityType: {
+                        annotations: {
+                            'Hierarchy': {
+                                'RecursiveHierarchy#MyHierarchy': {
+                                    NodeProperty: { $PropertyPath: 'NodeId' },
+                                    ParentNavigationProperty: { $NavigationPropertyPath: 'Parent' }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
+
+            it('should handle entity set with null annotations', () => {
+                const entitySet: any = {
+                    name: 'TestEntity',
+                    annotations: null,
+                    entityType: null
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(false);
+            });
+        });
+
+        describe('Real-world scenarios', () => {
+            it('should handle S/4 HANA analytical entities', () => {
+                const entitySet: any = {
+                    name: 'SalesOrderItem',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': transformationsRequiredForAnalyticalTable,
+                                'PropertyRestrictions': true,
+                                'GroupableProperties': ['Material', 'Customer'],
+                                'AggregatableProperties': [
+                                    {
+                                        'Property': 'NetAmount',
+                                        'SupportedAggregationMethods': ['sum', 'min', 'max']
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(true);
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+            });
+
+            it('should handle CAP with minimal analytical annotations', () => {
+                const entitySet: any = {
+                    name: 'Books',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['groupby'] // Only minimal transformations
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
+
+            it('should handle hierarchical organizational data', () => {
+                const entitySet: any = {
+                    name: 'OrganizationalUnit',
+                    annotations: {
+                        'Aggregation': {
+                            'ApplySupported': {
+                                'Transformations': ['filter', 'orderby'] // Partial transformations
+                            }
+                        }
+                    },
+                    entityType: {
+                        annotations: {
+                            'Hierarchy': {
+                                'RecursiveHierarchy': {
+                                    NodeProperty: { $PropertyPath: 'OrgUnitId' },
+                                    ParentNavigationProperty: { $NavigationPropertyPath: 'ParentUnit' }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                expect(shouldUseAnalyticalTable(entitySet, true)).toBe(true);
+                expect(shouldUseAnalyticalTable(entitySet, false)).toBe(false);
+            });
         });
     });
 });
