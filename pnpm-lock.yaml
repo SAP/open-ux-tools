@@ -440,6 +440,9 @@ importers:
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
