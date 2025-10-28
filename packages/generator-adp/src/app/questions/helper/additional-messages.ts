@@ -43,7 +43,7 @@ export const getSystemAdditionalMessages = (
         if (!isUIFlex) {
             return {
                 message: t('error.notDeployableNotFlexEnabledSystemError'),
-                severity: Severity.error
+                severity: Severity.warning
             };
         } else {
             return {
