@@ -5,7 +5,8 @@
     "private": false,
     "scripts": {
         "build-compile": "tsc --noEmit",
-        "build": "npm-run-all -l -s build-compile update-embeddings-script",
+        "copy-create-readme": "node -e \"require('fs').copyFileSync('node_modules/@sap-ux/create/README.md', 'data_local/create-README.md')\"",
+        "build": "npm run copy-create-readme && npm-run-all -l -s build-compile update-embeddings-script",
         "update-docs-script": "tsx src/scripts/build-docs.ts",
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
         "update-docs": "npm-run-all -l -s clean-data update-docs-script",
@@ -20,7 +21,9 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@sap-ux/create": "workspace:*"
+    },
     "devDependencies": {
         "@types/node": "20.0.0",
         "@lancedb/lancedb": "0.22.0",
