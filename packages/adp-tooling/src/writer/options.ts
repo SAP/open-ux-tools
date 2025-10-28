@@ -18,6 +18,7 @@ import type {
     CloudCustomTaskConfigTarget,
     CfAdpWriterConfig
 } from '../types';
+import { UI5_CDN_URL } from '../base/constants';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -371,7 +372,7 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
  */
 export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void {
     const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
-        url: 'https://ui5.sap.com'
+        url: UI5_CDN_URL
     };
 
     ui5Config.addFioriToolsProxyMiddleware(
