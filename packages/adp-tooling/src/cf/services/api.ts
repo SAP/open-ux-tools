@@ -114,7 +114,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
  * @param {string[]} appHostIds - The app host ids.
  * @param {CfConfig} cfConfig - The CF config.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<FDCResponse>} The FDC apps.
+ * @returns {Promise<CFApp[]>} The FDC apps.
  */
 export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
     const requestArguments = getFDCRequestArguments(cfConfig);

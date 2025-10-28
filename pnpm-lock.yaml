@@ -2290,6 +2290,12 @@ importers:
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@modelcontextprotocol/sdk':
         specifier: 1.17.5
@@ -2339,6 +2345,9 @@ importers:
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
       esbuild:
         specifier: 0.25.6
         version: 0.25.6
@@ -9409,7 +9418,7 @@ packages:
     dependencies:
       '@types/estree': 1.0.6
       estree-walker: 2.0.2
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       rollup: 3.29.5
     dev: true
 
@@ -18846,6 +18855,7 @@ packages:
   /jake@10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
     engines: {node: '>=10'}
+    hasBin: true
     dependencies:
       async: 3.2.4
       chalk: 4.1.2
@@ -19428,7 +19438,7 @@ packages:
       chalk: 4.1.2
       ci-info: 4.3.0
       graceful-fs: 4.2.11
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     dev: true
 
   /jest-util@30.2.0:
@@ -19440,7 +19450,7 @@ packages:
       chalk: 4.1.2
       ci-info: 4.3.0
       graceful-fs: 4.2.11
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     dev: true
 
   /jest-validate@30.2.0:
