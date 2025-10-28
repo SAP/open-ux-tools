@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.15
+
+### Patch Changes
+
+-   0cff26e: Added new API method `generateCustomField` to support custom field generation.
+
 ## 0.39.14
 
 ### Patch Changes
