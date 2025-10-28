@@ -1,7 +1,6 @@
 import { KeyStoreManager } from '../../../src/secure-store/key-store';
 import { keyring } from '@zowe/secrets-for-zowe-sdk';
 import type { Logger } from '@sap-ux/logger';
-import { keyring as zoweKeyring } from '@zowe/secrets-for-zowe-sdk';
 
 jest.mock('@sap-ux/logger', () => ({
     Logger: class {
@@ -23,7 +22,7 @@ describe('KeyStoreManager', () => {
     beforeEach(() => {
         jest.resetModules();
         jest.clearAllMocks();
-        keyStoreManager = new KeyStoreManager(log, zoweKeyring);
+        keyStoreManager = new KeyStoreManager(log, keyring);
     });
 
     afterAll(async () => {

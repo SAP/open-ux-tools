@@ -12,7 +12,10 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      */
-    constructor(private fs: Editor, private projectPath: string) {}
+    constructor(
+        private fs: Editor,
+        private projectPath: string
+    ) {}
 
     /**
      * Constructs content for a data source change.

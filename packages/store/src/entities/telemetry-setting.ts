@@ -8,12 +8,23 @@ import { serializable } from '../decorators';
 export class TelemetrySetting {
     @serializable public readonly enableTelemetry: boolean;
 
+    /**
+     *
+     * @param root0
+     * @param root0.enableTelemetry
+     */
     constructor({ enableTelemetry }: { enableTelemetry: boolean }) {
         this.enableTelemetry = enableTelemetry;
     }
 }
 
+/**
+ *
+ */
 export class TelemetrySettingKey implements EntityKey {
+    /**
+     *
+     */
     public getId(): string {
         return 'telemetrySetting'; // A singleton
     }

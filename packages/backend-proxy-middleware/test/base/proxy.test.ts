@@ -10,8 +10,9 @@ import {
     type EnhancedIncomingMessage
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
-import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import type { BackendSystem } from '@sap-ux/store';
+import { AuthenticationType } from '@sap-ux/store';
 import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 
 jest.mock('@sap-ux/store/dist/services/api-hub', () => ({

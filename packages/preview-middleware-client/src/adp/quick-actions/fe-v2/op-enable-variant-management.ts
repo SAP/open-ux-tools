@@ -1,13 +1,16 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { SMART_TABLE_TYPE } from '../control-types';
 
-import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { preprocessActionExecution } from './create-table-custom-column';
-import SmartTableExtended from 'sap/ui/comp/smarttable';
+import type SmartTableExtended from 'sap/ui/comp/smarttable';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
@@ -15,12 +18,19 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE];
 
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
+/**
+ *
+ */
 export class EnableObjectPageVariantManagementQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
     readonly forceRefreshAfterExecution = true;
 
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -78,6 +88,10 @@ export class EnableObjectPageVariantManagementQuickAction
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
 
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {

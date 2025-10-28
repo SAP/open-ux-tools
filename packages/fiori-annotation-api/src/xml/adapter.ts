@@ -75,6 +75,10 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     private documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 
+    /**
+     *
+     * @param fileCache
+     */
     private setFileCache(fileCache: Map<string, string>) {
         this.fileCache = fileCache;
     }
@@ -90,6 +94,9 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         }
         return this._compiledService;
     }
+    /**
+     *
+     */
     private set compiledService(v: CompiledService) {
         this._compiledService = v;
     }
@@ -258,6 +265,10 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return serializeTarget(target);
     }
 
+    /**
+     *
+     * @param metadataNamespace
+     */
     private getUniqueNamespace(metadataNamespace: string): string {
         const namespaces = new Set<string>();
         this.documents.forEach((document) => {
@@ -278,6 +289,9 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return newNamespace;
     }
 
+    /**
+     *
+     */
     private _getCompiledService(): CompiledService {
         const files = [this.service.metadataFile, ...this.service.annotationFiles];
         const annotationFiles: AnnotationFile[] = [];
@@ -296,6 +310,13 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         });
     }
 
+    /**
+     *
+     * @param document
+     * @param writer
+     * @param targetChildReferences
+     * @param change
+     */
     private processChange(
         document: Document,
         writer: XMLWriter,
@@ -460,6 +481,12 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         }
     }
 
+    /**
+     *
+     * @param targetChildReferences
+     * @param parentPointer
+     * @param element
+     */
     private getTargetChildReferences(
         targetChildReferences: Map<string, Set<string>>,
         parentPointer: string,
@@ -482,6 +509,12 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return pointerSet;
     }
 
+    /**
+     *
+     * @param targetChildReferences
+     * @param fullPointer
+     * @param element
+     */
     private markElementDeletion(
         targetChildReferences: Map<string, Set<string>>,
         fullPointer: string,
@@ -492,6 +525,12 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         annotationReferences.delete(fullPointer);
     }
 
+    /**
+     *
+     * @param targetChildReferences
+     * @param fullPointer
+     * @param element
+     */
     private markElementInsertion(
         targetChildReferences: Map<string, Set<string>>,
         fullPointer: string,
@@ -501,6 +540,12 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         annotationReferences.add(`${fullPointer}/subElements/-1`);
     }
 
+    /**
+     *
+     * @param uri
+     * @param writer
+     * @param edits
+     */
     private postprocessEdits(uri: string, writer: XMLWriter, edits: TextEdit[]): TextEdit[] {
         const file = this.fileCache.get(uri);
         const document = this.documents.get(uri);
@@ -518,6 +563,12 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return [];
     }
 
+    /**
+     *
+     * @param uri
+     * @param writer
+     * @param ast
+     */
     private updateReferences(uri: string, writer: XMLWriter, ast: XMLDocument): boolean {
         const document = this.documents.get(uri);
         if (!document) {
@@ -536,6 +587,14 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return deletions || inserts;
     }
 
+    /**
+     *
+     * @param writer
+     * @param document
+     * @param aliasInfo
+     * @param usedNames
+     * @param pointer
+     */
     private removeReferences(
         writer: XMLWriter,
         document: Document,
@@ -571,6 +630,14 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return toRemove.size > 0;
     }
 
+    /**
+     *
+     * @param writer
+     * @param document
+     * @param aliasInfo
+     * @param usedNames
+     * @param pointer
+     */
     private addReferences(
         writer: XMLWriter,
         document: Document,
@@ -642,12 +709,21 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 }
 
+/**
+ *
+ * @param condition
+ * @param message
+ */
 function throwIf(condition: boolean, message: string): void {
     if (condition) {
         throw new ApiError(message, ApiErrorCode.General);
     }
 }
 
+/**
+ *
+ * @param reference
+ */
 function createReferenceElement(reference: Reference): Element {
     const include = createElementNode({
         name: Edmx.Include,
@@ -669,6 +745,10 @@ function createReferenceElement(reference: Reference): Element {
     });
 }
 
+/**
+ *
+ * @param document
+ */
 function getEdmxPointer(document: XMLDocument): string | undefined {
     if (!document.rootElement) {
         return undefined;
@@ -677,6 +757,10 @@ function getEdmxPointer(document: XMLDocument): string | undefined {
     return `/rootElement`;
 }
 
+/**
+ *
+ * @param document
+ */
 function getSchemaPointer(document: XMLDocument): string | undefined {
     if (!document.rootElement) {
         return undefined;
@@ -697,6 +781,12 @@ function getSchemaPointer(document: XMLDocument): string | undefined {
     return `/rootElement/subElements/${dataServicesIndex}/subElements/${schemaIndex}`;
 }
 
+/**
+ *
+ * @param fileCache
+ * @param file
+ * @param ignoreComments
+ */
 function parseFile(
     fileCache: Map<string, string>,
     file: TextFile,
@@ -713,6 +803,11 @@ function parseFile(
 }
 type Node = AnyNode | ElementChild[];
 
+/**
+ *
+ * @param annotationFile
+ * @param pointer
+ */
 function convertPointer(annotationFile: AnnotationFile, pointer: string): string {
     let currentNode: Node | undefined = annotationFile;
     return pointer
@@ -738,6 +833,11 @@ function convertPointer(annotationFile: AnnotationFile, pointer: string): string
         .join('/');
 }
 
+/**
+ *
+ * @param segment
+ * @param currentNode
+ */
 function convertPointerSegment(
     segment: string,
     currentNode: Node
@@ -763,6 +863,11 @@ function convertPointerSegment(
     return { mappedSegment, nextNode };
 }
 
+/**
+ *
+ * @param annotationFileInternal
+ * @param metadataService
+ */
 function getAliasInfo(annotationFileInternal: AnnotationFile, metadataService: MetadataService): AliasInformation {
     const namespaces = getAllNamespacesAndReferences(
         annotationFileInternal.namespace,

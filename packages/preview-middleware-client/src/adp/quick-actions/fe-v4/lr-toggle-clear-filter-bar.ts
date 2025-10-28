@@ -1,7 +1,10 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import FilterBar from 'sap/ui/mdc/FilterBar';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FilterBar from 'sap/ui/mdc/FilterBar';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { executeToggleAction } from './utils';
@@ -19,12 +22,19 @@ export class ToggleClearFilterBarQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(ENABLE_CLEAR_FILTER_BAR_TYPE, [], '', context);
     }
     readonly forceRefreshAfterExecution = true;
     private isClearButtonEnabled = false;
 
+    /**
+     *
+     */
     initialize(): Promise<void> {
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
@@ -42,12 +52,18 @@ export class ToggleClearFilterBarQuickAction
         return Promise.resolve();
     }
 
+    /**
+     *
+     */
     protected get textKey() {
         return this.isClearButtonEnabled
             ? 'V4_QUICK_ACTION_LR_DISABLE_CLEAR_FILTER_BAR'
             : 'V4_QUICK_ACTION_LR_ENABLE_CLEAR_FILTER_BAR';
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         const command = await executeToggleAction(this.context, this.isClearButtonEnabled, CONTROL_TYPE, PROPERTY_PATH);
         if (command.length) {

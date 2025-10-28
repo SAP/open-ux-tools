@@ -1,4 +1,4 @@
-import ManagedObject from 'sap/ui/base/ManagedObject';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
 // add required functionality for testing here
 export class ManagedObjectMock {

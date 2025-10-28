@@ -23,7 +23,13 @@ import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 import BaseDialog from './BaseDialog.controller';
 
 type ExtensionPointModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/newFragmentName'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/extensionPointName'): string;
 };
 
@@ -33,6 +39,13 @@ type ExtensionPointModel = JSONModel & {
 export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
     public readonly data: ExtensionPointData;
 
+    /**
+     *
+     * @param name
+     * @param _overlays
+     * @param rta
+     * @param data
+     */
     constructor(name: string, _overlays: UI5Element, rta: RuntimeAuthoring, data: ExtensionPointData) {
         super(name);
         this.model = new JSONModel();

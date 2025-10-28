@@ -71,7 +71,7 @@ export function nodeMatcher(
         const element = nodes[index];
         const adjustedAnnotationPath = element.annotationPath
             .split('/')
-            .map((segment, i) => (i === 1 ? segment.split('.').slice(-1)[0] ?? segment : segment))
+            .map((segment, i) => (i === 1 ? (segment.split('.').slice(-1)[0] ?? segment) : segment))
             .join('/');
         if (annotationPath === element.annotationPath || annotationPath === adjustedAnnotationPath) {
             return element;

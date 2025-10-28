@@ -48,6 +48,11 @@ export function getLocalEDMXService(project: Project, serviceName: string, appNa
     };
 }
 
+/**
+ *
+ * @param requestedAppName
+ * @param project
+ */
 function adjustAppNameByProjectData(requestedAppName: string | undefined, project: Project): string {
     if (requestedAppName && project.apps[requestedAppName]) {
         return requestedAppName;

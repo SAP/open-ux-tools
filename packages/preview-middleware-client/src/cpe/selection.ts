@@ -1,8 +1,7 @@
-import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import type { Control, ExternalAction, Properties } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
     controlSelected,
-    Properties,
     propertyChanged,
     PropertyType,
     reportTelemetry,
@@ -67,6 +66,11 @@ function getPropertyDocument(
           } as PropertiesInfo);
 }
 
+/**
+ *
+ * @param control
+ * @param controlData
+ */
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
     try {
         const controlMetadata = control.getMetadata();
@@ -99,8 +103,12 @@ export class SelectionService implements Service {
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
+     * @param changeService
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService
+    ) {}
 
     /**
      * Initialize selection service.
@@ -160,6 +168,12 @@ export class SelectionService implements Service {
         });
     }
 
+    /**
+     *
+     * @param control
+     * @param sendAction
+     * @param overlay
+     */
     private async buildProperties(
         control: ManagedObject,
         sendAction: ActionSenderFunction,

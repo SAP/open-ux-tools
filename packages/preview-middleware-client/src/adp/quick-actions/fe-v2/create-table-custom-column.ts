@@ -1,14 +1,14 @@
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import UI5Element from 'sap/ui/core/Element';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type UI5Element from 'sap/ui/core/Element';
 
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-import ObjectPageSection from 'sap/uxap/ObjectPageSection';
-import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import type ObjectPageSection from 'sap/uxap/ObjectPageSection';
+import type ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
-import IconTabBar from 'sap/m/IconTabBar';
+import type IconTabBar from 'sap/m/IconTabBar';
 
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
@@ -64,10 +64,17 @@ export function preprocessActionExecution(
     }
 }
 
+/**
+ *
+ */
 export class AddTableCustomColumnQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(
             CREATE_TABLE_CUSTOM_COLUMN,
@@ -81,6 +88,10 @@ export class AddTableCustomColumnQuickAction
         );
     }
 
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {

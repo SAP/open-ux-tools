@@ -10,6 +10,9 @@ export const AuthenticationType = {
 
 export type AuthenticationType = (typeof AuthenticationType)[keyof typeof AuthenticationType];
 
+/**
+ *
+ */
 export class BackendSystem {
     @serializable public readonly name: string;
     @serializable public readonly url: string;
@@ -22,6 +25,20 @@ export class BackendSystem {
     @sensitiveData public readonly password?: string;
     @sensitiveData public readonly authenticationType?: string;
 
+    /**
+     *
+     * @param root0
+     * @param root0.name
+     * @param root0.url
+     * @param root0.client
+     * @param root0.serviceKeys
+     * @param root0.refreshToken
+     * @param root0.username
+     * @param root0.password
+     * @param root0.userDisplayName
+     * @param root0.authenticationType
+     * @param root0.systemType
+     */
     constructor({
         name,
         url,
@@ -57,19 +74,35 @@ export class BackendSystem {
         this.authenticationType = authenticationType;
     }
 }
+/**
+ *
+ */
 export class BackendSystemKey implements EntityKey {
     private url: string;
     private client?: string;
 
+    /**
+     *
+     * @param system
+     */
     public static from(system: BackendSystem): BackendSystemKey {
         return new BackendSystemKey({ url: system.url, client: system.client });
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.url
+     * @param root0.client
+     */
     constructor({ url, client }: { url: string; client?: string }) {
         this.url = url.trim().replace(/\/$/, '');
         this.client = client?.trim();
     }
 
+    /**
+     *
+     */
     public getId(): string {
         return this.url + `${this.client ? '/' + this.client : ''}`;
     }

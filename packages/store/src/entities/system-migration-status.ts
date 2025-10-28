@@ -1,7 +1,8 @@
 import type { EntityKey } from '.';
 import { serializable } from '../decorators';
 
-/** This represents the migration status of the systems from pure secure store
+/**
+ * This represents the migration status of the systems from pure secure store
  * the hybrid filesystem/secure store
  */
 export class SystemMigrationStatus {
@@ -9,6 +10,13 @@ export class SystemMigrationStatus {
     @serializable public readonly authTypeMigrated: boolean;
     @serializable public readonly migrationLogs: string[];
 
+    /**
+     *
+     * @param root0
+     * @param root0.authTypeMigrated
+     * @param root0.migrationDone
+     * @param root0.migrationLogs
+     */
     constructor({
         authTypeMigrated,
         migrationDone,
@@ -24,7 +32,13 @@ export class SystemMigrationStatus {
     }
 }
 
+/**
+ *
+ */
 export class SystemMigrationStatusKey implements EntityKey {
+    /**
+     *
+     */
     public getId(): string {
         return 'systemMigration'; // A singleton
     }

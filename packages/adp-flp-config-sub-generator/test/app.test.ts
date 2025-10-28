@@ -55,11 +55,10 @@ jest.mock('@sap-ux/inquirer-common', () => ({
         () =>
             ({
                 getValidationErrorHelp: () => 'Network Error'
-            } as unknown as inquirerCommon.ErrorHandler)
+            }) as unknown as inquirerCommon.ErrorHandler
     )
 }));
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
     TelemetryHelper: {

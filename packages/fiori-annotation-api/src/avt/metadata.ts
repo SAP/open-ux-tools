@@ -76,6 +76,11 @@ class MetadataConverter {
             typeDefinitions: []
         };
     }
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     */
     private convertAction(targetKinds: string[], element: MetadataElement): void {
         if (!['Action', 'Function'].some((item) => targetKinds.includes(item))) {
             return;
@@ -116,6 +121,12 @@ class MetadataConverter {
         this.actions.push(action);
     }
 
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     * @param elementKey
+     */
     private convertEntityContainer(targetKinds: string[], element: MetadataElement, elementKey: string): void {
         if (targetKinds.includes('EntityContainer')) {
             this.entityContainer = {
@@ -133,6 +144,11 @@ class MetadataConverter {
         }
     }
 
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     */
     private convertFunctionImport(targetKinds: string[], element: MetadataElement): void {
         const oDataVersion = this.metadataService.ODataVersion;
         if (targetKinds.includes('FunctionImport') || targetKinds.includes('ActionImport')) {
@@ -152,6 +168,11 @@ class MetadataConverter {
         }
     }
 
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     */
     private convertEntitySet(targetKinds: string[], element: MetadataElement): void {
         if (targetKinds.includes('EntitySet') && !targetKinds.includes('ComplexType')) {
             // for CDS no entity container is present: target kind EntitySet can appear at root level
@@ -171,6 +192,11 @@ class MetadataConverter {
     }
 
     // XML specific conversion, in CDS singletons are specially annotated entity sets (processed in convertEntitySet)
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     */
     private convertSingleton(targetKinds: string[], element: MetadataElement): void {
         if (targetKinds.includes('Singleton')) {
             const singleton: RawSingleton = {
@@ -185,6 +211,12 @@ class MetadataConverter {
         }
     }
 
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     * @param elementKey
+     */
     private convertComplexType(targetKinds: string[], element: MetadataElement, elementKey: string): void {
         if (targetKinds.includes('ComplexType')) {
             const complexTypeProperties: RawProperty[] = [];
@@ -225,6 +257,12 @@ class MetadataConverter {
         }
     }
 
+    /**
+     *
+     * @param targetKinds
+     * @param element
+     * @param elementKey
+     */
     private convertEntityType(targetKinds: string[], element: MetadataElement, elementKey: string): void {
         if (targetKinds.includes('EntityType') && !targetKinds.includes('ComplexType')) {
             const entityProperties: RawProperty[] = [];
@@ -248,6 +286,14 @@ class MetadataConverter {
         }
     }
 
+    /**
+     *
+     * @param entityProperties
+     * @param keys
+     * @param parent
+     * @param targetKinds
+     * @param element
+     */
     private convertProperty(
         entityProperties: RawProperty[],
         keys: RawProperty[],
@@ -268,6 +314,12 @@ class MetadataConverter {
             }
         }
     }
+    /**
+     *
+     * @param navigationProperties
+     * @param targetKinds
+     * @param element
+     */
     private convertNavigationProperty(
         navigationProperties: RawV4NavigationProperty[],
         targetKinds: string[],
@@ -289,6 +341,12 @@ class MetadataConverter {
     }
 }
 
+/**
+ *
+ * @param element
+ * @param targetKinds
+ * @param metadataService
+ */
 function convertFunctionImportV2(
     element: MetadataElement,
     targetKinds: string[],
@@ -329,6 +387,11 @@ function convertFunctionImportV2(
     return action;
 }
 
+/**
+ *
+ * @param elementTargetKinds
+ * @param element
+ */
 function isReturnParameter(elementTargetKinds: string[], element: MetadataElement): boolean {
     return (
         (elementTargetKinds.includes('Parameter') && element.name === '$Return') ||
@@ -342,6 +405,10 @@ const separators = new Set(['@', '/', '(']);
 function unalias(aliasedValue: string): string;
 
 // TODO: check what is this actually doing, aliases are not filled at all.
+/**
+ *
+ * @param aliasedValue
+ */
 function unalias(aliasedValue: string | undefined): string | undefined {
     if (!aliasedValue) {
         return aliasedValue;

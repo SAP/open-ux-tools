@@ -19,7 +19,10 @@ export class PageEditorApi {
      * @param appAccess - The application access object
      * @param pageId - Optional page identifier
      */
-    constructor(public appAccess: ApplicationAccess, public pageId?: string) {
+    constructor(
+        public appAccess: ApplicationAccess,
+        public pageId?: string
+    ) {
         this.ftfsIO = new SapuxFtfsFileIO(appAccess);
     }
 

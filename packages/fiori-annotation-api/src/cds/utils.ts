@@ -73,6 +73,12 @@ export function getAnnotationFromAssignment(
     return [annotation, edmxPath];
 }
 
+/**
+ *
+ * @param node
+ * @param parent
+ * @param greatGrandParent
+ */
 function findAnnotation(node: AstNode, parent?: AstNode, greatGrandParent?: AstNode): [Annotation, Target] {
     if (node.type === TARGET_TYPE) {
         // if no assignment is specified we default to the first one

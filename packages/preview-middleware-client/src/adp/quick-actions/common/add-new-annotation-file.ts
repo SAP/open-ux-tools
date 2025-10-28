@@ -1,4 +1,4 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import {
     NESTED_QUICK_ACTION_KIND,
@@ -36,10 +36,17 @@ export class AddNewAnnotationFile
     readonly type = ADD_NEW_ANNOTATION_FILE;
     readonly forceRefreshAfterExecution = true;
     public isApplicable = true;
+    /**
+     *
+     */
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
     private annotationDataSourceData: AnnotationDataSourceResponse;
+    /**
+     *
+     * @param context
+     */
     constructor(protected readonly context: QuickActionContext) {
         super(ADD_NEW_ANNOTATION_FILE, NESTED_QUICK_ACTION_KIND, '', context, [DIALOG_ENABLEMENT_VALIDATOR]);
     }
@@ -81,6 +88,9 @@ export class AddNewAnnotationFile
             }
         }
     }
+    /**
+     *
+     */
     protected get textKey() {
         let result = ADD_NEW_ANNOTATION_FILE_TITLE;
         const dataSourceIds = Object.keys(this.annotationDataSourceData.annotationDataSourceMap);
@@ -92,6 +102,10 @@ export class AddNewAnnotationFile
         }
         return result;
     }
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { annotationDataSourceMap, isRunningInBAS } = this.annotationDataSourceData;
         const appType = getApplicationType(this.context.rta.getRootControlInstance().getManifest());
@@ -160,6 +174,7 @@ export class AddNewAnnotationFile
 
     /**
      * Prepares nested quick action object
+     *
      * @returns action instance
      */
     getActionObject(): NestedQuickAction {

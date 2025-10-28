@@ -99,7 +99,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
             () =>
                 ({
                     on: jest.fn()
-                } as unknown as mockFs.WriteStream & { on: jest.Mock })
+                }) as unknown as mockFs.WriteStream & { on: jest.Mock }
         );
 
         // Test execution
@@ -130,7 +130,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
             () =>
                 ({
                     on: jest.fn()
-                } as unknown as mockFs.WriteStream & { on: jest.Mock })
+                }) as unknown as mockFs.WriteStream & { on: jest.Mock }
         );
 
         // Test execution

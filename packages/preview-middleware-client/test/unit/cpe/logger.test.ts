@@ -4,7 +4,7 @@ import Log from 'mock/sap/base/Log';
 describe('logger', () => {
     beforeEach(() => {
         Log.error.mockClear();
-    })
+    });
     test('info', async () => {
         logger.info('test');
         expect(Log.info).toHaveBeenCalledTimes(1);

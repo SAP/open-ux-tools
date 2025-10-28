@@ -163,6 +163,13 @@ export function getDeletionRangeForNode(
     return undefined;
 }
 
+/**
+ *
+ * @param vocabularyAliases
+ * @param tokens
+ * @param tokenRange
+ * @param nativeCdsTermName
+ */
 function findTermKind(
     vocabularyAliases: Set<string>,
     tokens: CompilerToken[],
@@ -185,6 +192,14 @@ function findTermKind(
     return deletionRangeKind ?? DeletionRangeKind.UNDEFINED;
 }
 
+/**
+ *
+ * @param vocabularyAliases
+ * @param tokens
+ * @param deletionRanges
+ * @param annotationFile
+ * @param includeTarget
+ */
 function expandDeletionRanges(
     vocabularyAliases: Set<string>,
     tokens: CompilerToken[],
@@ -250,6 +265,11 @@ function expandDeletionRanges(
         });
 }
 
+/**
+ *
+ * @param tokens
+ * @param deletionRanges
+ */
 function mergeDeletionRanges(tokens: CompilerToken[], deletionRanges: DeletionRange[]): boolean {
     let changed = false;
     for (let rangeIndex = 0; rangeIndex < deletionRanges.length; rangeIndex++) {
@@ -258,7 +278,7 @@ function mergeDeletionRanges(tokens: CompilerToken[], deletionRanges: DeletionRa
         do {
             doMerge = false;
             const next = rangeIndex + 1 < deletionRanges.length ? deletionRanges[rangeIndex + 1] : null;
-            if (next && current.termRange.end + 1 === next.termRange.start) {
+            if (current.termRange.end + 1 === next?.termRange.start) {
                 // merge possible if at most a single separator token is between deletion ranges
                 const nonCommentTokenIndexes: number[] = [];
                 let nextIndex = current.tokenRange.end;
@@ -289,6 +309,12 @@ function mergeDeletionRanges(tokens: CompilerToken[], deletionRanges: DeletionRa
     return changed;
 }
 
+/**
+ *
+ * @param tokens
+ * @param index
+ * @param next
+ */
 function getNeighborIndex(tokens: CompilerToken[], index: number, next = false): number {
     let neighboringIndex = index + (next ? +1 : -1);
     if (!tokens[neighboringIndex]) {
@@ -781,6 +807,10 @@ function isEmbedded(tokens: CompilerToken[], startIndex: number): boolean {
     return actionFunctionFound ? true : !annotateFound;
 }
 
+/**
+ *
+ * @param token
+ */
 function isComment(token: CompilerToken): boolean {
     return token?.text?.startsWith('//') || token?.text?.startsWith('/*');
 }
@@ -884,6 +914,11 @@ function hasParameterList(tokens: CompilerToken[], startIndex: number): boolean 
     return bracketPresent;
 }
 
+/**
+ *
+ * @param token
+ * @param endPosition
+ */
 function getPositionFromToken(token: CompilerToken | undefined, endPosition = false): Position | undefined {
     if (!token) {
         return undefined;
@@ -892,6 +927,13 @@ function getPositionFromToken(token: CompilerToken | undefined, endPosition = fa
     return Position.create(tokenLine(token), tokenColumn(token) + offset);
 }
 
+/**
+ *
+ * @param tokens
+ * @param tokenRange
+ * @param previousSeparatorIncluded
+ * @param siblingSeparatorFound
+ */
 function getRangeFromTokenRange(
     tokens: CompilerToken[],
     tokenRange: IndexRange,
@@ -909,6 +951,11 @@ function getRangeFromTokenRange(
     return undefined;
 }
 
+/**
+ *
+ * @param tokens
+ * @param deletionRange
+ */
 function includeSiblingSeparator(
     tokens: CompilerToken[],
     deletionRange: DeletionRange
@@ -922,7 +969,7 @@ function includeSiblingSeparator(
     const nextToken = tokens[nextTokenIndex];
     let siblingSeparatorFound = false;
     let previousSeparatorIncluded = false;
-    if (nextToken && nextToken.text === separator) {
+    if (nextToken?.text === separator) {
         // extend deletion range to include separator
         deletionRange.tokenRange.end = nextTokenIndex;
         siblingSeparatorFound = true;

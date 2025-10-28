@@ -6,7 +6,7 @@ import { t } from '../../../../i18n';
 import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type ServiceSelectionPromptOptions,
+    type ServiceSelectionPromptOptions, // eslint-disable-line @typescript-eslint/no-unused-vars
     type SystemNamePromptOptions
 } from '../../../../types';
 import { isBackendSystemKeyExisting, PromptState } from '../../../../utils';

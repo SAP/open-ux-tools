@@ -1,4 +1,4 @@
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import hasStableId from 'mock/sap/ui/rta/util/hasStableId';

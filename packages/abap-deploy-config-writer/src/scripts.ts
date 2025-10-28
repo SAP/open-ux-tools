@@ -19,7 +19,7 @@ export async function updateScripts(
     fs: Editor,
     options?: DeployConfigOptions
 ): Promise<void> {
-    const buildPrefix = options?.addBuildToUndeployScript ?? true ? `${BUILD_SCRIPT} && ` : '';
+    const buildPrefix = (options?.addBuildToUndeployScript ?? true) ? `${BUILD_SCRIPT} && ` : '';
 
     // deploy script
     const deployScript = `${BUILD_SCRIPT} && ${DEPLOY_SCRIPT} --config ${deployConfigFile}`;

@@ -1,6 +1,5 @@
 import { readFile } from 'fs/promises';
-import { join } from 'node:path';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import fs from 'node:fs';
 
 import express from 'express';
@@ -236,35 +235,38 @@ async function globalSetup(): Promise<void> {
             return;
         }
         res.json(
-            [...Object.keys(mapping), ...variants.values()].reduce((acc, key) => {
-                acc[key] = {
-                    name: baseAppDirectory,
-                    manifest: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp/manifest.json`,
-                    url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
-                    components: [
-                        {
-                            name: key,
-                            url: {
-                                url: '/',
-                                final: true
-                            },
-                            lazy: true
-                        }
-                    ],
-                    minUi5Versions: ['1.71.0'],
-                    requests: [
-                        {
-                            name: 'sap.ui.fl.changes',
-                            reference: key,
-                            preview: {
-                                maxLayer: 'PARTNER',
-                                reference: baseAppDirectory
+            [...Object.keys(mapping), ...variants.values()].reduce(
+                (acc, key) => {
+                    acc[key] = {
+                        name: baseAppDirectory,
+                        manifest: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp/manifest.json`,
+                        url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
+                        components: [
+                            {
+                                name: key,
+                                url: {
+                                    url: '/',
+                                    final: true
+                                },
+                                lazy: true
                             }
-                        }
-                    ]
-                };
-                return acc;
-            }, {} as Record<string, any>)
+                        ],
+                        minUi5Versions: ['1.71.0'],
+                        requests: [
+                            {
+                                name: 'sap.ui.fl.changes',
+                                reference: key,
+                                preview: {
+                                    maxLayer: 'PARTNER',
+                                    reference: baseAppDirectory
+                                }
+                            }
+                        ]
+                    };
+                    return acc;
+                },
+                {} as Record<string, any>
+            )
         );
     });
 

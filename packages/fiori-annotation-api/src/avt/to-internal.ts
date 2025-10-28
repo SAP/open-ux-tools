@@ -281,6 +281,12 @@ export function convertPrimitiveValueToInternal(
     }
 }
 
+/**
+ *
+ * @param element
+ * @param collectionElement
+ * @param hostElement
+ */
 function consumeElement(element: Element, collectionElement: Element, hostElement?: Element): Element {
     if (hostElement) {
         element.content = element.content || [];
@@ -291,6 +297,12 @@ function consumeElement(element: Element, collectionElement: Element, hostElemen
     return element;
 }
 
+/**
+ *
+ * @param element
+ * @param aliasInfo
+ * @param reverse
+ */
 function replaceAliasInElement(element: Element, aliasInfo: AliasInformation, reverse?: boolean): Element {
     // replace aliases in all attributes/sub nodes with full namespaces (reverse = true ? vice versa):
     const result = element;
@@ -300,6 +312,12 @@ function replaceAliasInElement(element: Element, aliasInfo: AliasInformation, re
     return result;
 }
 
+/**
+ *
+ * @param result
+ * @param aliasInfo
+ * @param reverse
+ */
 function replaceAliasInAttributes(result: Element, aliasInfo: AliasInformation, reverse?: boolean): void {
     // in attributes: term or type attributes, enumValue and any path values provided as attributes
     Object.keys(result.attributes || {}).forEach((attributeName) => {
@@ -327,6 +345,12 @@ function replaceAliasInAttributes(result: Element, aliasInfo: AliasInformation, 
     });
 }
 
+/**
+ *
+ * @param result
+ * @param aliasInfo
+ * @param reverse
+ */
 function replaceAliasInSubNodes(result: Element, aliasInfo: AliasInformation, reverse?: boolean): void {
     for (const subNode of result.content ?? []) {
         if (subNode.type === ELEMENT_TYPE) {
@@ -343,6 +367,10 @@ function replaceAliasInSubNodes(result: Element, aliasInfo: AliasInformation, re
     }
 }
 
+/**
+ *
+ * @param result
+ */
 function removeEmptyTextNodes(result: Element): void {
     if ((result.content ?? []).some((entry) => entry.type === ELEMENT_TYPE)) {
         // sub elements present: filter out empty text nodes
@@ -350,6 +378,11 @@ function removeEmptyTextNodes(result: Element): void {
     }
 }
 
+/**
+ *
+ * @param aliasInfo
+ * @param segment
+ */
 function getAliasedSegment(aliasInfo: AliasInformation, segment: string): string {
     const [path, term] = segment.split('@');
     if (term) {
@@ -361,6 +394,11 @@ function getAliasedSegment(aliasInfo: AliasInformation, segment: string): string
     }
 }
 
+/**
+ *
+ * @param aliasInfo
+ * @param path
+ */
 function getAliasedPath(aliasInfo: AliasInformation, path: PathValue): PathValue {
     return path
         .split('/')

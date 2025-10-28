@@ -69,6 +69,12 @@ class Visitor {
         };
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private target(astNode: Target, node: AnnotationFileTarget, pointer: string[]): ReturnValue | undefined {
         if (astNode.type === TARGET_TYPE) {
             const [segment, indexSegment, ...segments] = pointer;
@@ -97,6 +103,12 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private assignment(astNode: Assignment, node: Element, pointer: string[]): ReturnValue | undefined {
         if (astNode.type === ANNOTATION_TYPE) {
             const result = this.annotation(astNode, node, pointer);
@@ -123,6 +135,13 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     * @param embedded
+     */
     private annotation(
         astNode: Annotation,
         node: Element,
@@ -178,6 +197,12 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private value(
         astNode: AnnotationValue,
         node: ElementChild | Attribute,
@@ -294,6 +319,12 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private recordProperty(astNode: RecordProperty, node: ElementChild, pointer: string[]): ReturnValue | undefined {
         if (node.type !== ELEMENT_TYPE || node.name !== Edm.PropertyValue) {
             return undefined;
@@ -345,6 +376,12 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private flattenedProperty(astNode: RecordProperty, node: ElementChild, pointer: string[]): ReturnValue | undefined {
         if (node.type !== ELEMENT_TYPE || node.name !== Edm.Record) {
             return undefined;
@@ -378,6 +415,12 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private flattenedAnnotation(astNode: Annotation, node: ElementChild, pointer: string[]): ReturnValue | undefined {
         if (node.type !== ELEMENT_TYPE || (node.name !== Edm.Record && node.name !== Edm.Annotation)) {
             return undefined;
@@ -402,6 +445,12 @@ class Visitor {
         return undefined;
     }
 
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private flattenedAnnotationPropertyValue(
         astNode: Annotation,
         node: ElementChild,
@@ -434,6 +483,12 @@ class Visitor {
         }
         return undefined;
     }
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private flattenedAnnotationValue(
         astNode: Annotation,
         node: ElementChild,
@@ -463,6 +518,11 @@ class Visitor {
     }
 }
 
+/**
+ *
+ * @param nodes
+ * @param range
+ */
 function findNodeIndexByRange<T extends { range?: Range }>(nodes: T[], range: Range): number {
     for (let index = 0; index < nodes.length; index++) {
         const node = nodes[index];

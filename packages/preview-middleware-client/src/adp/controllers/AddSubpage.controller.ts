@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 
@@ -58,8 +58,17 @@ export interface AddSubpageOptions {
 
 export type AddSubpageModel = JSONModel & {
     getProperty(sPath: '/title'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/navigationData'): { navProperty: string; entitySet: string }[];
+    /**
+     *
+     */
     getProperty(sPath: '/selectedPageType/key'): SubpageType;
+    /**
+     *
+     */
     getProperty(sPath: '/selectedNavigation/key'): string;
 };
 
@@ -107,6 +116,10 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         // TODO: to be supported in future releases
     }
 
+    /**
+     *
+     * @param event
+     */
     onNavigationChange(event: Event) {
         const source = event.getSource<ComboBox>();
         const selectedKey = source.getSelectedKey();

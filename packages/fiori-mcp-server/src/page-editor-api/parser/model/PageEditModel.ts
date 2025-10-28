@@ -351,7 +351,7 @@ export class PageEditModel {
         // Validate schema node
         (params: SchemaParseParams): boolean => {
             const { currentNode } = params;
-            // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+
             if (currentNode.hidden) {
                 return false;
             }
@@ -608,8 +608,7 @@ export class PageEditModel {
                 );
                 const properties = currentNode.properties;
                 const hasPropertyIndex = propertyNames.some(
-                    (propertyName: string) =>
-                        currentNode.properties && currentNode.properties[propertyName]?.['propertyIndex'] !== undefined
+                    (propertyName: string) => currentNode.properties?.[propertyName]?.['propertyIndex'] !== undefined
                 );
                 if (properties && propertyNames.length && hasPropertyIndex) {
                     // Sort properties - if schema have mark

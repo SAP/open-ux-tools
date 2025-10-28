@@ -1,11 +1,14 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
+import type SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
 const CONTROL_TYPE_LR = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
@@ -20,6 +23,10 @@ export class ToggleSemanticDateRangeFilterBar
     extends SimpleQuickActionDefinitionBase<SmartFilterBar>
     implements SimpleQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR, [], '', context);
     }
@@ -52,12 +59,18 @@ export class ToggleSemanticDateRangeFilterBar
         }
     }
 
+    /**
+     *
+     */
     protected get textKey() {
         return this.isUseDateRangeTypeEnabled
             ? 'QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
             : 'QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         const version = await getUi5Version();
         const isLowerMinimalVersion = isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });

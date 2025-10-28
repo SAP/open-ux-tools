@@ -5,8 +5,7 @@ import type { create, Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { Inbound } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../../../src/types';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 import {
     getVariant,
