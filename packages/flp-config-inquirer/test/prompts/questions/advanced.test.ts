@@ -5,7 +5,8 @@ import {
     getInboundIdsPrompt,
     getParameterStringPrompt,
     getExistingFlpConfigInfoPrompt,
-    getIconPrompt
+    getIconPrompt,
+    getConfirmReplacePrompt
 } from '../../../src/prompts/questions';
 import { t } from '../../../src/i18n';
 import { promptNames } from '../../../src';
@@ -187,6 +188,31 @@ describe('advanced prompts', () => {
             const prompt = getIconPrompt();
             const trimmedValue = (prompt.filter as Function)('  sap-icon://home  ');
             expect(trimmedValue).toBe('sap-icon://home');
+        });
+    });
+
+    describe('getConfirmReplacePrompt', () => {
+        it('should return a valid confirm replace prompt configuration', () => {
+            const prompt = getConfirmReplacePrompt();
+
+            expect(prompt).toEqual({
+                type: 'confirm',
+                name: promptNames.confirmReplace,
+                message: t('prompts.confirmReplace'),
+                default: false,
+                guiOptions: {
+                    hint: t('tooltips.confirmReplace'),
+                    mandatory: true
+                },
+                validate: expect.any(Function)
+            });
+        });
+
+        it('should validate that the value is true', () => {
+            const prompt = getConfirmReplacePrompt();
+
+            expect((prompt.validate as Function)(true)).toBe(true);
+            expect((prompt.validate as Function)(false)).toBe(false);
         });
     });
 });
