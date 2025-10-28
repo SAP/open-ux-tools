@@ -23,13 +23,14 @@
         "LICENSE"
     ],
     "scripts": {
-        "vscode:prepublish": "pnpm run package",
-        "build": "pnpm run check-types && node esbuild.js",
+        "vscode:prepublish": "pnpm run build",
+        "build": "npm-run-all -l -s clean -p check-types bundle:dev",
+        "bundle:dev": "node esbuild.js --development",
+        "bundle:prod": "node esbuild.js --production",
         "clean": "rimraf dist coverage",
         "watch": "npm-run-all -p watch:*",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-        "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
         "check-types": "tsc --noEmit",
         "lint": "eslint . --ext .ts",
         "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors --silent",
@@ -62,6 +63,7 @@
         "i18next": "25.3.0",
         "jsonc-parser": "3.2.0",
         "normalize-path": "3.0.0",
+        "npm-run-all2": "8.0.4",
         "os-name": "4.0.1",
         "vscode-uri": "3.0.7",
         "@vscode/vsce": "3.6.0"

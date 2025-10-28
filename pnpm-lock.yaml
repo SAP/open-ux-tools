@@ -3584,6 +3584,9 @@ importers:
       normalize-path:
         specifier: 3.0.0
         version: 3.0.0
+      npm-run-all2:
+        specifier: 8.0.4
+        version: 8.0.4
       os-name:
         specifier: 4.0.1
         version: 4.0.1
