@@ -1,5 +1,106 @@
 # @sap-ux/create
 
+## 0.13.147
+
+### Patch Changes
+
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+    -   @sap-ux/flp-config-inquirer@0.4.49
+    -   @sap-ux/preview-middleware@0.23.37
+    -   @sap-ux/app-config-writer@0.6.50
+
+## 0.13.146
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/abap-deploy-config-writer@0.2.27
+    -   @sap-ux/adp-tooling@0.16.13
+    -   @sap-ux/app-config-writer@0.6.50
+    -   @sap-ux/cap-config-writer@0.12.19
+    -   @sap-ux/flp-config-inquirer@0.4.48
+    -   @sap-ux/mockserver-config-writer@0.9.24
+    -   @sap-ux/odata-service-writer@0.27.28
+    -   @sap-ux/preview-middleware@0.23.36
+    -   @sap-ux/system-access@0.6.22
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.37
+
+## 0.13.145
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/adp-tooling@0.16.12
+    -   @sap-ux/flp-config-inquirer@0.4.47
+    -   @sap-ux/preview-middleware@0.23.35
+    -   @sap-ux/app-config-writer@0.6.49
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.36
+    -   @sap-ux/system-access@0.6.22
+    -   @sap-ux/abap-deploy-config-writer@0.2.26
+
+## 0.13.144
+
+### Patch Changes
+
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+    -   @sap-ux/flp-config-inquirer@0.4.46
+    -   @sap-ux/preview-middleware@0.23.34
+    -   @sap-ux/app-config-writer@0.6.48
+
+## 0.13.143
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/abap-deploy-config-writer@0.2.25
+    -   @sap-ux/adp-tooling@0.16.10
+    -   @sap-ux/app-config-writer@0.6.48
+    -   @sap-ux/cap-config-writer@0.12.18
+    -   @sap-ux/flp-config-inquirer@0.4.45
+    -   @sap-ux/mockserver-config-writer@0.9.23
+    -   @sap-ux/odata-service-writer@0.27.27
+    -   @sap-ux/preview-middleware@0.23.33
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.35
+
+## 0.13.142
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.34
+-   @sap-ux/adp-tooling@0.16.9
+-   @sap-ux/flp-config-inquirer@0.4.44
+-   @sap-ux/preview-middleware@0.23.32
+-   @sap-ux/app-config-writer@0.6.47
+
+## 0.13.141
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/abap-deploy-config-writer@0.2.24
+    -   @sap-ux/adp-tooling@0.16.8
+    -   @sap-ux/app-config-writer@0.6.47
+    -   @sap-ux/cap-config-writer@0.12.17
+    -   @sap-ux/flp-config-inquirer@0.4.43
+    -   @sap-ux/mockserver-config-writer@0.9.22
+    -   @sap-ux/odata-service-writer@0.27.26
+    -   @sap-ux/preview-middleware@0.23.31
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.33
+
+## 0.13.140
+
+### Patch Changes
+
+-   20edaf3: feat: add help description to root level commands
+
 ## 0.13.139
 
 ### Patch Changes

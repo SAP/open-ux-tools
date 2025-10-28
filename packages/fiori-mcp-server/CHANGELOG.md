@@ -1,5 +1,18 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.3.0
+
+### Minor Changes
+
+-   d895232: - fix: V2 app crash when running `list-functionalities`
+    -   feat: add support for changing flex properties in V2 app
+
+## 0.2.5
+
+### Patch Changes
+
+-   8b7171e: chore: readme update - how to disable telemetry
+
 ## 0.2.4
 
 ### Patch Changes

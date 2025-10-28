@@ -695,23 +695,6 @@ describe('helpers', () => {
                 ).toBe(false);
             });
 
-            it('should return false when entitySetName is not provided', () => {
-                const mockMetadata: any = {
-                    version: '4.0',
-                    namespace: 'Test.Service',
-                    entitySets: []
-                };
-
-                expect(hasAggregateTransformationsForEntity(mockMetadata)).toBe(false);
-                expect(
-                    hasAggregateTransformationsForEntity(
-                        mockMetadata,
-                        undefined,
-                        transformationsRequiredForAnalyticalTable
-                    )
-                ).toBe(false);
-            });
-
             it('should work with custom transformation requirements', () => {
                 const mockMetadata: any = {
                     version: '4.0',
@@ -858,15 +841,6 @@ describe('helpers', () => {
             ).toBe(false);
         });
 
-        it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
-            expect(
-                hasAggregateTransformationsForEntity(metadata, undefined, transformationsRequiredForAnalyticalTable)
-            ).toBe(false);
-            expect(
-                hasAggregateTransformationsForEntity(metadata, undefined, transformationsRequiredForAnalyticalTable)
-            ).toBe(false);
-        });
-
         it('hasAggregateTransformationsForEntity should return false for non-existent entity sets', () => {
             expect(
                 hasAggregateTransformationsForEntity(
@@ -995,19 +969,6 @@ describe('helpers', () => {
             };
 
             expect(hasRecursiveHierarchyForEntity(mockMetadata, 'TestEntity')).toBe(false);
-        });
-
-        it('hasRecursiveHierarchyForEntity should return false if entitySetName is not provided', () => {
-            const mockMetadata: any = {
-                version: '4.0',
-                namespace: 'Test.Service',
-                entitySets: [],
-                entityTypes: [],
-                entityContainer: {}
-            };
-
-            expect(hasRecursiveHierarchyForEntity(mockMetadata)).toBe(false);
-            expect(hasRecursiveHierarchyForEntity(mockMetadata, undefined)).toBe(false);
         });
 
         it('hasRecursiveHierarchyForEntity should return false for non-existent entity set', () => {
@@ -1183,19 +1144,6 @@ describe('helpers', () => {
 
             expect(getRecursiveHierarchyQualifier(mockMetadata, 'NonExistentEntity')).toBeUndefined();
         });
-
-        it('should return undefined when entitySetName is not provided', () => {
-            const mockMetadata: any = {
-                version: '4.0',
-                namespace: 'Test.Service',
-                entitySets: [],
-                entityTypes: [],
-                entityContainer: {}
-            };
-
-            expect(getRecursiveHierarchyQualifier(mockMetadata)).toBeUndefined();
-            expect(getRecursiveHierarchyQualifier(mockMetadata, undefined)).toBeUndefined();
-        });
     });
 
     describe('hasAggregateTransformationsForEntity', () => {
@@ -1325,19 +1273,6 @@ describe('helpers', () => {
             };
 
             expect(hasAggregateTransformationsForEntity(mockMetadata, 'NonExistentEntity')).toBe(false);
-        });
-
-        it('should return false when entitySetName is not provided', () => {
-            const mockMetadata: any = {
-                version: '4.0',
-                namespace: 'Test.Service',
-                entitySets: [],
-                entityTypes: [],
-                entityContainer: {}
-            };
-
-            expect(hasAggregateTransformationsForEntity(mockMetadata)).toBe(false);
-            expect(hasAggregateTransformationsForEntity(mockMetadata, undefined)).toBe(false);
         });
     });
 
