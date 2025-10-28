@@ -1,19 +1,30 @@
+import { JSONLanguage, JSONSourceCode } from '@eslint/json';
+import type { Plugin } from '@eslint/config-helpers';
+import rules from './rules';
+
 //------------------------------------------------------------------------------
 // Plugin Definition
 //------------------------------------------------------------------------------
 
-module.exports.configs = {
-    defaultTS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js', '../eslintrc-test.js'],
-        parser: '@typescript-eslint/parser' // override parser used in eslint-plugin-fiori-custom to support TS
+const plugin: Plugin = {
+    meta: {
+        name: 'eslint-plugin-fiori-tools',
+        version: '0.0.1'
     },
-    defaultJS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-prod.js', '../eslintrc-test.js']
+    languages: {
+        json: new JSONLanguage({ mode: 'json' })
     },
-    testCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-test.js']
-    },
-    prodCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js']
+    rules,
+    configs: {
+        manifest: {
+            plugins: {},
+            rules: { 'consistency/flex-enabled': 'warn' }
+        }
     }
 };
+
+(plugin.configs!.manifest as any).plugins.consistency = plugin;
+
+module.exports = plugin;
+module.exports.default = plugin;
+module.exports.JSONSourceCode = JSONSourceCode;
