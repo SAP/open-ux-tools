@@ -455,7 +455,31 @@ describe('Adaptation Project Generator Integration Test', () => {
                     inbounds: inbounds,
                     projectRootPath: join(testOutputDir, answers.projectName),
                     layer: FlexLayer.CUSTOMER_BASE,
-                    vscode: vscodeMock
+                    vscode: vscodeMock,
+                    prompts: {
+                        items: [
+                            {
+                                description: 'Configure the system and select an application.',
+                                name: 'System and Application Selection'
+                            },
+                            {
+                                description: 'Configure the main project attributes.',
+                                name: 'Project Attributes'
+                            },
+                            {
+                                description: 'Configure deployment settings.',
+                                name: 'Deployment Configuration'
+                            },
+                            {
+                                description: 'Configure SAP Fiori Launchpad settings - app.variant',
+                                name: 'SAP Fiori Launchpad Configuration - Tile Settings'
+                            },
+                            {
+                                description: '',
+                                name: 'SAP Fiori Launchpad Configuration'
+                            }
+                        ]
+                    }
                 },
                 expect.any(Function),
                 expect.any(Object),
