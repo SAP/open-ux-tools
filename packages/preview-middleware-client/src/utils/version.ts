@@ -147,8 +147,43 @@ export const getUI5Libs = (() => {
     return async function (): Promise<string[]> {
         if (!cachedLibs) {
             const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
-            cachedLibs = versionInfo?.libraries.map(lib => lib.name) ?? [];
+            cachedLibs = versionInfo?.libraries.map(lib => lib.name) || UI5_LIBS_1_130_9;
+        }
+        if (!cachedLibs) {
+            Log.error('Could not get UI5 libraries of application. Using fallback libraries from UI5 version 1.130.9.');
+            cachedLibs = UI5_LIBS_1_130_9;
         }
         return cachedLibs;
     };
 })();
+
+const UI5_LIBS_1_130_9 = [
+    "sap.f",
+    "sap.fileviewer",
+    "sap.gantt",
+    "sap.m",
+    "sap.ndc",
+    "sap.suite.ui.commons",
+    "sap.tnt",
+    "sap.ui.comp",
+    "sap.ui.core",
+    "sap.ui.documentation",
+    "sap.ui.dt",
+    "sap.ui.fl",
+    "sap.ui.integration",
+    "sap.ui.layout",
+    "sap.ui.mdc",
+    "sap.ui.rta",
+    "sap.ui.suite",
+    "sap.ui.table",
+    "sap.ui.unified",
+    "sap.ui.ux3",
+    "sap.uxap",
+    "themelib_sap_belize",
+    "themelib_sap_bluecrystal",
+    "themelib_sap_fiori_3",
+    "themelib_sap_horizon",
+    "themelib_sap_hcb",
+    "themelib_sap_hcw",
+    "themelib_sap_quartz"
+]
