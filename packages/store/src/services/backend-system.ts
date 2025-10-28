@@ -5,7 +5,7 @@ import type { ServiceOptions } from '../types';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
-import { existsSync, copyFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { getFioriToolsDirectory, getSapToolsDirectory, getEntityFileName } from '../utils';
 import { Entity } from '../constants';
@@ -91,30 +91,42 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
     if (!options.baseDirectory) {
-        ensureSettingsMigrated();
-        options.baseDirectory = getSapToolsDirectory();
+        try {
+            ensureSettingsMigrated();
+            options.baseDirectory = getSapToolsDirectory();
+        } catch (error) {
+            logger.error(text('error.systemsJsonMigrationFailed', { error: (error as Error).message }));
+        }
     }
     return new SystemService(logger, options);
 }
 
 /**
- * Ensure settings are migrated from the old fiori tools directory to the new sap development tools directory.
+ * Ensure settings are migrated from .fioritools directory to the new .saptools directory.
  */
 function ensureSettingsMigrated(): void {
-    const sapDevToolsDir = getSapToolsDirectory();
-    const migrationFlag = join(sapDevToolsDir, '.systemsMigrated');
-
-    if (existsSync(migrationFlag)) {
-        return;
-    }
-
     const systemFileName = getEntityFileName(Entity.BackendSystem);
-    const legacyPath = join(getFioriToolsDirectory(), systemFileName);
-    const newPath = join(sapDevToolsDir, systemFileName);
+    const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
+    const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
 
-    if (existsSync(legacyPath)) {
-        mkdirSync(dirname(newPath), { recursive: true });
-        copyFileSync(legacyPath, newPath);
-        writeFileSync(migrationFlag, new Date().toISOString());
-    }
+    mkdirSync(dirname(newSystemsPath), { recursive: true });
+
+    const readJson = (filePath: string) => {
+        if (!existsSync(filePath)) {
+            return { systems: {} };
+        }
+        return JSON.parse(readFileSync(filePath, 'utf-8'));
+    };
+
+    const legacyData = readJson(legacySystemsPath);
+    const newData = readJson(newSystemsPath);
+
+    const merged = {
+        systems: {
+            ...legacyData.systems,
+            ...newData.systems
+        }
+    };
+
+    writeFileSync(newSystemsPath, JSON.stringify(merged, null, 2));
 }

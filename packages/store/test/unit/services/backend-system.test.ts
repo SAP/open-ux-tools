@@ -12,7 +12,7 @@ jest.mock('node:fs', () => {
     return {
         ...originalFs,
         existsSync: jest.fn().mockReturnValue(false),
-        copyFileSync: jest.fn(),
+        readFileSync: jest.fn(),
         writeFileSync: jest.fn(),
         mkdirSync: jest.fn()
     };
@@ -31,21 +31,45 @@ describe('BackendSystem service', () => {
             expect(service).toBeInstanceOf(SystemService);
         });
 
-        it('should check and return for already existing .migrated file', () => {
-            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValue(true);
+        it('should merge and write the new systems file to .saptools', () => {
+            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(false);
+            const readFileSyncSpy = jest
+                .spyOn(nodeFs, 'readFileSync')
+                .mockReturnValueOnce(
+                    '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
+                );
+            const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync');
             const service = getInstance(logger);
             expect(service).toBeInstanceOf(SystemService);
-            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.systemsMigrated'));
+            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.fioritools'));
+            expect(readFileSyncSpy).toHaveBeenCalledWith(expect.stringContaining('systems.json'), 'utf-8');
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(
+                expect.stringContaining('.saptools'),
+                JSON.stringify(
+                    {
+                        systems: {
+                            'https://mock.system1.com': {
+                                name: 'Mock System',
+                                url: 'https://mock.system1.com',
+                                systemType: 'OnPrem'
+                            }
+                        }
+                    },
+                    null,
+                    2
+                )
+            );
         });
 
-        it('should create .migrated file after migration', () => {
-            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false).mockReturnValueOnce(true);
-            const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync').mockImplementation(() => {});
-            getInstance(logger);
-            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.systemsMigrated'));
-            expect(writeFileSyncSpy).toHaveBeenCalledWith(
-                expect.stringContaining('.systemsMigrated'),
-                expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+        it('should log an error', () => {
+            jest.spyOn(nodeFs, 'mkdirSync').mockImplementationOnce(() => {
+                throw new Error('Mock error during mkdirSync');
+            });
+            const loggerErrorSpy = jest.spyOn(logger, 'error');
+            const service = getInstance(logger);
+            expect(service).toBeInstanceOf(SystemService);
+            expect(loggerErrorSpy).toHaveBeenCalledWith(
+                'The migration of the systems.json file from .fioritools to .saptools failed: Mock error during mkdirSync'
             );
         });
     });
