@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.17.0
+
+### Minor Changes
+
+-   cdeb18b: feat: Integrate a new ABAP api for retrieval of the UI5 framework version for a system in the ADP generator.
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+    -   @sap-ux/system-access@0.6.23
+
 ## 0.16.14
 
 ### Patch Changes
