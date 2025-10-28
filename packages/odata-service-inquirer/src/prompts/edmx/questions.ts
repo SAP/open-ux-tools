@@ -274,6 +274,7 @@ function getTableLayoutQuestions(
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
         // Variables to manage analytical table defaults across prompts
         let setAnalyticalTableDefault = false;
+        let setTreeTableDefault = false;
         let selectedEntity: EntityAnswer | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
@@ -302,18 +303,25 @@ function getTableLayoutQuestions(
                     // Update tracking variables
                     selectedEntity = currentEntity;
                     setAnalyticalTableDefault = defaultTableType === 'AnalyticalTable';
+                    setTreeTableDefault = defaultTableType === 'TreeTable';
                     return defaultTableType;
                 }
 
                 // Entity hasn't changed and user has a selection - preserve their choice
-                // Reset the analytical table default flag since this is user's choice, not system default
+                // Reset the analytical table and tree table default flags since this is user's choice, not system default
                 setAnalyticalTableDefault = false;
+                setTreeTableDefault = false;
                 return prevAnswers.tableType;
             },
             additionalMessages: () => {
                 if (setAnalyticalTableDefault) {
                     return {
                         message: t('prompts.tableType.analyticalTableDefault'),
+                        severity: Severity.information
+                    };
+                } else if (setTreeTableDefault) {
+                    return {
+                        message: t('prompts.tableType.treeTableDefault'),
                         severity: Severity.information
                     };
                 }
