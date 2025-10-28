@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.16.14
+
+### Patch Changes
+
+-   05ecba6: feat: Adapt CF projects' structure to work with preview-middleware
+
 ## 0.16.13
 
 ### Patch Changes

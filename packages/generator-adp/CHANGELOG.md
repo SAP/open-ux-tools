@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.5.16
+
+### Patch Changes
+
+-   05ecba6: feat: Adapt CF projects' structure to work with preview-middleware
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+
 ## 0.5.15
 
 ### Patch Changes
