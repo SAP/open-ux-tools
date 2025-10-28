@@ -17,17 +17,11 @@ export class PromptState {
      */
     public static backendSystemsCache: BackendSystem[] = [];
 
-    /**
-     * Store whether the selected system has stored credentials
-     */
-    public static hasStoredCredentials?: boolean;
-
     static reset(): void {
         // Reset all values in the odataService object, do not reset the object reference itself as it may be used by external consumers
         Object.keys(PromptState.odataService).forEach((key) => {
             PromptState.odataService[key as keyof OdataServiceAnswers] = undefined;
         });
-        PromptState.hasStoredCredentials = undefined;
     }
 
     static resetConnectedSystem(): void {

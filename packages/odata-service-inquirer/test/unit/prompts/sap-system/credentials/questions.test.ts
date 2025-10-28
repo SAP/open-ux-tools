@@ -59,6 +59,7 @@ describe('Test credentials prompts', () => {
         connectionValidatorMock.isAuthRequired = isAuthRequiredMock;
         mockSystemServiceRead.mockReset();
         connectionValidatorMock.validity = {};
+        PromptState.reset();
     });
 
     test('should show username/password prompts when authentication required', async () => {
@@ -104,7 +105,7 @@ describe('Test credentials prompts', () => {
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
     });
 
-    test('should prefill username from selected backend system if available', async () => {
+    test('should prefill username from the cached selected backend system if available', async () => {
         const connectionValidator = new ConnectionValidator();
         connectionValidatorMock.validity = {
             authenticated: false,
@@ -127,8 +128,8 @@ describe('Test credentials prompts', () => {
             client: '001'
         };
 
-        // Mock the SystemService to return the system with username
-        mockSystemServiceRead.mockResolvedValue(backendSystemWithUsername);
+        // Set up the cached backend system in PromptState
+        PromptState.backendSystemsCache = [backendSystemWithUsername];
 
         const answersWithBackendSystem = {
             [promptNames.systemSelection]: {
@@ -146,6 +147,9 @@ describe('Test credentials prompts', () => {
             url: 'http://abap.on.prem:1234',
             client: '001'
         };
+
+        // Set up the cached backend system without username in PromptState
+        PromptState.backendSystemsCache = [backendSystemWithoutUsername];
 
         const answersWithoutBackendSystem = {
             [promptNames.systemSelection]: {
@@ -425,11 +429,5 @@ describe('Test credentials prompts', () => {
             message: t('texts.passwordStoreWarning'),
             severity: Severity.warning
         });
-
-        // Should not show message when system is not marked as new/updated
-        if (PromptState.odataService.connectedSystem?.backendSystem) {
-            PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = false;
-        }
-        expect(passwordPrompt.additionalMessages?.('123')).toBeUndefined();
     });
 });

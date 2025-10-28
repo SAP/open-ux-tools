@@ -2,7 +2,6 @@ import type { AbapServiceProvider, ServiceProvider, V2CatalogService, V4CatalogS
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { WebIDEAdditionalData, WebIDEUsage } from '@sap-ux/btp-utils';
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { SystemService, BackendSystem } from '@sap-ux/store';
@@ -37,11 +36,6 @@ const backendSystemBasic: BackendSystem = {
     password: 'password1',
     systemType: 'OnPrem'
 };
-
-const backendSystemBasicNoCreds: BackendSystem = {
-    name: 'http://abap.on.prem:1234',
-    url: 'http://abap.on.prem:1234'
-} as BackendSystem;
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
@@ -239,7 +233,7 @@ describe('Test system selection prompts', () => {
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(5);
+        expect(systemConnectionQuestions).toHaveLength(6);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('destinationServicePath');
         expect(systemConnectionQuestions[2].name).toBe('systemSelectionCli');
@@ -363,7 +357,7 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(4);
+        expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('systemSelectionCli');
         expect(systemConnectionQuestions[2].name).toBe('systemSelection:systemUsername');
@@ -421,7 +415,7 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toMatchInlineSnapshot(`
             {
-              "message": "Authentication failed. Check your credentials are correct and try again.",
+              "message": "Authentication failed. Please try updating the credentials.",
               "severity": 2,
             }
         `);
@@ -433,32 +427,6 @@ describe('Test system selection prompts', () => {
         );
         expect(await (usernamePrompt?.when as Function)()).toBe(true);
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
-    });
-
-    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: basic) - no stored credentials', async () => {
-        // If no stored credentials and auth is required, auth fails but hasStoredCredentials is set to false -  message: t('prompts.systemSelection.noStoredCredentials'),
-        mockIsAppStudio = false;
-        const connectValidator = new ConnectionValidator();
-
-        // Setup the connection validator mock to simulate the required conditions
-        connectionValidatorMock.systemAuthType = 'basic';
-        isAuthRequiredMock.mockResolvedValue(true);
-
-        // Set PromptState to indicate no stored credentials
-        PromptState.hasStoredCredentials = false;
-
-        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
-
-        const result = await systemSelectionPrompt.additionalMessages?.({
-            type: 'backendSystem',
-            system: backendSystemBasicNoCreds
-        } as SystemSelectionAnswerType);
-
-        expect(result).toEqual({
-            message: t('prompts.systemSelection.noStoredCredentials'),
-            severity: Severity.information
-        });
     });
 
     test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket)', async () => {

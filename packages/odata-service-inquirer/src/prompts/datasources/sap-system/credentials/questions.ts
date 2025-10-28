@@ -1,21 +1,21 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
-import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
-import { BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
+import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
 import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
 import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
-    systemPassword = 'systemPassword'
+    systemPassword = 'systemPassword',
+    storeSystemCredentials = 'storeSystemCredentials'
 }
 /**
  * Re-usable credentials prompts for connection to systems using basic auth.
@@ -31,14 +31,16 @@ export function getCredentialsPrompts<T extends Answers>(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
     sapClient?: { sapClient: string | undefined; isValid: boolean }
-): (InputQuestion<T> | PasswordQuestion<T>)[] {
+): (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
     }`;
     const passwordPromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemPassword
     }`;
-
+    const storeCredentialsPromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
+        BasicCredentialsPromptNames.storeSystemCredentials
+    }`;
     // Optimization to prevent re-checking of auth
     let authRequired: boolean | undefined;
 
@@ -57,17 +59,15 @@ export function getCredentialsPrompts<T extends Answers>(
                 mandatory: true
             },
             default: async (answers: T) => {
-                // Prefill username from the selected backend system if available
                 const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
                 if (selectedSystem?.type === 'backendSystem') {
                     const selectedBackendSystem = selectedSystem.system as BackendSystem;
-                    if (selectedBackendSystem?.userDisplayName) {
-                        // Read system with credentials to get the stored username, since we won't assume that displayName = username
-                        const systemWithCredentials = await new SystemService(LoggerHelper.logger).read(
-                            BackendSystemKey.from(selectedBackendSystem) as BackendSystemKey
-                        );
-                        return systemWithCredentials?.username || '';
-                    }
+                    // Check if the cached backend system has stored username
+                    const selectedBackendSystemName = selectedBackendSystem?.name;
+                    const cachedBackendSystem = PromptState.backendSystemsCache.find(
+                        (sys) => sys.name === selectedBackendSystemName
+                    );
+                    return cachedBackendSystem?.username || '';
                 }
                 return '';
             },
@@ -130,13 +130,6 @@ export function getCredentialsPrompts<T extends Answers>(
                 return valResult;
             },
             additionalMessages: (password: string, answers: T) => {
-                if (PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated) {
-                    return {
-                        message: t('texts.passwordStoreWarning'),
-                        severity: Severity.warning
-                    };
-                }
-
                 // Since the odata service URL prompt has its own credentials prompts its safe to assume
                 // that `ignoreCertError` when true means that the user has set the node setting to ignore cert errors and
                 // not that the user has chosen to ignore the cert error for this specific connection (this is only supported by the odata service URL prompts).
@@ -150,8 +143,39 @@ export function getCredentialsPrompts<T extends Answers>(
                         severity: Severity.warning
                     };
                 }
+                // Lower priority than the cert error warning - we can only show one at a time, hence this should always be last
+                if (PromptState.odataService.connectedSystem?.backendSystem) {
+                    return {
+                        message: t('texts.passwordStoreWarning'),
+                        severity: Severity.warning
+                    };
+                }
             }
-        } as PasswordQuestion<T>
+        } as PasswordQuestion<T>,
+        {
+            when: (answers: T) =>
+                !!(
+                    connectionValidator.systemAuthType === 'basic' &&
+                    authRequired &&
+                    connectionValidator.serviceProvider &&
+                    answers[passwordPromptName]
+                ),
+            type: 'confirm',
+            name: storeCredentialsPromptName,
+            message: t('prompts.storeSystemCredentials.message'),
+            default: false,
+            validate: async (storeCredentials: boolean): Promise<ValidationResult> => {
+                if (PromptState.odataService.connectedSystem?.backendSystem) {
+                    PromptState.odataService.connectedSystem.backendSystem = Object.assign(
+                        PromptState.odataService.connectedSystem.backendSystem,
+                        {
+                            newOrUpdated: storeCredentials
+                        }
+                    );
+                }
+                return true;
+            }
+        } as ConfirmQuestion<T>
     ];
 }
 
@@ -175,17 +199,13 @@ function updatePromptStateWithConnectedSystem(
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {
         const backendSystem = selectedSystem.system as BackendSystem;
-
-        // Have the credentials changed..
+        // Have the credentials changed..?
         if (backendSystem.username !== username || backendSystem.password !== password) {
-            // Get the hasStoredCredentials from PromptState to determine if it's temp creds scenario or new/updated
-            const hasStoredCredentials = PromptState.hasStoredCredentials || false;
-
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
-                password,
+                password: password,
                 userDisplayName: username,
-                newOrUpdated: hasStoredCredentials
+                newOrUpdated: PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated ?? true
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.

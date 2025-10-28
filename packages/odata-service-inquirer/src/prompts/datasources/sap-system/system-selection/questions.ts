@@ -209,33 +209,22 @@ export async function getSystemConnectionQuestions(
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                let message;
-                // Check for stored credentials or authentication failure message if a backend system is selected
                 if (
                     selectedSystem.type === 'backendSystem' &&
                     connectionValidator.systemAuthType === 'basic' &&
                     (await connectionValidator.isAuthRequired())
                 ) {
-                    const noCredentials = !PromptState.hasStoredCredentials;
-                    if (noCredentials) {
-                        message = {
-                            message: t('prompts.systemSelection.noStoredCredentials'),
-                            severity: Severity.information
-                        };
-                    } else {
-                        message = {
-                            message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
-                            severity: Severity.information
-                        };
-                    }
+                    return {
+                        message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
+                        severity: Severity.information
+                    };
                 }
                 if (connectionValidator.ignoreCertError) {
-                    message = {
+                    return {
                         message: t('warnings.certErrorIgnoredByNodeSetting'),
                         severity: Severity.warning
                     };
                 }
-                return message ?? undefined;
             }
         } as ListQuestion<SystemSelectionAnswers>
     ];

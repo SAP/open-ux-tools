@@ -166,6 +166,7 @@ export function getUserSystemNameQuestion(
                 defaultSystemName = systemName;
                 isValid = await validateSystemName(systemName);
             }
+            const shouldStoreSystem = PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated ?? true;
 
             if (isValid === true) {
                 // Update or create the BackendSystem with the new system details for persistent storage
@@ -185,7 +186,7 @@ export function getUserSystemNameQuestion(
                         } as BackendSystem)
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
-                    PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;
+                    PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = shouldStoreSystem;
                 }
             }
             return isValid;

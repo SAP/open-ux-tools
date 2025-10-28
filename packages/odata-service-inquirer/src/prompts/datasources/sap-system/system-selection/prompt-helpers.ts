@@ -10,8 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystemKey } from '@sap-ux/store';
-import { type BackendSystem, SystemService } from '@sap-ux/store';
+import { type BackendSystem, BackendSystemKey, SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -73,8 +72,6 @@ export async function connectWithBackendSystem(
                 convertODataVersionType(requiredOdataVersion)
             );
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
-            const hasStoredCredentials = !!(backendSystem.username && backendSystem.password);
-            PromptState.hasStoredCredentials = hasStoredCredentials;
             let errorType;
             ({ valResult: connectValResult, errorType } = await connectionValidator.validateAuth(
                 backendSystem.url,
@@ -88,13 +85,24 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (errorType === ERROR_TYPE.AUTH) {
+            if (
+                errorType === ERROR_TYPE.AUTH &&
+                typeof backendSystem.username === 'string' &&
+                typeof backendSystem.password === 'string'
+            ) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', {
                         systemName: backendSystem.name,
                         error: connectValResult
                     })
                 );
+                // Assign username to the cached selected backend system choice for later use in credentials prompt
+                const systemIndex = PromptState.backendSystemsCache.findIndex((sys) => sys.name === backendSystem.name);
+                if (systemIndex !== -1) {
+                    PromptState.backendSystemsCache[systemIndex] = Object.assign(backendSystem, {
+                        username: backendSystem.username
+                    } as Partial<BackendSystem>);
+                }
                 return true;
             }
         }

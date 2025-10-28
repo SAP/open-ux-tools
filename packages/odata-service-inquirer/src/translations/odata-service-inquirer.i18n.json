@@ -84,6 +84,9 @@
         "systemPassword": {
             "message": "Password"
         },
+        "storeSystemCredentials": {
+            "message": "Do you want to store the system credentials?"
+        },
         "systemService": {
             "message": "Service",
             "breadcrumb": "Service",
@@ -107,8 +110,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Check your credentials are correct and try again.",
-            "noStoredCredentials": "This stored system has no credentials. Please provide them. They will not be saved with system details."
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
