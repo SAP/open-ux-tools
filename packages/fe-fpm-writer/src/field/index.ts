@@ -50,10 +50,10 @@ function enhanceConfig(fs: Editor, data: CustomField, manifestPath: string, mani
 /**
  * Add a custom field to an existing UI5 application.
  *
- * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {CustomField} customField - the custom field configuration
  * @param {Promise<Editor>} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export async function generateCustomField(basePath: string, customField: CustomField, fs?: Editor): Promise<Editor> {
     validateVersion(customField.minUI5Version);
