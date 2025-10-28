@@ -147,7 +147,7 @@ export const getUI5Libs = (() => {
     return async function (): Promise<string[]> {
         if (!cachedLibs) {
             const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
-            cachedLibs = versionInfo?.libraries.map(lib => lib.name) || UI5_LIBS_1_130_9;
+            cachedLibs = versionInfo?.libraries.map(lib => lib.name);
         }
         if (!cachedLibs) {
             Log.error('Could not get UI5 libraries of application. Using fallback libraries from UI5 version 1.130.9.');

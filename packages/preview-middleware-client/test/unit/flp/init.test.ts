@@ -116,6 +116,24 @@ describe('flp/init', () => {
             });
             const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
             manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].dependencies.libs['sap.m'] = {};
+            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('single app, one reuse lib, no VersionInfo', async () => {
+            VersionInfo.load.mockResolvedValue(undefined);
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].dependencies.libs['sap.m'] = {};
             fetchMock.mockResolvedValueOnce({ json: () => manifest });
             fetchMock.mockResolvedValueOnce({
                 json: () => ({
