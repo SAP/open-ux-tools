@@ -5,7 +5,7 @@ import {
     getWebappPath,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import type { ApplicationAccess, Manifest, Package, UI5FlexLayer } from '@sap-ux/project-access';
+import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
 import type { FileData } from '@sap/ux-specification/dist/types/src';
 import { existsSync } from 'node:fs';

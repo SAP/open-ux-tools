@@ -242,13 +242,11 @@ export class SapuxFtfsFileIO {
 
     /**
      * Builds the export configuration parameters for specification API 'exportConfig' call.
-     * Method augments the configuration with:
-     * - The UI5 framework version (via `getUI5Version`)
-     * - The SAPUI5 flexibility layer (via `getFlexChangeLayer`)
+     * Adds 'ui5Version' and 'layer' values to the configuration.
      *
-     * @param manifest - The application manifest containing OData service configuration.
-     * @param params - Partial export parameters to include in the resulting configuration.
-     * @returns A promise that resolves to the fully composed export configuration object.
+     * @param manifest - The application manifest containing OData service configuration
+     * @param params - Partial export parameters to include in the resulting configuration
+     * @returns A promise that resolves to the fully composed export configuration object
      */
     private async getExportConfigParameters(
         manifest: Manifest,
