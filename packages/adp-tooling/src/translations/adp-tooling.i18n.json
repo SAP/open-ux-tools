@@ -76,7 +76,7 @@
     },
     "error": {
         "appDoesNotSupportFlexibility": "The selected application does not support flexibility because it has `flexEnabled=false`. SAPUI5 Adaptation Project only supports applications that support flexibility. Please select a different application.",
-        "failedToParseXsAppJson": "Failed to parse `xs-app.json`. Error: {{error}}",
+        "failedToParseXsAppJson": "Failed to parse the `xs-app.json` file. Error: {{error}}",
         "failedToParseManifestJson": "Failed to parse the `manifest.json` file. Error: {{error}}",
         "oDataEndpointsValidationFailed": "Validation for the OData endpoints has failed. For more information, check the logs.",
         "adpDoesNotSupportSelectedApp": "Adaptation project doesn't support the selected application. Please select a different application.",
