@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.3.1
+
+### Patch Changes
+
+-   ae8dbc6: correction for merging systems added to legacy path
+
 ## 1.3.0
 
 ### Minor Changes
