@@ -3,10 +3,8 @@ import {
     getNavigationEntityChoices,
     getDefaultTableType
 } from '../../../../src/prompts/edmx/entity-helper';
-import { getRecursiveHierarchyQualifier } from '@sap-ux/inquirer-common';
+import { getRecursiveHierarchyQualifier, convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
 import { readFile } from 'fs/promises';
-import { parse } from '@sap-ux/edmx-parser';
-import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { join } from 'node:path';
 
@@ -46,8 +44,7 @@ describe('Test entity helper functions', () => {
 
     describe('Test getNavigationEntityOptions', () => {
         test('should return v4 navigation entities', async () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
             const navChoices = getNavigationEntityChoices(convertedMetadata, OdataVersion.v4, 'Travel');
             expect(navChoices.length).toEqual(2);
             expect(navChoices[0].name).toEqual('None');
@@ -60,8 +57,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return v2 navigation entities', async () => {
-            const parsedEdmx = parse(metadataV2);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV2);
             const navChoices = getNavigationEntityChoices(convertedMetadata, OdataVersion.v2, 'SEPMRA_C_PD_Product');
             expect(navChoices[0].name).toEqual('None');
             expect(navChoices[0].value).toEqual({});
@@ -319,8 +315,7 @@ describe('Test entity helper functions', () => {
 
     describe('Test getDefaultTableType', () => {
         test('should return AnalyticalTable for entities with aggregate transformations', () => {
-            const parsedEdmx = parse(metadataV4WithAggregateTransforms);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithAggregateTransforms);
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'SalesOrderItem');
 
@@ -328,8 +323,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return ResponsiveTable for ALP template when analytical requirements are not met', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
@@ -337,8 +331,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return AnalyticalTable for ALP template with OData v2', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false, 'Travel');
 
@@ -346,8 +339,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return current table type when provided', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
@@ -355,8 +347,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return ResponsiveTable as default fallback', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'Travel');
 
@@ -364,8 +355,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should handle undefined entitySetName gracefully', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false);
 
@@ -373,8 +363,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return AnalyticalTable for ALP template with OData v2 when no entitySetName provided', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('alp', convertedMetadata, OdataVersion.v2, false);
 
@@ -382,8 +371,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should handle non-existent entitySetName gracefully', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'NonExistentEntity');
 
@@ -391,8 +379,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should prioritize aggregate transformations in lrop v4', () => {
-            const parsedEdmx = parse(metadataV4WithAggregateTransforms);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithAggregateTransforms);
 
             const result = getDefaultTableType('lrop', convertedMetadata, OdataVersion.v4, false, 'SalesOrderItem');
 
@@ -400,8 +387,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should not use AnalyticalTable for non-v4 metadata with aggregate transformations', () => {
-            const parsedEdmx = parse(metadataV2);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV2);
 
             const result = getDefaultTableType(
                 'lrop',
@@ -415,8 +401,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should not use AnalyticalTable for non-lrop/worklist templates with aggregate transformations', () => {
-            const parsedEdmx = parse(metadataV4WithAggregateTransforms);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithAggregateTransforms);
 
             const result = getDefaultTableType('fpm', convertedMetadata, OdataVersion.v4, false, 'SalesOrderItem');
 
@@ -446,8 +431,7 @@ describe('Test entity helper functions', () => {
             // Integration test using the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
             // This entity has both recursive hierarchy and partial aggregate transformations (only 5 transformations)
             // Since analytical transformations are incomplete, TreeTable should be used for hierarchy
-            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithHierarchyRecursiveHierarchy);
 
             const result = getDefaultTableType(
                 'lrop',
@@ -511,8 +495,9 @@ describe('Test entity helper functions', () => {
             // Integration test using the actual metadataV4WithHierarchyAndCompleteAnalyticalTransformations.xml file
             // This entity has both recursive hierarchy AND complete analytical transformations (all 8 transformations)
             // Since analytical transformations are complete, AnalyticalTable should be used over TreeTable
-            const parsedEdmx = parse(metadataV4WithHierarchyAndCompleteAnalyticalTransformations);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(
+                metadataV4WithHierarchyAndCompleteAnalyticalTransformations
+            );
 
             const result = getDefaultTableType(
                 'lrop',
@@ -917,8 +902,7 @@ describe('Test entity helper functions', () => {
         test('should extract qualifier from RecursiveHierarchy annotation', () => {
             // Test with the actual metadataV4WithHierarchyRecursiveHierarchy.xml file
             // This metadata contains RecursiveHierarchy annotation with qualifier "I_SADL_HIER_UUID_COMPANY_NODE"
-            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithHierarchyRecursiveHierarchy);
 
             const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'P_SADL_HIER_UUID_D_COMPNY_ROOT');
 
@@ -926,8 +910,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return undefined for entities without RecursiveHierarchy annotation', () => {
-            const parsedEdmx = parse(metadataV4WithDraftEntities);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithDraftEntities);
 
             const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'Travel');
 
@@ -935,8 +918,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should return undefined for non-existent entity', () => {
-            const parsedEdmx = parse(metadataV4WithHierarchyRecursiveHierarchy);
-            const convertedMetadata = convert(parsedEdmx);
+            const convertedMetadata = convertEdmxToConvertedMetadata(metadataV4WithHierarchyRecursiveHierarchy);
 
             const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'NonExistentEntity');
 

@@ -1,5 +1,3 @@
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/vocabularies-types';
 import type { ListChoiceOptions } from 'inquirer';
@@ -7,6 +5,7 @@ import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
+    convertEdmxToConvertedMetadata,
     filterAggregateTransformations,
     hasAggregateTransformations,
     hasRecursiveHierarchyForEntitySet,
@@ -118,13 +117,13 @@ export function getEntityChoices(
     let convertedMetadata: ConvertedMetadata | undefined;
     let odataVersion: OdataVersion | undefined;
     try {
-        convertedMetadata = convert(parse(edmx));
-        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
+        convertedMetadata = convertEdmxToConvertedMetadata(edmx);
+        const parsedOdataVersion = Number.parseInt(convertedMetadata.version, 10);
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
         }
-        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
+        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-parser`
         odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
         let entitySets: EntitySet[] = [];
 

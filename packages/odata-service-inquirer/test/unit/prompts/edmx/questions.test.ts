@@ -15,8 +15,7 @@ import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
 import { join } from 'node:path';
-import { parse } from '@sap-ux/edmx-parser';
-import { convert } from '@sap-ux/annotation-converter';
+import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
 
 describe('Test entity prompts', () => {
     let metadataV4WithAggregateTransforms: string;
@@ -495,7 +494,7 @@ describe('Test entity prompts', () => {
         getEntityChoicesSpy.mockReturnValueOnce({
             choices: mockChoices,
             odataVersion: OdataVersion.v4,
-            convertedMetadata: convert(parse(v4ParamertrisedEntitiesMetadata)) as ConvertedMetadata
+            convertedMetadata: convertEdmxToConvertedMetadata(v4ParamertrisedEntitiesMetadata) as ConvertedMetadata
         });
         const questions = getEntitySelectionQuestions(v4ParamertrisedEntitiesMetadata, 'lrop', false, {
             defaultMainEntityName: 'ZC_STOCKAGEING'
@@ -560,7 +559,9 @@ describe('Test entity prompts', () => {
         getEntityChoicesSpy.mockReturnValueOnce({
             choices: mockChoices,
             odataVersion: OdataVersion.v4,
-            convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,
+            convertedMetadata: convertEdmxToConvertedMetadata(
+                metadataV4WithMultipleParameterisedEntities
+            ) as ConvertedMetadata,
             defaultMainEntityIndex: 0
         });
         const questionsForChangeableFields = getEntitySelectionQuestions(
@@ -590,7 +591,9 @@ describe('Test entity prompts', () => {
         getEntityChoicesSpy.mockReturnValueOnce({
             choices: mockChoices,
             odataVersion: OdataVersion.v4,
-            convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,
+            convertedMetadata: convertEdmxToConvertedMetadata(
+                metadataV4WithMultipleParameterisedEntities
+            ) as ConvertedMetadata,
             defaultMainEntityIndex: 1
         });
 

@@ -8,9 +8,8 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
 import { removeSync } from 'circular-reference-remover';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey } from '@sap-ux/store';
@@ -40,7 +39,7 @@ export function parseOdataVersion(metadata: string): {
     convertedMetadata: ConvertedMetadata;
 } {
     try {
-        const convertedMetadata = convert(parse(metadata));
+        const convertedMetadata = convertEdmxToConvertedMetadata(metadata);
         const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
 
         if (Number.isNaN(parsedOdataVersion)) {
