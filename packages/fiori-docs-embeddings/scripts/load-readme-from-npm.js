@@ -9,7 +9,7 @@ const { join } = require('node:path');
  */
 async function getPackageReadme(packageName) {
     // Handle scoped packages by URL-encoding the slash
-    const encodedName = packageName.replace('/', '%2F');
+    const encodedName = packageName.replace(/\//g, '%2F');
     const url = `https://registry.npmjs.org/${encodedName}`;
 
     try {
