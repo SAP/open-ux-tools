@@ -32,37 +32,11 @@ type AppIndexData = Record<
  * Check whether the given keys are custom libraries, and if yes, add them to the map.
  *
  * @param keys array of library or component names
- * @param customLibs map containing the required custom libraries
+ * @returns Promise of a set of custom library or component names.
  */
-async function addCustomKeys(keys: string[], customLibs: Record<string, true>): Promise<void> {
-    const ui5Libs = await getUI5Libs();
-    for (const key of keys) {
-        // ignore libs or Components that use SAPUI5 delivered namespaces
-        if (!ui5Libs.includes(key)) {
-            customLibs[key] = true;
-        }
-    }
-}
-
-/**
- * Check whether a specific dependency is a custom library, and if yes, add it to the map.
- *
- * @param dependency dependency from the manifest
- * @param customLibs map containing the required custom libraries
- */
-async function addKeys(dependency: Record<string, unknown>, customLibs: Record<string, true>): Promise<void> {
-    await addCustomKeys(Object.keys(dependency), customLibs);
-}
-
-/**
- * Check whether a specific ComponentUsage is a custom component, and if yes, add it to the map.
- *
- * @param compUsages ComponentUsage from the manifest
- * @param customLibs map containing the required custom libraries
- */
-async function addComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): Promise<void> {
-    const compNames = Object.values(compUsages).map((usage) => usage.name);
-    await addCustomKeys(compNames, customLibs);
+async function getCustomKeys(keys: string[]): Promise<Set<string>> {
+    const ui5LibSet = await getUI5Libs();
+    return new Set(keys.filter(key => !ui5LibSet.has(key)));
 }
 
 /**
@@ -72,29 +46,36 @@ async function addComponentUsageNames(compUsages: Record<string, { name: string 
  * @returns Promise of a comma separated list of all required libraries.
  */
 async function getManifestLibs(appUrls: string[]): Promise<string> {
-    const result = {} as Record<string, true>;
-    const promises = [];
-    for (const url of appUrls) {
-        promises.push(
-            fetch(`${url}/manifest.json`).then(async (resp) => {
-                const manifest = (await resp.json()) as Manifest;
-                if (manifest) {
-                    if (manifest['sap.ui5']?.dependencies) {
-                        if (manifest['sap.ui5'].dependencies.libs) {
-                            await addKeys(manifest['sap.ui5'].dependencies.libs, result);
-                        }
-                        if (manifest['sap.ui5'].dependencies.components) {
-                            await addKeys(manifest['sap.ui5'].dependencies.components, result);
-                        }
-                    }
-                    if (manifest['sap.ui5']?.componentUsages) {
-                        await addComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
-                    }
-                }
-            })
-        );
-    }
-    return Promise.all(promises).then(() => Object.keys(result).join(','));
+    const result = new Set<string>();
+
+    await Promise.all(appUrls.map(async (url) => {
+        const response = await fetch(`${url}/manifest.json`);
+        if (!response.ok) {
+            Log.error(`Failed to fetch app manifest. Status: ${response.status} ${response.statusText}`);
+            return;
+        }
+        const manifest = (await response.json()) as Manifest;
+        const sapUi5 = manifest['sap.ui5'];
+
+        // Collect custom keys for libs and components
+        for (const key of ['libs', 'components'] as const) {
+            const dependencies = sapUi5?.dependencies?.[key];
+            if (dependencies) {
+                const customKeys = await getCustomKeys(Object.keys(dependencies));
+                customKeys.forEach((key) => result.add(key));
+            }
+        }
+
+        // Collect custom keys for componentUsages
+        const componentUsages = sapUi5?.componentUsages as Record<string, { name: string }> | undefined;
+        if (componentUsages) {
+            const compNames = Object.values(componentUsages).map((componentUsage) => componentUsage.name);
+            const customKeys = await getCustomKeys(compNames);
+            customKeys.forEach((key) => result.add(key));
+        }
+    }));
+
+    return Array.from(result).join(',');
 }
 
 /**
@@ -153,6 +134,10 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
+        if (!response.ok) {
+            Log.error(`Failed to fetch app index data. Status: ${response.status} ${response.statusText}`);
+            return;
+        }
         try {
             registerModules((await response.json()) as AppIndexData);
         } catch (error) {

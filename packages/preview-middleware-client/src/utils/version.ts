@@ -140,14 +140,17 @@ export function getFullyQualifiedUi5Version(ui5VersionInfo: Ui5VersionInfo): str
 
 /** Retrieve the SAPUI5 delivered namespaces for the current UI5 version.
  *
- * @returns Promise of an array of SAPUI5 delivered namespaces
+ * @returns Promise of a Set of SAPUI5 delivered namespaces
  */
 export const getUI5Libs = (() => {
-    let cachedLibs: string[] | undefined;
-    return async function (): Promise<string[]> {
+    let cachedLibs: Set<string> | undefined;
+    return async function (): Promise<Set<string>> {
         if (!cachedLibs) {
             const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
-            cachedLibs = versionInfo?.libraries.map(lib => lib.name);
+            const libNames = versionInfo?.libraries.map(lib => lib.name);
+            if (libNames) {
+                cachedLibs = new Set(libNames);
+            }
         }
         if (!cachedLibs) {
             Log.error('Could not get UI5 libraries of application. Using fallback libraries from UI5 version 1.130.9.');
@@ -157,7 +160,7 @@ export const getUI5Libs = (() => {
     };
 })();
 
-const UI5_LIBS_1_130_9 = [
+const UI5_LIBS_1_130_9 = new Set([
     'sap.f',
     'sap.fileviewer',
     'sap.gantt',
@@ -186,4 +189,4 @@ const UI5_LIBS_1_130_9 = [
     'themelib_sap_hcb',
     'themelib_sap_hcw',
     'themelib_sap_quartz'
-];
+]);
