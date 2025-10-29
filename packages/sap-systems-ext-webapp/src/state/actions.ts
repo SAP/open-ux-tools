@@ -15,9 +15,9 @@ export const webViewReady = (): WebviewReady => ({
     type: 'WEBVIEW_READY'
 });
 
-export const createFioriProject = (systemName: string): CreateFioriProject => ({
+export const createFioriProject = (backendSystem: BackendSystem): CreateFioriProject => ({
     type: 'CREATE_FIORI_PROJECT',
-    payload: { systemName }
+    payload: { system: backendSystem }
 });
 
 export const openOutputChannel = (): OpenOutputChannel => ({

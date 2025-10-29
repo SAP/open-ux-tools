@@ -12,9 +12,9 @@ import SystemsLogger from '../../../utils/logger';
  * @param action action containing the system name
  */
 export const createFioriProject = async (_context: PanelContext, action: CreateFioriProject): Promise<void> => {
-    const systemName = action.payload?.systemName;
-    if (systemName) {
-        await commands.executeCommand(SystemCommands.LaunchAppGen, systemName);
+    const backendSystem = action.payload.system;
+    if (backendSystem) {
+        await commands.executeCommand(SystemCommands.LaunchAppGen, backendSystem);
     }
 };
 

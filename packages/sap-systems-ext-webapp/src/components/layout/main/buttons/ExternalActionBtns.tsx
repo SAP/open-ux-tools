@@ -50,7 +50,7 @@ export function ExternalActionBtns({ systemInfo, systemUnSaved }: Readonly<Exter
                             iconProps={{ iconName: UiIcons.Lightning }}
                             onClick={(): void => {
                                 if (systemInfo?.name) {
-                                    actions.createFioriProject(systemInfo.name);
+                                    actions.createFioriProject(systemInfo);
                                 }
                             }}>
                             {t('buttons.createFioriApp')}

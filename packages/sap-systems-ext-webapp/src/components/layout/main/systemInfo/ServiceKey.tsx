@@ -21,7 +21,7 @@ export function ServiceKey({ serviceKey }: Readonly<ServiceKeyProps>): ReactElem
     return (
         <div className="store-text-field ">
             <label className="store-detail-label">
-                {t('labels.serviceKeys')} <span className="mandatory-asterik">*</span>
+                {t('labels.serviceKeys')} <span className="mandatory-asterisk">*</span>
             </label>
             <UITextInput
                 id="serviceKeyField"

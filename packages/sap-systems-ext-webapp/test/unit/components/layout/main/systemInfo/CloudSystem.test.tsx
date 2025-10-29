@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { fireEvent, screen } from '@testing-library/dom';
 import { CloudSystem } from '../../../../../../src/components/layout/main/systemInfo/CloudSystem';
 
-describe('<BTPSystem />', () => {
+describe('<CloudSystem />', () => {
     it('should render url input box for reentrance ticket auth type', () => {
         const setUrl = jest.fn();
         const setIsDetailsUpdated = jest.fn();
@@ -20,7 +20,7 @@ describe('<BTPSystem />', () => {
             />
         );
 
-        const input = document.getElementById(`s4HUrl`);
+        const input = document.getElementById(`reentranceUrl`);
         fireEvent.change(input as HTMLElement, {
             target: { value: 'https://mock.s4.hana.sap' }
         });

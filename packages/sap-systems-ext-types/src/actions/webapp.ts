@@ -40,7 +40,7 @@ export const WEB_APP_ACTION_TYPES_SET = new Set(Object.keys(WEB_APP_ACTION_TYPES
 
 export interface CreateFioriProject {
     type: typeof CREATE_FIORI_PROJECT;
-    payload: { systemName: string };
+    payload: { system: BackendSystem };
 }
 export interface ExportSystem {
     type: typeof EXPORT_SYSTEM;

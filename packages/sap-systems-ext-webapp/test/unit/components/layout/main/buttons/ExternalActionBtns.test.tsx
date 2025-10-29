@@ -32,6 +32,6 @@ describe('<ActionButtons />', () => {
         const createFioriAppBtn = screen.getByRole('button', { name: 'Create SAP Fiori Application' });
         fireEvent.click(createFioriAppBtn);
 
-        expect(createFioriProjectSpy).toHaveBeenCalledWith('test system');
+        expect(createFioriProjectSpy).toHaveBeenCalledWith(systemInfo);
     });
 });

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 interface SystemTypesProps {
     readonly setType: (type: SystemType) => void;
+    readonly setAuthenticationType: (authType: string) => void;
 }
 
 /**
@@ -14,10 +15,18 @@ interface SystemTypesProps {
  *
  * @param props - system types props
  * @param props.setType - function to set the system type
+ * @param props.setAuthenticationType - function to set the authentication type
  * @returns - the system types JSX element
  */
-export function SystemTypes({ setType }: Readonly<SystemTypesProps>): ReactElement {
+export function SystemTypes({ setType, setAuthenticationType }: Readonly<SystemTypesProps>): ReactElement {
     const { t } = useTranslation();
+
+    const setTypes = (type: SystemType): void => {
+        setType(type);
+        if (type === 'AbapCloud') {
+            setAuthenticationType('reentranceTicket');
+        }
+    };
 
     const systemTypeOptions: UIDropdownOption[] = [
         {
@@ -33,14 +42,14 @@ export function SystemTypes({ setType }: Readonly<SystemTypesProps>): ReactEleme
     return (
         <div className="store-text-field ">
             <label className="store-detail-label">
-                {t('labels.type')} <span className="mandatory-asterik">*</span>
+                {t('labels.type')} <span className="mandatory-asterisk">*</span>
             </label>
             <UIDropdown
                 id="sysType"
                 options={systemTypeOptions}
                 placeholder={t('placeholders.typeOptions')}
                 onChange={(event, option) => {
-                    setType(option?.key as SystemType);
+                    setTypes(option?.key as SystemType);
                 }}
             />
         </div>

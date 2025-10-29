@@ -26,7 +26,7 @@ export function SystemName({ systemName, setName, setIsDetailsUpdated }: Readonl
     return (
         <div className="store-text-field">
             <label className="store-detail-label">
-                {t('labels.name')} <span className="mandatory-asterik">*</span>
+                {t('labels.name')} <span className="mandatory-asterisk">*</span>
             </label>
             <UITextInput
                 name="systemName"

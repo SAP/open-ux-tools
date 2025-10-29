@@ -15,9 +15,12 @@ describe('Test the executeCommands actions', () => {
 
     it('should run the launch app gen commands', async () => {
         const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand');
-
-        await createFioriProject({} as any, { type: 'CREATE_FIORI_PROJECT', payload: { systemName: 'Test System' } });
-        expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems.launchAppGen', 'Test System');
+        const backendSystem = { name: 'Mock system', url: 'https://mock.url.com' };
+        await createFioriProject({} as any, {
+            type: 'CREATE_FIORI_PROJECT',
+            payload: { system: backendSystem }
+        });
+        expect(executeCommandSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems.launchAppGen', backendSystem);
 
         await createFioriProject({} as any, { type: 'CREATE_FIORI_PROJECT', payload: {} as any });
         expect(executeCommandSpy).toHaveBeenCalledTimes(1);

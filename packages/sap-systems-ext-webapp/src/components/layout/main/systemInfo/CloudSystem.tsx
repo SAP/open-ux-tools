@@ -29,15 +29,15 @@ export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonl
 
     return (
         <div>
-            {authType === 'reentranceTicket' && systemInfo?.url && (
+            {authType === 'reentranceTicket' && (
                 <div className="store-text-field">
                     <label className="store-detail-label">
-                        {t('labels.url')} <span className="mandatory-asterik">*</span>
+                        {t('labels.url')} <span className="mandatory-asterisk">*</span>
                     </label>
                     <UITextInput
-                        name="s4HanaUrl"
-                        id="s4HUrl"
-                        defaultValue={systemInfo.url}
+                        name="reentranceTicketUrl"
+                        id="reentranceUrl"
+                        defaultValue={systemInfo?.url}
                         onChange={(e) => {
                             if (setUrl) {
                                 setUrl((e.target as HTMLInputElement).value);

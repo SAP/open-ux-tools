@@ -60,7 +60,7 @@ export function OnPremSystem({
         <div>
             <div className="store-text-field">
                 <label className="store-detail-label">
-                    {t('labels.url')} <span className="mandatory-asterik">*</span>
+                    {t('labels.url')} <span className="mandatory-asterisk">*</span>
                 </label>
                 <UITextInput
                     name="systemUrl"
