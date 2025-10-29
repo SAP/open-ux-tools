@@ -152,7 +152,7 @@ export function getCredentialsPrompts<T extends Answers>(
             name: storeCredentialsPromptName,
             message: t('prompts.storeSystemCredentials.message'),
             default: false,
-            validate: async (storeCredentials: boolean, answers: T): Promise<ValidationResult> => {
+            validate: async (storeCredentials: boolean): Promise<ValidationResult> => {
                 if (PromptState.odataService.connectedSystem?.backendSystem) {
                     const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
                     PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
