@@ -141,7 +141,7 @@ export async function runPostGenerationTasks(
     // Persist backend system connection information
     const hostEnv = getHostEnvironment();
 
-    if (service.backendSystem && hostEnv !== hostEnvironment.bas && service.backendSystem.newOrUpdated === true) {
+    if (service.backendSystem && hostEnv !== hostEnvironment.bas && service.backendSystem.newOrUpdated) {
         const storeService = await getService<BackendSystem, BackendSystemKey>({
             logger: logger,
             entityName: 'system'
@@ -149,8 +149,6 @@ export async function runPostGenerationTasks(
         // No need to await, we cannot recover anyway
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         storeService.write(service.backendSystem, { force: true });
-    } else if (service.backendSystem?.newOrUpdated === false && hostEnv !== hostEnvironment.bas) {
-        logger.info(t('logMessages.systemStorageDeclined', { system: service.backendSystem.name }));
     }
 
     // Display info message if using a cap service as it is not otherwise shown when a top level dir is not created

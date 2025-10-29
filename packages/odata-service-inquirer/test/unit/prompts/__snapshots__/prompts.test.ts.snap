@@ -79,7 +79,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },
@@ -172,7 +172,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },

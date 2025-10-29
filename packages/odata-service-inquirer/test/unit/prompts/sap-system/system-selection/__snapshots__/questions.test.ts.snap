@@ -42,7 +42,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },
@@ -161,7 +161,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "validate": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },
@@ -250,7 +250,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },

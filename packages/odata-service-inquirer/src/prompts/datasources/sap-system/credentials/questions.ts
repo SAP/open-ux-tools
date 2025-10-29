@@ -58,19 +58,7 @@ export function getCredentialsPrompts<T extends Answers>(
             guiOptions: {
                 mandatory: true
             },
-            default: async (answers: T) => {
-                const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
-                if (selectedSystem?.type === 'backendSystem') {
-                    const selectedBackendSystem = selectedSystem.system as BackendSystem;
-                    // Check if the cached backend system has stored username
-                    const selectedBackendSystemName = selectedBackendSystem?.name;
-                    const cachedBackendSystem = PromptState.backendSystemsCache.find(
-                        (sys) => sys.name === selectedBackendSystemName
-                    );
-                    return cachedBackendSystem?.username || '';
-                }
-                return '';
-            },
+            default: '',
             validate: (user: string) => user?.length > 0
         } as InputQuestion<T>,
         {
@@ -124,7 +112,7 @@ export function getCredentialsPrompts<T extends Answers>(
                     updatePromptStateWithConnectedSystem(connectionValidator.serviceProvider, selectedSystem, {
                         username: answers?.[usernamePromptName],
                         password: password
-                    });
+                    }); // Store credentials temporarily - will be conditionally kept/removed in store credentials prompt
                     return true;
                 }
                 return valResult;
@@ -157,21 +145,19 @@ export function getCredentialsPrompts<T extends Answers>(
                 !!(
                     connectionValidator.systemAuthType === 'basic' &&
                     authRequired &&
-                    connectionValidator.serviceProvider &&
+                    connectionValidator.validity.authenticated &&
                     answers[passwordPromptName]
                 ),
             type: 'confirm',
             name: storeCredentialsPromptName,
             message: t('prompts.storeSystemCredentials.message'),
             default: false,
-            validate: async (storeCredentials: boolean): Promise<ValidationResult> => {
+            validate: async (storeCredentials: boolean, answers: T): Promise<ValidationResult> => {
                 if (PromptState.odataService.connectedSystem?.backendSystem) {
-                    PromptState.odataService.connectedSystem.backendSystem = Object.assign(
-                        PromptState.odataService.connectedSystem.backendSystem,
-                        {
-                            newOrUpdated: storeCredentials
-                        }
-                    );
+                    const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
+                    PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
+                        newOrUpdated: storeCredentials
+                    });
                 }
                 return true;
             }
@@ -204,8 +190,7 @@ function updatePromptStateWithConnectedSystem(
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
                 password: password,
-                userDisplayName: username,
-                newOrUpdated: PromptState.odataService.connectedSystem?.backendSystem?.newOrUpdated ?? true
+                userDisplayName: username
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.

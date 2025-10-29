@@ -89,8 +89,7 @@
         "warningCachingNotSupported": "Warning: caching is not supported.",
         "attemptingToExecutePostGenerationCommand": "Attempting to execute command after app generation: {{- command}}",
         "installSkippedOptionSpecified": "Option `--skipInstall` was specified. Installation of dependencies will be skipped.",
-        "generatorExiting": "Application generation exiting due to error: {{error}}",
-        "systemStorageDeclined": "Skipping storage of the system: {{system}}. System storage was declined."
+        "generatorExiting": "Application generation exiting due to error: {{error}}"
     },
     "error": {
         "fatalError": "An error has occurred, please restart the generator.",

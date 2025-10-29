@@ -75,7 +75,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },
@@ -164,7 +164,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
-    "default": [Function],
+    "default": "",
     "guiOptions": {
       "mandatory": true,
     },

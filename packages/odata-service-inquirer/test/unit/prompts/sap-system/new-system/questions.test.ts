@@ -71,7 +71,11 @@ describe('Test new system prompt', () => {
         PromptState.odataService.connectedSystem = {
             serviceProvider: {} as ServiceProvider
         };
-        expect(await (userSystemNamePrompt.validate as Function)('http://abap.on.prem:1234 12/08/24')).toBe(true);
+        expect(
+            await (userSystemNamePrompt.validate as Function)('http://abap.on.prem:1234 12/08/24', {
+                storeSystemCredentials: true
+            })
+        ).toBe(true);
         expect(validateSystemName).toHaveBeenCalledWith('http://abap.on.prem:1234 12/08/24');
 
         expect(PromptState.odataService.connectedSystem.backendSystem).toEqual({
@@ -118,7 +122,8 @@ describe('Test new system prompt', () => {
                 systemUrl: 'http://mock.abap.on.prem:4300',
                 sapClient: '000',
                 abapSystemUsername: 'testUser',
-                abapSystemPassword: 'testPassword'
+                abapSystemPassword: 'testPassword',
+                storeSystemCredentials: true
             })
         ).toBe(true);
 
@@ -132,6 +137,49 @@ describe('Test new system prompt', () => {
             url: 'http://mock.abap.on.prem:4300',
             userDisplayName: 'testUser',
             username: 'testUser',
+            newOrUpdated: true,
+            systemType: 'OnPrem'
+        });
+    });
+
+    test('Should not store credentials when storeSystemCredentials is false', async () => {
+        const connectValidator = new ConnectionValidator();
+        // Only connected systems should be stored
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const result = await connectValidator.validateAuth(
+            'http://mock.abap.on.prem:4300',
+            'testUser',
+            'testPassword',
+            { sapClient: '000' }
+        );
+        expect(result).toEqual({ valResult: true }); // Connection is successful
+
+        const userSystemNamePrompt = getUserSystemNameQuestion(connectValidator);
+
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: {} as ServiceProvider
+        };
+
+        expect(
+            await (userSystemNamePrompt.validate as Function)('http://mock.abap.on.prem:4300, client 000', {
+                systemUrl: 'http://mock.abap.on.prem:4300',
+                sapClient: '000',
+                abapSystemUsername: 'testUser',
+                abapSystemPassword: 'testPassword',
+                storeSystemCredentials: false
+            })
+        ).toBe(true);
+
+        expect(PromptState.odataService.connectedSystem.backendSystem).toEqual({
+            authenticationType: 'basic',
+            client: '000',
+            name: 'http://mock.abap.on.prem:4300, client 000',
+            password: undefined,
+            refreshToken: undefined,
+            serviceKeys: undefined,
+            url: 'http://mock.abap.on.prem:4300',
+            userDisplayName: 'testUser',
+            username: undefined,
             newOrUpdated: true,
             systemType: 'OnPrem'
         });

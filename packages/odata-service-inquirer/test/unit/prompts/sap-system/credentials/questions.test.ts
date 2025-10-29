@@ -105,89 +105,6 @@ describe('Test credentials prompts', () => {
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
     });
 
-    test('should prefill username from the cached selected backend system if available', async () => {
-        const connectionValidator = new ConnectionValidator();
-        connectionValidatorMock.validity = {
-            authenticated: false,
-            authRequired: true,
-            reachable: true
-        };
-        connectionValidatorMock.systemAuthType = 'basic';
-        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
-        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
-        const userNamePrompt = credentialsPrompts.find(
-            (question) => question.name === systemUsernamePromptName
-        ) as InputQuestion;
-
-        const backendSystemWithUsername: BackendSystem = {
-            name: 'http://abap.on.prem:1234',
-            url: 'http://abap.on.prem:1234',
-            username: 'user1',
-            password: 'password1',
-            userDisplayName: 'user1',
-            client: '001'
-        };
-
-        // Set up the cached backend system in PromptState
-        PromptState.backendSystemsCache = [backendSystemWithUsername];
-
-        const answersWithBackendSystem = {
-            [promptNames.systemSelection]: {
-                type: 'backendSystem',
-                system: backendSystemWithUsername
-            }
-        };
-
-        expect(await userNamePrompt.default?.(answersWithBackendSystem as Record<string, unknown>)).toBe(
-            backendSystemWithUsername.username
-        );
-
-        const backendSystemWithoutUsername: BackendSystem = {
-            name: 'http://abap.on.prem:1234',
-            url: 'http://abap.on.prem:1234',
-            client: '001'
-        };
-
-        // Set up the cached backend system without username in PromptState
-        PromptState.backendSystemsCache = [backendSystemWithoutUsername];
-
-        const answersWithoutBackendSystem = {
-            [promptNames.systemSelection]: {
-                type: 'backendSystem',
-                system: backendSystemWithoutUsername
-            }
-        };
-
-        expect(await userNamePrompt.default?.(answersWithoutBackendSystem as Record<string, unknown>)).toBe('');
-    });
-
-    test('should not prefill username if selected system is not a backend system or username is not available', async () => {
-        const connectionValidator = new ConnectionValidator();
-        connectionValidatorMock.validity = {
-            authenticated: false,
-            authRequired: true,
-            reachable: true
-        };
-        connectionValidatorMock.systemAuthType = 'basic';
-        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
-        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
-        const userNamePrompt = credentialsPrompts.find(
-            (question) => question.name === systemUsernamePromptName
-        ) as InputQuestion;
-
-        const answersWithDestination = {
-            [promptNames.systemSelection]: {
-                type: 'destination',
-                system: {
-                    Name: 'dest1',
-                    Host: 'http://dest1.com'
-                } as Destination
-            }
-        };
-
-        expect(await userNamePrompt.default?.(answersWithDestination as Record<string, unknown>)).toBe('');
-    });
-
     test('should validate username/password using ConnectionValidator', async () => {
         const connectionValidator = new ConnectionValidator();
         connectionValidatorMock.validity = {
@@ -437,7 +354,7 @@ describe('Test credentials prompts', () => {
 
         // Setup for showing the prompt
         connectionValidatorMock.validity = {
-            authenticated: false,
+            authenticated: true,
             authRequired: true,
             reachable: true
         };

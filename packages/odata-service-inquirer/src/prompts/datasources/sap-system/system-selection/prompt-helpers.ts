@@ -10,8 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystemKey } from '@sap-ux/store';
-import { type BackendSystem, SystemService } from '@sap-ux/store';
+import { type BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -97,13 +96,6 @@ export async function connectWithBackendSystem(
                         error: connectValResult
                     })
                 );
-                // Assign username to the cached selected backend system choice for later use in credentials prompt
-                const systemIndex = PromptState.backendSystemsCache.findIndex((sys) => sys.name === backendSystem.name);
-                if (systemIndex !== -1) {
-                    PromptState.backendSystemsCache[systemIndex] = Object.assign(backendSystem, {
-                        username: backendSystem.username
-                    } as Partial<BackendSystem>);
-                }
                 return true;
             }
         }
