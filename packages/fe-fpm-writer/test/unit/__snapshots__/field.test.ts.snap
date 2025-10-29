@@ -1,0 +1,471 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CustomField Test 'position' property. Create with anchor 1`] = `
+Object {
+  "label": "New Custom Field",
+  "position": Object {
+    "anchor": "Dummy",
+    "placement": "Before",
+  },
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+}
+`;
+
+exports[`CustomField Test 'position' property. Create without anchor 1`] = `
+Object {
+  "label": "New Custom Field",
+  "position": Object {
+    "placement": "Before",
+  },
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+}
+`;
+
+exports[`CustomField Test 'position' property. Create without position 1`] = `
+Object {
+  "label": "New Custom Field",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+}
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.DummyOnAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        DummyOnAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.DummyOnAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        DummyOnAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomField Typescript - generate with handler, all properties 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField Typescript - generate with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField Typescript - generate with handler, all properties 3`] = `
+"import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider.
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}"
+`;
+
+exports[`CustomField custom control 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField custom control 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<CustomXML text=\\"\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField different data and not existing target 1`] = `
+Object {
+  "dummy": Object {
+    "options": Object {
+      "settings": Object {
+        "controlConfiguration": Object {
+          "dummy2": Object {
+            "fields": Object {
+              "DummyField": Object {
+                "label": "Dummy Field",
+                "position": Object {
+                  "anchor": "NewDummyFacet",
+                  "placement": "Before",
+                },
+                "template": "sapux.fe.fpm.writer.test.extensions.custom.DummyField",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "sample": Object {
+    "id": "Default",
+    "name": "sap.fe.templates.ObjectPage",
+    "options": Object {
+      "settings": Object {
+        "controlConfiguration": Object {
+          "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+            "fields": Object {
+              "ExistingCustomField": Object {
+                "label": "{i18n>customField}",
+                "position": Object {
+                  "anchor": "DataField::BooleanProperty",
+                  "placement": "After",
+                },
+                "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+              },
+            },
+          },
+        },
+        "entitySet": "RootEntity",
+      },
+    },
+    "type": "Component",
+    "viewLevel": 1,
+  },
+}
+`;
+
+exports[`CustomField no handler - default folder 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.ext.newCustomField.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField no handler, all properties 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField no handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"NewCustomField\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField no handler, no fs, all properties 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField with existing fragment 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField with fragmentFile 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomFieldFragment",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField with fragmentFile 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"NewCustomField\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField with handler, all properties 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+    "fields": Object {
+      "ExistingCustomField": Object {
+        "label": "{i18n>customField}",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sap.fe.core.fpmExplorer.customFieldContent.CustomFieldText",
+      },
+      "NewCustomField": Object {
+        "label": "New Custom Field",
+        "position": Object {
+          "anchor": "DummyField",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomField with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomField with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        /**
+         * Generated event handler.
+         *
+         * @param oEvent the event object provided by the event provider.
+         */
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;

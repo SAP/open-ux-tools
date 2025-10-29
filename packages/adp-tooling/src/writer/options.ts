@@ -15,8 +15,10 @@ import type {
     CloudApp,
     InternalInboundNavigation,
     CloudCustomTaskConfig,
-    CloudCustomTaskConfigTarget
+    CloudCustomTaskConfigTarget,
+    CfAdpWriterConfig
 } from '../types';
+import { UI5_CDN_URL } from '../base/constants';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -340,4 +342,61 @@ export function enhanceManifestChangeContentWithFlpConfig(
             manifestChangeContent.push(removeOtherInboundsChange);
         }
     }
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
+ */
+export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
+    const { baseApp, cf, project } = config;
+    ui5Config.addCustomTasks([
+        {
+            name: 'app-variant-bundler-build',
+            beforeTask: 'escapeNonAsciiCharacters',
+            configuration: {
+                module: project.name,
+                appHostId: baseApp.appHostId,
+                appName: baseApp.appName,
+                appVersion: baseApp.appVersion,
+                html5RepoRuntime: cf.html5RepoRuntimeGuid,
+                org: cf.org.GUID,
+                space: cf.space.GUID,
+                sapCloudService: cf.businessSolutionName ?? '',
+                serviceInstanceName: cf.businessService
+            }
+        }
+    ]);
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ */
+export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void {
+    const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
+        url: UI5_CDN_URL
+    };
+
+    ui5Config.addFioriToolsProxyMiddleware(
+        {
+            ui5: ui5ConfigOptions,
+            backend: []
+        },
+        'compression'
+    );
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-proxy',
+            configuration: {
+                flp: {
+                    theme: 'sap_horizon'
+                }
+            }
+        }
+    ]);
 }

@@ -1,6 +1,7 @@
 import type {
     v4,
     ExportParametersV4Type,
+    ExportConfigParameters,
     ExportResults,
     PageConfig,
     File,
@@ -12,9 +13,10 @@ import type {
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
-import type { Store } from 'mem-fs';
+import { readFlexChanges } from '@sap-ux/project-access';
 import { getManifest, getUI5Version, readAnnotationFiles } from './project';
 import { logger } from '../utils/logger';
+import { mergeChanges, writeFlexChanges } from './flex';
 
 export interface PageData {
     pageId: string;
@@ -30,18 +32,6 @@ export interface PageData {
 export interface AppData {
     config: Application;
     schema: string;
-}
-
-type Editor = NonNullable<Awaited<ReturnType<Specification['generateCustomExtension']>>>;
-
-// Extended interface of the mem-fs editor to restrict writing to specific files
-interface EditorExtended extends Editor {
-    store: Store;
-    /**
-     * Dump files to compare expected result. Provide a cwd for relative path.
-     * See also https://github.com/SBoudrias/mem-fs-editor#dumpcwd-filter for further details.
-     */
-    dump(): { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 }
 
 /**
@@ -91,10 +81,12 @@ export class SapuxFtfsFileIO {
         }
         const specification = await this.getSpecification();
         const annotationData = await readAnnotationFiles(this.appAccess);
+        const changeFiles = await readFlexChanges(this.appAccess.app.changes);
         // Import project using specification API
         return specification.importProject({
             manifest: manifest,
-            annotations: annotationData
+            annotations: annotationData,
+            flex: Object.values(changeFiles)
         });
     }
 
@@ -172,9 +164,10 @@ export class SapuxFtfsFileIO {
         if (!manifest) {
             return;
         }
+        const odataVersion = manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion;
         const specification = await this.getSpecification();
         const schemaType = pageData.pageType === PageTypeV4.ObjectPage ? SchemaType.ObjectPage : SchemaType.ListReport;
-        const params: ExportParametersV4Type = {
+        const params = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
                 jsonSchema: JSON.parse(pageData.schema),
@@ -185,14 +178,21 @@ export class SapuxFtfsFileIO {
                     config: pageData.config
                 } as v4.PageV4
             }
-        } as unknown as ExportParametersV4Type;
-
-        const result = specification.exportConfig({
-            v4: params
-        });
+        };
+        const exportConfig = (odataVersion === '2.0' ? { v2: params } : { v4: params }) as ExportConfigParameters;
+        const result = specification.exportConfig(exportConfig);
         if (result.manifestChangeIndicator === 'Updated') {
             await this.appAccess.updateManifestJSON(result.manifest);
         }
+        // Update flex changes
+        const changesPath = this.appAccess.app.changes;
+        const oldChangeFiles = await readFlexChanges(this.appAccess.app.changes);
+        const mergedChangeFiles = mergeChanges(changesPath, oldChangeFiles, result.flexChanges);
+        const fsEditor = await writeFlexChanges(changesPath, mergedChangeFiles);
+        await fsEditor.commit(() => {
+            //empty callback, do nothing.
+        });
+        result.flexChanges = Object.keys(fsEditor.dump());
         return result;
     }
 
@@ -235,10 +235,10 @@ export class SapuxFtfsFileIO {
             params.data.minUI5Version = await getUI5Version(this.appAccess);
         }
         const specification = await this.getSpecification();
-        const fsEditor = (await specification.generateCustomExtension(params)) as EditorExtended;
-        await fsEditor.commit(() => {
+        const fsEditor = await specification.generateCustomExtension(params);
+        await fsEditor?.commit(() => {
             //empty callback, do nothing.
         });
-        return Object.keys(fsEditor.dump());
+        return fsEditor ? Object.keys(fsEditor.dump()) : [];
     }
 }
