@@ -8,6 +8,7 @@ import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
+    hasAggregateTransformations,
     hasRecursiveHierarchyForEntitySet,
     findEntitySetByName,
     shouldUseAnalyticalTable
@@ -267,15 +268,20 @@ export function getDefaultTableType(
     // Handle OData v4 specific logic
     if (odataVersion === OdataVersion.v4 && entitySet) {
         const canUseAnalytical = templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp';
-        const hasAnalyticalCapabilities = shouldUseAnalyticalTable(entitySet, isCapService);
         const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
+        const hasAnalyticalData = hasAggregateTransformations(entitySet);
 
-        // Check for analytical data requirements
-        if (canUseAnalytical && hasAnalyticalCapabilities) {
-            return 'AnalyticalTable';
+        // Check for analytical capabilities first (highest priority)
+        if (canUseAnalytical && hasAnalyticalData) {
+            // For CAP services, any analytical data is sufficient
+            // For non-CAP services, require complete transformations
+            const hasAnalyticalCapabilities = shouldUseAnalyticalTable(entitySet, !isCapService);
+            if (hasAnalyticalCapabilities) {
+                return 'AnalyticalTable';
+            }
         }
 
-        // Check for hierarchical data requirements
+        // Check for hierarchical data only (no analytical data or analytical requirements not met)
         if ((templateType === 'lrop' || templateType === 'worklist') && hasHierarchy) {
             return 'TreeTable';
         }

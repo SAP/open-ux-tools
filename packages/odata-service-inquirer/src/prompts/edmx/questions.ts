@@ -272,10 +272,9 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
-        // Variables to manage analytical table defaults across prompts
-        let setAnalyticalTableDefault = false;
-        let setTreeTableDefault = false;
+        // Variables to track selected entity and default table type
         let selectedEntity: EntityAnswer | undefined;
+        let defaultTableType: TableType | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -292,7 +291,7 @@ function getTableLayoutQuestions(
 
                 // Only re-evaluate if entity has changed or no previous selection exists
                 if (currentEntity?.entitySetName !== selectedEntity?.entitySetName || !prevAnswers?.tableType) {
-                    const defaultTableType = getDefaultTableType(
+                    defaultTableType = getDefaultTableType(
                         templateType,
                         metadata,
                         odataVersion,
@@ -302,29 +301,27 @@ function getTableLayoutQuestions(
 
                     // Update tracking variables
                     selectedEntity = currentEntity;
-                    setAnalyticalTableDefault = defaultTableType === 'AnalyticalTable';
-                    setTreeTableDefault = defaultTableType === 'TreeTable';
                     return defaultTableType;
                 }
 
                 // Entity hasn't changed and user has a selection - preserve their choice
-                // Reset the analytical table and tree table default flags since this is user's choice, not system default
-                setAnalyticalTableDefault = false;
-                setTreeTableDefault = false;
+                // Reset the default table type since this is user's choice, not system default
+                defaultTableType = undefined;
                 return prevAnswers.tableType;
             },
             additionalMessages: () => {
-                if (setAnalyticalTableDefault) {
+                if (defaultTableType === 'AnalyticalTable') {
                     return {
                         message: t('prompts.tableType.analyticalTableDefault'),
                         severity: Severity.information
                     };
-                } else if (setTreeTableDefault) {
+                } else if (defaultTableType === 'TreeTable') {
                     return {
                         message: t('prompts.tableType.treeTableDefault'),
                         severity: Severity.information
                     };
                 }
+                return undefined;
             }
         } as ListQuestion<TableConfigAnswers>);
 

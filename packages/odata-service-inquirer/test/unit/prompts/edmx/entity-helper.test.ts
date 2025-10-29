@@ -17,6 +17,7 @@ describe('Test entity helper functions', () => {
     let metadataV4WithDraftEntities: string;
     let metadataV2WithDraftRoot: string;
     let metadataV4WithHierarchyRecursiveHierarchy: string;
+    let metadataV4WithHierarchyAndCompleteAnalyticalTransformations: string;
 
     beforeAll(async () => {
         metadataV4WithAggregateTransforms = await readFile(
@@ -35,6 +36,10 @@ describe('Test entity helper functions', () => {
         metadataV2WithDraftRoot = await readFile(join(__dirname, '../test-data/metadataV2WithDraftRoot.xml'), 'utf8');
         metadataV4WithHierarchyRecursiveHierarchy = await readFile(
             join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
+            'utf8'
+        );
+        metadataV4WithHierarchyAndCompleteAnalyticalTransformations = await readFile(
+            join(__dirname, '../test-data/metadataV4WithHierarchyAndCompleteAnalyticalTransformations.xml'),
             'utf8'
         );
     });
@@ -499,6 +504,24 @@ describe('Test entity helper functions', () => {
                 'TestEntityWithBoth'
             );
             // Complete aggregate transformations should take priority over recursive hierarchy
+            expect(result).toBe('AnalyticalTable');
+        });
+
+        test('should prioritize complete analytical transformations over hierarchy using real metadata', () => {
+            // Integration test using the actual metadataV4WithHierarchyAndCompleteAnalyticalTransformations.xml file
+            // This entity has both recursive hierarchy AND complete analytical transformations (all 8 transformations)
+            // Since analytical transformations are complete, AnalyticalTable should be used over TreeTable
+            const parsedEdmx = parse(metadataV4WithHierarchyAndCompleteAnalyticalTransformations);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const result = getDefaultTableType(
+                'lrop',
+                convertedMetadata,
+                OdataVersion.v4,
+                false,
+                'P_SADL_HIER_UUID_D_COMPNY_ROOT'
+            );
+            // When both analytical and hierarchical data are present with complete transformations, prefer AnalyticalTable
             expect(result).toBe('AnalyticalTable');
         });
 
