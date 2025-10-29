@@ -4,7 +4,7 @@ import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import type { Manifest } from '@sap-ux/project-access';
 
-export type UI5VersionDetails = {
+type UI5VersionDetails = {
     /**
      * Contains either
      * - the name of the distribution or
@@ -21,13 +21,7 @@ export type UI5VersionDetails = {
 };
 
 type UI5LibraryVersionInfo = {
-    /**
-     * Name of the UI5 library.
-     */
     name: string;
-    /**
-     * Version of the UI5 library.
-     */
     version: string;
 };
 
@@ -39,7 +33,7 @@ export type Ui5VersionInfo = {
     /**
      * Indicates if the UI5 version is served from CDN.
      */
-    isCdn: boolean;
+    isCdn?: boolean;
 };
 
 /**

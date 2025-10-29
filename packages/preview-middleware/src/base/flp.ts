@@ -59,7 +59,38 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
-import type { UI5VersionDetails, Ui5VersionInfo } from '@private/preview-middleware-client/src/utils/version';
+
+type UI5VersionDetails = {
+    /**
+     * Contains either
+     * - the name of the distribution or
+     * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
+     */
+    name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
+    /**
+     * Contains either
+     * - the version of the UI5 framework or
+     * - the version of the application in case the UI5 sources have been loaded from npmjs.
+     */
+    version: string | Manifest['sap.app']['applicationVersion']['version'];
+    libraries: UI5LibraryVersionInfo[]
+};
+
+type UI5LibraryVersionInfo = {
+    name: string;
+    version: string;
+};
+
+export type Ui5VersionInfo = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn: boolean;
+};
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
