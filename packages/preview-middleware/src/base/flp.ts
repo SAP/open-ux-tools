@@ -59,6 +59,7 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import type { UI5VersionDetails, Ui5VersionInfo } from '@private/preview-middleware-client/src/utils/version';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -81,17 +82,6 @@ type OnChangeRequestHandler = (
     logger: Logger,
     extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
-
-type Ui5Version = {
-    major: number;
-    minor: number;
-    patch: number;
-    label?: string;
-    /**
-     * Indicates if the UI5 version is served from CDN.
-     */
-    isCdn: boolean;
-};
 
 /**
  * Class handling preview of a sandbox FLP.
@@ -555,7 +545,7 @@ export class FlpSandbox {
         protocol: Request['protocol'],
         host: Request['headers']['host'],
         baseUrl: string = ''
-    ): Promise<Ui5Version> {
+    ): Promise<Ui5VersionInfo> {
         let version: string | undefined;
         let isCdn = false;
         if (!host) {
@@ -563,9 +553,7 @@ export class FlpSandbox {
         } else {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
-                const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
-                    | { name: string; libraries: { name: string; version: string }[] }
-                    | undefined;
+                const responseJson = (await fetch(versionUrl).then((res) => res.json())) as UI5VersionDetails | undefined;
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
@@ -603,7 +591,7 @@ export class FlpSandbox {
      * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5Version: Ui5Version): string {
+    private getSandboxTemplate(ui5Version: Ui5VersionInfo): string {
         this.logger.info(
             `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''

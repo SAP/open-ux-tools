@@ -2,12 +2,34 @@ import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
 import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import type { Manifest } from '@sap-ux/project-access';
 
-type SingleVersionInfo =
-    | {
-          name: string;
-          version: string;
-      };
+export type UI5VersionDetails = {
+    /**
+     * Contains either
+     * - the name of the distribution or
+     * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
+     */
+    name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
+    /**
+     * Contains either
+     * - the version of the UI5 framework or
+     * - the version of the application in case the UI5 sources have been loaded from npmjs.
+     */
+    version: string | Manifest['sap.app']['applicationVersion']['version'];
+    libraries: UI5LibraryVersionInfo[]
+};
+
+type UI5LibraryVersionInfo = {
+    /**
+     * Name of the UI5 library.
+     */
+    name: string;
+    /**
+     * Version of the UI5 library.
+     */
+    version: string;
+};
 
 export type Ui5VersionInfo = {
     major: number;
@@ -17,7 +39,7 @@ export type Ui5VersionInfo = {
     /**
      * Indicates if the UI5 version is served from CDN.
      */
-    isCdn?: boolean;
+    isCdn: boolean;
 };
 
 /**
@@ -54,8 +76,8 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
  * @returns Ui5VersionInfo
  */
 export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui5VersionInfo> {
-    const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
-    let version = versionInfo?.libraries?.find((lib) => lib.name === library)?.version;
+    const versionInfo = await VersionInfo.load() as UI5VersionDetails | undefined;
+    let version = versionInfo?.libraries.find((lib) => lib.name === library)?.version;
     const isCdn = versionInfo?.name === 'SAPUI5 Distribution';
     if (!version) {
         Log.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
@@ -146,7 +168,7 @@ export const getUI5Libs = (() => {
     let cachedLibs: Set<string> | undefined;
     return async function (): Promise<Set<string>> {
         if (!cachedLibs) {
-            const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
+            const versionInfo = await VersionInfo.load() as UI5VersionDetails | undefined;
             const libNames = versionInfo?.libraries.map(lib => lib.name);
             if (libNames) {
                 cachedLibs = new Set(libNames);
