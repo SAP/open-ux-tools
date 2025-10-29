@@ -1,11 +1,19 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Service, ServiceRetrievalOptions } from '.';
 import type { DataProvider } from '../data-provider';
+import type { ServiceOptions } from '../types';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
-import type { ServiceOptions } from '../types';
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { getFioriToolsDirectory, getSapToolsDirectory, getEntityFileName } from '../utils';
+import { Entity } from '../constants';
 
+/**
+ * Should not be used directly, use factory method `getService` instead.
+ * Data integrity cannot be guaranteed when using this class directly.
+ */
 export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;
     private readonly logger: Logger;
@@ -14,6 +22,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         this.logger = logger;
         this.dataProvider = new SystemDataProvider(this.logger, options);
     }
+
     public async partialUpdate(
         key: BackendSystemKey,
         entity: Partial<BackendSystem>
@@ -81,5 +90,43 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 }
 
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
+    if (!options.baseDirectory) {
+        try {
+            ensureSettingsMigrated();
+            options.baseDirectory = getSapToolsDirectory();
+        } catch (error) {
+            logger.error(text('error.systemsJsonMigrationFailed', { error: (error as Error).message }));
+        }
+    }
     return new SystemService(logger, options);
+}
+
+/**
+ * Ensure settings are migrated from .fioritools directory to the new .saptools directory.
+ */
+function ensureSettingsMigrated(): void {
+    const systemFileName = getEntityFileName(Entity.BackendSystem);
+    const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
+    const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
+
+    mkdirSync(dirname(newSystemsPath), { recursive: true });
+
+    const readJson = (filePath: string) => {
+        if (!existsSync(filePath)) {
+            return { systems: {} };
+        }
+        return JSON.parse(readFileSync(filePath, 'utf-8'));
+    };
+
+    const legacyData = readJson(legacySystemsPath);
+    const newData = readJson(newSystemsPath);
+
+    const merged = {
+        systems: {
+            ...legacyData.systems,
+            ...newData.systems
+        }
+    };
+
+    writeFileSync(newSystemsPath, JSON.stringify(merged, null, 2));
 }
