@@ -1,8 +1,9 @@
+import { convert } from '@sap-ux/annotation-converter';
 import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import { isAbapEnvironmentOnBtp, isAppStudio } from '@sap-ux/btp-utils';
 import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import { checkCdsUi5PluginEnabled, getAppLaunchText } from '@sap-ux/cap-config-writer';
-import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
+import { parse } from '@sap-ux/edmx-parser';
 import type { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
@@ -37,7 +38,7 @@ import { getBackendSystemType } from '@sap-ux/store';
  */
 export function getODataVersion(edmx: string): OdataVersion {
     try {
-        const convertedMetadata = convertEdmxToConvertedMetadata(edmx);
+        const convertedMetadata = convert(parse(edmx));
         return convertedMetadata.version.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
     } catch (error) {
         throw Error(t('error.appConfigUnparseableEdmx'));

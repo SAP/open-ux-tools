@@ -1,5 +1,6 @@
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
-import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
 import { filterDraftEnabledEntities } from '../../edmx/entity-helper';
 import LoggerHelper from '../../logger-helper';
 import { t } from '../../../i18n';
@@ -27,7 +28,7 @@ export function showCollabDraftWarning(edmx: string | ConvertedMetadata): boolea
     try {
         let convertedMetadata: ConvertedMetadata;
         if (typeof edmx === 'string') {
-            convertedMetadata = convertEdmxToConvertedMetadata(edmx);
+            convertedMetadata = convert(parse(edmx));
         } else {
             convertedMetadata = edmx;
         }
