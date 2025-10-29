@@ -61,8 +61,9 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
         for (const key of ['libs', 'components'] as const) {
             const dependencies = sapUi5?.dependencies?.[key];
             if (dependencies) {
-                const customKeys = await getCustomKeys(Object.keys(dependencies));
-                customKeys.forEach((key) => result.add(key));
+                for (const key of await getCustomKeys(Object.keys(dependencies))) {
+                    result.add(key);
+                }
             }
         }
 
@@ -70,8 +71,9 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
         const componentUsages = sapUi5?.componentUsages as Record<string, { name: string }> | undefined;
         if (componentUsages) {
             const compNames = Object.values(componentUsages).map((componentUsage) => componentUsage.name);
-            const customKeys = await getCustomKeys(compNames);
-            customKeys.forEach((key) => result.add(key));
+            for (const key of await getCustomKeys(compNames)) {
+                result.add(key);
+            }
         }
     }));
 
