@@ -173,11 +173,12 @@ describe('flp/init', () => {
             expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
 
-        test('registerComponentDependencyPaths: error case', async () => {
+        test('registerComponentDependencyPaths: error case 1 (invalid manifest json)', async () => {
             const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
             manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
             fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
             fetchMock.mockResolvedValueOnce({
+                ok: true,
                 json: () => {
                     throw new Error('Error');
                 }
@@ -189,6 +190,34 @@ describe('flp/init', () => {
             } catch (error) {
                 expect(error).toEqual('Error');
             }
+        });
+
+        test('registerComponentDependencyPaths: error case 2 (no app index data)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: true, json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                ok: false,
+                json: () => {
+                    throw new Error('Error');
+                }
+            });
+            CommunicationService.sendAction = jest.fn();
+
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+
+            expect(loaderMock).not.toHaveBeenCalled();
+        });
+
+        test('registerComponentDependencyPaths: error case 3 (no manifest json)', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ ok: false });
+            CommunicationService.sendAction = jest.fn();
+
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+
+            expect(loaderMock).not.toHaveBeenCalled();
         });
     });
 
