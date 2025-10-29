@@ -8,13 +8,14 @@ import type {
     GenerateCustomExtensionParams,
     Specification,
     Application,
-    PageType
+    PageType,
+    ExportParametersV2Type
 } from '@sap/ux-specification/dist/types/src';
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { readFlexChanges } from '@sap-ux/project-access';
-import { getManifest, getUI5Version, readAnnotationFiles } from './project';
+import { getFlexChangeLayer, getManifest, getUI5Version, readAnnotationFiles } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
 
@@ -164,10 +165,9 @@ export class SapuxFtfsFileIO {
         if (!manifest) {
             return;
         }
-        const odataVersion = manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion;
         const specification = await this.getSpecification();
         const schemaType = pageData.pageType === PageTypeV4.ObjectPage ? SchemaType.ObjectPage : SchemaType.ListReport;
-        const params = {
+        const exportParams = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
                 jsonSchema: JSON.parse(pageData.schema),
@@ -179,7 +179,7 @@ export class SapuxFtfsFileIO {
                 } as v4.PageV4
             }
         };
-        const exportConfig = (odataVersion === '2.0' ? { v2: params } : { v4: params }) as ExportConfigParameters;
+        const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
         const result = specification.exportConfig(exportConfig);
         if (result.manifestChangeIndicator === 'Updated') {
             await this.appAccess.updateManifestJSON(result.manifest);
@@ -209,17 +209,15 @@ export class SapuxFtfsFileIO {
             return;
         }
         const specification = await this.getSpecification();
-        const params: ExportParametersV4Type = {
+        const exportParams: ExportParametersV4Type = {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
                 manifest,
                 jsonSchema: JSON.parse(schema)
             }
         };
-
-        const result = specification.exportConfig({
-            v4: params
-        });
+        const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
+        const result = specification.exportConfig(exportConfig);
         await this.appAccess.updateManifestJSON(result.manifest);
         return result;
     }
@@ -240,5 +238,24 @@ export class SapuxFtfsFileIO {
             //empty callback, do nothing.
         });
         return fsEditor ? Object.keys(fsEditor.dump()) : [];
+    }
+
+    /**
+     * Builds the export configuration parameters for specification API 'exportConfig' call.
+     * Adds 'ui5Version' and 'layer' values to the configuration.
+     *
+     * @param manifest - The application manifest containing OData service configuration
+     * @param params - Partial export parameters to include in the resulting configuration
+     * @returns A promise that resolves to the fully composed export configuration object
+     */
+    private async getExportConfigParameters(
+        manifest: Manifest,
+        params: Partial<ExportParametersV2Type | ExportParametersV4Type>
+    ): Promise<ExportConfigParameters> {
+        const odataVersion = manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion;
+        const exportConfig = (odataVersion === '2.0' ? { v2: params } : { v4: params }) as ExportConfigParameters;
+        exportConfig.ui5Version = await getUI5Version(this.appAccess);
+        exportConfig.layer = await getFlexChangeLayer(this.appAccess.root);
+        return exportConfig;
     }
 }

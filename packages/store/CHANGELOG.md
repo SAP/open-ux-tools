@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.3.0
+
+### Minor Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+
 ## 1.2.1
 
 ### Patch Changes
