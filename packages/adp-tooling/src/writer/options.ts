@@ -316,9 +316,7 @@ export function enhanceManifestChangeContentWithFlpConfig(
 ): void {
     for (const [index, flpConfig] of flpConfigurations.entries()) {
         const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
-        if (!inboundChangeContent) {
-            continue;
-        }
+
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',
             content: inboundChangeContent,
