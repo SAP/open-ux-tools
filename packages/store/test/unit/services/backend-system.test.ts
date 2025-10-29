@@ -1,10 +1,22 @@
-import { SystemService } from '../../../src/services/backend-system';
+import { getInstance, SystemService } from '../../../src/services/backend-system';
 import { BackendSystem, BackendSystemKey } from '../../../src';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { initI18n, text } from '../../../src/i18n';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import * as nodeFs from 'node:fs';
 
 jest.mock('../../../src/data-provider/backend-system');
+
+jest.mock('node:fs', () => {
+    const originalFs = jest.requireActual('node:fs');
+    return {
+        ...originalFs,
+        existsSync: jest.fn().mockReturnValue(false),
+        readFileSync: jest.fn(),
+        writeFileSync: jest.fn(),
+        mkdirSync: jest.fn()
+    };
+});
 
 describe('BackendSystem service', () => {
     beforeAll(async () => {
@@ -12,6 +24,55 @@ describe('BackendSystem service', () => {
     });
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
+
+    describe('getInstance', () => {
+        it('creates an instance of SystemService', () => {
+            const service = getInstance(logger, { baseDirectory: 'some_directory' });
+            expect(service).toBeInstanceOf(SystemService);
+        });
+
+        it('should merge and write the new systems file to .saptools', () => {
+            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(false);
+            const readFileSyncSpy = jest
+                .spyOn(nodeFs, 'readFileSync')
+                .mockReturnValueOnce(
+                    '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
+                );
+            const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync');
+            const service = getInstance(logger);
+            expect(service).toBeInstanceOf(SystemService);
+            expect(existsSyncSpy).toHaveBeenCalledWith(expect.stringContaining('.fioritools'));
+            expect(readFileSyncSpy).toHaveBeenCalledWith(expect.stringContaining('systems.json'), 'utf-8');
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(
+                expect.stringContaining('.saptools'),
+                JSON.stringify(
+                    {
+                        systems: {
+                            'https://mock.system1.com': {
+                                name: 'Mock System',
+                                url: 'https://mock.system1.com',
+                                systemType: 'OnPrem'
+                            }
+                        }
+                    },
+                    null,
+                    2
+                )
+            );
+        });
+
+        it('should log an error', () => {
+            jest.spyOn(nodeFs, 'mkdirSync').mockImplementationOnce(() => {
+                throw new Error('Mock error during mkdirSync');
+            });
+            const loggerErrorSpy = jest.spyOn(logger, 'error');
+            const service = getInstance(logger);
+            expect(service).toBeInstanceOf(SystemService);
+            expect(loggerErrorSpy).toHaveBeenCalledWith(
+                'The migration of the systems.json file from .fioritools to .saptools failed: Mock error during mkdirSync'
+            );
+        });
+    });
 
     describe('delete', () => {
         it('delegates to data provider', async () => {
