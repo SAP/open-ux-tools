@@ -1,8 +1,8 @@
 import type { UpdateSystem } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types/system';
-import { SystemService, type BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import { commands, window } from 'vscode';
-import { getBackendSystem, geti18nOpts, TelemetryHelper, t } from '../../../utils';
+import { getBackendSystem, geti18nOpts, TelemetryHelper, t, getBackendSystemService } from '../../../utils';
 import { updateSystemStatus, validateSystemName } from '../utils';
 import {
     SystemAction,
@@ -11,7 +11,6 @@ import {
     SystemPanelViewType,
     SYSTEMS_EVENT
 } from '../../../utils/constants';
-import SystemsLogger from '../../../utils/logger';
 
 /**
  * This action updates or creates a system based on the provided details.
@@ -87,7 +86,8 @@ async function updateHandler(
     // this requires us to delete the existing system, dispose of the panel, and create and load a new one
     if (panelViewType === SystemPanelViewType.View && !systemExistsInStore && context.backendSystem) {
         context.disposePanel();
-        await new SystemService(SystemsLogger.logger).delete(context.backendSystem);
+        const systemService = await getBackendSystemService();
+        await systemService.delete(context.backendSystem);
         newPanelMsg = t('info.systemUpdated', { system: newSystem.name });
     }
 
@@ -149,7 +149,8 @@ async function saveSystem(
 ): Promise<void> {
     // ensure the user display name is set to the username
     const newBackendSystem = { ...backendSystem, userDisplayName: backendSystem.username };
-    await new SystemService(SystemsLogger.logger).write(newBackendSystem, {
+    const systemService = await getBackendSystemService();
+    await systemService.write(newBackendSystem, {
         force: systemExistsInStore
     });
     const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';

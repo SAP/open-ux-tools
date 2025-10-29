@@ -1,10 +1,9 @@
 import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
-import { BackendSystemKey, SystemService, type BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem, type Service } from '@sap-ux/store';
 import { window } from 'vscode';
 import { SystemPanel } from '../../panel';
-import { TelemetryHelper, t } from '../../utils';
+import { TelemetryHelper, getBackendSystemService, t } from '../../utils';
 import { SystemAction, LaunchViewStatus, SystemPanelViewType, SYSTEMS_EVENT } from '../../utils/constants';
-import SystemsLogger from '../../utils/logger';
 
 /**
  * Returns a command handler function that shows the details of a specified system.
@@ -16,7 +15,7 @@ export const showSystemsCommandHandler =
     (context: SystemCommandContext) =>
     async (system?: StoredSystemViewNode, statusMsg?: string): Promise<void> => {
         try {
-            const systemService = new SystemService(SystemsLogger.logger);
+            const systemService = await getBackendSystemService();
             const backendSystemKey = await getBackendSystemKey(systemService, system);
             const storedBackendSystem = await systemService.read(backendSystemKey);
             if (!storedBackendSystem) {
@@ -41,7 +40,7 @@ export const showSystemsCommandHandler =
  * @returns - the backend system key
  */
 async function getBackendSystemKey(
-    systemService: SystemService,
+    systemService: Service<BackendSystem, BackendSystemKey>,
     system?: StoredSystemViewNode
 ): Promise<BackendSystemKey> {
     if (system) {
@@ -57,7 +56,9 @@ async function getBackendSystemKey(
  * @param systemService - the system service for the store
  * @returns - the selected backend system key
  */
-async function sapSystemDropdownPicker(systemService: SystemService): Promise<BackendSystemKey> {
+async function sapSystemDropdownPicker(
+    systemService: Service<BackendSystem, BackendSystemKey>
+): Promise<BackendSystemKey> {
     const allBackendSystems = await systemService.getAll({ includeSensitiveData: false });
     const quickPickItems = allBackendSystems.map((system) => ({
         label: system.name,

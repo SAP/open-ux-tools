@@ -1,6 +1,5 @@
-import { SystemService, type BackendSystem } from '@sap-ux/store';
-import { t } from '../../../utils';
-import SystemsLogger from '../../../utils/logger';
+import type { BackendSystem } from '@sap-ux/store';
+import { getBackendSystemService, t } from '../../../utils';
 
 /**
  * Validates the provided system information.
@@ -25,7 +24,8 @@ export function validateSystemInfo(input: BackendSystem): boolean | string {
  * @throws error if the new name already exists in the store (and is not the current name)
  */
 export async function validateSystemName(newName: string, currentName?: string): Promise<true> {
-    const allSystems = await new SystemService(SystemsLogger.logger).getAll({ includeSensitiveData: false });
+    const systemService = await getBackendSystemService();
+    const allSystems = await systemService.getAll({ includeSensitiveData: false });
     const newSystemName = newName.trim();
 
     const nameExists = allSystems.some(

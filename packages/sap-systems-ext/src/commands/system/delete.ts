@@ -1,10 +1,9 @@
 import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
 import type { PanelManager, SystemPanel } from '../../panel';
-import { BackendSystemKey, SystemService, type BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { window } from 'vscode';
-import { t, confirmPrompt, TelemetryHelper, geti18nOpts } from '../../utils';
+import { t, confirmPrompt, TelemetryHelper, geti18nOpts, getBackendSystemService } from '../../utils';
 import { ConfirmationPromptType, SYSTEMS_EVENT, SystemAction, SystemActionStatus } from '../../utils/constants';
-import SystemsLogger from '../../utils/logger';
 
 /**
  * Returns a command handler function that deletes a specified system.
@@ -16,7 +15,7 @@ export const deleteSystemCommandHandler =
     (context: SystemCommandContext) =>
     async (system: StoredSystemViewNode): Promise<void> => {
         const backendSystemKey = new BackendSystemKey({ url: system.url, client: system.client });
-        const systemService = new SystemService(SystemsLogger.logger);
+        const systemService = await getBackendSystemService();
         const backendSystem = await systemService.read(backendSystemKey);
 
         if (!backendSystem) {

@@ -1,9 +1,9 @@
 import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
-import { BackendSystem, BackendSystemKey, SystemService, type SystemType } from '@sap-ux/store';
+import { BackendSystem, BackendSystemKey, type SystemType } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'node:os';
 import { readFileSync } from 'node:fs';
-import { confirmPrompt, TelemetryHelper, t } from '../../utils';
+import { confirmPrompt, TelemetryHelper, t, getBackendSystemService } from '../../utils';
 import {
     ConfirmationPromptType,
     SystemAction,
@@ -12,7 +12,6 @@ import {
     SYSTEMS_EVENT
 } from '../../utils/constants';
 import { SystemPanel } from '../../panel';
-import SystemsLogger from '../../utils/logger';
 
 /**
  * Returns a command handler function that handles importing a system configuration from a file.
@@ -24,7 +23,7 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
     try {
         const systemConfig = await getImportSystemConfig();
         const backendSystemKey = new BackendSystemKey({ url: systemConfig.url, client: systemConfig.client });
-        const systemService = new SystemService(SystemsLogger.logger);
+        const systemService = await getBackendSystemService();
         const existingSystem = await systemService.read(backendSystemKey);
 
         // if the system already exists, confirm if the user wants to overwrite

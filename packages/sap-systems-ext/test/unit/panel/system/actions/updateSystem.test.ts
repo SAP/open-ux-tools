@@ -22,7 +22,7 @@ const systemServiceWriteMock = jest.fn();
 const systemServiceDeleteMock = jest.fn();
 
 jest.mock('@sap-ux/store', () => ({
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         write: systemServiceWriteMock,
         delete: systemServiceDeleteMock
     }))

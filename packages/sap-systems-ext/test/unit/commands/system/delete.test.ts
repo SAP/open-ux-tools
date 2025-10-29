@@ -9,7 +9,7 @@ const systemServiceDeleteMock = jest.fn();
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         read: systemServiceReadMock,
         delete: systemServiceDeleteMock
     }))
