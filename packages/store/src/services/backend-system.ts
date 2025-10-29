@@ -92,7 +92,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
     if (!options.baseDirectory) {
         try {
-            ensureSettingsMigrated();
+            ensureSystemsMigrated();
             options.baseDirectory = getSapToolsDirectory();
         } catch (error) {
             logger.error(text('error.systemsJsonMigrationFailed', { error: (error as Error).message }));
@@ -103,30 +103,57 @@ export function getInstance(logger: Logger, options: ServiceOptions = {}): Syste
 
 /**
  * Ensure settings are migrated from .fioritools directory to the new .saptools directory.
+ * If migration has already taken place, only migrate new systems that have not yet been migrated.
  */
-function ensureSettingsMigrated(): void {
+function ensureSystemsMigrated(): void {
     const systemFileName = getEntityFileName(Entity.BackendSystem);
     const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
     const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
+    const migrationFlag = join(getSapToolsDirectory(), '.systemsMigrated');
+    const legacyData = JSON.parse(readFileSync(legacySystemsPath, 'utf-8')).systems as Record<string, BackendSystem>;
 
-    mkdirSync(dirname(newSystemsPath), { recursive: true });
+    if (existsSync(migrationFlag)) {
+        migrateNewLegacyPathEntries(newSystemsPath, legacyData);
+    } else {
+        // first time migration, move all data from legacy to new path
+        mkdirSync(dirname(newSystemsPath), { recursive: true });
+        writeFileSync(newSystemsPath, JSON.stringify({ systems: legacyData }, null, 2));
+    }
 
-    const readJson = (filePath: string) => {
-        if (!existsSync(filePath)) {
-            return { systems: {} };
+    // overwrite legacy file entries with migrated flag to avoid re-migration
+    const migratedData: Record<string, BackendSystem & { _migrated?: boolean }> = {};
+    for (const [key, system] of Object.entries(legacyData)) {
+        migratedData[key] = {
+            ...system,
+            _migrated: true
+        };
+    }
+
+    writeFileSync(legacySystemsPath, JSON.stringify({ systems: { ...migratedData } }, null, 2));
+    writeFileSync(migrationFlag, new Date().toISOString());
+}
+
+/**
+ * Migrates new entries in the systems.json in the legacy path, that have not yet been migrated.
+ *
+ * @param newSystemsPath - path to the new systems.json file
+ * @param legacyData - data from the legacy systems.json file
+ */
+function migrateNewLegacyPathEntries(newSystemsPath: string, legacyData: Record<string, BackendSystem>): void {
+    let hasNewEntries = false;
+    const newData: Record<string, BackendSystem> = {};
+
+    for (const [key, system] of Object.entries(legacyData)) {
+        if (!(system as BackendSystem & { _migrated?: boolean })._migrated) {
+            newData[key] = {
+                ...system
+            };
+            hasNewEntries = true;
         }
-        return JSON.parse(readFileSync(filePath, 'utf-8'));
-    };
+    }
 
-    const legacyData = readJson(legacySystemsPath);
-    const newData = readJson(newSystemsPath);
-
-    const merged = {
-        systems: {
-            ...legacyData.systems,
-            ...newData.systems
-        }
-    };
-
-    writeFileSync(newSystemsPath, JSON.stringify(merged, null, 2));
+    if (hasNewEntries) {
+        const existingData = JSON.parse(readFileSync(newSystemsPath, 'utf-8')).systems as Record<string, BackendSystem>;
+        writeFileSync(newSystemsPath, JSON.stringify({ systems: { ...existingData, ...newData } }, null, 2));
+    }
 }
