@@ -6,7 +6,8 @@
     "scripts": {
         "build-compile": "tsc --noEmit",
         "copy-create-readme": "node -e \"require('fs').copyFileSync('node_modules/@sap-ux/create/README.md', 'data_local/create-README.md')\"",
-        "build": "npm-run-all -l -p build-compile copy-create-readme update-embeddings-script",
+        "fetch-ux-ui5-tooling-readme": "node scripts/load-readme-from-npm.js @sap/ux-ui5-tooling",
+        "build": "npm-run-all -l -p build-compile copy-create-readme fetch-ux-ui5-tooling-readme update-embeddings-script",
         "update-docs-script": "tsx src/scripts/build-docs.ts",
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
         "update-docs": "npm-run-all -l -s clean-data update-docs-script",
