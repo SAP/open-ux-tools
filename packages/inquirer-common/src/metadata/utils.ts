@@ -1,32 +1,10 @@
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { t } from '../i18n';
+import { convertEdmxToConvertedMetadata } from './metadataHelpers';
 
 export interface EdmxConversionResult {
     convertedMetadata: ConvertedMetadata;
     odataVersion: OdataVersion;
-}
-
-/**
- * Converts an EDMX string to a ConvertedMetadata object.
- *
- * @param edmx - The EDMX string to convert.
- * @returns The converted metadata object.
- * @throws If the EDMX cannot be parsed or the OData version is unparseable.
- */
-export function convertEdmxToConvertedMetadata(edmx: string): ConvertedMetadata {
-    try {
-        const convertedMetadata = convert(parse(edmx));
-        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
-        if (Number.isNaN(parsedOdataVersion)) {
-            throw new Error(t('errors.unparseableOdataVersion'));
-        }
-        return convertedMetadata;
-    } catch (error) {
-        throw new Error(t('errors.unparseableMetadata', { error: (error as Error).message }));
-    }
 }
 
 /**
@@ -42,32 +20,17 @@ export function convertEdmxToConvertedMetadata(edmx: string): ConvertedMetadata 
  *   - Any other conversion error occurs
  */
 export function convertEdmxWithVersion(edmx: string): EdmxConversionResult {
-    try {
-        const convertedMetadata = convert(parse(edmx));
+    const convertedMetadata = convertEdmxToConvertedMetadata(edmx);
 
-        // Handle cases where version might be missing or unparseable
-        if (!convertedMetadata?.version) {
-            throw new Error(t('errors.unparseableOdataVersion'));
-        }
+    // Parse OData version to determine if it's v2 or v4
+    const parsedOdataVersion = Number.parseInt(convertedMetadata.version, 10);
 
-        const parsedOdataVersion = Number.parseInt(convertedMetadata.version, 10);
+    // Note that OData version > 4 (e.g., 4.1) is not currently supported by @sap-ux/edmx-converter
+    // For now, we treat any version >= 4 as v4, but this could be enhanced in the future
+    const odataVersion = parsedOdataVersion >= 4 ? OdataVersion.v4 : OdataVersion.v2;
 
-        // When unparseable version is encountered (e.g., version="invalid", version="", etc.)
-        if (Number.isNaN(parsedOdataVersion)) {
-            throw new Error(t('errors.unparseableOdataVersion'));
-        }
-
-        // Note that OData version > 4 (e.g., 4.1) is not currently supported by @sap-ux/edmx-converter
-        // For now, we treat any version >= 4 as v4, but this could be enhanced in the future
-        const odataVersion = parsedOdataVersion >= 4 ? OdataVersion.v4 : OdataVersion.v2;
-
-        return {
-            convertedMetadata,
-            odataVersion
-        };
-    } catch (error) {
-        // Provide specific error context for debugging
-        const errorMessage = (error as Error).message;
-        throw new Error(t('errors.unparseableMetadata', { error: errorMessage }));
-    }
+    return {
+        convertedMetadata,
+        odataVersion
+    };
 }

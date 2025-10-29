@@ -1,2 +1,2 @@
-export * from './entityHelpers';
+export * from './metadataHelpers';
 export * from './utils';
