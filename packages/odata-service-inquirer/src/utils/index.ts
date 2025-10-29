@@ -8,12 +8,11 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { removeSync } from 'circular-reference-remover';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey } from '@sap-ux/store';
+import { convertEdmxWithVersion } from '@sap-ux/inquirer-common';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -40,18 +39,10 @@ export function parseOdataVersion(metadata: string): {
     convertedMetadata: ConvertedMetadata;
 } {
     try {
-        const convertedMetadata = convert(parse(metadata));
-        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
-
-        if (Number.isNaN(parsedOdataVersion)) {
-            LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
-            throw new Error(t('errors.unparseableOdataVersion'));
-        }
-        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
-        const odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+        const conversionResult = convertEdmxWithVersion(metadata);
         return {
-            odataVersion,
-            convertedMetadata
+            odataVersion: conversionResult.odataVersion,
+            convertedMetadata: conversionResult.convertedMetadata
         };
     } catch (error) {
         LoggerHelper.logger.error(error);

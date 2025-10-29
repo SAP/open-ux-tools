@@ -943,4 +943,69 @@ describe('Test entity helper functions', () => {
             expect(qualifier).toBeUndefined();
         });
     });
+
+    describe('Error handling for unparseable metadata', () => {
+        test('should handle unparseable OData version gracefully', () => {
+            const invalidEdmx = `<?xml version="1.0" encoding="utf-8"?>
+                <edmx:Edmx Version="invalid" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                    <edmx:DataServices>
+                        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                            <EntityContainer Name="Container">
+                                <EntitySet Name="TestEntity" EntityType="TestService.TestEntity" />
+                            </EntityContainer>
+                            <EntityType Name="TestEntity">
+                                <Key>
+                                    <PropertyRef Name="ID" />
+                                </Key>
+                                <Property Name="ID" Type="Edm.String" />
+                            </EntityType>
+                        </Schema>
+                    </edmx:DataServices>
+                </edmx:Edmx>`;
+
+            const result = getEntityChoices(invalidEdmx);
+
+            // Should not throw, but should return empty/undefined metadata
+            expect(result.convertedMetadata).toBeUndefined();
+            expect(result.odataVersion).toBeUndefined();
+            expect(result.choices).toEqual([]);
+        });
+
+        test('should handle completely invalid EDMX gracefully', () => {
+            const invalidEdmx = 'This is not valid XML at all';
+
+            const result = getEntityChoices(invalidEdmx);
+
+            // Should not throw, but should return empty/undefined metadata
+            expect(result.convertedMetadata).toBeUndefined();
+            expect(result.odataVersion).toBeUndefined();
+            expect(result.choices).toEqual([]);
+        });
+
+        test('should handle missing OData version in metadata', () => {
+            const noVersionEdmx = `<?xml version="1.0" encoding="utf-8"?>
+                <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                    <edmx:DataServices>
+                        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                            <EntityContainer Name="Container">
+                                <EntitySet Name="TestEntity" EntityType="TestService.TestEntity" />
+                            </EntityContainer>
+                            <EntityType Name="TestEntity">
+                                <Key>
+                                    <PropertyRef Name="ID" />
+                                </Key>
+                                <Property Name="ID" Type="Edm.String" />
+                            </EntityType>
+                        </Schema>
+                    </edmx:DataServices>
+                </edmx:Edmx>`;
+
+            const result = getEntityChoices(noVersionEdmx);
+
+            // Should not throw, but should return empty/undefined metadata
+            expect(result.convertedMetadata).toBeUndefined();
+            expect(result.odataVersion).toBeUndefined();
+            expect(result.choices).toEqual([]);
+        });
+    });
 });

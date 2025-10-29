@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="Container">
+                <EntitySet Name="TestEntity" EntityType="TestService.TestEntity" />
+            </EntityContainer>
+            <EntityType Name="TestEntity">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.String" />
+                <Property Name="Name" Type="Edm.String" />
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
