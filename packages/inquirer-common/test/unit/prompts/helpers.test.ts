@@ -6,8 +6,7 @@ import {
     extendAdditionalMessages,
     extendValidate,
     extendWithOptions,
-    withCondition,
-    filterAggregateTransformations
+    withCondition
 } from '../../../src/prompts/helpers';
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import {
@@ -17,8 +16,9 @@ import {
     hasAggregateTransformationsForEntity,
     transformationsRequiredForAnalyticalTable,
     findEntitySetByName,
-    shouldUseAnalyticalTable
-} from '../../../src/prompts/helpers';
+    shouldUseAnalyticalTable,
+    filterAggregateTransformations
+} from '../../../src/metadata';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
