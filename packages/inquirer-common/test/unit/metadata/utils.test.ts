@@ -37,7 +37,7 @@ describe('metadata utils', () => {
                     </edmx:DataServices>
                 </edmx:Edmx>`;
 
-            expect(() => convertEdmxWithVersion(invalidVersionEdmx)).toThrow('Unparseable OData version');
+            expect(() => convertEdmxWithVersion(invalidVersionEdmx)).toThrow('errors.unparseableMetadata');
         });
 
         test('should handle missing version in metadata', () => {
@@ -58,25 +58,25 @@ describe('metadata utils', () => {
                     </edmx:DataServices>
                 </edmx:Edmx>`;
 
-            expect(() => convertEdmxWithVersion(noVersionEdmx)).toThrow('Unparseable OData version');
+            expect(() => convertEdmxWithVersion(noVersionEdmx)).toThrow('errors.unparseableMetadata');
         });
 
         test('should handle completely invalid EDMX', () => {
             const invalidEdmx = 'This is not valid XML at all';
 
-            expect(() => convertEdmxWithVersion(invalidEdmx)).toThrow('Unable to parse metadata');
+            expect(() => convertEdmxWithVersion(invalidEdmx)).toThrow('errors.unparseableMetadata');
         });
 
         test('should treat version >= 4 as v4', () => {
             const v41Edmx = validEdmxV4.replace('Version="4.0"', 'Version="4.1"');
-            
+
             const result = convertEdmxWithVersion(v41Edmx);
             expect(result.odataVersion).toBe(OdataVersion.v4);
         });
 
         test('should treat version < 4 as v2', () => {
             const v2Edmx = validEdmxV4.replace('Version="4.0"', 'Version="1.0"');
-            
+
             const result = convertEdmxWithVersion(v2Edmx);
             expect(result.odataVersion).toBe(OdataVersion.v2);
         });
@@ -94,7 +94,7 @@ describe('metadata utils', () => {
         test('should throw on invalid EDMX', () => {
             const invalidEdmx = 'This is not valid XML';
 
-            expect(() => convertEdmxToConvertedMetadata(invalidEdmx)).toThrow('Unable to parse metadata');
+            expect(() => convertEdmxToConvertedMetadata(invalidEdmx)).toThrow('errors.unparseableMetadata');
         });
     });
 });
