@@ -57,4 +57,7 @@ export {
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
 export { generateControllerExtension } from './controller-extension';
 
+export { CustomField } from './field/types';
+export { generateCustomField } from './field';
+
 export { initI18n } from './i18n';

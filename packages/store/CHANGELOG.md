@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 1.3.0
+
+### Minor Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+
+## 1.2.1
+
+### Patch Changes
+
+-   f8c596d: Reverts removal of @sensitiveData for service keys property of backend systems
+
 ## 1.2.0
 
 ### Minor Changes

@@ -2,7 +2,8 @@ import {
     type Destination,
     type ServiceInfo,
     createOAuth2UserTokenExchangeDest,
-    generateABAPCloudDestinationName
+    generateABAPCloudDestinationName,
+    isAppStudio
 } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
@@ -14,6 +15,7 @@ import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } 
 import {
     getDefaultChoiceIndex,
     getPromptHostEnvironment,
+    isBackendSystemKeyExisting,
     PromptState,
     removeCircularFromServiceProvider
 } from '../../../../utils';
@@ -242,13 +244,32 @@ export function getCFDiscoverPrompts(
             message: t('prompts.cloudFoundryAbapSystem.message'),
             validate: async (abapService: ServiceInstanceInfo): Promise<ValidationResult> => {
                 if (abapService) {
-                    return await validateCFServiceInfo(
+                    const valResult = await validateCFServiceInfo(
                         abapService,
                         connectionValidator,
                         requiredOdataVersion,
                         getPromptHostEnvironment() === hostEnvironment.cli,
                         cachedConnectedSystem
                     );
+                    // If the system exists already stop progress
+                    if (!isAppStudio() && valResult === true && connectionValidator.validatedUrl) {
+                        const existingBackend = isBackendSystemKeyExisting(
+                            PromptState.backendSystemsCache,
+                            connectionValidator.validatedUrl,
+                            connectionValidator.validatedClient
+                        );
+                        if (existingBackend) {
+                            // Invalidate the connection to prevent service selection
+                            // This is a temp workaround until multiple systems with the same url/client key is supported
+                            // This is necessary since the ServiceInstanceInfo does not include url/client information
+                            connectionValidator.resetConnectionState(true);
+                            // Cannot create a new store system with the same key
+                            return t('prompts.validationMessages.backendSystemExistsWarning', {
+                                backendName: existingBackend.name
+                            });
+                        }
+                    }
+                    return valResult;
                 }
                 const errorType = errorHandler.getCurrentErrorType();
                 if (errorType === ERROR_TYPE.NO_ABAP_ENVS) {
