@@ -66,6 +66,7 @@ type UI5VersionDetails = {
      * - the name of the distribution or
      * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
      */
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
     /**
      * Contains either
