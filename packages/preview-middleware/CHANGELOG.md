@@ -1,5 +1,83 @@
 # @sap-ux/preview-middleware
 
+## 0.23.38
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/adp-tooling@0.17.0
+    -   @sap-ux/system-access@0.6.23
+
+## 0.23.37
+
+### Patch Changes
+
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+
+## 0.23.36
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/adp-tooling@0.16.13
+    -   @sap-ux/system-access@0.6.22
+
+## 0.23.35
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/adp-tooling@0.16.12
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/system-access@0.6.22
+
+## 0.23.34
+
+### Patch Changes
+
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+
+## 0.23.33
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/adp-tooling@0.16.10
+    -   @sap-ux/system-access@0.6.21
+
+## 0.23.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.9
+
+## 0.23.31
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/adp-tooling@0.16.8
+    -   @sap-ux/system-access@0.6.21
+
+## 0.23.30
+
+### Patch Changes
+
+-   Updated dependencies [233259c]
+    -   @sap-ux/adp-tooling@0.16.7
+
+## 0.23.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.6
+-   @sap-ux/system-access@0.6.21
+
 ## 0.23.28
 
 ### Patch Changes

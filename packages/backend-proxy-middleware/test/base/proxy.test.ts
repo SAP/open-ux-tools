@@ -110,7 +110,9 @@ describe('proxy', () => {
                     originalUrl: '/old/my/bsp/test?sap-client=000'
                 } as EnhancedIncomingMessage)
             ).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe(
+                '/test?sap-client=012'
+            ); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
             expect(
                 writerChain!('/bsp/manifest.appdescr', {
                     originalUrl: '/my/bsp/manifest.appdescr'
@@ -316,7 +318,7 @@ describe('proxy', () => {
             mockCreateForAbapOnCloud.mockImplementationOnce(() => {
                 return {
                     cookies: '~cookies',
-                    getAtoInfo: jest.fn()
+                    getAtoInfo: jest.fn().mockReturnValue({})
                 };
             });
 
@@ -341,6 +343,7 @@ describe('proxy', () => {
                 refreshToken: cloudSystem.refreshToken,
                 refreshTokenChangedCb: callback
             });
+            expect(proxyOptions.headers.cookie).toBe('~cookies');
         });
 
         test('user/password authentication', async () => {
@@ -389,7 +392,6 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
-
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -505,7 +507,7 @@ describe('proxy', () => {
                     ...jest.requireActual('@sap-ux/logger'),
                     ToolsLogger: jest.fn().mockImplementation(() => ({
                         debug: debugSpy,
-                        info: jest.fn(),
+                        info: jest.fn()
                     }))
                 };
             });
