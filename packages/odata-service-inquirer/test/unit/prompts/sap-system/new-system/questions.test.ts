@@ -9,7 +9,7 @@ import { ConnectionValidator } from '../../../../../src/prompts/connectionValida
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'http://abap.on.prem:1234' }])
     }))
 }));
