@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.24.1
+
+### Patch Changes
+
+-   3253294: encode service name to get service url
+
 ## 1.24.0
 
 ### Minor Changes

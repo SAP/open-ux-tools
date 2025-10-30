@@ -1,5 +1,6 @@
 import { homedir } from 'node:os';
-import path from 'node:path';
+import { join } from 'node:path';
+import { plural } from 'pluralize';
 
 /**
  * Pick the properties listed and return a new object with a shallow-copy
@@ -46,9 +47,31 @@ export enum FioriToolsSettings {
     dir = '.fioritools'
 }
 
+export enum SapTools {
+    dir = '.saptools'
+}
+
 export const getFioriToolsDirectory = (): string => {
-    return path.join(homedir(), FioriToolsSettings.dir);
+    return join(homedir(), FioriToolsSettings.dir);
 };
+
+export const getSapToolsDirectory = (): string => {
+    return join(homedir(), SapTools.dir);
+};
+
+/**
+ * Trims, lowercases and returns plural if a non-empty string
+ *
+ * @param s
+ */
+export function toPersistenceName(s: string): string | undefined {
+    const t = s?.trim().toLowerCase();
+    return t && plural(t);
+}
+
+export function getEntityFileName(entityName: string): string {
+    return toPersistenceName(entityName) + '.json';
+}
 
 export * from './app-studio';
 export * from './backend';

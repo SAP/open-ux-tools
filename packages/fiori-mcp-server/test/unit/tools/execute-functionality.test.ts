@@ -8,6 +8,7 @@ import * as flexUtils from '../../../src/page-editor-api/flex';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -32,17 +33,24 @@ describe('executeFunctionality', () => {
             flexChanges
         });
     };
+    const fsEditor = create(createStorage());
     let getManifestSpy: jest.SpyInstance;
+    let getFlexChangeLayerSpy: jest.SpyInstance;
     let createApplicationAccessSpy: jest.SpyInstance;
     let writeFlexChangesSpy: jest.SpyInstance;
+    let getUI5VersionSpy: jest.SpyInstance;
     beforeEach(async () => {
         getManifestSpy = jest
             .spyOn(projectUtils, 'getManifest')
             .mockResolvedValue({} as openUxProjectAccessDependency.Manifest);
+        getFlexChangeLayerSpy = jest
+            .spyOn(projectUtils, 'getFlexChangeLayer')
+            .mockResolvedValue(FlexChangeLayer.Customer);
+        getUI5VersionSpy = jest.spyOn(projectUtils, 'getUI5Version').mockResolvedValue('1.141.3');
         findProjectRootSpy = jest
             .spyOn(openUxProjectAccessDependency, 'findProjectRoot')
             .mockImplementation(async (path: string): Promise<string> => path);
-        writeFlexChangesSpy = jest.spyOn(flexUtils, 'writeFlexChanges');
+        writeFlexChangesSpy = jest.spyOn(flexUtils, 'writeFlexChanges').mockResolvedValue(fsEditor);
         importProjectMock = jest.fn().mockResolvedValue([]);
         exportProjectMock = jest.fn();
         updateManifestJSONMock = jest.fn();
@@ -118,8 +126,11 @@ describe('executeFunctionality', () => {
             })
         );
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
-        const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.Application.application;
+        const exportParams = exportProjectMock.mock.calls[0][0];
+        const modifiedConfig = exportParams.v4.Application.application;
         expect(modifiedConfig.settings.title).toEqual('new title');
+        expect(exportParams.ui5Version).toEqual('1.141.3');
+        expect(exportParams.layer).toEqual(FlexChangeLayer.Customer);
         expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
     });
@@ -279,7 +290,6 @@ describe('executeFunctionality', () => {
 
     test('Change page property - flex change', async () => {
         const flexChangeFileName = 'id_1761320220775_2_propertyChange.change';
-        const fsEditor = create(createStorage());
         const commitSpy = jest.spyOn(fsEditor, 'commit');
         jest.spyOn(fsEditor, 'dump').mockReturnValue({
             [flexChangeFileName]: {
@@ -287,13 +297,13 @@ describe('executeFunctionality', () => {
                 state: 'modified'
             }
         });
-        writeFlexChangesSpy.mockResolvedValue(fsEditor);
         const file = await readFile(
             join(__dirname, '../page-editor-api/test-data/flex-changes', flexChangeFileName),
             'utf8'
         );
         mockSpecificationImport(importProjectMock);
         mockSpecificationExport(undefined, 'NoChange', [file]);
+        getFlexChangeLayerSpy.mockResolvedValue(FlexChangeLayer.Vendor);
         const details = await executeFunctionality({
             appPath,
             functionalityId: [
@@ -310,6 +320,8 @@ describe('executeFunctionality', () => {
         });
         // Check executions
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
+        expect(exportProjectMock).toHaveBeenCalledTimes(1);
+        expect(exportProjectMock.mock.calls[0][0].layer).toEqual(FlexChangeLayer.Vendor);
         expect(writeFlexChangesSpy).toHaveBeenCalledTimes(1);
         expect(writeFlexChangesSpy).toHaveBeenCalledWith('changes', {
             [join('changes', 'id_1761320220775_34_propertyChange.change')]: JSON.parse(file)
