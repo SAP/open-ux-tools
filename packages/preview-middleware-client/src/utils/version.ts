@@ -17,7 +17,7 @@ type UI5VersionDetails = {
      * - the version of the UI5 framework or
      * - the version of the application in case the UI5 sources have been loaded from npmjs.
      */
-    version: string | Manifest['sap.app']['applicationVersion']['version'];
+    version: string  ;
     libraries: UI5LibraryVersionInfo[]
 };
 
