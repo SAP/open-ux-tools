@@ -15,7 +15,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. `Click` on `Create` in the `Running Application Preview`
+2. Click on `Create` in the `Running Application Preview`
 3. Check `No historic changes` text is visible in the Changes Panel
 4. Check `This application was not modified yet` text is visible in the Changes Panel
 5. Check `HistoryClock` icon is visible in the Changes Panel
@@ -28,7 +28,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. `Click` on `Create` in the `Running Application Preview`
+2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
 4. Check `UNSAVED CHANGES` text is visible in the Changes Panel
 5. Check `Text->Manage` text is visible in the Changes Panel
@@ -41,7 +41,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. `Click` on `Create` in the `Running Application Preview`
+2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
 4. Click `Undo` button in the toolBar
 5. Check `Undo` button in the toolbar is disabled
@@ -56,7 +56,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. `Click` on `Create` in the `Running Application Preview`
+2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
 4. Click `Save` button in the toolBar
 5. Check `SAVED CHANGES` text is visible in the Changes Panel
@@ -70,7 +70,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. `Click` on `Create` in the `Running Application Preview`
+2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
 4. Click `Save` button in the toolBar
 5. Hover item with `Text->Manage` text and check `delete` is visible in the Changes Panel
@@ -86,7 +86,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. `Click` on `Create` in the `Running Application Preview`
+2. Click on `Create` in the `Running Application Preview`
 3. Create multiple changes to enable scrollbar
 4. Check `Changes Panel` filter bar is sticky in the Changes Panel
 

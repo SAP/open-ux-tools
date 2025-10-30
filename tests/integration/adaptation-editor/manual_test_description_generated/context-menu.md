@@ -13,7 +13,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Find and Right click on `OverflowToolbar` node in the Outline Panel
+2. Find and right click on `OverflowToolbar` node in the Outline Panel
 3. Click `Add: Fragment` item in the context menu of the Outline Panel
 4. Fill `Fragment Name` field with `toolbar-fragment` in the dialog `Add XML Fragment`
 5. Click `Save and Reload` button in the toolBar
@@ -43,7 +43,7 @@
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
-2. Find and Right click on `Create` node in the Outline Panel
+2. Find and right click on `Create` node in the Outline Panel
 3. Click `Rename` item in the context menu of the Outline Panel
 4. Fill `Selected Label:` field with `Add New` in the dialog `Rename`
 5. Click on `Create` button in the dialog `Rename`
@@ -82,7 +82,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Find and Right click on `ObjectPageSubSection` node in the Outline Panel
+6. Find and right click on `ObjectPageSubSection` node in the Outline Panel
 7. Click `Rename` item in the context menu of the Outline Panel
 8. Fill `Selected Label:` field with `Basic information` in the dialog `Rename`
 9. Click on `Create` button in the dialog `Rename`
@@ -121,7 +121,7 @@
 3. Click on `Go` button.
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
-6. Find and Right click on `ObjectPageLayout` node in the Outline Panel
+6. Find and right click on `ObjectPageLayout` node in the Outline Panel
 7. Click `Add: Fragment` item in the context menu of the Outline Panel
 8. Fill `Fragment Name` field with `custom-section` in the dialog `Add XML Fragment`
 9. Click on `Create` button in the dialog `Add XML Fragment`

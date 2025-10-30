@@ -150,7 +150,7 @@ test.describe(`@outline @context-menu`, () => {
             const lr = new ListReport(previewFrame);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             const dialog = new AdpDialog(previewFrame, ui5Version);
