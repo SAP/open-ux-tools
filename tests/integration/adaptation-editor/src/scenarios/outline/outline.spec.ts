@@ -41,7 +41,7 @@ test.describe(`@outline @cpe @adp`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.135.0'
+                description: '<1.84.0'
             }
         },
         async ({ page, previewFrame, ui5Version }) => {
@@ -62,7 +62,7 @@ test.describe(`@outline @cpe @adp`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.135.0'
+                description: '<1.84.0'
             }
         },
         async ({ page, ui5Version }) => {
@@ -155,7 +155,7 @@ test.describe(`@outline @cpe @adp`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.135.0'
+                description: '<1.84.0'
             }
         },
         async ({ page, ui5Version }) => {
