@@ -2,7 +2,7 @@ import { expect } from '@sap-ux-private/playwright';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V4 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
@@ -22,7 +22,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -30,7 +30,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
             await editor.quickActions.addCustomTableColumn.click();
 
-            await previewFrame.getByRole('textbox', { name: 'Fragment Name' }).fill('table-column');
+            await dialog.fillField('Fragment Name', 'table-column');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -88,7 +88,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const lr = new ListReport(previewFrame, 'fev4');
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -129,7 +129,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const lr = new ListReport(previewFrame, 'fev4');
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -172,7 +172,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const tableSettings = new TableSettings(previewFrame, 'Toolbar Configuration', 'fev4');
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -206,7 +206,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const dialog = new AdpDialog(previewFrame, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();

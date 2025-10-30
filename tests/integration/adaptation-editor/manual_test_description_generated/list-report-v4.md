@@ -81,8 +81,9 @@
 
 
 6. Click `Navigation` button in the toolBar
-7. Check Column Name is `New Column`
-8. Check Column Data is `Sample data`
+7. Click `Go` button in the Running Application Preview
+8. Check Column Name is `New Column`
+9. Check Column Data is `Sample data`
 
 ---
 

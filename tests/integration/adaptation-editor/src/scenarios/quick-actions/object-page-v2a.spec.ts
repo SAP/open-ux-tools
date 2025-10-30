@@ -1,6 +1,6 @@
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
-import { AdaptationEditorShell, ListReport, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, ListReport, verifyChanges } from '../test-utils';
 test.use({
     projectConfig: {
         ...ADP_FIORI_ELEMENTS_V2,
@@ -28,7 +28,7 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
             const lr = new ListReport(previewFrame);
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();

@@ -19,8 +19,9 @@
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Column` button in the Quick Actions Panel
-7. Click `Save and Reload` button in the toolBar
-8. Verify changes:
+7. Fill `Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
+8. Click `Save and Reload` button in the toolBar
+9. Verify changes:
 
 **Fragment(s)**
 
@@ -51,8 +52,8 @@
 ```
 
 
-9. Check Column Name is `New Column`
-10. Check Column Data is `Sample data`
+10. Check Column Name is `New Column`
+11. Check Column Data is `Sample data`
 
 ---
 
