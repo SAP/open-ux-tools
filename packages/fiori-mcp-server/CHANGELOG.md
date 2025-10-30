@@ -1,5 +1,18 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.3.1
+
+### Patch Changes
+
+-   f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
+
+## 0.3.0
+
+### Minor Changes
+
+-   d895232: - fix: V2 app crash when running `list-functionalities`
+    -   feat: add support for changing flex properties in V2 app
+
 ## 0.2.5
 
 ### Patch Changes

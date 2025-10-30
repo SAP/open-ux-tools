@@ -10,6 +10,7 @@ import {
     SourceManifest,
     getBaseAppInbounds,
     getConfiguredProvider,
+    getSystemUI5Version,
     isAppSupported,
     loadApps
 } from '@sap-ux/adp-tooling';
@@ -52,7 +53,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
-    getSystemUI5Version: jest.fn().mockResolvedValue('1.135.0'),
+    getSystemUI5Version: jest.fn(),
     fetchPublicVersions: jest.fn().mockResolvedValue({
         latest: { version: '1.134.1', support: 'Maintained', lts: false },
         '1.133.0': { version: '1.133.0', support: 'Maintained', lts: false }
@@ -111,6 +112,7 @@ const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
 const getSystemAdditionalMessagesMock = getSystemAdditionalMessages as jest.Mock;
+const getSystemUI5VersionMock = getSystemUI5Version as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
@@ -167,6 +169,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
+            getSystemUI5VersionMock.mockResolvedValue('1.135.0');
 
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
@@ -175,6 +178,22 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.ui5).toEqual({
                 publicVersions: expect.any(Object),
                 systemVersion: '1.135.0',
+                ui5Versions: ['1.134.1 (latest)']
+            });
+        });
+
+        it('system prompt validate should set ui5 proerties when system ui5 version is NOT detected', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+            getSystemUI5VersionMock.mockRejectedValue(new Error());
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.provider).toEqual(provider);
+            expect(configPrompter.ui5).toEqual({
+                publicVersions: expect.any(Object),
                 ui5Versions: ['1.134.1 (latest)']
             });
         });
