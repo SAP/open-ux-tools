@@ -78,7 +78,6 @@ export class XMLWriter {
             edits.push(...this.getTextEditsForPointer(pointer, batches[pointer], changes));
         }
         edits.sort(compareByRange);
-        console.log(JSON.stringify(edits, undefined, 2));
         return edits;
     }
 

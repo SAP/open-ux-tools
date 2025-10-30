@@ -932,14 +932,14 @@ function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockI
     edits.push(TextEdit.del(block.range));
     const previous = content[blockIndex - 1];
     const next = content[blockIndex + 1];
-    if (next?.range) {
-        // there could be whitespace to the next element which should be removed
-        edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
-    } else if (previous?.range) {
+    if (previous?.range) {
         // if the last child element is being deleted then white space between the last and previous should be removed as well
         deletePreviousElementWhiteSpaces(previous, block, edits);
         // iterate over the previous of previous element, if the previous element is already deleted.ß
         enhanceDeletionRange(edits, content, blockIndex);
+    } else if (next?.range) {
+        // there could be whitespace to the next element which should be removed
+        edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
     }
 }
 
