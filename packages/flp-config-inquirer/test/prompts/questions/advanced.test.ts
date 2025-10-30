@@ -200,10 +200,6 @@ describe('advanced prompts', () => {
                 name: promptNames.confirmReplace,
                 message: t('prompts.confirmReplace'),
                 default: false,
-                guiOptions: {
-                    hint: t('tooltips.confirmReplace'),
-                    mandatory: true
-                },
                 validate: expect.any(Function)
             });
         });
@@ -212,7 +208,7 @@ describe('advanced prompts', () => {
             const prompt = getConfirmReplacePrompt();
 
             expect((prompt.validate as Function)(true)).toBe(true);
-            expect((prompt.validate as Function)(false)).toBe(false);
+            expect((prompt.validate as Function)(false)).toBe(' ');
         });
     });
 });

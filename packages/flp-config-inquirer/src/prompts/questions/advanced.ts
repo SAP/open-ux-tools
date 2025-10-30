@@ -119,10 +119,8 @@ export function getConfirmReplacePrompt(): FLPConfigQuestion {
         name: promptNames.confirmReplace,
         message: t('prompts.confirmReplace'),
         default: false,
-        guiOptions: {
-            hint: t('tooltips.confirmReplace'),
-            mandatory: true
-        },
-        validate: (value): boolean => value
+        validate: (value): string | boolean => {
+            return !value ? ' ' : true;
+        }
     };
 }
