@@ -259,6 +259,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
@@ -276,6 +277,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
 
@@ -431,8 +433,11 @@ describe('proxy', () => {
                 path: '/my/path'
             };
             mockListDestinations.mockResolvedValueOnce({
-                [backend.destination]: {}
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap',
+                }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(false);
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
@@ -461,7 +466,7 @@ describe('proxy', () => {
             expect(options.secure).toBeUndefined();
         });
 
-        test('generate proxy middleware inside of BAS with minimal parameters (full url destination)', async () => {
+        test('generate proxy middleware inside of BAS with minimal parameters (destination with full url)', async () => {
             mockIsAppStudio.mockReturnValue(true);
             const backend: DestinationBackendConfig = {
                 destination: '~destination',
