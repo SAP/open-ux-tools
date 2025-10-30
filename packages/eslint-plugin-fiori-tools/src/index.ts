@@ -28,3 +28,4 @@ const plugin: Plugin = {
 module.exports = plugin;
 module.exports.default = plugin;
 module.exports.JSONSourceCode = JSONSourceCode;
+export default plugin;
