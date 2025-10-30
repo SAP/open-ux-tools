@@ -39,8 +39,10 @@ interface TestConfig {
  * Enumeration of available test project names.
  */
 export enum ProjectName {
-    /** List Report Object Page project */
-    lrop = 'lrop'
+    /** List Report Object Page project - V4 */
+    lrop = 'lrop',
+    /** List Report Object Page project - V2 */
+    lropv2 = 'lrop-v2'
 }
 
 /**
@@ -52,6 +54,11 @@ const TEST_PROJECTS = {
         type: 'EDMX',
         originalPath: getProjectOriginalPath(ProjectName.lrop),
         path: getCopiedProjectPath(ProjectName.lrop)
+    },
+    [ProjectName.lropv2]: {
+        type: 'EDMX',
+        originalPath: getProjectOriginalPath(ProjectName.lropv2),
+        path: getCopiedProjectPath(ProjectName.lropv2)
     }
 };
 

@@ -7,14 +7,17 @@ prompts:
 tests:
     # List apps
     - file://./list-apps/lrop.yaml
+    - file://./list-apps/lrop-v2.yaml
     # Pages
     - file://./pages/add-op-page.yaml
+    # - file://./pages/add-op-page-v2.yaml
     - file://./pages/add-cp-page.yaml
     - file://./pages/delete-page.yaml
     - file://./pages/add-first-lr-page.yaml
-    # Controller extensions
+    # # Controller extensions
     - file://./controller-extension/add-extension.yaml
-    # Properties
+    # # Properties
     - file://./properties/enable-fcl.yaml
+    - file://./properties/enable-fcl-v2.yaml
     - file://./properties/disable-fcl.yaml
     - file://./properties/initial-load.yaml
