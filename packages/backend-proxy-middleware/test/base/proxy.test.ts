@@ -65,6 +65,11 @@ describe('proxy', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockListDestinations.mockReset();
+        mockIsFullUrlDestination.mockReset();
+        mockGetCredentialsForDestinationService.mockReset();
+        mockIsAppStudio.mockReset();
+        mockPrompt.mockReset();
     });
 
     describe('PathRewriters', () => {
