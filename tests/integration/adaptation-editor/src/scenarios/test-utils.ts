@@ -161,7 +161,7 @@ export class ListReport {
      * @returns Locator for the context menu item.
      */
     getContextMenuItem(itemText: string): Locator {
-        return this.frame.getByText(itemText).describe(`\`${itemText}\` item in the context menu`);
+        return this.frame.getByText(itemText).first().describe(`\`${itemText}\` item in the context menu`);
     }
 
     /**
