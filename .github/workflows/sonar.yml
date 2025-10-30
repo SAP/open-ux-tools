@@ -1,0 +1,55 @@
+name: 'Sonar'
+on:
+  workflow_run:
+    workflows: [ 'CI/CD Pipeline' ]
+    types:
+      - completed
+jobs:
+  sonar:
+    name: 'Sonar analysis'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      actions: read # Required to download artifacts
+    steps:
+      - name: 'Checkout project'
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of Sonar analysis
+
+      - name: 'Download cached artifact'
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v5
+        with:
+          name: sonar-artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.ACCESS_PAT }}
+          merge-multiple: true
+
+      - name: 'Extract output artifact'
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        run: tar -xf output.tar
+
+      - name: 'Read pull request event'
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        run: |
+          echo "pr_number=$(sed '1q;d' pr-event.txt)" >> "$GITHUB_ENV"
+          echo "pr_head_ref=$(sed '2q;d' pr-event.txt)" >> "$GITHUB_ENV"
+          echo "pr_base_ref=$(sed '3q;d' pr-event.txt)" >> "$GITHUB_ENV"
+
+      - name: 'Run SonarCloud scan'
+        if: github.event_name == 'workflow_run'
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
+        with:
+          args: >
+            ${{ github.event.workflow_run.event == 'pull_request' && format('{0}{1}', '-Dsonar.scm.revision=', github.event.workflow_run.head_sha) || '' }}
+            ${{ github.event.workflow_run.event == 'pull_request' && format('{0}{1}', '-Dsonar.pullrequest.key=', env.pr_number) || '' }}
+            ${{ github.event.workflow_run.event == 'pull_request' && format('{0}{1}', '-Dsonar.pullrequest.branch=', env.pr_head_ref) || '' }}
+            ${{ github.event.workflow_run.event == 'pull_request' && format('{0}{1}', '-Dsonar.pullrequest.base=', env.pr_base_ref) || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
