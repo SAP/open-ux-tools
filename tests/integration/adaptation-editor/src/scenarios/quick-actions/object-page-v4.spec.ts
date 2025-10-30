@@ -27,7 +27,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
 
             await editor.toolbar.uiAdaptationModeButton.click();
             // wait until the quick actions label is rendered in the preview
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableColumn.click();
 
             await dialog.fillField('Fragment Name', 'table-column');
@@ -92,7 +92,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableOPVariantManagementInTable.click();
 
             await editor.toolbar.saveAndReloadButton.click();
@@ -133,7 +133,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableEmptyRowMode.click();
             await editor.toolbar.saveAndReloadButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
@@ -176,7 +176,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableActions.click();
             await tableSettings.expectItemsToBeVisible(['Basic Search', 'Approve', 'Callback', 'Delete']);
 
@@ -210,8 +210,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
-            // await page.waitForTimeout(3000); // wait for the quick actions to be ready
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addSubPage.click();
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();

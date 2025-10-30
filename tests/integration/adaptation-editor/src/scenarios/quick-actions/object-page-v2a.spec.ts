@@ -32,6 +32,7 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableOPVariantManagementInTable.click();
 
             await editor.toolbar.saveAndReloadButton.click();

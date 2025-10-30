@@ -32,6 +32,7 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-analytical-table`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableColumns.click();
             const tableSettings = new TableSettings(previewFrame);
             await tableSettings.expectItemsToBeVisible(['String Property', 'Date Property']);

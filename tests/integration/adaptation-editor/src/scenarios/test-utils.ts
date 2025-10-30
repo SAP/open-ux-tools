@@ -467,6 +467,10 @@ class QuickActionPanel {
         return this.getButtonLocator('Add Subpage');
     }
 
+    async waitForObjectPageQuickActionLoaded(): Promise<void> {
+        await this.page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true }).waitFor({ state: 'visible' });
+    }
+
     /**
      * Constructor for QuickActionPanel.
      *
