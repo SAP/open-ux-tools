@@ -71,11 +71,12 @@ export default function init(
                 Log.error('Service Initialization Failed: ', getError(error));
             });
         });
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         Promise.all(allPromises)
             .then(() => {
                 CommunicationService.sendAction(appLoaded());
             })
-
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             .catch(Log.error);
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));

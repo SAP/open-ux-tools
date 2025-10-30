@@ -17,12 +17,15 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "^9"
+        "eslint": "^9",
+        "@typescript-eslint/rule-tester": "8.46.2",
+        "eslint-plugin-eslint-plugin": "7.2.0"
     },
     "dependencies": {
-        "@eslint/eslintrc": "^3.3.1",
+        "@babel/core": "^7.28.5",
+        "@babel/eslint-parser": "^7.28.5",
         "@eslint/js": "^9",
-        "eslint-plugin-fiori-custom": "^2.6.7",
+        "lodash": "4.17.21",
         "yaml": "2.2.2"
     },
     "peerDependencies": {
@@ -36,6 +39,8 @@
     "files": [
         "LICENSE",
         "lib",
+        "docs",
+        "config",
         "eslintrc-common.js",
         "eslintrc-prod.js",
         "eslintrc-test.js",

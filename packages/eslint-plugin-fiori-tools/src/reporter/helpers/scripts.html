@@ -1,0 +1,91 @@
+<script type="text/javascript">
+	var lintResults = document.querySelectorAll('tr.lint-result'),
+		filters = document.querySelectorAll('input[name="filters"]'),
+		tabs = document.querySelectorAll('.nav-tabs > li > button');
+
+	// helper functions
+	function hideElement(element) {
+		if (!element.className.includes('hidden')) {
+			element.className = element.className + ' hidden';
+		}
+	}
+
+	function toggleDisplay(element) {
+		element.className = element.className.includes('hidden') ? element.className.replace(' hidden', '') : element.className + ' hidden';
+	}
+
+	// accordion
+	for(var i = 0; i < lintResults.length; i++) {
+		var result = lintResults[i];
+
+		result.addEventListener('click', handleResultClick);
+		result.addEventListener('keydown', function onKeydown(event) {
+			if (event.which === 13) {
+				handleResultClick.apply(this);
+			}
+		});
+	}
+
+	function handleResultClick() {
+		if (!this.className.includes('bg-success')) {
+			toggleAccordion.apply(this);
+		}
+		// TODO: Comment this back in when I can support it in example page
+//		window.location.href = '#' + this.getAttribute('id');
+	}
+
+	function toggleAccordion() {
+		var resultDetails = document.getElementsByClassName(this.getAttribute('data-group'));
+
+		this.className = this.className.includes('open') ? this.className.replace(' open', '') : this.className + ' open';
+		toggleDisplay(resultDetails[0]);
+	}
+
+	// filter
+	for(var j = 0; j < filters.length; j++) {
+		filters[j].addEventListener('change', filterResults);
+	}
+
+	function filterResults() {
+		var filterValue = document.querySelector('input[name="filters"]:checked').value;
+
+
+		for(var i = 0; i < lintResults.length; i++) {
+			var result = lintResults[i];
+
+			if (result.className.includes(filterValue)) {
+				result.className = result.className.includes('hidden') ? result.className.replace(' hidden', '') : result.className;
+			} else {
+				hideElement(result);
+			}
+
+			if (result.className.includes('hidden') && result.className.includes('open')) {
+				toggleAccordion.apply(result);
+			}
+		}
+	}
+
+	// tabs
+	for(var k = 0; k < tabs.length; k++) {
+		tabs[k].addEventListener('click', activateTab);
+	}
+
+	function activateTab() {
+		var currentTabs = document.querySelectorAll(this.getAttribute('data-parent') + ' .nav-tabs > li'),
+			tabPanes = document.querySelectorAll(this.getAttribute('data-parent') + ' .tab-pane'),
+			tabContent = document.getElementById(this.getAttribute('data-content'));
+
+		for(var i = 0; i < currentTabs.length; i++) {
+			disableTabs(currentTabs[i]);
+		}
+		for(var j = 0; j < tabPanes.length; j++) {
+			hideElement(tabPanes[j]);
+		}
+		this.parentNode.className = 'active';
+		toggleDisplay(tabContent);
+	}
+
+	function disableTabs(tab) {
+		tab.className = '';
+	}
+</script>

@@ -1,13 +1,15 @@
 {
     "extends": "../../tsconfig.json",
     "include": [
-        "src"
-, "config/flat", "config/legacy"    ],
+        "src/**/*.ts"
+    ],
     "compilerOptions": {
         "rootDir": "src",
-        "outDir": "lib"
+        "outDir": "lib",
+        "strict": false,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "allowJs": false
     },
-    "references": [
-    
-    ]
+    "references": []
 }
