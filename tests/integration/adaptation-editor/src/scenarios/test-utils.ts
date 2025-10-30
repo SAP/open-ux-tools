@@ -743,7 +743,7 @@ class ChangesPanel {
             await expect(scroller).toBeVisible();
             const lastItem = scroller.locator(':scope > *').last();
             await lastItem.scrollIntoViewIfNeeded();
-            expect(this.page.getByPlaceholder('Filter Changes')).toBeVisible();
+            await expect(this.page.getByPlaceholder('Filter Changes')).toBeVisible();
         });
     }
 }
@@ -963,6 +963,37 @@ class PropertiesPanel {
         });
     }
 
+    async scrollToProperty(propertySelector: string): Promise<void> {
+        await this.page.evaluate(
+            ({ querySelector }: { querySelector: string }) => {
+                const el = Array.from(document.querySelectorAll(`[data-testid="${querySelector}"]`)).filter(
+                    (el) => el
+                )[0];
+                if (el) {
+                    // Get the scroll container
+                    const scrollContainer = document.querySelector('.property-content.app-panel-scroller');
+                    if (scrollContainer) {
+                        el.scrollIntoView({ behavior: 'instant', block: 'center' });
+
+                        // Fine-tune scroll position to ensure visibility
+                        const containerRect = scrollContainer.getBoundingClientRect();
+                        const nodeRect = el.getBoundingClientRect();
+
+                        // Adjust scroll if needed to center the element
+                        if (nodeRect.top < containerRect.top || nodeRect.bottom > containerRect.bottom) {
+                            scrollContainer.scrollTop +=
+                                nodeRect.top - containerRect.top - (containerRect.height - nodeRect.height) / 2;
+                        }
+
+                        return true;
+                    }
+                }
+                return false;
+            },
+            { querySelector: propertySelector }
+        );
+    }
+
     /**
      * Returns a locator for a string editor in the properties panel based on the provided property name.
      *
@@ -974,6 +1005,7 @@ class PropertiesPanel {
             this.context
         }`, async () => {
             const locator = this.page.getByTestId(`${propertyName}--StringEditor`);
+            await this.scrollToProperty(`${propertyName}--StringEditor`);
             await expect(locator).toBeVisible();
             await locator.fill(value);
         });
@@ -1419,7 +1451,6 @@ export async function waitUntilFileIsDeleted(filePath: string): Promise<string[]
     }
     return file;
 }
-
 
 export async function exposeFunction(page: Page, message: any[]) {
     await page.exposeFunction('onPostMessage', (e: any) => {
