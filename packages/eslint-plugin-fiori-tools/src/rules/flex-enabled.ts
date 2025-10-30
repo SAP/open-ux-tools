@@ -29,6 +29,7 @@ const rule: ManifestRuleDefinition = {
                 const sapUI5Node = utils.getManifestProperty(node.body, 'sap.ui5');
                 if (!sapUI5Node || !utils.isMemberNode(sapUI5Node)) {
                     // no "sap.ui5" node found
+                    // never reached checkRuleApplicable would have returned false
                     return context.report({
                         loc: node.loc,
                         node: node,
@@ -55,7 +56,9 @@ const rule: ManifestRuleDefinition = {
                             const valueOffset = sapUI5Node.value.loc.start.offset + 1;
                             return fixer.insertTextBeforeRange(
                                 [valueOffset, valueOffset],
-                                `\n"flexEnabled": ${expectedValue},` // *for formatting : ${new Array(sapUI5Node.value.loc.end.column + 1).join(' ')}
+                                `\n${new Array(sapUI5Node.value.loc.end.column + 1).join(
+                                    ' '
+                                )}"flexEnabled": ${expectedValue},`
                             );
                         }
                     });

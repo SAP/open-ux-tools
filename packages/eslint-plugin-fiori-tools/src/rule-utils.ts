@@ -29,25 +29,6 @@ function compareVersions(a: string, b: string): boolean {
 }
 
 /**
- * Get the indentation for a given node in the source code.
- * @param {string} text - The source text from ESLint context.
- * @param {object} targetNode - The AST node (ValueNode) for which to get the indentation.
- * @returns {string} The indentation string.
- */
-// This function assumes that the source code is well-formed and that the targetNode is part of the source code.
-// It returns the indentation of the first line of the targetNode, which is typically the first member of an object.
-// If the targetNode is not an object or does not have members, it returns a default indentation of four spaces.
-function getIndentation(text: string, targetNode: AnyNode): string {
-    const lines = text.split('\n');
-    let line = 0;
-    if (targetNode?.type === 'Object' && targetNode?.members[0]) {
-        line = targetNode.members[0].loc.start.line - 1;
-    }
-    const match = lines[line] && lines[line].match(/^(\s*)/u);
-    return match ? match[1] : '    ';
-}
-
-/**
  * Determines if a node is an ObjectNode.
  *
  * @param node - The AST node to check.
@@ -255,7 +236,6 @@ function findMember(objectNode: any, name: string): MemberNode | undefined {
 
 export default {
     compareVersions,
-    getIndentation,
     getManifestProperty,
     getManifestPropertyValue,
     getMinUI5Version,
