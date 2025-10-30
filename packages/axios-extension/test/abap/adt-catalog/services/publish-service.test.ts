@@ -52,5 +52,42 @@ describe('PublishService', () => {
             );
             expect(result).toBe('/sap/opu/odata4/sap/zz1ui_countries002/srvd/sap/zz1ui_countries002/0001/');
         });
+
+        it('should encode service names with special characters', async () => {
+            const technicalDetails: ODataServiceTechnicalDetails = {
+                serviceName: '/RAPTEST/BEUI_TRV_O4DE',
+                serviceDefinitionName: '/RAPTEST/BEUI_TRV_O4DE',
+                serviceVersion: '0001'
+            };
+            const responseData = `<?xml version="1.0" encoding="utf-8"?>
+            <odatav4:serviceGroup odatav4:published="true" odatav4:serviceUrlPrefix="/sap/opu/odata4/raptest/beui_trv_o4de/srvd/" adtcore:name="/RAPTEST/BEUI_TRV_O4DE">
+                    <odatav4:services odatav4:repositoryId="SRVD" odatav4:serviceId="/RAPTEST/BEUI_TRV_O4DE" 
+                    odatav4:serviceVersion="0001" odatav4:serviceUrl="/sap/opu/odata4/raptest/beui_trv_o4de/srvd/raptest/beui_trv_o4de/0001/" 
+                    odatav4:annotationUrl="" odatav4:created="true">
+                        <serviceInfo:serviceInformation serviceInfo:name="/RAPTEST/BEUI_TRV_O4DE" serviceInfo:version="0001"
+                            xmlns:serviceInfo="http://www.sap.com/categories/serviceinformation">
+                            <serviceInfo:collection serviceInfo:name="Travels" serviceInfo:isLeading="true" serviceInfo:isRoot="true"/>
+                        </serviceInfo:serviceInformation>
+                        <odatav4:applicationDetails odatav4:applicationState="NOT_DEPLOYED" odatav4:applicationDescription="Not deployed" odatav4:applicationId=""/>
+                    </odatav4:services>
+                </odatav4:serviceGroup>`;
+            // return as { data } like other tests so parsing behaves the same way
+            const getSpy = jest.spyOn(service, 'get').mockResolvedValue({ data: responseData });
+            const result = await service.getODataV4ServiceUri(technicalDetails);
+            expect(getSpy).toHaveBeenCalledWith(
+                '/%2FRAPTEST%2FBEUI_TRV_O4DE',
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        Accept: 'application/vnd.sap.adt.businessservices.odatav4.v2+xml'
+                    }),
+                    params: {
+                        servicename: '/RAPTEST/BEUI_TRV_O4DE',
+                        serviceversion: '0001',
+                        srvdname: '/RAPTEST/BEUI_TRV_O4DE'
+                    }
+                })
+            );
+            expect(result).toBe('/sap/opu/odata4/raptest/beui_trv_o4de/srvd/raptest/beui_trv_o4de/0001/');
+        });
     });
 });
