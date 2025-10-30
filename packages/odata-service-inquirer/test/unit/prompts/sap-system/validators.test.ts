@@ -4,7 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 
 jest.mock('@sap-ux/store', () => ({
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'new system' } as BackendSystem])
     }))
 }));

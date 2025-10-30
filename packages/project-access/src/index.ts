@@ -52,7 +52,8 @@ export {
     updatePackageScript,
     getWorkspaceInfo,
     hasMinCdsVersion,
-    checkCdsUi5PluginEnabled
+    checkCdsUi5PluginEnabled,
+    readFlexChanges
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

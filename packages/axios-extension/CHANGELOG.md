@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.24.0
+
+### Minor Changes
+
+-   cdeb18b: feat: Integrate a new ABAP api for retrieval of the UI5 framework version for a system in the ADP generator.
+
 ## 1.23.1
 
 ### Patch Changes
