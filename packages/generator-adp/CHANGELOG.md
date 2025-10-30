@@ -1,5 +1,15 @@
 # @sap-ux/generator-adp
 
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+    -   @sap-ux/adp-tooling@0.17.3
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/system-access@0.6.26
+
 ## 0.6.2
 
 ### Patch Changes
