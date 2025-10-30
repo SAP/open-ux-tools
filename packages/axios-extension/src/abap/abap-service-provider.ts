@@ -15,6 +15,7 @@ import type { GeneratorEntry } from './adt-catalog/generators/types';
 import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
 import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
 import { SystemInfoService } from './adt-catalog/services/systeminfo-service';
+import { UI5VersionService } from './ui5-version-service';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -234,6 +235,19 @@ export class AbapServiceProvider extends ServiceProvider {
         }
 
         return this.services[subclassName] as T;
+    }
+
+    /**
+     * Creates a singleton instance of the UI5 version service using lazy initialization.
+     *
+     * @returns The instance to the UI5 version service.
+     */
+    public getUI5VersionService(): UI5VersionService {
+        const path = UI5VersionService.PATH;
+        if (!this.services[path]) {
+            this.services[path] = this.createService<UI5VersionService>(path, UI5VersionService);
+        }
+        return this.services[path] as UI5VersionService;
     }
 
     /**
