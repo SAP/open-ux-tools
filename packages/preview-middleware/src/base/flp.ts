@@ -66,7 +66,6 @@ type UI5VersionDetails = {
      * - the name of the distribution or
      * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
      */
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
     /**
      * Contains either
@@ -74,7 +73,7 @@ type UI5VersionDetails = {
      * - the version of the application in case the UI5 sources have been loaded from npmjs.
      */
     version: string | Manifest['sap.app']['applicationVersion']['version'];
-    libraries: UI5LibraryVersionInfo[]
+    libraries: UI5LibraryVersionInfo[];
 };
 
 type UI5LibraryVersionInfo = {
@@ -585,7 +584,9 @@ export class FlpSandbox {
         } else {
             try {
                 const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
-                const responseJson = (await fetch(versionUrl).then((res) => res.json())) as UI5VersionDetails | undefined;
+                const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
+                    | UI5VersionDetails
+                    | undefined;
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
