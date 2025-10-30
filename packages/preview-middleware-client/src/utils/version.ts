@@ -17,7 +17,8 @@ type UI5VersionDetails = {
      * - the version of the UI5 framework or
      * - the version of the application in case the UI5 sources have been loaded from npmjs.
      */
-    version: string  ;
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
+    version: string | Manifest['sap.app']['applicationVersion']['version'];
     libraries: UI5LibraryVersionInfo[]
 };
 
