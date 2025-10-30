@@ -1,5 +1,26 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.9.12
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/telemetry@0.6.35
+    -   @sap-ux/inquirer-common@0.8.9
+
+## 2.9.11
+
+### Patch Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+    -   @sap-ux/fiori-generator-shared@0.13.29
+    -   @sap-ux/telemetry@0.6.34
+    -   @sap-ux/inquirer-common@0.8.8
+
 ## 2.9.10
 
 ### Patch Changes

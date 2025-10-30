@@ -7,12 +7,14 @@ describe('store', () => {
     describe('getService', () => {
         it('initializes i18n resources', async () => {
             const mockInitI18n = jest.spyOn(i18n, 'initI18n');
-            await getService({ entityName: Entities.BackendSystem });
+            await getService({ entityName: Entities.BackendSystem, options: { baseDirectory: 'foo' } });
             expect(mockInitI18n).toHaveBeenCalled();
         });
 
         it('returns a truthy object for a valid entity', async () => {
-            await expect(getService({ entityName: Entities.BackendSystem })).resolves.toBeTruthy();
+            await expect(
+                getService({ entityName: Entities.BackendSystem, options: { baseDirectory: 'foo' } })
+            ).resolves.toBeTruthy();
         });
 
         it('throws an error for an invalid entity name', async () => {
