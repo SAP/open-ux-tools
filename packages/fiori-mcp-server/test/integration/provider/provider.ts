@@ -29,7 +29,22 @@ const MESSAGES_LOG_FOLDER = join(__dirname, '../logs');
  * Schema for the configuration of the AICoreApiProvider.
  */
 const AICoreApiProviderConfig = z.object({
-    model: z.enum(['gpt-4o', 'gpt-4o-mini']).default('gpt-4o'),
+    model: z
+        .enum([
+            'gpt-4o-mini',
+            'gpt-4o',
+            'gpt-4.1',
+            'gpt-4.1-mini',
+            'gpt-4.1-nano',
+            'o1',
+            'o3',
+            'o3-mini',
+            'o4-mini',
+            'gpt-5',
+            'gpt-5-mini',
+            'gpt-5-nano'
+        ])
+        .default('gpt-4o'),
     label: z.string().optional(),
     format: z.enum(['json', 'plain']).optional(),
     timeout: z.number().default(20000) // Default timeout of 20 seconds
