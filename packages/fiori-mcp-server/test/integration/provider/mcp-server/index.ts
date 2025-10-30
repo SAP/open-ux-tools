@@ -13,7 +13,8 @@ const client = new MultiServerMCPClient({
     mcpServers: {
         ['fiori-mcp-server']: {
             command: 'node',
-            args: [join(__dirname, `../../../../dist/index.js`)]
+            args: [join(__dirname, `../../../../dist/index.js`)],
+            env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
         }
     }
 });
