@@ -354,7 +354,7 @@ export async function generateProxyMiddlewareOptions(
         proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
     }
 
-    // IMPORTANT: setting the pathRewrite must (!) be done after 'enhanceConfigsForDestination' because this function possibly modifies backend.pathReplace that is being used in the pathRewrite
+    // IMPORTANT: setting the pathRewrite must (!) be done after 'enhanceConfigsForDestination' because this function possibly modifies 'backend.path' and 'backend.pathReplace' that is being used in the pathRewrite
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger)
 
     if (backend.bsp) {
