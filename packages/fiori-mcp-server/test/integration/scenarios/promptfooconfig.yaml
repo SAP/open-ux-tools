@@ -14,7 +14,6 @@ tests:
     - file://./list-apps/lrop-v2.yaml
     # Pages
     - file://./pages/add-op-page.yaml
-    # - file://./pages/add-op-page-v2.yaml
     - file://./pages/add-cp-page.yaml
     - file://./pages/delete-page.yaml
     - file://./pages/add-first-lr-page.yaml
