@@ -3536,6 +3536,9 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/guided-answers-helper':
         specifier: workspace:*
         version: link:../guided-answers-helper
