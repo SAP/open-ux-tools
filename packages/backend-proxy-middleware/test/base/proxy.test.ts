@@ -37,15 +37,18 @@ import {
     WebIDEUsage,
     WebIDEAdditionalData,
     getCredentialsForDestinationService,
-    isAppStudio
+    isAppStudio,
+    isFullUrlDestination
 } from '@sap-ux/btp-utils';
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     listDestinations: jest.fn(),
+    isFullUrlDestination: jest.fn(),
     getCredentialsForDestinationService: jest.fn(),
     isAppStudio: jest.fn()
 }));
 const mockListDestinations = listDestinations as jest.Mock;
+const mockIsFullUrlDestination = isFullUrlDestination as jest.Mock;
 const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
@@ -456,6 +459,30 @@ describe('proxy', () => {
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
+        });
+
+        test('generate proxy middleware inside of BAS with minimal parameters (full url destination)', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: DestinationBackendConfig = {
+                destination: '~destination',
+                path: '/my/path'
+            };
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/my/other/path',
+                }
+            });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
+            expect(options.changeOrigin).toBe(true);
+            expect(options.agent).toBeUndefined();
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+            expect((options.pathRewrite as Function)('/my/other/path/to/chicken', {})).toBe('/to/chicken');
         });
 
         test('generate proxy middleware options for FLP Embedded flow', async () => {
