@@ -1,9 +1,10 @@
 import { type AzureOpenAiChatCallOptions, AzureOpenAiChatClient } from '@sap-ai-sdk/langchain';
-import {
-    type ApiProvider,
-    type CallApiContextParams,
-    type CallApiOptionsParams,
-    type ProviderResponse
+import type {
+    AssertionValueFunctionContext,
+    ApiProvider,
+    CallApiContextParams,
+    CallApiOptionsParams,
+    ProviderResponse
 } from 'promptfoo';
 import { z } from 'zod';
 import fs from 'fs/promises';
@@ -19,6 +20,10 @@ import { getServiceKeyFromEnv } from './util/service-key';
 import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
 import { validate } from './util/validate';
 import { callTool, getTools } from './mcp-server';
+import { existsSync } from 'fs';
+import { join } from 'path';
+
+const MESSAGES_LOG_FOLDER = join(__dirname, '../logs');
 
 /**
  * Schema for the configuration of the AICoreApiProvider.
@@ -41,6 +46,7 @@ export default class AICoreApiProvider implements ApiProvider {
 
     private client?: Runnable<BaseLanguageModelInput, AIMessageChunk, AzureOpenAiChatCallOptions>;
     private tools: DynamicStructuredTool[] = [];
+    private runIndex = 0;
 
     constructor(options: { config: AICoreApiProviderConfig }) {
         this.config = AICoreApiProviderConfig.parse(options.config);
@@ -62,6 +68,8 @@ export default class AICoreApiProvider implements ApiProvider {
             });
             this.tools = await getTools();
             this.client = client.bindTools(this.tools);
+            // Cleanup log folder as client initialization happens once
+            await this.cleanupLog();
         }
         return this.client;
     }
@@ -152,7 +160,7 @@ export default class AICoreApiProvider implements ApiProvider {
         const responseFormat = await this.buildResponseFormatConfig(promptConfigValidation.data.response_format);
 
         try {
-            const response = await this.invokeCalls(prompt);
+            const response = await this.invokeCalls(prompt, context);
             let outputData = response.content;
             const usage = response.response_metadata.tokenUsage;
 
@@ -199,9 +207,10 @@ export default class AICoreApiProvider implements ApiProvider {
      * tool calls are returned by the model.
      *
      * @param prompt The input text or instruction from the user.
+     * @param context Optional context parameters for the API call.
      * @returns The final AI response message after all tool calls have been resolved.
      */
-    private async invokeCalls(prompt: string): Promise<AIMessageChunk> {
+    private async invokeCalls(prompt: string, context?: CallApiContextParams): Promise<AIMessageChunk> {
         const client = await this.getClient();
         // Initialize message history
         const messages: MessageFieldWithRole[] = [
@@ -239,7 +248,11 @@ export default class AICoreApiProvider implements ApiProvider {
             }
             response = await client.invoke(messages);
         }
-
+        messages.push({
+            role: 'assistant',
+            content: response.content
+        });
+        await this.writeLog(messages, context);
         return response;
     }
 
@@ -294,5 +307,48 @@ export default class AICoreApiProvider implements ApiProvider {
         return {
             error: error instanceof Error ? error.message : String(error)
         };
+    }
+
+    /**
+     * Cleans up the message log directory by removing all existing logs.
+     *
+     * @returns {Promise<void>} A promise that resolves once the cleanup is complete.
+     */
+    private async cleanupLog(): Promise<void> {
+        if (existsSync(MESSAGES_LOG_FOLDER)) {
+            await fs.rm(MESSAGES_LOG_FOLDER, { recursive: true, force: true });
+            await fs.mkdir(MESSAGES_LOG_FOLDER, { recursive: true });
+        }
+    }
+
+    /**
+     * Writes the given messages to a structured log file.
+     *
+     * This method:
+     * - Ensures the main log folder exists.
+     * - Determines a subfolder based on the snapshot name (if available).
+     * - Writes messages as formatted JSON into a file with a unique run index.
+     *
+     * @private
+     * @async
+     * @param {MessageFieldWithRole[]} messages - The list of messages (with roles) to log.
+     * @param {CallApiContextParams} [context] - Optional context object containing snapshot and test metadata.
+     * @returns {Promise<void>} A promise that resolves once the log file has been written.
+     */
+    private async writeLog(messages: MessageFieldWithRole[], context?: CallApiContextParams): Promise<void> {
+        if (!existsSync(MESSAGES_LOG_FOLDER)) {
+            await fs.mkdir(MESSAGES_LOG_FOLDER);
+        }
+        const snapshot = (context?.test as { assert?: AssertionValueFunctionContext[] })?.assert?.find(
+            (entry: AssertionValueFunctionContext) => !!entry.config?.snapshot
+        );
+        const subFolderName = snapshot?.config?.snapshot ?? 'other';
+        const folderPath = join(MESSAGES_LOG_FOLDER, subFolderName);
+        if (!existsSync(folderPath)) {
+            await fs.mkdir(folderPath);
+        }
+        const filePath = join(folderPath, `run-${this.runIndex}.json`);
+        this.runIndex++;
+        await fs.writeFile(filePath, JSON.stringify(messages, undefined, 4), { encoding: 'utf8' });
     }
 }
