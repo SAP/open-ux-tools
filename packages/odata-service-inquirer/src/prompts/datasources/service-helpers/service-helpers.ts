@@ -2,7 +2,8 @@ import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { filterDraftEnabledEntities } from '../../edmx/entity-helper';
 import LoggerHelper from '../../logger-helper';
 import { t } from '../../../i18n';
-import { convertEdmxWithVersion } from '@sap-ux/inquirer-common';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
 
 /**
  * If any of the draft root annotated entity sets have the share action property, then collaborative draft is enabled.
@@ -27,8 +28,7 @@ export function showCollabDraftWarning(edmx: string | ConvertedMetadata): boolea
     try {
         let convertedMetadata: ConvertedMetadata;
         if (typeof edmx === 'string') {
-            const conversionResult = convertEdmxWithVersion(edmx);
-            convertedMetadata = conversionResult.convertedMetadata;
+            convertedMetadata = convert(parse(edmx));
         } else {
             convertedMetadata = edmx;
         }
