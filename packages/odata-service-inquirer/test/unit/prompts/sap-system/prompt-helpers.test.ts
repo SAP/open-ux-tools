@@ -4,7 +4,7 @@ import { suggestSystemName } from '../../../../src/prompts/datasources/sap-syste
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'system1' }, { name: 'system2' }, { name: 'system2 (1)' }])
     }))
 }));

@@ -1,0 +1,41 @@
+{
+    "fileName": "id_1761320220775_34_propertyChange",
+    "fileType": "change",
+    "changeType": "propertyBindingChange",
+    "moduleName": "",
+    "reference": "project",
+    "packageName": "",
+    "content": {
+        "property": "width",
+        "newBinding": "{width}"
+    },
+    "selector": {
+        "id": "project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID",
+        "idIsLocal": false,
+        "type": "sap.m.Column"
+    },
+    "layer": "VENDOR",
+    "texts": {},
+    "namespace": "apps/project/changes/",
+    "projectId": "project",
+    "creation": 1761427497484,
+    "originalLanguage": "",
+    "support": {
+        "generator": "changeUtils: SAPFioriTools",
+        "service": "",
+        "user": "",
+        "sapui5Version": "1.98.0",
+        "sourceChangeFileName": "",
+        "compositeCommand": ""
+    },
+    "oDataInformation": {},
+    "dependentSelector": {},
+    "validAppVersions": {
+        "from": "${project.version}",
+        "to": "${project.version}",
+        "creation": "${project.version}"
+    },
+    "jsOnly": false,
+    "variantReference": "",
+    "appDescriptorChange": false
+}
