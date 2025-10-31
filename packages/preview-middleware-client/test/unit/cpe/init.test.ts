@@ -221,7 +221,7 @@ describe('main', () => {
         );
     });
 
-    test('should display a warning when there are connectivity issues with the OData health check', async () => {
+    test('should display an error when there are connectivity issues with the OData health check', async () => {
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
         changesServiceSpy.mockResolvedValue();
