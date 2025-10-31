@@ -1,0 +1,65 @@
+.store-main {
+    margin-top: 18px;
+    padding-bottom: 20px;
+}
+
+.store-text-field {
+    margin-left: 20px;
+    margin-right: 20%;
+    padding-top: 18px;
+    max-width: 480px;
+}
+
+.ms-Dropdown {
+    min-height: 36px;
+}
+
+.ms-Dropdown-container {
+    padding-top: 6px;
+}
+
+.ts-SelectBox .ms-Dropdown .ms-Dropdown-title {
+    height: 35px;
+    line-height: 36px;
+    font-size: 16px;
+}
+
+.ts-Callout-Dropdown .ms-Dropdown-items .ms-Dropdown-item {
+    font-size: 14px;
+    height: 30px;
+}
+
+.ms-TextField {
+    padding-top: 6px;
+}
+.ms-TextField-fieldGroup {
+    min-height: 34px;
+    align-items: center;
+}
+
+.ms-TextField-field {
+    font-size: 15px;
+    font-family: var(--vscode-font-family);
+}
+
+.store-detail-label {
+    padding-bottom: 26px;
+    font-size: 14px;
+    letter-spacing: 0px;
+    color: var(--vscode-settings-headerForeground);
+    font-weight: 500;
+}
+
+.loader-icon {
+    margin-bottom: 70px;
+}
+
+.ms-Spinner-circle {
+    margin-top: 60px;
+    margin-right: 60px;
+    position: absolute;
+}
+
+.mandatory-asterisk {
+    color: #ff5252;
+}

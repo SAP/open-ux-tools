@@ -1,0 +1,30 @@
+{
+    "name": "@sap-ux/sap-systems-ext-types",
+    "version": "0.0.0",
+    "private": true,
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "devDependencies": {
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/ui-components": "workspace:*"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=20.x"
+    }
+}
