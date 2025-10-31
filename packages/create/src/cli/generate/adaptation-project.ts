@@ -16,7 +16,7 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         .description(
             `Generate a new SAPUI5 adaptation project with optional prompts and configuration.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest generate adaptation-project\``
+                                     \`npx --yes @sap-ux/create@latest generate adaptation-project\``
         )
         .option('-n, --skip-install', 'skip the `npm install` step')
         .option('-s, --simulate', 'Simulate only. Do not write or install.')

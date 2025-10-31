@@ -68,7 +68,7 @@ function getCommanderProgram(): Command {
     const genCommands = getGenerateCommands();
     genCommands.description(
         `Command group for generating SAP Fiori applications. A subcommand is required.
-                    Usage: \`$ npx --yes @sap-ux/create@latest generate [subcommand] [options]\`
+                    Usage: \`npx --yes @sap-ux/create@latest generate [subcommand] [options]\`
                     The available subcommands are: ${getFeatureSummary(genCommands.commands)}\n`
     );
     program.addCommand(genCommands);
@@ -77,7 +77,7 @@ function getCommanderProgram(): Command {
     const addCommands = getAddCommands();
     addCommands.description(
         `Command group for adding features to existing SAP Fiori applications. A subcommand is required.
-                    Usage: \`$ npx --yes @sap-ux/create@latest add [subcommand] [options]\`
+                    Usage: \`npx --yes @sap-ux/create@latest add [subcommand] [options]\`
                     The available subcommands are: ${getFeatureSummary(addCommands.commands)}\n`
     );
     program.addCommand(addCommands);
@@ -86,7 +86,7 @@ function getCommanderProgram(): Command {
     const convertCommands = getConvertCommands();
     convertCommands.description(
         `Command group for converting existing SAP Fiori applications. A subcommand is required.
-                    Usage: \`$ npx --yes @sap-ux/create@latest convert [subcommand] [options]\`
+                    Usage: \`npx --yes @sap-ux/create@latest convert [subcommand] [options]\`
                     The available subcommands are: ${getFeatureSummary(convertCommands.commands)}\n`
     );
     program.addCommand(convertCommands);
@@ -95,7 +95,7 @@ function getCommanderProgram(): Command {
     const removeCommands = getRemoveCommands();
     removeCommands.description(
         `Command group for removing features from existing SAP Fiori applications. A subcommand is required.
-                    Usage: \`$ npx --yes @sap-ux/create@latest remove [subcommand] [options]\`
+                    Usage: \`npx --yes @sap-ux/create@latest remove [subcommand] [options]\`
                     The available subcommands are: ${getFeatureSummary(removeCommands.commands)}\n`
     );
     program.addCommand(removeCommands);
@@ -104,7 +104,7 @@ function getCommanderProgram(): Command {
     const changeCommands = getChangeCommands();
     changeCommands.description(
         `Command group for changing existing SAP Fiori applications. A subcommand is required.
-                    Usage: \`$ npx --yes @sap-ux/create@latest change [subcommand] [options]\`
+                    Usage: \`npx --yes @sap-ux/create@latest change [subcommand] [options]\`
                     The available subcommands are: ${getFeatureSummary(changeCommands.commands)}`
     );
     program.addCommand(changeCommands);

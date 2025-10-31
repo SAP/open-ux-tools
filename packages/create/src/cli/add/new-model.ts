@@ -17,7 +17,7 @@ export function addNewModelCommand(cmd: Command): void {
         .description(
             `Add a new OData service and SAPUI5 model to an existing adaptation project.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add model\``
+                                     \`npx --yes @sap-ux/create@latest add model\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {

@@ -14,7 +14,7 @@ export function addRemoveMockserverConfigCommand(cmd: Command): void {
         .description(
             `Removes the configuration for the \`@sap-ux/ui5-middleware-fe-mockserver\` mockserver module.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest remove mockserver-config\``
+                                     \`npx --yes @sap-ux/create@latest remove mockserver-config\``
         )
         .option('-v, --verbose', 'Show verbose information.')
         .option('-f, --force', 'Do not ask for confirmation when deleting files.')

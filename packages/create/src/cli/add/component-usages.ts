@@ -22,7 +22,7 @@ export function addComponentUsagesCommand(cmd: Command): void {
         .description(
             `Add the component usages to an adaptation project.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add component-usages\``
+                                     \`npx --yes @sap-ux/create@latest add component-usages\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {

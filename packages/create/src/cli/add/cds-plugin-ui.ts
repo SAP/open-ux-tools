@@ -14,7 +14,7 @@ export function addAddCdsPluginUi5Command(cmd: Command): void {
         .description(
             `Add the \`cds-plugin-ui5\` module and all prerequisites to a CAP project for UI5 server integration.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add cds-plugin-ui5\``
+                                     \`npx --yes @sap-ux/create@latest add cds-plugin-ui5\``
         )
         .option('-n, --skip-install', 'skip the `npm install` step')
         .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets `--verbose`')

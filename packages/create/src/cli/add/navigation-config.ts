@@ -43,7 +43,7 @@ export function addInboundNavigationConfigCommand(cmd: Command): void {
         .description(
             `Add SAP Fiori launchpad inbound navigation configuration to a project.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add inbound-navigation\``
+                                     \`npx --yes @sap-ux/create@latest add inbound-navigation\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')

@@ -13,7 +13,7 @@ export function addAddSmartLinksConfigCommand(cmd: Command): void {
         .description(
             `Add a \`smartLinks\` configuration to a project for cross-app navigation.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add smartlinks-config\``
+                                     \`npx --yes @sap-ux/create@latest add smartlinks-config\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')

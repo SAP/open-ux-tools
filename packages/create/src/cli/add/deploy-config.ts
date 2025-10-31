@@ -23,7 +23,7 @@ export function addDeployConfigCommand(cmd: Command): void {
         .description(
             `Prompt for ABAP deployment configuration details and adds and updates the project files accordingly.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add deploy-config\``
+                                     \`npx --yes @sap-ux/create@latest add deploy-config\``
         )
         .option('-t, --target <string>', 'Target for deployment: ABAP or Cloud Foundry (not yet implemented)')
         .option('-s, --simulate', 'Simulate only. Do not write. Also, sets `--verbose`')

@@ -18,7 +18,7 @@ export function addAddMockserverConfigCommand(cmd: Command): void {
         .description(
             `Add the necessary configuration for the \`@sap-ux/ui5-middleware-fe-mockserver\` mockserver module to enable local OData mocking.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add mockserver-config\``
+                                     \`npx --yes @sap-ux/create@latest add mockserver-config\``
         )
         .option('-i, --interactive', 'Ask for config options or otherwise, use the default options.')
         .option('-n, --skip-install', 'Skip the `npm install` step.')

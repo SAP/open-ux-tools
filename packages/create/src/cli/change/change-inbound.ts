@@ -15,7 +15,7 @@ export function addChangeInboundCommand(cmd: Command): void {
         .description(
             `Replace the inbound FLP configurations of the base application in an adaptation project.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest change inbound\``
+                                     \`npx --yes @sap-ux/create@latest change inbound\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {

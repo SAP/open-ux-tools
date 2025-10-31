@@ -25,7 +25,7 @@ export function addChangeDataSourceCommand(cmd: Command): void {
         .description(
             `Replace the OData Source of the base application in an adaptation project.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest change data-source\``
+                                     \`npx --yes @sap-ux/create@latest change data-source\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .option(

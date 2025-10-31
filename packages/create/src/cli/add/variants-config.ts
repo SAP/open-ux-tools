@@ -15,7 +15,7 @@ export function addAddVariantsConfigCommand(cmd: Command): void {
         .description(
             `Add the necessary configuration to an existing YAML file and the script to the \`package.json\` file for variants creation. It uses the configuration from the YAML file passed by the CLI or default to \`ui5.yaml\`, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add variants-config\``
+                                     \`npx --yes @sap-ux/create@latest add variants-config\``
         )
         .option(
             '-c, --config <string>',

@@ -31,7 +31,7 @@ sap-ux [command] [sub-command] /path/to/project
 
 Command group for generating SAP Fiori applications. A subcommand is required.
 
-Usage: `$ npx --yes @sap-ux/create@latest generate [subcommand] [options]`
+Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
 The available subcommands are: `adaptation-project`
 
@@ -44,7 +44,7 @@ Generate a new SAPUI5 adaptation project with optional prompts and configuration
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest generate adaptation-project`
+`npx --yes @sap-ux/create@latest generate adaptation-project`
 
 **Options:**
 - `-n, --skip-install` - skip the `npm install` step
@@ -65,7 +65,7 @@ Example usage:
 
 Command group for adding features to existing SAP Fiori applications. A subcommand is required.
 
-Usage: `$ npx --yes @sap-ux/create@latest add [subcommand] [options]`
+Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
 The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config` and `variants-config`
 
@@ -78,7 +78,7 @@ Add the necessary configuration for the `@sap-ux/ui5-middleware-fe-mockserver` m
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add mockserver-config`
+`npx --yes @sap-ux/create@latest add mockserver-config`
 
 **Options:**
 - `-i, --interactive` - Ask for config options or otherwise, use the default options.
@@ -94,7 +94,7 @@ Add a `smartLinks` configuration to a project for cross-app navigation.
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add smartlinks-config`
+`npx --yes @sap-ux/create@latest add smartlinks-config`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
@@ -108,7 +108,7 @@ Add the `cds-plugin-ui5` module and all prerequisites to a CAP project for UI5 s
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add cds-plugin-ui5`
+`npx --yes @sap-ux/create@latest add cds-plugin-ui5`
 
 **Options:**
 - `-n, --skip-install` - skip the `npm install` step
@@ -123,7 +123,7 @@ Add SAP Fiori launchpad inbound navigation configuration to a project.
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add inbound-navigation`
+`npx --yes @sap-ux/create@latest add inbound-navigation`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
@@ -138,7 +138,7 @@ Add the necessary configuration to an existing YAML file and the script to the `
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add cards-editor`
+`npx --yes @sap-ux/create@latest add cards-editor`
 
 **Options:**
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
@@ -153,7 +153,7 @@ Add a new OData service and SAPUI5 model to an existing adaptation project.
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add model`
+`npx --yes @sap-ux/create@latest add model`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
@@ -166,7 +166,7 @@ Adds an annotation to the OData Source of the base application in an adaptation 
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add annotations`
+`npx --yes @sap-ux/create@latest add annotations`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
@@ -180,7 +180,7 @@ Add HTML files for local preview and testing to the project. It uses the configu
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add html`
+`npx --yes @sap-ux/create@latest add html`
 
 **Options:**
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
@@ -195,7 +195,7 @@ Add the component usages to an adaptation project.
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add component-usages`
+`npx --yes @sap-ux/create@latest add component-usages`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
@@ -208,7 +208,7 @@ Prompt for ABAP deployment configuration details and adds and updates the projec
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add deploy-config`
+`npx --yes @sap-ux/create@latest add deploy-config`
 
 **Options:**
 - `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
@@ -225,7 +225,7 @@ Add the necessary configuration to an existing YAML file and the script to the `
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest add variants-config`
+`npx --yes @sap-ux/create@latest add variants-config`
 
 **Options:**
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
@@ -238,7 +238,7 @@ Example usage:
 
 Command group for converting existing SAP Fiori applications. A subcommand is required.
 
-Usage: `$ npx --yes @sap-ux/create@latest convert [subcommand] [options]`
+Usage: `npx --yes @sap-ux/create@latest convert [subcommand] [options]`
 
 The available subcommands are: `preview-config`
 
@@ -251,7 +251,7 @@ Executed in the root folder of an app, it converts the respective app to the pre
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest convert preview-config`
+`npx --yes @sap-ux/create@latest convert preview-config`
 
 **Options:**
 - `-s, --simulate <boolean>` _(required)_ - Simulate only. Do not write.
@@ -264,7 +264,7 @@ Example usage:
 
 Command group for removing features from existing SAP Fiori applications. A subcommand is required.
 
-Usage: `$ npx --yes @sap-ux/create@latest remove [subcommand] [options]`
+Usage: `npx --yes @sap-ux/create@latest remove [subcommand] [options]`
 
 The available subcommands are: `mockserver-config`
 
@@ -277,7 +277,7 @@ Removes the configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockser
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest remove mockserver-config`
+`npx --yes @sap-ux/create@latest remove mockserver-config`
 
 **Options:**
 - `-v, --verbose` - Show verbose information.
@@ -289,7 +289,7 @@ Example usage:
 
 Command group for changing existing SAP Fiori applications. A subcommand is required.
 
-Usage: `$ npx --yes @sap-ux/create@latest change [subcommand] [options]`
+Usage: `npx --yes @sap-ux/create@latest change [subcommand] [options]`
 
 The available subcommands are: `data-source` and `inbound`
 
@@ -301,7 +301,7 @@ Replace the OData Source of the base application in an adaptation project.
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest change data-source`
+`npx --yes @sap-ux/create@latest change data-source`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
@@ -315,7 +315,7 @@ Replace the inbound FLP configurations of the base application in an adaptation 
 
 Example usage:
 
-`$ npx -y @sap-ux/create@latest change inbound`
+`npx --yes @sap-ux/create@latest change inbound`
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.

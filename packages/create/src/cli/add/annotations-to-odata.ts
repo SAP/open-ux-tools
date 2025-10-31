@@ -27,7 +27,7 @@ export function addAnnotationsToOdataCommand(cmd: Command): void {
         .description(
             `Adds an annotation to the OData Source of the base application in an adaptation project.
                                      Example usage:
-                                     \`$ npx -y @sap-ux/create@latest add annotations\``
+                                     \`npx --yes @sap-ux/create@latest add annotations\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .option(
