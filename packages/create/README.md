@@ -50,14 +50,14 @@ Example usage:
 - `-n, --skip-install` - skip the `npm install` step
 - `-s, --simulate` - Simulate only. Do not write or install.
 - `-y, --yes` - use default values for all prompts
-- `--id [id]` - id of the adaptation project
-- `--reference [reference]` - id of the original application
-- `--url [url]` - url pointing to the target system containing the original app
-- `--ignoreCertErrors` - ignore certificate errors when connecting to the target system
-- `--ft` - enable the Fiori tools for the generated project
-- `--ts` - enable the TypeScript support for the generated project
-- `--package [package]` - ABAP package to be used for deployments
-- `--transport [transport]` - ABAP transport to be used for deployments
+- `--id [id]` - The ID of the adaptation project.
+- `--reference [reference]` - The ID of the original application.
+- `--url [url]` - The URL that points to the target system which contains the original application.
+- `--ignoreCertErrors` - Ignore certificate errors when connecting to the target system.
+- `--ft` - Enable SAP Fiori tools for the generated project.
+- `--ts` - Enable TypeScript support for the generated project.
+- `--package [package]` - The ABAP package to be used for deployments.
+- `--transport [transport]` - The ABAP transport to be used for deployments.
 
 --------------------------------
 
@@ -74,15 +74,15 @@ Available Subcommands: mockserver-config, smartlinks-config, cds-plugin-ui5, inb
 
 ## [`add mockserver-config`](#add-mockserver-config)
 
-Add the necessary configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver to enable local OData mocking.
+Add the necessary configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module to enable local OData mocking.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest add mockserver-config`
 
 **Options:**
-- `-i, --interactive` - ask for config options, otherwise use defaults
-- `-n, --skip-install` - skip the `npm install` step
+- `-i, --interactive` - Ask for config options or otherwise, use the default options.
+- `-n, --skip-install` - Skip the `npm install` step
 - `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -90,7 +90,7 @@ Example usage:
 
 ## [`add smartlinks-config`](#add-smartlinks-config)
 
-Add a smartLinks configuration to a project for cross-app navigation.
+Add a `smartLinks` configuration to a project for cross-app navigation.
 
 Example usage:
 
@@ -104,7 +104,7 @@ Example usage:
 
 ## [`add cds-plugin-ui5`](#add-cds-plugin-ui5)
 
-Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 Server integration.
+Add the `cds-plugin-ui5` module and all prerequisites to a CAP project for UI5 server integration.
 
 Example usage:
 
@@ -141,7 +141,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add cards-editor`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format., _(default: "ui5.yaml")_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -170,7 +170,7 @@ Example usage:
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format., _(default: "ui5.yaml")_
 
 --------------------------------
 
@@ -183,7 +183,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add html`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format., _(default: "ui5.yaml")_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -214,8 +214,8 @@ Example usage:
 - `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
 - `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-b, --base-file <string>` _(required)_ - The base config file of the project. _(default: 'ui5.yaml')_
-- `-d, --deploy-file <string>` _(required)_ - The name of the deploy config file to be written. _(default: 'ui5-deploy.yaml')_
+- `-b, --base-file <string>` _(required)_ - The base config file of the project. _(default: "ui5.yaml")_
+- `-d, --deploy-file <string>` _(required)_ - The name of the deploy config file to be written. _(default: "ui5-deploy.yaml")_
 
 --------------------------------
 
@@ -228,7 +228,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add variants-config`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format., _(default: "ui5.yaml")_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -305,7 +305,7 @@ Example usage:
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format., _(default: "ui5.yaml")_
 
 --------------------------------
 

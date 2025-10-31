@@ -12,7 +12,7 @@ import { runNpmInstallCommand } from '../../common';
 export function addAddCdsPluginUi5Command(cmd: Command): void {
     cmd.command('cds-plugin-ui5 [path]')
         .description(
-            `Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 Server integration.
+            `Add the \`cds-plugin-ui5\` module and all prerequisites to a CAP project for UI5 server integration.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add cds-plugin-ui5\``
         )

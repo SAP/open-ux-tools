@@ -28,10 +28,10 @@ export function addDeployConfigCommand(cmd: Command): void {
         .option('-t, --target <string>', 'Target for deployment: ABAP or Cloud Foundry (not yet implemented)')
         .option('-s, --simulate', 'Simulate only. Do not write. Also, sets \`--verbose\`')
         .option('-v, --verbose', 'Show verbose information.')
-        .option('-b, --base-file <string>', 'The base config file of the project. _(default: \'ui5.yaml\')_')
+        .option('-b, --base-file <string>', 'The base config file of the project. _(default: \"ui5.yaml\")_')
         .option(
             '-d, --deploy-file <string>',
-            'The name of the deploy config file to be written. _(default: \'ui5-deploy.yaml\')_'
+            'The name of the deploy config file to be written. _(default: \"ui5-deploy.yaml\")_'
         )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
