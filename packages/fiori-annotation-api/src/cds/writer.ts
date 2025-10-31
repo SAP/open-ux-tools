@@ -1305,13 +1305,14 @@ function isComma(token: AstNode | Comment | ContainerContentBlock | undefined): 
 }
 
 function findDeletionChange(document: CDSDocument, changes: CDSDocumentChange[], range: Range): boolean {
-    return !!changes.find((change) => {
+    return changes.some((change) => {
         if (change.type.startsWith('delete-')) {
             const [leaf] = getAstNodesFromPointer(document, change.pointer).reverse();
             if (leaf?.range) {
                 return rangeContained(leaf.range, range);
             }
         }
+        return false;
     });
 }
 

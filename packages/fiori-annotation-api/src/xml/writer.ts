@@ -198,7 +198,7 @@ export class XMLWriter {
             }
             text.push(this.textDocument.getText(range));
             if (
-                changes.find((change) => {
+                changes.some((change) => {
                     if (change.type !== DELETE_ELEMENT) {
                         return false;
                     }
