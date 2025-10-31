@@ -44,7 +44,7 @@ function getCommanderProgram(): Command {
     const logger = getLogger();
     const program = new Command();
     const version = getVersion();
-    program.description(`Configure features for Fiori applications and projects (${version}).`);
+    program.description(`Configure features for SAP Fiori applications and projects (${version}).`);
     program.addHelpText(
         'after',
         `\nExample Usage:

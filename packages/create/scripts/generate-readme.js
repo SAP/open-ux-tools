@@ -6,7 +6,7 @@ const fs = require('node:fs');
  */
 const STATIC_USAGE_SECTION = `# [Usage](#usage)
 
-It is recommended to use the cli via \`npx\` to always get the latest version without the need to install or update it manually. You can run it using:
+It is recommended to use the cli using \`npx\` to always get the latest version without the need to install or update it manually. You can run it using:
 
 \`\`\`sh
 npx -y @sap-ux/create@latest [command] [sub-command] /path/to/project
@@ -23,7 +23,7 @@ npm i -D @sap-ux/create@latest
 sap-ux [command] [sub-command] /path/to/project
 \`\`\`
 
-\`Note:\` If the project path is not provided, the current working directory will be used.
+\`Note:\` If the project path is not provided, the current working directory is used.
 
 ---
 
@@ -77,7 +77,7 @@ function renderOptions(options) {
  * @returns An array of Markdown strings for the command and its subcommands.
  */
 function renderCommandAndSubcommands(cmd, parentPath) {
-    const currentPath = [...parentPath, cmd.name];
+    const currentPath = [...parentPath, cmd.name].filter(Boolean);
     const fullCommandName = currentPath.join(' ');
     const anchor = generateAnchor(currentPath);
 

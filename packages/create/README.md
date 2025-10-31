@@ -1,10 +1,10 @@
 # `@sap-ux/create` CLI Reference
 
-Configure features for Fiori applications and projects (0.13.142).
+Configure features for SAP Fiori applications and projects (0.13.142).
 
 # [Usage](#usage)
 
-It is recommended to use the cli via `npx` to always get the latest version without the need to install or update it manually. You can run it using:
+It is recommended to use the cli using `npx` to always get the latest version without the need to install or update it manually. You can run it using:
 
 ```sh
 npx -y @sap-ux/create@latest [command] [sub-command] /path/to/project
@@ -21,13 +21,13 @@ npm i -D @sap-ux/create@latest
 sap-ux [command] [sub-command] /path/to/project
 ```
 
-`Note:` If the project path is not provided, the current working directory will be used.
+`Note:` If the project path is not provided, the current working directory is used.
 
 ---
 
 # [Commands](#commands)
 
-## [` generate`](#-generate)
+## [`generate`](#generate)
 
 Command group for generating SAP Fiori applications. A subcommand is required.
 
@@ -38,7 +38,7 @@ Available subcommands: adaptation-project
 
 --------------------------------
 
-## [` generate adaptation-project`](#-generate-adaptation-project)
+## [`generate adaptation-project`](#generate-adaptation-project)
 
 Generate a new UI5 adaptation project with optional prompts and configuration.
 
@@ -61,7 +61,7 @@ Example usage:
 
 --------------------------------
 
-## [` add`](#-add)
+## [`add`](#add)
 
 Command group for adding features to existing SAP Fiori applications. A subcommand is required.
 
@@ -72,7 +72,7 @@ Available Subcommands: mockserver-config, smartlinks-config, cds-plugin-ui5, inb
 
 --------------------------------
 
-## [` add mockserver-config`](#-add-mockserver-config)
+## [`add mockserver-config`](#add-mockserver-config)
 
 Add the necessary configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver to enable local OData mocking.
 
@@ -88,7 +88,7 @@ Example usage:
 
 --------------------------------
 
-## [` add smartlinks-config`](#-add-smartlinks-config)
+## [`add smartlinks-config`](#add-smartlinks-config)
 
 Add a smartLinks configuration to a project for cross-app navigation.
 
@@ -102,7 +102,7 @@ Example usage:
 
 --------------------------------
 
-## [` add cds-plugin-ui5`](#-add-cds-plugin-ui5)
+## [`add cds-plugin-ui5`](#add-cds-plugin-ui5)
 
 Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 Server integration.
 
@@ -117,7 +117,7 @@ Example usage:
 
 --------------------------------
 
-## [` add inbound-navigation`](#-add-inbound-navigation)
+## [`add inbound-navigation`](#add-inbound-navigation)
 
 Add Fiori Launchpad inbound navigation configuration to a project.
 
@@ -132,7 +132,7 @@ Example usage:
 
 --------------------------------
 
-## [` add cards-editor`](#-add-cards-editor)
+## [`add cards-editor`](#add-cards-editor)
 
 Add the necessary configuration to an existing yaml file and the script to package.json for cards generation. It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.
 
@@ -147,7 +147,7 @@ Example usage:
 
 --------------------------------
 
-## [` add model`](#-add-model)
+## [`add model`](#add-model)
 
 Add a new OData service and UI5 model to an existing adaptation project.
 
@@ -160,7 +160,7 @@ Example usage:
 
 --------------------------------
 
-## [` add annotations`](#-add-annotations)
+## [`add annotations`](#add-annotations)
 
 Adds an annotation to the OData Source of the base application in an adaptation project.
 
@@ -174,7 +174,7 @@ Example usage:
 
 --------------------------------
 
-## [` add html`](#-add-html)
+## [`add html`](#add-html)
 
 Add html files for local preview and testing to the project. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
@@ -189,7 +189,7 @@ Example usage:
 
 --------------------------------
 
-## [` add component-usages`](#-add-component-usages)
+## [`add component-usages`](#add-component-usages)
 
 Add the component usages to an adaptation project.
 
@@ -202,7 +202,7 @@ Example usage:
 
 --------------------------------
 
-## [` add deploy-config`](#-add-deploy-config)
+## [`add deploy-config`](#add-deploy-config)
 
 Prompt for ABAP deployment configuration details and add/update the project files accordingly.
 
@@ -219,7 +219,7 @@ Example usage:
 
 --------------------------------
 
-## [` add variants-config`](#-add-variants-config)
+## [`add variants-config`](#add-variants-config)
 
 Add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
@@ -234,7 +234,7 @@ Example usage:
 
 --------------------------------
 
-## [` convert`](#-convert)
+## [`convert`](#convert)
 
 Command group for converting existing SAP Fiori applications. A subcommand is required.
 
@@ -245,7 +245,7 @@ Available Subcommands: preview-config
 
 --------------------------------
 
-## [` convert preview-config`](#-convert-preview-config)
+## [`convert preview-config`](#convert-preview-config)
 
 Executed in the root folder of an app, it will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
 
@@ -260,7 +260,7 @@ Example usage:
 
 --------------------------------
 
-## [` remove`](#-remove)
+## [`remove`](#remove)
 
 Command group for removing features from existing SAP Fiori applications. A subcommand is required.
 
@@ -271,7 +271,7 @@ Available Subcommands: mockserver-config
 
 --------------------------------
 
-## [` remove mockserver-config`](#-remove-mockserver-config)
+## [`remove mockserver-config`](#remove-mockserver-config)
 
 Removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver.
 
@@ -285,7 +285,7 @@ Example usage:
 
 --------------------------------
 
-## [` change`](#-change)
+## [`change`](#change)
 
 Command group for changing existing SAP Fiori applications. A subcommand is required.
 
@@ -295,7 +295,7 @@ Available Subcommands: data-source, inbound
 
 --------------------------------
 
-## [` change data-source`](#-change-data-source)
+## [`change data-source`](#change-data-source)
 
 Replace the OData Source of the base application in an adaptation project.
 
@@ -309,9 +309,9 @@ Example usage:
 
 --------------------------------
 
-## [` change inbound`](#-change-inbound)
+## [`change inbound`](#change-inbound)
 
-Replace the Inbound FLP configurations of the base application in an adaptation project.
+Replace the inbound FLP configurations of the base application in an adaptation project.
 
 Example usage:
 
