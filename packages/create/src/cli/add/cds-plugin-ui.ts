@@ -16,8 +16,8 @@ export function addAddCdsPluginUi5Command(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add cds-plugin-ui5\``
         )
-        .option('-n, --skip-install', 'skip the \`npm install\` step')
-        .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets \`--verbose\`')
+        .option('-n, --skip-install', 'skip the `npm install` step')
+        .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {

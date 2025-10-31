@@ -26,7 +26,7 @@ export function addDeployConfigCommand(cmd: Command): void {
                                      \`$ npx -y @sap-ux/create@latest add deploy-config\``
         )
         .option('-t, --target <string>', 'Target for deployment: ABAP or Cloud Foundry (not yet implemented)')
-        .option('-s, --simulate', 'Simulate only. Do not write. Also, sets \`--verbose\`')
+        .option('-s, --simulate', 'Simulate only. Do not write. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .option('-b, --base-file <string>', 'The base config file of the project. _(default: \"ui5.yaml\")_')
         .option(

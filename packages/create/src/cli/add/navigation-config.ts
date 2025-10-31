@@ -45,7 +45,7 @@ export function addInboundNavigationConfigCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add inbound-navigation\``
         )
-        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets \`--verbose\`')
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .action(async (path, options) => {
