@@ -120,7 +120,7 @@ function getCommanderProgram(): Command {
  */
 function getFeatureSummary(commands: Command[]): string {
     const subCommandNames = commands.map((cmd) => `\`${cmd.name()}\``);
-    return subCommandNames.join(', ');
+    return subCommandNames.join(', ').replace(/, ([^,]*)$/, ' and $1');
 }
 
 /**
