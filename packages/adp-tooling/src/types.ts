@@ -39,6 +39,10 @@ export interface AdpPreviewConfig {
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+    /**
+     * For CF ADP projects: when set to 'dist', serve resources from local dist instead of backend merge.
+     */
+    useLocal?: string;
 }
 
 export interface OnpremApp {
