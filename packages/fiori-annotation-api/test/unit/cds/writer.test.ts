@@ -2056,6 +2056,162 @@ annotate S.E with @UI.LineItem: [
                 );`
                 );
             });
+            test('record single line formatting with merging', async () => {
+                const fixture = `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value1,
+                        }, {
+                            Value: value2,
+                        }, {
+                            Value: value3,
+                        },
+                    ]
+                );`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/0'
+                        },
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/1'
+                        }
+                    ],
+                    `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value3,
+                        },
+                    ]
+                );`
+                );
+            });
+            test('record single line formatting with repeated merging', async () => {
+                const fixture = `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value1,
+                        }, {
+                            Value: value2,
+                        }, {
+                            Value: value4,
+                        }, {
+                            Value: value3,
+                        },
+                    ]
+                );`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/0'
+                        },
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/1'
+                        },
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/2'
+                        }
+                    ],
+                    `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value3,
+                        },
+                    ]
+                );`
+                );
+            });
+            test('record single line formatting without merging', async () => {
+                const fixture = `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value1,
+                        }, {
+                            Value: value2,
+                        }, {
+                            Value: value3,
+                        },
+                    ]
+                );`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/1'
+                        }
+                    ],
+                    `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value1,
+                        }, {
+                            Value: value3,
+                        },
+                    ]
+                );`
+                );
+            });
+            test('record single line formatting with merging in the middle', async () => {
+                const fixture = `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value1,
+                        }, {
+                            Value: value2,
+                        }, {
+                            Value: value3,
+                        }, {
+                            Value: value4,
+                        },
+                    ]
+                );`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/1'
+                        },
+                        {
+                            type: 'delete-record',
+                            pointer: '/targets/0/assignments/0/value/items/2'
+                        }
+                    ],
+                    `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.LineItem: [
+                        {
+                            Value: value1,
+                        }, {
+                            Value: value4,
+                        },
+                    ]
+                );`
+                );
+            });
             test('block comment before', async () => {
                 const fixture = `
                 Service S { entity E {}; };

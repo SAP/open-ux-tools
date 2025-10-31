@@ -933,31 +933,27 @@ function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockI
     const previous = content[blockIndex - 1];
     const next = content[blockIndex + 1];
     if (previous?.range) {
+        let deleteCascadeFound = true;
+        for (let i = 0; i <= blockIndex; i++) {
+            const prev = content[i];
+            if (!edits.some((item) => isRangesEqual(item.range, prev.range))) {
+                deleteCascadeFound = false;
+                break;
+            }
+        }
+        if (deleteCascadeFound && next?.range) {
+            const edit = TextEdit.del(Range.create(block.range.end, next.range.start));
+            // other deletion edits with the same range may already exist
+            if (!edits.some((item) => isRangesEqual(item.range, edit.range))) {
+                edits.push(edit);
+            }
+        }
+
         // if the last child element is being deleted then white space between the last and previous should be removed as well
         deletePreviousElementWhiteSpaces(previous, block, edits);
-        // iterate over the previous of previous element, if the previous element is already deleted.ß
-        enhanceDeletionRange(edits, content, blockIndex);
     } else if (next?.range) {
         // there could be whitespace to the next element which should be removed
         edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
-    }
-}
-
-function enhanceDeletionRange(edits: TextEdit[], content: ContainerContentBlock[], blockIndex: number) {
-    for (let i = blockIndex - 1; i > -1; i--) {
-        const prev = content[i];
-        if (edits.some((item) => isRangesEqual(item.range, prev.range))) {
-            // previous element is being deleted
-            // the space above it should be included in deletion scope
-            const beforePrev = content[i - 1];
-            if (beforePrev?.range) {
-                deletePreviousElementWhiteSpaces(beforePrev, prev, edits);
-            } else {
-                break;
-            }
-        } else {
-            break;
-        }
     }
 }
 
