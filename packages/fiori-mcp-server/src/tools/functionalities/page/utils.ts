@@ -1,3 +1,4 @@
+import { AppData } from '../../../page-editor-api';
 import type { PageDef } from './types';
 import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 
@@ -91,4 +92,14 @@ export function generatePageId(
         idx++;
     }
     return pageId;
+}
+
+/**
+ * Retrieves the Fiori Elements version for the given application.
+ *
+ * @param appData - The application data object containing configuration details.
+ * @returns The resolved Fiori Elements version.
+ */
+export function getFioriElementsVersion(appData: AppData) {
+    return appData.config.target?.fioriElements ?? FioriElementsVersion.v4;
 }

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ServiceOptions } from './service';
 import { Service } from './service';
 

@@ -65,6 +65,14 @@ beforeEach(() => {
 
 afterEach(() => jest.clearAllMocks());
 
+const getMockAppJsonV2 = (fileName = 'two-pages-spec-app.json') => {
+    const fileContent = readFileSync(join(__dirname, 'test-data', fileName), 'utf8');
+    // Mock as v2 application
+    const appJson = JSON.parse(fileContent);
+    appJson.target.fioriElements = appJson.target.odata = 'v2';
+    return appJson;
+};
+
 describe('add-page', () => {
     describe('getFunctionalityDetails', () => {
         test('case 1: Invalid project root or app path', async () => {
@@ -104,6 +112,20 @@ describe('add-page', () => {
                 {
                     dataSourceUri: 'app.json',
                     fileContent
+                }
+            ]);
+            const result = await addPageHandlers.getFunctionalityDetails({
+                appPath,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
+            });
+            expect(result).toMatchSnapshot();
+        });
+        test('case 4: v2', async () => {
+            const appJson = getMockAppJsonV2('two-pages-spec-app.json');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent: JSON.stringify(appJson)
                 }
             ]);
             const result = await addPageHandlers.getFunctionalityDetails({
@@ -391,13 +413,6 @@ describe('add-page', () => {
         });
 
         describe('v2', () => {
-            const getMockAppJson = () => {
-                const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-                // Mock as v2 application
-                const appJson = JSON.parse(fileContent);
-                appJson.target.fioriElements = appJson.target.odata = 'v2';
-                return appJson;
-            };
             beforeEach(() => {
                 const manifestDestPath = join(copyProjectRoot, 'app', 'managetravels', 'webapp', 'manifest.json');
                 const manifestData = JSON.parse(readFileSync(manifestDestPath, 'utf8'));
@@ -405,7 +420,7 @@ describe('add-page', () => {
                 writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
             });
             test('Add page', async () => {
-                const appJson = getMockAppJson();
+                const appJson = getMockAppJsonV2();
                 importProjectMock.mockResolvedValue([
                     {
                         dataSourceUri: 'app.json',
@@ -454,7 +469,7 @@ describe('add-page', () => {
             });
 
             test('Add page when navigation is not set in parent', async () => {
-                const appJson = getMockAppJson();
+                const appJson = getMockAppJsonV2();
                 delete appJson.pages['TravelsObjectPage'].navigation;
                 importProjectMock.mockResolvedValue([
                     {
@@ -494,7 +509,7 @@ describe('add-page', () => {
             });
 
             test('Add page when no any page', async () => {
-                const appJson = getMockAppJson();
+                const appJson = getMockAppJsonV2();
                 delete appJson.pages;
                 importProjectMock.mockResolvedValue([
                     {
@@ -507,18 +522,18 @@ describe('add-page', () => {
                     functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {
                         entitySet: 'Travels',
-                        pageType: 'ListReport'
+                        pageType: 'ObjectPage'
                     }
                 });
                 expect(exportConfigMock).toHaveBeenCalledTimes(1);
                 const updatedAppConfig = exportConfigMock.mock.calls[0];
                 const pages = updatedAppConfig[0].v2.Application.application.pages;
                 expect(pages).toEqual({
-                    'ListReport_Travels': {
+                    'ObjectPage_Travels': {
                         entitySet: 'Travels',
                         navigation: {},
                         navigationProperty: 'Travels',
-                        pageType: 'ListReport'
+                        pageType: 'ObjectPage'
                     }
                 });
             });

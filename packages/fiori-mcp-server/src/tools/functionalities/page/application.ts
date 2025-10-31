@@ -1,16 +1,15 @@
-import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { CustomExtensionType, PageTypeV4, FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
 import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types';
 import { getService } from './serviceStore';
 import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
 import { MissingNavigationReason } from './types';
-import { generatePageId } from './utils';
+import { generatePageId, getFioriElementsVersion } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
 import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification/dist/types/src';
-import { FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
 import { getDefaultExtensionFolder } from '../../utils';
 
 /**
@@ -51,7 +50,7 @@ export class Application {
         this.appData = appData;
         this.appId = appId;
         this.applicationAccess = applicationAccess;
-        this.version = appData.config.target?.fioriElements ?? FioriElementsVersion.v4;
+        this.version = getFioriElementsVersion(appData);
     }
 
     /**
