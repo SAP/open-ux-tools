@@ -9,9 +9,11 @@ import {
     createDeleteAnnotationChange,
     createDeleteAnnotationGroupChange,
     createDeleteAnnotationGroupItemsChange,
+    createDeleteRecordChange,
     createDeleteTargetChange,
     createInsertAnnotationChange,
-    createInsertRecordPropertyChange
+    createInsertRecordPropertyChange,
+    createMoveCollectionChange
 } from '../../../src/cds/change';
 import { CDSWriter } from '../../../src/cds/writer';
 
@@ -3654,6 +3656,46 @@ annotate S.E with {
         });
     });
     describe('move collection value', () => {
+        test('same collection and delete first', async () => {
+            const fixture = `
+            Service S { entity E {}; };
+            annotate S.E with @(
+                UI.LineItem: [
+                    {
+                        Value: value1,
+                    },
+                    {
+                        Value: value2,
+                    },
+                    {
+                        Value: value3,
+                    },
+                ]
+            );`;
+            await testWriter(
+                fixture,
+                [
+                    createMoveCollectionChange(
+                        '/targets/0/assignments/0/value',
+                        ['/targets/0/assignments/0/value/items/2'],
+                        1
+                    ),
+                    createDeleteRecordChange('/targets/0/assignments/0/value/items/0')
+                ],
+                `
+            Service S { entity E {}; };
+            annotate S.E with @(
+                UI.LineItem: [
+                    {
+                        Value: value3,
+                    },
+                    {
+                        Value: value2,
+                    },
+                ]
+            );`
+            );
+        });
         test('same collection', async () => {
             const fixture = `
             Service S { entity E {}; };
