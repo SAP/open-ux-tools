@@ -1,12 +1,11 @@
-import path from 'path';
-import type { FSWatcher } from 'fs';
-import fs, { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
-import { plural } from 'pluralize';
+import path from 'node:path';
+import type { FSWatcher } from 'node:fs';
+import fs, { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import type { DataAccess } from '.';
 import type { Logger } from '@sap-ux/logger';
-import { errorInstance, getFioriToolsDirectory } from '../utils';
+import { errorInstance, getEntityFileName, getFioriToolsDirectory, toPersistenceName } from '../utils';
 import type { ServiceOptions } from '../types';
-import os from 'os';
+import os from 'node:os';
 import type { Entity } from '../constants';
 
 export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): string => {
@@ -218,20 +217,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
             }
         }
     }
-}
-
-/**
- * Trims, lowercases and returns plural if a non-empty string
- *
- * @param s
- */
-function toPersistenceName(s: string): string | undefined {
-    const t = s?.trim().toLowerCase();
-    return t && plural(t);
-}
-
-function getEntityFileName(entityName: string): string {
-    return toPersistenceName(entityName) + '.json';
 }
 
 /** Return an FSWatcher for a given entity name

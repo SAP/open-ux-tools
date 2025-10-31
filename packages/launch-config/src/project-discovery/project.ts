@@ -1,5 +1,5 @@
-import { promises as fs } from 'fs';
-import { basename, join } from 'path';
+import { promises as fs } from 'node:fs';
+import { basename, join } from 'node:path';
 import type { Manifest, ODataVersion, Package } from '@sap-ux/project-access';
 import { DirName, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { parse } from 'jsonc-parser';

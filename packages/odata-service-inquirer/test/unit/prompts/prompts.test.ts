@@ -4,7 +4,6 @@ import { getQuestions } from '../../../src/prompts';
 import { DatasourceType } from '../../../src/types';
 import * as utils from '../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -16,14 +15,10 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
-}));
-
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',
@@ -43,10 +38,6 @@ describe('getQuestions', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
-    });
-
-    beforeEach(() => {
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     afterEach(() => {

@@ -6,18 +6,10 @@ import type { BackendSystem } from '@sap-ux/store';
 import * as abapOnBtpQuestions from '../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
-}));
-
 describe('questions', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
-    });
-
-    beforeEach(() => {
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return expected questions', () => {
@@ -129,10 +121,6 @@ describe('questions', () => {
                     "value": "cloudFoundry",
                   },
                   {
-                    "name": "Upload a Service Key File",
-                    "value": "serviceKey",
-                  },
-                  {
                     "name": "Use Reentrance Ticket",
                     "value": "reentranceTicket",
                   },
@@ -152,18 +140,6 @@ describe('questions', () => {
                 },
                 "message": "System URL",
                 "name": "abapOnBtp:newSystemUrl",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
-                  "mandatory": true,
-                },
-                "guiType": "file-browser",
-                "message": "Service Key File Path",
-                "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],

@@ -1,5 +1,57 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.28
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/mockserver-config-writer@0.9.24
+
+## 0.27.27
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/mockserver-config-writer@0.9.23
+
+## 0.27.26
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/mockserver-config-writer@0.9.22
+
+## 0.27.25
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/mockserver-config-writer@0.9.21
+    -   @sap-ux/project-access@1.32.4
+
+## 0.27.24
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/mockserver-config-writer@0.9.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+
+## 0.27.23
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/mockserver-config-writer@0.9.19
+    -   @sap-ux/project-access@1.32.2
+
 ## 0.27.22
 
 ### Patch Changes

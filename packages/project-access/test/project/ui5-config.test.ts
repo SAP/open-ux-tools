@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import {
@@ -35,13 +35,14 @@ describe('Test getAllUi5YamlFileNames()', () => {
         memFs.write(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-something.yaml'), 'yet another test');
         memFs.delete(join(samplesRoot, 'default-with-ui5-yaml', 'ui5-custom.yaml'));
 
-        expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
+        const result = await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs);
+        expect(result.sort()).toMatchInlineSnapshot(`
             Array [
               "ui5-custom-multi.yaml",
               "ui5-local.yaml",
               "ui5-mock.yaml",
-              "ui5.yaml",
               "ui5-something.yaml",
+              "ui5.yaml",
             ]
         `);
     });

@@ -1,4 +1,4 @@
-import { join, sep } from 'path';
+import { join, sep } from 'node:path';
 import type { Package } from '../../src';
 import { FileName, getNodeModulesPath } from '../../src';
 import { addPackageDevDependency, hasDependency } from '../../src/project/dependencies';

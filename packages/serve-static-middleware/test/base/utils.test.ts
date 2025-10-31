@@ -1,5 +1,5 @@
 import { resolveServeStaticOptions, resolveSrcPath } from '../../src/base/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 
 describe('utils', () => {
     test('resolveServeStaticOptions: global options', () => {

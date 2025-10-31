@@ -1,30 +1,33 @@
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import type { ServerOptions } from 'http-proxy';
-import type { RequestHandler, Options } from 'http-proxy-middleware';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import i18n from 'i18next';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import type { Logger } from '@sap-ux/logger';
-import { ToolsLogger } from '@sap-ux/logger';
 import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
-import {
-    isAppStudio,
-    getDestinationUrlForAppStudio,
-    getCredentialsForDestinationService,
-    listDestinations,
-    isFullUrlDestination,
-    BAS_DEST_INSTANCE_CRED_HEADER
-} from '@sap-ux/btp-utils';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import {
+    BAS_DEST_INSTANCE_CRED_HEADER,
+    getCredentialsForDestinationService,
+    getDestinationUrlForAppStudio,
+    isAppStudio,
+    isFullUrlDestination,
+    listDestinations
+} from '@sap-ux/btp-utils';
+import { ToolsLogger, UI5ToolingTransport, type Logger } from '@sap-ux/logger';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ServerOptions } from 'http-proxy';
+import type { Options, RequestHandler } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import i18n from 'i18next';
 import translations from './i18n.json';
-
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
-import { updateProxyEnv } from './config';
-import type { Url } from 'url';
-import { addOptionsForEmbeddedBSP } from '../ext/bsp';
+import type connect from 'connect';
+import type { Request } from 'express';
+import type { Socket } from 'node:net';
+import type { Url } from 'node:url';
 import { getProxyForUrl } from 'proxy-from-env';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp';
+import { updateProxyEnv } from './config';
+
+export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
 /**
  * Collection of custom event handler for the proxy.
@@ -38,7 +41,7 @@ export const ProxyEventHandlers = {
      * @param _res (not used)
      * @param _options (not used)
      */
-    onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions) {
+    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
@@ -51,7 +54,7 @@ export const ProxyEventHandlers = {
      * @param _req (not used) original request
      * @param _res (not used)
      */
-    onProxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse) {
+    proxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse): void {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
@@ -78,7 +81,7 @@ export function proxyErrorHandler(
     err: Error & { code?: string },
     req: IncomingMessage & { next?: Function; originalUrl?: string },
     logger: ToolsLogger,
-    _res?: ServerResponse,
+    _res?: ServerResponse | Socket,
     _target?: string | Partial<Url>
 ): void {
     if (err && err.stack?.toLowerCase() !== 'error') {
@@ -123,7 +126,18 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
  */
 export const PathRewriters = {
     /**
-     * Generates a rewrite funtion that replace the match string with the prefix in the given string.
+     * Generates a rewrite function that replaces the matched string with '/manifest.json'.
+     *
+     * @param bspPath the bsp path from the yaml config
+     * @returns a path rewrite function
+     */
+    convertAppDescriptorToManifest(bspPath: string): (path: string) => string {
+        const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
+        return (path: string) => (path.match(regex) ? '/manifest.json' : path);
+    },
+
+    /**
+     * Generates a rewrite function that replaces the matched string with the prefix in the given string.
      *
      * @param match part of the path that is to be replaced
      * @param prefix new path that is used as replacement
@@ -134,7 +148,7 @@ export const PathRewriters = {
     },
 
     /**
-     * Add or replace the sap-client url parameter if missing or inocrrect in the original request path.
+     * Add or replace the sap-client url parameter if missing or incorrect in the original request path.
      *
      * @param client sap-client as string
      * @returns a path rewrite function
@@ -157,18 +171,28 @@ export const PathRewriters = {
      * @param log logger instance
      * @returns a path rewrite function
      */
-    getPathRewrite(config: BackendConfig, log: Logger): ((path: string) => string) | undefined {
-        const functions: ((path: string) => string)[] = [];
+    getPathRewrite(config: BackendConfig, log: Logger): (path: string, req: IncomingMessage) => string {
+        const functions: ((path: string, req: EnhancedIncomingMessage) => string)[] = [];
+        functions.push((path, req) => {
+            // ensure that the path starts with the configured path
+            // it might get lost when you nest router instances
+            return req.originalUrl?.includes(path) ? req.originalUrl : path;
+        });
         if (config.pathReplace) {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
         if (config.client) {
             functions.push(PathRewriters.replaceClient(config.client));
         }
+        if (config.bsp) {
+            functions.push(PathRewriters.convertAppDescriptorToManifest(config.bsp));
+        }
         if (functions.length > 0) {
-            return (path: string) => {
+            return (path: string, req: IncomingMessage) => {
                 let newPath = path;
-                functions.forEach((func) => (newPath = func(newPath)));
+                for (const func of functions) {
+                    newPath = func(newPath, req as EnhancedIncomingMessage);
+                }
                 if (newPath !== path) {
                     log.info(`Rewrite path ${path} > ${newPath}`);
                 } else {
@@ -208,7 +232,7 @@ export async function initI18n(): Promise<void> {
  * Enhance the proxy options and backend configurations for the usage of destinations in SAP Business Application Studio.
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
- * @param backend reference to the backend configuration that the the function may enhance
+ * @param backend reference to the backend configuration that the function may enhance
  */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options & { headers: object },
@@ -229,7 +253,7 @@ export async function enhanceConfigsForDestination(
                 backend.pathReplace = backend.pathReplace ?? '/';
             }
         } else {
-            throw new Error();
+            throw new Error('Destination not found. Please check your configuration or user role assignment.');
         }
     }
 }
@@ -239,16 +263,16 @@ export async function enhanceConfigsForDestination(
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param system backend system information (most likely) read from the store
- * @param oAuthRequired if true then the OAuth flow is triggered to get cookies
+ * @param authType determines the authentication protocol to be used
  * @param tokenChangedCallback function to call if a new refreshToken is available
  */
 export async function enhanceConfigForSystem(
     proxyOptions: Options & { headers: object },
     system: BackendSystem | undefined,
-    oAuthRequired: boolean | undefined,
+    authType: AuthenticationType,
     tokenChangedCallback: (refreshToken?: string) => void
 ): Promise<void> {
-    if (oAuthRequired) {
+    if (authType === AuthenticationType.OAuth2RefreshToken) {
         if (system?.serviceKeys) {
             const provider = createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
@@ -256,12 +280,15 @@ export async function enhanceConfigForSystem(
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
-            // sending a request to the backend to get token
-            await provider.getAtoInfo();
+            // sending a request to the backend to get cookies
+            const ato = await provider.getAtoInfo();
+            if (ato) {
+                proxyOptions.headers['cookie'] = provider.cookies.toString();
+            }
         } else {
-            throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
+            throw new Error('Cannot connect to ABAP Environment on BTP using OAuth without service keys.');
         }
-    } else if (system?.authenticationType === AuthenticationType.ReentranceTicket) {
+    } else if (system && authType === AuthenticationType.ReentranceTicket) {
         const provider = createForAbapOnCloud({
             ignoreCertErrors: proxyOptions.secure === false,
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
@@ -288,28 +315,29 @@ export async function enhanceConfigForSystem(
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
     options: Options = {},
-    logger: ToolsLogger = new ToolsLogger()
+    logger: ToolsLogger = new ToolsLogger({
+        transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
+    })
 ): Promise<Options> {
     // add required options
     const proxyOptions: Options & { headers: object } = {
         headers: {},
-        ...ProxyEventHandlers,
-        onError: (
-            err: Error & { code?: string },
-            req: IncomingMessage & { next?: Function; originalUrl?: string },
-            res: ServerResponse,
-            target: string | Partial<Url> | undefined
-        ) => {
-            proxyErrorHandler(err, req, logger, res, target);
+        on: {
+            error: (
+                err: Error & { code?: string },
+                req: IncomingMessage & { next?: Function; originalUrl?: string },
+                res: ServerResponse | Socket,
+                target: string | Partial<Url> | undefined
+            ) => {
+                proxyErrorHandler(err, req, logger, res, target);
+            },
+            ...ProxyEventHandlers
         },
-        ...options
+        ...options,
+        changeOrigin: true,
+        target: backend.url
+        //'pathRewrite' will be set later because it depends on subsequent settings
     };
-    proxyOptions.changeOrigin = true;
-    proxyOptions.logProvider = () => logger;
-
-    // always set the target to the url provided in yaml
-    proxyOptions.target = backend.url;
-
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
         const destBackend = backend as DestinationBackendConfig;
@@ -319,45 +347,14 @@ export async function generateProxyMiddlewareOptions(
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
-        const localBackend = backend as LocalBackendConfig;
-        // check if system credentials are stored in the store
-        try {
-            const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-            const system = (await systemStore.read(
-                new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
-            )) ?? {
-                name: '<unknown>',
-                url: localBackend.url,
-                authenticationType: localBackend.authenticationType
-            };
-            await enhanceConfigForSystem(
-                proxyOptions,
-                system,
-                backend.scp,
-                (refreshToken?: string, accessToken?: string) => {
-                    if (refreshToken) {
-                        logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
-                    }
-
-                    if (accessToken) {
-                        logger.info('Setting access token');
-                        proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
-                    } else {
-                        logger.warn('Setting of access token failed.');
-                    }
-                }
-            );
-        } catch (error) {
-            logger.warn('Accessing the credentials store failed.');
-            logger.debug(error as object);
-        }
+        await updateProxyConfigFromStore(backend, logger, proxyOptions);
     }
 
     if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
         proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
     }
 
+    // IMPORTANT: setting the pathRewrite must (!) be done after 'enhanceConfigsForDestination' because this function possibly modifies 'backend.path' and 'backend.pathReplace' that is being used in the pathRewrite
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
 
     if (backend.bsp) {
@@ -377,13 +374,62 @@ export async function generateProxyMiddlewareOptions(
 
     // update proxy config with values coming from args or ui5.yaml
     updateProxyEnv(backend.proxy);
-    backend.proxy = getProxyForUrl(proxyOptions.target);
+    backend.proxy = getProxyForUrl(proxyOptions.target as string);
     if (backend.proxy) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
-    logger.info(`Backend proxy created for ${proxyOptions.target} ${backend.path ? backend.path : ''}`);
+    logger.info(`Backend proxy created for ${proxyOptions.target}`);
     return proxyOptions;
+}
+
+/**
+ * Determine the correct authentication configuration for connections from a non-BAS platform.
+ *
+ * @param backend the backend config loaded from the yaml config
+ * @param logger a logger instance
+ * @param proxyOptions additional proxy header, request and response settings
+ */
+async function updateProxyConfigFromStore(
+    backend: BackendConfig,
+    logger: ToolsLogger,
+    proxyOptions: Options<IncomingMessage, ServerResponse<IncomingMessage>> & { headers: object }
+) {
+    const localBackend = backend as LocalBackendConfig;
+    // check if system credentials are stored in the store
+    try {
+        const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+        const system = (await systemStore.read(
+            new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
+        )) ?? {
+            name: '<unknown>',
+            url: localBackend.url,
+            authenticationType: localBackend.authenticationType
+        };
+        // Auth type is determined from app config as we may have multiple stored systems with the same url/client using different auth types
+        await enhanceConfigForSystem(
+            proxyOptions,
+            system,
+            localBackend.authenticationType ??
+                (localBackend.scp ? AuthenticationType.OAuth2RefreshToken : AuthenticationType.Basic),
+            (refreshToken?: string, accessToken?: string) => {
+                if (refreshToken) {
+                    logger.info('Updating refresh token for: ' + localBackend.url);
+                    systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
+                }
+
+                if (accessToken) {
+                    logger.info('Setting access token');
+                    proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
+                } else {
+                    logger.warn('Setting of access token failed.');
+                }
+            }
+        );
+    } catch (error) {
+        logger.warn('Accessing the credentials store failed.');
+        logger.debug(error as object);
+    }
 }
 
 /**

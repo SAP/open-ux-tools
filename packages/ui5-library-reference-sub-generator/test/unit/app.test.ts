@@ -1,6 +1,6 @@
 import yeomanTest from 'yeoman-test';
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import fsextra from 'fs-extra';
 import RefLibGenerator from '../../src/app';
 import { reuseLibs } from './util/constants';
@@ -45,7 +45,7 @@ jest.mock('yeoman-test/lib/adapter', () => ({
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
-    rimraf.sync(testOutputDir);
+    rimraf.rimrafSync(testOutputDir);
 });
 
 describe('Test reference generator', () => {

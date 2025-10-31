@@ -23,7 +23,7 @@ import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from
 import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
 import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';

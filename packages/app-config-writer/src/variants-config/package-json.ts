@@ -1,4 +1,4 @@
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import { getRTAUrlParameters, getRTAUrl } from './utils';
 import { getCLIForPreview } from '../common/utils';
 import type { Editor } from 'mem-fs-editor';

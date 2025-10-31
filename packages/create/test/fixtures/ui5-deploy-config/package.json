@@ -25,7 +25,7 @@
         "@ui5/fs": "^2.0.6",
         "@ui5/logger": "^2.0.1",
         "@sap/ux-ui5-tooling": "1",
-        "rimraf": "5.0.5",
+        "rimraf": "6.0.1",
         "@sap/ux-specification": "UI5-1.91",
         "@sap/ux-ui5-fe-mockserver-middleware": "1"
     },

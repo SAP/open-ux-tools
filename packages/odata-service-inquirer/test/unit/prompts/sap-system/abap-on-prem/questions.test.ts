@@ -6,6 +6,7 @@ import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/s
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { promptNames } from '../../../../../src/types';
 import { PromptState } from '../../../../../src/utils';
+import * as utils from '../../../../../src/utils';
 import type { InputQuestion } from '@sap-ux/inquirer-common';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
@@ -207,12 +208,31 @@ describe('questions', () => {
         expect(await (userSystemNamePrompt?.when as Function)({ [systemUrlPromptName]: systemUrl })).toBe(true);
     });
 
+    test('Should not show an existing system validation error (since it is shown with client prompt)', async () => {
+        const isBackendSystemKeyExistingSpy = jest.spyOn(utils, 'isBackendSystemKeyExisting');
+        const systemUrl = 'http://some.abap.system:1234';
+        const systemUrlPromptName = `abapOnPrem:${newSystemPromptNames.newSystemUrl}`;
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const systemUrlQuestion = newSystemQuestions.find((question) => question.name === systemUrlPromptName);
+        expect(await (systemUrlQuestion?.validate as Function)('')).toBe(true);
+        expect(isBackendSystemKeyExistingSpy).not.toHaveBeenCalled();
+    });
+
     test('Should validate sap-client input', () => {
+        jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue({
+            name: 'System1234',
+            url: 'http://some.system.hos'
+        });
         const newSystemQuestions = getAbapOnPremQuestions();
         const sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);
         expect((sapClientPrompt?.validate as Function)('')).toBe(true);
         expect((sapClientPrompt?.validate as Function)('123')).toBe(true);
         expect((sapClientPrompt?.validate as Function)('123x')).toEqual(expect.any(String));
+
+        // Should show an existing system warning for client prompt when abap on prem url provided for an existing system (non-BAS)
+        expect(
+            (sapClientPrompt?.validate as Function)('123', { 'abapOnPrem:newSystemUrl': 'http://some.system.host' })
+        ).toEqual(t('prompts.validationMessages.backendSystemExistsWarning', { backendName: 'System1234' }));
     });
 
     test('Should show `NODE_TLD_REJECT_UNAUTHORIZED` warning if set when bypassing certificate errors', async () => {

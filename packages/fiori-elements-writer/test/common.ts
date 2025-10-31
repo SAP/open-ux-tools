@@ -1,10 +1,10 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join, dirname } from 'path';
+import { join, dirname } from 'node:path';
 import {
     TableType,
     type FEOPSettings,

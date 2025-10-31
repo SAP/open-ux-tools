@@ -85,6 +85,26 @@ export function removeTimestampFromVersion(version: string): string {
 }
 
 /**
+ * Removes the '-snapshot' suffix from a version string's patch number.
+ * Converts version strings like '1.96.0-snapshot' to '1.96.0' by cleaning
+ * the patch part of any snapshot designation.
+ *
+ * @param {string} version - The version string that may include '-snapshot' in the patch number.
+ * @returns {string} The version string with the snapshot suffix removed from the patch number.
+ * @example
+ * ```typescript
+ * removeSnapshotFromVersion('1.96.0-snapshot'); // Returns '1.96.0'
+ * removeSnapshotFromVersion('1.87.3-SNAPSHOT'); // Returns '1.87.3' (case-insensitive)
+ * removeSnapshotFromVersion('1.120.1');         // Returns '1.120.1' (no change)
+ * ```
+ */
+export function removeSnapshotFromVersion(version: string): string {
+    const versionParts = version.split('.');
+    const patchNumber = versionParts[2].toLowerCase().replace('-snapshot', '');
+    return `${versionParts[0]}.${versionParts[1]}.${patchNumber}`;
+}
+
+/**
  * Conditionally appends a '-snapshot' suffix to a version string if certain criteria are met.
  * The suffix is added only if the version string includes an unreleased snapshot version.
  * For example, it adds '-snapshot' if the version from the system includes a timestamp and differs from the latest released version.
@@ -106,9 +126,9 @@ export function addSnapshot(version: string, latestVersion: string): string {
  */
 export function parseUI5Version(version: string): { major: number; minor: number; patch: number } {
     const versionParts = version ? version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.') : [];
-    const major = parseInt(versionParts[0], 10);
-    const minor = parseInt(versionParts[1], 10);
-    const patch = parseInt(versionParts[2], 10);
+    const major = Number.parseInt(versionParts[0], 10);
+    const minor = Number.parseInt(versionParts[1], 10);
+    const patch = Number.parseInt(versionParts[2], 10);
 
     return { major, minor, patch };
 }
@@ -134,7 +154,7 @@ export function isFeatureSupportedVersion(featureVersion: string, version?: stri
     } = parseUI5Version(featureVersion);
     const { major, minor, patch } = parseUI5Version(version);
 
-    if (isNaN(major) && isNaN(minor) && isNaN(patch)) {
+    if (Number.isNaN(major) && Number.isNaN(minor) && Number.isNaN(patch)) {
         return true;
     }
 

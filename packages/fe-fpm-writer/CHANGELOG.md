@@ -1,5 +1,128 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.15
+
+### Patch Changes
+
+-   0cff26e: Added new API method `generateCustomField` to support custom field generation.
+
+## 0.39.14
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/fiori-annotation-api@0.7.10
+
+## 0.39.13
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
+## 0.39.12
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/fiori-annotation-api@0.7.9
+
+## 0.39.11
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/fiori-annotation-api@0.7.8
+
+## 0.39.10
+
+### Patch Changes
+
+-   6debb89: incorrect entity list rich text editor fix
+
+## 0.39.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.7.7
+
+## 0.39.8
+
+### Patch Changes
+
+-   43dc48c: Add custom columns for building blocks
+
+## 0.39.7
+
+### Patch Changes
+
+-   Updated dependencies [1443680]
+    -   @sap-ux/fiori-annotation-api@0.7.6
+
+## 0.39.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/fiori-annotation-api@0.7.5
+
+## 0.39.5
+
+### Patch Changes
+
+-   Updated dependencies [376daf5]
+    -   @sap-ux/fiori-annotation-api@0.7.4
+
+## 0.39.4
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-annotation-api@0.7.3
+    -   @sap-ux/project-access@1.32.3
+
+## 0.39.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/fiori-annotation-api@0.7.2
+
+## 0.39.2
+
+### Patch Changes
+
+-   99ec164: Remove button group configuration from Rich Text Editor template for initial version
+
+## 0.39.1
+
+### Patch Changes
+
+-   Updated dependencies [321b09e]
+    -   @sap-ux/fiori-annotation-api@0.7.1
+
+## 0.39.0
+
+### Minor Changes
+
+-   1276258: Add support for Rich text editor
+
+## 0.38.11
+
+### Patch Changes
+
+-   d553f8e: Binding Context Type Choices Should Be Alphabetically Ordered
+
+## 0.38.10
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/fiori-annotation-api@0.7.0
+
 ## 0.38.9
 
 ### Patch Changes

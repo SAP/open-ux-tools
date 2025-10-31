@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';

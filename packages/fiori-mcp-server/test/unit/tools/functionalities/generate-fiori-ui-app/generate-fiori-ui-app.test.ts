@@ -1,6 +1,6 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
-import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/command';
+import type { GeneratorConfigCAP } from '../../../../../src/tools/functionalities/generate-fiori-ui-app/schema';
 import packageJson from '../../../../../package.json';
 
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
@@ -23,7 +23,7 @@ import {
     GENERATE_FIORI_UI_APP,
     generateFioriUIAppHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
-import { existsSync, promises as fsPromises } from 'fs';
+import { existsSync, promises as fsPromises } from 'node:fs';
 
 // Mock child_process.exec
 const mockExec = jest.fn();
@@ -39,7 +39,7 @@ describe('getFunctionalityDetails', () => {
             appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.functionalityId
         });
-        expect(details).toEqual(GENERATE_FIORI_UI_APP);
+        expect(details).toMatchSnapshot();
     });
 });
 const paramTest: GeneratorConfigCAP = {
@@ -52,11 +52,7 @@ const paramTest: GeneratorConfigCAP = {
         description: 'Description for App 1',
         ui5Theme: 'sap_horizon',
         ui5Version: '1.136.7',
-        localUI5Version: '1.136.7',
-        skipAnnotations: false,
-        enableCodeAssist: true,
-        enableEslint: true,
-        enableTypeScript: true
+        localUI5Version: '1.136.7'
     },
     service: {
         capService: {
@@ -117,13 +113,9 @@ describe('executeFunctionality', () => {
                     floorplan: 'FE_LROP',
                     project: {
                         description: 'Description for App 1',
-                        enableCodeAssist: true,
-                        enableEslint: true,
-                        enableTypeScript: true,
                         localUI5Version: '1.136.7',
                         name: 'app1',
                         'namespace': 'zzz',
-                        'skipAnnotations': false,
                         targetFolder: join(testOutputDir, 'app1'),
                         'title': 'App 1',
                         'ui5Theme': 'sap_horizon',
@@ -162,14 +154,10 @@ describe('executeFunctionality', () => {
             'floorplan': 'FE_LROP',
             'project': {
                 'description': 'Description for App 1',
-                'enableCodeAssist': true,
-                'enableEslint': true,
-                'enableTypeScript': true,
                 'localUI5Version': '1.136.7',
                 'name': 'app1',
                 'namespace': 'zzz',
                 'sapux': true,
-                'skipAnnotations': false,
                 'targetFolder': join(testOutputDir, 'app1'),
                 'title': 'App 1',
                 'ui5Theme': 'sap_horizon',
@@ -250,18 +238,18 @@ describe('executeFunctionality', () => {
                 {
                     \\"code\\": \\"invalid_value\\",
                     \\"values\\": [
-                        \\"FE_FPM\\",
                         \\"FE_LROP\\",
+                        \\"FE_FEOP\\",
+                        \\"FE_FPM\\",
                         \\"FE_OVP\\",
                         \\"FE_ALP\\",
-                        \\"FE_FEOP\\",
                         \\"FE_WORKLIST\\",
                         \\"FF_SIMPLE\\"
                     ],
                     \\"path\\": [
                         \\"floorplan\\"
                     ],
-                    \\"message\\": \\"Invalid option: expected one of \\\\\\"FE_FPM\\\\\\"|\\\\\\"FE_LROP\\\\\\"|\\\\\\"FE_OVP\\\\\\"|\\\\\\"FE_ALP\\\\\\"|\\\\\\"FE_FEOP\\\\\\"|\\\\\\"FE_WORKLIST\\\\\\"|\\\\\\"FF_SIMPLE\\\\\\"\\"
+                    \\"message\\": \\"Invalid option: expected one of \\\\\\"FE_LROP\\\\\\"|\\\\\\"FE_FEOP\\\\\\"|\\\\\\"FE_FPM\\\\\\"|\\\\\\"FE_OVP\\\\\\"|\\\\\\"FE_ALP\\\\\\"|\\\\\\"FE_WORKLIST\\\\\\"|\\\\\\"FF_SIMPLE\\\\\\"\\"
                 },
                 {
                     \\"expected\\": \\"object\\",
@@ -317,9 +305,17 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        await expect(
-            generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput)
-        ).rejects.toThrowErrorMatchingInlineSnapshot('"Unknown error. Recheck input parameters."');
+        await expect(generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput))
+            .rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Missing required fields in parameters. [
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                }
+            ]"
+        `);
     });
 
     test('executeFunctionality - servicePath normalization without leading slash', async () => {

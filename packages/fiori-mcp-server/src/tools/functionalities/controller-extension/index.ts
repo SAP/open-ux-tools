@@ -6,48 +6,19 @@ import type {
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
-    GetFunctionalityDetailsOutput,
-    Parameter
+    GetFunctionalityDetailsOutput
 } from '../../../types';
-import { getDefaultExtensionFolder, resolveApplication } from '../../utils';
-import { join } from 'path';
+import { convertToSchema, getDefaultExtensionFolder, resolveApplication, validateWithSchema } from '../../utils';
+import { join } from 'node:path';
 import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant';
-
-/**
- * Retrieves the parameter definitions for creating a controller extension.
- *
- * @returns An object containing parameter definitions for pageType, pageId, and controllerName.
- */
-function getParameters(): { pageType: Parameter; pageId: Parameter; controllerName: Parameter } {
-    return {
-        pageType: {
-            id: 'pageType',
-            type: 'string',
-            description: 'Type of page',
-            options: ['ListReport', 'ObjectPage'],
-            defaultValue: 'ListReport',
-            required: true
-        },
-        pageId: {
-            id: 'pageId',
-            type: 'string',
-            description: 'If controller extenison should be assigned for specific page, then pageId should be provided'
-        },
-        controllerName: {
-            id: 'controllerName',
-            type: 'string',
-            description: 'Name of new controller extension file',
-            required: true
-        }
-    };
-}
+import { buildControllerExtensionSchema, ControllerExtensionCreationSchema } from './schema';
 
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,
     name: 'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry',
     description:
         'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.',
-    parameters: Object.values(getParameters())
+    parameters: convertToSchema(ControllerExtensionCreationSchema)
 };
 
 /**
@@ -57,26 +28,16 @@ export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsO
  * @returns A promise that resolves to the functionality details output.
  */
 async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Promise<GetFunctionalityDetailsOutput> {
-    const defaultParameters = getParameters();
     // Populate options for pageId
     const project = await resolveApplication(input.appPath);
-    let pageIds: string[] = [];
-    if (project?.applicationAccess) {
-        const ftfsFileIo = new SapuxFtfsFileIO(project.applicationAccess);
-        const appData = await ftfsFileIo.readApp();
-        pageIds = Object.keys(appData.config.pages ?? {});
+    if (!project?.applicationAccess) {
+        throw new Error('Invalid Project Root or Application Path');
     }
-    const parameters: Parameter[] = [defaultParameters.pageType, defaultParameters.controllerName];
-    if (pageIds.length) {
-        parameters.push({
-            ...defaultParameters.pageId,
-            options: pageIds
-        });
-    }
+    const ftfsFileIo = new SapuxFtfsFileIO(project.applicationAccess);
 
     return {
         ...CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
-        parameters
+        parameters: convertToSchema(await buildControllerExtensionSchema(ftfsFileIo))
     };
 }
 
@@ -88,15 +49,16 @@ async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Pro
  */
 async function executeFunctionality(input: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
     const { parameters, appPath } = input;
-    const { pageId, controllerName, pageType } = parameters;
     const project = await resolveApplication(appPath);
     let changes: string[] = [];
-    if (!controllerName || typeof controllerName !== 'string') {
-        throw new Error('Missing or invalid parameter "controllerName"');
-    }
     if (project?.applicationAccess) {
         const { appId, root } = project;
         const ftfsFileIo = new SapuxFtfsFileIO(project.applicationAccess);
+        const parametersSchema = await buildControllerExtensionSchema(ftfsFileIo);
+
+        const creationParameters = validateWithSchema(parametersSchema, parameters);
+        const { pageId, controllerName, pageType } = creationParameters;
+
         const exensionPageType = await retrieveControllerExtensionPageType(ftfsFileIo, pageType, pageId);
 
         if (exensionPageType && typeof exensionPageType === 'string') {
@@ -141,7 +103,7 @@ async function retrieveControllerExtensionPageType(
     pageType?: unknown,
     pageId?: unknown
 ): Promise<ControllerExtensionPageType | undefined> {
-    if (!pageType && typeof pageId === 'string') {
+    if (pageId && typeof pageId === 'string') {
         // Find pageType for passed page id
         const appData = await appReader.readApp();
         pageType = appData.config.pages?.[pageId]?.pageType as string;

@@ -1,5 +1,35 @@
 # @sap-ux/store
 
+## 1.3.1
+
+### Patch Changes
+
+-   ae8dbc6: correction for merging systems added to legacy path
+
+## 1.3.0
+
+### Minor Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+
+## 1.2.1
+
+### Patch Changes
+
+-   f8c596d: Reverts removal of @sensitiveData for service keys property of backend systems
+
+## 1.2.0
+
+### Minor Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
+## 1.1.5
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
 ## 1.1.4
 
 ### Patch Changes

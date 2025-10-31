@@ -1,9 +1,9 @@
 import { generateOPAFiles, generatePageObjectFile } from '../../src/fiori-elements-opa-writer';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem from 'fs';
+import fileSystem from 'node:fs';
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;

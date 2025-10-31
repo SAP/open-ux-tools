@@ -1,5 +1,217 @@
 # @sap-ux/preview-middleware
 
+## 0.23.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.3
+-   @sap-ux/system-access@0.6.26
+
+## 0.23.40
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.2
+-   @sap-ux/system-access@0.6.25
+
+## 0.23.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.1
+-   @sap-ux/system-access@0.6.24
+
+## 0.23.38
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/adp-tooling@0.17.0
+    -   @sap-ux/system-access@0.6.23
+
+## 0.23.37
+
+### Patch Changes
+
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+
+## 0.23.36
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/adp-tooling@0.16.13
+    -   @sap-ux/system-access@0.6.22
+
+## 0.23.35
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/adp-tooling@0.16.12
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/system-access@0.6.22
+
+## 0.23.34
+
+### Patch Changes
+
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+
+## 0.23.33
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/adp-tooling@0.16.10
+    -   @sap-ux/system-access@0.6.21
+
+## 0.23.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.9
+
+## 0.23.31
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/adp-tooling@0.16.8
+    -   @sap-ux/system-access@0.6.21
+
+## 0.23.30
+
+### Patch Changes
+
+-   Updated dependencies [233259c]
+    -   @sap-ux/adp-tooling@0.16.7
+
+## 0.23.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.6
+-   @sap-ux/system-access@0.6.21
+
+## 0.23.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.5
+
+## 0.23.27
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.16.4
+
+## 0.23.26
+
+### Patch Changes
+
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+
+## 0.23.25
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+
+## 0.23.24
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/adp-tooling@0.16.1
+
+## 0.23.23
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/adp-tooling@0.16.0
+
+## 0.23.22
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+
+## 0.23.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+
+## 0.23.20
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+    -   @sap-ux/adp-tooling@0.15.36
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/system-access@0.6.19
+
+## 0.23.19
+
+### Patch Changes
+
+-   Updated dependencies [e015869]
+    -   @sap-ux/adp-tooling@0.15.35
+
+## 0.23.18
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.34
+
+## 0.23.17
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/system-access@0.6.19
+    -   @sap-ux/adp-tooling@0.15.33
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/i18n@0.3.4
+
+## 0.23.16
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.32
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/system-access@0.6.18
+
+## 0.23.15
+
+### Patch Changes
+
+-   a22b24e: enhance logging for remote connection of windows users
+
+## 0.23.14
+
+### Patch Changes
+
+-   998954b: Upgrade bas-sdk to get axios updates
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/adp-tooling@0.15.31
+    -   @sap-ux/system-access@0.6.18
+
 ## 0.23.13
 
 ### Patch Changes

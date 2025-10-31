@@ -7,15 +7,9 @@ import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { PromptState } from '../../../../../src/utils';
-import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap-system/validators';
 import type { ConnectedSystem } from '../../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import { url } from 'inspector';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
-
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
-}));
+import * as utils from '../../../../../src/utils';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -73,8 +67,6 @@ describe('questions', () => {
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.serviceProvider = serviceProviderMock;
         validateServiceInfoMock = true;
-        // Feature toggle disabled by default - service key shown
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return Abap on BTP questions', () => {
@@ -86,10 +78,6 @@ describe('questions', () => {
                   {
                     "name": "Discover a Cloud Foundry Service",
                     "value": "cloudFoundry",
-                  },
-                  {
-                    "name": "Upload a Service Key File",
-                    "value": "serviceKey",
                   },
                   {
                     "name": "Use Reentrance Ticket",
@@ -110,18 +98,6 @@ describe('questions', () => {
                 },
                 "message": "System URL",
                 "name": "abapOnBtp:newSystemUrl",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
-                  "mandatory": true,
-                },
-                "guiType": "file-browser",
-                "message": "Service Key File Path",
-                "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -180,63 +156,22 @@ describe('questions', () => {
             ]
         `);
     });
-    test.each([
-        {
-            description: 'should show the service key question when feature toggle is disabled (default)',
-            featureEnabled: false,
-            expectServiceKeyChoice: true,
-            expectServiceKeyPrompt: true
-        },
-        {
-            description: 'should hide the service key question when feature toggle is enabled',
-            featureEnabled: true,
-            expectServiceKeyChoice: false,
-            expectServiceKeyPrompt: false
-        }
-    ])('$description', ({ featureEnabled, expectServiceKeyChoice, expectServiceKeyPrompt }) => {
-        (isFeatureEnabled as jest.Mock).mockReturnValue(featureEnabled);
-
-        const questions = getAbapOnBTPSystemQuestions();
-        const authTypePrompt = questions.find((q) => q.name === 'abapOnBtpAuthType') as ListQuestion;
-
-        if (expectServiceKeyChoice) {
-            expect(authTypePrompt.choices).toContainEqual({
-                name: 'Upload a Service Key File',
-                value: 'serviceKey'
-            });
-        } else {
-            expect(authTypePrompt.choices).not.toContainEqual({
-                name: 'Upload a Service Key File',
-                value: 'serviceKey'
-            });
-        }
-
-        expect(questions.some((q) => q.name === 'serviceKey')).toBe(expectServiceKeyPrompt);
-    });
 
     test('should show the correct auth type prompt', () => {
         const newSystemQuestions = getAbapOnBTPSystemQuestions();
         const authTypePrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtpAuthType') as ListQuestion;
         expect(authTypePrompt.choices).toEqual([
             { name: 'Discover a Cloud Foundry Service', value: 'cloudFoundry' },
-            { name: 'Upload a Service Key File', value: 'serviceKey' },
             { name: 'Use Reentrance Ticket', value: 'reentranceTicket' }
         ]);
 
-        // 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
+        // 'cloudFoundry' | 'reentranceTicket';
         const reentranceTicketUrlPrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtp:newSystemUrl');
         expect((reentranceTicketUrlPrompt?.when as Function)({ 'abapOnBtpAuthType': 'reentranceTicket' })).toBe(true);
-        expect((reentranceTicketUrlPrompt?.when as Function)({ 'abapOnBtpAuthType': 'serviceKey' })).toBe(false);
         expect((reentranceTicketUrlPrompt?.when as Function)({ 'abapOnBtpAuthType': 'cloudFoundry' })).toBe(false);
-
-        const serviceKeyPrompt = newSystemQuestions.find((q) => q.name === 'serviceKey');
-        expect((serviceKeyPrompt?.when as Function)({ 'abapOnBtpAuthType': 'reentranceTicket' })).toBe(false);
-        expect((serviceKeyPrompt?.when as Function)({ 'abapOnBtpAuthType': 'serviceKey' })).toBe(true);
-        expect((serviceKeyPrompt?.when as Function)({ 'abapOnBtpAuthType': 'cloudFoundry' })).toBe(false);
 
         const cfAbapSysPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
         expect((cfAbapSysPrompt?.when as Function)({ 'abapOnBtpAuthType': 'reentranceTicket' })).toBe(false);
-        expect((cfAbapSysPrompt?.when as Function)({ 'abapOnBtpAuthType': 'serviceKey' })).toBe(false);
         expect((cfAbapSysPrompt?.when as Function)({ 'abapOnBtpAuthType': 'cloudFoundry' })).toBe(true);
     });
 
@@ -420,67 +355,6 @@ describe('questions', () => {
         expect(PromptState.odataService.connectedSystem).toBeUndefined();
     });
 
-    test('Service key prompt should validate service key and connect', async () => {
-        const serviceInfoMock: ServiceInfo = {
-            uaa: {
-                clientid: 'clientid1',
-                clientsecret: 'clientSecret1',
-                url: 'http://abap.on.btp:1234'
-            },
-            url: 'http://abap.on.btp:1234',
-            catalogs: {
-                abap: {
-                    path: 'path1',
-                    type: 'type1'
-                }
-            }
-        };
-        let validateServiceKeyFileMock = jest
-            .spyOn(sapSystemValidators, 'validateServiceKey')
-            .mockReturnValue(serviceInfoMock); // service key file is valid
-        validateServiceInfoMock = true; // connection is successful
-        let newSystemQuestions = getAbapOnBTPSystemQuestions();
-
-        let serviceKeyPrompt = newSystemQuestions.find((q) => q.name === 'serviceKey');
-        expect(await (serviceKeyPrompt?.validate as Function)('path/to/service/key')).toBe(true);
-        expect(validateServiceKeyFileMock).toHaveBeenCalledWith('path/to/service/key');
-        expect(PromptState.odataService).toEqual({ connectedSystem: { serviceProvider: serviceProviderMock } });
-
-        validateServiceKeyFileMock = jest
-            .spyOn(sapSystemValidators, 'validateServiceKey')
-            .mockReturnValue('invalid service key file'); // service key file is valid
-        expect(await (serviceKeyPrompt?.validate as Function)('path/to/service/key')).toBe('invalid service key file');
-
-        // Should connect using a cached connected system when provided
-        const backendSystemServiceKeys: BackendSystem = {
-            name: 'http://abap.on.btp:1234',
-            url: 'http://abap.on.btp:1234',
-            authenticationType: 'serviceKeys',
-            serviceKeys: {
-                uaa: serviceInfoMock.uaa,
-                url: serviceInfoMock.url,
-                systemid: 'abap_btp_001'
-            }
-        };
-        const cachedConnectedSystem: ConnectedSystem = {
-            serviceProvider: {
-                catalog: {}
-            } as unknown as AbapServiceProvider,
-            backendSystem: backendSystemServiceKeys
-        };
-
-        validateServiceKeyFileMock = jest
-            .spyOn(sapSystemValidators, 'validateServiceKey')
-            .mockReturnValue(serviceInfoMock); // service key file is valid
-        newSystemQuestions = getAbapOnBTPSystemQuestions(undefined, cachedConnectedSystem);
-        serviceKeyPrompt = newSystemQuestions.find((q) => q.name === 'serviceKey');
-        PromptState.reset();
-        validateServiceInfoMock = true;
-        expect(await ((serviceKeyPrompt as ListQuestion).validate as Function)('path/to/service/key')).toBe(true);
-        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
-        expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
-    });
-
     test('Reentrance ticket (system url) prompt should use cached connected system if provided', async () => {
         const backendSystemReentrance: BackendSystem = {
             name: 'http://s4hc:1234',
@@ -499,5 +373,21 @@ describe('questions', () => {
         expect(await ((systemUrlPrompt as InputQuestion).validate as Function)('http:/s4hc:1234')).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
         expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
+    });
+
+    test('Reentrance ticket (system url) prompt should use validate that an existing system with the same url exists', async () => {
+        const backendSystemReentrance: BackendSystem = {
+            name: 'http://s4hc:1234',
+            url: 'http:/s4hc:1234',
+            authenticationType: 'reentranceTicket'
+        };
+        jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue(backendSystemReentrance);
+
+        connectionValidatorMock.validity.authenticated = true;
+        const newSystemQuestions = getAbapOnBTPSystemQuestions();
+        const systemUrlPrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtp:newSystemUrl');
+        expect(await ((systemUrlPrompt as InputQuestion).validate as Function)('http:/s4hc:1234')).toEqual(
+            t('prompts.validationMessages.backendSystemExistsWarning', { backendName: backendSystemReentrance.name })
+        );
     });
 });

@@ -5,11 +5,13 @@ import {
     getWebappPath,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
+import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
+import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
 import type { FileData } from '@sap/ux-specification/dist/types/src';
-import { existsSync } from 'fs';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { logger } from '../utils/logger';
 
 /**
  * Method returns main service of the application.
@@ -121,9 +123,30 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
     const manifest = await getManifest(appAccess);
     let ui5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
 
-    if (ui5Version !== undefined && isNaN(parseFloat(ui5Version))) {
+    if (ui5Version !== undefined && Number.isNaN(parseFloat(ui5Version))) {
         ui5Version = 'latest';
     }
 
     return ui5Version ?? 'latest';
+}
+
+/**
+ * Reads the application's `package.json` file and extracts the `sapuxLayer` property.
+ *
+ * @param root - the absolute path to the application's root directory.
+ * @returns A promise that resolves to the `sapuxLayer` value from `package.json`.
+ */
+export async function getFlexChangeLayer(root: string): Promise<FlexChangeLayer> {
+    let packageJson: Package | undefined;
+    const packageJsonPath = join(root, FileName.Package);
+    if (existsSync(packageJsonPath)) {
+        const file = await readFile(packageJsonPath);
+        try {
+            packageJson = JSON.parse(file.toString());
+        } catch (error) {
+            logger.error(String(error));
+        }
+    }
+
+    return packageJson?.sapuxLayer === 'VENDOR' ? FlexChangeLayer.Vendor : FlexChangeLayer.Customer;
 }

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';

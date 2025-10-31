@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { join, normalize, posix } from 'path';
+import { join, normalize, posix } from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
 import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, EdmxOdataService, CdsAnnotationsInfo } from '../types';

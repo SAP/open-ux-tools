@@ -1,5 +1,126 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.62
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.9
+
+## 0.4.61
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.8
+
+## 0.4.60
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/inquirer-common@0.8.7
+
+## 0.4.59
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.6
+
+## 0.4.58
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/inquirer-common@0.8.5
+
+## 0.4.57
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+
+## 0.4.56
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/inquirer-common@0.8.3
+
+## 0.4.55
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.2
+
+## 0.4.54
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.1
+
+## 0.4.53
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
+## 0.4.52
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.51
+
+## 0.4.51
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+
+## 0.4.50
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+-   @sap-ux/inquirer-common@0.7.49
+
+## 0.4.49
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.4.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.48
+
+## 0.4.47
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/inquirer-common@0.7.47
+    -   @sap-ux/project-access@1.32.3
+
+## 0.4.46
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+-   @sap-ux/inquirer-common@0.7.46
+
+## 0.4.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.45
+
 ## 0.4.44
 
 ### Patch Changes

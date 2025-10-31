@@ -1,5 +1,69 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.3.1
+
+### Patch Changes
+
+-   f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
+
+## 0.3.0
+
+### Minor Changes
+
+-   d895232: - fix: V2 app crash when running `list-functionalities`
+    -   feat: add support for changing flex properties in V2 app
+
+## 0.2.5
+
+### Patch Changes
+
+-   8b7171e: chore: readme update - how to disable telemetry
+
+## 0.2.4
+
+### Patch Changes
+
+-   e75b594: Add Fiori Development portal documentation to embeddings
+-   Updated dependencies [e75b594]
+    -   @sap-ux/fiori-docs-embeddings@0.3.0
+
+## 0.2.3
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.2.2
+
+### Patch Changes
+
+-   8a97bcc: fix "Error [ERR_REQUIRE_ESM]" when starting fiori mcp server e.g. Nodejs 22.8.0
+
+## 0.2.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/fiori-docs-embeddings@0.1.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
+
+### Patch Changes
+
+-   Updated dependencies [b179405]
+    -   @sap-ux/fiori-docs-embeddings@0.1.0
+
+## 0.1.6
+
+### Patch Changes
+
+-   f038ab8: Refactored `get-functionality-details` to return parameters as JSON Schema, unified with Zod validation (validateWithSchema) and schema conversion (convertion to JSON Schema).
+
 ## 0.1.5
 
 ### Patch Changes

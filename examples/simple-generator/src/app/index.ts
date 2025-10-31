@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 
 import type { Template, LROPSettings, OVPSettings, FPMSettings } from '@sap-ux/fiori-elements-writer';

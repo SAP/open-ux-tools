@@ -1,6 +1,6 @@
-import { fileURLToPath, pathToFileURL } from 'url';
-import { isAbsolute, join, relative } from 'path';
-import { platform } from 'os';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { isAbsolute, join, relative } from 'node:path';
+import { platform } from 'node:os';
 
 import type {
     AliasInformation,

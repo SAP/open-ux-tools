@@ -1,5 +1,50 @@
 # @sap-ux/axios-extension
 
+## 1.24.1
+
+### Patch Changes
+
+-   3253294: encode service name to get service url
+
+## 1.24.0
+
+### Minor Changes
+
+-   cdeb18b: feat: Integrate a new ABAP api for retrieval of the UI5 framework version for a system in the ADP generator.
+
+## 1.23.1
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+
+## 1.23.0
+
+### Minor Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/feature-toggle@0.3.2
+
+## 1.22.10
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/btp-utils@1.1.4
+
+## 1.22.9
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+
 ## 1.22.8
 
 ### Patch Changes

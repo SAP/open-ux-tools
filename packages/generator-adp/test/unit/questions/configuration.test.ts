@@ -1,9 +1,16 @@
-import type { ConfigAnswers, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
+import type {
+    ConfigAnswers,
+    FlexUISupportedSystem,
+    SourceApplication,
+    SystemLookup,
+    UI5Version
+} from '@sap-ux/adp-tooling';
 import {
     FlexLayer,
     SourceManifest,
     getBaseAppInbounds,
     getConfiguredProvider,
+    getSystemUI5Version,
     isAppSupported,
     loadApps
 } from '@sap-ux/adp-tooling';
@@ -19,6 +26,8 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
 import { configPromptNames } from '../../../src/app/types';
 import { initI18n, t } from '../../../src/utils/i18n';
+import { getSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
+import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
@@ -26,7 +35,8 @@ jest.mock('../../../src/app/questions/helper/conditions', () => ({
 }));
 
 jest.mock('../../../src/app/questions/helper/additional-messages.ts', () => ({
-    getAppAdditionalMessages: jest.fn().mockResolvedValue(undefined)
+    getAppAdditionalMessages: jest.fn().mockResolvedValue(undefined),
+    getSystemAdditionalMessages: jest.fn()
 }));
 
 jest.mock('../../../src/app/questions/helper/validators.ts', () => ({
@@ -43,7 +53,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
-    getSystemUI5Version: jest.fn().mockResolvedValue('1.135.0'),
+    getSystemUI5Version: jest.fn(),
     fetchPublicVersions: jest.fn().mockResolvedValue({
         latest: { version: '1.134.1', support: 'Maintained', lts: false },
         '1.133.0': { version: '1.133.0', support: 'Maintained', lts: false }
@@ -101,10 +111,16 @@ const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
+const getSystemAdditionalMessagesMock = getSystemAdditionalMessages as jest.Mock;
+const getSystemUI5VersionMock = getSystemUI5Version as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
     const layer = FlexLayer.CUSTOMER_BASE;
+    const systemAdditionalMessage: IMessageSeverity = {
+        message: 'System additional message',
+        severity: Severity.information
+    };
 
     beforeAll(async () => {
         await initI18n();
@@ -153,6 +169,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
+            getSystemUI5VersionMock.mockResolvedValue('1.135.0');
 
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
@@ -161,6 +178,22 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.ui5).toEqual({
                 publicVersions: expect.any(Object),
                 systemVersion: '1.135.0',
+                ui5Versions: ['1.134.1 (latest)']
+            });
+        });
+
+        it('system prompt validate should set ui5 proerties when system ui5 version is NOT detected', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+            getSystemUI5VersionMock.mockRejectedValue(new Error());
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.provider).toEqual(provider);
+            expect(configPrompter.ui5).toEqual({
+                publicVersions: expect.any(Object),
                 ui5Versions: ['1.134.1 (latest)']
             });
         });
@@ -180,18 +213,21 @@ describe('ConfigPrompter Integration Tests', () => {
                 ...sourceSystems,
                 getSystemRequiresAuth: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
             } as unknown as SystemLookup;
+            isAbapCloudMock.mockResolvedValue(true);
             configPrompter = new ConfigPrompter(systemLookup, layer, logger);
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
 
             const result1 = await systemPrompt?.validate?.('SYS010', dummyAnswers);
+            expect(configPrompter['isCloudProject']).toBe(true);
             const result2 = await systemPrompt?.validate?.('SYS010_NOAUTH', dummyAnswers);
 
             expect(result1).toEqual(true);
             expect(result2).toEqual(true);
             expect(configPrompter['flexUISystem']).toEqual(undefined);
             expect(configPrompter['isAuthRequired']).toEqual(true);
+            expect(configPrompter['isCloudProject']).toBeUndefined();
         });
 
         it('system prompt validate should throw error', async () => {
@@ -249,6 +285,24 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
             expect(result).toEqual(true);
+        });
+
+        it('should set system additional messages when additionalMessages callback gets called', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
+            const flexUISystem: FlexUISupportedSystem = {
+                isUIFlex: true,
+                isOnPremise: false
+            };
+            configPrompter['flexUISystem'] = flexUISystem;
+            configPrompter['isCloudProject'] = true;
+
+            const result = await systemPrompt?.additionalMessages?.();
+
+            expect(result).toEqual(systemAdditionalMessage);
+            expect(getSystemAdditionalMessagesMock).toHaveBeenCalledWith(flexUISystem, true);
+            expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
         });
     });
 
@@ -355,6 +409,31 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
 
             expect(result).toEqual(`Authentication error: ${axiosError.message}`);
+        });
+
+        it('password prompt additionalMessages should return undefined if system additional messages are already set', async () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            configPrompter['systemAdditionalMessage'] = systemAdditionalMessage;
+
+            const additionalMessages = await passwordPrompt?.additionalMessages?.();
+
+            expect(additionalMessages).toBeUndefined();
+            expect(getSystemAdditionalMessagesMock).not.toHaveBeenCalled();
+        });
+
+        it('password prompt additionalMessages callback should set the system additional messages if not set', async () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            getSystemAdditionalMessagesMock.mockReturnValue(systemAdditionalMessage);
+
+            const additionalMessages = await passwordPrompt?.additionalMessages?.();
+
+            expect(additionalMessages).toEqual(systemAdditionalMessage);
+            expect(getSystemAdditionalMessagesMock).toHaveBeenCalled();
+            expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
         });
     });
 
@@ -478,6 +557,22 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
 
             expect(result).toEqual(t('error.manifestCouldNotBeValidated'));
+        });
+
+        it('application prompt validate should return string when  application does NOT support adaptation and the project is cloud', async () => {
+            const error = new Error(t('error.appDoesNotSupportManifest'));
+            getManifestSpy.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
+            configPrompter['isCloudProject'] = true;
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            const errorMessage = error.message;
+            expect(errorMessage).toBeTruthy();
+            expect(result).toEqual(errorMessage);
         });
 
         it('application prompt validate should return string when manifest flexEnabled is false', async () => {

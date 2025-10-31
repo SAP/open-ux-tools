@@ -1,4 +1,4 @@
-import * as mockFs from 'fs';
+import * as mockFs from 'node:fs';
 import type { Endpoint } from '../../src';
 import { cli } from '../../src/cli/index';
 import { checkEnvironment } from '../../src/checks/environment';

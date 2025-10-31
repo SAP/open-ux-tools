@@ -1,10 +1,10 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { generateCAPConfig, RouterModuleType } from '../../src';
 import * as projectAccess from '@sap-ux/project-access';
-import fs from 'fs';
+import fs from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 let hasSyncMock: jest.SpyInstance;

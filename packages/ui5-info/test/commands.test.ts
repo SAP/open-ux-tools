@@ -3,7 +3,7 @@ jest.disableAutomock();
 import * as cp from 'child_process';
 import { executeNpmUI5VersionsCmd } from '../src/commands';
 import { getUI5Versions } from '../src/ui5-version-info';
-import os from 'os';
+import os from 'node:os';
 
 jest.mock('child_process');
 const mockedCp = jest.mocked(cp, { shallow: true });
@@ -209,7 +209,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             1,
             'npm.cmd',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
-            {}
+            { 'shell': true }
         );
     });
 });

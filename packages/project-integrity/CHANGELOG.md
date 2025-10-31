@@ -1,5 +1,46 @@
 # @sap-ux/project-integrity
 
+## 0.2.24
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+
+## 0.2.23
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+
+## 0.2.22
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.4
+
+## 0.2.20
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/project-access@1.32.3
+
+## 0.2.19
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.2
+
 ## 0.2.18
 
 ### Patch Changes

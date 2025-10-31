@@ -1,5 +1,92 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.10
+
+### Patch Changes
+
+-   edd0b4c: fix: wrong 'pathReplace' in case of appStudio
+
+## 0.10.9
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+
+## 0.10.6
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+
+## 0.10.5
+
+### Patch Changes
+
+-   9a9c43c: Fixes preview with legacy apps and service keys systems
+    -   @sap-ux/axios-extension@1.23.1
+
+## 0.10.4
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+
+## 0.10.3
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+
+## 0.10.2
+
+### Patch Changes
+
+-   2e1fd75: fix: bsp scenario broken
+
+## 0.10.1
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/axios-extension@1.22.10
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/store@1.1.5
+
+## 0.10.0
+
+### Minor Changes
+
+-   64250ed: migrate to http-proxy-middleware v3
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/axios-extension@1.22.9
+
 ## 0.9.18
 
 ### Patch Changes

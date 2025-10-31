@@ -1,5 +1,24 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.17
+
+### Patch Changes
+
+-   ccb5285: vocabulary update
+
+## 0.4.16
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+
+## 0.4.15
+
+### Patch Changes
+
+-   Updated dependencies [aa8bb7a]
+    -   @sap-ux/odata-annotation-core-types@0.5.0
+
 ## 0.4.14
 
 ### Patch Changes

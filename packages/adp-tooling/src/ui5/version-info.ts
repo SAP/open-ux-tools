@@ -1,6 +1,12 @@
 import type { UI5Version } from '../types';
 import { fetchInternalVersions } from './fetch';
-import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './format';
+import {
+    isFeatureSupportedVersion,
+    removeTimestampFromVersion,
+    addSnapshot,
+    buildSystemVersionLabel,
+    removeSnapshotFromVersion
+} from './format';
 import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
 
 export interface VersionLabels {
@@ -49,8 +55,8 @@ export function shouldSetMinUI5Version(systemVersion?: string): boolean {
     }
 
     const versionParts = systemVersion.split('.');
-    const minorVersion = versionParts.length > 1 ? parseInt(versionParts[1], 10) : NaN;
-    return !isNaN(minorVersion) && minorVersion >= 90;
+    const minorVersion = versionParts.length > 1 ? Number.parseInt(versionParts[1], 10) : NaN;
+    return !Number.isNaN(minorVersion) && minorVersion >= 90;
 }
 
 /**
@@ -99,7 +105,13 @@ export function getVersionLabels(version: string | undefined, publicVersions: UI
  */
 export function checkSystemVersionPattern(version: string | undefined): string | undefined {
     const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-    return version && pattern.test(version) ? removeTimestampFromVersion(version) : undefined;
+    if (!version || !pattern.test(version)) {
+        return undefined;
+    }
+
+    let normalizedVersion = removeTimestampFromVersion(version);
+    normalizedVersion = removeSnapshotFromVersion(normalizedVersion);
+    return normalizedVersion;
 }
 
 /**
@@ -126,13 +138,13 @@ export async function getInternalVersions(latestVersion: string): Promise<string
 export async function getHigherVersions(version: string, publicVersions: UI5Version): Promise<string[]> {
     const latestVersion = publicVersions?.latest?.version;
     const radix = 10;
-    const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => parseInt(part, radix));
+    const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => Number.parseInt(part, radix));
 
     const higherVersions = Object.keys(publicVersions)
         .filter((key) => key !== 'latest')
         .map((key) => publicVersions[key]['version'])
         .filter((ver: string) => {
-            const [, minor, micro] = ver.split('.').map((part) => parseInt(part, radix));
+            const [, minor, micro] = ver.split('.').map((part) => Number.parseInt(part, radix));
             return minor > baselineMinor || (minor === baselineMinor && micro > baselineMicro);
         });
 

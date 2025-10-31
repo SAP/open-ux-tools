@@ -1,5 +1,218 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.90
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.41
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/abap-deploy-config-writer@0.2.31
+
+## 0.1.89
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.40
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.30
+
+## 0.1.88
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.39
+-   @sap-ux/deploy-config-generator-shared@0.1.48
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.29
+
+## 0.1.87
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.38
+-   @sap-ux/deploy-config-generator-shared@0.1.47
+-   @sap-ux/fiori-generator-shared@0.13.28
+-   @sap-ux/abap-deploy-config-writer@0.2.28
+
+## 0.1.86
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/abap-deploy-config-writer@0.2.27
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.37
+    -   @sap-ux/deploy-config-generator-shared@0.1.47
+
+## 0.1.85
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.36
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/abap-deploy-config-writer@0.2.26
+
+## 0.1.84
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/abap-deploy-config-writer@0.2.25
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.35
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+
+## 0.1.83
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.34
+-   @sap-ux/deploy-config-generator-shared@0.1.45
+
+## 0.1.82
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/abap-deploy-config-writer@0.2.24
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.33
+    -   @sap-ux/deploy-config-generator-shared@0.1.45
+
+## 0.1.81
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.32
+-   @sap-ux/deploy-config-generator-shared@0.1.44
+-   @sap-ux/fiori-generator-shared@0.13.25
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.23
+
+## 0.1.80
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.31
+    -   @sap-ux/deploy-config-generator-shared@0.1.43
+
+## 0.1.79
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.30
+-   @sap-ux/deploy-config-generator-shared@0.1.42
+
+## 0.1.78
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.29
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.42
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/abap-deploy-config-writer@0.2.22
+
+## 0.1.77
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.28
+-   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.1.76
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.27
+    -   @sap-ux/abap-deploy-config-writer@0.2.21
+    -   @sap-ux/project-access@1.32.4
+    -   @sap-ux/fiori-generator-shared@0.13.22
+    -   @sap-ux/deploy-config-generator-shared@0.1.41
+
+## 0.1.75
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.26
+-   @sap-ux/deploy-config-generator-shared@0.1.40
+-   @sap-ux/fiori-generator-shared@0.13.21
+
+## 0.1.74
+
+### Patch Changes
+
+-   43a2446: chore: fix Sonar issues
+-   Updated dependencies [43a2446]
+    -   @sap-ux/abap-deploy-config-writer@0.2.20
+    -   @sap-ux/fiori-generator-shared@0.13.20
+    -   @sap-ux/project-access@1.32.3
+    -   @sap-ux/ui5-config@0.29.7
+    -   @sap-ux/btp-utils@1.1.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.25
+    -   @sap-ux/deploy-config-generator-shared@0.1.39
+
+## 0.1.73
+
+### Patch Changes
+
+-   Updated dependencies [d866995]
+    -   @sap-ux/ui5-config@0.29.6
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.24
+    -   @sap-ux/abap-deploy-config-writer@0.2.19
+    -   @sap-ux/project-access@1.32.2
+    -   @sap-ux/fiori-generator-shared@0.13.19
+    -   @sap-ux/deploy-config-generator-shared@0.1.38
+
+## 0.1.72
+
+### Patch Changes
+
+-   4b0b8fb: fix: Missing build script for ADP onPremise projects leads to error during deployment
+-   Updated dependencies [4b0b8fb]
+    -   @sap-ux/abap-deploy-config-writer@0.2.18
+
+## 0.1.71
+
+### Patch Changes
+
+-   30cf923: fix: "lrep" property is not added when the deploy config is created from within the ADP Generator
+
+## 0.1.70
+
+### Patch Changes
+
+-   Updated dependencies [fe5fd09]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.23
+
+## 0.1.69
+
+### Patch Changes
+
+-   Updated dependencies [998954b]
+    -   @sap-ux/btp-utils@1.1.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.22
+    -   @sap-ux/deploy-config-generator-shared@0.1.37
+    -   @sap-ux/fiori-generator-shared@0.13.18
+    -   @sap-ux/abap-deploy-config-writer@0.2.17
+
 ## 0.1.68
 
 ### Patch Changes

@@ -11,9 +11,9 @@ import {
     YAML_VERSION_REGEX
 } from '@sap-ux/jest-file-matchers';
 import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
-import os from 'os';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import os from 'node:os';
+import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
@@ -36,7 +36,7 @@ export function cleanTestDir(path: string): void {
             console.log(err);
         }
     } else {
-        rimraf.sync(path);
+        rimraf.rimrafSync(path);
     }
 }
 /**
