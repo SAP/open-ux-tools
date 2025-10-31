@@ -1,5 +1,5 @@
 import type { PageDef } from './types';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 
 const newPagePrefixForType = new Map<PageTypeV4, string>([
     [PageTypeV4.ListReport, 'List'],
@@ -42,6 +42,20 @@ function generatePageIdV4(page: PageDef, parentPage: string | undefined, navigat
 }
 
 /**
+ * Generates the id for a new V2 page
+ * @param {Page} page - page attributes
+ * @returns parts = an array of strings that shall be joined to form the page ID
+ */
+function generatePageIdV2(page: PageDef): string[] {
+    const parts: string[] = [];
+    parts.push(page.pageType);
+    if (page.entitySet) {
+        parts.push(page.entitySet);
+    }
+    return parts;
+}
+
+/**
  * Generates the id for a new page.
  *
  * @param page - page attributes.
@@ -54,10 +68,18 @@ export function generatePageId(
     page: PageDef,
     parentPage: string | undefined,
     pages: PageDef[],
+    appVersion: FioriElementsVersion,
     navigationProperty?: string
 ): string {
-    // Page generation for V4 page
-    const parts = generatePageIdV4(page, parentPage, navigationProperty);
+    let parts: string[] = [];
+    if (appVersion === FioriElementsVersion.v2) {
+        // Page generation for V2 page
+        parts = generatePageIdV2(page);
+    } else {
+        // Page generation for V4 page
+        parts = generatePageIdV4(page, parentPage, navigationProperty);
+    }
+
     let pageId = parts.join('_');
 
     const existingPageIds = pages.map((existingPage) => existingPage.pageId);
