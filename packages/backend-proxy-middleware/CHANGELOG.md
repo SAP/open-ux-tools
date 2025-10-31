@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.10
+
+### Patch Changes
+
+-   edd0b4c: fix: wrong 'pathReplace' in case of appStudio
+
 ## 0.10.9
 
 ### Patch Changes
