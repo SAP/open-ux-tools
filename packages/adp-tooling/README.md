@@ -20,3 +20,9 @@ The submodule contains functionality required in different scenarios, e.g. promp
 
 ## Templates
 The templates folder contains ejs templates to be used for the generation of new adaptation projects as well as to generate artifacts in existing adaptation projects.
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/adp-tooling/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-tooling)

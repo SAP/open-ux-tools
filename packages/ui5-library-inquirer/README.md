@@ -100,3 +100,10 @@ export default class UI5LibraryGenerator extends Generator {
 SAP Fiori Elements
 Yeoman
 Generator
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-library-inquirer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-inquirer)

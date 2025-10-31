@@ -33,3 +33,10 @@ See usage in [`test/unit/fiori-service.test.ts`](test/unit/fiori-service.test.ts
 ## Keywords
 OData Fiori annotations
 
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-annotation-api/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-annotation-api)

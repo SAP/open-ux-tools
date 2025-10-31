@@ -106,3 +106,10 @@ For more available APIs, check in [`/src/index`](./src/index.ts)
 i18n
 CAP i18n
 UI5 i18n
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/i18n/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/i18n)

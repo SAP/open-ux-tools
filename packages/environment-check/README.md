@@ -70,3 +70,10 @@ Options
 ```
 ## Keywords
 SAP Fiori Tools
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/environment-check/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/environment-check)

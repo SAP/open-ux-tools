@@ -17,3 +17,10 @@ Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and e
 SAP Fiori Elements
 Yeoman
 Generator
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-library-reference-sub-generator/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-reference-sub-generator)

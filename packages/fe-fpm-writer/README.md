@@ -36,3 +36,10 @@ fs.commit();
 See more complex example in [`/test/integration/index.test.ts`](./test/integration/index.test.ts)
 ## Keywords
 SAP Fiori elements
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fe-fpm-writer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fe-fpm-writer)

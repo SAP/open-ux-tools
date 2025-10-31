@@ -115,3 +115,9 @@ npm run clean
 ## License
 
 Apache-2.0
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-docs-embeddings/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings)

@@ -53,3 +53,10 @@ const text = print(element);
 
 ## Keywords
 OData CAP CDS annotations
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/cds-odata-annotation-converter/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/cds-odata-annotation-converter)

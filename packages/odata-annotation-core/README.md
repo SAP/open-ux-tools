@@ -95,3 +95,10 @@ For other usage examples see unit tests in `odata-annotation-core/test`.
 
 ## Keywords
 SAP ODATA annotations
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-annotation-core/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-annotation-core)

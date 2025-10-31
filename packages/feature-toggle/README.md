@@ -91,3 +91,9 @@ const capCdsMode = isFeatureEnabled('sap.ux.internal.testBetaFeatures.capCdsMode
 
 ## Keywords
 SAP Fiori Tools
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/feature-toggle/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/feature-toggle)

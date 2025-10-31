@@ -100,3 +100,10 @@ SAP Fiori elements
 SAP CAP
 SAP CAP writer
 SAP UI5
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/cap-config-writer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/cap-config-writer)

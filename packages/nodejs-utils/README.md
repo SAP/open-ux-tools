@@ -18,3 +18,10 @@ see ./tests/unit/
 
 ## Keywords
 SAP Fiori tools library
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/nodejs-utils/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/nodejs-utils)
