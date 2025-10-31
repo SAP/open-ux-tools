@@ -85,7 +85,7 @@ function renderCommandAndSubcommands(cmd, parentPath) {
     md += `${cmd.description.replace(/ {2,}/g, '\n')}\n\n`;
 
     if (cmd.options && cmd.options.length > 0) {
-        md += `**Options:**\n${renderOptions(cmd.options)}\n\n`;
+        md += `Options:\n${renderOptions(cmd.options)}\n\n`;
     }
 
     const commandDocs = [md];

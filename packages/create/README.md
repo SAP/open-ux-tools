@@ -46,7 +46,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest generate adaptation-project`
 
-**Options:**
+Options:
 - `-n, --skip-install` - Skip the `npm install` step.
 - `-s, --simulate` - Simulate only. Do not write or install.
 - `-y, --yes` - Use default values for all prompts.
@@ -80,7 +80,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add mockserver-config`
 
-**Options:**
+Options:
 - `-i, --interactive` - Ask for config options or otherwise, use the default options.
 - `-n, --skip-install` - Skip the `npm install` step.
 - `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
@@ -96,7 +96,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add smartlinks-config`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -110,7 +110,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add cds-plugin-ui5`
 
-**Options:**
+Options:
 - `-n, --skip-install` - Skip the `npm install` step.
 - `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
@@ -125,7 +125,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add inbound-navigation`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
@@ -140,7 +140,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add cards-editor`
 
-**Options:**
+Options:
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
@@ -155,7 +155,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add model`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
 
 --------------------------------
@@ -168,7 +168,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add annotations`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
@@ -182,7 +182,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add html`
 
-**Options:**
+Options:
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
@@ -197,7 +197,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add component-usages`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
 
 --------------------------------
@@ -210,7 +210,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add deploy-config`
 
-**Options:**
+Options:
 - `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
 - `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
@@ -227,7 +227,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest add variants-config`
 
-**Options:**
+Options:
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
@@ -253,7 +253,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest convert preview-config`
 
-**Options:**
+Options:
 - `-s, --simulate <boolean>` _(required)_ - Simulate only. Do not write.
 - `-v, --verbose` - Show verbose information.
 - `-t, --tests <boolean>` _(required)_ - Also, convert test suite and test runners.
@@ -279,7 +279,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest remove mockserver-config`
 
-**Options:**
+Options:
 - `-v, --verbose` - Show verbose information.
 - `-f, --force` - Do not ask for confirmation when deleting files.
 
@@ -303,7 +303,7 @@ Example:
 
 `npx --yes @sap-ux/create@latest change data-source`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
@@ -317,6 +317,6 @@ Example:
 
 `npx --yes @sap-ux/create@latest change inbound`
 
-**Options:**
+Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
 
