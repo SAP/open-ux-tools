@@ -28,6 +28,12 @@ interface FDCResponse {
     results: CFApp[];
 }
 
+interface CreateServiceOptions {
+    xsSecurityProjectName?: string;
+    templatePathOverwrite?: string;
+    logger?: ToolsLogger;
+}
+
 const PARAM_MAP: Map<string, string> = new Map([
     ['spaceGuids', 'space_guids'],
     ['planNames', 'service_plan_names'],
@@ -108,7 +114,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
  * @param {string[]} appHostIds - The app host ids.
  * @param {CfConfig} cfConfig - The CF config.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<FDCResponse>} The FDC apps.
+ * @returns {Promise<CFApp[]>} The FDC apps.
  */
 export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
     const requestArguments = getFDCRequestArguments(cfConfig);
@@ -133,53 +139,38 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
 }
 
 /**
- * Creates a service.
+ * Creates a service instance.
  *
- * @param {string} spaceGuid - The space GUID.
- * @param {string} plan - The plan.
+ * @param {string} plan - The service plan.
  * @param {string} serviceInstanceName - The service instance name.
- * @param {string[]} tags - The tags.
- * @param {string} [serviceName] - The service name.
- * @param {object} [security] - Security configuration.
- * @param {string | null} security.filePath - The security file path.
- * @param {string} [security.xsappname] - The XS app name.
- * @param {ToolsLogger} [logger] - The logger.
+ * @param {string} serviceName - The service name.
+ * @param {CreateServiceOptions} [options] - Additional options.
+ * @returns {Promise<void>} The promise.
  */
-export async function createService(
-    spaceGuid: string,
+export async function createServiceInstance(
     plan: string,
     serviceInstanceName: string,
-    tags: string[],
-    serviceName: string | undefined,
-    security?: {
-        filePath: string | null;
-        xsappname?: string;
-    },
-    logger?: ToolsLogger
+    serviceName: string,
+    options?: CreateServiceOptions
 ): Promise<void> {
+    const { xsSecurityProjectName, templatePathOverwrite, logger } = options ?? {};
+
     try {
-        const { filePath, xsappname } = security ?? {};
-        if (!serviceName) {
-            const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
-                `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
-            );
-            const serviceOffering = json?.resources?.find(
-                (resource: CfServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
-            );
-            serviceName = serviceOffering?.name;
-        }
         logger?.log(
             `Creating service instance '${serviceInstanceName}' of service '${serviceName}' with '${plan}' plan`
         );
 
-        const commandParameters: string[] = ['create-service', serviceName ?? '', plan, serviceInstanceName];
-        if (filePath) {
+        const commandParameters: string[] = ['create-service', serviceName, plan, serviceInstanceName];
+
+        if (xsSecurityProjectName) {
             let xsSecurity = null;
             try {
-                const filePath = path.resolve(__dirname, '../../../templates/cf/xs-security.json');
+                const baseTmplPath = path.join(__dirname, '../../../templates');
+                const templatePath = templatePathOverwrite ?? baseTmplPath;
+                const filePath = path.resolve(templatePath, 'cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
                 xsSecurity = JSON.parse(xsContent) as unknown as { xsappname?: string };
-                xsSecurity.xsappname = xsappname;
+                xsSecurity.xsappname = xsSecurityProjectName;
             } catch (err) {
                 logger?.error(`Failed to parse xs-security.json file: ${err}`);
                 throw new Error(t('error.xsSecurityJsonCouldNotBeParsed'));
@@ -197,48 +188,63 @@ export async function createService(
 }
 
 /**
+ * Gets the service name by tags.
+ *
+ * @param {string} spaceGuid - The space GUID.
+ * @param {string[]} tags - The service tags for discovery.
+ * @returns {Promise<string>} The service name.
+ */
+export async function getServiceNameByTags(spaceGuid: string, tags: string[]): Promise<string> {
+    const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
+        `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
+    );
+    const serviceOffering = json?.resources?.find(
+        (resource: CfServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
+    );
+    return serviceOffering?.name ?? '';
+}
+
+/**
  * Creates the services.
  *
- * @param {string} projectPath - The project path.
  * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
- * @param {string} spaceGuid - The space GUID.
+ * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
  */
 export async function createServices(
-    projectPath: string,
     yamlContent: MtaYaml,
     initialServices: string[],
     timestamp: string,
-    spaceGuid: string,
+    templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
     const excludeServices = new Set([...initialServices, 'portal', 'html5-apps-repo']);
-    const xsSecurityPath = path.join(projectPath, 'xs-security.json');
     const xsSecurityProjectName = getProjectNameForXsSecurity(yamlContent, timestamp);
     for (const resource of yamlContent.resources ?? []) {
         if (!excludeServices.has(resource?.parameters?.service ?? '')) {
             if (resource?.parameters?.service === 'xsuaa') {
-                await createService(
-                    spaceGuid,
+                await createServiceInstance(
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
-                    [],
                     resource.parameters.service,
-                    { filePath: xsSecurityPath, xsappname: xsSecurityProjectName },
-                    logger
+                    {
+                        xsSecurityProjectName,
+                        templatePathOverwrite,
+                        logger
+                    }
                 );
             } else {
-                await createService(
-                    spaceGuid,
+                await createServiceInstance(
                     resource.parameters['service-plan'] ?? '',
                     resource.parameters['service-name'] ?? '',
-                    [],
-                    resource.parameters.service,
-                    { filePath: null, xsappname: xsSecurityProjectName },
-                    logger
+                    resource.parameters.service ?? '',
+                    {
+                        templatePathOverwrite,
+                        logger
+                    }
                 );
             }
         }

@@ -1,4 +1,4 @@
-// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
+// Last content update: Wed Oct 15 2025 09:21:20 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -133,6 +133,7 @@ export default {
         },
         'ExternalID': {
             '$Kind': 'Term',
+            '$Type': 'Edm.PrimitiveType',
             '$Nullable': true,
             '$AppliesTo': ['Property', 'Parameter'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
@@ -170,7 +171,6 @@ export default {
             '$Kind': 'Term',
             '$Nullable': true,
             '$AppliesTo': ['Property', 'Parameter'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'The point in time represented by the annotated property or parameter shall be interpreted in the given time zone',
             '@Org.OData.Core.V1.LongDescription':
@@ -182,7 +182,6 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['Property', 'Parameter'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Annotated property or parameter is a time zone'
         },
         'IsDigitSequence': {
@@ -714,13 +713,22 @@ export default {
                     'Headline for value list, fallback is the label of the property or parameter'
             },
             'CollectionPath': {
+                '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
                     'Resource path of an OData collection with possible values, relative to CollectionRoot'
+            },
+            'RelativeCollectionPath': {
+                '$Type': 'Edm.NavigationPropertyPath',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Navigation property path of an OData collection with possible values, relative to the annotation target'
             },
             'CollectionRoot': {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
-                    'Service root of the value list collection; not specified means local to the document containing the annotation'
+                    'Service root of the value list collection; not specified means local to the document containing the annotation',
+                '@Org.OData.Core.V1.LongDescription':
+                    '`CollectionRoot` must not be specified unless `CollectionPath` is provided.'
             },
             'DistinctValuesSupported': {
                 '$Type': 'Edm.Boolean',
@@ -760,7 +768,9 @@ export default {
                 '$Type': 'com.sap.vocabularies.Common.v1.ValueListParameter',
                 '@Org.OData.Core.V1.Description':
                     'Instructions on how to construct the value list request and consume response properties'
-            }
+            },
+            '@Org.OData.Core.V1.Description':
+                'Exactly one of `CollectionPath` and `RelativeCollectionPath` must be provided.'
         },
         'FetchValuesType': {
             '$Kind': 'TypeDefinition',
@@ -1700,6 +1710,31 @@ export default {
                 'Service prefers requests to use a resource path with navigation properties',
             '@Org.OData.Core.V1.LongDescription':
                 'Use this tag on services that do not restrict requests to certain resource paths\nvia [`Capabilities`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.html)\nor [`Core.RequiresExplicitBinding`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.html#RequiresExplicitBinding)\nannotations, but that prefer requests with a resource path that\ncontains the navigation properties reflecting the UI structure.\n\nFor example, entering a cancellation fee into an order item field bound to `CancellationItem/Fee`\nleads to a\n`PATCH Orders(23)/Items(5)/CancellationItem` request with `{"Fee": ...}` payload.'
+        },
+        'ReferentialConstraint': {
+            '$Kind': 'Term',
+            '$Collection': true,
+            '$Type': 'com.sap.vocabularies.Common.v1.ReferentialConstraintType',
+            '$AppliesTo': ['NavigationProperty'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                '[Referential constraints](https://oasis-tcs.github.io/odata-specs/odata-csdl-xml/odata-csdl-xml.html#ReferentialConstraint) without nullability requirement'
+        },
+        'ReferentialConstraintType': {
+            '$Kind': 'ComplexType',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'A record that behaves like the standard referential constraint on the navigation property targeted by a [`ReferentialConstraint`](#ReferentialConstraint) annotation,\n          but the nullability requirement for the dependent property is lifted.\n          It asserts that the principal property _of an existing related entity_\n          must have the same value as the dependent property.',
+            'Property': {
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description':
+                    'The path to the property is evaluated relative to the type containing the navigation property'
+            },
+            'ReferencedProperty': {
+                '$Type': 'Edm.PropertyPath',
+                '@Org.OData.Core.V1.Description':
+                    'The path to the referenced property MUST start with a segment containing the navigation property'
+            }
         }
     }
 } as CSDL;

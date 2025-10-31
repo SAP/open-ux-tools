@@ -1770,23 +1770,14 @@ Object {
       "validate": [Function],
     },
     Object {
-      "choices": Array [
-        Object {
-          "name": "Absolute",
-          "value": "absolute",
-        },
-        Object {
-          "name": "Relative",
-          "value": "relative",
-        },
-      ],
+      "choices": [Function],
       "default": "absolute",
       "guiOptions": Object {
         "dependantPromptNames": Array [
           "buildingBlockData.metaPath.entitySet",
         ],
         "mandatory": true,
-        "selectType": "static",
+        "selectType": "dynamic",
       },
       "message": "Binding Context",
       "name": "buildingBlockData.metaPath.bindingContextType",

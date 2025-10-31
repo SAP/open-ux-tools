@@ -304,10 +304,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: AppRouterType.STANDALONE,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -336,10 +336,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -373,10 +373,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: null as unknown as AppRouterType,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -408,10 +408,10 @@ describe('YAML Project Functions', () => {
                         moduleName,
                         appRouterType: AppRouterType.STANDALONE,
                         businessSolutionName,
-                        businessService,
-                        spaceGuid
+                        businessService
                     },
                     mockMemFs,
+                    undefined,
                     mockLogger
                 )
             ).rejects.toThrow('Write failed');
@@ -456,10 +456,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -511,10 +511,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -570,10 +570,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 
@@ -629,10 +629,10 @@ describe('YAML Project Functions', () => {
                     moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
-                    businessService,
-                    spaceGuid
+                    businessService
                 },
                 mockMemFs,
+                undefined,
                 mockLogger
             );
 

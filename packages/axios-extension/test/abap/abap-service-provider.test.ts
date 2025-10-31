@@ -10,6 +10,7 @@ import {
     AppIndexService,
     LayeredRepositoryService
 } from '../../src';
+import { UI5VersionService } from '../../src/abap/ui5-version-service';
 
 /**
  * URL are specific to the discovery schema.
@@ -190,6 +191,10 @@ describe('AbapServiceProvider', () => {
             const alias = '/alias/path';
             const service = provider.getLayeredRepository(alias);
             expect(service).toBe(provider.service(alias));
+        });
+        test('UI5VersionService', () => {
+            const service = provider.getUI5VersionService();
+            expect(service).toBe(provider.service(UI5VersionService.PATH));
         });
     });
 

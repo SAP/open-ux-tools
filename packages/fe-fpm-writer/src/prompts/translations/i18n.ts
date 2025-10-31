@@ -219,6 +219,7 @@ const ns1 = {
                 'validation': 'A view or fragment is required to generate the Rich Text Editor building block.'
             },
             'bindingContextType': 'Binding Context',
+            'relativeBindingDisabledTooltip': 'There are no suitable entities available for relative binding.',
             'valueSource': 'Value Source',
             'entitySet': 'Entity',
             'targetProperty': 'Target Property',
