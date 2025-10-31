@@ -37,7 +37,7 @@
         "i18next": "25.3.0",
         "inquirer-autocomplete-prompt": "2.0.1",
         "lodash": "4.17.21",
-        "semver": "7.5.4"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",
@@ -45,7 +45,7 @@
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "@types/semver": "7.5.4",
+        "@types/semver": "7.7.1",
         "inquirer": "8.2.7"
     },
     "engines": {
