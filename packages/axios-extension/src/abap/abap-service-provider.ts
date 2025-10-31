@@ -34,8 +34,6 @@ export class AbapServiceProvider extends ServiceProvider {
      */
     protected _publicUrl: string;
 
-    private _valueListReferences = [];
-
     /**
      * The connected system info
      */
@@ -299,39 +297,26 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Collects ValueListReferences annotation values from the service metadata and annotation files.
      *
-     * @param servicePath - The service path to which the value list references belong
-     * @param metadata - The metadata of the service
-     * @param annotations - The annotation files
+     * @param references - Service references for which metadata should be fetched.
      * @returns A list of ValueListReferences found in the metadata and annotations.
      */
-    public async getValueListReferenceServices(
-        servicePath: string,
-        metadata: ConvertedMetadata | string | undefined,
-        annotations: { Definitions: string; Uri: string }[]
+    public async fetchValueListReferenceServices(
+        references: { target: string; rootPath: string; value: string }[]
     ): Promise<Record<string, { data?: string; path: string }[]>> {
-        if (!metadata) {
-            return {};
-        }
-        const files = [
-            { data: metadata, path: servicePath },
-            ...annotations.map((annotationFile) => ({ data: annotationFile.Definitions, path: annotationFile.Uri }))
-        ];
         const allPromises: Record<string, Promise<string>> = {};
         const valueListReferences: Record<string, { data?: string; path: string }[]> = {};
 
-        for (const { rootPath, target, values } of this.getValueListReferences(files)) {
-            for (const reference of values) {
-                const externalServicePath = joinPosix(rootPath, reference as string).replace('/$metadata', '');
-                const externalService = this.service(externalServicePath);
-                allPromises[externalServicePath] = externalService.metadata().catch(() => {
-                    // TODO: error handling
-                    return '';
-                });
-                valueListReferences[target] ??= [];
-                valueListReferences[target].push({
-                    path: externalServicePath
-                });
-            }
+        for (const { rootPath, target, value } of references) {
+            const externalServicePath = joinPosix(rootPath, value).replace('/$metadata', '');
+            const externalService = this.service(externalServicePath);
+            allPromises[externalServicePath] = externalService.metadata().catch(() => {
+                this.log.warn(`Could not fetch value list reference metadata from ${externalServicePath}`);
+                return '';
+            });
+            valueListReferences[target] ??= [];
+            valueListReferences[target].push({
+                path: externalServicePath
+            });
         }
 
         await Promise.allSettled(Object.keys(allPromises));
@@ -349,33 +334,41 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Collects ValueListReferences annotation values from the given metadata and annotation files.
      *
-     * @param files - Metadata and annotation files to be searched for ValueListReferences.
+     * @param servicePath - The service path to which the value list references belong
+     * @param metadata - The metadata of the service
+     * @param annotations - The annotation files
      * @returns ValueListReferences found in the files.
      */
     public getValueListReferences(
-        files: {
-            data: string | ConvertedMetadata;
-            path: string;
-        }[]
-    ): { target: string; rootPath: string; values: string[] }[] {
-        if (this._valueListReferences) {
-            return this._valueListReferences;
+        servicePath: string,
+        metadata: ConvertedMetadata | string | undefined,
+        annotations: { Definitions: string; Uri: string }[]
+    ): { target: string; rootPath: string; value: string }[] {
+        if (!metadata) {
+            return [];
         }
-        this._valueListReferences = [];
+        const files = [
+            { data: metadata, path: servicePath },
+            ...annotations.map((annotationFile) => ({ data: annotationFile.Definitions, path: annotationFile.Uri }))
+        ];
+
+        const valueListReferences = [];
         for (const { data, path } of files) {
             const schema = typeof data === 'string' ? convert(parse(data)) : data;
             for (const entityType of schema.entityTypes) {
                 for (const property of entityType.entityProperties) {
                     const target = `${entityType.name}/${property.name}`;
-                    this._valueListReferences.push({
-                        rootPath: path,
-                        target,
-                        values: property.annotations.Common?.ValueListReferences ?? []
-                    });
+                    for (const value of property.annotations.Common?.ValueListReferences ?? []) {
+                        valueListReferences.push({
+                            rootPath: path,
+                            target,
+                            value
+                        });
+                    }
                 }
             }
         }
-        return this._valueListReferences;
+        return valueListReferences;
     }
 
     /**

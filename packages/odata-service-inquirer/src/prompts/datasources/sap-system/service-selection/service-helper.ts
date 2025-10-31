@@ -329,11 +329,14 @@ export async function validateService(
     }
 
     if (connectionValidator.serviceProvider instanceof AbapServiceProvider) {
-        connectionValidator.serviceProvider
-            .getValueListReferenceServices(service.servicePath, convertedMetadata, annotations ?? [])
-            .catch(() => {
-                LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
-            });
+        const valueListReferences = connectionValidator.serviceProvider.getValueListReferences(
+            service.servicePath,
+            convertedMetadata,
+            annotations ?? []
+        );
+        connectionValidator.serviceProvider.fetchValueListReferenceServices(valueListReferences).catch(() => {
+            LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
+        });
     }
 
     PromptState.odataService.annotations = annotations;
