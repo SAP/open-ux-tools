@@ -2,7 +2,8 @@ import type { RequestHandler, Request, Response, NextFunction } from 'express';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { MiddlewareParameters } from './types';
 import type { CfOAuthMiddlewareConfig } from './types';
-import { OAuthTokenManager } from './oauth-manager';
+import type { OAuthTokenManager } from './oauth-manager';
+import { createManagerFromOAuthCredentials, createManagerFromCfAdpProject } from './token-manager-factory';
 
 /**
  * UI5 middleware for adding OAuth2 Bearer tokens to requests for CF ADP projects.
@@ -23,12 +24,12 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
 
     if (config.credentials) {
         logger.info('Initializing CF OAuth middleware with provided credentials');
-        const { clientId, clientSecret, tokenEndpoint } = config.credentials;
+        const { clientId, clientSecret, url } = config.credentials;
 
-        tokenManager = new OAuthTokenManager(clientId, clientSecret, tokenEndpoint, logger);
+        tokenManager = createManagerFromOAuthCredentials(clientId, clientSecret, url, logger);
     } else {
         logger.info('Attempting to auto-detect CF ADP project for OAuth credentials');
-        tokenManager = await OAuthTokenManager.fromCfAdpProject(process.cwd(), logger);
+        tokenManager = await createManagerFromCfAdpProject(process.cwd(), logger);
 
         if (!tokenManager) {
             logger.warn(
