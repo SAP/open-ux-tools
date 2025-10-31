@@ -1,24 +1,25 @@
-# CF OAuth Middleware
+# `@sap-ux/cf-oauth-middleware`
 
-OAuth2 Bearer token middleware for Cloud Foundry adaptation projects. Automatically adds authentication tokens to requests for OData and other backend services.
+The `@sap-ux/cf-oauth-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for adding OAuth2 Bearer tokens to requests for Cloud Foundry adaptation projects. It can be used either with the `ui5 serve` or the `fiori run` commands.
 
-## Features
+The middleware automatically detects CF ADP projects and extracts OAuth credentials from service keys, or can be configured manually with OAuth credentials. It intelligently caches tokens and refreshes them automatically before expiry.
 
-- **Automatic Detection**: Detects CF ADP projects and extracts OAuth credentials from service keys
-- **Manual Configuration**: Supports manual credential configuration for custom setups
-- **Token Caching**: Intelligently caches tokens and refreshes them before expiry
-- **Path Filtering**: Only processes requests matching a configured path prefix (e.g., `/odata`)
-- **Reusable**: Can be used standalone or integrated with other middlewares
+## Configuration Options
 
-## Installation
-
-This package is part of the `@sap-ux/open-ux-tools` monorepo.
+| Option              | Value Type | Requirement Type | Default Value | Description                                                                                                      |
+| ------------------- | ---------- | ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `path`              | `string`   | optional         | `/odata`       | Path prefix to match requests. Only requests starting with this path will receive Bearer tokens.                |
+| `credentials`       | object     | optional         | `undefined`    | Manual OAuth credentials. If not provided, middleware attempts to auto-detect from Cloud Foundry ADP project.   |
+| `credentials.clientId` | `string` | mandatory (if credentials provided) | `undefined` | OAuth2 client ID.                                                                                                |
+| `credentials.clientSecret` | `string` | mandatory (if credentials provided) | `undefined` | OAuth2 client secret.                                                                                            |
+| `credentials.url`    | `string`   | mandatory (if credentials provided) | `undefined` | Base URL for the OAuth service. The token endpoint will be constructed as `{url}/oauth/token`.                   |
+| `debug`             | `boolean`  | optional         | `false`        | Enable debug logging for troubleshooting.                                                                        |
 
 ## Usage
 
-### Automatic Detection (Recommended)
+### [Automatic Detection (Recommended)](#automatic-detection-recommended)
 
-For CF ADP projects, the middleware automatically detects the project and extracts OAuth credentials:
+For Cloud Foundry adaptation projects, the middleware automatically detects the project configuration from `ui5.yaml` and extracts OAuth credentials from service keys. No manual configuration is required.
 
 ```yaml
 server:
@@ -27,12 +28,18 @@ server:
       afterMiddleware: compression
       configuration:
         path: /odata
-        debug: false
 ```
 
-### Manual Credentials
+The middleware will:
 
-For custom setups or when auto-detection is not available:
+1. Read the `app-variant-bundler-build` custom task from `ui5.yaml`
+2. Extract `serviceInstanceName` and `serviceInstanceGuid`
+3. Retrieve service keys using `@sap-ux/adp-tooling`
+4. Extract UAA credentials and construct the token endpoint
+
+### [Manual Credentials](#manual-credentials)
+
+For custom setups or when auto-detection is not available, you can provide OAuth credentials manually:
 
 ```yaml
 server:
@@ -42,29 +49,30 @@ server:
       configuration:
         path: /odata
         credentials:
-          clientId: "your-client-id"
+          clientId: "sb-your-service-instance!b123|your-app!b456"
           clientSecret: "your-client-secret"
-          tokenEndpoint: "https://your-uaa-url/oauth/token"
-        debug: false
+          url: "https://example.authentication.eu12.hana.ondemand.com"
+        debug: true
 ```
 
-## Configuration Options
+The `url` should be the base URL of the UAA service (without `/oauth/token`). The middleware will automatically construct the full token endpoint.
 
-- **`path`** (optional, default: `/odata`): Path prefix to match requests. Only requests starting with this path will receive Bearer tokens.
-- **`credentials`** (optional): Manual OAuth credentials. If not provided, middleware attempts auto-detection.
-- **`debug`** (optional, default: `false`): Enable debug logging for troubleshooting.
+### [Custom Path](#custom-path)
 
-## How It Works
+If you want to match a different path prefix:
 
-1. **Detection**: Checks if the project is a CF ADP project by reading `ui5.yaml`
-2. **Credentials**: Extracts service instance information and gets service keys using adp-tooling
-3. **Token Management**: Requests OAuth tokens using client credentials flow
-4. **Caching**: Caches tokens and refreshes them automatically 60 seconds before expiry
-5. **Request Handling**: Adds `Authorization: Bearer <token>` header to matching requests
+```yaml
+server:
+  customMiddleware:
+    - name: cf-oauth-middleware
+      afterMiddleware: compression
+      configuration:
+        path: /api
+```
 
-## Integration with Backend Proxy
+### [Integration with Backend Proxy](#integration-with-backend-proxy)
 
-This middleware should be placed **before** the backend proxy middleware:
+This middleware should be placed **before** the backend proxy middleware so that tokens are added before requests are forwarded:
 
 ```yaml
 server:
@@ -73,44 +81,109 @@ server:
       afterMiddleware: compression
       configuration:
         path: /odata
-    - name: backend-proxy-middleware
+    - name: fiori-tools-proxy
       afterMiddleware: cf-oauth-middleware
       configuration:
         backend:
           - path: /odata
-             url: http://localhost:3030
+            url: "https://your-backend-service.cfapps.eu12.hana.ondemand.com"
+```
+
+### [Complete Cloud Foundry adaptation project Example](#complete-cloud-foundry-adaptation-project-example)
+
+For a complete Cloud Foundry adaptation project setup with OAuth and preview:
+
+```yaml
+server:
+  customMiddleware:
+    - name: cf-oauth-middleware
+      afterMiddleware: compression
+      configuration:
+        path: /odata
+    - name: fiori-tools-proxy
+      afterMiddleware: cf-oauth-middleware
+      configuration:
+        backend:
+          - path: /odata
+            url: "https://your-backend-service.cfapps.eu12.hana.ondemand.com"
+        ui5:
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        flp:
+          theme: sap_horizon
 ```
 
 ## Programmatic Usage
 
-```typescript
-import { OAuthTokenManager } from '@sap-ux/cf-oauth-middleware';
+Alternatively, you can use the underlying token manager and factory functions programmatically:
 
-// From manual credentials
-const manager = new OAuthTokenManager(
+```typescript
+import {
+    OAuthTokenManager,
+    createManagerFromCredentials,
+    createManagerFromOAuthCredentials,
+    createManagerFromCfAdpProject
+} from '@sap-ux/cf-oauth-middleware';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { CfCredentials } from '@sap-ux/adp-tooling';
+
+// From CF credentials (extracted from service keys)
+const credentials: CfCredentials = {
+    uaa: {
+        clientid: 'client-id',
+        clientsecret: 'client-secret',
+        url: 'https://example'
+    },
+    // ... other properties
+};
+const manager = createManagerFromCredentials(credentials, logger);
+
+// From direct OAuth credentials (base URL)
+const manager = createManagerFromOAuthCredentials(
     'client-id',
     'client-secret',
-    'https://uaa-url/oauth/token',
+    'https://example',
     logger
 );
 
 // Auto-detect from CF ADP project
-const manager = await OAuthTokenManager.fromCfAdpProject(process.cwd(), logger);
+const manager = await createManagerFromCfAdpProject(process.cwd(), logger);
 
-// Get token
+// Get access token
 const token = await manager.getAccessToken();
 ```
 
+## How It Works
+
+1. **Detection**: For automatic mode, checks if the project is a CF ADP project by reading `ui5.yaml` and looking for the `app-variant-bundler-build` custom task.
+2. **Credentials**: Extracts `serviceInstanceName` and `serviceInstanceGuid` from the custom task configuration.
+3. **Service Keys**: Retrieves service keys using `@sap-ux/adp-tooling`, which communicates with Cloud Foundry CLI.
+4. **Token Endpoint**: Constructs the token endpoint from the UAA base URL as `{url}/oauth/token`.
+5. **Token Management**: Requests OAuth tokens using client credentials flow.
+6. **Caching**: Caches tokens in memory and refreshes them automatically 60 seconds before expiry.
+7. **Request Handling**: Adds `Authorization: Bearer <token>` header to requests matching the configured path prefix.
+
 ## Error Handling
 
-- If auto-detection fails and no manual credentials are provided, the middleware silently skips token addition
-- If token request fails, an error response (500) is returned
-- All errors are logged for debugging
+- If auto-detection fails and no manual credentials are provided, the middleware silently skips token addition (requests proceed without tokens).
+- If token request fails, an error response (500) is returned with the error message.
+- All errors are logged for debugging purposes.
+- If a token request fails, subsequent requests will retry the token fetch.
 
 ## Security Considerations
 
-- Credentials are never logged in production
-- Tokens are cached in memory only
-- Token refresh happens automatically before expiry
-- Service keys are obtained securely through CF CLI
+- Credentials are never logged in production mode.
+- Tokens are cached in memory only and never persisted to disk.
+- Token refresh happens automatically 60 seconds before expiry to avoid using expired tokens.
+- Service keys are obtained securely through Cloud Foundry CLI.
+- The middleware only adds tokens to requests matching the configured path prefix.
 
+## Keywords
+
+- OAuth2 Middleware
+- Cloud Foundry ADP
+- Bearer Token
+- Fiori tools
+- SAP UI5
