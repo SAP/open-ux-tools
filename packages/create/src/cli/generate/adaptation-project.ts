@@ -20,7 +20,7 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         )
         .option('-n, --skip-install', 'skip the `npm install` step')
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
-        .option('-y, --yes', 'use default values for all prompts')
+        .option('-y, --yes', 'Use default values for all prompts.')
         .option('--id [id]', 'The ID of the adaptation project.')
         .option('--reference [reference]', 'The ID of the original application.')
         .option('--url [url]', 'The URL that points to the target system which contains the original application.')
