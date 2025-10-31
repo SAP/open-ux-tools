@@ -14,9 +14,9 @@ export function addConvertPreviewCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest convert preview-config\``
         )
-        .option('-s, --simulate', 'Simulate only. Do not write.')
+        .option('-s, --simulate <boolean>', 'Simulate only. Do not write.')
         .option('-v, --verbose', 'Show verbose information.')
-        .option('-t, --tests', 'Also, convert test suite and test runners.')
+        .option('-t, --tests <boolean>', 'Also, convert test suite and test runners.')
         .action(async (path, options) => {
             const simulateString = /(?:=)?(true|false)/i.exec(options.simulate)?.[1];
             const testsString = /(?:=)?(true|false)/i.exec(options.tests)?.[1];
