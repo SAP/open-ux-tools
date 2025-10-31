@@ -85,7 +85,7 @@ export default function init(
             sendInfoCenterMessage({
                 title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
                 description: getError(error).message,
-                type: MessageBarType.error
+                type: MessageBarType.warning
             })
         );
 

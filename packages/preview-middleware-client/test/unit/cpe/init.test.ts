@@ -239,7 +239,7 @@ describe('main', () => {
             showInfoCenterMessage({
                 title: 'OData Service Health Check',
                 description: 'Service unavailable.',
-                type: MessageBarType.error
+                type: MessageBarType.warning
             })
         );
     });
