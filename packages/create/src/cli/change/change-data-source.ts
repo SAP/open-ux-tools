@@ -11,7 +11,7 @@ import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { FileName } from "@sap-ux/project-access";
+import { FileName } from '@sap-ux/project-access';
 
 let loginAttempts = 3;
 
@@ -28,11 +28,7 @@ Example:
     \`npx --yes @sap-ux/create@latest change data-source\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
-        .option(
-            '-c, --config <string>',
-            'Path to the project configuration file in YAML format.',
-            FileName.Ui5Yaml
-        )
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .action(async (path, options) => {
             await changeDataSource(path, !!options.simulate, options.config);
         });
