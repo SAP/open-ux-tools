@@ -14,9 +14,9 @@ import { join } from 'node:path';
 export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
         .description(
-            `Generate a new SAPUI5 adaptation project with optional prompts and configuration.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest generate adaptation-project\``
+            `Generate a new SAPUI5 adaptation project with optional prompts and configuration.\n
+Example:
+    \`npx --yes @sap-ux/create@latest generate adaptation-project\``
         )
         .option('-n, --skip-install', 'Skip the `npm install` step.')
         .option('-s, --simulate', 'Simulate only. Do not write or install.')

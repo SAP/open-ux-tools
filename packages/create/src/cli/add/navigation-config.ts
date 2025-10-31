@@ -41,9 +41,9 @@ type Variant = { isAdp: true; content: DescriptorVariant } | { isAdp: false; con
 export function addInboundNavigationConfigCommand(cmd: Command): void {
     cmd.command('inbound-navigation [path]')
         .description(
-            `Add SAP Fiori launchpad inbound navigation configuration to a project.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest add inbound-navigation\``
+            `Add SAP Fiori launchpad inbound navigation configuration to a project.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add inbound-navigation\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')

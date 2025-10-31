@@ -20,9 +20,9 @@ import { promptYUIQuestions } from '../../common';
 export function addComponentUsagesCommand(cmd: Command): void {
     cmd.command('component-usages [path]')
         .description(
-            `Add the component usages to an adaptation project.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest add component-usages\``
+            `Add the component usages to an adaptation project.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add component-usages\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {

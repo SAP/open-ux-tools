@@ -12,9 +12,9 @@ import { hasFileDeletes, validateBasePath } from '../../validation';
 export function addRemoveMockserverConfigCommand(cmd: Command): void {
     cmd.command('mockserver-config [path]')
         .description(
-            `Removes the configuration for the \`@sap-ux/ui5-middleware-fe-mockserver\` mockserver module.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest remove mockserver-config\``
+            `Removes the configuration for the \`@sap-ux/ui5-middleware-fe-mockserver\` mockserver module.\n
+Example:
+    \`npx --yes @sap-ux/create@latest remove mockserver-config\``
         )
         .option('-v, --verbose', 'Show verbose information.')
         .option('-f, --force', 'Do not ask for confirmation when deleting files.')

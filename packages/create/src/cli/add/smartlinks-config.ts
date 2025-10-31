@@ -11,9 +11,9 @@ import { validateBasePath } from '../../validation';
 export function addAddSmartLinksConfigCommand(cmd: Command): void {
     cmd.command('smartlinks-config [path]')
         .description(
-            `Add a \`smartLinks\` configuration to a project for cross-app navigation.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest add smartlinks-config\``
+            `Add a \`smartLinks\` configuration to a project for cross-app navigation.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add smartlinks-config\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')

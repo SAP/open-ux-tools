@@ -17,9 +17,9 @@ import { FileName } from '@sap-ux/project-access';
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
         .description(
-            `Add HTML files for local preview and testing to the project. It uses the configuration from the \`ui5.yaml\` file as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest add html\``
+            `Add HTML files for local preview and testing to the project. It uses the configuration from the \`ui5.yaml\` file as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add html\``
         )
         .option(
             '-c, --config <string>',

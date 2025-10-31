@@ -42,7 +42,7 @@ The available subcommands are: `adaptation-project`
 
 Generate a new SAPUI5 adaptation project with optional prompts and configuration.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest generate adaptation-project`
 
@@ -76,7 +76,7 @@ The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-pl
 
 Add the necessary configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module to enable local OData mocking.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add mockserver-config`
 
@@ -92,7 +92,7 @@ Example usage:
 
 Add a `smartLinks` configuration to a project for cross-app navigation.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add smartlinks-config`
 
@@ -106,7 +106,7 @@ Example usage:
 
 Add the `cds-plugin-ui5` module and all prerequisites to a CAP project for UI5 server integration.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add cds-plugin-ui5`
 
@@ -121,7 +121,7 @@ Example usage:
 
 Add SAP Fiori launchpad inbound navigation configuration to a project.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add inbound-navigation`
 
@@ -136,7 +136,7 @@ Example usage:
 
 Add the necessary configuration to an existing YAML file and the script to the `package.json` file for cards generation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add cards-editor`
 
@@ -151,7 +151,7 @@ Example usage:
 
 Add a new OData service and SAPUI5 model to an existing adaptation project.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add model`
 
@@ -164,7 +164,7 @@ Example usage:
 
 Adds an annotation to the OData Source of the base application in an adaptation project.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add annotations`
 
@@ -178,7 +178,7 @@ Example usage:
 
 Add HTML files for local preview and testing to the project. It uses the configuration from the `ui5.yaml` file as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add html`
 
@@ -193,7 +193,7 @@ Example usage:
 
 Add the component usages to an adaptation project.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add component-usages`
 
@@ -206,7 +206,7 @@ Example usage:
 
 Prompt for ABAP deployment configuration details and adds and updates the project files accordingly.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add deploy-config`
 
@@ -223,7 +223,7 @@ Example usage:
 
 Add the necessary configuration to an existing YAML file and the script to the `package.json` file for variants creation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest add variants-config`
 
@@ -249,7 +249,7 @@ The available subcommands are: `preview-config`
 
 Executed in the root folder of an app, it converts the respective app to the preview with virtual endpoints. It uses the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources are deleted and the HTML files previously used for the preview are renamed to `*_old.html`.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest convert preview-config`
 
@@ -275,7 +275,7 @@ The available subcommands are: `mockserver-config`
 
 Removes the configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest remove mockserver-config`
 
@@ -299,7 +299,7 @@ The available subcommands are: `data-source` and `inbound`
 
 Replace the OData Source of the base application in an adaptation project.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest change data-source`
 
@@ -313,7 +313,7 @@ Example usage:
 
 Replace the inbound FLP configurations of the base application in an adaptation project.
 
-Example usage:
+Example:
 
 `npx --yes @sap-ux/create@latest change inbound`
 

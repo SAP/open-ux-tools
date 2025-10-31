@@ -12,9 +12,9 @@ import { runNpmInstallCommand } from '../../common';
 export function addAddCdsPluginUi5Command(cmd: Command): void {
     cmd.command('cds-plugin-ui5 [path]')
         .description(
-            `Add the \`cds-plugin-ui5\` module and all prerequisites to a CAP project for UI5 server integration.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest add cds-plugin-ui5\``
+            `Add the \`cds-plugin-ui5\` module and all prerequisites to a CAP project for UI5 server integration.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add cds-plugin-ui5\``
         )
         .option('-n, --skip-install', 'Skip the `npm install` step.')
         .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets `--verbose`')

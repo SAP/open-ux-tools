@@ -25,9 +25,9 @@ let loginAttempts = 3;
 export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations [path]')
         .description(
-            `Adds an annotation to the OData Source of the base application in an adaptation project.
-                                     Example usage:
-                                     \`npx --yes @sap-ux/create@latest add annotations\``
+            `Adds an annotation to the OData Source of the base application in an adaptation project.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add annotations\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .option(
