@@ -124,7 +124,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         jest.spyOn(flpConfigInquirer, 'getPrompts').mockResolvedValue([]);
         jest.spyOn(flpConfigInquirer, 'getTileSettingsQuestions').mockReturnValue([]);
         jest.spyOn(flpConfigInquirer, 'getAdpFlpConfigPromptOptions').mockReturnValue({});
-        jest.spyOn(flpConfigInquirer, 'getAdpFlpInboundsWriterConfig').mockReturnValue(flpConfigAnswers);
+        jest.spyOn(flpConfigInquirer, 'getAdpFlpInboundsWriterConfig').mockReturnValue([flpConfigAnswers]);
     });
 
     afterEach(() => {
@@ -255,7 +255,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         expect(commitMock).toHaveBeenCalled();
         expect(genAdpNavSpy).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
-            expect.objectContaining(flpConfigAnswers),
+            expect.arrayContaining([flpConfigAnswers]),
             expect.any(Object)
         );
         expect(genNavSpy).not.toHaveBeenCalled();
@@ -295,7 +295,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         expect(commitMock).toHaveBeenCalled();
         expect(genAdpNavSpy).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
-            expect.objectContaining(flpConfigAnswers),
+            expect.arrayContaining([flpConfigAnswers]),
             expect.any(Object)
         );
         expect(genNavSpy).not.toHaveBeenCalled();

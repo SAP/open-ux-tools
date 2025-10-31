@@ -86,7 +86,6 @@ export interface AdpWriterConfig {
         name?: string;
         description?: string;
     };
-    flp?: FlpConfig;
     customConfig?: CustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
@@ -214,8 +213,6 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
 }
-
-export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
 
 export interface Language {
     sap: string;

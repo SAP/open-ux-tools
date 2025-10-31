@@ -14,7 +14,8 @@ export enum promptNames {
     title = 'title',
     subTitle = 'subTitle',
     icon = 'icon',
-    additionalParameters = 'additionalParameters'
+    additionalParameters = 'additionalParameters',
+    confirmReplace = 'confirmReplace'
 }
 
 export enum tilePromptNames {
@@ -35,6 +36,7 @@ export interface FLPConfigAnswers {
     [promptNames.subTitle]?: string;
     [promptNames.icon]?: string;
     [promptNames.additionalParameters]?: string;
+    [promptNames.confirmReplace]?: boolean;
     s4Continue?: boolean;
 }
 
@@ -135,6 +137,13 @@ export interface ParameterStringPromptOptions {
 }
 
 /**
+ * Options for the 'confirmReplace' prompt.
+ */
+export interface ConfirmReplacePromptOptions {
+    hide?: boolean;
+}
+
+/**
  * The options which are common for the FLP config inquirer.
  */
 type FLPConfigCommonInquirerOptions = {
@@ -151,6 +160,7 @@ type PromptOptionMap = {
     [promptNames.icon]: IconPromptOptions;
     [promptNames.additionalParameters]: ParameterStringPromptOptions;
     [promptNames.existingFlpConfigInfo]: ExistingFlpConfigInfo;
+    [promptNames.confirmReplace]: ConfirmReplacePromptOptions;
 };
 
 /**

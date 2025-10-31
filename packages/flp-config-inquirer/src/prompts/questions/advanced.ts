@@ -107,3 +107,20 @@ export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
         filter: (val: string): string => val?.trim()
     };
 }
+
+/**
+ * Creates the 'confirmReplace' prompt for confirming tile replacement.
+ *
+ * @returns {FLPConfigQuestion} The prompt configuration for confirming tile replacement.
+ */
+export function getConfirmReplacePrompt(): FLPConfigQuestion {
+    return {
+        type: 'confirm',
+        name: promptNames.confirmReplace,
+        message: t('prompts.confirmReplace'),
+        default: false,
+        validate: (value): string | boolean => {
+            return value ? true : ' ';
+        }
+    };
+}

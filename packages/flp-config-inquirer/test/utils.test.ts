@@ -94,36 +94,47 @@ describe('utils', () => {
 
     describe('getAdpFlpInboundsWriterConfig', () => {
         it('should return config for REPLACE scenario', () => {
-            const flpConfigAnswers = {
-                inboundId: {
-                    semanticObject: 'semanticObject_Base',
-                    action: 'action_Base',
-                    signature: { parameters: { foo: 'bar' } }
-                },
-                title: 'title_New',
-                subTitle: 'subTitle_New',
-                icon: 'icon_New'
-            };
             const tileSettingsAnswers = { tileHandlingAction: tileActions.REPLACE };
 
             const writerConfig = getAdpFlpInboundsWriterConfig(
-                flpConfigAnswers as unknown as FLPConfigAnswers,
+                undefined,
                 adpTooling.FlexLayer.CUSTOMER_BASE,
-                tileSettingsAnswers as TileSettingsAnswers
+                tileSettingsAnswers as TileSettingsAnswers,
+                {
+                    inboundId: {
+                        semanticObject: 'semanticObject_Base',
+                        action: 'action_Base'
+                    },
+                    inboundId2: {
+                        semanticObject: 'semanticObject_Other',
+                        action: 'action_Other'
+                    }
+                }
             );
 
-            expect(writerConfig).toEqual({
-                inboundId: 'customer.semanticObject_Base-action_Base',
-                semanticObject: 'semanticObject_Base',
-                action: 'action_Base',
-                title: 'title_New',
-                subTitle: 'subTitle_New',
-                icon: 'icon_New',
-                additionalParameters: JSON.stringify({ foo: 'bar' })
-            });
+            expect(writerConfig).toEqual([
+                {
+                    inboundId: 'customer.inboundId',
+                    semanticObject: 'semanticObject_Base',
+                    action: 'action_Base',
+                    title: '',
+                    subTitle: '',
+                    icon: '',
+                    additionalParameters: ''
+                },
+                {
+                    inboundId: 'customer.inboundId2',
+                    semanticObject: 'semanticObject_Other',
+                    action: 'action_Other',
+                    title: '',
+                    subTitle: '',
+                    icon: '',
+                    additionalParameters: ''
+                }
+            ]);
         });
 
-        it('should return empty strings for config if no answers REPLACE scenario', () => {
+        it('should return empty array for config if no answers REPLACE scenario', () => {
             const tileSettingsAnswers = { tileHandlingAction: tileActions.REPLACE };
 
             const writerConfig = getAdpFlpInboundsWriterConfig(
@@ -132,15 +143,7 @@ describe('utils', () => {
                 tileSettingsAnswers as TileSettingsAnswers
             );
 
-            expect(writerConfig).toEqual({
-                inboundId: '',
-                semanticObject: '',
-                action: '',
-                title: '',
-                subTitle: '',
-                icon: '',
-                additionalParameters: ''
-            });
+            expect(writerConfig).toEqual([]);
         });
 
         it('should return config for ADD scenario', () => {
@@ -160,15 +163,17 @@ describe('utils', () => {
                 tileSettingsAnswers
             );
 
-            expect(writerConfig).toEqual({
-                inboundId: 'customer.semanticObject_New-action_New',
-                semanticObject: 'semanticObject_New',
-                action: 'action_New',
-                title: 'title_New',
-                subTitle: 'subTitle_New',
-                icon: 'icon_New',
-                additionalParameters: '{ "param1": "value1" }'
-            });
+            expect(writerConfig).toEqual([
+                {
+                    inboundId: 'customer.semanticObject_New-action_New',
+                    semanticObject: 'semanticObject_New',
+                    action: 'action_New',
+                    title: 'title_New',
+                    subTitle: 'subTitle_New',
+                    icon: 'icon_New',
+                    additionalParameters: '{ "param1": "value1" }'
+                }
+            ]);
         });
 
         it('should return config emptry strings for config if no answers ADD scenario', () => {
@@ -180,15 +185,17 @@ describe('utils', () => {
                 tileSettingsAnswers
             );
 
-            expect(writerConfig).toEqual({
-                inboundId: '',
-                semanticObject: '',
-                action: '',
-                title: '',
-                subTitle: '',
-                icon: '',
-                additionalParameters: ''
-            });
+            expect(writerConfig).toEqual([
+                {
+                    inboundId: '',
+                    semanticObject: '',
+                    action: '',
+                    title: '',
+                    subTitle: '',
+                    icon: '',
+                    additionalParameters: ''
+                }
+            ]);
         });
 
         it('should handle missing tileSettingsAnswers', () => {
@@ -203,15 +210,17 @@ describe('utils', () => {
 
             const writerConfig = getAdpFlpInboundsWriterConfig(flpConfigAnswers, adpTooling.FlexLayer.VENDOR);
 
-            expect(writerConfig).toEqual({
-                inboundId: 'so3-act3',
-                semanticObject: 'so3',
-                action: 'act3',
-                title: 'Title3',
-                subTitle: 'Sub3',
-                icon: 'icon3',
-                additionalParameters: 'params3'
-            });
+            expect(writerConfig).toEqual([
+                {
+                    inboundId: 'so3-act3',
+                    semanticObject: 'so3',
+                    action: 'act3',
+                    title: 'Title3',
+                    subTitle: 'Sub3',
+                    icon: 'icon3',
+                    additionalParameters: 'params3'
+                }
+            ]);
         });
     });
 });
