@@ -16,13 +16,13 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
         .description(
-            `Add html files for local preview and testing to the project. It will use the configuration from the \`ui5.yaml\` as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
+            `Add HTML files for local preview and testing to the project. It uses the configuration from the \`ui5.yaml\` file as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add html\``
         )
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
-        .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', 'ui5.yaml')
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets \`--verbose\`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();

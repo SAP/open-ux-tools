@@ -21,17 +21,17 @@ import { promptYUIQuestions } from '../../common';
 export function addDeployConfigCommand(cmd: Command): void {
     cmd.command('deploy-config [path]')
         .description(
-            `Prompt for ABAP deployment configuration details and add/update the project files accordingly.
+            `Prompt for ABAP deployment configuration details and adds and updates the project files accordingly.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add deploy-config\``
         )
-        .option('-t, --target <string>', 'target for deployment; ABAP or Cloud Foundry (not yet implemented)')
-        .option('-s, --simulate', 'simulate only do not write; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
-        .option('-b, --base-file <string>', 'the base file config file of the project; default : ui5.yaml')
+        .option('-t, --target <string>', 'Target for deployment: ABAP or Cloud Foundry (not yet implemented)')
+        .option('-s, --simulate', 'Simulate only. Do not write. Also, sets \`--verbose\`')
+        .option('-v, --verbose', 'Show verbose information.')
+        .option('-b, --base-file <string>', 'The base config file of the project. _(default: \'ui5.yaml\')_')
         .option(
             '-d, --deploy-file <string>',
-            'the name of the deploy config file to be written; default : ui5-deploy.yaml'
+            'The name of the deploy config file to be written. _(default: \'ui5-deploy.yaml\')_'
         )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {

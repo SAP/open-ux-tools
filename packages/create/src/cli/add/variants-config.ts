@@ -12,13 +12,13 @@ import { isAbsolute, join } from 'node:path';
 export function addAddVariantsConfigCommand(cmd: Command): void {
     cmd.command('variants-config [path]')
         .description(
-            `Add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to \`ui5.yaml\`, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
+            `Add the necessary configuration to an existing YAML file and the script to the \`package.json\` file for variants creation. It uses the configuration from the YAML file passed by the CLI or default to \`ui5.yaml\`, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add variants-config\``
         )
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
-        .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', 'ui5.yaml')
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();

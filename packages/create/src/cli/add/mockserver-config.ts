@@ -21,9 +21,9 @@ export function addAddMockserverConfigCommand(cmd: Command): void {
                                      \`$ npx -y @sap-ux/create@latest add mockserver-config\``
         )
         .option('-i, --interactive', 'ask for config options, otherwise use defaults')
-        .option('-n, --skip-install', 'skip npm install step')
-        .option('-s, --simulate', 'simulate only do not write or install; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .option('-n, --skip-install', 'skip the \`npm install\` step')
+        .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets \`--verbose\`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();

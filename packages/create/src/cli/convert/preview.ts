@@ -10,13 +10,13 @@ import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } fro
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
         .description(
-            `Executed in the root folder of an app, it will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the \`package.json\` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to \`*_old.html\`.
+            `Executed in the root folder of an app, it converts the respective app to the preview with virtual endpoints. It uses the configuration from the scripts in the \`package.json\` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources are deleted and the HTML files previously used for the preview are renamed to \`*_old.html\`.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest convert preview-config\``
         )
-        .option('-s, --simulate <boolean>', 'simulate only do not write')
-        .option('-v, --verbose', 'show verbose information')
-        .option('-t, --tests <boolean>', 'also convert test suite and test runners')
+        .option('-s, --simulate', 'Simulate only. Do not write.')
+        .option('-v, --verbose', 'Show verbose information.')
+        .option('-t, --tests', 'Also, convert test suite and test runners.')
         .action(async (path, options) => {
             const simulateString = /(?:=)?(true|false)/i.exec(options.simulate)?.[1];
             const testsString = /(?:=)?(true|false)/i.exec(options.tests)?.[1];

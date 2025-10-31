@@ -41,13 +41,13 @@ type Variant = { isAdp: true; content: DescriptorVariant } | { isAdp: false; con
 export function addInboundNavigationConfigCommand(cmd: Command): void {
     cmd.command('inbound-navigation [path]')
         .description(
-            `Add Fiori Launchpad inbound navigation configuration to a project.
+            `Add SAP Fiori launchpad inbound navigation configuration to a project.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add inbound-navigation\``
         )
-        .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', FileName.Ui5Yaml)
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets \`--verbose\`')
+        .option('-v, --verbose', 'Show verbose information.')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();

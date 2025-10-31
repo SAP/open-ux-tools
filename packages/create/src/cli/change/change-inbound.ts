@@ -17,7 +17,7 @@ export function addChangeInboundCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest change inbound\``
         )
-        .option('-s, --simulate', 'simulate only do not write or install')
+        .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {
             await changeInbound(path, !!options.simulate);
         });

@@ -47,8 +47,8 @@ Example usage:
 `$ npx -y @sap-ux/create@latest generate adaptation-project`
 
 **Options:**
-- `-n, --skip-install` - skip npm install step
-- `-s, --simulate` - simulate only do not write or install
+- `-n, --skip-install` - skip the `npm install` step
+- `-s, --simulate` - Simulate only. Do not write or install.
 - `-y, --yes` - use default values for all prompts
 - `--id [id]` - id of the adaptation project
 - `--reference [reference]` - id of the original application
@@ -82,9 +82,9 @@ Example usage:
 
 **Options:**
 - `-i, --interactive` - ask for config options, otherwise use defaults
-- `-n, --skip-install` - skip npm install step
-- `-s, --simulate` - simulate only do not write or install; sets also --verbose
-- `-v, --verbose` - show verbose information
+- `-n, --skip-install` - skip the `npm install` step
+- `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -97,8 +97,8 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add smartlinks-config`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write config; sets also --verbose
-- `-v, --verbose` - show verbose information
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -111,39 +111,39 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add cds-plugin-ui5`
 
 **Options:**
-- `-n, --skip-install` - skip npm install step
-- `-s, --simulate` - simulate only, do not write or install; sets also --verbose
-- `-v, --verbose` - show verbose information
+- `-n, --skip-install` - skip the `npm install` step
+- `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
 ## [`add inbound-navigation`](#add-inbound-navigation)
 
-Add Fiori Launchpad inbound navigation configuration to a project.
+Add SAP Fiori launchpad inbound navigation configuration to a project.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest add inbound-navigation`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write config; sets also --verbose
-- `-v, --verbose` - show verbose information
-- `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
 
 --------------------------------
 
 ## [`add cards-editor`](#add-cards-editor)
 
-Add the necessary configuration to an existing yaml file and the script to package.json for cards generation. It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.
+Add the necessary configuration to an existing YAML file and the script to the `package.json` file for cards generation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest add cards-editor`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
-- `-s, --simulate` - simulate only do not write config; sets also --verbose
-- `-v, --verbose` - show verbose information
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -156,7 +156,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add model`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write or install
+- `-s, --simulate` - Simulate only. Do not write or install.
 
 --------------------------------
 
@@ -169,23 +169,23 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add annotations`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write or install
-- `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
+- `-s, --simulate` - Simulate only. Do not write or install.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
 
 --------------------------------
 
 ## [`add html`](#add-html)
 
-Add html files for local preview and testing to the project. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
+Add HTML files for local preview and testing to the project. It uses the configuration from the `ui5.yaml` file as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest add html`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
-- `-s, --simulate` - simulate only do not write config; sets also --verbose
-- `-v, --verbose` - show verbose information
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -198,39 +198,39 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add component-usages`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write or install
+- `-s, --simulate` - Simulate only. Do not write or install.
 
 --------------------------------
 
 ## [`add deploy-config`](#add-deploy-config)
 
-Prompt for ABAP deployment configuration details and add/update the project files accordingly.
+Prompt for ABAP deployment configuration details and adds and updates the project files accordingly.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest add deploy-config`
 
 **Options:**
-- `-t, --target <string>` _(required)_ - target for deployment; ABAP or Cloud Foundry (not yet implemented)
-- `-s, --simulate` - simulate only do not write; sets also --verbose
-- `-v, --verbose` - show verbose information
-- `-b, --base-file <string>` _(required)_ - the base file config file of the project; default : ui5.yaml
-- `-d, --deploy-file <string>` _(required)_ - the name of the deploy config file to be written; default : ui5-deploy.yaml
+- `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
+- `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-b, --base-file <string>` _(required)_ - The base config file of the project. _(default: 'ui5.yaml')_
+- `-d, --deploy-file <string>` _(required)_ - The name of the deploy config file to be written. _(default: 'ui5-deploy.yaml')_
 
 --------------------------------
 
 ## [`add variants-config`](#add-variants-config)
 
-Add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
+Add the necessary configuration to an existing YAML file and the script to the `package.json` file for variants creation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest add variants-config`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
-- `-s, --simulate` - simulate only do not write config; sets also --verbose
-- `-v, --verbose` - show verbose information
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -247,16 +247,16 @@ Available Subcommands: preview-config
 
 ## [`convert preview-config`](#convert-preview-config)
 
-Executed in the root folder of an app, it will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
+Executed in the root folder of an app, it converts the respective app to the preview with virtual endpoints. It uses the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources are deleted and the HTML files previously used for the preview are renamed to `*_old.html`.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest convert preview-config`
 
 **Options:**
-- `-s, --simulate <boolean>` _(required)_ - simulate only do not write
-- `-v, --verbose` - show verbose information
-- `-t, --tests <boolean>` _(required)_ - also convert test suite and test runners
+- `-s, --simulate` - Simulate only. Do not write.
+- `-v, --verbose` - Show verbose information.
+- `-t, --tests` - Also, convert test suite and test runners.
 
 --------------------------------
 
@@ -273,15 +273,15 @@ Available Subcommands: mockserver-config
 
 ## [`remove mockserver-config`](#remove-mockserver-config)
 
-Removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver.
+Removes the configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module.
 
 Example usage:
 
 `$ npx -y @sap-ux/create@latest remove mockserver-config`
 
 **Options:**
-- `-v, --verbose` - show verbose information
-- `-f, --force` - do not ask for confirmation when deleting files
+- `-v, --verbose` - Show verbose information.
+- `-f, --force` - Do not ask for confirmation when deleting files.
 
 --------------------------------
 
@@ -304,8 +304,8 @@ Example usage:
 `$ npx -y @sap-ux/create@latest change data-source`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write or install
-- `-c, --config <string>` _(required)_ - Path to project configuration file in YAML format _(default: "ui5.yaml")_
+- `-s, --simulate` - Simulate only. Do not write or install.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
 
 --------------------------------
 
@@ -318,5 +318,5 @@ Example usage:
 `$ npx -y @sap-ux/create@latest change inbound`
 
 **Options:**
-- `-s, --simulate` - simulate only do not write or install
+- `-s, --simulate` - Simulate only. Do not write or install.
 
