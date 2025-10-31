@@ -6,7 +6,7 @@ import {
     findDefaultSystemSelectionIndex,
     NewSystemChoice
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 
@@ -42,7 +42,7 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValueOnce(backendSystems),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);

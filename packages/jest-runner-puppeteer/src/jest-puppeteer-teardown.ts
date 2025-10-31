@@ -14,5 +14,5 @@ const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 export default async function () {
     console.log(chalk.green('Teardown Puppeteer'));
     await globalAny.__BROWSER_GLOBAL__.close();
-    rimraf.sync(DIR);
+    rimraf.rimrafSync(DIR);
 }
