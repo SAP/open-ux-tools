@@ -40,7 +40,8 @@ type Variant = { isAdp: true; content: DescriptorVariant } | { isAdp: false; con
  */
 export function addInboundNavigationConfigCommand(cmd: Command): void {
     cmd.command('inbound-navigation [path]')
-        .description(`Add Fiori Launchpad inbound navigation configuration to a project.
+        .description(
+            `Add Fiori Launchpad inbound navigation configuration to a project.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add inbound-navigation\``
         )

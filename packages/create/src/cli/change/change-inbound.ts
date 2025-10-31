@@ -12,7 +12,8 @@ import { validateAdpProject, validateCloudAdpProject } from '../../validation';
  */
 export function addChangeInboundCommand(cmd: Command): void {
     cmd.command('inbound [path]')
-        .description(`Replace the Inbound FLP configurations of the base application in an adaptation project.
+        .description(
+            `Replace the Inbound FLP configurations of the base application in an adaptation project.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest change inbound\``
         )

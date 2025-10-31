@@ -15,7 +15,8 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
  */
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
-        .description(`Add html files for local preview and testing to the project. It will use the configuration from the \`ui5.yaml\` as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
+        .description(
+            `Add html files for local preview and testing to the project. It will use the configuration from the \`ui5.yaml\` as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add html\``
         )

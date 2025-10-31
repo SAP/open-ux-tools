@@ -11,7 +11,8 @@ import { isAbsolute, join } from 'node:path';
  */
 export function addAddVariantsConfigCommand(cmd: Command): void {
     cmd.command('variants-config [path]')
-        .description(`Add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to \`ui5.yaml\`, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
+        .description(
+            `Add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to \`ui5.yaml\`, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add variants-config\``
         )

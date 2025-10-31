@@ -11,7 +11,8 @@ import { hasFileDeletes, validateBasePath } from '../../validation';
  */
 export function addRemoveMockserverConfigCommand(cmd: Command): void {
     cmd.command('mockserver-config [path]')
-        .description(`Removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver.
+        .description(
+            `Removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest remove mockserver-config\``
         )

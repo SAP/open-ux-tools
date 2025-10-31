@@ -10,7 +10,8 @@ import { validateBasePath } from '../../validation';
  */
 export function addAddSmartLinksConfigCommand(cmd: Command): void {
     cmd.command('smartlinks-config [path]')
-        .description(`Add a smartLinks configuration to a project for cross-app navigation.
+        .description(
+            `Add a smartLinks configuration to a project for cross-app navigation.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add smartlinks-config\``
         )

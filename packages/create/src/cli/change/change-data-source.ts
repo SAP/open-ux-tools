@@ -21,7 +21,8 @@ let loginAttempts = 3;
  */
 export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('data-source [path]')
-        .description(`Replace the OData Source of the base application in an adaptation project.
+        .description(
+            `Replace the OData Source of the base application in an adaptation project.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest change data-source\``
         )

@@ -23,7 +23,8 @@ let loginAttempts = 3;
  */
 export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations [path]')
-        .description(`Adds an annotation to the OData Source of the base application in an adaptation project.
+        .description(
+            `Adds an annotation to the OData Source of the base application in an adaptation project.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add annotations\``
         )
