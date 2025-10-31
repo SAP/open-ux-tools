@@ -40,7 +40,7 @@ The available subcommands are: `adaptation-project`
 
 ## [`generate adaptation-project`](#generate-adaptation-project)
 
-Generate a new UI5 adaptation project with optional prompts and configuration.
+Generate a new SAPUI5 adaptation project with optional prompts and configuration.
 
 Example usage:
 
@@ -149,7 +149,7 @@ Example usage:
 
 ## [`add model`](#add-model)
 
-Add a new OData service and UI5 model to an existing adaptation project.
+Add a new OData service and SAPUI5 model to an existing adaptation project.
 
 Example usage:
 

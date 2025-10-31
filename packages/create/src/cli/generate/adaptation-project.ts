@@ -14,7 +14,7 @@ import { join } from 'node:path';
 export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
         .description(
-            `Generate a new UI5 adaptation project with optional prompts and configuration.
+            `Generate a new SAPUI5 adaptation project with optional prompts and configuration.
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest generate adaptation-project\``
         )
