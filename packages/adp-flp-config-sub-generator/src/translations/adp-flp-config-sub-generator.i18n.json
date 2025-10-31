@@ -6,7 +6,7 @@
         "flpConfigName": "SAP Fiori Launchpad Configuration",
         "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Settings",
         "tileSettingsDescr": "Configure SAP Fiori Launchpad settings - {{projectName}}",
-        "flpConfigReplaceCurrentTiles": "Current tiles:\n{{- currentTiles}}",
+        "flpConfigReplaceCurrentTiles": "Existing Tiles:\n{{- currentTiles}}",
         "flpConfigReplaceTile": "  • Inbound ID: {{- inboundId}}\n  • Title: {{- title}}"
     },
     "info": {
