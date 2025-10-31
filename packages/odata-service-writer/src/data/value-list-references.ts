@@ -4,7 +4,7 @@ import prettifyXml from 'prettify-xml';
 import { DirName, getWebappPath } from '@sap-ux/project-access';
 
 import type { OdataService } from '../types';
-import { join, relative } from 'path';
+import { join } from 'path';
 
 export interface ValueListReferences {
     target: string;
@@ -31,7 +31,6 @@ export async function writeValueListReferenceMetadata(
         return;
     }
     const webappPath = await getWebappPath(basePath, fs);
-    const map: Record<string, string> = {};
     for (const target of targets) {
         for (const reference of valueListReferences[target]) {
             const [valueListServicePath] = reference.path.split(';');
@@ -49,20 +48,15 @@ export async function writeValueListReferenceMetadata(
             const path = join(
                 webappPath,
                 DirName.LocalService,
-                'value-list-references',
                 service.name ?? 'mainService',
+                relativeServicePath,
                 target,
-                `${relativeServicePath}.xml`
+                'metadata.xml'
             );
 
             if (reference.data) {
-                map[reference.path] = relative(webappPath, path);
                 fs.write(path, prettifyXml(reference.data, { indent: 4 }));
             }
         }
     }
-    fs.write(
-        join(webappPath, DirName.LocalService, 'value-list-references', 'service-map.json'),
-        JSON.stringify(map, undefined, 4)
-    );
 }

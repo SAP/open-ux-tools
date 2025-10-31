@@ -32,6 +32,8 @@ export class AbapServiceProvider extends ServiceProvider {
      */
     protected _publicUrl: string;
 
+    private _valueListReferences = [];
+
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
      * The function returns a promise because it may be required to fetch the information from the backend.
@@ -312,19 +314,22 @@ export class AbapServiceProvider extends ServiceProvider {
      * @param files - Metadata and annotation files to be searched for ValueListReferences.
      * @returns ValueListReferences found in the files.
      */
-    private getValueListReferences(
+    public getValueListReferences(
         files: {
             data: string | ConvertedMetadata;
             path: string;
         }[]
     ): { target: string; rootPath: string; values: string[] }[] {
-        const references = [];
+        if (this._valueListReferences) {
+            return this._valueListReferences;
+        }
+        this._valueListReferences = [];
         for (const { data, path } of files) {
             const schema = typeof data === 'string' ? convert(parse(data)) : data;
             for (const entityType of schema.entityTypes) {
                 for (const property of entityType.entityProperties) {
                     const target = `${entityType.name}/${property.name}`;
-                    references.push({
+                    this._valueListReferences.push({
                         rootPath: path,
                         target,
                         values: property.annotations.Common?.ValueListReferences ?? []
@@ -332,7 +337,7 @@ export class AbapServiceProvider extends ServiceProvider {
                 }
             }
         }
-        return references;
+        return this._valueListReferences;
     }
 
     /**
