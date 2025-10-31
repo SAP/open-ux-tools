@@ -1,0 +1,7 @@
+specVersion: '2.6'
+metadata:
+    name: cf-oauth-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: dist/middleware.js

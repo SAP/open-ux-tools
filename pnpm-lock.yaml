@@ -1259,6 +1259,37 @@ importers:
         specifier: 4.4.0
         version: 4.4.0
 
+  packages/cf-oauth-middleware:
+    dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      axios:
+        specifier: 1.12.2
+        version: 1.12.2
+    devDependencies:
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
+      nock:
+        specifier: 13.4.0
+        version: 13.4.0
+      supertest:
+        specifier: 7.1.4
+        version: 7.1.4
+
   packages/control-property-editor:
     devDependencies:
       '@esbuild-plugins/node-modules-polyfill':
@@ -19702,10 +19733,12 @@ packages:
   /mime@1.6.0:
     resolution: {integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==}
     engines: {node: '>=4'}
+    hasBin: true
 
   /mime@2.6.0:
     resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
     engines: {node: '>=4.0.0'}
+    hasBin: true
     dev: true
 
   /mimic-fn@2.1.0:

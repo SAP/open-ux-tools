@@ -27,7 +27,6 @@ import {
     isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -234,7 +233,7 @@ export default class extends Generator {
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
         if (!this.jsonInput) {
-            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isCfFeatureEnabled;
+            const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
@@ -454,7 +453,7 @@ export default class extends Generator {
     private async _determineTargetEnv(): Promise<void> {
         const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
 
-        if (isAppStudio() && hasRequiredExtensions) {
+        if (hasRequiredExtensions) {
             await this._promptForTargetEnvironment();
         } else {
             this.targetEnv = TargetEnv.ABAP;
@@ -466,7 +465,7 @@ export default class extends Generator {
      */
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
-            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig, this.vscode)
+            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig)
         ]);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
@@ -545,7 +544,9 @@ export default class extends Generator {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.cfPrompter.serviceInstanceGuid;
+        const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
+        const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
+        const backendUrl = this.cfPrompter.backendUrl;
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
@@ -553,6 +554,8 @@ export default class extends Generator {
             layer: this.layer,
             manifest,
             html5RepoRuntimeGuid,
+            serviceInstanceGuid,
+            backendUrl,
             projectPath,
             publicVersions
         });

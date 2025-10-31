@@ -1,0 +1,51 @@
+{
+    "name": "@sap-ux/cf-oauth-middleware",
+    "description": "OAuth2 Bearer token middleware for Cloud Foundry adaptation projects",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cf-oauth-middleware"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acf-oauth-middleware"
+    },
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "axios": "1.12.2"
+    },
+    "devDependencies": {
+        "@types/express": "4.17.21",
+        "@types/supertest": "2.0.12",
+        "express": "4.21.2",
+        "nock": "13.4.0",
+        "supertest": "7.1.4"
+    },
+    "ui5": {
+        "dependencies": []
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}
