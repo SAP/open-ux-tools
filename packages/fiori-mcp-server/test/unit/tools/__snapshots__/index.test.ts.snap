@@ -3,6 +3,7 @@
 exports[`Tools schemas execute_functionality: Input schema for "execute_functionality" 1`] = `
 Object {
   "additionalProperties": false,
+  "description": "Input object for executing a functionality. Only three top-level properties are allowed: \\"functionalityId\\", \\"parameters\\", and \\"appPath\\". All other dynamic or functionality-specific inputs must be included inside the \\"parameters\\" object. Do not place any additional fields at the root level.",
   "properties": Object {
     "appPath": Object {
       "description": "Path to the Fiori application. Path should be an absolute path.",

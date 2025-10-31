@@ -1,0 +1,11 @@
+config:
+    project: 'lrop-v2'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Enable FCL with two columns mid expanded. Application in {{appPath}}'
+assert:
+  - type: javascript
+    value: file://../assertions/snapshots.ts:validate
+    config:
+      snapshot: fcl-enable-v2
+      file: webapp/manifest.json
