@@ -18,7 +18,7 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
                                      Example usage:
                                      \`npx --yes @sap-ux/create@latest generate adaptation-project\``
         )
-        .option('-n, --skip-install', 'skip the `npm install` step')
+        .option('-n, --skip-install', 'Skip the `npm install` step.')
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .option('-y, --yes', 'Use default values for all prompts.')
         .option('--id [id]', 'The ID of the adaptation project.')

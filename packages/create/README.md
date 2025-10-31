@@ -47,7 +47,7 @@ Example usage:
 `npx --yes @sap-ux/create@latest generate adaptation-project`
 
 **Options:**
-- `-n, --skip-install` - skip the `npm install` step
+- `-n, --skip-install` - Skip the `npm install` step.
 - `-s, --simulate` - Simulate only. Do not write or install.
 - `-y, --yes` - Use default values for all prompts.
 - `--id [id]` - The ID of the adaptation project.
@@ -111,7 +111,7 @@ Example usage:
 `npx --yes @sap-ux/create@latest add cds-plugin-ui5`
 
 **Options:**
-- `-n, --skip-install` - skip the `npm install` step
+- `-n, --skip-install` - Skip the `npm install` step.
 - `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
