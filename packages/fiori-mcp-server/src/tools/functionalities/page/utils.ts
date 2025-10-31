@@ -1,4 +1,4 @@
-import { AppData } from '../../../page-editor-api';
+import type { AppData } from '../../../page-editor-api';
 import type { PageDef } from './types';
 import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 

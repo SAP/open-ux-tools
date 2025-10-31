@@ -87,8 +87,8 @@ const childPageSchema = (page: string, navigations: AllowedNavigationOptions[], 
  * - If `navigations` is empty, a schema for creating the very first page is returned.
  *
  * @param navigations - Mapping of parent page IDs to allowed navigation options.
- * @param version - Fiori elements version of application.
  * @param entities - Entity options available when creating the very first page.
+ * @param version - Fiori elements version of application.
  * @returns A Zod schema that validates either child page creation or first page creation.
  */
 export function buildPageCreationSchema(
