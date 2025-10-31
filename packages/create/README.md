@@ -49,7 +49,7 @@ Example usage:
 **Options:**
 - `-n, --skip-install` - skip the `npm install` step
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-y, --yes` - use default values for all prompts
+- `-y, --yes` - Use default values for all prompts.
 - `--id [id]` - The ID of the adaptation project.
 - `--reference [reference]` - The ID of the original application.
 - `--url [url]` - The URL that points to the target system which contains the original application.
@@ -254,9 +254,9 @@ Example usage:
 `$ npx -y @sap-ux/create@latest convert preview-config`
 
 **Options:**
-- `-s, --simulate` - Simulate only. Do not write.
+- `-s, --simulate <boolean>` _(required)_ - Simulate only. Do not write.
 - `-v, --verbose` - Show verbose information.
-- `-t, --tests` - Also, convert test suite and test runners.
+- `-t, --tests <boolean>` _(required)_ - Also, convert test suite and test runners.
 
 --------------------------------
 
