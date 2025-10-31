@@ -508,7 +508,7 @@ describe('ControllerExtension', () => {
                 () =>
                     ({
                         toISOString: () => '2020-01-01T00:00:00.000Z'
-                    } as unknown as Date)
+                    }) as unknown as Date
             );
             jest.spyOn(apiHandler, 'writeChange').mockImplementation(async (data) => {
                 return Promise.resolve(data);

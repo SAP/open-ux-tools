@@ -1,10 +1,11 @@
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 
-import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
+import type { SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
+import { SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
 import { getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
-import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
-import { EnablementValidator } from './enablement-validator';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { EnablementValidator } from './enablement-validator';
 import { QuickActionDefinitionBase } from './quick-action-base';
 
 /**
@@ -13,12 +14,23 @@ import { QuickActionDefinitionBase } from './quick-action-base';
 export abstract class SimpleQuickActionDefinitionBase<
     T extends UI5Element = UI5Element
 > extends QuickActionDefinitionBase<typeof SIMPLE_QUICK_ACTION_KIND> {
+    /**
+     *
+     */
     public get isApplicable(): boolean {
         return this.control !== undefined;
     }
 
     protected control: T | undefined;
 
+    /**
+     *
+     * @param type
+     * @param controlTypes
+     * @param defaultTextKey
+     * @param context
+     * @param enablementValidators
+     */
     constructor(
         public readonly type: string,
         protected readonly controlTypes: string[],
@@ -29,6 +41,9 @@ export abstract class SimpleQuickActionDefinitionBase<
         super(type, SIMPLE_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
     }
 
+    /**
+     *
+     */
     initialize(): Promise<void> {
         this.control = getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
@@ -38,6 +53,9 @@ export abstract class SimpleQuickActionDefinitionBase<
         return Promise.resolve();
     }
 
+    /**
+     *
+     */
     getActionObject(): SimpleQuickAction {
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,

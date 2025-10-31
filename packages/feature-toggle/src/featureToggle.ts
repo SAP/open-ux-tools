@@ -103,6 +103,7 @@ export class FeatureToggleAccess {
 function getVSCodeInstance(): any {
     let vscode;
     try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         vscode = require('vscode');
     } catch {
         // Vscode not available. Normally in CLI

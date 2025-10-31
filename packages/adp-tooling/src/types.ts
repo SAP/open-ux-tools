@@ -493,16 +493,16 @@ export const ChangeTypeMap: Record<ChangeType, string> = {
 export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOTATIONS_TO_ODATA
     ? AnnotationsData
     : T extends ChangeType.ADD_COMPONENT_USAGES
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_LIBRARY_REFERENCE
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_NEW_MODEL
-    ? NewModelData
-    : T extends ChangeType.CHANGE_DATA_SOURCE
-    ? DataSourceData
-    : T extends ChangeType.CHANGE_INBOUND
-    ? InboundData
-    : never;
+      ? ComponentUsagesData
+      : T extends ChangeType.ADD_LIBRARY_REFERENCE
+        ? ComponentUsagesData
+        : T extends ChangeType.ADD_NEW_MODEL
+          ? NewModelData
+          : T extends ChangeType.CHANGE_DATA_SOURCE
+            ? DataSourceData
+            : T extends ChangeType.CHANGE_INBOUND
+              ? InboundData
+              : never;
 
 export interface AnnotationsData {
     variant: DescriptorVariant;

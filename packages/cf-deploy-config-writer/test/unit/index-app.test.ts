@@ -24,7 +24,7 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -60,7 +60,7 @@ describe('CF Writer App', () => {
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
-        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     beforeAll(() => {

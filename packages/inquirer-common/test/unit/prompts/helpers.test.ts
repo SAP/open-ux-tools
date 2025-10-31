@@ -7,10 +7,7 @@ import {
     extendValidate,
     extendWithOptions,
     withCondition,
-    filterAggregateTransformations
-} from '../../../src/prompts/helpers';
-import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
-import {
+    filterAggregateTransformations,
     convertEdmxToConvertedMetadata,
     hasRecursiveHierarchyForEntity,
     getRecursiveHierarchyQualifier,
@@ -18,6 +15,7 @@ import {
     transformationsRequiredForAnalyticalTable,
     findEntitySetByName
 } from '../../../src/prompts/helpers';
+import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 

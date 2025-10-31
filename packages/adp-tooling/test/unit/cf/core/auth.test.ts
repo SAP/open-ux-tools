@@ -7,7 +7,7 @@ jest.mock('@sap/cf-tools/out/src/cf-local', () => ({
     cfGetAvailableOrgs: jest.fn()
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCFLocal = require('@sap/cf-tools/out/src/cf-local');
 
 const mockCfConfig: CfConfig = {

@@ -85,7 +85,6 @@ describe('HTML5 Repository', () => {
         test('should successfully get OAuth token', async () => {
             const mockResponse = {
                 data: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     access_token: 'test-access-token'
                 }
             };
@@ -227,7 +226,6 @@ describe('HTML5 Repository', () => {
             mockAxios.get
                 .mockResolvedValueOnce({
                     data: {
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         access_token: 'test-token'
                     }
                 })

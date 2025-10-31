@@ -4,4 +4,4 @@
  * module imports with the vscode extension instance from the test runner's
  * environment.
  */
-jest.mock('vscode', () => (global as any).vscode, { virtual: true }); // eslint-disable-line @typescript-eslint/no-explicit-any
+jest.mock('vscode', () => (global as any).vscode, { virtual: true });

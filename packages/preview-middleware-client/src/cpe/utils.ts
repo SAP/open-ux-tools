@@ -102,6 +102,12 @@ export function getRootControlFromComponentContainer(container?: ComponentContai
     return undefined;
 }
 
+/**
+ *
+ * @param control
+ * @param changeService
+ * @param controlOverlay
+ */
 export function getManifestProperties(
     control: ManagedObject,
     changeService: ChangeService,

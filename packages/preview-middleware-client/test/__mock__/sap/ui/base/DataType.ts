@@ -29,7 +29,10 @@ export default class DataTypeMock {
     }
 }
 export class PrimitiveDataTypeMock extends DataTypeMock {
-    constructor(private name: string, private baseType?: DataTypeMock) {
+    constructor(
+        private name: string,
+        private baseType?: DataTypeMock
+    ) {
         super();
     }
 

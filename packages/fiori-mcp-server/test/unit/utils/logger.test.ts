@@ -29,7 +29,7 @@ describe('logger module', () => {
 
     describe('getLogLevel function behavior', () => {
         it('should return Error level as default when no configuration is provided', () => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
             expect(logger.constructor.name).toBe('WinstonLogger');
@@ -37,21 +37,21 @@ describe('logger module', () => {
 
         it('should use global LOG_LEVEL when set', () => {
             (global as Record<string, unknown>).LOG_LEVEL = 'INFO';
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should use environment LOG_LEVEL when global is not set', () => {
             process.env.LOG_LEVEL = 'DEBUG';
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should use command line argument when global and env are not set', () => {
             process.argv.push('--log-level=WARN');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -59,7 +59,7 @@ describe('logger module', () => {
         it('should prioritize global over environment variable', () => {
             (global as Record<string, unknown>).LOG_LEVEL = 'ERROR';
             process.env.LOG_LEVEL = 'INFO';
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -67,7 +67,7 @@ describe('logger module', () => {
         it('should prioritize global over command line argument', () => {
             (global as Record<string, unknown>).LOG_LEVEL = 'WARN';
             process.argv.push('--log-level=DEBUG');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -75,7 +75,7 @@ describe('logger module', () => {
         it('should prioritize environment over command line argument', () => {
             process.env.LOG_LEVEL = 'VERBOSE';
             process.argv.push('--log-level=SILLY');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -101,7 +101,7 @@ describe('logger module', () => {
         testCases.forEach(({ input, expected }) => {
             it(`should handle ${input} case-insensitively for ${expected}`, () => {
                 process.env.LOG_LEVEL = input;
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
                 const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
                 expect(logger).toBeDefined();
             });
@@ -109,21 +109,21 @@ describe('logger module', () => {
 
         it('should fall back to Error level for invalid log level strings', () => {
             process.env.LOG_LEVEL = 'INVALID_LEVEL';
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should fall back to Error level for empty string', () => {
             process.env.LOG_LEVEL = '';
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should fall back to Error level for whitespace-only string', () => {
             process.env.LOG_LEVEL = '   ';
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -132,14 +132,14 @@ describe('logger module', () => {
     describe('command line argument parsing', () => {
         it('should parse --log-level=VALUE format correctly', () => {
             process.argv.push('--log-level=INFO');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should handle command line argument without equals sign gracefully', () => {
             process.argv.push('--log-level');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -147,14 +147,14 @@ describe('logger module', () => {
         it('should handle multiple --log-level arguments by using the first one', () => {
             process.argv.push('--log-level=DEBUG');
             process.argv.push('--log-level=ERROR');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should handle malformed command line arguments', () => {
             process.argv.push('--log-level=');
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -162,13 +162,13 @@ describe('logger module', () => {
 
     describe('logger instance configuration', () => {
         it('should create logger with correct prefix', () => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
 
         it('should create logger with ConsoleTransport', () => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const { logger } = require('../../../src/utils/logger') as { logger: ToolsLogger };
             expect(logger).toBeDefined();
         });
@@ -178,7 +178,7 @@ describe('logger module', () => {
         let logger: ToolsLogger;
 
         beforeEach(() => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const loggerModule = require('../../../src/utils/logger') as { logger: ToolsLogger };
             logger = loggerModule.logger;
         });

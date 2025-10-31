@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { getLibraryChoices, getProjectChoices } from '../../src/choices';
-import { Manifest, ReuseLibType } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
+import { ReuseLibType } from '@sap-ux/project-access';
 
 describe('choices utils', () => {
     test('should return project choices', async () => {

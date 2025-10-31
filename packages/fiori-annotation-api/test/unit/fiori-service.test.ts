@@ -146,7 +146,7 @@ const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> 
             }
         }
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const runner: any = (testCase: EditTestCase<T>, timeout?: number): void => {
         describe(testCase.name, run(testCase, timeout));
     };
