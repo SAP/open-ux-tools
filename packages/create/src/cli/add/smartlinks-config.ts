@@ -15,7 +15,7 @@ export function addAddSmartLinksConfigCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add smartlinks-config\``
         )
-        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets \`--verbose\`')
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {

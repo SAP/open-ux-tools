@@ -21,7 +21,7 @@ export function addAddHtmlFilesCmd(cmd: Command): void {
                                      \`$ npx -y @sap-ux/create@latest add html\``
         )
         .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', 'ui5.yaml')
-        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets \`--verbose\`')
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
