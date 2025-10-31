@@ -1,8 +1,8 @@
 import utils from '../rule-utils';
-import { FioriPropertyDefinition, PROPERTY_DEFINITIONS } from '../property-definitions';
-import { DocumentNode } from '@humanwhocodes/momoa';
-import { ManifestRuleDefinition } from '../types';
+import { type FioriPropertyDefinition, PROPERTY_DEFINITIONS } from '../property-definitions';
+import type { DocumentNode } from '@humanwhocodes/momoa';
 
+import type { ManifestRuleDefinition } from '../types';
 const flexEnabledDefinition: FioriPropertyDefinition = PROPERTY_DEFINITIONS.flexEnabled;
 
 const rule: ManifestRuleDefinition = {
@@ -16,39 +16,25 @@ const rule: ManifestRuleDefinition = {
         messages: {
             flexEnabled: flexEnabledDefinition.message
         },
-        fixable: flexEnabledDefinition.fixable,
-        hasSuggestions: true
+        fixable: flexEnabledDefinition.fixable
     },
 
     create(context) {
         return {
-            Document(node: DocumentNode) {
+            Document(node: DocumentNode): void {
                 if (!utils.checkRuleApplicable(flexEnabledDefinition, node.body as any, context.filename)) {
-                    return {};
+                    return;
                 }
                 const sapUI5Node = utils.getManifestProperty(node.body, 'sap.ui5');
                 if (!sapUI5Node || !utils.isMemberNode(sapUI5Node)) {
                     // no "sap.ui5" node found
-                    // never reached checkRuleApplicable would have returned false
-                    return context.report({
-                        loc: node.loc,
-                        node: node,
-                        messageId: 'flexEnabled',
-                        suggest: [
-                            {
-                                desc: "Check manifest configuration for 'sap.ui5' and add 'flexEnabled' property",
-                                fix: function (fixer) {
-                                    return null;
-                                }
-                            }
-                        ]
-                    });
+                    return;
                 }
                 const flexEnabledNode = utils.getManifestProperty(sapUI5Node, 'flexEnabled');
                 const expectedValue = flexEnabledDefinition.expectedValue ?? true;
                 if (!flexEnabledNode || !utils.isMemberNode(flexEnabledNode)) {
                     // no "flexEnabled" node found
-                    return context.report({
+                    context.report({
                         loc: sapUI5Node.loc,
                         node: sapUI5Node,
                         messageId: 'flexEnabled',
@@ -62,13 +48,14 @@ const rule: ManifestRuleDefinition = {
                             );
                         }
                     });
+                    return;
                 }
                 // "flexEnabled" node found, check its value
                 const value = flexEnabledNode.value.type === 'Boolean' ? flexEnabledNode.value.value : undefined;
                 if (value === expectedValue) {
                     return;
                 }
-                return context.report({
+                context.report({
                     loc: flexEnabledNode.loc,
                     node: flexEnabledNode,
                     messageId: 'flexEnabled',
@@ -76,6 +63,7 @@ const rule: ManifestRuleDefinition = {
                         return fixer.replaceTextRange(flexEnabledNode.value.range!, expectedValue.toString());
                     }
                 });
+                return;
             }
         };
     }

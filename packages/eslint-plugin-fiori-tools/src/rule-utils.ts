@@ -1,7 +1,7 @@
-import { AnyNode, DocumentNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
+import type { AnyNode, DocumentNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
 import fs from 'fs';
 import path from 'path';
-import { FioriPropertyDefinition } from './property-definitions';
+import type { FioriPropertyDefinition } from './property-definitions';
 
 /**
  * Compares two version strings in the format 'x.y.z'.
