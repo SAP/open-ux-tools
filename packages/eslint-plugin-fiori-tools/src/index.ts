@@ -1,10 +1,6 @@
-import { JSONLanguage, JSONSourceCode } from '@eslint/json';
-import type { Plugin } from '@eslint/config-helpers';
+import { JSONLanguage } from '@eslint/json';
+import type { Plugin, Config } from '@eslint/config-helpers';
 import rules from './rules';
-
-//------------------------------------------------------------------------------
-// Plugin Definition
-//------------------------------------------------------------------------------
 
 const plugin: Plugin = {
     meta: {
@@ -14,18 +10,30 @@ const plugin: Plugin = {
     languages: {
         json: new JSONLanguage({ mode: 'json' })
     },
-    rules,
-    configs: {
-        manifest: {
-            plugins: {},
-            rules: { 'consistency/flex-enabled': 'warn' }
-        }
+    rules
+};
+
+const commonConfig: Config = {
+    files: ['**/manifest.json'],
+    plugins: { consistency: plugin },
+    language: 'consistency/json'
+};
+
+const v2: Config = {
+    ...commonConfig,
+    rules: { 'consistency/flex-enabled': 'warn' }
+};
+const v4: Config = {
+    ...commonConfig,
+    rules: {
+        'consistency/flex-enabled': 'error'
     }
 };
 
-(plugin.configs!.manifest as any).plugins.consistency = plugin;
-
+// Export the plugin as default and attach the configs
 module.exports = plugin;
 module.exports.default = plugin;
-module.exports.JSONSourceCode = JSONSourceCode;
+module.exports.v2 = v2;
+module.exports.v4 = v4;
 export default plugin;
+export { v2, v4 };
