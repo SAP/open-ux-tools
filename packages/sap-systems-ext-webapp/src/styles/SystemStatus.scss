@@ -1,0 +1,65 @@
+.system-status {
+    margin-left: 20px;
+    margin-top: 22px;
+    margin-bottom: 22.2px;
+
+    &-info {
+        color: var(--vscode-foreground);
+    }
+
+    &-warn {
+        color: var(--vscode-notificationsWarningIcon-foreground);
+    }
+
+    &-error {
+        color: var(--vscode-notificationsErrorIcon-foreground);
+    }
+}
+
+.system-info-status {
+    margin-left: 20px;
+    padding-top: 18px;
+    font-size: 14px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+}
+
+.status-msg {
+    margin-inline: 6px;
+    margin-bottom: 4px;
+}
+
+.UIActionCallout-callout {
+    margin-bottom: 16px;
+}
+
+.output-link {
+    &-warn {
+        color: var(--vscode-notificationsWarningIcon-foreground);
+        &:hover,
+        &:hover:focus,
+        &:hover:active {
+            color: var(--vscode-notificationsWarningIcon-foreground);
+        }
+    }
+
+    &-error {
+        color: var(--vscode-notificationsErrorIcon-foreground);
+        &:hover,
+        &:hover:focus,
+        &:hover:active {
+            color: var(--vscode-notificationsErrorIcon-foreground);
+        }
+    }
+}
+
+.catalog-messages > div {
+    margin-bottom: 5px;
+}
+
+#outputLink {
+    font-weight: bold;
+}

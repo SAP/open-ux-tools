@@ -1,11 +1,19 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Service, ServiceRetrievalOptions } from '.';
 import type { DataProvider } from '../data-provider';
+import type { ServiceOptions } from '../types';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
-import type { ServiceOptions } from '../types';
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { getFioriToolsDirectory, getSapToolsDirectory, getEntityFileName } from '../utils';
+import { Entity } from '../constants';
 
+/**
+ * Should not be used directly, use factory method `getService` instead.
+ * Data integrity cannot be guaranteed when using this class directly.
+ */
 export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;
     private readonly logger: Logger;
@@ -14,6 +22,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         this.logger = logger;
         this.dataProvider = new SystemDataProvider(this.logger, options);
     }
+
     public async partialUpdate(
         key: BackendSystemKey,
         entity: Partial<BackendSystem>
@@ -81,5 +90,70 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 }
 
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
+    if (!options.baseDirectory) {
+        try {
+            ensureSystemsMigrated();
+            options.baseDirectory = getSapToolsDirectory();
+        } catch (error) {
+            logger.error(text('error.systemsJsonMigrationFailed', { error: (error as Error).message }));
+        }
+    }
     return new SystemService(logger, options);
+}
+
+/**
+ * Ensure settings are migrated from .fioritools directory to the new .saptools directory.
+ * If migration has already taken place, only migrate new systems that have not yet been migrated.
+ */
+function ensureSystemsMigrated(): void {
+    const systemFileName = getEntityFileName(Entity.BackendSystem);
+    const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
+    const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
+    const migrationFlag = join(getSapToolsDirectory(), '.systemsMigrated');
+    const legacyData = JSON.parse(readFileSync(legacySystemsPath, 'utf-8')).systems as Record<string, BackendSystem>;
+
+    if (existsSync(migrationFlag)) {
+        migrateNewLegacyPathEntries(newSystemsPath, legacyData);
+    } else {
+        // first time migration, move all data from legacy to new path
+        mkdirSync(dirname(newSystemsPath), { recursive: true });
+        writeFileSync(newSystemsPath, JSON.stringify({ systems: legacyData }, null, 2));
+    }
+
+    // overwrite legacy file entries with migrated flag to avoid re-migration
+    const migratedData: Record<string, BackendSystem & { _migrated?: boolean }> = {};
+    for (const [key, system] of Object.entries(legacyData)) {
+        migratedData[key] = {
+            ...system,
+            _migrated: true
+        };
+    }
+
+    writeFileSync(legacySystemsPath, JSON.stringify({ systems: { ...migratedData } }, null, 2));
+    writeFileSync(migrationFlag, new Date().toISOString());
+}
+
+/**
+ * Migrates new entries in the systems.json in the legacy path, that have not yet been migrated.
+ *
+ * @param newSystemsPath - path to the new systems.json file
+ * @param legacyData - data from the legacy systems.json file
+ */
+function migrateNewLegacyPathEntries(newSystemsPath: string, legacyData: Record<string, BackendSystem>): void {
+    let hasNewEntries = false;
+    const newData: Record<string, BackendSystem> = {};
+
+    for (const [key, system] of Object.entries(legacyData)) {
+        if (!(system as BackendSystem & { _migrated?: boolean })._migrated) {
+            newData[key] = {
+                ...system
+            };
+            hasNewEntries = true;
+        }
+    }
+
+    if (hasNewEntries) {
+        const existingData = JSON.parse(readFileSync(newSystemsPath, 'utf-8')).systems as Record<string, BackendSystem>;
+        writeFileSync(newSystemsPath, JSON.stringify({ systems: { ...existingData, ...newData } }, null, 2));
+    }
 }
