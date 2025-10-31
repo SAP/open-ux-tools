@@ -40,7 +40,7 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
-        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/yeoman-ui-types": "1.20.2",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
