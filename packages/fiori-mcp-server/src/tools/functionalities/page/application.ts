@@ -412,8 +412,7 @@ export class Application {
 
         const ftfsFileIo = new SapuxFtfsFileIO(this.applicationAccess);
         await ftfsFileIo.writeApp(this.appData);
-
-        return { pageID: id, changes: [] };
+        return { pageID: id, changes: [this.applicationAccess.app.manifest] };
     }
 
     /**
