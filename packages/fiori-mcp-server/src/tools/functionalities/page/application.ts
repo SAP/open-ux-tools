@@ -1,11 +1,11 @@
-import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { CustomExtensionType, PageTypeV4, FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
 import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types';
 import { getService } from './serviceStore';
 import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
 import { MissingNavigationReason } from './types';
-import { generatePageId } from './utils';
+import { generatePageId, getFioriElementsVersion } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
@@ -21,6 +21,7 @@ export class Application {
     private readonly appId: string;
     private readonly applicationAccess: ApplicationAccess;
     private readonly params: GetFunctionalityDetailsInput;
+    private readonly version: FioriElementsVersion;
     /**
      * Creates a new instance of the Application class.
      *
@@ -49,6 +50,7 @@ export class Application {
         this.appData = appData;
         this.appId = appId;
         this.applicationAccess = applicationAccess;
+        this.version = getFioriElementsVersion(appData);
     }
 
     /**
@@ -293,7 +295,7 @@ export class Application {
     }
 
     /**
-     * Generates a new page using the FPM writer.
+     * Generates a new V4 page using the FPM writer.
      *
      * @param newPage - The new page details.
      * @param parentPage - The parent page, if any.
@@ -303,7 +305,7 @@ export class Application {
      * @param entitySet - Optional entity set for the new page.
      * @returns A promise that resolves to an object containing the new page ID and changes made.
      */
-    private async generatePageWithFPMWriter(
+    private async generatePageV4(
         newPage: NewPage,
         parentPage: PageDef | undefined,
         targetNavigation: AllowedNavigationOptions | undefined,
@@ -336,6 +338,7 @@ export class Application {
             },
             parentPage?.pageId,
             pages,
+            this.version,
             targetNavigation?.name
         );
 
@@ -349,6 +352,66 @@ export class Application {
 
         const changes = await this.writeFPM(newPage.pageType, pageApi, viewName);
         return { pageID: id, changes };
+    }
+
+    /**
+     * Generates a new V2 page using the Specification export APIapproach.
+     *
+     * @param newPage - The new page details.
+     * @param parentPage - The parent page, if any.
+     * @param targetNavigation - The target navigation option.
+     * @param pages - Existing pages in the application.
+     * @param viewName - Optional view name for custom pages.
+     * @param entitySet - Optional entity set for the new page.
+     * @returns A promise that resolves to an object containing the new page ID and changes made.
+     */
+    private async generatePageV2(
+        newPage: NewPage,
+        parentPage: PageDef | undefined,
+        targetNavigation: AllowedNavigationOptions | undefined,
+        pages: PageDef[],
+        viewName?: string,
+        entitySet?: string
+    ): Promise<{ pageID: string; changes: string[] }> {
+        // Prepare pages config
+        const appConfig = this.appData.config;
+        if (!appConfig.pages) {
+            appConfig.pages = {};
+        }
+        // Generate new page id
+        const id = generatePageId(
+            {
+                entitySet: targetNavigation?.entitySet ?? entitySet ?? '',
+                pageId: '',
+                pageType: newPage.pageType,
+                contextPath: '',
+                viewName
+            },
+            parentPage?.pageId,
+            pages,
+            this.version,
+            targetNavigation?.name
+        );
+        // Update application pages with new page
+        appConfig.pages[id] = {
+            pageType: newPage.pageType,
+            entitySet: targetNavigation?.entitySet ?? entitySet,
+            navigationProperty: targetNavigation?.name,
+            navigation: {}
+        };
+        // Update parent with link
+        const parent = parentPage ? appConfig.pages[parentPage.pageId] : undefined;
+        if (parent) {
+            if (!parent.navigation) {
+                parent.navigation = {};
+            }
+            const parentEntity = parent.entitySet ?? '';
+            parent.navigation[id] = targetNavigation?.name ? `${parentEntity}.${targetNavigation.name}` : parentEntity;
+        }
+
+        const ftfsFileIo = new SapuxFtfsFileIO(this.applicationAccess);
+        await ftfsFileIo.writeApp(this.appData);
+        return { pageID: id, changes: [this.applicationAccess.app.manifest] };
     }
 
     /**
@@ -570,7 +633,9 @@ export class Application {
         // Generate the page
         const navigations = await this.getAllowedNavigations(parentPage);
         const targetNavigation = this.findTargetNavigation(navigations, navigation, entitySet);
-        const { pageID, changes } = await this.generatePageWithFPMWriter(
+        const generateMethod = this.version === FioriElementsVersion.v2 ? this.generatePageV2 : this.generatePageV4;
+        const { pageID, changes } = await generateMethod.call(
+            this,
             newPage,
             parentPage,
             targetNavigation,
