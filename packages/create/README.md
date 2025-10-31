@@ -33,7 +33,7 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 
 Usage: `$ npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
-Available subcommands: adaptation-project
+The available subcommands are: `adaptation-project`
 
 
 --------------------------------
@@ -67,7 +67,7 @@ Command group for adding features to existing SAP Fiori applications. A subcomma
 
 Usage: `$ npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
-Available Subcommands: mockserver-config, smartlinks-config, cds-plugin-ui5, inbound-navigation, cards-editor, model, annotations, html, component-usages, deploy-config, variants-config
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`
 
 
 --------------------------------
@@ -240,7 +240,7 @@ Command group for converting existing SAP Fiori applications. A subcommand is re
 
 Usage: `$ npx --yes @sap-ux/create@latest convert [subcommand] [options]`
 
-Available Subcommands: preview-config
+The available subcommands are: `preview-config`
 
 
 --------------------------------
@@ -266,7 +266,7 @@ Command group for removing features from existing SAP Fiori applications. A subc
 
 Usage: `$ npx --yes @sap-ux/create@latest remove [subcommand] [options]`
 
-Available Subcommands: mockserver-config
+The available subcommands are: `mockserver-config`
 
 
 --------------------------------
@@ -291,7 +291,7 @@ Command group for changing existing SAP Fiori applications. A subcommand is requ
 
 Usage: `$ npx --yes @sap-ux/create@latest change [subcommand] [options]`
 
-Available Subcommands: data-source, inbound
+The available subcommands are: `data-source`, `inbound`
 
 --------------------------------
 
