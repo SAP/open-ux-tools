@@ -362,6 +362,32 @@ describe('Test entity prompts', () => {
             severity: Severity.information
         });
 
+        // Test TreeTable default message for entity with recursive hierarchy
+        const metadataV4WithHierarchyRecursiveHierarchy = await readFile(
+            join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
+            'utf8'
+        );
+        const questionsWithHierarchy = getEntitySelectionQuestions(
+            metadataV4WithHierarchyRecursiveHierarchy,
+            'lrop',
+            false
+        );
+        const tableTypeWithHierarchy = questionsWithHierarchy.find(
+            (question) => question.name === EntityPromptNames.tableType
+        ) as ListQuestion;
+        // Simulate prevAnswers with mainEntity that has recursive hierarchy
+        const hierarchyEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'P_SADL_HIER_UUID_D_COMPNY_ROOT',
+                entitySetType: 'SAP__self.P_SADL_HIER_UUID_D_COMPNY_ROOTType'
+            }
+        };
+        expect((tableTypeWithHierarchy.default as Function)(hierarchyEntity)).toEqual('TreeTable');
+        expect((tableTypeWithHierarchy.additionalMessages as Function)('TreeTable')).toEqual({
+            message: t('prompts.tableType.treeTableDefault'),
+            severity: Severity.information
+        });
+
         // If the user has already selected a table type for the same entity, return it
         // First call establishes the entity
         (tableType.default as Function)({
@@ -422,11 +448,11 @@ describe('Test entity prompts', () => {
         );
 
         // Test qualifier auto-population functionality
-        const metadataV4WithHierarchyQualifier = await readFile(
-            join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
-            'utf8'
+        const questionsWithQualifier = getEntitySelectionQuestions(
+            metadataV4WithHierarchyRecursiveHierarchy,
+            'lrop',
+            false
         );
-        const questionsWithQualifier = getEntitySelectionQuestions(metadataV4WithHierarchyQualifier, 'lrop', false);
         const hierarchyQualifierWithAutoPopulation = questionsWithQualifier.find(
             (question) => question.name === EntityPromptNames.hierarchyQualifier
         ) as InputQuestion;

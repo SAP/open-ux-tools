@@ -1,9 +1,9 @@
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { filterDraftEnabledEntities } from '../../edmx/entity-helper';
 import LoggerHelper from '../../logger-helper';
 import { t } from '../../../i18n';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
 
 /**
  * If any of the draft root annotated entity sets have the share action property, then collaborative draft is enabled.
