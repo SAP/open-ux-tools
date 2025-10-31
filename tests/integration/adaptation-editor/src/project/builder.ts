@@ -14,6 +14,10 @@ export interface ProjectParameters {
     userParams?: Record<string, string | boolean>;
 }
 
+export interface TestParams {
+    port: number;
+}
+
 export const ADAPTATION_EDITOR_PATH = '/adaptation-editor.html';
 
 /**
@@ -103,20 +107,29 @@ export function createV2Manifest(userParameters: ProjectParameters, workerId: st
  * @param userParameters - The project parameters provided by the user.
  * @param ui5Version - The UI5 version to be used.
  * @param workerId - The unique worker ID for the project.
+ * @param testParams - optional object to pass parameters for manual test project generation.
  * @returns A string representation of the YAML file content.
  */
 export async function createYamlFile(
     userParameters: ProjectParameters,
     ui5Version: string,
-    workerId: string
+    workerId: string,
+    testParams?: TestParams
 ): Promise<string> {
     const { id, mainServiceUri } = getProjectParametersWithDefaults(userParameters);
+
     const template = await readFile(join(__dirname, 'templates', 'ui5.yaml'), 'utf-8');
     const document = await YamlDocument.newInstance(template);
 
     document.setIn({ path: 'metadata.name', value: id + '.' + workerId });
     document.setIn({ path: 'server.customMiddleware.0.configuration.services.urlPath', value: mainServiceUri });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
+    if (testParams?.port) {
+        document.setIn({
+            path: 'server.customMiddleware.4.configuration.url',
+            value: `http://localhost:${testParams.port}`
+        });
+    }
 
     return document.toString();
 }
@@ -148,9 +161,11 @@ export function createComponent(userParameters: ProjectParameters, workerId: str
  * Creates a package.json file for the project.
  *
  * @param id - The project ID.
+ * @param isAdpProject - Whether the project is an ADP project.
+ * @param testParams - Optional test parameters for manual test project generation.
  * @returns A string representation of the package.json file content.
  */
-export function createPackageJson(id: string): string {
+export function createPackageJson(id: string, isAdpProject = false, testParams?: TestParams): string {
     return `{
     "name": "${id}",
     "version": "0.0.1",
@@ -158,6 +173,13 @@ export function createPackageJson(id: string): string {
     "devDependencies": {
         "@sap-ux/ui5-middleware-fe-mockserver": "2.1.112",
         "@ui5/cli": "3"
+    }${
+        isAdpProject && testParams
+            ? `,
+    "scripts": {
+        "start-editor": "ui5 serve --config=ui5.yaml --open adaptation-editor.html"
+    }`
+            : ''
     }
 }
 `;
@@ -169,16 +191,20 @@ export function createPackageJson(id: string): string {
  * @param projectConfig - The project configuration.
  * @param workerId - The unique worker ID for the project.
  * @param ui5Version - The UI5 version to be used.
+ * @param folder - The folder to create the project in (default: 'fixtures-copy')
+ * @param testParams - additional options for manual test project generation
  * @returns The root path of the generated project.
  */
 export async function generateUi5Project(
     projectConfig: typeof FIORI_ELEMENTS_V2,
     workerId: string,
-    ui5Version: string
+    ui5Version: string,
+    folder = 'fixtures-copy',
+    testParams?: TestParams
 ): Promise<string> {
     const { id } = getProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
-    const yamlContent = await createYamlFile(projectConfig, ui5Version, workerId);
+    const root = join(__dirname, '..', '..', folder, `${projectConfig.id}.${workerId}`);
+    const yamlContent = await createYamlFile(projectConfig, ui5Version, workerId, testParams);
     const manifestContent = JSON.stringify(createV2Manifest(projectConfig, workerId), undefined, 2);
 
     if (!existsSync(root)) {
@@ -274,6 +300,7 @@ function getAdpProjectParametersWithDefaults(parameters: AdpProjectParameters): 
  * @param backendUrl - The backend URL for the ADP project.
  * @param mainServiceUri - The main service URI for the ADP project.
  * @param livereloadPort - The livereload port for the ADP project.
+ * @param abapPort - Port for starting backend server.
  * @returns A string representation of the YAML file content.
  */
 async function createAdpYamlFile(
@@ -281,7 +308,8 @@ async function createAdpYamlFile(
     ui5Version: string,
     backendUrl: string,
     mainServiceUri: string,
-    livereloadPort: number
+    livereloadPort: number,
+    abapPort?: number
 ): Promise<string> {
     const { id } = getAdpProjectParametersWithDefaults(userParameters);
     const template = await readFile(join(__dirname, 'templates', 'adp.yaml'), 'utf-8');
@@ -296,6 +324,17 @@ async function createAdpYamlFile(
     });
     document.setIn({ path: 'server.customMiddleware.2.configuration.adp.target.url', value: backendUrl });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
+    if (abapPort) {
+        document.setIn({ path: 'server.customMiddleware.4.configuration.url', value: `http://localhost:${abapPort}` });
+        document.setIn({
+            path: 'server.customMiddleware.4.configuration.backend.url',
+            value: `http://localhost:${abapPort}`
+        });
+        document.setIn({
+            path: 'server.customMiddleware.2.configuration.adp.target.url',
+            value: `http://localhost:${abapPort}`
+        });
+    }
 
     return document.toString();
 }
@@ -329,6 +368,8 @@ export async function createAppDescriptorVariant(
  * @param ui5Version - The UI5 version to be used.
  * @param backendUrl - The backend URL for the ADP project.
  * @param livereloadPort - The livereload port for the ADP project.
+ * @param folder - The folder to create the project in (default: 'fixtures-copy')
+ * @param testParams - Additional options for manual test project generation.
  * @returns The root path of the generated ADP project.
  */
 export async function generateAdpProject(
@@ -336,16 +377,19 @@ export async function generateAdpProject(
     workerId: string,
     ui5Version: string,
     backendUrl: string,
-    livereloadPort: number
+    livereloadPort: number,
+    folder = 'fixtures-copy',
+    testParams?: TestParams
 ): Promise<string> {
     const { id } = getAdpProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
+    const root = join(__dirname, '..', '..', folder, `${projectConfig.id}.${workerId}`);
     const yamlContent = await createAdpYamlFile(
         projectConfig,
         ui5Version,
         backendUrl,
         projectConfig.baseApp.mainServiceUri,
-        livereloadPort
+        livereloadPort,
+        testParams?.port
     );
     const appDescriptorVariant = JSON.stringify(
         await createAppDescriptorVariant(projectConfig, projectConfig.baseApp.id + '.' + workerId),
@@ -370,7 +414,7 @@ export async function generateAdpProject(
 
     await Promise.all([
         writeFile(join(root, 'ui5.yaml'), yamlContent),
-        writeFile(join(root, 'package.json'), createPackageJson(id + '.' + workerId)),
+        writeFile(join(root, 'package.json'), createPackageJson(id + '.' + workerId, true, testParams)),
         writeFile(join(root, 'webapp', 'manifest.appdescr_variant'), appDescriptorVariant),
         writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
         writeFile(
