@@ -20,7 +20,10 @@ import { promptYUIQuestions } from '../../common';
  */
 export function addDeployConfigCommand(cmd: Command): void {
     cmd.command('deploy-config [path]')
-        .description('Prompt for ABAP deployment configuration details and add/update the project files accordingly.')
+        .description(`Prompt for ABAP deployment configuration details and add/update the project files accordingly.
+                                     Example usage:
+                                     \`$ npx -y @sap-ux/create@latest add deploy-config\``
+        )
         .option('-t, --target <string>', 'target for deployment; ABAP or Cloud Foundry (not yet implemented)')
         .option('-s, --simulate', 'simulate only do not write; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')

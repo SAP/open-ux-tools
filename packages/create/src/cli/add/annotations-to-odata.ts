@@ -23,7 +23,10 @@ let loginAttempts = 3;
  */
 export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations [path]')
-        .description('Adds an annotation to the OData Source of the base application in an adaptation project.')
+        .description(`Adds an annotation to the OData Source of the base application in an adaptation project.
+                                     Example usage:
+                                     \`$ npx -y @sap-ux/create@latest add annotations\``
+        )
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {

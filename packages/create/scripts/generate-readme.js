@@ -82,7 +82,7 @@ function renderCommandAndSubcommands(cmd, parentPath) {
     const anchor = generateAnchor(currentPath);
 
     let md = `## [\`${fullCommandName}\`](#${anchor})\n\n`;
-    md += `${cmd.description}\n\n`;
+    md += `${cmd.description.replace(/ {2,}/g, '\n')}\n\n`;
 
     if (cmd.options && cmd.options.length > 0) {
         md += `**Options:**\n${renderOptions(cmd.options)}\n\n`;
@@ -128,7 +128,7 @@ function generateReadme(spec) {
         );
     });
 
-    md += allCommandDocs.join('---\n\n');
+    md += allCommandDocs.join('--------------------------------\n\n');
 
     return md;
 }

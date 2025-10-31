@@ -13,7 +13,10 @@ import { join } from 'node:path';
  */
 export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
-        .description('Generate a new UI5 adaptation project with optional prompts and configuration.')
+        .description(`Generate a new UI5 adaptation project with optional prompts and configuration.
+                                     Example usage:
+                                     \`$ npx -y @sap-ux/create@latest generate adaptation-project\``
+        )
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-y, --yes', 'use default values for all prompts')

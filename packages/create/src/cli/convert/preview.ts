@@ -10,7 +10,9 @@ import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } fro
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
         .description(
-            'Executed in the root folder of an app, it will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.'
+            `Executed in the root folder of an app, it will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the \`package.json\` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to \`*_old.html\`.
+                                     Example usage:
+                                     \`$ npx -y @sap-ux/create@latest convert preview-config\``
         )
         .option('-s, --simulate <boolean>', 'simulate only do not write')
         .option('-v, --verbose', 'show verbose information')

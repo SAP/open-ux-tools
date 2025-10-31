@@ -21,7 +21,10 @@ let loginAttempts = 3;
  */
 export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('data-source [path]')
-        .description('Replace the OData Source of the base application in an adaptation project.')
+        .description(`Replace the OData Source of the base application in an adaptation project.
+                                     Example usage:
+                                     \`$ npx -y @sap-ux/create@latest change data-source\``
+        )
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {

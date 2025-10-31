@@ -67,15 +67,15 @@ function getCommanderProgram(): Command {
     // Handler for create-fiori generate <feature> ..
     const genCommands = getGenerateCommands();
     genCommands.description(
-        `Generate adaptation projects.
-                    Available Subcommands: ${getFeatureSummary(genCommands.commands)}\n`
+        `Command group for generating SAP Fiori applications. A subcommand is required.
+                    Available subcommands: ${getFeatureSummary(genCommands.commands)}\n`
     );
     program.addCommand(genCommands);
 
     // Handler for create-fiori add <feature> ..
     const addCommands = getAddCommands();
     addCommands.description(
-        `Add features to an SAP Fiori app.
+        `Command group for adding features to existing SAP Fiori applications. A subcommand is required.
                     Available Subcommands: ${getFeatureSummary(addCommands.commands)}\n`
     );
     program.addCommand(addCommands);
@@ -83,7 +83,7 @@ function getCommanderProgram(): Command {
     // Handler for create-fiori convert <feature> ..
     const convertCommands = getConvertCommands();
     convertCommands.description(
-        `Convert existing SAP Fiori applications.
+        `Command group for converting existing SAP Fiori applications. A subcommand is required.
                     Available Subcommands: ${getFeatureSummary(convertCommands.commands)}\n`
     );
     program.addCommand(convertCommands);
@@ -91,7 +91,7 @@ function getCommanderProgram(): Command {
     // Handler for create-fiori remove <feature> ..
     const removeCommands = getRemoveCommands();
     removeCommands.description(
-        `Remove features from existing SAP Fiori applications.
+        `Command group for removing features from existing SAP Fiori applications. A subcommand is required.
                     Available Subcommands: ${getFeatureSummary(removeCommands.commands)}\n`
     );
     program.addCommand(removeCommands);
@@ -99,7 +99,7 @@ function getCommanderProgram(): Command {
     // Handler for create-fiori change <feature> ..
     const changeCommands = getChangeCommands();
     changeCommands.description(
-        `Change existing adaptation projects.
+        `Command group for changing existing SAP Fiori applications. A subcommand is required.
                     Available Subcommands: ${getFeatureSummary(changeCommands.commands)}`
     );
     program.addCommand(changeCommands);
