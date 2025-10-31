@@ -1,6 +1,7 @@
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 import * as common from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 
 import Log from 'mock/sap/base/Log';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -19,29 +20,50 @@ import { RtaService } from '../../../src/cpe/rta-service';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
+import { ODataDownStatus } from '../../../src/cpe/odata-health/odata-health-status';
 
-function getAppLoadedWaitPromise(): Promise<boolean> {
+function getWaitForAppLoadedPromise(): Promise<void> {
     return new Promise((resolve) => {
         CommunicationService.sendAction = jest.fn().mockImplementation((change) => {
             if (common.appLoaded.match(change)) {
-                resolve(true);
+                resolve();
             }
         });
     });
 }
 
 async function waitForCpeInit(rta: RuntimeAuthoring): Promise<void> {
-    const isAppLoadedPromise = getAppLoadedWaitPromise();
+    const waitForAppLoaded = getWaitForAppLoadedPromise();
     // a.vasilev: Inside the init function we have a bunch of promises not included
     // in the await so the only way to include them in the test await so to be able
     // to verify sendAction gets called before the test ends is to use a deferred promise.
     // The deffered promise is resolved when the app-loaded action is sent. This
     // action is sent when all unawaited promises are resolved.
     await init(rta);
-    await isAppLoadedPromise;
+    await waitForAppLoaded;
 }
 
+async function waitForInfoCenterNotification(): Promise<void> {
+    return new Promise((resolve) => {
+        (CommunicationService.sendAction as jest.Mock).mockImplementation((change) => {
+            if (common.showInfoCenterMessage.match(change)) {
+                resolve();
+            }
+        });
+    });
+}
+
+const getHealthStatusMock = jest.fn();
+
+jest.mock('../../../src/cpe/odata-health/odata-health-checker', () => ({
+    ODataHealthChecker: jest.fn().mockImplementation(() => ({
+        getHealthStatus: getHealthStatusMock
+    }))
+}));
+
 describe('main', () => {
+    const UNHEALTHY_ODATA_SERVICE_STATUS = new ODataDownStatus('/servica-a', 'Service not configured properly');
+
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
@@ -83,6 +105,7 @@ describe('main', () => {
         RuntimeAuthoringMock.prototype.getRootControlInstance = jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         });
+        getHealthStatusMock.mockResolvedValue([]);
     });
 
     afterEach(() => {
@@ -147,6 +170,7 @@ describe('main', () => {
         expect(applyChangeSpy).toHaveBeenCalledWith({ rta }, payload);
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
     });
+
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
         changesServiceSpy.mockResolvedValue();
@@ -161,7 +185,7 @@ describe('main', () => {
         expect(Log.error).toHaveBeenCalledWith('Service Initialization Failed: ', error);
     });
 
-    test('init and appLoaed called', async () => {
+    test('init and appLoaded called', async () => {
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
         changesServiceSpy.mockResolvedValue();
@@ -172,5 +196,51 @@ describe('main', () => {
 
         await waitForCpeInit(rta);
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.appLoaded());
+    });
+
+    test('should display a warning when there is unhealthy OData service', async () => {
+        initOutlineSpy.mockResolvedValue();
+        rtaSpy.mockResolvedValue();
+        changesServiceSpy.mockResolvedValue();
+        connectorServiceSpy.mockResolvedValue();
+        selectionServiceSpy.mockResolvedValue('' as never);
+        quickActionServiceSpy.mockResolvedValue();
+        contextMenuServiceSpy.mockResolvedValue();
+        getHealthStatusMock.mockResolvedValue([UNHEALTHY_ODATA_SERVICE_STATUS]);
+
+        await waitForCpeInit(rta);
+        await waitForInfoCenterNotification();
+
+        const sendActionMock = CommunicationService.sendAction as jest.Mock;
+        expect(sendActionMock.mock.calls[2][0]).toEqual(
+            showInfoCenterMessage({
+                title: 'OData Service Health Check',
+                description: 'OData service with endpoint /servica-a is down, reason: Service not configured properly.',
+                type: MessageBarType.warning
+            })
+        );
+    });
+
+    test('should display a warning when there are connectivity issues with the OData health check', async () => {
+        initOutlineSpy.mockResolvedValue();
+        rtaSpy.mockResolvedValue();
+        changesServiceSpy.mockResolvedValue();
+        connectorServiceSpy.mockResolvedValue();
+        selectionServiceSpy.mockResolvedValue('' as never);
+        quickActionServiceSpy.mockResolvedValue();
+        contextMenuServiceSpy.mockResolvedValue();
+        getHealthStatusMock.mockRejectedValue(new Error('Service unavailable.'));
+
+        await waitForCpeInit(rta);
+        await waitForInfoCenterNotification();
+
+        const sendActionMock = CommunicationService.sendAction as jest.Mock;
+        expect(sendActionMock.mock.calls[2][0]).toEqual(
+            showInfoCenterMessage({
+                title: 'OData Service Health Check',
+                description: 'Service unavailable.',
+                type: MessageBarType.error
+            })
+        );
     });
 });

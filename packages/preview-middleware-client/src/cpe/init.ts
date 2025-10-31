@@ -68,19 +68,18 @@ export default function init(
     oDataHealthChecker
         .getHealthStatus()
         .then((healthStatus) =>
-            healthStatus.map((status) => {
-                const isServiceHealthy = isODataServiceHealthy(status);
-                return sendInfoCenterMessage({
-                    title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
-                    description: isServiceHealthy
-                        ? { key: 'ADP_ODATA_SERVICE_UP_DESCRIPTION', params: [status.serviceUrl] }
-                        : {
+            healthStatus.map((status) =>
+                isODataServiceHealthy(status)
+                    ? Promise.resolve()
+                    : sendInfoCenterMessage({
+                          title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                          description: {
                               key: 'ADP_ODATA_SERVICE_DOWN_DESCRIPTION',
                               params: [status.serviceUrl, status.errorMessage]
                           },
-                    type: isServiceHealthy ? MessageBarType.info : MessageBarType.error
-                });
-            })
+                          type: MessageBarType.warning
+                      })
+            )
         )
         .catch((error) =>
             sendInfoCenterMessage({
