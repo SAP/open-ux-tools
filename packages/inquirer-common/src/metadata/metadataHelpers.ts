@@ -225,7 +225,7 @@ export function convertEdmxToConvertedMetadata(edmx: string): ConvertedMetadata 
         const convertedMetadata = convert(parse(edmx));
         const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
         if (Number.isNaN(parsedOdataVersion)) {
-            throw new Error(t('errors.unparseableOdataVersion'));
+            throw new TypeError(t('errors.unparseableOdataVersion'));
         }
         return convertedMetadata;
     } catch (error) {
