@@ -120,7 +120,7 @@ export function getConfirmReplacePrompt(): FLPConfigQuestion {
         message: t('prompts.confirmReplace'),
         default: false,
         validate: (value): string | boolean => {
-            return !value ? ' ' : true;
+            return value ? true : ' ';
         }
     };
 }
