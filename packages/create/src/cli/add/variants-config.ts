@@ -17,7 +17,11 @@ export function addAddVariantsConfigCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add variants-config\``
         )
-        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
+        .option(
+            '-c, --config <string>',
+            'Path to the project configuration file in YAML format.',
+            FileName.Ui5Yaml
+        )
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
