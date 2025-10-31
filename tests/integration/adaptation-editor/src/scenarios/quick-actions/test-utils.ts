@@ -27,7 +27,7 @@ export function getButtonLocator(page: Page | FrameLocator, name: string, contex
  */
 export class ListReport {
     private readonly frame: FrameLocator;
-    private readonly ui5Version: string;
+    private readonly feVersion: 'fev2' | 'fev4';
     /**
      * @returns Locator for the "Go" button.
      */
@@ -78,6 +78,9 @@ export class ListReport {
      * @returns Locator for the table title/header.
      */
     get tableTitle(): Locator {
+        if (this.feVersion === 'fev4') {
+            return this.frame.locator('.sapMListHdr .sapMTitle');
+        }
         return this.frame.locator('.sapMTitle.sapUiCompSmartTableHeader');
     }
 
@@ -92,9 +95,11 @@ export class ListReport {
 
     /**
      * @param frame - FrameLocator for the List Report.
+     * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
      */
-    constructor(frame: FrameLocator) {
+    constructor(frame: FrameLocator, feVersion: 'fev2' | 'fev4' = 'fev2') {
         this.frame = frame;
+        this.feVersion = feVersion;
     }
 }
 
@@ -104,6 +109,7 @@ export class ListReport {
 export class TableSettings {
     private readonly frame: FrameLocator;
     private dialogName: string;
+    private feVersion: 'fev2' | 'fev4';
     /**
      * @returns Locator for the dialog containing table settings.
      */
@@ -117,6 +123,25 @@ export class TableSettings {
      * @returns {Promise<string[]>} An array of visible texts from the first column.
      */
     async getSettingsTexts(): Promise<string[]> {
+        if (this.feVersion === 'fev4') {
+            const rows = this.dialog.locator('tbody > tr');
+            const count = await rows.count();
+            const texts: string[] = [];
+            for (let i = 0; i < count; i++) {
+                const row = rows.nth(i);
+                // skip group/header rows
+                const roleDesc = await row.getAttribute('aria-roledescription');
+                if (roleDesc === 'Group Row') {
+                    continue;
+                }
+                const bdi = row.locator('bdi');
+                if ((await bdi.count()) === 0) {
+                    continue;
+                }
+                texts.push((await bdi.first().innerText()).trim());
+            }
+            return texts;
+        }
         const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
         const count = await rows.count();
         const texts: string[] = [];
@@ -132,12 +157,19 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move up.
      */
     async moveActionUp(index: number): Promise<void> {
-        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        let rows;
+        let modifiedIndex = index;
+        if (this.feVersion === 'fev4') {
+            modifiedIndex = index + 1; // adjust for header row
+            rows = this.dialog.locator('tbody > tr');
+        } else {
+            rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        }
         await test.step(`Hover over row \`${index + 1}\` and click on \`Move up\` button in the row of \`${
             this.dialogName
         }\` table`, async () => {
-            await rows.nth(index).hover();
-            await rows.nth(index).getByRole('button', { name: 'Move Up' }).click();
+            await rows.nth(modifiedIndex).hover();
+            await rows.nth(modifiedIndex).getByRole('button', { name: 'Move Up' }).click();
         });
     }
     /**
@@ -150,13 +182,16 @@ export class TableSettings {
             await this.dialog.getByRole('button', { name: 'OK' }).click();
         });
     }
+
     /**
      * @param frame - FrameLocator for the dialog.
      * @param dialogName - Name of the dialog.
+     * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
      */
-    constructor(frame: FrameLocator, dialogName = 'View Settings') {
+    constructor(frame: FrameLocator, dialogName = 'View Settings', feVersion: 'fev2' | 'fev4' = 'fev2') {
         this.frame = frame;
         this.dialogName = dialogName;
+        this.feVersion = feVersion;
     }
 
     /**
@@ -165,7 +200,13 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move down.
      */
     async moveActionDown(index: number): Promise<void> {
-        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        let rows;
+        if (this.feVersion === 'fev4') {
+            rows = this.dialog.locator('tbody > tr');
+        } else {
+            rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        }
+
         await test.step(`Hover over row \`${index + 1}\` and click on Move down button in the row of \`${
             this.dialogName
         }\` table`, async () => {
@@ -173,7 +214,6 @@ export class TableSettings {
             await rows.nth(index).getByRole('button', { name: 'Move Down' }).click();
         });
     }
-
     /**
      * Checks given elements are visible.
      *
@@ -317,6 +357,12 @@ class QuickActionPanel {
      */
     get addLocalAnnotationFile(): Locator {
         return this.getButtonLocator('Add Local Annotation File');
+    }
+    /**
+     * @returns Locator for the button to Add Subpage.
+     */
+    get addSubPage(): Locator {
+        return this.getButtonLocator('Add Subpage');
     }
 
     /**
@@ -560,42 +606,6 @@ export async function readChanges(root: string): Promise<Changes> {
 }
 
 /**
- * Compare changes against expected changes and create appropriate matchers.
- *
- * @param projectCopy path to projectCopy to check for changes
- * @param expected The actual changes object from test results
- * @returns An expect matcher for use in tests
- */
-export async function expectChanges(projectCopy: string, expected: Partial<Changes>): Promise<void> {
-    const matcher: Record<string, any> = {};
-
-    // Process file-based properties (fragments, annotations, coding) in a single pattern
-    const fileBasedProperties: (keyof Changes)[] = ['fragments', 'annotations', 'coding'];
-
-    for (const prop of fileBasedProperties) {
-        if (expected[prop]) {
-            const matchers: Record<string, any> = {};
-            for (const [filename, content] of Object.entries(expected[prop])) {
-                matchers[filename] = expect.stringMatching(new RegExp(content));
-            }
-            matcher[prop] = expect.objectContaining(matchers);
-        }
-    }
-
-    // Handle changes array with deep conversion
-    if (expected.changes) {
-        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
-        matcher.changes = expect.arrayContaining(changeMatchers);
-    }
-
-    await expect
-        .poll(async () => readChanges(projectCopy), {
-            message: 'make sure change file is created'
-        })
-        .toEqual(matcher);
-}
-
-/**
  * Recursively convert an object to expect matchers.
  *
  * @param obj Object to convert to expect matchers
@@ -620,10 +630,6 @@ function convertToExpectMatchers(obj: any): unknown {
             // Recursively convert nested objects/arrays
             if (value !== null && typeof value === 'object') {
                 result[key] = convertToExpectMatchers(value) as any;
-            }
-            // Convert strings to stringMatching
-            else if (typeof value === 'string') {
-                result[key] = expect.stringMatching(value);
             }
             // Keep other primitive types as is
             else {
@@ -664,6 +670,12 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
             }
             matcher[prop] = expect.objectContaining(matchers);
         }
+    }
+
+    // Handle changes array with deep conversion
+    if (expected.changes) {
+        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
+        matcher.changes = expect.arrayContaining(changeMatchers);
     }
 
     await test.step(description, async () => {
