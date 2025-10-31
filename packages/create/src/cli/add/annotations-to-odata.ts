@@ -30,11 +30,7 @@ export function addAnnotationsToOdataCommand(cmd: Command): void {
                                      \`npx --yes @sap-ux/create@latest add annotations\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
-        .option(
-            '-c, --config <string>',
-            'Path to the project configuration file in YAML format.',
-            FileName.Ui5Yaml
-        )
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .action(async (path, options) => {
             await addAnnotationsToOdata(path, !!options.simulate, options.config);
         });
