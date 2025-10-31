@@ -154,14 +154,7 @@ export function hasRecursiveHierarchyForEntitySet(entitySet: EntitySet): boolean
  * @returns The qualifier string if found, undefined otherwise.
  */
 export function getRecursiveHierarchyQualifierForEntitySet(entitySet: EntitySet): string | undefined {
-    const recursiveHierarchyKey = findRecursiveHierarchyKey(entitySet);
-
-    if (!recursiveHierarchyKey) {
-        return undefined;
-    }
-
-    // Extract qualifier if present (format: "RecursiveHierarchy#qualifier" or just "RecursiveHierarchy")
-    return recursiveHierarchyKey.includes('#') ? recursiveHierarchyKey.split('#')[1] : undefined;
+    return findRecursiveHierarchyKey(entitySet)?.split('#')[1];
 }
 
 /**
