@@ -47,7 +47,7 @@ export function hasAggregateTransformations(entitySet: EntitySet): boolean {
         entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
         entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
 
-    return !!transformations && Array.isArray(transformations) && transformations.length > 0;
+    return Array.isArray(transformations) && transformations.length > 0;
 }
 
 /**
@@ -78,7 +78,7 @@ export function hasAggregateTransformationsForEntitySet(
         entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
         entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations;
 
-    if (!transformations || !Array.isArray(transformations)) {
+    if (!Array.isArray(transformations)) {
         return false;
     }
 
@@ -236,6 +236,7 @@ export function convertEdmxToConvertedMetadata(edmx: string): ConvertedMetadata 
         }
         return convertedMetadata;
     } catch (error) {
-        throw new Error(t('errors.unparseableMetadata', { error: (error as Error).message }));
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(t('errors.unparseableMetadata', { error: errorMessage }));
     }
 }
