@@ -61,6 +61,7 @@ function generatePageIdV2(page: PageDef): string[] {
  * @param page - page attributes.
  * @param parentPage - parent page.
  * @param pages - Object with existing pages.
+ * @param appVersion - fiori elements version.
  * @param navigationProperty - navigation property (optional).
  * @returns Generated page id.
  */
