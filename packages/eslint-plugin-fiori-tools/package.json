@@ -17,17 +17,19 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "9.38.0",
+        "@eslint/json": "^0.13.2",
         "@humanwhocodes/momoa": "^3.3.9",
-        "@eslint/json": "^0.13.2"
+        "eslint": "9.38.0"
     },
     "dependencies": {
+        "@eslint/eslintrc": "3.3.1",
+        "@eslint/js": "9.38.0",
         "yaml": "2.2.2"
     },
     "peerDependencies": {
-        "eslint": ">=9",
         "@typescript-eslint/eslint-plugin": ">=7.1.1",
-        "@typescript-eslint/parser": ">=5.62.0"
+        "@typescript-eslint/parser": ">=5.62.0",
+        "eslint": ">=9"
     },
     "engines": {
         "node": ">=20.x"

@@ -1734,6 +1734,12 @@ importers:
 
   packages/eslint-plugin-fiori-tools:
     dependencies:
+      '@eslint/eslintrc':
+        specifier: 3.3.1
+        version: 3.3.1
+      '@eslint/js':
+        specifier: 9.38.0
+        version: 9.38.0
       '@typescript-eslint/eslint-plugin':
         specifier: '>=7.1.1'
         version: 7.2.0(@typescript-eslint/parser@7.2.0)(eslint@9.38.0)(typescript@5.9.3)
@@ -4867,7 +4873,7 @@ packages:
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.2
       convert-source-map: 2.0.0
-      debug: 4.4.0
+      debug: 4.4.1
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
