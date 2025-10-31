@@ -1,5 +1,62 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.55
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.54
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/flp-config-inquirer@0.4.53
+
+## 0.3.54
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.53
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/flp-config-inquirer@0.4.52
+-   @sap-ux/inquirer-common@0.8.9
+
+## 0.3.53
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.52
+-   @sap-ux/deploy-config-generator-shared@0.1.48
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/flp-config-inquirer@0.4.51
+-   @sap-ux/inquirer-common@0.8.8
+
+## 0.3.52
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.51
+-   @sap-ux/deploy-config-generator-shared@0.1.47
+-   @sap-ux/fiori-generator-shared@0.13.28
+-   @sap-ux/flp-config-inquirer@0.4.50
+
+## 0.3.51
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.49
+-   @sap-ux/app-config-writer@0.6.50
+
+## 0.3.50
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/app-config-writer@0.6.50
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/flp-config-inquirer@0.4.48
+    -   @sap-ux/deploy-config-generator-shared@0.1.47
+    -   @sap-ux/inquirer-common@0.8.7
+
 ## 0.3.49
 
 ### Patch Changes

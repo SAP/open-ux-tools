@@ -1,5 +1,39 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.10
+
+### Patch Changes
+
+-   edd0b4c: fix: wrong 'pathReplace' in case of appStudio
+
+## 0.10.9
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+
+## 0.10.6
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+
 ## 0.10.5
 
 ### Patch Changes

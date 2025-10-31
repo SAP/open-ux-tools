@@ -1,6 +1,12 @@
 import type { UI5Version } from '../types';
 import { fetchInternalVersions } from './fetch';
-import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './format';
+import {
+    isFeatureSupportedVersion,
+    removeTimestampFromVersion,
+    addSnapshot,
+    buildSystemVersionLabel,
+    removeSnapshotFromVersion
+} from './format';
 import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
 
 export interface VersionLabels {
@@ -99,7 +105,13 @@ export function getVersionLabels(version: string | undefined, publicVersions: UI
  */
 export function checkSystemVersionPattern(version: string | undefined): string | undefined {
     const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-    return version && pattern.test(version) ? removeTimestampFromVersion(version) : undefined;
+    if (!version || !pattern.test(version)) {
+        return undefined;
+    }
+
+    let normalizedVersion = removeTimestampFromVersion(version);
+    normalizedVersion = removeSnapshotFromVersion(normalizedVersion);
+    return normalizedVersion;
 }
 
 /**

@@ -1,5 +1,85 @@
 # @sap-ux/create
 
+## 0.13.151
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.41
+-   @sap-ux/adp-tooling@0.17.3
+-   @sap-ux/app-config-writer@0.6.54
+-   @sap-ux/flp-config-inquirer@0.4.53
+-   @sap-ux/preview-middleware@0.23.41
+-   @sap-ux/system-access@0.6.26
+-   @sap-ux/abap-deploy-config-writer@0.2.31
+
+## 0.13.150
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.40
+-   @sap-ux/adp-tooling@0.17.2
+-   @sap-ux/app-config-writer@0.6.53
+-   @sap-ux/preview-middleware@0.23.40
+-   @sap-ux/system-access@0.6.25
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/flp-config-inquirer@0.4.52
+-   @sap-ux/abap-deploy-config-writer@0.2.30
+-   @sap-ux/cap-config-writer@0.12.21
+
+## 0.13.149
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.39
+-   @sap-ux/adp-tooling@0.17.1
+-   @sap-ux/app-config-writer@0.6.52
+-   @sap-ux/preview-middleware@0.23.39
+-   @sap-ux/system-access@0.6.24
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/flp-config-inquirer@0.4.51
+-   @sap-ux/abap-deploy-config-writer@0.2.29
+-   @sap-ux/cap-config-writer@0.12.20
+
+## 0.13.148
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/adp-tooling@0.17.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.38
+    -   @sap-ux/app-config-writer@0.6.51
+    -   @sap-ux/flp-config-inquirer@0.4.50
+    -   @sap-ux/preview-middleware@0.23.38
+    -   @sap-ux/system-access@0.6.23
+    -   @sap-ux/abap-deploy-config-writer@0.2.28
+
+## 0.13.147
+
+### Patch Changes
+
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+    -   @sap-ux/flp-config-inquirer@0.4.49
+    -   @sap-ux/preview-middleware@0.23.37
+    -   @sap-ux/app-config-writer@0.6.50
+
+## 0.13.146
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/abap-deploy-config-writer@0.2.27
+    -   @sap-ux/adp-tooling@0.16.13
+    -   @sap-ux/app-config-writer@0.6.50
+    -   @sap-ux/cap-config-writer@0.12.19
+    -   @sap-ux/flp-config-inquirer@0.4.48
+    -   @sap-ux/mockserver-config-writer@0.9.24
+    -   @sap-ux/odata-service-writer@0.27.28
+    -   @sap-ux/preview-middleware@0.23.36
+    -   @sap-ux/system-access@0.6.22
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.37
+
 ## 0.13.145
 
 ### Patch Changes

@@ -8,8 +8,7 @@ import {
     type CustomConfig,
     type TypesConfig,
     type CfAdpWriterConfig,
-    type DescriptorVariant,
-    ApplicationType
+    type DescriptorVariant
 } from '../types';
 import {
     enhanceUI5DeployYaml,
@@ -17,7 +16,9 @@ import {
     hasDeployConfig,
     enhanceUI5YamlWithCustomConfig,
     enhanceUI5YamlWithCustomTask,
-    enhanceUI5YamlWithTranspileMiddleware
+    enhanceUI5YamlWithTranspileMiddleware,
+    enhanceUI5YamlWithCfCustomTask,
+    enhanceUI5YamlWithCfCustomMiddleware
 } from './options';
 
 import type { Package } from '@sap-ux/project-access';
@@ -126,30 +127,6 @@ export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
 }
 
 /**
- * Get the ADP config for the CF project.
- *
- * @param {CfAdpWriterConfig} config - The CF configuration.
- * @returns {Record<string, unknown>} The ADP config for the CF project.
- */
-export function getCfAdpConfig(config: CfAdpWriterConfig): Record<string, unknown> {
-    const { app, project, ui5, cf } = config;
-    const configJson = {
-        componentname: app.namespace,
-        appvariant: project.name,
-        layer: app.layer,
-        isOVPApp: app.appType === ApplicationType.FIORI_ELEMENTS_OVP,
-        isFioriElement: app.appType === ApplicationType.FIORI_ELEMENTS,
-        environment: 'CF',
-        ui5Version: ui5.version,
-        cfApiUrl: cf.url,
-        cfSpace: cf.space.GUID,
-        cfOrganization: cf.org.GUID
-    };
-
-    return configJson;
-}
-
-/**
  * Writes a given project template files within a specified folder in the project directory.
  *
  * @param {string} baseTmplPath - The root path of the templates folder.
@@ -213,6 +190,54 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
 }
 
 /**
+ * Writes a ui5.yaml file for CF project within a specified folder in the project directory.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @returns {void}
+ */
+export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfig, fs: Editor): Promise<void> {
+    try {
+        const ui5ConfigPath = join(projectPath, 'ui5.yaml');
+        const baseUi5ConfigContent = fs.read(ui5ConfigPath);
+        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+        ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8', paths: { webapp: 'dist' } });
+
+        /** Middlewares */
+        enhanceUI5YamlWithCfCustomMiddleware(ui5Config);
+
+        fs.write(ui5ConfigPath, ui5Config.toString());
+    } catch (e) {
+        throw new Error(`Could not write ui5.yaml file. Reason: ${e.message}`);
+    }
+}
+
+/**
+ * Writes a ui5-build.yaml file for CF project within a specified folder in the project directory.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @returns {void}
+ */
+export async function writeCfUI5BuildYaml(projectPath: string, data: CfAdpWriterConfig, fs: Editor): Promise<void> {
+    try {
+        const ui5ConfigPath = join(projectPath, 'ui5-build.yaml');
+        const baseUi5ConfigContent = fs.read(ui5ConfigPath);
+        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+        ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
+
+        /** Builder task */
+        enhanceUI5YamlWithCfCustomTask(ui5Config, data);
+
+        fs.write(ui5ConfigPath, ui5Config.toString());
+    } catch (e) {
+        throw new Error(`Could not write ui5-build.yaml file. Reason: ${e.message}`);
+    }
+}
+
+/**
  * Writes a ui5-deploy.yaml file within a specified folder in the project directory.
  *
  * @param {string} projectPath - The root path of the project.
@@ -251,7 +276,7 @@ export async function writeCfTemplates(
 ): Promise<void> {
     const baseTmplPath = join(__dirname, '../../templates');
     const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
-    const { app, baseApp, cf, project, options } = config;
+    const { app, project, options } = config;
 
     fs.copyTpl(
         join(templatePath, 'project/webapp/manifest.appdescr_variant'),
@@ -264,18 +289,12 @@ export async function writeCfTemplates(
     });
 
     fs.copyTpl(join(templatePath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
-        appHostId: baseApp.appHostId,
-        appName: baseApp.appName,
-        appVersion: baseApp.appVersion,
-        module: project.name,
-        html5RepoRuntime: cf.html5RepoRuntimeGuid,
-        org: cf.org.GUID,
-        space: cf.space.GUID,
-        sapCloudService: cf.businessSolutionName ?? '',
-        instanceName: cf.businessService
+        module: project.name
     });
 
-    fs.writeJSON(join(project.folder, '.adp/config.json'), getCfAdpConfig(config));
+    fs.copyTpl(join(templatePath, 'cf/ui5-build.yaml'), join(project.folder, 'ui5-build.yaml'), {
+        module: project.name
+    });
 
     fs.copyTpl(join(templatePath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
         module: project.name,
