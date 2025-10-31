@@ -42,7 +42,8 @@ function generatePageIdV4(page: PageDef, parentPage: string | undefined, navigat
 }
 
 /**
- * Generates the id for a new V2 page
+ * Generates the id for a new V2 page.
+ *
  * @param {Page} page - page attributes
  * @returns parts = an array of strings that shall be joined to form the page ID
  */
