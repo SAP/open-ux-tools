@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import { findProjectRoot, getProjectType } from '@sap-ux/project-access';
+import { FileName, findProjectRoot, getProjectType } from '@sap-ux/project-access';
 
 /**
  * Add the cards-editor command.
@@ -16,7 +16,7 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add cards-editor\``
         )
-        .option('-c, --config <string>', 'Path to the project configuration file in YAML format. _(default: \"ui5.yaml\")_')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {

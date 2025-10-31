@@ -13,6 +13,7 @@ import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-serv
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
+import { FileName } from '@sap-ux/project-access';
 
 let loginAttempts = 3;
 
@@ -29,7 +30,7 @@ export function addAnnotationsToOdataCommand(cmd: Command): void {
                                      \`$ npx -y @sap-ux/create@latest add annotations\``
         )
         .option('-s, --simulate', 'Simulate only. Do not write or install.')
-        .option('-c, --config <string>', 'Path to the project configuration file in YAML format. _(default: \"ui5.yaml\")_')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .action(async (path, options) => {
             await addAnnotationsToOdata(path, !!options.simulate, options.config);
         });

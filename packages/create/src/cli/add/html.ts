@@ -7,6 +7,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Adds a command to add the virtual html files hosted by the preview middleware to the file system.
@@ -20,7 +21,7 @@ export function addAddHtmlFilesCmd(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add html\``
         )
-        .option('-c, --config <string>', 'Path to the project configuration file in YAML format. _(default: "ui5.yaml")_)')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {

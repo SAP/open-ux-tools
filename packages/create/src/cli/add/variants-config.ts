@@ -3,6 +3,7 @@ import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { generateVariantsConfig } from '@sap-ux/app-config-writer';
 import { isAbsolute, join } from 'node:path';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Add the "add variants config" command to a passed command.
@@ -16,7 +17,7 @@ export function addAddVariantsConfigCommand(cmd: Command): void {
                                      Example usage:
                                      \`$ npx -y @sap-ux/create@latest add variants-config\``
         )
-        .option('-c, --config <string>', 'Path to the project configuration file in YAML format. _(default: \"ui5.yaml\")_')
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
