@@ -128,7 +128,7 @@ Example usage:
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -141,7 +141,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add cards-editor`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -170,7 +170,7 @@ Example usage:
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
@@ -183,7 +183,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add html`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -228,7 +228,7 @@ Example usage:
 `$ npx -y @sap-ux/create@latest add variants-config`
 
 **Options:**
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
@@ -305,7 +305,7 @@ Example usage:
 
 **Options:**
 - `-s, --simulate` - Simulate only. Do not write or install.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: "ui5.yaml")_
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 

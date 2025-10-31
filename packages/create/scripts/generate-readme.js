@@ -63,7 +63,7 @@ function renderOptions(options) {
         if (opt.required) md += ' _(required)_';
         md += ` - ${opt.description}`;
         if (opt.defaultValue !== undefined) {
-            md += ` _(default: ${JSON.stringify(opt.defaultValue)})_`;
+            md += ` _(default: \`${opt.defaultValue}\`)_`;
         }
         return md;
     }).join('\n');
