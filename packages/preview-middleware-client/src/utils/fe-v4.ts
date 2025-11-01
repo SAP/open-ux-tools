@@ -2,7 +2,6 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import TemplateComponent from 'sap/fe/core/TemplateComponent';
 import Component from 'sap/ui/core/Component';
 import AppComponent from 'sap/fe/core/AppComponent';
-import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { isA } from './core';
@@ -48,7 +47,10 @@ export function getV4PageType(control: ManagedObject): 'ObjectPage' | 'ListRepor
         return undefined;
     }
     const view = component.getRootControl();
-    const name = (view as XMLView).getViewName();
+    if (!isA('sap.ui.core.mvc.XMLView', view)) {
+        return undefined;
+    }
+    const name = view.getViewName();
     if (name === 'sap.fe.templates.ObjectPage.ObjectPage') {
         return 'ObjectPage';
     }
@@ -66,7 +68,7 @@ export function getV4PageType(control: ManagedObject): 'ObjectPage' | 'ListRepor
  */
 export function getPageName(control: ManagedObject): string | undefined {
     const component = Component.getOwnerComponentFor(control);
-    if (!isA<TemplateComponent>('sap.fe.core.TemplateComponent', component)) {
+    if (!isA('sap.fe.core.TemplateComponent', component)) {
         return undefined;
     }
     const view = component.getRootControl();
@@ -117,7 +119,6 @@ export async function createManifestPropertyChange(
         } else {
             adjustedChanges[key] = value;
         }
-        
     }
     const [manifestPropertyChange] = overlayData.manifestPropertyChange(
         adjustedChanges,

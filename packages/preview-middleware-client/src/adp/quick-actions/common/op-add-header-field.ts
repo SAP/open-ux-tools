@@ -46,7 +46,7 @@ export class AddHeaderFieldQuickAction
         const headerContent = this.control.getHeaderContent();
 
         // check if only flex box exist in the headerContent.
-        if (headerContent.length === 1 && isA<FlexBox>('sap.m.FlexBox', headerContent[0])) {
+        if (headerContent.length === 1 && isA('sap.m.FlexBox', headerContent[0])) {
             const overlay = OverlayRegistry.getOverlay(headerContent[0]) || [];
             await DialogFactory.createDialog(
                 overlay,
