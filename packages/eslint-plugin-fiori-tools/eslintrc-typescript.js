@@ -1,4 +1,3 @@
-'use strict';
 const { getResourcePaths } = require('./lib/utils');
 const { sourceCodePath, testCodePath } = getResourcePaths();
 const overrides = [

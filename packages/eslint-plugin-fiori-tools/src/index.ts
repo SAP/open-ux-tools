@@ -1,19 +1,39 @@
-//------------------------------------------------------------------------------
-// Plugin Definition
-//------------------------------------------------------------------------------
+import { JSONLanguage } from '@eslint/json';
+import type { Plugin, Config } from '@eslint/config-helpers';
+import rules from './rules';
 
-module.exports.configs = {
-    defaultTS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js', '../eslintrc-test.js'],
-        parser: '@typescript-eslint/parser' // override parser used in eslint-plugin-fiori-custom to support TS
+const plugin: Plugin = {
+    meta: {
+        name: 'eslint-plugin-fiori-tools',
+        version: '0.0.1'
     },
-    defaultJS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-prod.js', '../eslintrc-test.js']
+    languages: {
+        json: new JSONLanguage({ mode: 'json' })
     },
-    testCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-test.js']
-    },
-    prodCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js']
+    rules
+};
+
+const commonConfig: Config = {
+    files: ['**/manifest.json'],
+    plugins: { consistency: plugin },
+    language: 'consistency/json'
+};
+
+const v2: Config = {
+    ...commonConfig,
+    rules: { 'consistency/flex-enabled': 'warn' }
+};
+const v4: Config = {
+    ...commonConfig,
+    rules: {
+        'consistency/flex-enabled': 'error'
     }
 };
+
+// Export the plugin as default and attach the configs
+module.exports = plugin;
+module.exports.default = plugin;
+module.exports.v2 = v2;
+module.exports.v4 = v4;
+export default plugin;
+export { v2, v4 };
