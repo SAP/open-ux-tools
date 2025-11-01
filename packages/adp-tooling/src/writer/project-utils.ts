@@ -202,38 +202,16 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-        ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8', paths: { webapp: 'dist' } });
-
-        /** Middlewares */
-        enhanceUI5YamlWithCfCustomMiddleware(ui5Config);
-
-        fs.write(ui5ConfigPath, ui5Config.toString());
-    } catch (e) {
-        throw new Error(`Could not write ui5.yaml file. Reason: ${e.message}`);
-    }
-}
-
-/**
- * Writes a ui5-build.yaml file for CF project within a specified folder in the project directory.
- *
- * @param {string} projectPath - The root path of the project.
- * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @returns {void}
- */
-export async function writeCfUI5BuildYaml(projectPath: string, data: CfAdpWriterConfig, fs: Editor): Promise<void> {
-    try {
-        const ui5ConfigPath = join(projectPath, 'ui5-build.yaml');
-        const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
 
         /** Builder task */
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
+        /** Middlewares */
+        enhanceUI5YamlWithCfCustomMiddleware(ui5Config, data);
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
-        throw new Error(`Could not write ui5-build.yaml file. Reason: ${e.message}`);
+        throw new Error(`Could not write ui5.yaml file. Reason: ${e.message}`);
     }
 }
 
@@ -289,10 +267,6 @@ export async function writeCfTemplates(
     });
 
     fs.copyTpl(join(templatePath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
-        module: project.name
-    });
-
-    fs.copyTpl(join(templatePath, 'cf/ui5-build.yaml'), join(project.folder, 'ui5-build.yaml'), {
         module: project.name
     });
 

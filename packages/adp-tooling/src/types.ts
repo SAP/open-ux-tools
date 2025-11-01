@@ -39,6 +39,10 @@ export interface AdpPreviewConfig {
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+    /**
+     * For CF ADP projects: when set to 'dist', serve resources from local dist instead of backend merge.
+     */
+    useLocal?: string;
 }
 
 export interface OnpremApp {
@@ -882,6 +886,8 @@ export interface UI5YamlCustomTaskConfiguration {
     space: string;
     html5RepoRuntime: string;
     sapCloudService: string;
+    serviceInstanceName: string;
+    serviceInstanceGuid: string;
 }
 
 export interface UI5YamlCustomTask {
@@ -1037,6 +1043,8 @@ export interface CfAdpWriterConfig {
         approuter: AppRouterType;
         businessService: string;
         businessSolutionName?: string;
+        serviceInstanceGuid?: string; // GUID of the business service instance
+        backendUrl?: string; // Backend URL from service keys endpoints.psmservice.url
     };
     project: {
         name: string;
@@ -1066,6 +1074,8 @@ export interface CreateCfConfigParams {
     layer: FlexLayer;
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
+    serviceInstanceGuid?: string;
+    backendUrl?: string;
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
@@ -1135,7 +1145,6 @@ export interface CFApp {
     messages?: string[];
     serviceInstanceGuid?: string;
 }
-
 /**
  * CF services (application sources) prompts
  */

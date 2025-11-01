@@ -73,6 +73,9 @@
       "path": "packages/cf-deploy-config-writer"
     },
     {
+      "path": "packages/cf-oauth-middleware"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {

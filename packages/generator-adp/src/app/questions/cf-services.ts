@@ -79,12 +79,45 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Returns the service instance GUID.
+     * Returns the HTML5 repo service instance GUID.
      *
-     * @returns Service instance GUID.
+     * @returns HTML5 repo service instance GUID.
      */
-    public get serviceInstanceGuid(): string {
+    public get html5RepoRuntimeGuid(): string {
         return this.html5RepoServiceInstanceGuid;
+    }
+
+    /**
+     * Returns the business service instance GUID.
+     *
+     * @returns Business service instance GUID.
+     */
+    public get serviceInstanceGuid(): string | undefined {
+        return this.businessServiceKeys?.serviceInstance?.guid;
+    }
+
+    /**
+     * Returns the backend URL from service keys endpoints.
+     *
+     * @returns Backend URL from the first endpoint that has a url property, or undefined.
+     */
+    public get backendUrl(): string | undefined {
+        const credentials = this.businessServiceKeys?.credentials;
+        if (!credentials || credentials.length === 0) {
+            return undefined;
+        }
+        const endpoints = credentials[0]?.endpoints as Record<string, { url?: string }> | undefined;
+        if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
+            for (const key in endpoints) {
+                if (Object.prototype.hasOwnProperty.call(endpoints, key)) {
+                    const endpoint = endpoints[key] as { url?: string } | undefined;
+                    if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
+                        return endpoint.url;
+                    }
+                }
+            }
+        }
+        return undefined;
     }
 
     /**
