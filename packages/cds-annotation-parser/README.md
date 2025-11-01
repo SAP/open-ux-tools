@@ -72,3 +72,9 @@ if (ast !== undefined) {
 
 ## Keywords
 OData annotations CAP CDS
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/cds-annotation-parser/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/cds-annotation-parser)

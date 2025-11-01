@@ -21,3 +21,9 @@ To consume this module, add @sap-ux/eslint-plugin-fiori-tools to `extend` in you
 - defaultTS: contains rules for typescript and rules for both prod and test code from plugin eslint-plugin-fiori-custom 
 - testcode: contains rules for typescript and rules for test code from plugin eslint-plugin-fiori-custom
 - prodCode: contains rules for typescript and rules for production code from plugin eslint-plugin-fiori-custom
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/eslint-plugin-fiori-tools)

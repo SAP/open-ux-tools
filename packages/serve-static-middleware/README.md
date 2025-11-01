@@ -129,3 +129,10 @@ const serveStaticFn = serveStaticMiddleware(root, config);
 * Fiori tools
 * Fiori elements
 * SAP UI5
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/serve-static-middleware/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/serve-static-middleware)

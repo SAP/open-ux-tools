@@ -59,3 +59,10 @@ await exampleWriter();
 
 ## Keywords
 SAP Fiori Elements
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-test-writer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-test-writer)

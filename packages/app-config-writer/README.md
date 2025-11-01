@@ -55,3 +55,9 @@ See more complex example in [`/test/unit`](./test/unit)
 
 ## Keywords
 SAP Fiori elements
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/app-config-writer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/app-config-writer)

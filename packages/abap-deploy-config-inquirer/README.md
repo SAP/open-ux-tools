@@ -91,3 +91,9 @@ Inquirer
 Prompting
 Generator
 Deployment
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/abap-deploy-config-inquirer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/abap-deploy-config-inquirer)

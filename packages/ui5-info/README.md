@@ -59,3 +59,10 @@ See TypeScript doc for a full description of possible value for [`UI5VersionFilt
 ## Keywords
 SAP
 UI5
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-info/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-info)

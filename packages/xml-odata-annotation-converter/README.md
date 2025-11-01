@@ -53,3 +53,10 @@ const metadata = convertMetadataDocument(ast);
 
 ## Keywords
 OData annotations
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/xml-odata-annotation-converter/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/xml-odata-annotation-converter)

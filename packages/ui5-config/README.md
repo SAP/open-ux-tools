@@ -41,3 +41,10 @@ See more example in [`/test/index.test.ts`](./test/index.test.ts)
 
 ## Keywords
 SAP Fiori freestyle
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-config/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-config)

@@ -64,3 +64,10 @@ The vocabulary API is implemented via class VocabularyService and currently expo
 * getVocabularies
 * getVocabulary
 * getVocabularyNamespace
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-vocabularies/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-vocabularies)

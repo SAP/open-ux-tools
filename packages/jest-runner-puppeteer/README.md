@@ -29,3 +29,9 @@ For use in jest config
     setupFilesAfterEnv: ['expect-puppeteer', '@sap-ux/jest-runner-puppeteer/dist/jest-circus.setup.js'],
  }
  ```
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/jest-runner-puppeteer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-runner-puppeteer)

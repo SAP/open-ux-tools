@@ -147,3 +147,10 @@ router.use("/resources/", ui5Proxy({ path: "/", url: "https://ui5.sap.com"})/*, 
 
 ## Keywords
 UI5 Proxy Middleware
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-proxy-middleware/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-proxy-middleware)

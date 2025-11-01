@@ -21,3 +21,9 @@ See usage in `test/` folder.
 * SAP Fiori elements
 * SAP Fiori freestyle
 * Project integrity
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/project-integrity/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/project-integrity)

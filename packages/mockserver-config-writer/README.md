@@ -32,3 +32,10 @@ See more complex example in [`/test/unit`](./test/unit)
 ## Keywords
 SAP Fiori elements
 SAP Fiori - UI5 middleware for the Fiori elements mock server
+
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/mockserver-config-writer/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/mockserver-config-writer)

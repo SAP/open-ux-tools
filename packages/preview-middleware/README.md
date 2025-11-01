@@ -236,3 +236,9 @@ server:
 
 ## [Limitations](#limitations)
 - When serving the UI5 sources from npmjs, flex changes for virtual endpoints are only supported for UI5 versions >= `1.84.x`.
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/preview-middleware/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware)

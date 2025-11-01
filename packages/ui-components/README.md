@@ -18,3 +18,9 @@ See examples in `ui-components/stories`.
 VSCode Webview
 SAP Application Studio (BAS)
 SAP Business Technology Platform (BTP)
+## Changelog
+
+See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui-components/CHANGELOG.md) file for details on changes and version history.
+## Links
+
+- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui-components)
