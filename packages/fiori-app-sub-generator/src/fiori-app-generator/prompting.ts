@@ -197,6 +197,7 @@ export async function promptOdataServiceAnswers(
         serviceId: answers.serviceId,
         edmx: answers.metadata,
         annotations: answers.annotations,
+        valueListReferences: answers.valueListReferences,
         version: answers.odataVersion,
         capService: answers.capService,
         source: answers.datasourceType,
