@@ -2,7 +2,13 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import {
+    CallToolRequestSchema,
+    ListToolsRequestSchema,
+    ListPromptsRequestSchema,
+    GetPromptRequestSchema,
+    type CallToolResult
+} from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
 import {
     docSearch,
@@ -10,6 +16,7 @@ import {
     listFunctionalities,
     getFunctionalityDetails,
     executeFunctionality,
+    getFioriRules,
     tools
 } from './tools';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
@@ -48,12 +55,14 @@ export class FioriFunctionalityServer {
             },
             {
                 capabilities: {
-                    tools: {}
+                    tools: {},
+                    prompts: {}
                 }
             }
         );
 
         this.setupToolHandlers();
+        this.setupPromptHandlers();
         this.setupErrorHandling();
     }
 
@@ -74,6 +83,42 @@ export class FioriFunctionalityServer {
      */
     private async setupTelemetry(): Promise<void> {
         await TelemetryHelper.initTelemetrySettings();
+    }
+
+    /**
+     * Sets up handlers for MCP prompts.
+     * Configures handlers for listing and getting prompts with Fiori rules.
+     */
+    private setupPromptHandlers(): void {
+        this.server.setRequestHandler(ListPromptsRequestSchema, async () => {
+            return {
+                prompts: [
+                    {
+                        name: 'fiori-rules',
+                        description:
+                            'Complete set of rules and best practices for creating or modifying SAP Fiori elements applications'
+                    }
+                ]
+            };
+        });
+
+        this.server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+            if (request.params.name === 'fiori-rules') {
+                const rulesContent = getFioriRules();
+                return {
+                    messages: [
+                        {
+                            role: 'user',
+                            content: {
+                                type: 'text',
+                                text: rulesContent
+                            }
+                        }
+                    ]
+                };
+            }
+            throw new Error(`Unknown prompt: ${request.params.name}`);
+        });
     }
 
     /**
@@ -114,10 +159,13 @@ export class FioriFunctionalityServer {
                     case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
+                    case 'get_fiori_rules':
+                        result = getFioriRules();
+                        break;
                     default:
                         await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
                         throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
+                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality, get_fiori_rules.`
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
