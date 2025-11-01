@@ -233,7 +233,7 @@ describe('Test system selection prompts', () => {
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(5);
+        expect(systemConnectionQuestions).toHaveLength(6);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('destinationServicePath');
         expect(systemConnectionQuestions[2].name).toBe('systemSelectionCli');
@@ -357,7 +357,7 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(4);
+        expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('systemSelectionCli');
         expect(systemConnectionQuestions[2].name).toBe('systemSelection:systemUsername');

@@ -84,6 +84,9 @@
         "systemPassword": {
             "message": "Password"
         },
+        "storeSystemCredentials": {
+            "message": "Do you want to store the system credentials?"
+        },
         "systemService": {
             "message": "Service",
             "breadcrumb": "Service",
@@ -256,6 +259,7 @@
         "forUserName": "(for user [{{username}}])",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
-        "choiceNameNone": "None"
+        "choiceNameNone": "None",
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
     }
 }

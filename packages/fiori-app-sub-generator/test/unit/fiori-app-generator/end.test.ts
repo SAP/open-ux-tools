@@ -111,6 +111,30 @@ describe('runPostGenerationTasks', () => {
         expect(storeServiceWriteMock).toHaveBeenCalledWith(service.backendSystem, { force: true });
     });
 
+    it('should NOT persist backend system when newOrUpdated is false', async () => {
+        const service = {
+            backendSystem: {
+                newOrUpdated: false
+            } as unknown as BackendSystem,
+            sapClient: '100',
+            odataVersion: OdataVersion.v2,
+            datasourceType: DatasourceType.sapSystem
+        };
+        const project = {
+            targetFolder: '/path/to/project',
+            name: 'testProject',
+            flpAppId: 'testAppId'
+        };
+
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+
+        await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
+
+        // Should not call getService or write when newOrUpdated is false
+        expect(getService).not.toHaveBeenCalled();
+        expect(storeServiceWriteMock).not.toHaveBeenCalled();
+    });
+
     it('should show information message for cap projects', async () => {
         const service = {
             capService: {} as unknown as CapService,
