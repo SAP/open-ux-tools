@@ -365,6 +365,56 @@ function createDataWithLabel(value = 'sample'): AnnotationRecord {
     };
 }
 
+function createAction(label: string): AnnotationRecord {
+    return {
+        type: `${UI}.DataFieldForAction`,
+        propertyValues: [
+            {
+                name: 'Label',
+                value: {
+                    type: 'String',
+                    String: label
+                }
+            },
+            {
+                name: 'Action',
+                value: {
+                    type: 'String',
+                    String: `${label}Action`
+                }
+            }
+        ]
+    };
+}
+function createActionGroup(actions: AnnotationRecord[] = []): AnnotationRecord {
+    return {
+        type: `${UI}.DataFieldForActionGroup`,
+        propertyValues: [
+            {
+                name: 'Actions',
+                value: {
+                    type: 'Collection',
+                    Collection: actions
+                }
+            },
+            {
+                name: 'Label',
+                value: {
+                    type: 'String',
+                    String: 'value'
+                }
+            },
+            {
+                name: 'ID',
+                value: {
+                    type: 'String',
+                    String: 'ID'
+                }
+            }
+        ]
+    };
+}
+
 function createValueListWithRecord(
     uri: string,
     targetName: string,
@@ -4038,6 +4088,101 @@ rating : Rating;
                             }
                         ],
                         index: 0
+                    }
+                ]
+            });
+            createEditTestCase({
+                name: 'different parents and delete source',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createLineItem(
+                        files.annotations,
+                        [createDataField(), createDataField('test1'), createDataField('test2')],
+                        'a'
+                    ),
+                    createLineItem(files.annotations, [], 'b')
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Move,
+                        uri: files.annotations,
+                        pointer: 'collection',
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM,
+                            qualifier: 'b'
+                        },
+                        moveReference: [
+                            {
+                                fromPointer: ['collection/0', 'collection/1'],
+                                reference: {
+                                    target: targetName,
+                                    term: LINE_ITEM,
+                                    qualifier: 'a'
+                                }
+                            }
+                        ],
+                        index: 0
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        uri: files.annotations,
+                        pointer: '',
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM,
+                            qualifier: 'a'
+                        }
+                    }
+                ]
+            });
+            createEditTestCase({
+                name: 'same parent, after source and delete source',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: targetName,
+                            value: {
+                                term: `${UI}.Identification`,
+
+                                collection: [
+                                    createAction('test0'),
+                                    createActionGroup([createAction('test2'), createAction('test3')]),
+                                    createAction('test1'),
+                                    createAction('test4')
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Move,
+                        uri: files.annotations,
+                        pointer: 'collection',
+                        reference: {
+                            target: targetName,
+                            term: `${UI}.Identification`
+                        },
+                        moveReference: [
+                            {
+                                fromPointer: ['collection/1/propertyValues/0/value/Collection/0']
+                            }
+                        ],
+                        index: 2
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        uri: files.annotations,
+                        pointer: '/collection/1',
+                        reference: {
+                            target: targetName,
+                            term: `${UI}.Identification`
+                        }
                     }
                 ]
             });
