@@ -593,6 +593,9 @@ importers:
       '@jest/types':
         specifier: 30.0.1
         version: 30.0.1
+      mockserver-node:
+        specifier: 5.15.0
+        version: 5.15.0
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
@@ -19899,6 +19902,17 @@ packages:
     resolution: {integrity: sha512-cMSfGmQlTiCF54a7taY1cUVXuuEKqDR8vLrfN7pI4LCskxwRedupMQB7o5d5Hg5L6rctvtyZJwUxMl3czTd4tg==}
     dependencies:
       through: 2.3.8
+    dev: true
+
+  /mockserver-node@5.15.0:
+    resolution: {integrity: sha512-Po442dwW5GpTSgP2T2FbGFv8vp07llfTVJSZBZQZ2VoTFvkhRgCN1D1FqRFhTFZ/42aCTYsWxQnjp1Tt1nISxA==}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      follow-redirects: 1.15.6(debug@4.4.1)
+      glob: 8.0.3
+      q: 2.0.3
+    transitivePeerDependencies:
+      - debug
     dev: true
 
   /module-details-from-path@1.0.3:
