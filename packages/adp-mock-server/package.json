@@ -1,0 +1,35 @@
+{
+    "name": "@sap-ux/adp-mock-server",
+    "version": "0.0.1",
+    "description": "Adaptation project mock server",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf dist *.tsbuildinfo",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --build --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/adp-mock-server"
+    },
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*"
+    },
+    "devDependencies": {
+        "@jest/types": "30.0.1",
+        "rimraf": "5.0.5"
+    },
+    "engines": {
+        "node": ">=20.0"
+    }
+}
