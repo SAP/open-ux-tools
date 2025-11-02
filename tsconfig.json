@@ -37,6 +37,9 @@
       "path": "packages/adp-flp-config-sub-generator"
     },
     {
+      "path": "packages/adp-mock-server"
+    },
+    {
       "path": "packages/adp-tooling"
     },
     {

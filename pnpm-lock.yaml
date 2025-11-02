@@ -584,6 +584,19 @@ importers:
         specifier: 6.3.0
         version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)(yeoman-generator@5.10.0)
 
+  packages/adp-mock-server:
+    dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+    devDependencies:
+      '@jest/types':
+        specifier: 30.0.1
+        version: 30.0.1
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+
   packages/adp-tooling:
     dependencies:
       '@sap-devx/yeoman-ui-types':
