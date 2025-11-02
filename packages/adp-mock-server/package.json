@@ -27,6 +27,7 @@
     },
     "devDependencies": {
         "@jest/types": "30.0.1",
+        "mockserver-node": "5.15.0",
         "rimraf": "5.0.5"
     },
     "engines": {
