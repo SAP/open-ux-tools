@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.4.40
+
+### Patch Changes
+
+-   3e88b99: Ensure error message is pushed to the UI soo user is aware why the finish button is not enabled, additional logging appended
+
 ## 0.4.39
 
 ### Patch Changes
