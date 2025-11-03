@@ -1,11 +1,9 @@
 import fs from 'fs/promises';
 import { existsSync } from 'fs';
 import { basename, join, dirname } from 'path';
-import { diffJson, diffTrimmedLines } from 'diff';
-import type { Change } from 'diff';
-import { green, red } from 'chalk';
 import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
+import assert from 'node:assert';
 
 interface SnapshotData {
     content: {
@@ -170,7 +168,7 @@ function validateSnapshot(snapshotData: SnapshotData, config: SnapshotConfigurat
                 if (segement.mode === 'contains') {
                     compareResult = deepContains(snapshotSegment, actualSegment);
                 } else {
-                    compareResult = compareJson(actualSegment, snapshotSegment);
+                    compareResult = compare(actualSegment, snapshotSegment);
                 }
             } else {
                 compareResult =
@@ -182,8 +180,8 @@ function validateSnapshot(snapshotData: SnapshotData, config: SnapshotConfigurat
         }
     } else {
         compareResult = config.file.endsWith('.json')
-            ? compareJson(snapshotData.content.source, snapshotData.content.snapshot)
-            : compareStrings(snapshotData.content.source, snapshotData.content.snapshot);
+            ? compare(JSON.parse(snapshotData.content.source), JSON.parse(snapshotData.content.snapshot))
+            : compare(snapshotData.content.source, snapshotData.content.snapshot);
     }
     return compareResult;
 }
@@ -220,16 +218,22 @@ function getByPath(obj: unknown, path: (string | number)[]): unknown {
 }
 
 /**
- * Compare two json objects or string.
+ * Compares two values (objects or strings) for deep equality.
+ * Uses Node's built-in `assert.deepStrictEqual()` internally.
+ * If the values differ, it returns a human-readable diff string.
+ * If the values are deeply equal, it returns `undefined`.
  *
- * @param obj1 First json object or string to compare.
- * @param obj2 Second json object or string to compare.
- * @returns A string describing the differences, or `undefined` if the strings are identical.
+ * @param {string | object} value1 - The first object or string to compare.
+ * @param {string | object} value2 - The second object or string to compare.
+ * @returns {string | undefined} A string describing the differences if values differ,
+ *   or `undefined` if they are identical.
  */
-function compareJson(obj1: string | object, obj2: string | object): string | undefined {
-    const diffChanges = diffJson(obj1, obj2);
-    const diffResultString = getDiffResultString(diffChanges);
-    return diffResultString ? diffResultString : undefined;
+function compare(value1: string | object, value2: string | object): string | undefined {
+    try {
+        assert.deepStrictEqual(value1, value2);
+    } catch (e) {
+        return e.message;
+    }
 }
 
 /**
@@ -265,35 +269,4 @@ function deepContains(expected: unknown, actual: unknown, path = ''): string | u
 
     // Ignore extra keys in `actual`
     return undefined;
-}
-
-/**
- * Compare two strings.
- *
- * @param obj1 First object to compare.
- * @param obj2 Second object to compare.
- * @returns A string describing the differences, or `undefined` if the strings are identical.
- */
-function compareStrings(obj1: string, obj2: string): string | undefined {
-    const diffChanges = diffTrimmedLines(obj1, obj2);
-    const diffResultString = getDiffResultString(diffChanges);
-    return diffResultString ? diffResultString : undefined;
-}
-
-/**
- * Get the diff results as colored string.
- *
- * @param diffChanges Array of changes, result from diff.
- * @returns Diff results as colored string.
- */
-function getDiffResultString(diffChanges: Change[]): string {
-    let diffResults: string = '';
-    for (const diffChange of diffChanges) {
-        if (diffChange.added) {
-            diffResults += green(diffChange.value);
-        } else if (diffChange.removed) {
-            diffResults += red(diffChange.value);
-        }
-    }
-    return diffResults;
 }
