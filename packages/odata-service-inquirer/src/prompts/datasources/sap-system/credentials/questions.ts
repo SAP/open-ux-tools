@@ -11,6 +11,7 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -146,7 +147,8 @@ export function getCredentialsPrompts<T extends Answers>(
                     connectionValidator.systemAuthType === 'basic' &&
                     authRequired &&
                     connectionValidator.validity.authenticated &&
-                    answers[passwordPromptName]
+                    answers[passwordPromptName] &&
+                    !isAppStudio()
                 ),
             type: 'confirm',
             name: storeCredentialsPromptName,
