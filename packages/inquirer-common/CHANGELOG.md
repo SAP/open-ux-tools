@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.9.0
+
+### Minor Changes
+
+-   4ddcff3: Add a message for the Tree table default. Move and export shouldUseAnalyticalTable() for use in other repos.
+
 ## 0.8.10
 
 ### Patch Changes
