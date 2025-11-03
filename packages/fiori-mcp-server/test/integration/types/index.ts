@@ -1,1 +1,1 @@
-export * from './const';
+export { FOLDER_PATHS } from './const';
