@@ -38,7 +38,7 @@ The middleware will:
 2. Extract `serviceInstanceName` and `serviceInstanceGuid`
 3. Retrieve service keys using `@sap-ux/adp-tooling`
 4. Extract UAA credentials and construct the token endpoint
-5. Extract OAuth paths from `xs-app.json` (if available) by finding routes with an `endpoint` property
+5. Extract OAuth paths from `xs-app.json` (if available) by finding routes with an `source` property
 
 ### [Manual Credentials](#manual-credentials)
 
@@ -174,7 +174,7 @@ Alternatively, you can use the underlying token manager and factory functions pr
 5. **Token Management**: Requests OAuth tokens using client credentials flow.
 6. **Caching**: Caches tokens in memory and refreshes them automatically 60 seconds before expiry.
 7. **Request Handling**: Adds `Authorization: Bearer <token>` header to requests matching any of the configured path prefixes.
-8. **OAuth Paths Extraction**: For automatic detection, extracts OAuth paths from `xs-app.json` routes that have an `endpoint` property. Routes with `service: "html5-apps-repo-rt"` are automatically filtered out.
+8. **OAuth Paths Extraction**: For automatic detection, extracts OAuth paths from `xs-app.json` routes that have an `source` property. Routes with `service: "html5-apps-repo-rt"` are automatically filtered out.
 
 ## Error Handling
 

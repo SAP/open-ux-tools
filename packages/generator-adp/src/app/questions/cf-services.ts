@@ -114,7 +114,7 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Returns the OAuth paths extracted from xs-app.json routes that have an endpoint property.
+     * Returns the OAuth paths extracted from xs-app.json routes that have a source property.
      *
      * @returns {string[]} Array of path patterns that should receive OAuth Bearer tokens.
      */

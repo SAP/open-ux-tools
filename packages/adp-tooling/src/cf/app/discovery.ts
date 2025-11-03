@@ -55,11 +55,11 @@ export function getBackendUrlFromCredentials(credentials: CfCredentials[]): stri
 }
 
 /**
- * Extracts OAuth paths from xs-app.json routes that have an endpoint property.
+ * Extracts OAuth paths from xs-app.json routes that have a source property.
  * These paths should receive OAuth Bearer tokens in the middleware.
  *
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries containing xs-app.json.
- * @returns {string[]} Array of path patterns (from route.source) that have an endpoint property.
+ * @returns {string[]} Array of path patterns (from route.source) that have a source property.
  */
 export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[] {
     const xsApp: XsApp | undefined = extractXSApp(zipEntries);

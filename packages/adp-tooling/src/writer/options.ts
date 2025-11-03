@@ -377,8 +377,8 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
         url: UI5_CDN_URL
     };
 
-    const oauthPaths = config.cf.oauthPaths && config.cf.oauthPaths.length > 0 ? config.cf.oauthPaths : [];
-    if (oauthPaths.length > 0) {
+    const oauthPaths = config.cf?.oauthPaths;
+    if (oauthPaths && oauthPaths.length > 0) {
         const backendConfig: FioriToolsProxyConfigBackend[] = [];
         if (config.cf.backendUrl) {
             backendConfig.push({

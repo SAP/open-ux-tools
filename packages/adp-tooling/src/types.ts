@@ -1052,7 +1052,7 @@ export interface CfAdpWriterConfig {
          */
         backendUrl?: string;
         /**
-         * OAuth paths extracted from xs-app.json routes that have an endpoint property.
+         * OAuth paths extracted from xs-app.json routes that have a source property.
          */
         oauthPaths?: string[];
     };
