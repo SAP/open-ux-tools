@@ -3,7 +3,6 @@ import type { CustomElement, Position } from '../common/types';
 export enum TargetControl {
     header = 'header',
     body = 'body',
-    //    footer = 'footer',
     section = '@com.sap.vocabularies.UI.v1.FieldGroup',
     table = '@com.sap.vocabularies.UI.v1.LineItem'
 }
@@ -14,6 +13,8 @@ export interface ActionMenuTarget {
     customSectionKey?: string;
     navProperty?: string;
     qualifier?: string;
+    menuId?: string;
+    positionUpdates?: { key: string; position: Position | undefined }[];
 }
 
 export interface ActionMenu extends CustomElement {

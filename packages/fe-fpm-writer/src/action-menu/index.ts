@@ -7,28 +7,8 @@ import { getTemplatePath } from '../templates';
 import { getJsonSpace } from '../common/file';
 import { getManifest } from '../common/utils';
 import { enhanceManifestAndGetActionsElementReference } from '../action';
-import type { ActionMenu } from './types';
+import { TargetControl, type ActionMenu, type ActionMenuTarget } from './types';
 
-/**
- * Enhances the provided custom action configuration with default data.
- *
- * @param {ActionMenu} data - a custom action configuration object
- * @returns enhanced configuration
- */
-// function enhanceConfig(data: ActionMenu): ActionMenu {
-//     // clone input
-//     const config: ActionMenu = {
-//         ...data,
-//         target: { ...data.target },
-//         settings: { ...data.settings }
-//     };
-
-//     // set default values for visibility and enabled
-//     config.settings.enabled = config.settings.enabled || true;
-//     config.settings.visible = config.settings.visible || true;
-
-//     return config as ActionMenu;
-// }
 /**
  * Add a custom page to an existing UI5 application.
  *
@@ -46,15 +26,44 @@ export async function generateActionMenu(basePath: string, actionMenuConfig: Act
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
-    // const config = enhanceConfig(actionMenuConfig);
-
-    // enhance manifest with action menu definition
-    const actionsContainer = enhanceManifestAndGetActionsElementReference(manifest, actionMenuConfig.target);
-    Object.assign(
-        actionsContainer,
-        JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action-menu.json`)), actionMenuConfig, {}))
-    );
+    if (!actionMenuConfig.target.menuId) {
+        // enhance manifest with action menu definition
+        const actionsContainer = enhanceManifestAndGetActionsElementReference(manifest, actionMenuConfig.target);
+        Object.assign(
+            actionsContainer,
+            JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action-menu.json`)), actionMenuConfig, {}))
+        );
+        (actionMenuConfig.target.positionUpdates ?? []).forEach(({ key, position }) => {
+            const action = actionsContainer[key];
+            if (action) {
+                if (position) {
+                    action.position = position;
+                } else {
+                    delete action.position;
+                }
+            }
+        });
+    } else {
+        const actionsContainer = getExistingMenuItemsContainer(manifest, actionMenuConfig.target);
+        const actionsList: string[] = actionsContainer[actionMenuConfig.target.menuId].menu;
+        actionsList.push(...actionMenuConfig.settings.actions);
+    }
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionMenuConfig.tabInfo));
 
     return fs;
+}
+
+function getExistingMenuItemsContainer(manifest: any, target: ActionMenuTarget): any {
+    const page = manifest['sap.ui5'].routing.targets[target.page];
+    if (target.control === TargetControl.header) {
+        return page.options.settings.content[target.control].actions;
+    } else if (target.control === TargetControl.body && target.customSectionKey) {
+        return page.options.settings.content[target.control].sections[target.customSectionKey].actions;
+    } else {
+        // Custom actions for other elements are defined in: 'options/settings/controlConfiguration/<element>/actions'
+        const controlPrefix = target.navProperty ? target.navProperty + '/' : '';
+        const controlSuffix = target.qualifier ? '#' + target.qualifier : '';
+        const controlId = `${controlPrefix}${target.control}${controlSuffix}`;
+        return page.options.settings.controlConfiguration[controlId].actions;
+    }
 }

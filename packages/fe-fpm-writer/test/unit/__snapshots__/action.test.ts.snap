@@ -14,8 +14,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
@@ -56,8 +61,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
@@ -97,8 +107,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
@@ -307,8 +322,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "body": Object {
@@ -349,8 +369,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
@@ -387,8 +412,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "controlConfiguration": Object {
                 "TestItems/@com.sap.vocabularies.UI.v1.LineItem#MyQualifier": Object {
@@ -425,8 +455,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
@@ -484,8 +519,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
@@ -522,8 +562,13 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
-          "name": "sap.fe.templates.ListReport",
+          "name": "sap.fe.templates.ObjectPage",
           "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
             "settings": Object {
               "content": Object {
                 "header": Object {
