@@ -1,8 +1,7 @@
 import React from 'react';
 import type { ReactElement } from 'react';
-import { UITextInput } from '@sap-ux/ui-components';
+import { UITextInput, UIIcon, UiIcons } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
-import { UIIcon, UiIcons } from '@sap-ux/ui-components';
 
 import '../../../../styles/SystemMain.scss';
 
