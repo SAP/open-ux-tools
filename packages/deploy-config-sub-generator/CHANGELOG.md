@@ -1,5 +1,36 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.4.41
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/odata-service-inquirer@2.10.0
+    -   @sap-ux/inquirer-common@0.9.0
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.77
+    -   @sap-ux/deploy-config-generator-shared@0.1.50
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.92
+
+## 0.4.40
+
+### Patch Changes
+
+-   3e88b99: Ensure error message is pushed to the UI soo user is aware why the finish button is not enabled, additional logging appended
+
+## 0.4.39
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.91
+    -   @sap-ux/deploy-config-generator-shared@0.1.50
+    -   @sap-ux/fiori-generator-shared@0.13.31
+    -   @sap-ux/odata-service-inquirer@2.9.14
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.8.10
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.76
+
 ## 0.4.38
 
 ### Patch Changes
