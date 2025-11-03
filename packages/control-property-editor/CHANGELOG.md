@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.1
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
 ## 0.7.0
 
 ### Minor Changes

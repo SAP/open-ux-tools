@@ -36,7 +36,7 @@ import {
 } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { isCli, isExtensionInstalled, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
@@ -61,7 +61,8 @@ import { CFServicesPrompter } from '../src/app/questions/cf-services';
 
 jest.mock('@sap-ux/feature-toggle', () => ({
     ...jest.requireActual('@sap-ux/feature-toggle'),
-    isInternalFeaturesSettingEnabled: jest.fn()
+    isInternalFeaturesSettingEnabled: jest.fn(),
+    isFeatureEnabled: jest.fn()
 }));
 
 jest.mock('../src/app/questions/helper/default-values.ts', () => ({
@@ -312,6 +313,7 @@ const createServicesMock = createServices as jest.MockedFunction<typeof createSe
 const mockIsInternalFeaturesSettingEnabled = isInternalFeaturesSettingEnabled as jest.MockedFunction<
     typeof isInternalFeaturesSettingEnabled
 >;
+const mockIsFeatureEnabled = isFeatureEnabled as jest.MockedFunction<typeof isFeatureEnabled>;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -324,6 +326,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         beforeEach(() => {
             fs.mkdirSync(testOutputDir, { recursive: true });
             mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
+            mockIsFeatureEnabled.mockReturnValue(false);
             isExtensionInstalledMock.mockReturnValueOnce(true);
             loadAppsMock.mockResolvedValue(apps);
             jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
@@ -567,8 +570,8 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
-            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
-            isExtensionInstalledMock.mockReturnValue(true);
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
+            mockIsFeatureEnabled.mockReturnValue(true);
             isCfInstalledMock.mockResolvedValue(true);
             isLoggedInCfMock.mockResolvedValue(true);
             loadAppsMock.mockResolvedValue(apps);
@@ -624,23 +627,27 @@ describe('Adaptation Project Generator Integration Test', () => {
             const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
             const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
             const ui5Yaml = join(projectFolder, 'ui5.yaml');
+            const ui5BuildYaml = join(projectFolder, 'ui5-build.yaml');
             const mtaYaml = join(cfTestOutputDir, 'mta.yaml');
             const packageJson = join(projectFolder, 'package.json');
 
             expect(fs.existsSync(manifestPath)).toBe(true);
             expect(fs.existsSync(i18nPath)).toBe(true);
             expect(fs.existsSync(ui5Yaml)).toBe(true);
+            expect(fs.existsSync(ui5BuildYaml)).toBe(true);
             expect(fs.existsSync(mtaYaml)).toBe(true);
             expect(fs.existsSync(packageJson)).toBe(true);
 
             const manifestContent = fs.readFileSync(manifestPath, 'utf8');
             const i18nContent = fs.readFileSync(i18nPath, 'utf8');
             const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
+            const ui5BuildContent = fs.readFileSync(ui5BuildYaml, 'utf8');
             const mtaContent = fs.readFileSync(mtaYaml, 'utf8');
             const packageJsonContent = fs.readFileSync(packageJson, 'utf8');
             expect(manifestContent).toMatchSnapshot();
             expect(i18nContent).toMatchSnapshot();
             expect(ui5Content).toMatchSnapshot();
+            expect(ui5BuildContent).toMatchSnapshot();
             expect(mtaContent).toMatchSnapshot();
             expect(packageJsonContent).toMatchSnapshot();
         });

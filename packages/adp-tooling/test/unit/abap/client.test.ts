@@ -1,7 +1,8 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
 
-import { getFlexUISupportedSystem, getSystemUI5Version, getBaseAppInbounds } from '../../../src';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { getBaseAppInbounds, getFlexUISupportedSystem, getSystemUI5Version } from '../../../src';
 
 describe('getFlexUISupportedSystem', () => {
     it('should return immediately when isCustomerBase is false', async () => {
@@ -36,29 +37,71 @@ describe('getFlexUISupportedSystem', () => {
 });
 
 describe('getSystemUI5Version', () => {
-    it('should return the UI5 version from the service', async () => {
+    const loggerMock = {
+        debug: jest.fn()
+    } as unknown as jest.Mocked<ToolsLogger>;
+
+    it('should return the UI5 version from the bootstrap api', async () => {
         const version = '1.135.0';
-        const dummyService = {
+        const bootstrapService = {
+            getUI5Version: jest.fn().mockResolvedValue(version)
+        };
+        const adtService = {
+            getUI5Version: jest.fn()
+        };
+        const provider = {
+            getUI5VersionService: jest.fn().mockReturnValue(bootstrapService),
+            getAdtService: jest.fn().mockResolvedValue(adtService)
+        } as unknown as AbapServiceProvider;
+
+        const result = await getSystemUI5Version(provider, loggerMock);
+
+        expect(provider.getUI5VersionService).toHaveBeenCalled();
+        expect(bootstrapService.getUI5Version).toHaveBeenCalled();
+        expect(result).toBe(version);
+
+        expect(provider.getAdtService).not.toHaveBeenCalled();
+        expect(adtService.getUI5Version).not.toHaveBeenCalled();
+    });
+
+    it('should return the UI5 version from the adt service when the bootstrap api throws', async () => {
+        const version = '1.135.0';
+        const nextApiError = new Error('Failed to retreive UI5 version');
+        const bootstrapService = {
+            getUI5Version: jest.fn().mockRejectedValue(nextApiError)
+        };
+        const adtService = {
             getUI5Version: jest.fn().mockResolvedValue(version)
         };
         const provider = {
-            getAdtService: jest.fn().mockResolvedValue(dummyService)
+            getUI5VersionService: jest.fn().mockReturnValue(bootstrapService),
+            getAdtService: jest.fn().mockResolvedValue(adtService)
         } as unknown as AbapServiceProvider;
 
-        const result = await getSystemUI5Version(provider);
+        const result = await getSystemUI5Version(provider, loggerMock);
+
+        expect(provider.getUI5VersionService).toHaveBeenCalled();
+        await expect(bootstrapService.getUI5Version.mock.results[0].value).rejects.toThrow(nextApiError);
 
         expect(provider.getAdtService).toHaveBeenCalledWith(UI5RtVersionService);
-        expect(dummyService.getUI5Version).toHaveBeenCalled();
+        expect(adtService.getUI5Version).toHaveBeenCalled();
         expect(result).toBe(version);
     });
 
-    it('should return undefined if the service is not available', async () => {
+    it('should return undefined if the adt service is not available and the bootstrap api throws', async () => {
+        const nextApiError = new Error('Failed to retreive UI5 version');
+        const bootstrapService = {
+            getUI5Version: jest.fn().mockRejectedValue(nextApiError)
+        };
         const provider = {
+            getUI5VersionService: jest.fn().mockReturnValue(bootstrapService),
             getAdtService: jest.fn().mockResolvedValue(undefined)
         } as unknown as AbapServiceProvider;
 
-        const result = await getSystemUI5Version(provider);
+        const result = await getSystemUI5Version(provider, loggerMock);
 
+        expect(provider.getUI5VersionService).toHaveBeenCalled();
+        await expect(bootstrapService.getUI5Version.mock.results[0].value).rejects.toThrow(nextApiError);
         expect(result).toBeUndefined();
     });
 });

@@ -1,5 +1,76 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.54
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.4
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/inquirer-common@0.8.10
+
+## 0.4.53
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+    -   @sap-ux/adp-tooling@0.17.3
+    -   @sap-ux/fiori-generator-shared@0.13.30
+
+## 0.4.52
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.2
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/inquirer-common@0.8.9
+
+## 0.4.51
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.1
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/inquirer-common@0.8.8
+
+## 0.4.50
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+    -   @sap-ux/adp-tooling@0.17.0
+    -   @sap-ux/fiori-generator-shared@0.13.28
+
+## 0.4.49
+
+### Patch Changes
+
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+
+## 0.4.48
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/adp-tooling@0.16.13
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/project-input-validator@0.6.29
+    -   @sap-ux/inquirer-common@0.8.7
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/adp-tooling@0.16.12
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/inquirer-common@0.8.6
+    -   @sap-ux/fiori-generator-shared@0.13.27
+
 ## 0.4.46
 
 ### Patch Changes
