@@ -99,22 +99,6 @@ export default class AICoreApiProvider implements ApiProvider {
     }
 
     /**
-     * Calculate the cost of the request based on the number of tokens used. Cost is in SAP Compute Units (CU).
-     *
-     * @param promptTokens Number of tokens in the prompt.
-     * @param completionTokens Number of tokens in the completion.
-     * @returns Cost in SAP Compute Units (CU).
-     */
-    calculateCost(promptTokens: number, completionTokens: number): number {
-        switch (this.config.model) {
-            case 'gpt-4o':
-                return (6.99 * promptTokens + 20.6115 * completionTokens) / 1e6;
-            case 'gpt-4o-mini':
-                return (0.2016 * promptTokens + 0.8737 * completionTokens) / 1e6;
-        }
-    }
-
-    /**
      * Builds the response format configuration for the OpenAI API request.
      *
      * @param configuredResponseFormat The response format configuration from the prompt config.
@@ -201,8 +185,7 @@ export default class AICoreApiProvider implements ApiProvider {
                     prompt: usage?.promptTokens,
                     completion: usage?.completionTokens,
                     total: usage?.totalTokens
-                },
-                cost: usage ? this.calculateCost(usage.promptTokens, usage.completionTokens) : undefined
+                }
             };
 
             return result;
@@ -236,8 +219,11 @@ export default class AICoreApiProvider implements ApiProvider {
         ];
         // Make first call to AI
         let response = await client.invoke(messages);
+        // Limit tool calls to 10 to prevent potential infinite loops
+        let maxToolCalls = 10;
+        let toolCallIndex = 0;
         // Resolve tool calls
-        while (response.tool_calls?.length) {
+        while (response.tool_calls?.length && toolCallIndex < maxToolCalls) {
             // Request from assistant for tool
             messages.push({
                 role: 'assistant',
@@ -262,6 +248,7 @@ export default class AICoreApiProvider implements ApiProvider {
                 }
             }
             response = await client.invoke(messages);
+            toolCallIndex++;
         }
         messages.push({
             role: 'assistant',
