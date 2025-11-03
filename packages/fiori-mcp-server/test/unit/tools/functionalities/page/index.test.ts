@@ -22,7 +22,7 @@ jest.mock('@sap-ux/project-access', () => {
     };
 });
 
-const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'ai-created-cap');
+const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'ai-created-cap');
 const copyProjectRoot = `${originProjectRoot}-add-page-copy`;
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
