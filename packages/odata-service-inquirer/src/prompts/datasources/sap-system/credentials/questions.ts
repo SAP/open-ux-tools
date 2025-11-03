@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
+import { isFullUrlDestination, isPartialUrlDestination, isAppStudio, type Destination } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
@@ -11,7 +11,6 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
-import { isAppStudio } from '@sap-ux/btp-utils';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
