@@ -2,7 +2,7 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
-import { AlertOutlineIcon } from '../AlertOutlineIcon';
+import { UIIcon, UiIcons } from '@sap-ux/ui-components';
 
 import '../../../../styles/SystemMain.scss';
 
@@ -65,7 +65,7 @@ export function BasicAuthCreds({
                     }}
                 />
                 <div className="store-warning-text">
-                    <AlertOutlineIcon />
+                    <UIIcon className="status-icon" iconName={UiIcons.Warning} />
                     {t('warnings.passwordStoreWarning')}
                     <a href={helpURL} rel="noopener noreferrer" className="store-warning-link">
                         {t('buttons.learnMore')}
