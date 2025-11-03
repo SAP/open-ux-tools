@@ -26,7 +26,7 @@ export class FeatureToggleAccess {
         }
 
         // if TOOLSUITE_FEATURES env is set check if the feature is enabled there.
-        if (process.env.TOOLSUITE_FEATURES && process.env.MY_OTHER_FEATURES === 'true') {
+        if (process.env.TOOLSUITE_FEATURES) {
             console.log('TOOLSUITE_FEATURES and MY_OTHER_FEATURES env variable is set');
             const envFeatures = process.env.TOOLSUITE_FEATURES.split(',');
             toggleConfigValue = envFeatures.includes(feature) ? true : toggleConfigValue;
