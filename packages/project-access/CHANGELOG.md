@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.32.7
+
+### Patch Changes
+
+-   d895232: feat: add new API method `readFlexChanges` to read change files from a specified folder path
+
+## 1.32.6
+
+### Patch Changes
+
+-   ea0a942: Improve function `refreshSpecificationDistTags` - prevent caching `specification-dist-tags.json` if an error is returned in the JSON from `npm view @sap/ux-specification dist-tags --json`
+
 ## 1.32.5
 
 ### Patch Changes

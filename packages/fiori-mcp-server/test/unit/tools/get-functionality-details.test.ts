@@ -27,6 +27,9 @@ describe('getFunctionalityDetails', () => {
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'dummy-id',
+                app: {
+                    changes: 'changes'
+                },
                 project: {
                     root: 'root',
                     apps: {

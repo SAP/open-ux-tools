@@ -269,4 +269,35 @@ describe('Test credentials prompts', () => {
             } as NewSystemAnswers)
         ).toBeUndefined();
     });
+
+    test('should not show credentials prompts if the sap client reference is invalid', async () => {
+        const connectionValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.isAuthRequired.mockReturnValue(true);
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.validatedUrl = 'http://abap01:1234';
+        const sapClientRef = {
+            sapClient: '999',
+            isValid: true
+        };
+
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace, sapClientRef);
+        const userNamePrompt = credentialsPrompts.find(
+            (question) => question.name === systemUsernamePromptName
+        ) as InputQuestion;
+        const passwordPrompt = credentialsPrompts.find(
+            (question) => question.name === systemPasswordPromptName
+        ) as PasswordQuestion;
+
+        expect(await (userNamePrompt?.when as Function)()).toBe(true);
+        expect(await (passwordPrompt?.when as Function)()).toBe(true);
+
+        sapClientRef.isValid = false;
+        expect(await (userNamePrompt?.when as Function)()).toBe(false);
+        expect(await (passwordPrompt?.when as Function)()).toBe(false);
+    });
 });

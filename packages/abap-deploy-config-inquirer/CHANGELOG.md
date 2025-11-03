@@ -1,5 +1,90 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.42
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+    -   @sap-ux/fiori-generator-shared@0.13.31
+    -   @sap-ux/system-access@0.6.27
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.8.10
+
+## 1.6.41
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/system-access@0.6.26
+
+## 1.6.40
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/system-access@0.6.25
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.8.9
+
+## 1.6.39
+
+### Patch Changes
+
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+    -   @sap-ux/fiori-generator-shared@0.13.29
+    -   @sap-ux/system-access@0.6.24
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/inquirer-common@0.8.8
+
+## 1.6.38
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/system-access@0.6.23
+
+## 1.6.37
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+-   @sap-ux/fiori-generator-shared@0.13.28
+-   @sap-ux/system-access@0.6.22
+-   @sap-ux/inquirer-common@0.8.7
+
+## 1.6.36
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+-   @sap-ux/inquirer-common@0.8.6
+-   @sap-ux/fiori-generator-shared@0.13.27
+-   @sap-ux/system-access@0.6.22
+
+## 1.6.35
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.0
+-   @sap-ux/fiori-generator-shared@0.13.27
+-   @sap-ux/system-access@0.6.21
+-   @sap-ux/inquirer-common@0.8.5
+
+## 1.6.34
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+
 ## 1.6.33
 
 ### Patch Changes
