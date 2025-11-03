@@ -109,6 +109,9 @@ describe('questions', () => {
               },
               {
                 "default": false,
+                "guiOptions": {
+                  "breadcrumb": "Store Credentials",
+                },
                 "message": "Do you want to store the system credentials?",
                 "name": "abapOnPrem:storeSystemCredentials",
                 "type": "confirm",

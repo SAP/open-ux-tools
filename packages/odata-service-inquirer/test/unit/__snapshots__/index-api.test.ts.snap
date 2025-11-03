@@ -102,6 +102,9 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   },
   {
     "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
     "message": "Do you want to store the system credentials?",
     "name": "systemSelection:storeSystemCredentials",
     "type": "confirm",
@@ -191,6 +194,9 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   },
   {
     "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
     "message": "Do you want to store the system credentials?",
     "name": "abapOnPrem:storeSystemCredentials",
     "type": "confirm",

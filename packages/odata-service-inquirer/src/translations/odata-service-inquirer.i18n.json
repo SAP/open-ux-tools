@@ -85,7 +85,8 @@
             "message": "Password"
         },
         "storeSystemCredentials": {
-            "message": "Do you want to store the system credentials?"
+            "message": "Do you want to store the system credentials?",
+            "breadcrumb": "Store Credentials"
         },
         "systemService": {
             "message": "Service",

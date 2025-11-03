@@ -44,7 +44,7 @@ export function getCredentialsPrompts<T extends Answers>(
     // Optimization to prevent re-checking of auth
     let authRequired: boolean | undefined;
 
-    return [
+    const credentialsPrompts: (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] = [
         {
             when: async () => {
                 authRequired = await connectionValidator.isAuthRequired();
@@ -139,31 +139,39 @@ export function getCredentialsPrompts<T extends Answers>(
                     };
                 }
             }
-        } as PasswordQuestion<T>,
-        {
-            when: (answers: T) =>
-                !!(
-                    connectionValidator.systemAuthType === 'basic' &&
-                    authRequired &&
-                    connectionValidator.validity.authenticated &&
-                    answers[passwordPromptName] &&
-                    !isAppStudio()
-                ),
-            type: 'confirm',
-            name: storeCredentialsPromptName,
-            message: t('prompts.storeSystemCredentials.message'),
-            default: false,
-            validate: async (storeCredentials: boolean): Promise<ValidationResult> => {
-                if (PromptState.odataService.connectedSystem?.backendSystem) {
-                    const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
-                    PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
-                        newOrUpdated: storeCredentials
-                    });
-                }
-                return true;
-            }
-        } as ConfirmQuestion<T>
+        } as PasswordQuestion<T>
     ];
+
+    const confirmCredentialStoragePrompt: ConfirmQuestion<T> = {
+        when: (answers: T) =>
+            !!(
+                connectionValidator.systemAuthType === 'basic' &&
+                authRequired &&
+                connectionValidator.validity.authenticated &&
+                answers[passwordPromptName]
+            ),
+        type: 'confirm',
+        name: storeCredentialsPromptName,
+        message: t('prompts.storeSystemCredentials.message'),
+        default: false,
+        guiOptions: {
+            breadcrumb: t('prompts.storeSystemCredentials.breadcrumb')
+        },
+        validate: async (storeCredentials: boolean): Promise<boolean> => {
+            if (PromptState.odataService.connectedSystem?.backendSystem) {
+                const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
+                PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
+                    newOrUpdated: storeCredentials
+                });
+            }
+            return true;
+        }
+    };
+
+    if (!isAppStudio()) {
+        credentialsPrompts.push(confirmCredentialStoragePrompt);
+    }
+    return credentialsPrompts;
 }
 
 /**

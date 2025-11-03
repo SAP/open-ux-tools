@@ -233,7 +233,7 @@ describe('Test system selection prompts', () => {
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(6);
+        expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('destinationServicePath');
         expect(systemConnectionQuestions[2].name).toBe('systemSelectionCli');
