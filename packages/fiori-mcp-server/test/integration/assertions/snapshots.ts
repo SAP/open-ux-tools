@@ -73,7 +73,6 @@ export async function validate(
  *
  * @param vars Promptfoo context variables.
  * @returns The project path string if available in passed variables.
- * ```
  */
 function getProjectPath(vars: Record<string, string | object>): string | undefined {
     return vars.PROJECT_PATH && typeof vars.PROJECT_PATH === 'string' ? vars.PROJECT_PATH : undefined;
