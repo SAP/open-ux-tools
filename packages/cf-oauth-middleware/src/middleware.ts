@@ -1,5 +1,7 @@
 import type { RequestHandler, Request, Response, NextFunction } from 'express';
+
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+
 import type { MiddlewareParameters } from './types';
 import type { CfOAuthMiddlewareConfig } from './types';
 import type { OAuthTokenManager } from './oauth-manager';
@@ -8,8 +10,8 @@ import { createManagerFromOAuthCredentials, createManagerFromCfAdpProject } from
 /**
  * UI5 middleware for adding OAuth2 Bearer tokens to requests for CF ADP projects.
  *
- * @param params input parameters for UI5 middleware.
- * @param params.options configuration options.
+ * @param {MiddlewareParameters<CfOAuthMiddlewareConfig>} params - Input parameters for UI5 middleware.
+ * @param {CfOAuthMiddlewareConfig} params.options - Configuration options.
  * @returns {Promise<RequestHandler>} Express middleware handler.
  */
 module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfig>): Promise<RequestHandler> => {

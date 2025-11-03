@@ -129,8 +129,8 @@ export class AdpPreview {
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
      *
-     * @param descriptorVariant descriptor variant from the project
-     * @returns the UI5 flex layer for which editing is enabled
+     * @param {DescriptorVariant} descriptorVariant - Descriptor variant from the project.
+     * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         if (this.config.useLocal) {

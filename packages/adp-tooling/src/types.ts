@@ -1043,8 +1043,14 @@ export interface CfAdpWriterConfig {
         approuter: AppRouterType;
         businessService: string;
         businessSolutionName?: string;
-        serviceInstanceGuid?: string; // GUID of the business service instance
-        backendUrl?: string; // Backend URL from service keys endpoints.psmservice.url
+        /**
+         * GUID of the business service instance.
+         */
+        serviceInstanceGuid?: string;
+        /**
+         * Backend URL from service instance keys.
+         */
+        backendUrl?: string;
     };
     project: {
         name: string;

@@ -26,6 +26,32 @@ export function getAppHostIds(credentials: CfCredentials[]): string[] {
 }
 
 /**
+ * Extracts the backend URL from service key credentials. Iterates through all endpoint keys to find the first endpoint with a URL.
+ *
+ * @param {CfCredentials[]} credentials - The credentials from service keys.
+ * @returns {string | undefined} The backend URL or undefined if not found.
+ */
+export function getBackendUrlFromCredentials(credentials: CfCredentials[]): string | undefined {
+    if (!credentials || credentials.length === 0) {
+        return undefined;
+    }
+
+    const endpoints = credentials[0]?.endpoints as Record<string, { url?: string }> | undefined;
+    if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
+        for (const key in endpoints) {
+            if (Object.prototype.hasOwnProperty.call(endpoints, key)) {
+                const endpoint = endpoints[key] as { url?: string } | undefined;
+                if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
+                    return endpoint.url;
+                }
+            }
+        }
+    }
+
+    return undefined;
+}
+
+/**
  * Discover apps from FDC API based on credentials.
  *
  * @param {CfCredentials[]} credentials - The credentials containing app host IDs

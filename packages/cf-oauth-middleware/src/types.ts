@@ -1,5 +1,5 @@
 /**
- * Configuration for CF OAuth middleware.
+ * Configuration for Cloud Foundry OAuth middleware.
  */
 export interface CfOAuthMiddlewareConfig {
     /**
