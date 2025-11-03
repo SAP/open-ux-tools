@@ -31,9 +31,9 @@ describe('Test utils - Deploy', () => {
 
     it('Validate isMTAInstalled with missing mta', () => {
         hasbinSyncMock.mockReturnValue(false);
-        expect(isMTAInstalled('cf', '')).toEqual(' ');
+        expect(isMTAInstalled('cf', '')).toEqual('errors.noBinary');
         expect(isMTAInstalled('InvalidParam', '')).toEqual(true);
-        expect(isMTAInstalled('abap', '')).toEqual(' ');
+        expect(isMTAInstalled('abap', '')).toEqual('errors.noBinary');
     });
 
     it('Validate isMTAInstalled with installed mta', () => {
