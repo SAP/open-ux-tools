@@ -2,6 +2,7 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
+import { AlertOutlineIcon } from '../AlertOutlineIcon';
 
 import '../../../../styles/SystemMain.scss';
 
@@ -12,6 +13,9 @@ interface BasicAuthCredsProps {
     setPassword: (password: string) => void;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
 }
+
+const helpURL =
+    'https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/78a82b6852ce4061ba0825afdb79cda6.html?locale=en-US';
 
 /**
  * Renders the basic authentication credentials input fields.
@@ -60,6 +64,13 @@ export function BasicAuthCreds({
                         setIsDetailsUpdated(true);
                     }}
                 />
+                <div className="store-warning-text">
+                    <AlertOutlineIcon />
+                    {t('warnings.passwordStoreWarning')}
+                    <a href={helpURL} rel="noopener noreferrer" className="store-warning-link">
+                        {t('buttons.learnMore')}
+                    </a>
+                </div>
             </div>
         </div>
     );
