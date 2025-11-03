@@ -54,4 +54,4 @@ export { getFilesystemWatcherFor } from './data-access';
 export { ServiceOptions };
 export { Entity };
 export { SystemType, getBackendSystemType } from './utils';
-export { getFioriToolsDirectory, FioriToolsSettings } from './utils';
+export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils';
