@@ -28,5 +28,13 @@ describe('<BasicAuthCred />', () => {
         expect(setIsDetailsUpdated).toHaveBeenCalled();
         expect(setUsername).toHaveBeenCalledWith('input-value');
         expect(setPassword).toHaveBeenCalledWith('input-value');
+
+        expect(
+            screen.getByText(
+                "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+            )
+        ).toBeInTheDocument();
+        expect(document.querySelector('.status-icon')).toBeInTheDocument();
+        expect(screen.getByText('Learn more...')).toBeInTheDocument();
     });
 });
