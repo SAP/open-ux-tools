@@ -250,7 +250,7 @@ export async function createSystemChoices(
             return {
                 name: getBackendSystemDisplayName(system),
                 value: {
-                    system: system,
+                    system,
                     type: 'backendSystem'
                 } as SystemSelectionAnswerType
             };
