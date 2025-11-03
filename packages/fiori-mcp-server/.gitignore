@@ -1,5 +1,5 @@
 dist
 data
 reports
-test/integration/test-data/copy
+test/test-data/copy
 test/integration/logs
