@@ -32,6 +32,7 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableOPVariantManagementInTable.click();
 
             await editor.toolbar.saveAndReloadButton.click();
@@ -58,6 +59,12 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
                     }
                 ]
             });
+
+            await editor.quickActions.checkQADisabled('Enable Variant Management in Tables');
+            await editor.quickActions.checkDisabledButtonTitle(
+                'Enable Variant Management in Tables',
+                `This option has been disabled because variant management is already enabled for the ''Table Section' table'`
+            );
         }
     );
 });

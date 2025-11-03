@@ -34,6 +34,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableEmptyRowMode.click();
             await editor.toolbar.saveAndReloadButton.click();
             await editor.toolbar.isDisabled();
@@ -75,6 +76,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.clickOnGoButton();
             await lr.clickOnTableNthRow(0);
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableActions.click();
             await tableSettings.expectItemsToBeVisible([
                 'SearchField - fiori.elements.v2.0::sap.suite.ui.generic.template.ObjectPage.view.Details::RootEntity--toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection::Table::Toolbar::SearchField',
@@ -114,6 +116,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             if (satisfies(ui5Version, '~1.71.0')) {
                 await page.waitForTimeout(1000);
             }
@@ -174,7 +177,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
-
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableAction.click();
 
             await dialog.fillField('Fragment Name', 'op-table-action');
@@ -222,6 +225,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableColumns.click();
             await tableSettings.expectItemsToBeVisible(['String Property', 'Date Property']);
         }
@@ -246,7 +250,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.reloadCompleted();
-
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableColumn.click();
 
             await dialog.fillField('Column Fragment Name', 'table-column');
@@ -336,7 +340,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addHeaderField.click();
 
             await dialog.fillField('Fragment Name', 'op-header-field');
@@ -381,7 +385,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
         await lr.clickOnTableNthRow(0);
 
         await editor.toolbar.uiAdaptationModeButton.click();
-
+        await editor.quickActions.waitForObjectPageQuickActionLoaded();
         await editor.quickActions.addCustomSection.click();
 
         await dialog.fillField('Fragment Name', 'op-section');

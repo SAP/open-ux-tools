@@ -119,7 +119,8 @@ export default class ManualTestCaseReporter implements Reporter {
             /^Create context$/,
             /^Create page$/,
             /^Navigate to "\/adaptation-editor\.html\?fiori-tools-rta-mode=true"$/,
-            /locator\('iframe\[title="Application Preview"\]'\)/
+            /locator\('iframe\[title="Application Preview"\]'\)/,
+            /^Wait for selector getByText/
         ];
 
         const shouldSkip = skipPatterns.some((pattern) => pattern.test(step.title));

@@ -364,6 +364,35 @@ class QuickActionPanel {
     get addSubPage(): Locator {
         return this.getButtonLocator('Add Subpage');
     }
+    /**
+     * Waits for the Object Page Quick Action panel to be loaded.
+     */
+    async waitForObjectPageQuickActionLoaded(): Promise<void> {
+        await this.page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true }).waitFor({ state: 'visible' });
+    }
+
+    /**
+     * Checks if a quick action button is disabled.
+     * @param buttonName - Name of the button to check.
+     * @returns Promise that resolves when the assertion passes.
+     *
+     */
+    async checkQADisabled(buttonName: string): Promise<void> {
+        const button = this.getButtonLocator(buttonName);
+        await expect(button, `Check \`${buttonName}\` quick action is disabled`).toBeDisabled();
+    }
+
+    /**
+     * Checks the title of a disabled button.
+     * @param buttonName - Name of the button to check.
+     * @param expectedTitle - Expected title of the disabled button.
+     * @returns Promise that resolves when the assertion passes.
+     */
+    async checkDisabledButtonTitle(buttonName: string, expectedTitle: string): Promise<void> {
+        const button = this.getButtonLocator(buttonName);
+        const title = await button.getAttribute('title');
+        expect(title, `Check disabled button title is \`${title}\``).toBe(expectedTitle);
+    }
 
     /**
      * Constructor for QuickActionPanel.

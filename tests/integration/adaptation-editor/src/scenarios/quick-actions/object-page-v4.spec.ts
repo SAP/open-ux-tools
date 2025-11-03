@@ -27,7 +27,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
 
             await editor.toolbar.uiAdaptationModeButton.click();
             // wait until the quick actions label is rendered in the preview
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableColumn.click();
 
             await previewFrame.getByRole('textbox', { name: 'Fragment Name' }).fill('table-column');
@@ -92,7 +92,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableOPVariantManagementInTable.click();
 
             await editor.toolbar.saveAndReloadButton.click();
@@ -113,7 +113,11 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
-            // TODO: Check QA state disabled and check the message to be "'This option has been disabled because variant management is already enabled for tables and charts'"
+            await editor.quickActions.checkQADisabled('Enable Variant Management in Tables');
+            await editor.quickActions.checkDisabledButtonTitle(
+                'Enable Variant Management in Tables',
+                `This option has been disabled because variant management is already enabled for tables and charts`
+            );
         }
     );
     test(
@@ -133,7 +137,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableEmptyRowMode.click();
             await editor.toolbar.saveAndReloadButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
@@ -155,7 +159,11 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                 ]
             });
 
-            // TODO check the button disabled state and the message
+            await editor.quickActions.checkQADisabled('Enable Empty Row Mode for Tables');
+            await editor.quickActions.checkDisabledButtonTitle(
+                'Enable Empty Row Mode for Tables',
+                `This option has been disabled because empty row mode is already enabled for this table`
+            );
         }
     );
     test(
@@ -176,7 +184,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableActions.click();
             await tableSettings.expectItemsToBeVisible(['Basic Search', 'Approve', 'Callback', 'Delete']);
 
@@ -210,8 +218,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
-            // await page.waitForTimeout(3000); // wait for the quick actions to be ready
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addSubPage.click();
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
@@ -242,6 +249,12 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
+
+            await editor.quickActions.checkQADisabled('Add Subpage');
+            await editor.quickActions.checkDisabledButtonTitle(
+                'Add Subpage',
+                `This option has been disabled because there are no subpages to add`
+            );
         }
     );
 });
