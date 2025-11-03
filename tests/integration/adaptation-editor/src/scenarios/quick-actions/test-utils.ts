@@ -373,9 +373,9 @@ class QuickActionPanel {
 
     /**
      * Checks if a quick action button is disabled.
+     *
      * @param buttonName - Name of the button to check.
      * @returns Promise that resolves when the assertion passes.
-     *
      */
     async checkQADisabled(buttonName: string): Promise<void> {
         const button = this.getButtonLocator(buttonName);
@@ -384,6 +384,7 @@ class QuickActionPanel {
 
     /**
      * Checks the title of a disabled button.
+     *
      * @param buttonName - Name of the button to check.
      * @param expectedTitle - Expected title of the disabled button.
      * @returns Promise that resolves when the assertion passes.
