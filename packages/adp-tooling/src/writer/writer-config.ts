@@ -200,7 +200,8 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
             businessService: params.cfServicesAnswers.businessService ?? '',
             businessSolutionName: params.cfServicesAnswers.businessSolutionName,
             serviceInstanceGuid: params.serviceInstanceGuid,
-            backendUrl: params.backendUrl
+            backendUrl: params.backendUrl,
+            oauthPaths: params.oauthPaths
         },
         project: {
             name: params.attributeAnswers.projectName,

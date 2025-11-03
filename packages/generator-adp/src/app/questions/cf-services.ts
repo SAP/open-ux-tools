@@ -21,8 +21,10 @@ import {
     validateSmartTemplateApplication,
     validateODataEndpoints,
     getBusinessServiceKeys,
-    getBackendUrlFromCredentials
+    getBackendUrlFromCredentials,
+    getOAuthPathsFromXsApp
 } from '@sap-ux/adp-tooling';
+import type { HTML5Content } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -69,6 +71,10 @@ export class CFServicesPrompter {
      * The manifest.
      */
     private appManifest: Manifest | undefined;
+    /**
+     * The zip entries from the downloaded app content.
+     */
+    private appContentEntries: HTML5Content['entries'] | undefined;
 
     /**
      * Returns the loaded application manifest.
@@ -105,6 +111,18 @@ export class CFServicesPrompter {
     public get backendUrl(): string | undefined {
         const credentials = this.businessServiceKeys?.credentials ?? [];
         return getBackendUrlFromCredentials(credentials);
+    }
+
+    /**
+     * Returns the OAuth paths extracted from xs-app.json routes that have an endpoint property.
+     *
+     * @returns {string[]} Array of path patterns that should receive OAuth Bearer tokens.
+     */
+    public get oauthPaths(): string[] {
+        if (!this.appContentEntries) {
+            return [];
+        }
+        return getOAuthPathsFromXsApp(this.appContentEntries);
     }
 
     /**
@@ -256,6 +274,7 @@ export class CFServicesPrompter {
                     );
                     this.appManifest = manifest;
                     this.html5RepoServiceInstanceGuid = serviceInstanceGuid;
+                    this.appContentEntries = entries;
 
                     await validateSmartTemplateApplication(manifest);
                     await validateODataEndpoints(entries, this.businessServiceKeys!.credentials, this.logger);

@@ -3,10 +3,10 @@
  */
 export interface CfOAuthMiddlewareConfig {
     /**
-     * Path prefix to match requests (e.g., '/odata')
-     * Only requests starting with this path will get Bearer tokens.
+     * Path prefixes to match requests (e.g., ['/odata/v4', '/odata/v2']).
+     * Only requests starting with these paths will get Bearer tokens.
      */
-    path?: string;
+    paths?: string[];
     /**
      * Manual OAuth credentials (optional).
      * If not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.

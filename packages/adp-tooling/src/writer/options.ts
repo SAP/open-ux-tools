@@ -377,30 +377,41 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
         url: UI5_CDN_URL
     };
 
-    const backendConfig: FioriToolsProxyConfigBackend[] = [];
-    if (config.cf.backendUrl) {
-        backendConfig.push({
-            path: '/odata',
-            url: config.cf.backendUrl
-        });
-    }
-
-    ui5Config.addCustomMiddleware([
-        {
-            name: 'cf-oauth-middleware',
-            afterMiddleware: 'compression',
-            configuration: {
-                path: '/odata'
-            }
+    const oauthPaths = config.cf.oauthPaths && config.cf.oauthPaths.length > 0 ? config.cf.oauthPaths : [];
+    if (oauthPaths.length > 0) {
+        const backendConfig: FioriToolsProxyConfigBackend[] = [];
+        if (config.cf.backendUrl) {
+            backendConfig.push({
+                path: '/odata',
+                url: config.cf.backendUrl
+            });
         }
-    ]);
-    ui5Config.addFioriToolsProxyMiddleware(
-        {
-            ui5: ui5ConfigOptions,
-            backend: backendConfig
-        },
-        'cf-oauth-middleware'
-    );
+
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'cf-oauth-middleware',
+                afterMiddleware: 'compression',
+                configuration: {
+                    paths: oauthPaths
+                }
+            }
+        ]);
+        ui5Config.addFioriToolsProxyMiddleware(
+            {
+                ui5: ui5ConfigOptions,
+                backend: backendConfig
+            },
+            'cf-oauth-middleware'
+        );
+    } else {
+        ui5Config.addFioriToolsProxyMiddleware(
+            {
+                ui5: ui5ConfigOptions,
+                backend: []
+            },
+            'compression'
+        );
+    }
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-preview',

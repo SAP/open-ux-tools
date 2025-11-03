@@ -1,8 +1,11 @@
+import type AdmZip from 'adm-zip';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
 import { getFDCApps } from '../services/api';
-import type { CfConfig, CFApp, CfCredentials } from '../../types';
+import { extractXSApp } from '../utils/validation';
+import type { CfConfig, CFApp, CfCredentials, XsApp } from '../../types';
 
 /**
  * Get the app host ids.
@@ -49,6 +52,43 @@ export function getBackendUrlFromCredentials(credentials: CfCredentials[]): stri
     }
 
     return undefined;
+}
+
+/**
+ * Extracts OAuth paths from xs-app.json routes that have an endpoint property.
+ * These paths should receive OAuth Bearer tokens in the middleware.
+ *
+ * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries containing xs-app.json.
+ * @returns {string[]} Array of path patterns (from route.source) that have an endpoint property.
+ */
+export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[] {
+    const xsApp: XsApp | undefined = extractXSApp(zipEntries);
+    if (!xsApp?.routes) {
+        return [];
+    }
+
+    const pathsSet = new Set<string>();
+    for (const route of xsApp.routes) {
+        if (route.service === 'html5-apps-repo-rt' || !route.source) {
+            continue;
+        }
+
+        let path = route.source;
+        // Remove leading ^ and trailing $
+        path = path.replace(/^\^/, '').replace(/\$$/, '');
+        // Remove capture groups like (.*) or $1
+        path = path.replace(/\([^)]*\)/g, '');
+        // Remove regex quantifiers
+        path = path.replace(/\$\d+/g, '');
+        // Clean up any remaining regex characters at the end
+        path = path.replace(/\/?\*$/, '');
+
+        if (path) {
+            pathsSet.add(path);
+        }
+    }
+
+    return Array.from(pathsSet);
 }
 
 /**

@@ -1051,6 +1051,10 @@ export interface CfAdpWriterConfig {
          * Backend URL from service instance keys.
          */
         backendUrl?: string;
+        /**
+         * OAuth paths extracted from xs-app.json routes that have an endpoint property.
+         */
+        oauthPaths?: string[];
     };
     project: {
         name: string;
@@ -1082,6 +1086,7 @@ export interface CreateCfConfigParams {
     html5RepoRuntimeGuid: string;
     serviceInstanceGuid?: string;
     backendUrl?: string;
+    oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;

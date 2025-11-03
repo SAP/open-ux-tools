@@ -21,7 +21,12 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
     });
 
     const config = options.configuration || {};
-    const path = config.path || '/odata';
+
+    let paths: string[] = [];
+    if (config.paths && Array.isArray(config.paths) && config.paths.length > 0) {
+        paths = config.paths;
+    }
+
     let tokenManager: OAuthTokenManager | null = null;
 
     if (config.credentials) {
@@ -42,15 +47,19 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
         }
     }
 
-    logger.debug(`CF OAuth middleware options: ${JSON.stringify({ path, hasTokenManager: !!tokenManager })}`);
+    logger.debug(`CF OAuth middleware options: ${JSON.stringify({ paths, hasTokenManager: !!tokenManager })}`);
+    if (paths.length === 0) {
+        logger.warn('CF OAuth middleware has no paths configured. Middleware will be inactive.');
+    }
 
     return async (req: Request, res: Response, next: NextFunction) => {
-        if (!tokenManager) {
+        if (!tokenManager || paths.length === 0) {
             next();
             return;
         }
 
-        if (!req.url.startsWith(path)) {
+        const shouldAddToken = paths.some((path) => req.url.startsWith(path));
+        if (!shouldAddToken) {
             next();
             return;
         }
