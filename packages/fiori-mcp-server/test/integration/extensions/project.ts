@@ -121,6 +121,14 @@ function getProjectOriginalPath(name: ProjectName): string {
  * @param setupFiles Array of setup files to copy over the base project files.
  */
 async function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFiles[] = []): Promise<void> {
+    // Remove the copied project from the previous test run — it may contain new files not present in the original project.
+    if (existsSync(dest)) {
+        try {
+            await fs.rm(dest, { recursive: true, force: true });
+        } catch (e) {
+            console.log(e);
+        }
+    }
     // Copy whole project
     await copyFolder(source, dest);
     // Overwrite files with passed setup files
