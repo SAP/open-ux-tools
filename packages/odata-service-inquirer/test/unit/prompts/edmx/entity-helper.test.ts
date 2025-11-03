@@ -17,6 +17,7 @@ describe('Test entity helper functions', () => {
     let metadataV4WithDraftEntities: string;
     let metadataV2WithDraftRoot: string;
     let metadataV4WithHierarchyRecursiveHierarchy: string;
+    let metadataV4WithHierarchyAndCompleteAnalyticalTransformations: string;
 
     beforeAll(async () => {
         metadataV4WithAggregateTransforms = await readFile(
@@ -35,6 +36,10 @@ describe('Test entity helper functions', () => {
         metadataV2WithDraftRoot = await readFile(join(__dirname, '../test-data/metadataV2WithDraftRoot.xml'), 'utf8');
         metadataV4WithHierarchyRecursiveHierarchy = await readFile(
             join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
+            'utf8'
+        );
+        metadataV4WithHierarchyAndCompleteAnalyticalTransformations = await readFile(
+            join(__dirname, '../test-data/metadataV4WithHierarchyAndCompleteAnalyticalTransformations.xml'),
             'utf8'
         );
     });
@@ -502,6 +507,24 @@ describe('Test entity helper functions', () => {
             expect(result).toBe('AnalyticalTable');
         });
 
+        test('should prioritize complete analytical transformations over hierarchy using real metadata', () => {
+            // Integration test using the actual metadataV4WithHierarchyAndCompleteAnalyticalTransformations.xml file
+            // This entity has both recursive hierarchy AND complete analytical transformations (all 8 transformations)
+            // Since analytical transformations are complete, AnalyticalTable should be used over TreeTable
+            const parsedEdmx = parse(metadataV4WithHierarchyAndCompleteAnalyticalTransformations);
+            const convertedMetadata = convert(parsedEdmx);
+
+            const result = getDefaultTableType(
+                'lrop',
+                convertedMetadata,
+                OdataVersion.v4,
+                false,
+                'P_SADL_HIER_UUID_D_COMPNY_ROOT'
+            );
+            // When both analytical and hierarchical data are present with complete transformations, prefer AnalyticalTable
+            expect(result).toBe('AnalyticalTable');
+        });
+
         it('should return AnalyticalTable for CAP services with ApplySupported annotation', () => {
             const mockMetadata: any = {
                 entitySets: [
@@ -918,6 +941,71 @@ describe('Test entity helper functions', () => {
             const qualifier = getRecursiveHierarchyQualifier(convertedMetadata, 'NonExistentEntity');
 
             expect(qualifier).toBeUndefined();
+        });
+    });
+
+    describe('Error handling for unparseable metadata', () => {
+        test('should handle unparseable OData version gracefully', () => {
+            const invalidEdmx = `<?xml version="1.0" encoding="utf-8"?>
+                <edmx:Edmx Version="invalid" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                    <edmx:DataServices>
+                        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                            <EntityContainer Name="Container">
+                                <EntitySet Name="TestEntity" EntityType="TestService.TestEntity" />
+                            </EntityContainer>
+                            <EntityType Name="TestEntity">
+                                <Key>
+                                    <PropertyRef Name="ID" />
+                                </Key>
+                                <Property Name="ID" Type="Edm.String" />
+                            </EntityType>
+                        </Schema>
+                    </edmx:DataServices>
+                </edmx:Edmx>`;
+
+            const result = getEntityChoices(invalidEdmx);
+
+            // Should not throw, but should return empty/undefined metadata
+            expect(result.convertedMetadata).toBeUndefined();
+            expect(result.odataVersion).toBeUndefined();
+            expect(result.choices).toEqual([]);
+        });
+
+        test('should handle completely invalid EDMX gracefully', () => {
+            const invalidEdmx = 'This is not valid XML at all';
+
+            const result = getEntityChoices(invalidEdmx);
+
+            // Should not throw, but should return empty/undefined metadata
+            expect(result.convertedMetadata).toBeUndefined();
+            expect(result.odataVersion).toBeUndefined();
+            expect(result.choices).toEqual([]);
+        });
+
+        test('should handle missing OData version in metadata', () => {
+            const noVersionEdmx = `<?xml version="1.0" encoding="utf-8"?>
+                <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                    <edmx:DataServices>
+                        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                            <EntityContainer Name="Container">
+                                <EntitySet Name="TestEntity" EntityType="TestService.TestEntity" />
+                            </EntityContainer>
+                            <EntityType Name="TestEntity">
+                                <Key>
+                                    <PropertyRef Name="ID" />
+                                </Key>
+                                <Property Name="ID" Type="Edm.String" />
+                            </EntityType>
+                        </Schema>
+                    </edmx:DataServices>
+                </edmx:Edmx>`;
+
+            const result = getEntityChoices(noVersionEdmx);
+
+            // Should not throw, but should return empty/undefined metadata
+            expect(result.convertedMetadata).toBeUndefined();
+            expect(result.odataVersion).toBeUndefined();
+            expect(result.choices).toEqual([]);
         });
     });
 });

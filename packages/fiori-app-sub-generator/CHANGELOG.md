@@ -1,5 +1,21 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.56
+
+### Patch Changes
+
+-   10a3b57: Adds a system store warning to password input, add new prompt (default false) whether to store the credentials for new system / existing system on reauth and a relevant breadcrumb.
+-   Updated dependencies [10a3b57]
+    -   @sap-ux/odata-service-inquirer@2.11.0
+
+## 0.7.55
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/odata-service-inquirer@2.10.0
+    -   @sap-ux/ui5-application-inquirer@0.15.31
+
 ## 0.7.54
 
 ### Patch Changes
