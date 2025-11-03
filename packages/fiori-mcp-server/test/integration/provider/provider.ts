@@ -220,7 +220,7 @@ export default class AICoreApiProvider implements ApiProvider {
         // Make first call to AI
         let response = await client.invoke(messages);
         // Limit tool calls to 10 to prevent potential infinite loops
-        let maxToolCalls = 10;
+        const maxToolCalls = 10;
         let toolCallIndex = 0;
         // Resolve tool calls
         while (response.tool_calls?.length && toolCallIndex < maxToolCalls) {
