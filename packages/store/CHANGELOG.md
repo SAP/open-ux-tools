@@ -1,5 +1,29 @@
 # @sap-ux/store
 
+## 1.3.2
+
+### Patch Changes
+
+-   cc65eec: adds new vscode sap systems extension
+
+## 1.3.1
+
+### Patch Changes
+
+-   ae8dbc6: correction for merging systems added to legacy path
+
+## 1.3.0
+
+### Minor Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+
+## 1.2.1
+
+### Patch Changes
+
+-   f8c596d: Reverts removal of @sensitiveData for service keys property of backend systems
+
 ## 1.2.0
 
 ### Minor Changes

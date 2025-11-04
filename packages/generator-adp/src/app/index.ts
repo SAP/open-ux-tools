@@ -27,10 +27,12 @@ import {
     isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
+import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { EventName } from '../telemetryEvents';
@@ -63,7 +65,6 @@ import {
     type AttributePromptOptions,
     type JsonInput
 } from './types';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 
 const generatorTitle = 'Adaptation Project';
@@ -166,13 +167,13 @@ export default class extends Generator {
      */
     private cfServicesAnswers: CfServicesAnswers;
     /**
-     * Indicates if the extension is installed.
-     */
-    private readonly isExtensionInstalled: boolean;
-    /**
      * Indicates if CF is installed.
      */
     private cfInstalled: boolean;
+    /**
+     * Indicates if the CF feature is enabled.
+     */
+    private readonly isCfFeatureEnabled: boolean;
 
     /**
      * Creates an instance of the generator.
@@ -190,12 +191,17 @@ export default class extends Generator {
         this.options = opts;
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
-        this.isExtensionInstalled = isInternalFeaturesSettingEnabled()
-            ? isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext')
-            : false;
+
+        this.isCfFeatureEnabled = isFeatureEnabled('sap.ux.appGenerator.testBetaFeatures.adpCfExperimental');
+        this.logger.debug(`isCfFeatureEnabled: ${this.isCfFeatureEnabled}`);
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
+
+        // Force the generator to overwrite existing files without additional prompting
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
 
         if (!this.jsonInput) {
             this.env.lookup({
@@ -228,7 +234,7 @@ export default class extends Generator {
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
         if (!this.jsonInput) {
-            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isExtensionInstalled;
+            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isCfFeatureEnabled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
@@ -446,7 +452,7 @@ export default class extends Generator {
      * Sets the target environment and updates related state accordingly.
      */
     private async _determineTargetEnv(): Promise<void> {
-        const hasRequiredExtensions = this.isExtensionInstalled && this.cfInstalled;
+        const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
 
         if (isAppStudio() && hasRequiredExtensions) {
             await this._promptForTargetEnvironment();

@@ -37,15 +37,18 @@ import {
     WebIDEUsage,
     WebIDEAdditionalData,
     getCredentialsForDestinationService,
-    isAppStudio
+    isAppStudio,
+    isFullUrlDestination
 } from '@sap-ux/btp-utils';
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     listDestinations: jest.fn(),
+    isFullUrlDestination: jest.fn(),
     getCredentialsForDestinationService: jest.fn(),
     isAppStudio: jest.fn()
 }));
 const mockListDestinations = listDestinations as jest.Mock;
+const mockIsFullUrlDestination = isFullUrlDestination as jest.Mock;
 const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
@@ -62,6 +65,11 @@ describe('proxy', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockListDestinations.mockReset();
+        mockIsFullUrlDestination.mockReset();
+        mockGetCredentialsForDestinationService.mockReset();
+        mockIsAppStudio.mockReset();
+        mockPrompt.mockReset();
     });
 
     describe('PathRewriters', () => {
@@ -110,7 +118,9 @@ describe('proxy', () => {
                     originalUrl: '/old/my/bsp/test?sap-client=000'
                 } as EnhancedIncomingMessage)
             ).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe(
+                '/test?sap-client=012'
+            ); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
             expect(
                 writerChain!('/bsp/manifest.appdescr', {
                     originalUrl: '/my/bsp/manifest.appdescr'
@@ -254,6 +264,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
@@ -271,6 +282,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
 
@@ -316,7 +328,7 @@ describe('proxy', () => {
             mockCreateForAbapOnCloud.mockImplementationOnce(() => {
                 return {
                     cookies: '~cookies',
-                    getAtoInfo: jest.fn()
+                    getAtoInfo: jest.fn().mockReturnValue({})
                 };
             });
 
@@ -341,6 +353,7 @@ describe('proxy', () => {
                 refreshToken: cloudSystem.refreshToken,
                 refreshTokenChangedCb: callback
             });
+            expect(proxyOptions.headers.cookie).toBe('~cookies');
         });
 
         test('user/password authentication', async () => {
@@ -389,7 +402,6 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
-
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -426,8 +438,11 @@ describe('proxy', () => {
                 path: '/my/path'
             };
             mockListDestinations.mockResolvedValueOnce({
-                [backend.destination]: {}
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap',
+                }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(false);
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
@@ -454,6 +469,30 @@ describe('proxy', () => {
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
+        });
+
+        test('generate proxy middleware inside of BAS with minimal parameters (destination with full url)', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: DestinationBackendConfig = {
+                destination: '~destination',
+                path: '/my/path'
+            };
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/my/other/path',
+                }
+            });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
+            expect(options.changeOrigin).toBe(true);
+            expect(options.agent).toBeUndefined();
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+            expect((options.pathRewrite as Function)('/my/other/path/to/chicken', {})).toBe('/to/chicken');
         });
 
         test('generate proxy middleware options for FLP Embedded flow', async () => {
@@ -505,7 +544,7 @@ describe('proxy', () => {
                     ...jest.requireActual('@sap-ux/logger'),
                     ToolsLogger: jest.fn().mockImplementation(() => ({
                         debug: debugSpy,
-                        info: jest.fn(),
+                        info: jest.fn()
                     }))
                 };
             });

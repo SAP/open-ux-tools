@@ -23,7 +23,6 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -74,7 +73,7 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => systemServiceMock)
+    getService: jest.fn().mockImplementation(() => systemServiceMock)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -358,7 +357,7 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(4);
+        expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('systemSelectionCli');
         expect(systemConnectionQuestions[2].name).toBe('systemSelection:systemUsername');

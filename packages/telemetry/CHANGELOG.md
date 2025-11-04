@@ -1,5 +1,58 @@
 # @sap-ux/telemetry
 
+## 0.6.36
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+    -   @sap-ux/ui5-config@0.29.8
+
+## 0.6.35
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+    -   @sap-ux/ui5-config@0.29.8
+
+## 0.6.34
+
+### Patch Changes
+
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+    -   @sap-ux/ui5-config@0.29.8
+
+## 0.6.33
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+
+## 0.6.32
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+
+## 0.6.31
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+
+## 0.6.30
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/ui5-config@0.29.8
+
 ## 0.6.29
 
 ### Patch Changes

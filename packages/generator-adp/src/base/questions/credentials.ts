@@ -74,7 +74,7 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
                 };
 
                 const abapProvider = await getConfiguredProvider(options, logger);
-                await getSystemUI5Version(abapProvider);
+                await getSystemUI5Version(abapProvider, logger);
 
                 return true;
             } catch (e) {
