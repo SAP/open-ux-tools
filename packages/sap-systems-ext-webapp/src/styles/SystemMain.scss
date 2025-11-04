@@ -63,3 +63,25 @@
 .mandatory-asterisk {
     color: #ff5252;
 }
+
+.store-warning-text {
+    padding-top: 4px;
+    font-size: 12px;
+    color: var(--vscode-editorWarning-foreground);
+
+    .status-icon {
+        vertical-align: middle;
+        padding-right: 4px;
+    }
+
+    .store-warning-link {
+        margin-left: 8px;
+        color: var(--vscode-textLink-foreground);
+        text-decoration: none;
+
+        &:hover {
+            color: var(--vscode-textLink-activeForeground);
+            text-decoration: underline;
+        }
+    }
+}

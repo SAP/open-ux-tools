@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.0
+
+### Minor Changes
+
+-   10a3b57: Adds a system store warning to password input, add new prompt (default false) whether to store the credentials for new system / existing system on reauth and a relevant breadcrumb.
+
+## 2.10.0
+
+### Minor Changes
+
+-   4ddcff3: Add a message for the Tree table default. Move and export shouldUseAnalyticalTable() for use in other repos.
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
 ## 2.9.14
 
 ### Patch Changes

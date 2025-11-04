@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.23.44
+
+### Patch Changes
+
+-   a0c3b6c: feat: add log messages for viewCache redirect
+
+## 0.23.43
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.5
+
 ## 0.23.42
 
 ### Patch Changes
