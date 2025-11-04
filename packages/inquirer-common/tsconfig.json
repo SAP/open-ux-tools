@@ -25,6 +25,9 @@
       "path": "../logger"
     },
     {
+      "path": "../odata-service-writer"
+    },
+    {
       "path": "../telemetry"
     },
     {

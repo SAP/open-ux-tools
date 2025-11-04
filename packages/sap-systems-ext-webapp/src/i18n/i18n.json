@@ -1,0 +1,52 @@
+{
+    "labels": {
+        "name": "System Name",
+        "type": "System Type",
+        "authenticationType": "Authentication Type",
+        "url": "URL",
+        "client": "Client",
+        "username": "Username",
+        "password": "Password",
+        "reentranceTicket": "Reentrance Ticket",
+        "serviceKeys": "Service Keys"
+    },
+    "placeholders": {
+        "typeOptions": "Click to display the list of options."
+    },
+    "validations": {
+        "urlPathWarning": "The provided URL must not contain a path."
+    },
+    "titles": {
+        "sapSystemDetails": "SAP System Details",
+        "newSapSystem": "New SAP System",
+        "onPremSystem": "ABAP On Premise",
+        "btpSystem": "ABAP Environment on SAP Business Technology Platform"
+    },
+    "systemStatus": {
+        "infoLoading": "Loading System Information...",
+        "catalogCount": "The OData {{version}} catalog call returned {{count}} services.",
+        "catalogUnavailable": "The OData {{version}} catalog service is not available.",
+        "openOutputChannel": {
+            "forMoreInfo": "For more information, check the ",
+            "outputTab": "OUTPUT tab."
+        },
+        "increaseLogLevel": "For more information, you need to increase the log level to <b>Debug</b>."
+    },
+
+    "dialog": {
+        "titleConfirmSave": "Save Confirmation",
+        "subtextConfirmSave": "The SAP system has not been validated by testing the connection. Are you sure you want to save?",
+        "yes": "Yes",
+        "no": "No"
+    },
+    "buttons": {
+        "testConnection": "Test Connection",
+        "save": "Save",
+        "exportSystem": "Export System",
+        "createFioriApp": "Create SAP Fiori Application",
+        "learnMore": "Learn more..."
+    },
+    "warnings": {
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+    }
+}
