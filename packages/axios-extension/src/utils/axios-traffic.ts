@@ -31,6 +31,7 @@ interface MuabResponse {
 }
 
 function logAxiosTrafficInternal(logger: ToolsLogger, isGeneratorWorkflow: boolean = true) {
+    return;
     const prototype = Axios.prototype;
     const originalRequest = prototype.request;
     const muabConfigStream = fs.createWriteStream(TEMP_MUAB_CONFIG_PATH, { flags: 'w' });
