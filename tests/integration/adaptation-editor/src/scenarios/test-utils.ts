@@ -33,10 +33,11 @@ export const Selector = {
  * @param page - Page or FrameLocator to search within
  * @param name - Name of the button to locate
  * @param context - Context description for the button (e.g., 'Quick Actions Panel')
+ * @param exact - Whether to match the button name exactly (default is false)
  * @returns Locator for the button with added description
  */
-export function getButtonLocator(page: Page | FrameLocator, name: string, context: string): Locator {
-    return page.getByRole('button', { name }).describe(`\`${name}\` button in the ${context}`);
+export function getButtonLocator(page: Page | FrameLocator, name: string, context: string, exact = false): Locator {
+    return page.getByRole('button', { name, exact }).describe(`\`${name}\` button in the ${context}`);
 }
 
 /**
@@ -170,7 +171,7 @@ export class ListReport {
      */
     async checkControlLabel(label: string): Promise<void> {
         await test.step(`Check control's label is \`${label}\` in the \`${this.context}\``, async () => {
-            const value = await getButtonLocator(this.frame, label, this.context).innerText();
+            const value = await getButtonLocator(this.frame, label, this.context, true).innerText();
             expect(value).toStrictEqual(label);
         });
     }
@@ -1275,7 +1276,24 @@ class PropertiesPanel {
         await test.step(`Hover property \`${capitalizeWords(property)}\` to open tooltip in the ${
             this.context
         }`, async () => {
-            await this.page.getByTestId(`${property}--Label`).hover();
+            const labelLocator = this.page.getByTestId(`${property}--Label`);
+            const tooltipId = `${property}--PropertyTooltip--tooltip`;
+            const tooltipLocator = this.page.locator(`#${tooltipId}`);
+
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                await labelLocator.hover({ force: true });
+                try {
+                    await tooltipLocator.waitFor({ state: 'visible', timeout: 1000 });
+                    return;
+                } catch (e) {
+                    if (attempt === 3) {
+                        throw new Error(
+                            `Tooltip for property "${property}" did not become visible after ${3} attempts.`
+                        );
+                    }
+                    await this.page.waitForTimeout(200);
+                }
+            }
         });
     }
 
