@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.4
+
+### Patch Changes
+
+-   931505d: test config update
+
 ## 0.0.3
 
 ### Patch Changes
