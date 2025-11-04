@@ -249,7 +249,8 @@ jobs:
             - name: Prepare Slack notification message (extension release only)
               if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
               run: |
-                  echo "EXT_RELEASE_MESSAGE=:package: VSCode SAP Systems extension v${{ env.EXT_VERSION }} released." >> $GITHUB_ENV
+                  RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/sap-ux-sap-systems-ext@${{ env.EXT_VERSION }}"
+                  echo "EXT_RELEASE_MESSAGE=:package: VSCode SAP Systems extension v${{ env.EXT_VERSION }} released - <${RELEASE_URL}|View on GitHub>" >> $GITHUB_ENV
             - name: Send Slack notification (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
               uses: slackapi/slack-github-action@v1.26.0
@@ -259,7 +260,7 @@ jobs:
               env:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Send Slack notification (extension release)
-              if: steps.changesetPublish.outputs.published != 'true' && env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
               uses: slackapi/slack-github-action@v1.26.0
               with:
                   payload: |
