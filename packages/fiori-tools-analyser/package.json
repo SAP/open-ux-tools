@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-tools-analyser",
     "version": "0.1.0",
-    "description": "Analyse SAP Fiori applications to produce bill of materials telemetry data.",
+    "description": "Analyse SAP Fiori applications to produce bill of materials data.",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -33,7 +33,6 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*",
         "fast-glob": "3.3.1",
         "yaml": "2.3.3"
     },

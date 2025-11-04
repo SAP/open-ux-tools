@@ -1,4 +1,4 @@
-import type { AnalysisStatus, BillOfMaterialsSummary, TelemetryDimensions } from './shared';
+import type { AnalysisStatus, BillOfMaterialsSummary, UsageDimensions } from './shared';
 import type { ListReportAnalysis } from './list-report';
 import type { ObjectPageAnalysis } from './object-page';
 
@@ -18,6 +18,6 @@ export interface BillOfMaterials {
 export interface AnalysisResult {
     readonly status: AnalysisStatus;
     readonly billOfMaterials?: BillOfMaterials;
-    readonly telemetryDimensions?: TelemetryDimensions;
+    readonly usageDimensions?: UsageDimensions;
     readonly warnings?: readonly string[];
 }

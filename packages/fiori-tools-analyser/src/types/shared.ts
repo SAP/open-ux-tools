@@ -5,7 +5,7 @@ export interface AnalyseAppOptions {
     readonly templateId?: string;
 }
 
-export interface TelemetryDimensions {
+export interface UsageDimensions {
     readonly templateId: string;
     readonly templateVersion?: string;
     readonly deployTarget?: string;
