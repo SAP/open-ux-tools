@@ -978,7 +978,11 @@ class OutlinePanel {
     async checkOutlineNodeSelected(text: string): Promise<void> {
         await test.step(`Check \`${text}\` node is selected in the ${this.context}`, async () => {
             const node = this.page.locator('.app-panel-selected-bg').first();
-            expect(await node.textContent()).toBe(text);
+            await expect
+                .poll(async () => await node.textContent(), {
+                    timeout: 5000
+                })
+                .toBe(text);
             await expect(node).toBeVisible();
         });
     }
@@ -1228,8 +1232,11 @@ class PropertiesPanel {
         }`, async () => {
             const locator = this.page.getByTestId(`${propertyName}--StringEditor`);
             await expect(locator).toBeVisible();
-            const value = await locator.inputValue();
-            expect(value).toBe(expectedValue);
+            await expect
+                .poll(async () => await locator.inputValue(), {
+                    timeout: 5000 // optional: set max wait time in ms
+                })
+                .toBe(expectedValue);
         });
     }
 
