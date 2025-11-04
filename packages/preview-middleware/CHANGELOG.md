@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.45
+
+### Patch Changes
+
+-   e985618: feat(preview-middleware): enable card generator for CAP projects
+
 ## 0.23.44
 
 ### Patch Changes
