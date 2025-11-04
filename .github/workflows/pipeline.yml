@@ -212,7 +212,7 @@ jobs:
               id: detect_sap_systems_ext
               run: |
                   PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
-                  if echo "$PUBLISHED" | grep -q '^@sap-ux/sap-systems-ext$'; then
+                  if echo "$PUBLISHED" | grep -q '^sap-ux-sap-systems-ext$'; then
                     echo "SAP_SYSTEMS_EXT_CHANGED=true" >> $GITHUB_ENV
                   else
                     echo "SAP_SYSTEMS_EXT_CHANGED=false" >> $GITHUB_ENV
@@ -222,13 +222,13 @@ jobs:
               run: echo "EXT_VERSION=$(jq -r '.version' packages/sap-systems-ext/package.json)" >> $GITHUB_ENV
             - name: Package sap-systems-ext VSCode extension
               if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
-              run: pnpm --filter @sap-ux/sap-systems-ext ide-ext:package
+              run: pnpm --filter sap-ux-sap-systems-ext ide-ext:package
             - name: Create GitHub Release (sap-systems-ext)
               if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
               uses: softprops/action-gh-release@v1
               with:
-                  tag_name: sap-systems-ext@${{ env.EXT_VERSION }}
-                  name: sap-systems-ext v${{ env.EXT_VERSION }}
+                  tag_name: sap-ux-sap-systems-ext@${{ env.EXT_VERSION }}
+                  name: sap-ux-sap-systems-ext v${{ env.EXT_VERSION }}
                   body: 'VSCode SAP Systems extension v${{ env.EXT_VERSION }} release.'
                   draft: false
                   prerelease: false
