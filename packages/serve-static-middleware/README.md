@@ -1,4 +1,6 @@
-#  `@sap-ux/serve-static-middleware`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/serve-static-middleware/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/serve-static-middleware)
+
+# [`@sap-ux/serve-static-middleware`](https://github.com/SAP/open-ux-tools/tree/main/packages/serve-static-middleware)
 
 The `@sap-ux/serve-static-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for serving any static resources locally from your machine.
 
@@ -130,9 +132,3 @@ const serveStaticFn = serveStaticMiddleware(root, config);
 * Fiori elements
 * SAP UI5
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/serve-static-middleware/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/serve-static-middleware)

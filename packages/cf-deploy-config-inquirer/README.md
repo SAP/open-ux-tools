@@ -1,4 +1,6 @@
-# @sap-ux/cf-deploy-config-inquirer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/cf-deploy-config-inquirer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/cf-deploy-config-inquirer)
+
+# [`@sap-ux/cf-deploy-config-inquirer`](https://github.com/SAP/open-ux-tools/tree/main/packages/cf-deploy-config-inquirer)
 
 Prompts module that can provide prompts for Cloud Foundry deployment config writer.
 
@@ -63,9 +65,3 @@ Prompting
 Generator
 Deployment
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/cf-deploy-config-inquirer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/cf-deploy-config-inquirer)

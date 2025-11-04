@@ -1,4 +1,6 @@
-# @sap-ux/ui5-application-inquirer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-application-inquirer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-application-inquirer)
+
+# [`@sap-ux/ui5-application-inquirer`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-application-inquirer)
 
 Provides Inquirer based prompting to allow input and validation of data required to generate a UI5 application
 
@@ -78,9 +80,3 @@ Inquirer
 Prompting
 Generator
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-application-inquirer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-application-inquirer)

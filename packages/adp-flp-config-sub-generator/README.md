@@ -1,4 +1,6 @@
-# @sap-ux/adp-flp-config-sub-generator
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/adp-flp-config-sub-generator/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-flp-config-sub-generator)
+
+# [`@sap-ux/adp-flp-config-sub-generator`](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-flp-config-sub-generator)
 
 ## Features
 
@@ -19,9 +21,3 @@ SAP Fiori Elements
 Yeoman
 Generator
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/adp-flp-config-sub-generator/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-flp-config-sub-generator)

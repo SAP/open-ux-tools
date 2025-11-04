@@ -1,4 +1,6 @@
-# @sap-ux/odata-service-inquirer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-service-inquirer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-service-inquirer)
+
+# [`@sap-ux/odata-service-inquirer`](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-service-inquirer)
 
 Provides Inquirer based end-user prompting to allow selection of a service from multiple data source types. This involves acquiring a connection to backend systems and retrieving edmx metadata for services provided by the catalog, from a local file or CAP project. This module also provides prompts that may be used to gather user selections to define the main and navigation entities and related prompts relating to application layout and annotation generation when creating a UI5 application using the `@sap-ux/fiori-freestyle-writer` and `@sap-ux/fiori-elements-writer` modules.
 
@@ -83,9 +85,3 @@ Inquirer
 Prompting
 Generator
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-service-inquirer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-service-inquirer)

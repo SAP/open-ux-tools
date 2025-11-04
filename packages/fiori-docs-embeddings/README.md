@@ -1,4 +1,6 @@
-# @sap-ux/fiori-docs-embeddings
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-docs-embeddings/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings)
+
+# [`@sap-ux/fiori-docs-embeddings`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings)
 
 A Node.js package that indexes SAP Fiori related documentation from multiple sources and generates vector embeddings for semantic search capabilities.
 
@@ -82,9 +84,9 @@ The module indexes documentation from these sources by default:
 Generated data is organized as:
 ```
 data/
-├── docs/           # Parsed documentation files
-├── embeddings/     # Vector database (LanceDB)
-└── search/         # Search indexes
+â”œâ”€â”€ docs/           # Parsed documentation files
+â”œâ”€â”€ embeddings/     # Vector database (LanceDB)
+â””â”€â”€ search/         # Search indexes
 ```
 
 ## Features
@@ -115,9 +117,4 @@ npm run clean
 ## License
 
 Apache-2.0
-## Changelog
 
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-docs-embeddings/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings)

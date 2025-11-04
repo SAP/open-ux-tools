@@ -1,4 +1,6 @@
-# `@sap-ux/logger`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/logger/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/logger)
+
+# [`@sap-ux/logger`](https://github.com/SAP/open-ux-tools/tree/main/packages/logger)
 
 This is a simple logging library. It uses [Winston](https://github.com/winstonjs/winston) underneath to do the heavy-lifting. The API is agnostic to any particular logging library. Don't depend on any Winston-specific implemenation as the underlying library may change in the future.
 
@@ -73,9 +75,3 @@ The following options are not supported yet. There are no definite plans to add 
     -  `ConsoleTransport` logs colored and timestamped lines (piping will remove color encoding though)
 * File rotation - the file transport appends to an existing file or creates a new one if missing
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/logger/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/logger)

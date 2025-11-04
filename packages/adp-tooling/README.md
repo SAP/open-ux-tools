@@ -1,4 +1,6 @@
-#  `@sap-ux/adp-tooling`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/adp-tooling/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-tooling)
+
+# [`@sap-ux/adp-tooling`](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-tooling)
 
 A module containing different tooling modules helpful when working with SAP UI5 adaptation projects.
 
@@ -20,9 +22,4 @@ The submodule contains functionality required in different scenarios, e.g. promp
 
 ## Templates
 The templates folder contains ejs templates to be used for the generation of new adaptation projects as well as to generate artifacts in existing adaptation projects.
-## Changelog
 
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/adp-tooling/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-tooling)

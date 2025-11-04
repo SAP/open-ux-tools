@@ -1,4 +1,6 @@
-# @sap-ux/mockserver-config-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/mockserver-config-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/mockserver-config-writer)
+
+# [`@sap-ux/mockserver-config-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/mockserver-config-writer)
 
 Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to an SAP UX project.
 
@@ -33,9 +35,3 @@ See more complex example in [`/test/unit`](./test/unit)
 SAP Fiori elements
 SAP Fiori - UI5 middleware for the Fiori elements mock server
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/mockserver-config-writer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/mockserver-config-writer)

@@ -1,4 +1,6 @@
-# `@sap-ux/i18n`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/i18n/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/i18n)
+
+# [`@sap-ux/i18n`](https://github.com/SAP/open-ux-tools/tree/main/packages/i18n)
 
 Package containing low level APIs and utility functions for working with i18n of a project. For more convenient high level APIs on i18n, check [`@sap-ux/project-access`](../project-access)
 
@@ -107,9 +109,3 @@ i18n
 CAP i18n
 UI5 i18n
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/i18n/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/i18n)

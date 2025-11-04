@@ -1,4 +1,6 @@
-# @sap-ux/fe-fpm-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fe-fpm-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fe-fpm-writer)
+
+# [`@sap-ux/fe-fpm-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/fe-fpm-writer)
 
 Generates elements defined in the Fiori elements for OData v4 flexible programming model into Fiori elements applications
 
@@ -37,9 +39,3 @@ See more complex example in [`/test/integration/index.test.ts`](./test/integrati
 ## Keywords
 SAP Fiori elements
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fe-fpm-writer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fe-fpm-writer)

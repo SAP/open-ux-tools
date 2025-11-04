@@ -1,4 +1,6 @@
-# @sap-ux/odata-vocabularies
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-vocabularies/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-vocabularies)
+
+# [`@sap-ux/odata-vocabularies`](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-vocabularies)
 
 Library that contains the most recent copies of the OData vocabularies authored by OASIS and SAP
 
@@ -65,9 +67,3 @@ The vocabulary API is implemented via class VocabularyService and currently expo
 * getVocabulary
 * getVocabularyNamespace
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-vocabularies/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-vocabularies)

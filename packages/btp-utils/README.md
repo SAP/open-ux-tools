@@ -1,4 +1,6 @@
-# @sap-ux/btp-utils
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/btp-utils/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/btp-utils)
+
+# [`@sap-ux/btp-utils`](https://github.com/SAP/open-ux-tools/tree/main/packages/btp-utils)
 Library to simplify working with SAP BTP specific features especially in SAP Business Application.
 
 ## Installation
@@ -18,9 +20,3 @@ See examples in `test/app-studio.test.ts` and `test/destination.test.ts`.
 SAP Application Studio (BAS)
 SAP Business Technology Platform (BTP)
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/btp-utils/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/btp-utils)

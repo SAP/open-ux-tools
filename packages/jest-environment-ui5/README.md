@@ -1,11 +1,13 @@
-# @sap-ux/jest-environment-ui5
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/jest-environment-ui5/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-environment-ui5)
+
+# [`@sap-ux/jest-environment-ui5`](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-environment-ui5)
 
 Test environment for Jest for SAPUI5.
 
 The `@sap-ux/jest-environment-ui5` is a custom test environment for Jest that allows to run tests for SAPUI5 applications. 
 It is based on the `@ui5/project` to resolve the UI5 dependencies and serve the application sources during the test execution.
 
-## ⚠️ Experimental: Early Version
+## âš ï¸ Experimental: Early Version
 This package is in an experimental state and was only used internally at SAP so far. 
 While we strive for stability it might not be exempt of issues.
 
@@ -101,9 +103,3 @@ Pass `-u` or `--update` to update the snapshot folder. Please use this with care
 ## Keywords
 SAP Fiori Tools
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/jest-environment-ui5/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-environment-ui5)

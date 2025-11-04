@@ -1,4 +1,6 @@
-# @sap-ux/store
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/store/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/store)
+
+# [`@sap-ux/store`](https://github.com/SAP/open-ux-tools/tree/main/packages/store)
 
 This is a store for persistent data in Fiori tools.
 
@@ -87,9 +89,3 @@ interface EntityKey<T> {
 }
 ```
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/store/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/store)

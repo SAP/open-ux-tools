@@ -1,4 +1,6 @@
-# @sap-ux/fiori-freestyle-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-freestyle-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-freestyle-writer)
+
+# [`@sap-ux/fiori-freestyle-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-freestyle-writer)
 
 Writer module allowing to generate custom SAPUI5 applications with different templates.
 
@@ -67,9 +69,3 @@ SAPUI5
 SAP Fiori
 SAP Fiori tools
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-freestyle-writer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-freestyle-writer)

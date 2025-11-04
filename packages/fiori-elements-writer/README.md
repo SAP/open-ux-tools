@@ -1,4 +1,6 @@
-# @sap-ux/fiori-elements-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-elements-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-elements-writer)
+
+# [`@sap-ux/fiori-elements-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-elements-writer)
 
 Easy to use Fiori Elements project files writer for use within Yeoman generator and other prompting libraries. 
 
@@ -75,9 +77,3 @@ await exampleWriter();
 ## Keywords
 SAP Fiori Elements
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-elements-writer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-elements-writer)

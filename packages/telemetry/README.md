@@ -1,4 +1,6 @@
-# @sap-ux/telemetry
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/telemetry/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/telemetry)
+
+# [`@sap-ux/telemetry`](https://github.com/SAP/open-ux-tools/tree/main/packages/telemetry)
 
 This library is used by SAP Fiori tools to collect anonymous usage data to guide Fiori tools improvement. This library is
 specific for SAP Fiori tools's telemtry infrastrcture deployed on Azure cloud and it is built on Azure Application Insight node.js client. It is open sourced becaused some open sourced modules of Fiori tools need it for collecting usage data.
@@ -25,9 +27,4 @@ cd package/telemetry
 # Add this line in .env file OpenUxTools_ResourceId=<your_azure_instrument_key>
 pnpm example
 ```
-## Changelog
 
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/telemetry/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/telemetry)

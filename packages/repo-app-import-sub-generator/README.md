@@ -1,4 +1,6 @@
-# @sap-ux/repo-app-import-sub-generator
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/repo-app-import-sub-generator/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/repo-app-import-sub-generator)
+
+# [`@sap-ux/repo-app-import-sub-generator`](https://github.com/SAP/open-ux-tools/tree/main/packages/repo-app-import-sub-generator)
 
 ## Features
 
@@ -15,9 +17,3 @@ Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and e
 ## Keywords
 SAP Fiori Generator
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/repo-app-import-sub-generator/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/repo-app-import-sub-generator)

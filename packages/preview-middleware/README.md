@@ -1,4 +1,6 @@
-#  `@sap-ux/preview-middleware`
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/preview-middleware/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware)
+
+#  [`@sap-ux/preview-middleware`](https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware)
 
 The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for previewing an application in a local SAP Fiori launchpad. It can be used either with the `ui5 serve` or the `fiori run` commands.
 It hosts a local SAP Fiori launchpad based on your configuration as well as offers an API to modify flex changes in your project. The API is available at `/preview/api` and additional client code required for the preview is available at `/preview/client`.
@@ -236,9 +238,3 @@ server:
 
 ## [Limitations](#limitations)
 - When serving the UI5 sources from npmjs, flex changes for virtual endpoints are only supported for UI5 versions >= `1.84.x`.
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/preview-middleware/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware)

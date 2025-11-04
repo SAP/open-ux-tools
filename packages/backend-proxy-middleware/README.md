@@ -1,4 +1,6 @@
-#  `@sap-ux/backend-proxy-middleware`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/backend-proxy-middleware/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware)
+
+# [`@sap-ux/backend-proxy-middleware`](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware)
 
 The `@sap-ux/backend-proxy-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for proxying requests to backend servers. The middleware is agnostic to running in local environments and SAP Business Application Studio. Additionally, if credentials are maintained with the SAP Fiori tools then these will be used.
 
@@ -179,9 +181,3 @@ const proxy = createProxy(backend, options);
 * Fiori elements
 * SAP UI5
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/backend-proxy-middleware/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware)

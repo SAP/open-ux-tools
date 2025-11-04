@@ -1,4 +1,6 @@
-# @sap-ux/project-access
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/project-access/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/project-access)
+
+# [`@sap-ux/project-access`](https://github.com/SAP/open-ux-tools/tree/main/packages/project-access)
 
 Library that offers functions to find, read, and retrieve project information and artifacts.
 
@@ -20,9 +22,4 @@ See usage in `test/` folder.
 * SAP Fiori tools
 * SAP Fiori elements
 * SAP Fiori freestyle
-## Changelog
 
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/project-access/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/project-access)

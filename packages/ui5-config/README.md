@@ -1,4 +1,6 @@
-# @sap-ux/ui5-config
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-config/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-config)
+
+# [`@sap-ux/ui5-config`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-config)
 Utility module to create and update [UI5 tooling configuration](https://sap.github.io/ui5-tooling/pages/Configuration/) files (`ui5*.yaml`) with helper methods specifically for Fiori tools middlewares.
 
 ## Installation
@@ -42,9 +44,3 @@ See more example in [`/test/index.test.ts`](./test/index.test.ts)
 ## Keywords
 SAP Fiori freestyle
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-config/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-config)

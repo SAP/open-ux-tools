@@ -1,4 +1,6 @@
-# @sap-ux/ui5-application-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-application-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-application-writer)
+
+# [`@sap-ux/ui5-application-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-application-writer)
 
 Writes a basic ui5 application
 
@@ -37,9 +39,3 @@ fs.commit();
 ## Keywords
 SAP Fiori Freestyle
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-application-writer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-application-writer)

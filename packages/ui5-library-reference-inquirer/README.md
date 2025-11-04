@@ -1,4 +1,6 @@
-# @sap-ux/ui5-library-reference-inquirer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-library-reference-inquirer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-reference-inquirer)
+
+# [`@sap-ux/ui5-library-reference-inquirer`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-reference-inquirer)
 
 Provides Inquirer based prompting to allow input and validation of data required to generate a UI5 library
 
@@ -64,9 +66,3 @@ SAP Fiori Elements
 Yeoman
 Generator
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-library-reference-inquirer/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-reference-inquirer)

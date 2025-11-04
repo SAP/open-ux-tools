@@ -1,4 +1,6 @@
-# @sap-ux/nodejs-utils
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/nodejs-utils/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/nodejs-utils)
+
+# [`@sap-ux/nodejs-utils`](https://github.com/SAP/open-ux-tools/tree/main/packages/nodejs-utils)
 
 Nodejs utility wrappers
 
@@ -19,9 +21,3 @@ see ./tests/unit/
 ## Keywords
 SAP Fiori tools library
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/nodejs-utils/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/nodejs-utils)

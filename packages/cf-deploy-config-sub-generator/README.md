@@ -1,4 +1,6 @@
-# @sap-ux/cf-deploy-config-sub-generator
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/cf-deploy-config-sub-generator/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/cf-deploy-config-sub-generator)
+
+# [`@sap-ux/cf-deploy-config-sub-generator`](https://github.com/SAP/open-ux-tools/tree/main/packages/cf-deploy-config-sub-generator)
 
 ## Features
 
@@ -19,9 +21,4 @@ Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and e
 ## Keywords
 SAP Fiori Generator
 Cloud Foundry
-## Changelog
 
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/cf-deploy-config-sub-generator/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/cf-deploy-config-sub-generator)

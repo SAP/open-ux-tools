@@ -1,4 +1,6 @@
-# Fiori Annotation Generator API
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/annotation-generator/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/annotation-generator)
+
+# [Fiori Annotation Generator API](https://github.com/SAP/open-ux-tools/tree/main/packages/annotation-generator)
 
 Reads annotations for a service in a SAP Fiori Elements project with local metadata. Allows generation of annotations for generation of new Fiori Elements apps.
 
@@ -82,9 +84,3 @@ await generateAnnotations(fs, serviceParameters, options);
 ## Keywords
 OData annotations, app generation
 
-## Changelog
-
-See the [CHANGELOG.md](https://github.com/SAP/open-ux-tools/blob/main/packages/annotation-generator/CHANGELOG.md) file for details on changes and version history.
-## Links
-
-- [GitHub Package](https://github.com/SAP/open-ux-tools/tree/main/packages/annotation-generator)
