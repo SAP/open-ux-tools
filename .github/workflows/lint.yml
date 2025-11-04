@@ -13,16 +13,16 @@ jobs:
   run-linters:
     strategy:
       matrix:
-          os: [ubuntu-latest]
-          node-version: [20.x]
+        os: [ubuntu-latest]
+        node-version: [20.x]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v4
         with:
-            repository: ${{ github.event.pull_request.head.repo.full_name }}
-            ref: ${{ github.event.pull_request.head.ref }}            
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -31,16 +31,16 @@ jobs:
       - name: Cache pnpm modules
         uses: actions/cache@v4
         env:
-            cache-name: cache-pnpm-modules
+          cache-name: cache-pnpm-modules
         with:
-            path: ~/.pnpm-store
-            key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-            restore-keys: |
-                ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
+          path: ~/.pnpm-store
+          key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-            node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
       - name: Install pnpm modules
         run: pnpm install --frozen-lockfile
       - name: Run build
@@ -53,8 +53,8 @@ jobs:
           NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
       - name: Commit lint fixes if any
         run: |
-                git config --global user.name github-actions[bot]
-                git config --global user.email github-actions[bot]@users.noreply.github.com
-                git add pnpm-lock.yaml
-                git commit -m "Linting auto fix commit" -a --no-verify || true
-                git push  || true
+          git config --global user.name github-actions[bot]
+          git config --global user.email github-actions[bot]@users.noreply.github.com
+          git add pnpm-lock.yaml
+          git commit -m "Linting auto fix commit" -a --no-verify || true
+          git push  || true
