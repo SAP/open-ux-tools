@@ -820,9 +820,9 @@ describe('FlpSandbox', () => {
         afterEach(() => {
             fetchMock.mockRestore();
         });
-
+        let flp: FlpSandbox;
         const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+            flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
 
@@ -831,7 +831,6 @@ describe('FlpSandbox', () => {
 
             server = supertest(app);
         };
-
         beforeAll(async () => {
             await setupMiddleware(mockConfig as MiddlewareConfig);
         });
@@ -925,6 +924,69 @@ describe('FlpSandbox', () => {
             expect(response.text).toBe('i18n file updated.');
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
+        });
+        test('should handle string i18n path', async () => {
+            const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = 'i18n/custom.properties';
+            await flp.init(manifest);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+        });
+
+        test('should handle bundleUrl with supported and fallback locales', async () => {
+            const newI18nEntry = [{ key: 'GREETING', value: 'Hallo Welt' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['de', 'es'],
+                fallbackLocale: 'de'
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+        });
+
+        test('should reject unsupported locale', async () => {
+            const newI18nEntry = [{ key: 'GREETING', value: 'Bonjour' }];
+
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['de', 'es']
+            };
+            await flp.init(manifest);
+
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=fr`).send(newI18nEntry);
+
+            expect(response.status).toBe(400);
+            expect(response.text).toContain('Locale "fr" is not supported');
+        });
+        test('should fallback to default i18n/i18n.properties if no i18n defined', async () => {
+            const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
+
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            delete manifest['sap.app'].i18n;
+            await flp.init(manifest);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
+
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
     });
 
