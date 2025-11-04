@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.6
+
+### Patch Changes
+
+-   b0b210b: change to draft release for extensions
+
 ## 0.0.5
 
 ### Patch Changes
