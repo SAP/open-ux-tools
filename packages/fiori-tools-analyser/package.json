@@ -1,0 +1,47 @@
+{
+    "name": "@sap-ux/fiori-tools-analyser",
+    "version": "0.1.0",
+    "description": "Analyse SAP Fiori applications to produce bill of materials telemetry data.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/fiori-tools-analyser"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-tools-analyser"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "fast-glob": "3.3.1",
+        "yaml": "2.3.3"
+    },
+    "devDependencies": {
+        "@sap-ux/fiori-annotation-api": "workspace:*"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}
+

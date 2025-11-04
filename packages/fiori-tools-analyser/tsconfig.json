@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../fiori-annotation-api"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
+    }
+  ]
+}

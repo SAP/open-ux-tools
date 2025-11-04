@@ -124,6 +124,9 @@
       "path": "packages/fiori-mcp-server"
     },
     {
+      "path": "packages/fiori-tools-analyser"
+    },
+    {
       "path": "packages/fiori-tools-settings"
     },
     {
