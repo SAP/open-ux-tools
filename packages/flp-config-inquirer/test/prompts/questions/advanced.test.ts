@@ -1,5 +1,6 @@
 import { parseParameters } from '@sap-ux/adp-tooling';
 import * as inputValidator from '@sap-ux/project-input-validator';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import {
     getInboundIdsPrompt,
@@ -10,6 +11,7 @@ import {
 } from '../../../src/prompts/questions';
 import { t } from '../../../src/i18n';
 import { promptNames } from '../../../src';
+import { add } from 'lodash';
 
 const parseParametersMock = parseParameters as jest.Mock;
 
@@ -200,7 +202,8 @@ describe('advanced prompts', () => {
                 name: promptNames.confirmReplace,
                 message: t('prompts.confirmReplace'),
                 default: false,
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                additionalMessages: expect.any(Function)
             });
         });
 
@@ -209,6 +212,16 @@ describe('advanced prompts', () => {
 
             expect((prompt.validate as Function)(true)).toBe(true);
             expect((prompt.validate as Function)(false)).toBe(' ');
+        });
+
+        it('should return the additional message with information severity', () => {
+            const prompt = getConfirmReplacePrompt();
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessage')
+            });
         });
     });
 });

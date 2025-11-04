@@ -282,9 +282,10 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private _setupReplacePage(): void {
         const tileEntries = this.inbounds
-            ? Object.entries(this.inbounds).map(([inboundId, inboundData]) => {
+            ? Object.values(this.inbounds).map((inboundData) => {
                   const title = inboundData.title ?? '';
-                  return t('yuiNavSteps.flpConfigReplaceTile', { inboundId, title });
+                  const navigationIntent = `${inboundData.semanticObject}-${inboundData.action}`;
+                  return t('yuiNavSteps.flpConfigReplaceTile', { navigationIntent, title });
               })
             : [];
 

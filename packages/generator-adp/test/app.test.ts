@@ -475,11 +475,11 @@ describe('Adaptation Project Generator Integration Test', () => {
                             },
                             {
                                 description: 'Configure SAP Fiori Launchpad settings - app.variant',
-                                name: 'SAP Fiori Launchpad Configuration - Tile Settings'
+                                name: 'SAP Fiori Launchpad Configuration - Select Action'
                             },
                             {
                                 description: '',
-                                name: 'SAP Fiori Launchpad Configuration'
+                                name: 'SAP Fiori Launchpad Configuration - Tile Settings'
                             }
                         ]
                     }
