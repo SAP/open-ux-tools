@@ -207,11 +207,12 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-            - name: Detect sap-systems-ext changes
+            - name: Detect sap-systems-ext publication
+              if: steps.changesetPublish.outputs.published == 'true'
               id: detect_sap_systems_ext
               run: |
-                  CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/sap-systems-ext/' || true)
-                  if [ -n "$CHANGED" ]; then
+                  PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
+                  if echo "$PUBLISHED" | grep -q '^@sap-ux/sap-systems-ext$'; then
                     echo "SAP_SYSTEMS_EXT_CHANGED=true" >> $GITHUB_ENV
                   else
                     echo "SAP_SYSTEMS_EXT_CHANGED=false" >> $GITHUB_ENV
@@ -246,9 +247,9 @@ jobs:
                   echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
                   echo "$EOF" >> $GITHUB_ENV
             - name: Prepare Slack notification message (extension release only)
-              if: steps.changesetPublish.outputs.published != 'true' && env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
               run: |
-                  echo "EXT_RELEASE_MESSAGE=:package: VSCode SAP Systems extension v${{ env.EXT_VERSION }} released (private package)." >> $GITHUB_ENV
+                  echo "EXT_RELEASE_MESSAGE=:package: VSCode SAP Systems extension v${{ env.EXT_VERSION }} released." >> $GITHUB_ENV
             - name: Send Slack notification (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
               uses: slackapi/slack-github-action@v1.26.0
