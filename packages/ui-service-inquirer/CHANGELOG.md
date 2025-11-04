@@ -1,5 +1,30 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.45
+
+### Patch Changes
+
+-   Updated dependencies [10a3b57]
+    -   @sap-ux/odata-service-inquirer@2.11.0
+
+## 0.2.44
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/odata-service-inquirer@2.10.0
+    -   @sap-ux/inquirer-common@0.9.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.43
+
+## 0.2.43
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.42
+-   @sap-ux/odata-service-inquirer@2.9.14
+-   @sap-ux/telemetry@0.6.36
+-   @sap-ux/inquirer-common@0.8.10
+
 ## 0.2.42
 
 ### Patch Changes
