@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.46
+
+### Patch Changes
+
+-   db63f7b: fix(preview-middleware): i18n handling for cards generator
+
 ## 0.23.45
 
 ### Patch Changes
