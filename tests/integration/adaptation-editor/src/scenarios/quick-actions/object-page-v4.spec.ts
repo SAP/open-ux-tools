@@ -113,7 +113,6 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
-            // TODO: Check QA state disabled and check the message to be "'This option has been disabled because variant management is already enabled for tables and charts'"
         }
     );
     test(
@@ -154,8 +153,6 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
-
-            // TODO check the button disabled state and the message
         }
     );
     test(
