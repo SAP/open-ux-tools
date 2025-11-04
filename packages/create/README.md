@@ -192,4 +192,3 @@ sap-ux generate adaptation-project --id my.adp --reference the.original.app --ur
 - `--ft` enable the Fiori tools for the generated project
 - `--package [package]` ABAP package to be used for deployments
 - `--transport [transport]` ABAP transport to be used for deployments
-

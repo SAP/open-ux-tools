@@ -93,4 +93,3 @@ const capCdsMode = isFeatureEnabled('sap.ux.internal.testBetaFeatures.capCdsMode
 
 ## Keywords
 SAP Fiori Tools
-

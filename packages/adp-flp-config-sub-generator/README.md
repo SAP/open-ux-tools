@@ -20,4 +20,3 @@ Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and e
 SAP Fiori Elements
 Yeoman
 Generator
-

@@ -61,4 +61,3 @@ See TypeScript doc for a full description of possible value for [`UI5VersionFilt
 ## Keywords
 SAP
 UI5
-

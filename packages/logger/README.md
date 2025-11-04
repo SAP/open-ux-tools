@@ -74,4 +74,3 @@ The following options are not supported yet. There are no definite plans to add 
     -  `FileTransport` logs in JSON
     -  `ConsoleTransport` logs colored and timestamped lines (piping will remove color encoding though)
 * File rotation - the file transport appends to an existing file or creates a new one if missing
-

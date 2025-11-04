@@ -66,4 +66,3 @@ For other usage examples see unit tests in `odata-annotation-core-types/test`.
 
 ## Keywords
 SAP ODATA annotations
-

@@ -18,4 +18,3 @@ Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and e
 ## Keywords
 SAP Fiori Generator
 Cloud Foundry
-

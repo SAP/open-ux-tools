@@ -19,4 +19,3 @@ See examples in `test/app-studio.test.ts` and `test/destination.test.ts`.
 ## Keywords
 SAP Application Studio (BAS)
 SAP Business Technology Platform (BTP)
-

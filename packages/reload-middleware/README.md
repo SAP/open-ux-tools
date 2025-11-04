@@ -103,4 +103,3 @@ return getConnectLivereload(connectOptions);
 * Fiori tools
 * Fiori elements
 * SAP UI5
-

@@ -55,4 +55,3 @@ const text = print(element);
 
 ## Keywords
 OData CAP CDS annotations
-

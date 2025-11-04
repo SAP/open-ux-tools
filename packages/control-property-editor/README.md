@@ -15,4 +15,3 @@ React App
 Control Property Editor
 Visual Editor
 SAP
-

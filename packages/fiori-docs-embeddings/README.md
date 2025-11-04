@@ -117,4 +117,3 @@ npm run clean
 ## License
 
 Apache-2.0
-

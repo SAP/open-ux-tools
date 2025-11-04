@@ -20,4 +20,3 @@ See examples in `ui-components/stories`.
 VSCode Webview
 SAP Application Studio (BAS)
 SAP Business Technology Platform (BTP)
-

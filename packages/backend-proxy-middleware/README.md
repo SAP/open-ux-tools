@@ -180,4 +180,3 @@ const proxy = createProxy(backend, options);
 * Fiori tools
 * Fiori elements
 * SAP UI5
-

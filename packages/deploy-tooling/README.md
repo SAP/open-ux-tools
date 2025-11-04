@@ -235,4 +235,3 @@ Ensure you restart any running processes to apply the changes.
 Example Scenario
 
 If you're using a proxy server to route your HTTPS traffic, the proxy server will need to create a secure, TLS-encrypted connection to the target server on your behalf. `tls.connect()` will be used to establish that encrypted tunnel between your client, the proxy, and the server.
-

@@ -34,4 +34,3 @@ See more complex example in [`/test/unit`](./test/unit)
 ## Keywords
 SAP Fiori elements
 SAP Fiori - UI5 middleware for the Fiori elements mock server
-

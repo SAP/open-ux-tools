@@ -20,4 +20,3 @@ See examples in `test/yaml-document.test.ts`
 
 ## Keywords
 SAP Fiori Freestyle
-

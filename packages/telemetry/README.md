@@ -27,4 +27,3 @@ cd package/telemetry
 # Add this line in .env file OpenUxTools_ResourceId=<your_azure_instrument_key>
 pnpm example
 ```
-

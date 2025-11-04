@@ -42,4 +42,3 @@ await generate(testDir, config, fs);
 
 ## Keywords
 SAP Fiori Freestyle
-

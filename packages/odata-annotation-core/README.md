@@ -97,4 +97,3 @@ For other usage examples see unit tests in `odata-annotation-core/test`.
 
 ## Keywords
 SAP ODATA annotations
-

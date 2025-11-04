@@ -22,4 +22,3 @@ The submodule contains functionality required in different scenarios, e.g. promp
 
 ## Templates
 The templates folder contains ejs templates to be used for the generation of new adaptation projects as well as to generate artifacts in existing adaptation projects.
-

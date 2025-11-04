@@ -20,4 +20,3 @@ Pnpm
 
 ## Usage
 See example usage in [test folder](./test).
-

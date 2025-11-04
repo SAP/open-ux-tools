@@ -22,4 +22,3 @@ See usage in `test/` folder.
 * SAP Fiori tools
 * SAP Fiori elements
 * SAP Fiori freestyle
-

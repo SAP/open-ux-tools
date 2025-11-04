@@ -83,4 +83,3 @@ await generateAnnotations(fs, serviceParameters, options);
 
 ## Keywords
 OData annotations, app generation
-

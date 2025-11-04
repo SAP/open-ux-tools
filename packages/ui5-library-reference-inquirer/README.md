@@ -65,4 +65,3 @@ export default class UI5LibraryReferenceGenerator extends Generator {
 SAP Fiori Elements
 Yeoman
 Generator
-

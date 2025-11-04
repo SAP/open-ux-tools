@@ -108,4 +108,3 @@ For more available APIs, check in [`/src/index`](./src/index.ts)
 i18n
 CAP i18n
 UI5 i18n
-

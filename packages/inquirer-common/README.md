@@ -43,4 +43,3 @@ inquirer
 SAP
 UI5
 prompt
-

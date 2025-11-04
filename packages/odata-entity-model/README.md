@@ -50,4 +50,3 @@ Pnpm
 ```
 
 For usage examples see unit tests in `odata-entity-model/test`.
-

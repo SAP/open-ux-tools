@@ -66,4 +66,3 @@ The vocabulary API is implemented via class VocabularyService and currently expo
 * getVocabularies
 * getVocabulary
 * getVocabularyNamespace
-

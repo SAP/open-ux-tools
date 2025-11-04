@@ -31,4 +31,3 @@ For use in jest config
     setupFilesAfterEnv: ['expect-puppeteer', '@sap-ux/jest-runner-puppeteer/dist/jest-circus.setup.js'],
  }
  ```
-

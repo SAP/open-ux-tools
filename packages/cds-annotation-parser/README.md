@@ -74,4 +74,3 @@ if (ast !== undefined) {
 
 ## Keywords
 OData annotations CAP CDS
-

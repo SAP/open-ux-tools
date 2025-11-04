@@ -55,4 +55,3 @@ const metadata = convertMetadataDocument(ast);
 
 ## Keywords
 OData annotations
-

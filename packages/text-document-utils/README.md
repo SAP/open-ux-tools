@@ -16,4 +16,3 @@ Pnpm
 
 ## Usage
 See usage in `test/` folder.
-

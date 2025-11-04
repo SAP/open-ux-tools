@@ -149,4 +149,3 @@ router.use("/resources/", ui5Proxy({ path: "/", url: "https://ui5.sap.com"})/*, 
 
 ## Keywords
 UI5 Proxy Middleware
-

@@ -23,4 +23,3 @@ See usage in `test/` folder.
 * SAP Fiori elements
 * SAP Fiori freestyle
 * Project integrity
-

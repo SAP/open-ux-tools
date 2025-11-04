@@ -43,4 +43,3 @@ See more example in [`/test/index.test.ts`](./test/index.test.ts)
 
 ## Keywords
 SAP Fiori freestyle
-

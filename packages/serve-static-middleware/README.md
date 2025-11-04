@@ -131,4 +131,3 @@ const serveStaticFn = serveStaticMiddleware(root, config);
 * Fiori tools
 * Fiori elements
 * SAP UI5
-

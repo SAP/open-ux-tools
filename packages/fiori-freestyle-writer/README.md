@@ -68,4 +68,3 @@ await exampleWriter();
 SAPUI5
 SAP Fiori
 SAP Fiori tools
-

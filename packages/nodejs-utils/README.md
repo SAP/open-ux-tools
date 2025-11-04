@@ -20,4 +20,3 @@ see ./tests/unit/
 
 ## Keywords
 SAP Fiori tools library
-

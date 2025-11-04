@@ -102,4 +102,3 @@ Pass `-u` or `--update` to update the snapshot folder. Please use this with care
 
 ## Keywords
 SAP Fiori Tools
-

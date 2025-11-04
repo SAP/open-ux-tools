@@ -34,4 +34,3 @@ See usage in [`test/unit/fiori-service.test.ts`](test/unit/fiori-service.test.ts
 
 ## Keywords
 OData Fiori annotations
-

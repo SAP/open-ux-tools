@@ -79,4 +79,3 @@ SAP UI5 Application
 Inquirer
 Prompting
 Generator
-

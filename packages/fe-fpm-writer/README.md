@@ -38,4 +38,3 @@ fs.commit();
 See more complex example in [`/test/integration/index.test.ts`](./test/integration/index.test.ts)
 ## Keywords
 SAP Fiori elements
-
