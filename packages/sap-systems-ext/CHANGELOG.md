@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.5
+
+### Patch Changes
+
+-   4b00366: testing pipeline config
+
 ## 0.0.4
 
 ### Patch Changes
