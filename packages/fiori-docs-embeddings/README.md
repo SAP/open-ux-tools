@@ -84,9 +84,9 @@ The module indexes documentation from these sources by default:
 Generated data is organized as:
 ```
 data/
-â”œâ”€â”€ docs/           # Parsed documentation files
-â”œâ”€â”€ embeddings/     # Vector database (LanceDB)
-â””â”€â”€ search/         # Search indexes
+├── docs/           # Parsed documentation files
+├── embeddings/     # Vector database (LanceDB)
+└── search/         # Search indexes
 ```
 
 ## Features
