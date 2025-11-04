@@ -1,25 +1,27 @@
-const { defineConfig, globalIgnores } = require('eslint/config');
+import { FlatCompat } from '@eslint/eslintrc';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const js = require('@eslint/js');
-
-const { FlatCompat } = require('@eslint/eslintrc');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+    baseDirectory: __dirname
 });
 
-module.exports = defineConfig([
-    {
-        extends: compat.extends('../../.eslintrc'),
+const base = compat.extends('../../.eslintrc');
 
+export default [
+    { ignores: ['**/dist', '**/lib', './eslint.config.js'] },
+    ...base,
+    {
+        files: ['**/*.ts', , '**/*.tsx'],
         languageOptions: {
             parserOptions: {
+                projectService: false,
                 project: './tsconfig.eslint.json',
                 tsconfigRootDir: __dirname
             }
         }
-    },
-    globalIgnores(['**/dist', '**/lib', '**/.eslintrc*.js'])
-]);
+    }
+];
