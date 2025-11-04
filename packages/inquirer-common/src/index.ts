@@ -5,4 +5,5 @@ export * from './error-handler/error-handler';
 export * from './prompts/cf-helper';
 export * from './telemetry/telemetry';
 export * from './prompts/credentials';
+export * from './metadata';
 export { addi18nResourceBundle } from './i18n';
