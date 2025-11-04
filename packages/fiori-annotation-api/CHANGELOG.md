@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.11
+
+### Patch Changes
+
+-   271847c: fix: overlapping edits with move and delete change combination.
+
 ## 0.7.10
 
 ### Patch Changes
