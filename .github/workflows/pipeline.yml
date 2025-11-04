@@ -59,15 +59,6 @@ jobs:
             - name: Validate changeset files if found
               if: steps.check_changeset_files.outputs.files_exists == 'true'
               run: pnpm changeset status
-            - name: Package SAP Systems VSCode extension
-              if: steps.check_changeset_files.outputs.files_exists == 'true' && matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-              run: |
-                  if grep -R "sap-ux-sap-systems-ext" .changeset/*.md >/dev/null 2>&1; then
-                    echo "sap-systems-ext referenced in changeset. Packaging extension..."
-                    pnpm --filter sap-ux-sap-systems-ext ide-ext:package
-                  else
-                    echo "sap-systems-ext not referenced in changeset. Skipping packaging."
-                  fi
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@v4
@@ -216,6 +207,21 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+            - name: Detect sap-systems-ext changes
+              id: detect_sap_systems_ext
+              run: |
+                  CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/sap-systems-ext/' || true)
+                  if [ -n "$CHANGED" ]; then
+                    echo "SAP_SYSTEMS_EXT_CHANGED=true" >> $GITHUB_ENV
+                  else
+                    echo "SAP_SYSTEMS_EXT_CHANGED=false" >> $GITHUB_ENV
+                  fi
+            - name: Read sap-systems-ext version
+              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              run: echo "EXT_VERSION=$(jq -r '.version' packages/sap-systems-ext/package.json)" >> $GITHUB_ENV
+            - name: Package sap-systems-ext VSCode extension
+              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              run: pnpm --filter @sap-ux/sap-systems-ext ide-ext:package
             - name: Create GitHub Release (sap-systems-ext)
               if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
               uses: softprops/action-gh-release@v1
