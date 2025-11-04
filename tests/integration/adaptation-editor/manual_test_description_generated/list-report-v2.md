@@ -161,7 +161,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click `UI Adaptation` button in the toolBar
 5. Click `Add Custom Table Column` button in the Quick Actions Panel
 6. Fill `Column Fragment Name` field with `table-column` in the dialog `Add Custom Table Column`
@@ -229,7 +229,7 @@
 
 
 12. Click `Navigation` button in the toolBar
-13. Click on `Go` button.
+13. Click `Go` button in the Running Application Preview
 14. Check Column Name is `New Column`
 15. Check Column Data is `Sample data`
 

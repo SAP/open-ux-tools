@@ -6,7 +6,6 @@ import { AdaptationEditorShell, ListReport } from '../test-utils';
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@changes-panel @other-changes @cpe @adp`, () => {
-    // test.setTimeout(5 * 60 * 10000);
     test(
         '1. Create other change - remove',
         {

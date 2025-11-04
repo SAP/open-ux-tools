@@ -16,7 +16,7 @@
 5. Click `Value Help` icon for `ActiveIcon` property in the Properties Panel
 6. Fill `Filter Icons` input field with `action` in the `Select Icon` dialog
 7. Click `cell` with `action-settings` in the `Select Icon` dialog
-8. Click `OK` button in the `Select Icon` dialog
+8. Click `OK` button in the `Select Icon Dialog`
 9. Click `Save` button in the toolBar
 10. Check `ActiveIcon` property value is `sap-icon://action-settings` in the Properties Panel
 11. Verify changes:

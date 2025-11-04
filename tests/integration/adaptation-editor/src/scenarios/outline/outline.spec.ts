@@ -7,13 +7,12 @@ import { AdaptationEditorShell, ListReport } from '../test-utils';
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@outline @cpe @adp`, () => {
-    // test.setTimeout(5 * 60 * 10000);
     test(
         '1. Outline',
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.135.0'
+                description: '<1.84.0'
             }
         },
         async ({ page, previewFrame, ui5Version }) => {
@@ -24,8 +23,6 @@ test.describe(`@outline @cpe @adp`, () => {
             await editor.outlinePanel.filterOutline('Delete');
             await editor.outlinePanel.clickOnNode('Delete');
             await editor.propertiesPanel.setBooleanProperty('enabled', true);
-
-            // TODO: check in changes panel enabled property is there in unsaved changes
 
             await editor.propertiesPanel.fillStringEditor('text', 'Remove Record');
 

@@ -7,7 +7,6 @@ import { AdaptationEditorShell, AdpDialog, ListReport, verifyChanges } from '../
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@outline @context-menu`, () => {
-    // test.setTimeout(5 * 60 * 10000);
     test(
         '1: Trigger Add Fragment at OverflowToolbar node via context menu',
         {

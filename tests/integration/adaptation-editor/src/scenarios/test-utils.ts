@@ -2,7 +2,7 @@ import { readdir, readFile } from 'fs/promises';
 import { join } from 'node:path';
 import { expect, test, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
 import { gte } from 'semver';
-import { readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 
 interface Changes {
     annotations: Record<string, string>;
@@ -10,6 +10,11 @@ interface Changes {
     fragments: Record<string, string>;
     changes: object[];
 }
+const CHANGE_INDICATOR = {
+    UnSaved: 'empty circle',
+    Saved: 'filled circle',
+    SavedAndUnSaved: 'half-filled circle'
+};
 
 export const Selection = {
     show_common_only: 'show_common_only',
@@ -33,6 +38,54 @@ export const Selector = {
 export function getButtonLocator(page: Page | FrameLocator, name: string, context: string): Locator {
     return page.getByRole('button', { name }).describe(`\`${name}\` button in the ${context}`);
 }
+
+/**
+ * Delays execution for a specified number of milliseconds.
+ *
+ * @param ms - Number of milliseconds to delay (default is 5000)
+ */
+export const delay = async (ms = 5000): Promise<void> => {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+/**
+ * Exposes a function in the page context to listen for post messages and store them in the provided array.
+ *
+ * @param page - The Playwright Page object
+ * @param message - The array to store received messages
+ * @returns Promise that resolves when the function is exposed
+ */
+export async function exposeFunction(page: Page, message: any[]) {
+    await page.exposeFunction('onPostMessage', (e: any) => {
+        if (e.action?.type && !['[ext] outline-changed', '[ext] property-changed'].includes(e.action.type)) {
+            message.push(e);
+        }
+    });
+    await page.evaluate(() => {
+        window.parent.addEventListener('message', (e: any) => {
+            (window as any).onPostMessage(e.data);
+        });
+    });
+}
+/**
+ * Waits for a scene to be validated within a specified timeout.
+ *
+ * @param sceneValidator - A function that returns a Promise resolving to a boolean indicating if the scene is valid
+ * @param timeout - Maximum time to wait for the scene to be valid (default is 5000 ms)
+ * @param tick - Interval time between checks (default is 200 ms)
+ * @returns Promise that resolves to true if the scene is valid within the timeout, otherwise false
+ */
+const waitForScene = async (sceneValidator: () => Promise<boolean>, timeout = 5000, tick = 200) => {
+    let ticks = Math.ceil(timeout / tick);
+    while (ticks > 0) {
+        await delay(tick);
+        if (await sceneValidator()) {
+            return true;
+        }
+        ticks--;
+    }
+    return false;
+};
 
 /**
  * Class representing a List Report in the Adaptation Editor.
@@ -75,11 +128,8 @@ export class ListReport {
      * @param buttonText - The text of the button to click.
      */
     async clickOnButton(buttonText: string = 'Go'): Promise<void> {
-        await test.step(`Click on \`${buttonText}\` button.`, async () => {
-            //await this.goButton.click();
-            const locator = this.getButtonByLabel(buttonText);
-            await locator.click();
-        });
+        const locator = await getButtonLocator(this.frame, buttonText, this.context);
+        await locator.click();
     }
     /**
      * Clicks on the specified row in the List Report table.
@@ -116,20 +166,11 @@ export class ListReport {
     }
 
     /**
-     * @param text - control label to check.
-     * @returns Locator for the given text in the List Report.
-     */
-
-    getButtonByLabel(text: string): Locator {
-        return this.frame.getByRole('button', { name: text });
-    }
-
-    /**
      * @param label - control label to check.
      */
     async checkControlLabel(label: string): Promise<void> {
         await test.step(`Check control's label is \`${label}\` in the \`${this.context}\``, async () => {
-            const value = await this.getButtonByLabel(label).innerText();
+            const value = await getButtonLocator(this.frame, label, this.context).innerText();
             expect(value).toStrictEqual(label);
         });
     }
@@ -140,11 +181,10 @@ export class ListReport {
      * @param text - The label of the control to click on.
      * @param button - The mouse button to use for the click action ('left', 'right', or 'middle'). Default is 'left'.
      */
-
     async clickOnControlOverlay(text: string, button: 'left' | 'right' | 'middle' = 'left'): Promise<void> {
         const clickedButton = button === 'left' ? 'Click' : 'Right Click';
         await test.step(`${clickedButton} on \`${text}\` in the \`${this.context}\``, async () => {
-            const controlLocator = this.getButtonByLabel(text);
+            const controlLocator = getButtonLocator(this.frame, text, this.context);
             const controlId = await controlLocator.getAttribute('id');
             const escaped = controlId!.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
             const overlayLocator = this.frame.locator(`[data-sap-ui-dt-for="${escaped}"]`);
@@ -152,6 +192,18 @@ export class ListReport {
                 button: button
             });
         });
+    }
+
+    /**
+     * Gets the control ID by its label.
+     *
+     * @param text - The label of the control.
+     * @returns Promise resolving to the control ID.
+     */
+    async getControlIdByLabel(text: string): Promise<string> {
+        const controlLocator = getButtonLocator(this.frame, text, this.context);
+        const controlId = await controlLocator.getAttribute('id');
+        return controlId!;
     }
 
     /**
@@ -183,7 +235,7 @@ export class ListReport {
     /**
      * Checks if the List Report app is loaded in the preview iframe.
      *
-     *  @return Promise that resolves when the app is loaded.
+     *  @returns Promise that resolves when the app is loaded.
      */
     async checkAppLoaded(): Promise<void> {
         await test.step(`Check app rendered in the preview iframe \`${this.context}\``, async () => {
@@ -192,6 +244,18 @@ export class ListReport {
                     `[id="fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--listReportFilter"]`
                 )
                 .waitFor({ state: 'visible' });
+        });
+    }
+    /**
+     * @param text - control label to check.
+     * @param expectedState - expected enabled state.
+     */
+    async checkControlState(text: string, expectedState: boolean): Promise<void> {
+        const state = expectedState ? 'enabled' : 'disabled';
+        await test.step(`Check control with label \`${text}\` is \`${state}\` in the \`${this.context}\``, async () => {
+            const selector = await this.getControlIdByLabel(text);
+            const controlState = await (await this.frame.locator(`[id="${selector}"]`)).isEnabled();
+            expect(controlState).toBe(expectedState);
         });
     }
 
@@ -652,6 +716,13 @@ class ChangesPanel {
         });
     }
 
+    async checkText(text: string): Promise<void> {
+        await test.step(`Check \`${text}\` text is visible in the ${this.context}`, async () => {
+            const textLocator = this.page.getByText(text);
+            await textLocator.waitFor({ state: 'visible' });
+            await expect(textLocator).toBeVisible();
+        });
+    }
     /**
      * Reusable function to check saved changes stack for specific change types.
      *
@@ -679,8 +750,10 @@ class ChangesPanel {
             let textLocator = this.page.getByText(text.join(''));
             if (stack === 'unsaved') {
                 textLocator = this.page.getByTestId('unsaved-changes-stack').getByText(text.join(''));
+                await textLocator.waitFor({ state: 'visible' });
             } else if (stack === 'saved') {
                 textLocator = this.getGenericItemLocatorInSavedStack(text);
+                await textLocator.waitFor({ state: 'attached' });
             }
             await expect(textLocator).toBeVisible();
         });
@@ -774,7 +847,7 @@ class OutlinePanel {
             const count = await this.page.locator(selector).count();
 
             if (count === 0) {
-                throw new Error(`Node with text "${text}" not found in the outline panel`);
+                await this.page.locator(selector).waitFor({ state: 'attached' });
             }
 
             // Element exists but may not be in viewport, scroll it into view
@@ -820,7 +893,64 @@ class OutlinePanel {
         });
     }
 
-    // Click on one of the menus is opend context menu of the outline panel
+    async checkOutlineNodeIndicator(text: string, expected: 'UnSaved' | 'Saved' | 'SavedAndUnSaved'): Promise<void> {
+        await this.clickOnNode(text);
+        await test.step(`Check \`${text}\` node has \`${CHANGE_INDICATOR[expected]} (${expected})\` indicator in the ${this.context}`, async () => {
+            const indicatorType = await this.getChangeIndicator(text);
+            expect(indicatorType).toBe(expected);
+        });
+    }
+
+    /**
+     * Returns the type of change indicator rendered for a node in the outline panel.
+     * Possible return values: 'unsavedChange', 'saved', 'savedAndUnsavedChange', or null.
+     *
+     * @param text - The text of the node to check for change indicator.
+     * @returns The type of change indicator: 'unsavedChange', 'saved', 'savedAndUnsavedChange', or null.
+     */
+    async getChangeIndicator(text: string): Promise<'UnSaved' | 'Saved' | 'SavedAndUnSaved' | null> {
+        return await this.page.evaluate((nodeText) => {
+            // Find the node with the given text
+            const node = Array.from(document.querySelectorAll('.tree-cell div')).find(
+                (el) => el.textContent?.trim() === nodeText
+            );
+            if (!node) {
+                return null;
+            }
+
+            // Go to its parent with .tree-cell
+            const treeCell = node.closest('.tree-cell');
+            if (!treeCell || !treeCell.parentElement) {
+                return null;
+            }
+
+            // Check siblings for change indicator SVGs
+            for (const sibling of Array.from(treeCell.parentElement.children)) {
+                if (sibling === treeCell) {
+                    continue;
+                }
+                const svg = sibling.querySelector('svg');
+                if (!svg) {
+                    continue;
+                }
+
+                const circle = svg.querySelector('circle');
+                const path = svg.querySelector('path');
+                if (circle && circle.hasAttribute('stroke') && !circle.hasAttribute('fill') && !path) {
+                    return 'UnSaved';
+                }
+                if (circle && circle.hasAttribute('fill') && !circle.hasAttribute('stroke') && !path) {
+                    return 'Saved';
+                }
+
+                if (circle && circle.hasAttribute('stroke') && path && path.hasAttribute('fill')) {
+                    return 'SavedAndUnSaved';
+                }
+            }
+            return null;
+        }, text);
+    }
+
     /**
      * Clicks on a menu item in the context menu of the outline panel.
      *
@@ -828,11 +958,9 @@ class OutlinePanel {
      * @returns Promise that resolves when the click action is completed.
      */
     async clickOnContextMenu(menuName: string): Promise<void> {
-        // return test.step(`Click on \`${menuName}\` item in the context menu of the Outline Panel`, async () => {
         const menuItem = this.page.getByRole('menu').getByRole('menuitem', { name: menuName });
         await expect(menuItem).toBeVisible();
         await menuItem.describe(`\`${menuName}\` item in the context menu of the Outline Panel`).click();
-        //});
     }
 
     /**
@@ -879,8 +1007,6 @@ class OutlinePanel {
     }
 
     async getEnabledOptionsInFilterOutline(): Promise<(string | null | undefined)[]> {
-        //return Promise.resolve([]);
-
         const checkedLabels =
             (await this.page.evaluate(() => {
                 return Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
@@ -967,6 +1093,11 @@ class PropertiesPanel {
         });
     }
 
+    /**
+     * Scrolls to a property in the properties panel based on the provided selector.
+     *
+     * @param propertySelector - The selector of the property to scroll to.
+     */
     async scrollToProperty(propertySelector: string): Promise<void> {
         await this.page.evaluate(
             ({ querySelector }: { querySelector: string }) => {
@@ -998,6 +1129,12 @@ class PropertiesPanel {
         );
     }
 
+    getExpressionValueButton(propertyName: string): Locator {
+        return this.page
+            .getByTestId(`${propertyName}--InputTypeToggle--expression`)
+            .describe(`\`Expression\` value for \`${capitalizeWords(propertyName)}\` property in the ${this.context}`);
+    }
+
     /**
      * Returns a locator for a string editor in the properties panel based on the provided property name.
      *
@@ -1015,6 +1152,36 @@ class PropertiesPanel {
         });
     }
 
+    checkValue(propertyName: string, expectedValue: string): Promise<void> {
+        return test.step(`Check \`${capitalizeWords(propertyName)}\` property value is \`${expectedValue}\` in the ${
+            this.context
+        }`, async () => {
+            const value = (await this.getAllPropertiesEditorTypes()).find(
+                (item) => item.originalProperty === propertyName
+            )!.value;
+            expect(value).toBe(expectedValue);
+        });
+    }
+
+    checkError(propertyName: string, errorMessage: string): Promise<void> {
+        const newMessage = errorMessage ? `has error and error message is\`${errorMessage}\`` : 'has no error';
+        return test.step(`Check \`${capitalizeWords(propertyName)}\` property value ${newMessage} in the ${
+            this.context
+        }`, async () => {
+            const value = (await this.getAllPropertiesEditorTypes()).find(
+                (item) => item.originalProperty === propertyName
+            )!.errorMessage;
+            expect(value).toBe(errorMessage);
+        });
+    }
+
+    /**
+     * Returns a locator for the Value Help input icon in the properties panel based on the provided property name.
+     *
+     * @param propertyName - name of the property.
+     * @param title - title attribute of the icon.
+     * @returns Locator for the Value Help input icon.
+     */
     getValueHelpInput(propertyName: string, title = 'Select Icon'): Locator {
         this.title = title;
         return this.page
@@ -1023,6 +1190,11 @@ class PropertiesPanel {
             .describe(`\`Value Help\` icon for \`${capitalizeWords(propertyName)}\` property in the ${this.context}`);
     }
 
+    /**
+     * Fills the Filter Icons input field in the Value Help dialog.
+     *
+     * @param value - value to fill in.
+     */
     async fillValueHelpFilter(value: string): Promise<void> {
         await test.step(`Fill \`Filter Icons\` input field with \`${value}\` in the \`${this.title}\` dialog`, async () => {
             const filterInput = this.page.getByPlaceholder('Filter Icons');
@@ -1031,12 +1203,24 @@ class PropertiesPanel {
         });
     }
 
+    /**
+     * Returns a locator for a table cell in the Value Help dialog based on the provided cell content.
+     *
+     * @param cellContent - content of the cell.
+     * @returns Locator for the table cell with the specified content.
+     */
     getValueHelpTableCell(cellContent: string): Locator {
         return this.page
             .getByRole('gridcell', { name: cellContent })
             .describe(`\`cell\` with \`${cellContent}\` in the \`${this.title}\` dialog`);
     }
 
+    /**
+     * Checks the value of a string editor property in the properties panel.
+     *
+     * @param propertyName - name of the property.
+     * @param expectedValue - expected value of the property.
+     */
     async checkStringEditorPropertyValue(propertyName: string, expectedValue: string): Promise<void> {
         await test.step(`Check \`${capitalizeWords(propertyName)}\` property value is \`${expectedValue}\` in the ${
             this.context
@@ -1048,10 +1232,325 @@ class PropertiesPanel {
         });
     }
 
-    get valueHelpOkButton(): Locator {
-        return this.page.getByRole('button', { name: 'OK' }).describe(`\`OK\` button in the \`${this.title}\` dialog`);
+    /**
+     * Returns a locator for the OK button in the Value Help dialog.
+     *
+     * @param btn - button name, default is 'OK'.
+     * @param title - title or context of the button.
+     * @returns Locator for the OK button.
+     */
+    getButton(btn = 'OK', title: string): Locator {
+        return this.page.getByRole('button', { name: btn }).describe(`\`${btn}\` button in the \`${title}\``);
     }
 
+    /**
+     * Returns a locator for the filter option button in the Manage Filters callout.
+     *
+     * @param text - The text of the filter option to locate.
+     * @returns Locator for the filter option button with the specified text.
+     */
+    getFilterOptionButton(text: string = 'Show only editable properties'): Locator {
+        return this.page
+            .locator('label')
+            .filter({ hasText: `${text}` })
+            .locator('i')
+            .describe(`\`${text}\` option to uncheck in the Manage Filters callout in ${this.context}`);
+    }
+
+    /*
+     * @returns Locator for the Filter Options button in the Manage Filters callout.
+     */
+    get mangeFiltersButton(): Locator {
+        return this.page
+            .locator('#control-property-editor-property-search-funnel-callout-target-id')
+            .describe(`\`Filter Options\` button in the Manage Filters callout in the ${this.context}`);
+    }
+
+    /**
+     * Opens the tooltip for a given property in the properties panel.
+     *
+     * @param property
+     */
+    async openTooltip(property: string): Promise<void> {
+        await test.step(`Hover property \`${capitalizeWords(property)}\` to open tooltip in the ${
+            this.context
+        }`, async () => {
+            await this.page.getByTestId(`${property}--Label`).hover();
+        });
+    }
+
+    /**
+     * Extracts the content of a tooltip for a given property in the properties panel.
+     *
+     * @param property
+     * @returns An object containing the extracted tooltip content.
+     */
+    async extractTooltipContent(property: string): Promise<any> {
+        const tooltipId = `${property}--PropertyTooltip--tooltip`;
+        const tooltip = this.page.locator(`#${tooltipId}`);
+
+        // Title (usually in header)
+        const title = await tooltip.locator(`div[id="${property}--PropertyTooltip-Header"] span`).first().textContent();
+
+        // Section containing key-value pairs
+        const section = tooltip.locator('section');
+        const spans = await section.locator('span').elementHandles();
+
+        // Extract key-value pairs (alternating span order)
+        const pairs: Record<string, string> = {};
+        for (let i = 0; i < spans.length - 1; i++) {
+            const key = await spans[i].textContent();
+            const value = await spans[i + 1].textContent();
+            // Heuristic: key is not empty, value is not empty, and key !== value
+            if (key && value && key !== value) {
+                pairs[key.trim()] = value.trim();
+                i++; // skip next, as it's already used as value
+            }
+        }
+
+        // Info icon description (aria-label or title attribute)
+        let infoIconDesc = '';
+        const infoIcon = await section.locator('i[data-icon-name="Info"]').elementHandle();
+        if (infoIcon) {
+            infoIconDesc = (await infoIcon.getAttribute('aria-label')) || (await infoIcon.getAttribute('title')) || '';
+        }
+
+        // Footer description (by ID)
+        const descriptionId = `${property}--PropertyTooltip-Footer`;
+        const description = await tooltip.locator(`#${descriptionId}`).textContent();
+
+        return {
+            title: title?.trim() ?? '',
+            ...pairs,
+            infoIconDesc: infoIconDesc.trim(),
+            description: description?.trim() ?? ''
+        };
+    }
+    /**
+     * Finds all property names in the properties panel.
+     *
+     * @returns An array of property names.
+     */
+    async findAllPropertiesPanel(): Promise<string[]> {
+        const propertyNames =
+            (await this.page.evaluate(() => {
+                return Array.from(document.querySelectorAll('[data-testid$="--InputTypeWrapper"]'))
+                    .map((wrapper) => {
+                        const label = wrapper.querySelector('label[data-testid$="--Label"]');
+                        return label ? label.textContent.trim() : '';
+                    })
+                    .filter(Boolean);
+            })) ?? [];
+        return propertyNames;
+    }
+
+    /**
+     * Filters properties in the properties panel based on the provided text.
+     *
+     * @param text
+     */
+    async filterProperties(text: string): Promise<void> {
+        const filterInput = this.page.getByPlaceholder('Filter Properties');
+        await test.step(`Fill \`Filter Properties\` input field with \`${text}\``, async () => {
+            await filterInput.fill(text);
+        });
+    }
+
+    /**
+     * Retrieves all properties along with their editor types and values from the properties panel.
+     *
+     * @returns An array of objects containing property names, editor types, checked types, and values.
+     */
+    async getAllPropertiesEditorTypes(): Promise<
+        {
+            property: string | null;
+            editorType: string | null;
+            checkedType: string | null;
+            value: string;
+            originalProperty: string;
+            errorMessage?: string;
+        }[]
+    > {
+        await this.page.waitForSelector('[data-testid$="--InputTypeWrapper"]');
+        return await this.page.evaluate(() => {
+            return Array.from(document.querySelectorAll('[data-testid$="--InputTypeWrapper"]')).map((wrapper) => {
+                // Get property name from label
+                const label = wrapper.querySelector('label[data-testid$="--Label"]');
+                const propertyName = label ? label.textContent.trim() : null;
+
+                const checkedButton = wrapper.querySelector('button.is-checked');
+                let editorType = null;
+                let checkedType = null;
+                let value: string = '';
+                let errorMessage: string = '';
+
+                if (checkedButton) {
+                    // Determine type by data-testid or title
+                    const testid = checkedButton.getAttribute('data-testid') || '';
+                    const title = checkedButton.getAttribute('title') || '';
+                    if (testid.includes('StringEditor')) {
+                        editorType = 'input';
+                    } else if (testid.includes('enumMember') || testid.includes('DropdownEditor')) {
+                        editorType = 'dropdown';
+                    } else if (testid.includes('booleanTrue') || testid.includes('booleanFalse')) {
+                        editorType = 'checkbox';
+                    } else if (testid.includes('expression')) {
+                        editorType = 'expression';
+                    } else {
+                        editorType = 'input';
+                    }
+
+                    checkedType = testid || title;
+                }
+
+                // Get value for string editor
+                const stringInput = wrapper.querySelector('input[data-testid$="--StringEditor"]');
+                if (stringInput) {
+                    value = (stringInput as HTMLInputElement).value ?? '';
+                }
+
+                // Get value for dropdown editor
+                const dropdownInput = wrapper.querySelector('[data-testid$="--DropdownEditor"] input');
+                if (dropdownInput) {
+                    value = (dropdownInput as HTMLInputElement).value ?? '';
+                }
+
+                // Get value for checkbox (true/false)
+                if (editorType === 'checkbox') {
+                    value = checkedButton?.getAttribute('title') || checkedType || '';
+                }
+
+                // Get value for expression editor
+                const expressionInput = wrapper.querySelector(
+                    'button[data-testid$="--InputTypeToggle--expression"].is-checked'
+                );
+                if (expressionInput) {
+                    value = (stringInput as HTMLInputElement).value ?? '';
+                }
+
+                // Get error message if present
+                const errorSpan = wrapper.querySelector('span[data-automation-id="error-message"]');
+                if (errorSpan) {
+                    errorMessage = errorSpan.textContent?.trim();
+                }
+
+                return {
+                    property: propertyName,
+                    originalProperty: (propertyName || '')
+                        .split(' ')
+                        .map((word, idx) =>
+                            idx === 0
+                                ? word.charAt(0).toLowerCase() + word.slice(1)
+                                : word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(''),
+                    editorType,
+                    checkedType,
+                    value,
+                    errorMessage
+                };
+            });
+        });
+    }
+
+    async checkIfPropertiesFromApiAreRendered(
+        propertiesFromApi: { name: string; readableName: string; isEnabled: boolean; type: string; value: string }[],
+        propertiesRendered: {
+            property: string | null;
+            editorType: string | null;
+            checkedType: string | null;
+            value: string;
+        }[]
+    ): Promise<void> {
+        const namesFromApi = propertiesFromApi
+            .filter((p) => p.isEnabled)
+            .map((p: any) => {
+                return { name: p.readableName, value: String(p.value) };
+            })
+            .filter((p) => p)
+            .sort();
+        const namesRendered = propertiesRendered
+            .map((p: any) => {
+                return { name: p.property, value: p.value };
+            })
+            .sort();
+        let output = `Check only following properties are rendered in the ${this.context}\n`;
+        for (const item of namesRendered) {
+            output += `     - Property name \`${item.name}\` and its value is \`${
+                item.value === '' ? 'NO_VALUE_SET' : item.value
+            }\`\n`;
+        }
+        expect(namesRendered, output).toEqual(namesFromApi);
+    }
+
+    /**
+     * Retrieves the visible properties from the provided messages.
+     *
+     * @param messages - Array of messages containing property information.
+     * @returns Promise that resolves to an array of visible properties.
+     */
+    async getAllPropertiesFromMessage(
+        messages: any[]
+    ): Promise<{ name: string; readableName: string; isEnabled: boolean; type: string; value: string }[]> {
+        const result = await waitForScene(
+            () => Promise.resolve(messages.filter((m) => !!m.action?.payload?.properties).length > 0),
+            2000
+        );
+        expect(result).toBe(true);
+
+        const relevant = messages.filter((m) => !!m.action?.payload?.properties);
+        return relevant[relevant.length - 1].action.payload.properties.map((p: any) => {
+            return { name: p.name, readableName: p.readableName, isEnabled: p.isEnabled, type: p.type, value: p.value };
+        });
+    }
+
+    async checkPropertiesListIsFilteredByText(filterText: string): Promise<void> {
+        await test.step(`Check properties list is filtered by \`${filterText}\` in the ${this.context}`, async () => {
+            const propertyNames = await this.findAllPropertiesPanel();
+            for (const name of propertyNames) {
+                expect(name.toLowerCase().includes(filterText.toLowerCase())).toBe(true);
+            }
+        });
+    }
+
+    async checkPropertyIndicator(
+        propertyName: string,
+        expected: 'Saved' | 'UnSaved' | 'SavedAndUnSaved'
+    ): Promise<void> {
+        const indicator = await this.page.evaluate(
+            ([propertyName]) => {
+                const svg = document.querySelector(`[id="${propertyName}--ChangeIndicator"]`);
+                const circle = svg!.querySelector('circle');
+                const path = svg!.querySelector('path');
+                if (circle && circle.hasAttribute('stroke') && !circle.hasAttribute('fill') && !path) {
+                    return 'UnSaved';
+                }
+                if (circle && circle.hasAttribute('fill') && !circle.hasAttribute('stroke') && !path) {
+                    return 'Saved';
+                }
+
+                if (circle && circle.hasAttribute('stroke') && path && path.hasAttribute('fill')) {
+                    return 'SavedAndUnSaved';
+                }
+            },
+            [propertyName]
+        );
+        return test.step(`Check \`${CHANGE_INDICATOR[expected]}\` (${expected}) indicator is visible for the property \`${propertyName}\` in the ${this.context}`, async () => {
+            expect(indicator).toBe(expected);
+        });
+    }
+
+    async checkTooltipContent(property: string, expectedContent: any): Promise<void> {
+        await this.openTooltip(property);
+        const tooltip = await this.extractTooltipContent(property);
+        await test.step(`Verify tooltip content \n\`\`\`json\n${JSON.stringify(
+            tooltip,
+            null,
+            2
+        )}\n\`\`\`\n\n`, async () => {
+            expect(tooltip).toMatchObject(expectedContent);
+        });
+    }
     /**
      * Constructor for PropertiesPanel.
      *
@@ -1433,10 +1932,6 @@ export function capitalizeWords(input: string): string {
     return input.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-export const delay = async (ms = 5000): Promise<void> => {
-    await new Promise((r) => setTimeout(r, ms));
-};
-
 export async function waitUntilFileIsDeleted(filePath: string): Promise<string[]> {
     let retryCount = 0;
     let file: string[] = [];
@@ -1456,15 +1951,98 @@ export async function waitUntilFileIsDeleted(filePath: string): Promise<string[]
     return file;
 }
 
-export async function exposeFunction(page: Page, message: any[]) {
-    await page.exposeFunction('onPostMessage', (e: any) => {
-        if (e.action?.type && !['[ext] outline-changed', '[ext] property-changed'].includes(e.action.type)) {
-            message.push(e);
+/**
+ * Check if given files count are present in the changes folder
+ *
+ * @param changesFolderPath - absolute path to the changes folder.
+ * @param filesCount - number of files to be checked in the changes folder.
+ * @param retry - number of retries.
+ * @returns boolean
+ */
+export async function waitForChangeFile(changesFolderPath: string, filesCount = 1, retry = 5): Promise<boolean> {
+    const path = changesFolderPath;
+    for (let index = 0; index < retry; index++) {
+        try {
+            const files = readdirSync(path);
+            if (files.length >= filesCount) {
+                const text = filesCount < 1 ? 'no files' : `${files.length} files`;
+                expect(files.length, `Confirm there are ${text} in the workspace`).toBeGreaterThanOrEqual(filesCount);
+                return true;
+            }
+        } catch (e) {
+            await delay();
         }
+        return false;
+    }
+    return false;
+}
+
+export async function createChangeFlexFile(webappPath: string, version: string | undefined) {
+    const path = join(webappPath, 'changes');
+
+    // check if `changes` directory exists
+    if (!existsSync(path)) {
+        mkdirSync(path, { recursive: true });
+    }
+
+    // get the file details
+    const fileDetails = await getChangeFile(version);
+    const filePath = join(path, fileDetails.name);
+
+    // write the content to the file
+    await test.step(`Create change flex file \`${fileDetails.name}\` in the changes folder with content \n\`\`\`json\n${fileDetails.content}\n\`\`\`\n\n`, async () => {
+        writeFileSync(filePath, fileDetails.content, 'utf-8');
     });
-    await page.evaluate(() => {
-        window.parent.addEventListener('message', (e: any) => {
-            (window as any).onPostMessage(e.data);
-        });
-    });
+}
+
+/**
+ * this method contains file content after updating text of `Create` button.
+ *
+ * @param version - ui5 version
+ * @returns `name` and `content` for change flex file
+ */
+export async function getChangeFile(version: string | undefined) {
+    return {
+        name: 'id_create_propertyChange.change',
+        content: `{
+  "changeType": "propertyChange",
+  "reference": "adp.fiori.elements.v2",
+  "namespace": "apps/adp.fiori.elements.v2/changes/",
+  "creation": "2025-11-04T07:53:54.822Z",
+  "projectId": "adp.fiori.elements.v2",
+  "packageName": "$TMP",
+  "support": {
+    "generator": "@sap-ux/control-property-editor",
+    "sapui5Version": "${version}",
+    "command": "property"
+  },
+  "originalLanguage": "EN",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "change",
+  "fileName": "id_create_propertyChange.change",
+  "content": {
+    "property": "text",
+    "newValue": "Create New"
+  },
+  "texts": {},
+  "selector": {
+    "id": "fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--addEntry",
+    "type": "sap.m.Button",
+    "idIsLocal": false
+  },
+  "dependentSelector": {},
+  "jsOnly": false
+}
+          `
+    };
+}
+
+export function deleteChanges(changesPath: string): void {
+    try {
+        if (existsSync(changesPath)) {
+            rmSync(changesPath, { recursive: true });
+        }
+    } catch (e) {
+        console.log(`Failed to delete changes folder from ${changesPath} \n ${e}`);
+    }
 }

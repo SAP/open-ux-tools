@@ -23,7 +23,6 @@ async function createChanges(page: Page): Promise<void> {
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@changes-panel @cpe @adp`, () => {
-    // test.setTimeout(5 * 60 * 10000);
     test(
         '1. Summary view',
         {

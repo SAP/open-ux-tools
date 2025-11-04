@@ -79,7 +79,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Find and right click on `ObjectPageSubSection` node in the Outline Panel
@@ -118,7 +118,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Find and right click on `ObjectPageLayout` node in the Outline Panel

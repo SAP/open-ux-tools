@@ -5,7 +5,6 @@ import { AdaptationEditorShell } from '../test-utils';
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@toolbar @themes @cpe @adp`, () => {
-    // test.setTimeout(5 * 60 * 10000);
     test(
         '1. Change Theme',
         {

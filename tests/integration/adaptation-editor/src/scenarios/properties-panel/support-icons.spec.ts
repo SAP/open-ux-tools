@@ -6,7 +6,6 @@ import { AdaptationEditorShell, ListReport, verifyChanges } from '../test-utils'
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@properties-panel @support-icons @cpe @adp`, () => {
-    // test.setTimeout(5 * 60 * 10000);
     test(
         '1. Change icon property for button control',
         {
@@ -28,7 +27,7 @@ test.describe(`@properties-panel @support-icons @cpe @adp`, () => {
             await editor.propertiesPanel.getValueHelpInput('activeIcon').click();
             await editor.propertiesPanel.fillValueHelpFilter('action');
             await editor.propertiesPanel.getValueHelpTableCell('action-settings').click();
-            await editor.propertiesPanel.valueHelpOkButton.click();
+            await editor.propertiesPanel.getButton('OK', 'Select Icon Dialog').click();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.propertiesPanel.checkStringEditorPropertyValue('activeIcon', 'sap-icon://action-settings');
