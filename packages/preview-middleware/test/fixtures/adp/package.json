@@ -10,9 +10,9 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@sap-ux/backend-proxy-middleware": "0.6.61",
-    "@sap-ux/ui5-proxy-middleware": "1.1.24",
-    "@ui5/cli": "^3.3.2"
+    "@sap-ux/backend-proxy-middleware": "0.10.11",
+    "@sap-ux/ui5-proxy-middleware": "1.6.4",
+    "@ui5/cli": "4.0.33"
   },
   "scripts": {
     "build": "ui5 build --clean-dest",
