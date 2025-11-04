@@ -12,6 +12,8 @@
     ],
     "scripts": {
         "build": "tsc --build",
+        "start": "ts-node ./src/index.ts --start",
+        "stop": "ts-node ./src/index.ts --stop",
         "clean": "rimraf dist *.tsbuildinfo",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --build --watch"
@@ -23,12 +25,18 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
-        "@sap-ux/logger": "workspace:*"
+        "@sap-ux/logger": "workspace:*",
+        "@types/lodash": "4.14.202",
+        "dotenv": "16.3.1",
+        "lodash": "4.17.21",
+        "mockserver-client": "5.15.0"
     },
     "devDependencies": {
         "@jest/types": "30.0.1",
         "mockserver-node": "5.15.0",
-        "rimraf": "5.0.5"
+        "rimraf": "5.0.5",
+        "ts-node": "10.9.2",
+        "typescript": "5.9.3"
     },
     "engines": {
         "node": ">=20.0"
