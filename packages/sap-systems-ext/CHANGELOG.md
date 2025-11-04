@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.3
+
+### Patch Changes
+
+-   7ab5311: config test
+
 ## 0.0.2
 
 ### Patch Changes
