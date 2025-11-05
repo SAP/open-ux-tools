@@ -107,10 +107,10 @@ export async function downloadAppContent(
     const { appHostId, appName, appVersion } = parameters;
     const appNameVersion = `${appName}-${appVersion}`;
     try {
-        const htmlRepoCredentials = await getHtml5RepoCredentials(spaceGuid, logger);
+        const { credentials, serviceInstance } = await getHtml5RepoCredentials(spaceGuid, logger);
 
-        const token = await getToken(htmlRepoCredentials?.credentials[0]?.uaa);
-        const uri = `${htmlRepoCredentials?.credentials[0]?.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
+        const token = await getToken(credentials[0]?.credentials.uaa);
+        const uri = `${credentials[0]?.credentials.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
         const zip = await downloadZip(token, appHostId, uri);
 
         let admZip;
@@ -131,7 +131,7 @@ export async function downloadAppContent(
             const manifest = JSON.parse(zipEntry.getData().toString('utf8')) as Manifest;
             return {
                 entries: admZip.getEntries(),
-                serviceInstanceGuid: htmlRepoCredentials.serviceInstance.guid,
+                serviceInstanceGuid: serviceInstance.guid,
                 manifest: manifest
             };
         } catch (e) {

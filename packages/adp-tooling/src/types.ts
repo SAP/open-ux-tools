@@ -837,10 +837,12 @@ export interface AppParamsExtended extends CfAppParams {
 }
 
 export interface CfCredentials {
-    [key: string]: any;
-    uaa: Uaa;
-    uri: string;
-    endpoints: any;
+    credentials: {
+        [key: string]: any;
+        uaa: Uaa;
+        uri: string;
+        endpoints: any;
+    };
 }
 
 export interface ServiceKeys {

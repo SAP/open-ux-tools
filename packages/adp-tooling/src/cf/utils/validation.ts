@@ -142,7 +142,7 @@ export async function validateODataEndpoints(
     const routes = xsApp?.routes;
     if (dataSources && routes) {
         const serviceKeyEndpoints = ([] as string[]).concat(
-            ...credentials.map((item) => (item.endpoints ? Object.keys(item.endpoints) : []))
+            ...credentials.map(({ credentials }) => (credentials.endpoints ? Object.keys(credentials.endpoints) : []))
         );
         messages.push(...matchRoutesAndDatasources(dataSources, routes, serviceKeyEndpoints));
     } else if (routes && !dataSources) {

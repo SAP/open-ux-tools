@@ -83,26 +83,28 @@ describe('CF Services CLI', () => {
             const serviceInstanceGuid = 'test-guid-123';
             const mockCredentials: CfCredentials[] = [
                 {
-                    name: 'test-service-key',
-                    label: 'test-service',
-                    tags: [],
                     credentials: {
-                        uri: 'https://test-service.com',
+                        name: 'test-service-key',
+                        label: 'test-service',
+                        tags: [],
+                        credentials: {
+                            uri: 'https://test-service.com',
+                            uaa: {
+                                clientid: 'test-client',
+                                clientsecret: 'test-secret',
+                                url: 'https://uaa.test.com'
+                            }
+                        },
                         uaa: {
                             clientid: 'test-client',
                             clientsecret: 'test-secret',
                             url: 'https://uaa.test.com'
-                        }
-                    },
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: 'https://uaa.test.com'
-                    },
-                    uri: 'https://test-service.com',
-                    endpoints: {
-                        'html5-apps-repo': {
-                            'app_host_id': 'test-app-host-id'
+                        },
+                        uri: 'https://test-service.com',
+                        endpoints: {
+                            'html5-apps-repo': {
+                                'app_host_id': 'test-app-host-id'
+                            }
                         }
                     }
                 }
@@ -117,7 +119,7 @@ describe('CF Services CLI', () => {
                 filters: [
                     {
                         value: serviceInstanceGuid,
-                        key: eFilters.service_instance_guid
+                        key: eFilters.service_instance_guids
                     }
                 ]
             });
@@ -138,7 +140,7 @@ describe('CF Services CLI', () => {
                 filters: [
                     {
                         value: serviceInstanceGuid,
-                        key: eFilters.service_instance_guid
+                        key: eFilters.service_instance_guids
                     }
                 ]
             });

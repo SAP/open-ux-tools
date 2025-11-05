@@ -14,7 +14,7 @@ export function getAppHostIds(credentials: CfCredentials[]): string[] {
     const appHostIds: string[] = [];
 
     for (const credential of credentials) {
-        const appHostId = credential['html5-apps-repo']?.app_host_id;
+        const appHostId = credential.credentials['html5-apps-repo']?.app_host_id;
         if (appHostId) {
             // There might be multiple appHostIds separated by comma
             const ids = appHostId.split(',').map((item: string) => item.trim());

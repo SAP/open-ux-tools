@@ -183,14 +183,16 @@ describe('CF Utils Validation', () => {
 
             const mockCredentials: CfCredentials[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: {
-                        'odata-endpoint': '/odata.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: {
+                            'odata-endpoint': '/odata.test.com'
+                        }
                     }
                 }
             ];
@@ -224,14 +226,16 @@ describe('CF Utils Validation', () => {
 
             const mockCredentials: CfCredentials[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: {
-                        'odata-endpoint': '/odata.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: {
+                            'odata-endpoint': '/odata.test.com'
+                        }
                     }
                 }
             ];
@@ -268,14 +272,16 @@ describe('CF Utils Validation', () => {
 
             const mockCredentials: CfCredentials[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: {
-                        'odata-endpoint': '/odata.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: {
+                            'odata-endpoint': '/odata.test.com'
+                        }
                     }
                 }
             ];
@@ -418,13 +424,15 @@ describe('CF Utils Validation', () => {
 
             const mockCredentials: CfCredentials[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: undefined
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: undefined
+                    }
                 }
             ];
 
@@ -477,25 +485,29 @@ describe('CF Utils Validation', () => {
 
             const mockCredentials: CfCredentials[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client-1',
-                        clientsecret: 'test-secret-1',
-                        url: '/uaa1.test.com'
-                    },
-                    uri: '/service1.test.com',
-                    endpoints: {
-                        'odata-endpoint-1': '/odata1.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client-1',
+                            clientsecret: 'test-secret-1',
+                            url: '/uaa1.test.com'
+                        },
+                        uri: '/service1.test.com',
+                        endpoints: {
+                            'odata-endpoint-1': '/odata1.test.com'
+                        }
                     }
                 },
                 {
-                    uaa: {
-                        clientid: 'test-client-2',
-                        clientsecret: 'test-secret-2',
-                        url: '/uaa2.test.com'
-                    },
-                    uri: '/service2.test.com',
-                    endpoints: {
-                        'odata-endpoint-2': '/odata2.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client-2',
+                            clientsecret: 'test-secret-2',
+                            url: '/uaa2.test.com'
+                        },
+                        uri: '/service2.test.com',
+                        endpoints: {
+                            'odata-endpoint-2': '/odata2.test.com'
+                        }
                     }
                 }
             ];

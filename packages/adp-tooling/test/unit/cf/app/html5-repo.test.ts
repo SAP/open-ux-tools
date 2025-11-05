@@ -42,9 +42,11 @@ describe('HTML5 Repository', () => {
     const mockServiceKeys: ServiceKeys = {
         credentials: [
             {
-                uaa: mockUaa,
-                uri: '/test-html5-repo',
-                endpoints: {}
+                credentials: {
+                    uaa: mockUaa,
+                    uri: '/test-html5-repo',
+                    endpoints: {}
+                }
             }
         ],
         serviceInstance: {

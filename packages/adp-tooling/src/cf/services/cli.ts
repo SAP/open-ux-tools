@@ -1,6 +1,4 @@
-import CFLocal = require('@sap/cf-tools/out/src/cf-local');
-import CFToolsCli = require('@sap/cf-tools/out/src/cli');
-import { eFilters } from '@sap/cf-tools/out/src/types';
+import { Cli, cfGetInstanceCredentials, eFilters } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -17,7 +15,7 @@ const ENV = { env: { 'CF_COLOR': 'false' } };
  */
 export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
     try {
-        const response = await CFToolsCli.Cli.execute(['version'], ENV);
+        const response = await Cli.execute(['version'], ENV);
         if (response.exitCode !== 0) {
             throw new Error(response.stderr);
         }
@@ -36,12 +34,11 @@ export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
  */
 export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCredentials[]> {
     try {
-        return await CFLocal.cfGetInstanceCredentials({
+        return await cfGetInstanceCredentials({
             filters: [
                 {
                     value: serviceInstanceGuid,
-                    // key: eFilters.service_instance_guid
-                    key: eFilters.service_instance_guid
+                    key: eFilters.service_instance_guids
                 }
             ]
         });
@@ -58,10 +55,7 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCre
  */
 export async function createServiceKey(serviceInstanceName: string, serviceKeyName: string): Promise<void> {
     try {
-        const cliResult = await CFToolsCli.Cli.execute(
-            ['create-service-key', serviceInstanceName, serviceKeyName],
-            ENV
-        );
+        const cliResult = await Cli.execute(['create-service-key', serviceInstanceName, serviceKeyName], ENV);
         if (cliResult.exitCode !== 0) {
             throw new Error(cliResult.stderr);
         }
@@ -78,7 +72,7 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
  */
 export async function requestCfApi<T = unknown>(url: string): Promise<T> {
     try {
-        const response = await CFToolsCli.Cli.execute(['curl', url], ENV);
+        const response = await Cli.execute(['curl', url], ENV);
         if (response.exitCode === 0) {
             try {
                 return JSON.parse(response.stdout);
