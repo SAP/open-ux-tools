@@ -1,5 +1,20 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.78
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/deploy-config-generator-shared@0.1.51
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.37
+    -   @sap-ux/cf-deploy-config-writer@0.3.36
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/btp-utils@1.1.5
+
 ## 0.2.77
 
 ### Patch Changes

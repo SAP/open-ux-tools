@@ -1,5 +1,13 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.8
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/btp-utils@1.1.5
+
 ## 0.2.7
 
 ### Patch Changes
