@@ -1,5 +1,15 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.33
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/ui5-application-writer@1.5.20
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/logger@0.7.1
+
 ## 0.7.32
 
 ### Patch Changes
