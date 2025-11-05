@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.4.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.4.0
 
 ### Minor Changes

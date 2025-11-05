@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.5
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/logger@0.7.1
+
 ## 1.6.4
 
 ### Patch Changes
