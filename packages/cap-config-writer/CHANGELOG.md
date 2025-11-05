@@ -1,5 +1,16 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.23
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/yaml@0.17.2
+
 ## 0.12.22
 
 ### Patch Changes

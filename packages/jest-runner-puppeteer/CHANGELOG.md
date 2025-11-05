@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.2.0
 
 ### Minor Changes
