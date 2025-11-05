@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import type { CfCredentials, XsApp, XsAppRoute } from '../../types';
+import type { ServiceKeys, XsApp, XsAppRoute } from '../../types';
 import { getApplicationType, isSupportedAppTypeForAdp } from '../../source/manifest';
 
 /**
@@ -112,13 +112,13 @@ function matchRoutesAndDatasources(
  * Validate the OData endpoints, data sources and routes.
  *
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
- * @param {CfCredentials[]} credentials - The credentials.
+ * @param {ServiceKeys[]} serviceKeys - The service keys.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<string[]>} The messages.
  */
 export async function validateODataEndpoints(
     zipEntries: AdmZip.IZipEntry[],
-    credentials: CfCredentials[],
+    serviceKeys: ServiceKeys[],
     logger: ToolsLogger
 ): Promise<void> {
     const messages: string[] = [];
@@ -142,7 +142,7 @@ export async function validateODataEndpoints(
     const routes = xsApp?.routes;
     if (dataSources && routes) {
         const serviceKeyEndpoints = ([] as string[]).concat(
-            ...credentials.map(({ credentials }) => (credentials.endpoints ? Object.keys(credentials.endpoints) : []))
+            ...serviceKeys.map(({ credentials }) => (credentials.endpoints ? Object.keys(credentials.endpoints) : []))
         );
         messages.push(...matchRoutesAndDatasources(dataSources, routes, serviceKeyEndpoints));
     } else if (routes && !dataSources) {

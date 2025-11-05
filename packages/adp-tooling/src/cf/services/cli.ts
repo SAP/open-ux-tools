@@ -3,7 +3,7 @@ import { Cli, cfGetInstanceCredentials, eFilters } from '@sap/cf-tools';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
-import type { CfCredentials } from '../../types';
+import type { ServiceKeys } from '../../types';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 
@@ -30,9 +30,9 @@ export async function isCfInstalled(logger: ToolsLogger): Promise<boolean> {
  * Gets the service instance credentials.
  *
  * @param {string} serviceInstanceGuid - The service instance GUID.
- * @returns {Promise<CfCredentials[]>} The service instance credentials.
+ * @returns {Promise<ServiceKeys[]>} The service instance credentials.
  */
-export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCredentials[]> {
+export async function getServiceKeys(serviceInstanceGuid: string): Promise<ServiceKeys[]> {
     try {
         return await cfGetInstanceCredentials({
             filters: [

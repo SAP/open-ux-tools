@@ -6,7 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
 import { initI18n, t } from '../../../../src/i18n';
-import type { CfCredentials } from '../../../../src/types';
+import type { ServiceKeys } from '../../../../src/types';
 
 jest.mock('@sap/cf-tools/out/src/cf-local', () => ({
     cfGetInstanceCredentials: jest.fn()
@@ -81,7 +81,7 @@ describe('CF Services CLI', () => {
     describe('getServiceKeys', () => {
         test('should return service instance credentials', async () => {
             const serviceInstanceGuid = 'test-guid-123';
-            const mockCredentials: CfCredentials[] = [
+            const mockCredentials: ServiceKeys[] = [
                 {
                     credentials: {
                         name: 'test-service-key',

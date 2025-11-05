@@ -7,7 +7,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import {
-    getBusinessServiceKeys,
+    getBusinessServiceInfo,
     getFDCApps,
     getFDCRequestArguments,
     createServiceInstance,
@@ -18,7 +18,7 @@ import {
 import { initI18n, t } from '../../../../src/i18n';
 import { isLoggedInCf } from '../../../../src/cf/core/auth';
 import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
-import type { CfConfig, ServiceKeys, MtaYaml } from '../../../../src/types';
+import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
 import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
 
 jest.mock('fs', () => ({
@@ -75,7 +75,7 @@ describe('CF Services API', () => {
         jest.clearAllMocks();
     });
 
-    describe('getBusinessServiceKeys', () => {
+    describe('getBusinessServiceInfo', () => {
         test('should return service keys when service instance is found', async () => {
             const businessService = 'test-service';
             const config: CfConfig = {
@@ -85,8 +85,8 @@ describe('CF Services API', () => {
                 token: 'test-token'
             };
 
-            const mockServiceKeys: ServiceKeys = {
-                credentials: [
+            const mockServiceKeys: ServiceInfo = {
+                serviceKeys: [
                     {
                         credentials: {
                             clientid: 'test-client-id',
@@ -116,9 +116,9 @@ describe('CF Services API', () => {
                     }
                 ]
             });
-            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.credentials);
+            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.serviceKeys);
 
-            const result = await getBusinessServiceKeys(businessService, config, mockLogger);
+            const result = await getBusinessServiceInfo(businessService, config, mockLogger);
 
             expect(result).toEqual(mockServiceKeys);
             expect(mockLogger.log).toHaveBeenCalledWith(
@@ -137,7 +137,7 @@ describe('CF Services API', () => {
 
             mockRequestCfApi.mockResolvedValue({ resources: [] });
 
-            const result = await getBusinessServiceKeys(businessService, config, mockLogger);
+            const result = await getBusinessServiceInfo(businessService, config, mockLogger);
 
             expect(result).toBeNull();
         });
@@ -508,8 +508,8 @@ describe('CF Services API', () => {
                 spaceGuids: ['test-space-guid'],
                 names: ['test-service']
             };
-            const mockServiceKeys: ServiceKeys = {
-                credentials: [
+            const mockServiceKeys: ServiceInfo = {
+                serviceKeys: [
                     {
                         credentials: {
                             clientid: 'test-client-id',
@@ -539,7 +539,7 @@ describe('CF Services API', () => {
                     }
                 ]
             });
-            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.credentials);
+            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.serviceKeys);
 
             const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
 
@@ -633,7 +633,7 @@ describe('CF Services API', () => {
             const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
 
             expect(result).toEqual({
-                credentials: [
+                serviceKeys: [
                     {
                         credentials: {
                             clientid: 'test-client-id',
