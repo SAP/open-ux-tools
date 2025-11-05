@@ -1,5 +1,25 @@
 # @sap-ux/create
 
+## 0.13.157
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.44
+    -   @sap-ux/abap-deploy-config-writer@0.2.33
+    -   @sap-ux/mockserver-config-writer@0.9.25
+    -   @sap-ux/odata-service-writer@0.27.29
+    -   @sap-ux/flp-config-inquirer@0.4.56
+    -   @sap-ux/preview-middleware@0.23.47
+    -   @sap-ux/app-config-writer@0.6.56
+    -   @sap-ux/cap-config-writer@0.12.23
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/adp-tooling@0.17.6
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/logger@0.7.1
+
 ## 0.13.156
 
 ### Patch Changes
