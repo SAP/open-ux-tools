@@ -1,5 +1,23 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.12
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+
 ## 0.10.10
 
 ### Patch Changes

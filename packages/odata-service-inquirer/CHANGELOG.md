@@ -1,5 +1,50 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/guided-answers-helper@0.4.1
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/telemetry@0.6.37
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
+## 2.11.0
+
+### Minor Changes
+
+-   10a3b57: Adds a system store warning to password input, add new prompt (default false) whether to store the credentials for new system / existing system on reauth and a relevant breadcrumb.
+
+## 2.10.0
+
+### Minor Changes
+
+-   4ddcff3: Add a message for the Tree table default. Move and export shouldUseAnalyticalTable() for use in other repos.
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
+## 2.9.14
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+    -   @sap-ux/fiori-generator-shared@0.13.31
+    -   @sap-ux/telemetry@0.6.36
+    -   @sap-ux/inquirer-common@0.8.10
+
 ## 2.9.13
 
 ### Patch Changes

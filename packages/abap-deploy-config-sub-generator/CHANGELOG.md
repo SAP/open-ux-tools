@@ -1,5 +1,38 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.93
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/deploy-config-generator-shared@0.1.51
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.44
+    -   @sap-ux/abap-deploy-config-writer@0.2.33
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+
+## 0.1.92
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.43
+-   @sap-ux/deploy-config-generator-shared@0.1.50
+
+## 0.1.91
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.42
+-   @sap-ux/deploy-config-generator-shared@0.1.50
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.32
+
 ## 0.1.90
 
 ### Patch Changes

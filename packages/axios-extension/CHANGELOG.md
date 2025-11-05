@@ -1,5 +1,14 @@
 # @sap-ux/axios-extension
 
+## 1.24.2
+
+### Patch Changes
+
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+
 ## 1.24.1
 
 ### Patch Changes
