@@ -474,8 +474,8 @@ describe('Adaptation Project Generator Integration Test', () => {
                                 name: 'Deployment Configuration'
                             },
                             {
-                                description: 'Configure SAP Fiori Launchpad settings - app.variant',
-                                name: 'SAP Fiori Launchpad Configuration - Select Action'
+                                description: 'Add new tile or replace existing tiles of the base application.\nProject: app.variant',
+                                name: 'SAP Fiori Launchpad Configuration - Tile Handling'
                             },
                             {
                                 description: '',

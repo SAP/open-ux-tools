@@ -295,7 +295,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.prompts.splice(flpConfigPageIndex, 1, [
             {
                 name: t('yuiNavSteps.flpConfigName'),
-                description: t('yuiNavSteps.flpConfigReplaceCurrentTiles', { currentTiles: tileEntries.join('\n\n') })
+                description: t('yuiNavSteps.flpConfigReplaceCurrentTiles', { currentTiles: tileEntries.join('\n') })
             }
         ]);
     }
