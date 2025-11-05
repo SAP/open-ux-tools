@@ -38,7 +38,7 @@ export async function generateActionMenu(basePath: string, actionMenuConfig: Act
             actionsContainer,
             JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action-menu.json`)), actionMenuConfig, {}))
         );
-        for (const { key, position } of actionMenuConfig.target.positionUpdates ?? []) {
+        for (const { key, position } of actionMenuConfig.positionUpdates ?? []) {
             if (['__proto__', 'constructor', 'prototype'].includes(key)) {
                 // Prevent prototype pollution via special property names
                 continue;

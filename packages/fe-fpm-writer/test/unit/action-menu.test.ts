@@ -158,13 +158,13 @@ describe('CustomAction', () => {
                     target: {
                         page: target.page,
                         control: TargetControl.body,
-                        customSectionKey: 'CustomSectionOne',
-                        positionUpdates: [
-                            { key: 'Action3', position: { placement: Placement.After, anchor: 'AnnoAction' } },
-                            { key: 'Action1', position: undefined },
-                            { key: 'Action2', position: undefined }
-                        ]
+                        customSectionKey: 'CustomSectionOne'
                     },
+                    positionUpdates: [
+                        { key: 'Action3', position: { placement: Placement.After, anchor: 'AnnoAction' } },
+                        { key: 'Action1', position: undefined },
+                        { key: 'Action2', position: undefined }
+                    ],
                     settings
                 },
                 fs

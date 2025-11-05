@@ -14,11 +14,11 @@ export interface ActionMenuTarget {
     navProperty?: string;
     qualifier?: string;
     menuId?: string;
-    positionUpdates?: { key: string; position: Position | undefined }[];
 }
 
 export interface ActionMenu extends CustomElement {
     target: ActionMenuTarget;
+    positionUpdates?: { key: string; position: Position | undefined }[];
     settings: {
         text: string;
         actions: string[];
