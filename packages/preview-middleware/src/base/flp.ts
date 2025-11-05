@@ -521,12 +521,7 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                if (this.projectType === 'EDMXBackend') {
-                    this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
-                } else {
-                    this.logger.warn(`The Card Generator is not available for CAP projects.`);
-                    this.templateConfig.enableCardGenerator = false;
-                }
+                this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
                 await this.flpGetHandler(req, res, next);
             }
         );
@@ -1045,9 +1040,6 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        if (this.projectType !== 'EDMXBackend') {
-            return;
-        }
         this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
 
@@ -1067,14 +1059,49 @@ export class FlpSandbox {
         try {
             this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
-            const i18nPath = this.manifest['sap.app'].i18n as string;
-            const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
-            const entries = (req.body as Array<I18nEntry>) || [];
-            entries.forEach((entry) => {
-                if (entry.comment) {
-                    entry.annotation = entry.comment;
-                }
-            });
+            const i18nConfig = this.manifest['sap.app'].i18n;
+            let i18nPath = 'i18n/i18n.properties';
+            let fallbackLocale: string | undefined;
+            let supportedLocales: string[] = [];
+
+            if (typeof i18nConfig === 'string') {
+                i18nPath = i18nConfig;
+            } else if (typeof i18nConfig === 'object' && i18nConfig !== null && 'bundleUrl' in i18nConfig) {
+                const {
+                    bundleUrl: i18nPathFromConfig,
+                    supportedLocales: locales = [],
+                    fallbackLocale: fallback
+                } = i18nConfig as {
+                    bundleUrl: string;
+                    supportedLocales?: string[];
+                    fallbackLocale?: string;
+                };
+
+                i18nPath = i18nPathFromConfig;
+                supportedLocales = locales;
+                fallbackLocale = fallback;
+            }
+
+            const requestedLocale = (req.query.locale as string) || fallbackLocale || '';
+            const baseFilePath = join(webappPath, i18nPath);
+            const filePath = requestedLocale
+                ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
+                : baseFilePath;
+
+            if (requestedLocale && supportedLocales.length > 0 && !supportedLocales.includes(requestedLocale)) {
+                this.sendResponse(
+                    res,
+                    'text/plain',
+                    400,
+                    `Locale "${requestedLocale}" is not supported. Supported: ${supportedLocales.join(', ')}`
+                );
+                return;
+            }
+
+            const entries = ((req.body as Array<I18nEntry>) || []).map((entry) => ({
+                ...entry,
+                annotation: entry.comment ?? entry.annotation
+            }));
             await createPropertiesI18nEntries(filePath, entries);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
         } catch (error) {
@@ -1090,9 +1117,6 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        if (this.projectType !== 'EDMXBackend') {
-            return;
-        }
         this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
 

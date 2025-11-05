@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.26
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/ui5-config@0.29.9
+
 ## 0.6.25
 
 ### Patch Changes

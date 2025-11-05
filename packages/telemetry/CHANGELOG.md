@@ -1,5 +1,18 @@
 # @sap-ux/telemetry
 
+## 0.6.37
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+
 ## 0.6.36
 
 ### Patch Changes

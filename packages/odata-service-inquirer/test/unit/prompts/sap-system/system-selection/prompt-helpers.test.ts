@@ -44,6 +44,11 @@ jest.mock('@sap-ux/store', () => ({
     // Mock store access
     getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValueOnce(backendSystems),
+        read: jest.fn().mockImplementation((key) => {
+            // Mock read to return systems with credentials
+            const system = backendSystems.find((s) => s.url === key.url);
+            return Promise.resolve(system);
+        }),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })
