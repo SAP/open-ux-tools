@@ -327,8 +327,7 @@
 ```
 
 
-6. Check `Enable Variant Management in Tables and Charts` quick action is disabled
-7. Check disabled button title is `This option has been disabled because variant management is already enabled for tables and charts`
+6. Check `Enable Variant Management in Tables and Charts` quick action is disabled and tooltip is `This option has been disabled because variant management is already enabled for tables and charts`
 
 ---
 

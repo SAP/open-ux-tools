@@ -375,11 +375,16 @@ class QuickActionPanel {
      * Checks if a quick action button is disabled.
      *
      * @param buttonName - Name of the button to check.
+     * @param title - Optional title to check for the disabled button.
      * @returns Promise that resolves when the assertion passes.
      */
-    async checkQADisabled(buttonName: string): Promise<void> {
+    async checkQADisabled(buttonName: string, title?: string): Promise<void> {
         const button = this.getButtonLocator(buttonName);
-        await expect(button, `Check \`${buttonName}\` quick action is disabled`).toBeDisabled();
+        if (title) {
+            await this.checkDisabledButtonTitle(buttonName, title);
+        }
+        const tooltip = title ? `and tooltip is \`${title}\`` : '';
+        await expect(button, `Check \`${buttonName}\` quick action is disabled ${tooltip}`).toBeDisabled();
     }
 
     /**
@@ -389,10 +394,9 @@ class QuickActionPanel {
      * @param expectedTitle - Expected title of the disabled button.
      * @returns Promise that resolves when the assertion passes.
      */
-    async checkDisabledButtonTitle(buttonName: string, expectedTitle: string): Promise<void> {
+    private async checkDisabledButtonTitle(buttonName: string, expectedTitle: string): Promise<void> {
         const button = this.getButtonLocator(buttonName);
-        const title = await button.getAttribute('title');
-        expect(title, `Check disabled button title is \`${title}\``).toBe(expectedTitle);
+        await expect(button).toHaveAttribute('title', expectedTitle, { timeout: 10000 });
     }
 
     /**

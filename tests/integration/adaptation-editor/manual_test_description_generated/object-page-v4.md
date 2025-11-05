@@ -88,8 +88,7 @@
 ```
 
 
-9. Check `Enable Variant Management in Tables` quick action is disabled
-10. Check disabled button title is `This option has been disabled because variant management is already enabled for tables and charts`
+9. Check `Enable Variant Management in Tables` quick action is disabled and tooltip is `This option has been disabled because variant management is already enabled for tables and charts`
 
 ---
 
@@ -125,8 +124,7 @@
 ```
 
 
-9. Check `Enable Empty Row Mode for Tables` quick action is disabled
-10. Check disabled button title is `This option has been disabled because empty row mode is already enabled for this table`
+9. Check `Enable Empty Row Mode for Tables` quick action is disabled and tooltip is `This option has been disabled because empty row mode is already enabled for this table`
 
 ---
 
@@ -190,8 +188,7 @@
 ```
 
 
-9. Check `Add Subpage` quick action is disabled
-10. Check disabled button title is `This option has been disabled because there are no subpages to add`
+9. Check `Add Subpage` quick action is disabled and tooltip is `This option has been disabled because there are no subpages to add`
 
 ---
 

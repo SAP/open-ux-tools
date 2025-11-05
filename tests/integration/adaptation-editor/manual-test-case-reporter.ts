@@ -107,6 +107,7 @@ export default class ManualTestCaseReporter implements Reporter {
             /^Expect\.poll\.toEqual$/,
             /^Expect \"toBeEnabled\"$/,
             /^Expect \"toBeDisabled\"$/,
+            /^Expect \"toHaveAttribute\"$/,
             /^Expect \"poll toEqual\"$/,
             /^locator\.textContent/,
             /^locator\.count/,

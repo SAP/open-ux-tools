@@ -392,8 +392,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                     }
                 ]
             });
-            await editor.quickActions.checkQADisabled('Enable Variant Management in Tables and Charts');
-            await editor.quickActions.checkDisabledButtonTitle(
+            await editor.quickActions.checkQADisabled(
                 'Enable Variant Management in Tables and Charts',
                 `This option has been disabled because variant management is already enabled for tables and charts`
             );

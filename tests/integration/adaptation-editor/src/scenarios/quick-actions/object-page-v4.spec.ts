@@ -113,8 +113,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
-            await editor.quickActions.checkQADisabled('Enable Variant Management in Tables');
-            await editor.quickActions.checkDisabledButtonTitle(
+            await editor.quickActions.checkQADisabled(
                 'Enable Variant Management in Tables',
                 `This option has been disabled because variant management is already enabled for tables and charts`
             );
@@ -159,8 +158,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                 ]
             });
 
-            await editor.quickActions.checkQADisabled('Enable Empty Row Mode for Tables');
-            await editor.quickActions.checkDisabledButtonTitle(
+            await editor.quickActions.checkQADisabled(
                 'Enable Empty Row Mode for Tables',
                 `This option has been disabled because empty row mode is already enabled for this table`
             );
@@ -250,8 +248,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                 ]
             });
 
-            await editor.quickActions.checkQADisabled('Add Subpage');
-            await editor.quickActions.checkDisabledButtonTitle(
+            await editor.quickActions.checkQADisabled(
                 'Add Subpage',
                 `This option has been disabled because there are no subpages to add`
             );

@@ -42,8 +42,7 @@
 ```
 
 
-10. Check `Enable Variant Management in Tables` quick action is disabled
-11. Check disabled button title is `This option has been disabled because variant management is already enabled for the ''Table Section' table'`
+10. Check `Enable Variant Management in Tables` quick action is disabled and tooltip is `This option has been disabled because variant management is already enabled for the ''Table Section' table'`
 
 ---
 
