@@ -1,4 +1,6 @@
-# @sap-ux/mockserver-config-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/mockserver-config-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/mockserver-config-writer)
+
+# [`@sap-ux/mockserver-config-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/mockserver-config-writer)
 
 Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to an SAP UX project.
 
