@@ -44,17 +44,17 @@ export async function generateActionMenu(basePath: string, actionMenuConfig: Act
                 continue;
             }
             const action = actionsContainer[key] as { [key: string]: unknown };
-            if (action) {
-                if (position) {
-                    action.position = position;
-                } else {
-                    delete action.position;
-                }
+            if (!action) {
+                continue;
+            }
+            action.position = position;
+            if (!position) {
+                delete action.position;
             }
         }
     }
-    fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionMenuConfig.tabInfo));
 
+    fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionMenuConfig.tabInfo));
     return fs;
 }
 
