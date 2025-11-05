@@ -1,5 +1,23 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/guided-answers-helper@0.4.1
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/telemetry@0.6.37
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
 ## 2.11.0
 
 ### Minor Changes

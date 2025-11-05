@@ -1,5 +1,21 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.12
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.14
+    -   @sap-ux/xml-odata-annotation-converter@0.4.2
+    -   @sap-ux/odata-annotation-core-types@0.5.1
+    -   @sap-ux/cds-annotation-parser@0.2.21
+    -   @sap-ux/odata-annotation-core@0.2.10
+    -   @sap-ux/odata-entity-model@0.3.2
+    -   @sap-ux/odata-vocabularies@0.4.18
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/logger@0.7.1
+
 ## 0.7.11
 
 ### Patch Changes
