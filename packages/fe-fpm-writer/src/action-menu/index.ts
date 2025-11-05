@@ -26,14 +26,19 @@ export async function generateActionMenu(basePath: string, actionMenuConfig: Act
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
-    if (!actionMenuConfig.target.menuId) {
+    if (actionMenuConfig.target.menuId) {
+        // add new action to existing menu
+        const actionsContainer = getExistingMenuItemsContainer(manifest, actionMenuConfig.target);
+        const actionsList: string[] = actionsContainer[actionMenuConfig.target.menuId].menu;
+        actionsList.push(...actionMenuConfig.settings.actions);
+    } else {
         // enhance manifest with action menu definition
         const actionsContainer = enhanceManifestAndGetActionsElementReference(manifest, actionMenuConfig.target);
         Object.assign(
             actionsContainer,
             JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action-menu.json`)), actionMenuConfig, {}))
         );
-        (actionMenuConfig.target.positionUpdates ?? []).forEach(({ key, position }) => {
+        for (const { key, position } of actionMenuConfig.target.positionUpdates ?? []) {
             const action = actionsContainer[key];
             if (action) {
                 if (position) {
@@ -42,17 +47,20 @@ export async function generateActionMenu(basePath: string, actionMenuConfig: Act
                     delete action.position;
                 }
             }
-        });
-    } else {
-        const actionsContainer = getExistingMenuItemsContainer(manifest, actionMenuConfig.target);
-        const actionsList: string[] = actionsContainer[actionMenuConfig.target.menuId].menu;
-        actionsList.push(...actionMenuConfig.settings.actions);
+        }
     }
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionMenuConfig.tabInfo));
 
     return fs;
 }
 
+/**
+ * Returns actions manifest entry for a given action menu target control.
+ *
+ * @param manifest - manifest content
+ * @param target - target control
+ * @returns - manifest node - container for a menu
+ */
 function getExistingMenuItemsContainer(manifest: any, target: ActionMenuTarget): any {
     const page = manifest['sap.ui5'].routing.targets[target.page];
     if (target.control === TargetControl.header) {
