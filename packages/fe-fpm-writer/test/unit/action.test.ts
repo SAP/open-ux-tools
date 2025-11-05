@@ -45,8 +45,7 @@ describe('CustomAction', () => {
                     routing: {
                         targets: {
                             TestObjectPage: {
-                                name: 'sap.fe.templates.ObjectPage',
-                                options: { content: { header: { actions: {} } } }
+                                name: 'sap.fe.templates.ListReport'
                             }
                         }
                     }

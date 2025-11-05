@@ -365,3 +365,55 @@ Object {
   },
 }
 `;
+
+exports[`CustomAction generateActionMenu update position information for existing custom actions 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "body": Object {
+                  "sections": Object {
+                    "CustomSectionOne": Object {
+                      "actions": Object {
+                        "Action1": Object {},
+                        "Action2": Object {},
+                        "Action3": Object {
+                          "position": Object {
+                            "anchor": "AnnoAction",
+                            "placement": "After",
+                          },
+                        },
+                        "AnnoAction": Object {},
+                        "MyCustomActionMenu": Object {
+                          "menu": Array [
+                            "Action1",
+                            "Action2",
+                          ],
+                          "text": "My custom action menu text",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
