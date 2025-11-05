@@ -239,7 +239,7 @@ jobs:
                   tag_name: ${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}
                   name: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}
                   body: 'Extension release: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}'
-                  draft: false
+                  draft: true
                   prerelease: false
                   generate_release_notes: true
                   files: ${{ env.EXT_DIR }}/*.vsix
