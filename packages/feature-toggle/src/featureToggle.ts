@@ -1,6 +1,5 @@
 import type { FeatureToggle } from './types';
 import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants';
-import { CommentThreadCollapsibleState } from 'vscode';
 
 /**
  * Utility class for accessing and managing feature toggles.
