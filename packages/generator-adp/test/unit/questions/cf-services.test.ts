@@ -99,17 +99,19 @@ const mockManifest: Manifest = {
 const mockServiceKeys: ServiceKeys = {
     credentials: [
         {
-            url: '/test.service.com',
-            clientid: 'test-client',
-            clientsecret: 'test-secret',
-            uaa: {
-                url: '/test.uaa.com',
+            credentials: {
+                url: '/test.service.com',
                 clientid: 'test-client',
-                clientsecret: 'test-secret'
-            },
-            uri: '/test.service.com',
-            endpoints: {
-                'test-endpoint': '/test.endpoint.com'
+                clientsecret: 'test-secret',
+                uaa: {
+                    url: '/test.uaa.com',
+                    clientid: 'test-client',
+                    clientsecret: 'test-secret'
+                },
+                uri: '/test.service.com',
+                endpoints: {
+                    'test-endpoint': '/test.endpoint.com'
+                }
             }
         }
     ],
