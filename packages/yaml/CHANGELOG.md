@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.17.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.17.1
 
 ### Patch Changes

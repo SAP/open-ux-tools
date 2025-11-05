@@ -1,5 +1,13 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.5.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/text-document-utils@0.3.2
+
 ## 0.5.0
 
 ### Minor Changes

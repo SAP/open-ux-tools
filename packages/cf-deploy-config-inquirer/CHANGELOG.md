@@ -1,5 +1,83 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.37
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+
+## 0.5.36
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
+## 0.5.35
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.10
+
+## 0.5.34
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.9
+
+## 0.5.33
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.8
+
+## 0.5.32
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.7
+
+## 0.5.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.6
+
+## 0.5.30
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.5
+
+## 0.5.29
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+
+## 0.5.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.3
+
+## 0.5.27
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.2
+
+## 0.5.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.1
+
 ## 0.5.25
 
 ### Patch Changes

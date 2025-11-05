@@ -1,4 +1,6 @@
-#  `@sap-ux/adp-tooling`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/adp-tooling/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-tooling)
+
+# [`@sap-ux/adp-tooling`](https://github.com/SAP/open-ux-tools/tree/main/packages/adp-tooling)
 
 A module containing different tooling modules helpful when working with SAP UI5 adaptation projects.
 

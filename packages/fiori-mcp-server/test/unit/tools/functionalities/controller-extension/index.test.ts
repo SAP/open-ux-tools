@@ -43,6 +43,9 @@ describe('create-controller-extension', () => {
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'app1',
+                app: {
+                    changes: 'changes'
+                },
                 project: {
                     apps: {
                         ['app1']: {}
