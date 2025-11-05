@@ -56,5 +56,15 @@ jobs:
           git config --global user.name github-actions[bot]
           git config --global user.email github-actions[bot]@users.noreply.github.com
           git add pnpm-lock.yaml
-          git commit -m "Linting auto fix commit" -a --no-verify || true
-          git push  || true
+          if git commit -m "Linting auto fix commit" -a --no-verify; then
+            CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD)
+            if ! git push; then
+              echo "::error::Failed to push lint fixes to remote repository. The commit was created locally but could not be pushed."
+              echo "::error::Files that could not be committed: $CHANGED_FILES"
+              echo "Fix the eslint issues locally and push the changes."
+              exit 1
+            fi
+            echo "Lint fixes committed and pushed successfully"
+          else
+            echo "No lint fixes needed"
+          fi
