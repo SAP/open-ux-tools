@@ -6,10 +6,7 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
-    "types": [
-      "@npm/types"
-    ]
+    "outDir": "dist"
   },
   "references": [
     {
