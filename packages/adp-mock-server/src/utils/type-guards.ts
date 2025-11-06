@@ -1,3 +1,4 @@
+import { HttpRequest } from 'mockserver-client';
 import { BinaryBody, Body, XmlBody } from '../types';
 
 export function isBodyType(body: unknown): body is Body {
