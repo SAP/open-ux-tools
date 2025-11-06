@@ -109,7 +109,8 @@ function renderCommandAndSubcommands(cmd, parentPath) {
  */
 function generateReadme(spec) {
     // --- 1. Header ---
-    let md = `# \`@sap-ux/create\` CLI Reference\n\n`;
+    let md = `[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/create/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/create)\n`;
+    md += `# [\`@sap-ux/create\`](https://github.com/SAP/open-ux-tools/tree/main/packages/create) CLI Reference\n\n`;
     md += `${spec.description}\n\n`;
 
     // --- 2. Static Usage Section ---
