@@ -1,5 +1,13 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/logger@0.7.1
+
 ## 0.4.1
 
 ### Patch Changes

@@ -1,4 +1,6 @@
-# @sap-ux/ui-service-sub-generator
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui-service-sub-generator/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui-service-sub-generator)
+
+# [`@sap-ux/ui-service-sub-generator`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui-service-sub-generator)
 
 ## Features
 

@@ -1,4 +1,6 @@
-# @sap-ux/create
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/create/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/create)
+
+# [`@sap-ux/create`](https://github.com/SAP/open-ux-tools/tree/main/packages/create)
 Module which provides command line interface to configure features for SAP UX projects or applications.
 
 ## [Installation](#installation)

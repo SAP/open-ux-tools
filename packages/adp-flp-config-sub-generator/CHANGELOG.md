@@ -1,5 +1,23 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.108
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/flp-config-inquirer@0.4.56
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/adp-tooling@0.17.6
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
 ## 0.1.107
 
 ### Patch Changes
