@@ -28,7 +28,6 @@ interface AdjustMtaYamlParams {
     appRouterType: AppRouterType;
     businessSolutionName: string;
     businessService: string;
-    spaceGuid: string;
 }
 
 /**
@@ -418,7 +417,7 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  * @returns {Promise<void>} The promise.
  */
 export async function adjustMtaYaml(
-    { projectPath, moduleName, appRouterType, businessSolutionName, businessService, spaceGuid }: AdjustMtaYamlParams,
+    { projectPath, moduleName, appRouterType, businessSolutionName, businessService }: AdjustMtaYamlParams,
     memFs: Editor,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
@@ -456,15 +455,7 @@ export async function adjustMtaYaml(
     // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
     adjustMtaYamlFlpModule(yamlContent, projectName, businessService);
 
-    await createServices(
-        projectPath,
-        yamlContent,
-        initialServices,
-        timestamp,
-        spaceGuid,
-        templatePathOverwrite,
-        logger
-    );
+    await createServices(yamlContent, initialServices, timestamp, templatePathOverwrite, logger);
 
     const updatedYamlContent = yaml.dump(yamlContent);
 

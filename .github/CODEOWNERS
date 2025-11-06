@@ -24,8 +24,12 @@
 # Module: fiori-elements-writer
 /packages/fiori-elements-writer/ @SAP/ux-tools-elements-writer
 
+# Module: fiori-mcp-server (and related)
+/packages/fiori-mcp-server/ @SAP/ux-tools-fiori-mcp-server
+/packages/fiori-docs-embeddings/ @SAP/ux-tools-fiori-mcp-server
+
 # Module: eslint-plugin-fiori-tools
-/packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-fiori-freestyle-writer @SAP/ux-tools-elements-writer
+/packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-eslint-plugin-fiori-tools
 
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger

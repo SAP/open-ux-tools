@@ -1,5 +1,57 @@
 # @sap-ux/system-access
 
+## 0.6.28
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
+## 0.6.27
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+
+## 0.6.26
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+
+## 0.6.25
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+
+## 0.6.24
+
+### Patch Changes
+
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+
+## 0.6.23
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+
+## 0.6.22
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+
 ## 0.6.21
 
 ### Patch Changes

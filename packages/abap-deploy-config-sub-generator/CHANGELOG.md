@@ -1,5 +1,109 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.93
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/deploy-config-generator-shared@0.1.51
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.44
+    -   @sap-ux/abap-deploy-config-writer@0.2.33
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+
+## 0.1.92
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.43
+-   @sap-ux/deploy-config-generator-shared@0.1.50
+
+## 0.1.91
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.42
+-   @sap-ux/deploy-config-generator-shared@0.1.50
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.32
+
+## 0.1.90
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.41
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/abap-deploy-config-writer@0.2.31
+
+## 0.1.89
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.40
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.30
+
+## 0.1.88
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.39
+-   @sap-ux/deploy-config-generator-shared@0.1.48
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/abap-deploy-config-writer@0.2.29
+
+## 0.1.87
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.38
+-   @sap-ux/deploy-config-generator-shared@0.1.47
+-   @sap-ux/fiori-generator-shared@0.13.28
+-   @sap-ux/abap-deploy-config-writer@0.2.28
+
+## 0.1.86
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/abap-deploy-config-writer@0.2.27
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.37
+    -   @sap-ux/deploy-config-generator-shared@0.1.47
+
+## 0.1.85
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.36
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/abap-deploy-config-writer@0.2.26
+
+## 0.1.84
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/abap-deploy-config-writer@0.2.25
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.35
+    -   @sap-ux/deploy-config-generator-shared@0.1.46
+
 ## 0.1.83
 
 ### Patch Changes

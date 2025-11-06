@@ -45,3 +45,4 @@ export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript, hasUI5CliV3 } from './script';
 export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';
+export { readFlexChanges } from './flex-changes';

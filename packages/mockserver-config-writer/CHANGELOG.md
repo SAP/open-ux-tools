@@ -1,5 +1,28 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.25
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/ui5-config@0.29.9
+
+## 0.9.24
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+
+## 0.9.23
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+
 ## 0.9.22
 
 ### Patch Changes

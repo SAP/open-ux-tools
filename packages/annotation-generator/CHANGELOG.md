@@ -1,5 +1,39 @@
 # @sap-ux/annotation-generator
 
+## 0.3.74
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/odata-annotation-core-types@0.5.1
+    -   @sap-ux/fiori-annotation-api@0.7.12
+    -   @sap-ux/odata-entity-model@0.3.2
+    -   @sap-ux/project-access@1.32.8
+
+## 0.3.73
+
+### Patch Changes
+
+-   Updated dependencies [271847c]
+    -   @sap-ux/fiori-annotation-api@0.7.11
+
+## 0.3.72
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/fiori-annotation-api@0.7.10
+
+## 0.3.71
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/fiori-annotation-api@0.7.9
+
 ## 0.3.70
 
 ### Patch Changes

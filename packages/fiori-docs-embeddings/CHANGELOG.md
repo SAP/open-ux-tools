@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
+## 0.4.1
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
 ## 0.4.0
 
 ### Minor Changes
