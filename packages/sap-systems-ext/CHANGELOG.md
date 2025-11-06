@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.8
+
+### Patch Changes
+
+-   fea04a4: Adjust cloud system component rendering logic, adjust log message. Add log message when testing connection, service summary include catalog results log.
+
 ## 0.0.7
 
 ### Patch Changes
