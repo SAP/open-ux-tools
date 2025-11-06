@@ -187,12 +187,17 @@ jobs:
                   node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
-            - name: Replace placeholder with instrumentation key
+            - name: Set instrumentation key in fiori-mcp-server
               uses: jacobtomlinson/gha-find-replace@v3
               with:
-                  include: |
-                      packages/fiori-mcp-server/src/telemetry/index.ts
-                      packages/sap-systems-ext/src/utils/telemetryHelper.ts
+                  include: packages/fiori-mcp-server/src/telemetry/index.ts
+                  find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
+                  replace: ${{ secrets.INSTRUMENTATION_KEY }}
+                  regex: false
+            - name: Set instrumentation key in sap-systems-ext
+              uses: jacobtomlinson/gha-find-replace@v3
+              with:
+                  include: packages/sap-systems-ext/src/utils/telemetryHelper.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
