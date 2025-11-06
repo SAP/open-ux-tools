@@ -43,7 +43,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
 
         if ((v2Request.count ?? 0) > 0 || (v4Request.count ?? 0) > 0) {
             postConnectionStatus(postMessage, true, serviceCount);
-            logServiceSummary(system.name, v2Request.count, v4Request.count);
+            logServiceSummary(system.name, serviceCount);
             logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
         } else {
             throw new Error(t('error.noServices'));
@@ -146,11 +146,18 @@ function logAxiosError(version: ODataVersion, error: AxiosError): void {
  * Simple logging of the service count.
  *
  * @param systemName - name of the system
- * @param v2Count - number of V2 services
- * @param v4Count - number of V4 services
+ * @param catalog - catalog results containing service counts and errors
  */
-function logServiceSummary(systemName: string, v2Count?: number, v4Count?: number): void {
-    SystemsLogger.logger.info(t('info.numServices', { system: systemName, v2: v2Count ?? 'no', v4: v4Count ?? 'no' }));
+function logServiceSummary(systemName: string, catalog: CatalogServicesCounts): void {
+    logCatalogErrors(catalog);
+
+    SystemsLogger.logger.info(
+        t('info.numServices', {
+            system: systemName,
+            v2: catalog?.v2Request?.count ?? 'no',
+            v4: catalog?.v4Request?.count ?? 'no'
+        })
+    );
 }
 
 /**
