@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.7
+
+### Patch Changes
+
+-   f1a2795: fix: Instrumentation key
+
 ## 0.0.6
 
 ### Patch Changes
