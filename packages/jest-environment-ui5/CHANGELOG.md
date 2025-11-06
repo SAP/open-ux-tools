@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.11
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 5.3.10
 
 ### Patch Changes

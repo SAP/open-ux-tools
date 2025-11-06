@@ -36,9 +36,19 @@ import {
     INSERT_RECORD_CHANGE_TYPE,
     INSERT_TARGET_CHANGE_TYPE,
     createDeleteAnnotationGroupItemsChange,
-    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
+    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
+    MOVE_COLLECTION_VALUE_CHANGE_TYPE,
+    DELETE_RECORD_CHANGE_TYPE
 } from './change';
-import type { Deletes, CDSDocumentChange, InsertRecord, InsertEmbeddedAnnotation, InsertAnnotation } from './change';
+import type {
+    Deletes,
+    CDSDocumentChange,
+    InsertRecord,
+    InsertEmbeddedAnnotation,
+    InsertAnnotation,
+    MoveCollectionValue,
+    DeleteRecord
+} from './change';
 import { getChildCount, type AstNode, type CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 import type { CompilerToken } from './cds-compiler-tokens';
@@ -88,6 +98,8 @@ class ChangePreprocessor {
                 result.push(change);
             }
         }
+
+        this.adjustMoveIndices(result); // for this to correctly work we need the final delete changes with adjusted pointers
         return result;
     }
 
@@ -573,6 +585,35 @@ class ChangePreprocessor {
             this.commands.set(indexedValue.index, { type: 'drop' });
         }
         return lastChange;
+    }
+
+    private adjustMoveIndices(changes: CDSDocumentChange[]): void {
+        // there is a non standard case where an item is moved to position that is after deleted item
+        // it interferes with deletion logic and would be more difficult to handle it during text edit generation
+        // the expected text is the same as if we would insert before the deleted item, so we adjust the move index here
+        const moves: MoveCollectionValue[] = [];
+        const deletes: DeleteRecord[] = [];
+        for (const change of changes) {
+            if (change.type === MOVE_COLLECTION_VALUE_CHANGE_TYPE) {
+                moves.push(change);
+            } else if (change.type === DELETE_RECORD_CHANGE_TYPE) {
+                deletes.push(change);
+            }
+        }
+        if (moves.length === 0 || deletes.length === 0) {
+            return;
+        }
+        for (const move of moves) {
+            if (move.index === undefined) {
+                // it will be inserted at the start, not relevant case
+                continue;
+            }
+            const pointer = `${move.pointer}/items/${move.index - 1}`;
+            const match = deletes.find((change) => change.pointer === pointer);
+            if (match) {
+                move.index--;
+            }
+        }
     }
 }
 

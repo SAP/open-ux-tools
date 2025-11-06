@@ -1,5 +1,11 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.3.1
 
 ### Patch Changes
