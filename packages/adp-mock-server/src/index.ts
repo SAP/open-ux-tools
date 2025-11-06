@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import { start_mockserver, stop_mockserver } from 'mockserver-node';
 import path from 'path';
-import { getClient, recordResponses } from './client';
+import { getRecordClient, recordResponses } from './client/record-client';
+import { getReplayClient } from './client/replay-client';
 import {
     CLI_PARAM_RECORD,
     CLI_PARAM_START,
@@ -11,8 +12,10 @@ import {
     NOOP,
     RESPONSES_JSON_PATH
 } from './constants';
-import { logger } from './logger';
-import { createMockDataFolderIfNeeded, getCliParamValueByName, getSapSystemPort } from './utils';
+import { getCliParamValueByName } from './utils/cli-utils';
+import { createMockDataFolderIfNeeded } from './utils/file-utils';
+import { logger } from './utils/logger';
+import { getSapSystemPort } from './utils/sap-system-utils';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -40,7 +43,7 @@ async function startInRecordMode(): Promise<void> {
         // verbose: true
     });
     logger.info(`✅ Server running on port ${MOCK_SERVER_PORT} in record mode.`);
-    await getClient();
+    await getRecordClient();
 }
 
 async function startInReplayMode(): Promise<void> {
@@ -48,12 +51,14 @@ async function startInReplayMode(): Promise<void> {
         serverPort: MOCK_SERVER_PORT,
         jvmOptions: [
             '-Dmockserver.watchInitializationJson=true',
+            // We load all request/responses as expectations for the replay mode.
             `-Dmockserver.initializationJsonPath=${RESPONSES_JSON_PATH}`,
             '-Dmockserver.persistExpectations=false'
         ]
         // verbose: true
     });
     logger.info(`✅ Server running on port ${MOCK_SERVER_PORT} in replay mode.`);
+    await getReplayClient();
 }
 
 async function stop(): Promise<void> {

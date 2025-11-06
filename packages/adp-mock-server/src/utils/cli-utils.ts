@@ -1,22 +1,4 @@
-import { setTimeout } from 'node:timers/promises';
-import { DEFAULT_SAP_SYSTEM_PORT, MOCK_DATA_FOLDER_PATH } from './constants';
-import { promises as fs } from 'fs';
-import { HttpRequestAndHttpResponse } from 'mockserver-client/mockServer';
-import { request } from 'node:http';
-
 type CliParamValue = string | number | boolean | undefined;
-
-export async function wait(seconds: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(seconds * 1000, resolve));
-}
-
-export function getSapSystemPort(): number {
-    return parseInt(process.env.SAP_SYSTEM_PORT ?? DEFAULT_SAP_SYSTEM_PORT.toString(), 10);
-}
-
-export function createMockDataFolderIfNeeded(): Promise<string | undefined> {
-    return fs.mkdir(MOCK_DATA_FOLDER_PATH, { recursive: true });
-}
 
 export function getCliParamValueByName<T extends CliParamValue>(name: string): T {
     const arg = process.argv.find((arg) => arg.startsWith(`--${name}`));
