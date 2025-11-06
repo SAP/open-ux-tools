@@ -1,0 +1,53 @@
+{
+    "header": {
+        "editableHeaderContent": false,
+        "sections": {},
+        "actions": {
+            "Action4": {
+                "text": "Action4",
+                "press": "opa1.ext.controller.Action1.action4",
+                "visible": true,
+                "enabled": true
+            }
+        }
+    },
+    "footer": {
+        "actions": {
+            "footeraction": {
+                "text": "footeraction",
+                "press": "opa1.ext.controller.Footeraction.footeraction",
+                "visible": true,
+                "enabled": true
+            }
+        }
+    },
+    "layout": {},
+    "sections": {
+        "_Booking::@com.sap.vocabularies.UI.v1.LineItem": {
+            "table": {
+                "toolBar": {
+                    "actions": {
+                        "custom4": {
+                            "requiresSelection": false,
+                            "text": "custom4",
+                            "press": "opa1.ext.controller.Custom4.custom4",
+                            "visible": true,
+                            "enabled": true
+                        }
+                    }
+                },
+                "columns": {
+                    "Cc1": {
+                        "position": {
+                            "anchor": "DataField::CurrencyCode",
+                            "placement": "After"
+                        },
+                        "header": "cc1",
+                        "template": "opa1.ext.fragment.Cc1"
+                    }
+                }
+            }
+        }
+    },
+    "$schema": "../.schemas/ObjectPage_TravelObjectPage.json"
+}

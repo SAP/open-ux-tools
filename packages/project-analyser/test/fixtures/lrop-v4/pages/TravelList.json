@@ -1,0 +1,54 @@
+{
+    "variantManagement": "Page",
+    "header": {
+        "actions": {
+            "action1": {
+                "text": "action 1",
+                "press": "opa1.ext.controller.Action1.action1",
+                "visible": true,
+                "enabled": true
+            },
+            "action2": {
+                "text": "action 2",
+                "press": "opa1.ext.controller.Action1.action1",
+                "visible": true,
+                "enabled": true
+            }
+        }
+    },
+    "filterBar": {
+        "selectionFields": {
+            "filter1": {
+                "label": "Filter 1",
+                "property": "CustomerName",
+                "template": "opa1.ext.fragment.Filter1",
+                "required": false
+            }
+        }
+    },
+    "table": {
+        "type": "ResponsiveTable",
+        "toolBar": {
+            "actions": {
+                "action3": {
+                    "requiresSelection": false,
+                    "text": "Action 3",
+                    "press": "opa1.ext.controller.Action3.action3",
+                    "visible": true,
+                    "enabled": true
+                }
+            }
+        },
+        "columns": {
+            "Custom1": {
+                "position": {
+                    "anchor": "DataField::CustomerName",
+                    "placement": "After"
+                },
+                "header": "Custom1",
+                "template": "opa1.ext.fragment.Custom1"
+            }
+        }
+    },
+    "$schema": "../.schemas/ListReport_TravelList.json"
+}

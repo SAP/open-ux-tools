@@ -1,0 +1,13 @@
+{
+    "header": {
+        "editableHeaderContent": false,
+        "sections": {},
+        "actions": {}
+    },
+    "footer": {
+        "actions": {}
+    },
+    "layout": {},
+    "sections": {},
+    "$schema": "../.schemas/ObjectPage_BookingObjectPage.json"
+}
