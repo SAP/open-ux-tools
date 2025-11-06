@@ -3,4 +3,4 @@
 'sap-ux-sap-systems-ext': patch
 ---
 
-Adjust cloud system component rendering logic, adjust log message. Add log message when testing connection.
+Adjust cloud system component rendering logic, adjust log message. Add log message when testing connection, service summary include catalog results log.
