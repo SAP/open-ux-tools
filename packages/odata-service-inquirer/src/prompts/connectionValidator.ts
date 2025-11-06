@@ -1061,7 +1061,10 @@ export class ConnectionValidator {
                     this._connectedUserName = username;
                     return { valResult: true };
                 } else if (this.validity.authenticated === false) {
-                    return { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
+                    return {
+                        valResult: this.getAuthFailureReasonText(status, odataVersion),
+                        errorType: ERROR_TYPE.AUTH
+                    };
                 }
             }
             return { valResult };
@@ -1088,5 +1091,32 @@ export class ConnectionValidator {
         this._validatedUrl = undefined;
         this._destinationUrl = undefined;
         this._destination = undefined;
+    }
+
+    /**
+     * Get the specific authorization reason user message.
+     *
+     * @param httpStatusCode the http error code returned from a request
+     * @param odataVersion optional, the odata version specific request, for example for specific catalog requests
+     * @returns the text message indicting the authentication or authorization failure speific to an odata catalog request
+     */
+    private getAuthFailureReasonText(httpStatusCode: string | number, odataVersion?: ODataVersion): string {
+        let errorType;
+        if ([403, '403'].includes(httpStatusCode)) {
+            errorType = t('texts.authorization');
+        } else if ([401, '401'].includes(httpStatusCode)) {
+            errorType = t('texts.authentication');
+        }
+
+        let authFailureReason;
+        if (odataVersion) {
+            authFailureReason = t('errors.authenticationFailureToCatalogReason', {
+                odataVersion,
+                errorType: errorType
+            });
+        } else {
+            authFailureReason = t('errors.authenticationFailureToAllCatalogsReason', { errorType });
+        }
+        return authFailureReason;
     }
 }

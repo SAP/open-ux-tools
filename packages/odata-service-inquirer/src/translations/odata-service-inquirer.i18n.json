@@ -218,6 +218,8 @@
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
         "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
         "authenticationFailed": "Authentication incorrect: {{error}}.",
+        "authenticationFailureToCatalogReason": "Could not access OData V{{odataVersion}} service catalog due to {{errorType}} failure",
+        "authenticationFailureToAllCatalogsReason": "Could not access any service catalogs due to {{errorType}} failure",
         "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
         "urlNotFound": "URL not found.",
@@ -262,6 +264,8 @@
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None",
-        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
+        "authorization": "authorization",
+        "authentication": "authentication"
     }
 }
