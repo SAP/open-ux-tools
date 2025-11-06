@@ -108,8 +108,10 @@ function renderCommandAndSubcommands(cmd, parentPath) {
  * @returns The complete README content as a Markdown string.
  */
 function generateReadme(spec) {
-    // --- 1. Header ---
+    // --- 0. Badges ---
     let md = `[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/create/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/create)\n`;
+
+    // --- 1. Header ---
     md += `# [\`@sap-ux/create\`](https://github.com/SAP/open-ux-tools/tree/main/packages/create) CLI Reference\n\n`;
     md += `${spec.description}\n\n`;
 
