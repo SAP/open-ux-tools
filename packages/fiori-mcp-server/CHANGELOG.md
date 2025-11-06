@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.3.3
+
+### Patch Changes
+
+-   f1a2795: fix: Instrumentation key
+
 ## 0.3.2
 
 ### Patch Changes
