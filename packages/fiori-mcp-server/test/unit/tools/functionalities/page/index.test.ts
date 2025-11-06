@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import {
     ADD_PAGE_FUNCTIONALITY,
     addPageHandlers,
@@ -22,8 +22,8 @@ jest.mock('@sap-ux/project-access', () => {
     };
 });
 
-const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'ai-created-cap');
-const copyProjectRoot = `${originProjectRoot}-add-page-copy`;
+const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'node-ai-created');
+const copyProjectRoot = join(originProjectRoot, '..', '..', 'copy', `node-ai-created-add-page`);
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
 let importProjectMock = jest.fn();
