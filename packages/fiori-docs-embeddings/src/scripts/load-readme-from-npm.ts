@@ -15,19 +15,16 @@ async function getPackageReadme(packageName: string, logger: ToolsLogger): Promi
     // Handle scoped packages by URL-encoding the slash
     const encodedName: string = packageName.replace(/\//g, '%2F');
     const url = `https://registry.npmjs.org/${encodedName}`;
-
     try {
         const response: Response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Failed to fetch package: ${response.statusText}`);
         }
         const data: Packument = await response.json();
-
         if (!data.readme) {
             logger.warn(`Warning: Could not find README content for ${packageName}.`);
             return null;
         }
-
         return data.readme;
     } catch (error) {
         throw new Error(`Error fetching README for ${packageName}:`, error.message ?? error);
@@ -44,7 +41,6 @@ async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Pro
     logger.info(`Fetching README for ${packageName}...`);
     const readmeContent: string | null = await getPackageReadme(packageName, logger);
     const outputFileName = `${packageName.split('/').pop()}-README.md`;
-
     if (readmeContent) {
         try {
             const outputPath = join('data_local', outputFileName);
@@ -66,5 +62,4 @@ if (!packageName) {
     logger.error('Please provide a package name as an argument.');
     process.exit(1);
 }
-
 void fetchAndSaveReadme(packageName, logger);
