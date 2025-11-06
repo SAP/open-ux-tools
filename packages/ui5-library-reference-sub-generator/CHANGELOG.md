@@ -1,5 +1,48 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.65
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.65
+    -   @sap-ux/ui5-library-reference-writer@0.2.24
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/telemetry@0.6.37
+
+## 0.1.64
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-reference-inquirer@0.4.64
+
+## 0.1.63
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/telemetry@0.6.36
+-   @sap-ux/ui5-library-reference-inquirer@0.4.63
+
+## 0.1.62
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/telemetry@0.6.35
+-   @sap-ux/ui5-library-reference-inquirer@0.4.62
+
+## 0.1.61
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/telemetry@0.6.34
+-   @sap-ux/ui5-library-reference-inquirer@0.4.61
+
 ## 0.1.60
 
 ### Patch Changes

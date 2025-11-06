@@ -1,5 +1,71 @@
 # @sap-ux/preview-middleware
 
+## 0.23.47
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/adp-tooling@0.17.6
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/i18n@0.3.5
+
+## 0.23.46
+
+### Patch Changes
+
+-   db63f7b: fix(preview-middleware): i18n handling for cards generator
+
+## 0.23.45
+
+### Patch Changes
+
+-   e985618: feat(preview-middleware): enable card generator for CAP projects
+
+## 0.23.44
+
+### Patch Changes
+
+-   a0c3b6c: feat: add log messages for viewCache redirect
+
+## 0.23.43
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.5
+
+## 0.23.42
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.4
+-   @sap-ux/system-access@0.6.27
+
+## 0.23.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.3
+-   @sap-ux/system-access@0.6.26
+
+## 0.23.40
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.2
+-   @sap-ux/system-access@0.6.25
+
+## 0.23.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.1
+-   @sap-ux/system-access@0.6.24
+
 ## 0.23.38
 
 ### Patch Changes

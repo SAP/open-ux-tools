@@ -1,5 +1,69 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.58
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/deploy-config-generator-shared@0.1.51
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/flp-config-inquirer@0.4.56
+    -   @sap-ux/app-config-writer@0.6.56
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/i18n@0.3.5
+
+## 0.3.57
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+    -   @sap-ux/deploy-config-generator-shared@0.1.50
+    -   @sap-ux/flp-config-inquirer@0.4.55
+    -   @sap-ux/app-config-writer@0.6.55
+
+## 0.3.56
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.55
+-   @sap-ux/deploy-config-generator-shared@0.1.50
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/flp-config-inquirer@0.4.54
+-   @sap-ux/inquirer-common@0.8.10
+
+## 0.3.55
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.54
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/flp-config-inquirer@0.4.53
+
+## 0.3.54
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.53
+-   @sap-ux/deploy-config-generator-shared@0.1.49
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/flp-config-inquirer@0.4.52
+-   @sap-ux/inquirer-common@0.8.9
+
+## 0.3.53
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.52
+-   @sap-ux/deploy-config-generator-shared@0.1.48
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/flp-config-inquirer@0.4.51
+-   @sap-ux/inquirer-common@0.8.8
+
 ## 0.3.52
 
 ### Patch Changes
