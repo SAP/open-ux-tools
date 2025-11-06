@@ -2047,6 +2047,9 @@ importers:
       '@lancedb/lancedb':
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
+      '@npm/types':
+        specifier: 2.1.0
+        version: 2.1.0
       '@sap-ux/create':
         specifier: workspace:*
         version: link:../create
@@ -2289,7 +2292,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.2
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -8331,6 +8334,11 @@ packages:
     engines: {node: '>=12.4.0'}
     dev: true
 
+  /@npm/types@2.1.0:
+    resolution: {integrity: sha512-humQVe2BrWR7Yum5hGDYBnIPnnZJvKSOH/I4QN1ZL2bdb4c4zQHaHupEJ3cOkSJ07G3YfN793ptbNh196BWLgA==}
+    engines: {node: '>=18.6.0'}
+    dev: true
+
   /@npmcli/agent@2.2.0:
     resolution: {integrity: sha512-2yThA1Es98orMkpSLVqlDZAMPK3jHJhifP2gnNUdk1754uZ8yI5c+ulCoVG+WlntQA6MzhrURMXjSd9Z7dJ2/Q==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -9316,6 +9324,10 @@ packages:
       - debug
       - typescript
     dev: true
+
+  /@sap-ux/fiori-docs-embeddings@0.4.2:
+    resolution: {integrity: sha512-TxA18pNBy/zaCoxdkWNHISTs7mMKwXaSOMbjvTzgfjfB1RCUR78wtuH4eXN97O9KTlZ5t/L4gELj3NUCzaq3MA==}
+    dev: false
 
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}
