@@ -62,4 +62,4 @@ if (!packageName) {
     logger.error('Please provide a package name as an argument.');
     process.exit(1);
 }
-void fetchAndSaveReadme(packageName, logger);
+fetchAndSaveReadme(packageName, logger);
