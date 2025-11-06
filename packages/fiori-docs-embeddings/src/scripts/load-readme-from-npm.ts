@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Packument } from '@npm/types';
+import type { Packument } from '@npm/types';
 import { ToolsLogger } from '@sap-ux/logger';
 
 /**
@@ -62,4 +62,6 @@ if (!packageName) {
     logger.error('Please provide a package name as an argument.');
     process.exit(1);
 }
-fetchAndSaveReadme(packageName, logger);
+
+// eslint-disable-next-line no-void
+void fetchAndSaveReadme(packageName, logger);
