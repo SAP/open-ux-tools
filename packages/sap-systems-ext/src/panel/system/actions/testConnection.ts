@@ -92,6 +92,7 @@ function handleCatalogError(
 
     const catalogResultError = catalog.v2Request.error ?? catalog.v4Request.error;
     if (!catalogResultError) {
+        SystemsLogger.logger.error(t('error.testConnection', { error: error?.message }));
         return postConnectionStatus(postMessage, false, undefined, error?.message);
     }
 
