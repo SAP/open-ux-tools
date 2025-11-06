@@ -18,7 +18,7 @@ export async function analyzeManifest(
         return undefined;
     }
 
-    logger?.debug('Manifest analyser received manifest', manifest.path);
+    logger?.debug(`Manifest analyser received manifest at ${manifest.path}`);
 
     // Implementation will inspect routing, component settings, and page definitions in future iterations.
     return undefined;

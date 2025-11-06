@@ -1,11 +1,11 @@
-# @sap-ux/fiori-tools-analyser
+# @sap-ux/project-analyser
 
 Utility library for analysing SAP Fiori applications and deriving bill of materials data for downstream tooling.
 
 ## Installation
 
 ```bash
-pnpm add @sap-ux/fiori-tools-analyser
+pnpm add @sap-ux/project-analyser
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @sap-ux/fiori-tools-analyser
 The module is currently under active development. A high-level example of the planned API is shown below.
 
 ```typescript
-import { analyzeApp } from '@sap-ux/fiori-tools-analyser';
+import { analyzeApp } from '@sap-ux/project-analyser';
 
 const result = await analyzeApp({ appPath: '/path/to/fiori-app' });
 console.log(result.summary);

@@ -18,7 +18,7 @@ export async function analyzeAnnotations(
         return undefined;
     }
 
-    logger?.debug('Annotation analyser received documents', annotations.length);
+    logger?.debug(`Annotation analyser received ${annotations.length} documents`);
 
     // Future implementation will parse annotation vocabularies and building blocks to gather usage metrics.
     return undefined;

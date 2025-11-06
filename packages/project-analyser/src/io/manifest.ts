@@ -23,7 +23,7 @@ export async function loadManifestDocument(
             content: JSON.parse(manifestContent) as Record<string, unknown>
         };
     } catch (error: unknown) {
-        logger?.debug('Unable to load manifest.json', error);
+        logger?.debug(`Unable to load manifest.json: ${String(error)}`);
         return undefined;
     }
 }

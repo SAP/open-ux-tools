@@ -59,7 +59,7 @@ export async function loadAnnotationDocuments(
         const documents = await Promise.all(files.map((file) => readAnnotationFile(file)));
         return documents.filter((doc): doc is AnnotationDocument => doc !== undefined);
     } catch (error: unknown) {
-        logger?.debug('Unable to load annotations directory', error);
+        logger?.debug(`Unable to load annotations directory: ${String(error)}`);
         return [];
     }
 }

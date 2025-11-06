@@ -124,9 +124,6 @@
       "path": "packages/fiori-mcp-server"
     },
     {
-      "path": "packages/fiori-tools-analyser"
-    },
-    {
       "path": "packages/fiori-tools-settings"
     },
     {
@@ -194,6 +191,9 @@
     },
     {
       "path": "packages/project-access"
+    },
+    {
+      "path": "packages/project-analyser"
     },
     {
       "path": "packages/project-input-validator"
