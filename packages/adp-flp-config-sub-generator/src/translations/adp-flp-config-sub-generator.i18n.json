@@ -6,8 +6,8 @@
         "flpConfigName": "SAP Fiori Launchpad Configuration - Tile Settings",
         "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Handling",
         "tileSettingsDescr": "Add new tile or replace existing tiles of the base application.\nProject: {{projectName}}",
-        "flpConfigReplaceCurrentTiles": "Existing Tiles (Title/Navigation Intent):\n{{- currentTiles}}",
-        "flpConfigReplaceTile": "  • {{- title}} / {{- navigationIntent}}"
+        "flpConfigReplaceCurrentTiles": "Existing Tiles (Title ⑊ Navigation Intent):\n\n{{- currentTiles}}",
+        "flpConfigReplaceTile": "  • {{- title}} ⑊ {{- navigationIntent}}"
     },
     "info": {
         "flpConfigAdded": "SAP Fiori launchpad configuration added."

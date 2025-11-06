@@ -9,7 +9,7 @@
         "createAnotherInbound": "Do you want to add or edit another inbound?",
         "icon": "Icon",
         "existingFLPConfig": "This project already has a SAP Fiori launchpad configuration. If you create a new configuration, it will overwrite the existing one.",
-        "tileHandlingAction": "Action:",
+        "tileHandlingAction": "Tile Handling Action:",
         "copyFromExisting": "Copy Configurations from an Existing Inbound?",
         "confirmReplace": "Do you want to proceed?"
     },
@@ -26,8 +26,8 @@
         "duplicateInbound": "The base application has an existing inbound that matches the values for Semantic Object and Action. To create a new tile you must modify the Semantic Object value, the Action value, or both."
     },
     "choices": {
-        "replaceOriginalTile": "Replace",
-        "addNewTile": "Add"
+        "replaceOriginalTile": "Replace Tiles",
+        "addNewTile": "Add Tile"
     },
     "additionalMessages": {
         "confirmReplaceAdditionalMessage": "Confirming will create a copy of the existing tiles. To replace original tiles, create a new IAM app of type \"UI Adaptation\" and add it to a custom business catalog. In the business role, add your custom catalog and deactivate the original IAM app."
