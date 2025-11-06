@@ -47,7 +47,7 @@ test.describe(`@reload-middleware @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Update');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             const webappChangesPath = join(projectCopy, 'webapp', 'changes');
             await createChangeFlexFile(webappChangesPath, ui5Version);
             await editor.changesPanel.checkText('Changes Detected');
@@ -97,7 +97,7 @@ test.describe(`@reload-middleware @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Manage');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.changesPanel.checkTextInPanel(['SAVED CHANGES']);

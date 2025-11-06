@@ -1066,6 +1066,74 @@ class PropertiesPanel {
     private title: string = 'Properties';
 
     /**
+     * Checks if the properties panel is visible.
+     */
+    async checkPropertiesPanelIsVisible(): Promise<void> {
+        await test.step(`Check \`${this.context}\` is visible`, async () => {
+            const properties = await this.page
+                .locator('div.property-content.app-panel-scroller')
+                .getByLabel('PROPERTIES', { exact: true });
+            await properties.waitFor({ state: 'visible' });
+            await expect(properties).toBeVisible();
+        });
+    }
+
+    /**
+     * Clicks elsewhere on the page to loose focus from the input field in the properties panel.
+     */
+    async clickElseWhereToLooseFocus(): Promise<void> {
+        await test.step(`Click elsewhere to loose focus from the input in ${this.context}`, async () => {
+            await this.page.click('body', { position: { x: 0, y: 0 } });
+        });
+    }
+    /**
+     * Checks if the control ID is visible in the properties panel.
+     *
+     * @param id - control id to check.
+     */
+    async checkControlId(id: string): Promise<void> {
+        const label = this.page.getByTestId('CONTROL ID--Label');
+        await label.waitFor({ state: 'visible' });
+        await expect(label).toBeVisible();
+        const controlIdValue = this.page.getByTestId('CONTROL ID');
+        await expect(await controlIdValue.inputValue()).toEqual(id);
+    }
+
+    /**
+     * Checks if the "Copy to Clipboard" button is visible in the properties panel.
+     *
+     * @param selector - The selector for the button ('CONTROLID' or 'CONTROLTYPE').
+     */
+    async checkCopyToClipboardButton(selector: 'CONTROLID' | 'CONTROLTYPE'): Promise<void> {
+        await test.step(`Check \`Copy\` button and its tooltip \`Copy\` is visible in the ${this.context}`, async () => {
+            const button = this.page.locator(`#${selector}--copy`);
+            await expect(button).toBeVisible();
+            await expect(button).toHaveAttribute('title', 'Copy');
+        });
+    }
+
+    /**
+     * Checks if the control ID and control type are visible in the properties panel.
+     *
+     * @param id - control id to check.
+     * @param type - control type to check.
+     */
+    async checkControlIdAndControlType(id: string, type?: string): Promise<void> {
+        const text = type ? `\`Control Id: ${id}\` and \`Control Type: ${type}\`` : `\`Control Id: ${id}\``;
+        await test.step(`Check ${text} are visible in the ${this.context}`, async () => {
+            await this.checkControlId(id);
+
+            if (type) {
+                const typeLabel = this.page.getByTestId('CONTROL TYPE--Label');
+                await typeLabel.waitFor({ state: 'visible' });
+                await expect(typeLabel).toBeVisible();
+                const controlTypeValue = this.page.getByTestId('CONTROL TYPE');
+                await expect(await controlTypeValue.inputValue()).toEqual(type);
+            }
+        });
+    }
+
+    /**
      * Returns a locator for a property field in the properties panel based on the provided label.
      *
      * @param label - The label of the property field to locate.

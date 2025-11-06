@@ -59,7 +59,7 @@ test.describe(`@changes-panel @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Manage');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.changesPanel.checkTextInPanel(['UNSAVED CHANGES']);
             await editor.changesPanel.checkTextInPanel(['Text', 'Manage'], 'unsaved');
         }
@@ -79,7 +79,7 @@ test.describe(`@changes-panel @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Manage');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.undoButton.click();
             await editor.toolbar.isUndoDisabled();
             await editor.toolbar.redoButton.click();
@@ -100,7 +100,7 @@ test.describe(`@changes-panel @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Manage');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.changesPanel.checkTextInPanel(['SAVED CHANGES']);
@@ -121,7 +121,7 @@ test.describe(`@changes-panel @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Manage');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.changesPanel.checkDeleteButtonForSavedItem(['Text', 'Manage']);

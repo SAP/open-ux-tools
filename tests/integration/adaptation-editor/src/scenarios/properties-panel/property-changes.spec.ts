@@ -20,7 +20,7 @@ test.describe(`@properties-panel @change-indicators @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Create New');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.propertiesPanel.checkPropertyIndicator('text', 'UnSaved');
             await editor.propertiesPanel.checkTooltipContent('text', {
                 'Current value': 'Create New',
@@ -50,7 +50,7 @@ test.describe(`@properties-panel @change-indicators @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Create New');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.propertiesPanel.checkPropertyIndicator('text', 'Saved');
@@ -67,7 +67,7 @@ test.describe(`@properties-panel @change-indicators @cpe @adp`, () => {
             await editor.outlinePanel.checkOutlineNodeIndicator('Create New', 'Saved');
 
             await editor.propertiesPanel.fillStringEditor('text', 'Create Newest');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.propertiesPanel.checkPropertyIndicator('text', 'SavedAndUnSaved');
             await editor.outlinePanel.checkOutlineNodeIndicator('Create Newest', 'SavedAndUnSaved');
         }
@@ -87,7 +87,7 @@ test.describe(`@properties-panel @change-indicators @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
             await editor.propertiesPanel.fillStringEditor('text', 'Create New');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.changesPanel.expectSavedChangesStack(page, 'Button', 1);

@@ -30,8 +30,9 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
-4. Check `UNSAVED CHANGES` text is visible in the Changes Panel
-5. Check `Text->Manage` text is visible in the Changes Panel
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Check `UNSAVED CHANGES` text is visible in the Changes Panel
+6. Check `Text->Manage` text is visible in the Changes Panel
 
 ---
 
@@ -43,10 +44,11 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
-4. Click `Undo` button in the toolBar
-5. Check `Undo` button in the toolbar is disabled
-6. Click `Redo` button in the toolBar
-7. Check `Undo` button in the toolbar is enabled
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Click `Undo` button in the toolBar
+6. Check `Undo` button in the toolbar is disabled
+7. Click `Redo` button in the toolBar
+8. Check `Undo` button in the toolbar is enabled
 
 ---
 
@@ -58,9 +60,10 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
-4. Click `Save` button in the toolBar
-5. Check `SAVED CHANGES` text is visible in the Changes Panel
-6. Check `Text->Manage` text is visible in the Changes Panel
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Click `Save` button in the toolBar
+6. Check `SAVED CHANGES` text is visible in the Changes Panel
+7. Check `Text->Manage` text is visible in the Changes Panel
 
 ---
 
@@ -72,11 +75,12 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
-4. Click `Save` button in the toolBar
-5. Hover item with `Text->Manage` text and check `delete` is visible in the Changes Panel
-6. Click `Delete` button for `Text->Manage` item in the Changes Panel
-7. Click `Delete` button in the dialog to confirm change deletion in the Changes Panel
-8. Verify in the project `webapp --> changes` folder, change file is deleted.
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Click `Save` button in the toolBar
+6. Hover item with `Text->Manage` text and check `delete` is visible in the Changes Panel
+7. Click `Delete` button for `Text->Manage` item in the Changes Panel
+8. Click `Delete` button in the dialog to confirm change deletion in the Changes Panel
+9. Verify in the project `webapp --> changes` folder, change file is deleted.
 
 ---
 

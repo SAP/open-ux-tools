@@ -25,8 +25,14 @@ test.describe(`@properties-panel @property @cpe @adp`, () => {
             await editor.reloadCompleted();
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Create');
+            await editor.propertiesPanel.checkControlIdAndControlType(
+                await listReport.getControlIdByLabel('Create'),
+                'sap.m.Button'
+            );
+            await editor.propertiesPanel.checkCopyToClipboardButton('CONTROLID');
+            await editor.propertiesPanel.checkCopyToClipboardButton('CONTROLTYPE');
             await editor.propertiesPanel.fillStringEditor('text', 'Create New');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.propertiesPanel.checkStringEditorPropertyValue('text', 'Create New');
@@ -62,14 +68,14 @@ test.describe(`@properties-panel @property @cpe @adp`, () => {
             await editor.propertiesPanel.getExpressionValueButton('enabled').click();
             await editor.propertiesPanel.checkValue('enabled', '{expression}');
             await editor.propertiesPanel.fillStringEditor('enabled', '{expression');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.propertiesPanel.checkValue('enabled', '{expression');
             await editor.propertiesPanel.checkError(
                 'enabled',
                 `SyntaxError: no closing braces found in '{expression' after pos:0`
             );
             await editor.propertiesPanel.fillStringEditor('enabled', '{someExpression}');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.propertiesPanel.checkValue('enabled', '{someExpression}');
             await editor.propertiesPanel.checkError('enabled', ``);
 
@@ -94,7 +100,7 @@ test.describe(`@properties-panel @property @cpe @adp`, () => {
             const listReport = new ListReport(previewFrame);
             await listReport.clickOnControlOverlay('Delete');
             await editor.propertiesPanel.fillStringEditor('text', 'Remove');
-            await page.getByTestId('text--Label').click();
+            await editor.propertiesPanel.clickElseWhereToLooseFocus();
             await editor.toolbar.undoButton.click();
             await editor.propertiesPanel.checkStringEditorPropertyValue('text', '{i18n>DELETE}');
             await editor.toolbar.redoButton.click();

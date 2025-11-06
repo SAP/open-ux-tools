@@ -15,11 +15,14 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
-3. Fill `Text` property with  `Create New` in the Properties Panel
-4. Click `Save` button in the toolBar
-5. Check `Text` property value is `Create New` in the Properties Panel
-6. Check `Text->Create New` text is visible in the Changes Panel
-7. Verify changes:
+3. Check `Control Id: fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--addEntry` and `Control Type: sap.m.Button` are visible in the Properties Panel
+4. Check `Copy` button and its tooltip `Copy` is visible in the Properties Panel
+5. Fill `Text` property with  `Create New` in the Properties Panel
+6. Click elsewhere to loose focus from the input in Properties Panel
+7. Click `Save` button in the toolBar
+8. Check `Text` property value is `Create New` in the Properties Panel
+9. Check `Text->Create New` text is visible in the Changes Panel
+10. Verify changes:
 
 **Change(s)**
 
@@ -52,16 +55,18 @@
 7. Click `Expression` value for `Enabled` property in the Properties Panel
 8. Check `Enabled` property value is `{expression}` in the Properties Panel
 9. Fill `Enabled` property with  `{expression` in the Properties Panel
-10. Check `Enabled` property value is `{expression` in the Properties Panel
-11. Check `Enabled` property value has error and error message is`SyntaxError: no closing braces found in '{expression' after pos:0` in the Properties Panel
-12. Fill `Enabled` property with  `{someExpression}` in the Properties Panel
-13. Check `Enabled` property value is `{someExpression}` in the Properties Panel
-14. Check `Enabled` property value has no error in the Properties Panel
-15. Check `Type` property value is `Transparent` in the Properties Panel
-16. Click `Expression` value for `Type` property in the Properties Panel
-17. Check `Type` property value is `{expression}` in the Properties Panel
-18. Fill `Type` property with  `Back` in the Properties Panel
-19. Check `Type` property value is `Back` in the Properties Panel
+10. Click elsewhere to loose focus from the input in Properties Panel
+11. Check `Enabled` property value is `{expression` in the Properties Panel
+12. Check `Enabled` property value has error and error message is`SyntaxError: no closing braces found in '{expression' after pos:0` in the Properties Panel
+13. Fill `Enabled` property with  `{someExpression}` in the Properties Panel
+14. Click elsewhere to loose focus from the input in Properties Panel
+15. Check `Enabled` property value is `{someExpression}` in the Properties Panel
+16. Check `Enabled` property value has no error in the Properties Panel
+17. Check `Type` property value is `Transparent` in the Properties Panel
+18. Click `Expression` value for `Type` property in the Properties Panel
+19. Check `Type` property value is `{expression}` in the Properties Panel
+20. Fill `Type` property with  `Back` in the Properties Panel
+21. Check `Type` property value is `Back` in the Properties Panel
 
 ---
 
@@ -73,10 +78,11 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Delete` in the `Running Application Preview`
 3. Fill `Text` property with  `Remove` in the Properties Panel
-4. Click `Undo` button in the toolBar
-5. Check `Text` property value is `{i18n>DELETE}` in the Properties Panel
-6. Click `Redo` button in the toolBar
-7. Check `Text` property value is `Remove` in the Properties Panel
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Click `Undo` button in the toolBar
+6. Check `Text` property value is `{i18n>DELETE}` in the Properties Panel
+7. Click `Redo` button in the toolBar
+8. Check `Text` property value is `Remove` in the Properties Panel
 
 ---
 

@@ -63,7 +63,8 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Update` in the Properties Panel
-4. Create change flex file `id_create_propertyChange.change` in the changes folder with content 
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Create change flex file `id_create_propertyChange.change` in the changes folder with content 
 ```json
 {
   "changeType": "propertyChange",
@@ -98,11 +99,11 @@
 ```
 
 
-5. Check `Changes Detected` text is visible in the Changes Panel
-6. Click `Reload` link in the Changes Panel
-7. Check app rendered in the preview iframe `Running Application Preview`
-8. Check `Text->Update` text is visible in the Changes Panel
-9. Check control's label is `Update` in the `Running Application Preview`
+6. Check `Changes Detected` text is visible in the Changes Panel
+7. Click `Reload` link in the Changes Panel
+8. Check app rendered in the preview iframe `Running Application Preview`
+9. Check `Text->Update` text is visible in the Changes Panel
+10. Check control's label is `Update` in the `Running Application Preview`
 
 ---
 
@@ -167,15 +168,16 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click on `Create` in the `Running Application Preview`
 3. Fill `Text` property with  `Manage` in the Properties Panel
-4. Click `Save` button in the toolBar
-5. Check `SAVED CHANGES` text is visible in the Changes Panel
-6. Check `Text->Manage` text is visible in the Changes Panel
-7. Click `Delete` button for `Text->Manage` item in the Changes Panel
-8. Click `Delete` button in the dialog to confirm change deletion in the Changes Panel
-9. Click `Reload` link in the Changes Panel
-10. Check `No historic changes` text is visible in the Changes Panel
-11. Check app rendered in the preview iframe `Running Application Preview`
-12. Check control's label is `Create` in the `Running Application Preview`
+4. Click elsewhere to loose focus from the input in Properties Panel
+5. Click `Save` button in the toolBar
+6. Check `SAVED CHANGES` text is visible in the Changes Panel
+7. Check `Text->Manage` text is visible in the Changes Panel
+8. Click `Delete` button for `Text->Manage` item in the Changes Panel
+9. Click `Delete` button in the dialog to confirm change deletion in the Changes Panel
+10. Click `Reload` link in the Changes Panel
+11. Check `No historic changes` text is visible in the Changes Panel
+12. Check app rendered in the preview iframe `Running Application Preview`
+13. Check control's label is `Create` in the `Running Application Preview`
 
 ---
 
