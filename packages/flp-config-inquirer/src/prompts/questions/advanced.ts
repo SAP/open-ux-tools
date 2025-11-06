@@ -120,14 +120,10 @@ export function getConfirmReplacePrompt(): FLPConfigQuestion {
         name: promptNames.confirmReplace,
         message: t('prompts.confirmReplace'),
         default: false,
-        validate: (value): string | boolean => {
-            return value ? true : ' ';
-        },
-        additionalMessages: (): IMessageSeverity => {
-            return {
-                severity: Severity.information,
-                message: t('additionalMessages.confirmReplaceAdditionalMessage')
-            };
-        }
+        validate: (value): string | boolean => (value ? true : ' '),
+        additionalMessages: (): IMessageSeverity => ({
+            severity: Severity.information,
+            message: t('additionalMessages.confirmReplaceAdditionalMessage')
+        })
     };
 }
