@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.26.14
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
+## 1.26.13
+
+### Patch Changes
+
+-   6debb89: style update for disabled combobox option
+
 ## 1.26.12
 
 ### Patch Changes

@@ -1,5 +1,284 @@
 # @sap-ux/generator-adp
 
+## 0.6.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+-   @sap-ux/inquirer-common@0.9.3
+
+## 0.6.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/adp-tooling@0.17.7
+
+## 0.6.6
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/odata-service-writer@0.27.29
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/adp-tooling@0.17.6
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
+## 0.6.5
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+    -   @sap-ux/adp-tooling@0.17.5
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+    -   @sap-ux/adp-tooling@0.17.4
+    -   @sap-ux/fiori-generator-shared@0.13.31
+    -   @sap-ux/system-access@0.6.27
+    -   @sap-ux/inquirer-common@0.8.10
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+    -   @sap-ux/adp-tooling@0.17.3
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/system-access@0.6.26
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+    -   @sap-ux/adp-tooling@0.17.2
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/system-access@0.6.25
+    -   @sap-ux/inquirer-common@0.8.9
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+    -   @sap-ux/adp-tooling@0.17.1
+    -   @sap-ux/fiori-generator-shared@0.13.29
+    -   @sap-ux/system-access@0.6.24
+    -   @sap-ux/inquirer-common@0.8.8
+
+## 0.6.0
+
+### Minor Changes
+
+-   cdeb18b: feat: Integrate a new ABAP api for retrieval of the UI5 framework version for a system in the ADP generator.
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+    -   @sap-ux/adp-tooling@0.17.0
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/system-access@0.6.23
+
+## 0.5.16
+
+### Patch Changes
+
+-   05ecba6: feat: Adapt CF projects' structure to work with preview-middleware
+-   Updated dependencies [05ecba6]
+    -   @sap-ux/adp-tooling@0.16.14
+
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/adp-tooling@0.16.13
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/odata-service-writer@0.27.28
+    -   @sap-ux/project-input-validator@0.6.29
+    -   @sap-ux/system-access@0.6.22
+    -   @sap-ux/inquirer-common@0.8.7
+
+## 0.5.14
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/adp-tooling@0.16.12
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/inquirer-common@0.8.6
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/system-access@0.6.22
+
+## 0.5.13
+
+### Patch Changes
+
+-   27fb53e: fix: CF integration tests and sonar issues
+-   Updated dependencies [27fb53e]
+    -   @sap-ux/adp-tooling@0.16.11
+
+## 0.5.12
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/adp-tooling@0.16.10
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/odata-service-writer@0.27.27
+    -   @sap-ux/project-input-validator@0.6.28
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/inquirer-common@0.8.5
+
+## 0.5.11
+
+### Patch Changes
+
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+    -   @sap-ux/adp-tooling@0.16.9
+
+## 0.5.10
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/adp-tooling@0.16.8
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/odata-service-writer@0.27.26
+    -   @sap-ux/project-input-validator@0.6.27
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/inquirer-common@0.8.3
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [233259c]
+    -   @sap-ux/adp-tooling@0.16.7
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/adp-tooling@0.16.6
+    -   @sap-ux/fiori-generator-shared@0.13.25
+    -   @sap-ux/system-access@0.6.21
+    -   @sap-ux/inquirer-common@0.8.2
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/inquirer-common@0.8.1
+    -   @sap-ux/adp-tooling@0.16.5
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+    -   @sap-ux/adp-tooling@0.16.4
+
+## 0.5.5
+
+### Patch Changes
+
+-   441be86: fix: Remove CF flow from the ADP Generator and fix template resolution problem
+-   Updated dependencies [441be86]
+    -   @sap-ux/adp-tooling@0.16.3
+
+## 0.5.4
+
+### Patch Changes
+
+-   3d63709: fix: Project name appears twice under system and password prompts when cloud system is selected.
+
+## 0.5.3
+
+### Patch Changes
+
+-   ee9af90: fix(adp)(vscode): SAP Fiori Launchpad Configuration step appears multiple times.
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [3e4bf96]
+    -   @sap-ux/adp-tooling@0.16.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/system-access@0.6.20
+    -   @sap-ux/adp-tooling@0.16.1
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 0.5.0
+
+### Minor Changes
+
+-   247a5a9: feat: Add ADP Generator Cloud Foundry prompting code
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/adp-tooling@0.16.0
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 0.4.13
+
+### Patch Changes
+
+-   Updated dependencies [1df9184]
+    -   @sap-ux/adp-tooling@0.15.38
+
+## 0.4.12
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.37
+-   @sap-ux/inquirer-common@0.7.50
+
 ## 0.4.11
 
 ### Patch Changes

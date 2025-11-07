@@ -8,12 +8,20 @@ import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
+import {
+    PromptState,
+    convertODataVersionType,
+    isBackendSystemKeyExisting,
+    removeCircularFromServiceProvider
+} from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { SystemSelectionAnswers } from '../system-selection/questions';
+import type { AbapOnPremAnswers } from '../abap-on-prem/questions';
+import { BasicCredentialsPromptNames } from '../credentials/questions';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -26,8 +34,8 @@ function systemAuthTypeToAuthenticationType(
     systemAuthType: SystemAuthType | undefined
 ): AuthenticationType | undefined {
     switch (systemAuthType) {
-        case 'serviceKey':
-            return AuthenticationType.OAuth2RefreshToken;
+        case 'serviceKey' /** @deprecated All cloud auth is reentrance ticket based, legacy stored entries are still supported */:
+            return AuthenticationType.ReentranceTicket;
         case 'reentranceTicket':
             return AuthenticationType.ReentranceTicket;
         case 'basic':
@@ -42,14 +50,16 @@ function systemAuthTypeToAuthenticationType(
  * @param connectValidator a connection validator instance used to validate the system url
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  * @param requiredOdataVersion The required OData version for the system connection, only catalogs supporting the specifc odata version will be used.
- * @param cachedConnectedSystem
+ * @param cachedConnectedSystem An existing connection may be passed which will prevent reauthentication
+ * @param showExistingSystemWarning if the url exists in secure store a validation message will be returned
  * @returns the system url prompt
  */
 export function getSystemUrlQuestion<T extends Answers>(
     connectValidator: ConnectionValidator,
     promptNamespace?: string,
     requiredOdataVersion?: OdataVersion,
-    cachedConnectedSystem?: ConnectedSystem
+    cachedConnectedSystem?: ConnectedSystem,
+    showExistingSystemWarning = true
 ): InputQuestion<T> {
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${newSystemPromptNames.newSystemUrl}`;
     const newSystemUrlQuestion = {
@@ -64,13 +74,21 @@ export function getSystemUrlQuestion<T extends Answers>(
         validate: async (url) => {
             PromptState.resetConnectedSystem();
             // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
-            // Only in the case or re-entrance tickets will we reuse an existing connection.
+            // Only in the case of re-entrance tickets will we reuse an existing connection.
             if (
                 cachedConnectedSystem &&
                 cachedConnectedSystem.backendSystem?.url === url &&
                 cachedConnectedSystem.backendSystem?.authenticationType === 'reentranceTicket'
             ) {
                 connectValidator.setConnectedSystem(cachedConnectedSystem);
+            } else if (showExistingSystemWarning) {
+                const existingBackend = isBackendSystemKeyExisting(PromptState.backendSystemsCache, url);
+                if (existingBackend) {
+                    // Not a cached connection so re-validate as new backend system entry
+                    return t('prompts.validationMessages.backendSystemExistsWarning', {
+                        backendName: existingBackend.name
+                    });
+                }
             }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,
@@ -114,7 +132,7 @@ export function getSystemUrlQuestion<T extends Answers>(
 export function getUserSystemNameQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace?: string
-): InputQuestion<Partial<NewSystemAnswers>> {
+): InputQuestion<Partial<NewSystemAnswers & AbapOnPremAnswers & SystemSelectionAnswers>> {
     let defaultSystemName: string;
     let userModifiedSystemName: boolean = false;
     const promptNamespacePart = `${promptNamespace ? promptNamespace + ':' : ''}`;
@@ -138,7 +156,10 @@ export function getUserSystemNameQuestion(
             }
             return defaultSystemName;
         },
-        validate: async (systemName: string) => {
+        validate: async (
+            systemName: string,
+            previousAnswers: NewSystemAnswers & Partial<AbapOnPremAnswers> & Partial<SystemSelectionAnswers>
+        ) => {
             if (!systemName) {
                 return false;
             }
@@ -152,6 +173,13 @@ export function getUserSystemNameQuestion(
                 isValid = await validateSystemName(systemName);
             }
 
+            const shouldStoreCreds =
+                !!previousAnswers?.[
+                    `${promptNamespacePart}${BasicCredentialsPromptNames.storeSystemCredentials}` as keyof (
+                        | AbapOnPremAnswers
+                        | SystemSelectionAnswers
+                    )
+                ];
             if (isValid === true) {
                 // Update or create the BackendSystem with the new system details for persistent storage
                 if (connectValidator.validatedUrl && PromptState.odataService.connectedSystem) {
@@ -160,15 +188,14 @@ export function getUserSystemNameQuestion(
                         name: systemName,
                         url: connectValidator.validatedUrl,
                         client: connectValidator.validatedClient,
-                        username: connectValidator.axiosConfig?.auth?.username,
-                        password: connectValidator.axiosConfig?.auth?.password,
-                        serviceKeys: connectValidator.serviceInfo,
+                        username: shouldStoreCreds ? connectValidator.axiosConfig?.auth?.username : undefined,
+                        password: shouldStoreCreds ? connectValidator.axiosConfig?.auth?.password : undefined,
+                        serviceKeys: connectValidator.serviceInfo, // This will not be persisted and is only used to determine cached connection equality for CF provided uaa keys
                         userDisplayName: connectValidator.connectedUserName,
                         systemType: getBackendSystemType({
                             serviceKeys: connectValidator.serviceInfo,
                             authenticationType: connectValidator.systemAuthType
-                        } as BackendSystem),
-                        refreshToken: connectValidator.refreshToken
+                        } as BackendSystem)
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                     PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;
@@ -176,7 +203,7 @@ export function getUserSystemNameQuestion(
             }
             return isValid;
         }
-    } as InputQuestion<Partial<NewSystemAnswers>>;
+    } as InputQuestion<Partial<NewSystemAnswers & AbapOnPremAnswers & SystemSelectionAnswers>>;
 
     return newSystemNamePrompt;
 }

@@ -1,4 +1,6 @@
-# @sap-ux/abap-deploy-config-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/abap-deploy-config-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/abap-deploy-config-writer)
+
+# [`@sap-ux/abap-deploy-config-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/abap-deploy-config-writer)
 
 Easy to use ABAP deployment configuration writer for use within Yeoman generator and other prompting libraries. 
 

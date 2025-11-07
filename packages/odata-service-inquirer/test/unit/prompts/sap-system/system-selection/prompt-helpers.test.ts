@@ -4,10 +4,9 @@ import {
     CfAbapEnvServiceChoice,
     createSystemChoices,
     findDefaultSystemSelectionIndex,
-    getBackendSystemDisplayName,
     NewSystemChoice
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 
@@ -43,8 +42,13 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValueOnce(backendSystems),
+        read: jest.fn().mockImplementation((key) => {
+            // Mock read to return systems with credentials
+            const system = backendSystems.find((s) => s.url === key.url);
+            return Promise.resolve(system);
+        }),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })
@@ -70,26 +74,6 @@ describe('Test system selection prompt helpers', () => {
             mockIsAppStudio = false;
         });
 
-        test('Should get backend system display name', () => {
-            expect(
-                getBackendSystemDisplayName({
-                    name: 'systemA',
-                    userDisplayName: 'userDisplayName1',
-                    authenticationType: 'reentranceTicket' as AuthenticationType,
-                    systemType: 'S4HC'
-                } as BackendSystem)
-            ).toEqual('systemA (S4HC) [userDisplayName1]');
-
-            expect(
-                getBackendSystemDisplayName({
-                    name: 'systemB',
-                    userDisplayName: 'userDisplayName2',
-                    serviceKeys: { url: 'Im a service key' },
-                    systemType: 'BTP'
-                } as BackendSystem)
-            ).toEqual('systemB (BTP) [userDisplayName2]');
-        });
-
         test('Should create backend system selection choices', async () => {
             expect(await createSystemChoices()).toEqual([
                 {
@@ -107,7 +91,7 @@ describe('Test system selection prompt helpers', () => {
                     }
                 },
                 {
-                    name: `${backendSystemReentrance.name} (S4HC)`,
+                    name: `${backendSystemReentrance.name} (ABAP Cloud)`,
                     value: {
                         system: backendSystemReentrance,
                         type: 'backendSystem'

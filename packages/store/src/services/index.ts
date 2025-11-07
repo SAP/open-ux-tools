@@ -8,11 +8,11 @@ export interface ServiceRetrievalOptions {
  */
 export interface Service<Entity, EntityKey> {
     read(key: EntityKey): Promise<Entity | undefined>;
-    write(entity: Entity): Promise<Entity | undefined>;
+    write(entity: Entity, options?: unknown): Promise<Entity | undefined>;
     partialUpdate(key: EntityKey, entity: Partial<Entity>): Promise<Entity | undefined>;
     delete(entity: Entity): Promise<boolean>;
     getAll(options?: ServiceRetrievalOptions): Promise<Entity[] | []>;
 }
 
-export { SystemService } from './backend-system';
+export type { SystemService } from './backend-system';
 export { ApiHubSettingsService } from './api-hub';

@@ -1,5 +1,226 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.4
+
+### Patch Changes
+
+-   2e75589: Change condition and location of the password store warning
+
+## 2.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
+## 2.11.2
+
+### Patch Changes
+
+-   Updated dependencies [56235f8]
+    -   @sap-ux/telemetry@0.6.38
+    -   @sap-ux/fiori-generator-shared@0.13.33
+    -   @sap-ux/inquirer-common@0.9.2
+
+## 2.11.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/guided-answers-helper@0.4.1
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/telemetry@0.6.37
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
+## 2.11.0
+
+### Minor Changes
+
+-   10a3b57: Adds a system store warning to password input, add new prompt (default false) whether to store the credentials for new system / existing system on reauth and a relevant breadcrumb.
+
+## 2.10.0
+
+### Minor Changes
+
+-   4ddcff3: Add a message for the Tree table default. Move and export shouldUseAnalyticalTable() for use in other repos.
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
+## 2.9.14
+
+### Patch Changes
+
+-   Updated dependencies [cc65eec]
+    -   @sap-ux/store@1.3.2
+    -   @sap-ux/fiori-generator-shared@0.13.31
+    -   @sap-ux/telemetry@0.6.36
+    -   @sap-ux/inquirer-common@0.8.10
+
+## 2.9.13
+
+### Patch Changes
+
+-   Updated dependencies [3253294]
+    -   @sap-ux/axios-extension@1.24.1
+    -   @sap-ux/fiori-generator-shared@0.13.30
+
+## 2.9.12
+
+### Patch Changes
+
+-   Updated dependencies [ae8dbc6]
+    -   @sap-ux/store@1.3.1
+    -   @sap-ux/fiori-generator-shared@0.13.30
+    -   @sap-ux/telemetry@0.6.35
+    -   @sap-ux/inquirer-common@0.8.9
+
+## 2.9.11
+
+### Patch Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+-   Updated dependencies [36b0f19]
+    -   @sap-ux/store@1.3.0
+    -   @sap-ux/fiori-generator-shared@0.13.29
+    -   @sap-ux/telemetry@0.6.34
+    -   @sap-ux/inquirer-common@0.8.8
+
+## 2.9.10
+
+### Patch Changes
+
+-   Updated dependencies [cdeb18b]
+    -   @sap-ux/axios-extension@1.24.0
+    -   @sap-ux/fiori-generator-shared@0.13.28
+
+## 2.9.9
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/axios-extension@1.23.1
+    -   @sap-ux/fiori-generator-shared@0.13.28
+    -   @sap-ux/project-input-validator@0.6.29
+    -   @sap-ux/telemetry@0.6.33
+    -   @sap-ux/inquirer-common@0.8.7
+
+## 2.9.8
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.23.1
+-   @sap-ux/inquirer-common@0.8.6
+-   @sap-ux/fiori-generator-shared@0.13.27
+
+## 2.9.7
+
+### Patch Changes
+
+-   1b5d459: Fixes creds prompt shown when sap client invalid (on-prem url/client only)
+
+## 2.9.6
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.27
+    -   @sap-ux/project-input-validator@0.6.28
+    -   @sap-ux/telemetry@0.6.32
+    -   @sap-ux/inquirer-common@0.8.5
+
+## 2.9.5
+
+### Patch Changes
+
+-   06bc541: Check Transformations for Analytical default table.
+-   Updated dependencies [06bc541]
+    -   @sap-ux/inquirer-common@0.8.4
+
+## 2.9.4
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/fiori-generator-shared@0.13.26
+    -   @sap-ux/project-input-validator@0.6.27
+    -   @sap-ux/telemetry@0.6.31
+    -   @sap-ux/inquirer-common@0.8.3
+
+## 2.9.3
+
+### Patch Changes
+
+-   7b89529: Fix for existing system url/client validation shown in wrong prompt (abap-on-prem)
+
+## 2.9.2
+
+### Patch Changes
+
+-   Updated dependencies [f8c596d]
+    -   @sap-ux/store@1.2.1
+    -   @sap-ux/fiori-generator-shared@0.13.25
+    -   @sap-ux/telemetry@0.6.30
+    -   @sap-ux/inquirer-common@0.8.2
+
+## 2.9.1
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/inquirer-common@0.8.1
+
+## 2.9.0
+
+### Minor Changes
+
+-   4053369: Determine the default table type based on the service capabilities. Auto-populate qualifier from RecursiveHierarchy annotation if available.
+
+### Patch Changes
+
+-   Updated dependencies [4053369]
+    -   @sap-ux/inquirer-common@0.8.0
+
+## 2.8.13
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/axios-extension@1.23.0
+    -   @sap-ux/store@1.2.0
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/telemetry@0.6.29
+    -   @sap-ux/inquirer-common@0.7.51
+
+## 2.8.12
+
+### Patch Changes
+
+-   Updated dependencies [247a5a9]
+    -   @sap-ux/project-input-validator@0.6.26
+
+## 2.8.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.50
+
 ## 2.8.10
 
 ### Patch Changes

@@ -45,7 +45,7 @@ jest.mock('yeoman-test/lib/adapter', () => ({
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
-    rimraf.sync(testOutputDir);
+    rimraf.rimrafSync(testOutputDir);
 });
 
 describe('Test reference generator', () => {

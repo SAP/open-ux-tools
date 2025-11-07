@@ -1,5 +1,84 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.33
+
+### Patch Changes
+
+-   Updated dependencies [56235f8]
+    -   @sap-ux/telemetry@0.6.38
+
+## 0.13.32
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/telemetry@0.6.37
+
+## 0.13.31
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.36
+
+## 0.13.30
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.35
+
+## 0.13.29
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.34
+
+## 0.13.28
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/telemetry@0.6.33
+
+## 0.13.27
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/telemetry@0.6.32
+
+## 0.13.26
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/telemetry@0.6.31
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.30
+
+## 0.13.24
+
+### Patch Changes
+
+-   d4dabbd: Fix for label for Abap cloud returned as empty string
+
+## 0.13.23
+
+### Patch Changes
+
+-   bacaf93: Connections to Abap cloud will always use re-entrance tickets instead of UAA/OAuth2
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/telemetry@0.6.29
+
 ## 0.13.22
 
 ### Patch Changes
