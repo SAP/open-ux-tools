@@ -335,8 +335,8 @@ export async function generateProxyMiddlewareOptions(
         },
         ...options,
         changeOrigin: true,
-        target: backend.url,
-        pathRewrite: PathRewriters.getPathRewrite(backend, logger)
+        target: backend.url
+        //'pathRewrite' will be set later because it depends on subsequent settings
     };
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
@@ -353,6 +353,9 @@ export async function generateProxyMiddlewareOptions(
     if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
         proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
     }
+
+    // IMPORTANT: setting the pathRewrite must (!) be done after 'enhanceConfigsForDestination' because this function possibly modifies 'backend.path' and 'backend.pathReplace' that is being used in the pathRewrite
+    proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
 
     if (backend.bsp) {
         await addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);

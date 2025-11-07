@@ -689,7 +689,13 @@ export class ConfigPrompter {
      * @returns {Promise<void>} A promise that resolves once all version data is loaded and assigned.
      */
     private async loadUI5Versions(): Promise<void> {
-        const version = await getSystemUI5Version(this.abapProvider);
+        let version: string | undefined;
+        try {
+            version = await getSystemUI5Version(this.abapProvider, this.logger);
+        } catch (error) {
+            this.logger.debug(`Could not fetch the system UI5 version: ${error.message}.`);
+        }
+
         this.systemVersion = checkSystemVersionPattern(version);
         this.publicVersions = await fetchPublicVersions(this.logger);
         this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);

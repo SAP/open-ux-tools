@@ -26,7 +26,7 @@ jobs:
               uses: pnpm/action-setup@v4.1.0
               with:
                   run_install: |
-                    - args: [--frozen-lockfile]
+                      - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -45,17 +45,17 @@ jobs:
             - name: Run build
               run: pnpm run build
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Run unit tests
               run: pnpm run test --tuiAutoExit
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Check for changeset files
               id: check_changeset_files
               uses: andstor/file-existence-action@v3
               with:
-                files: '.changeset/[!README]*.md'
-                fail: false
+                  files: '.changeset/[!README]*.md'
+                  fail: false
             - name: Validate changeset files if found
               if: steps.check_changeset_files.outputs.files_exists == 'true'
               run: pnpm changeset status
@@ -63,37 +63,51 @@ jobs:
               id: cache-playwright-browsers
               uses: actions/cache@v4
               with:
-                path: |
-                  ${{ runner.os == 'Windows' }}:
-                    C:\Users\runneradmin\AppData\Local\ms-playwright
-                  ${{ runner.os != 'Windows' }}:
-                    ~/.cache/ms-playwright
-                key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                  path: |
+                      ${{ runner.os == 'Windows' }}:
+                        C:\Users\runneradmin\AppData\Local\ms-playwright
+                      ${{ runner.os != 'Windows' }}:
+                        ~/.cache/ms-playwright
+                  key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
             - name: Run integration tests
               run: pnpm run test:integration
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload playwright reports
               if: failure()
               uses: actions/upload-artifact@v4
               with:
-                name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
-                path: |
-                  packages/*/playwright-report
-                  !packages/*/node_modules
-                retention-days: 15
-            - name: Delete node_modules before sonar scan (better performance)
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-              run: find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && git restore .
+                  name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                  path: |
+                      packages/*/playwright-report
+                      !packages/*/node_modules
+                  retention-days: 15
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-              uses: sonarsource/sonarqube-scan-action@v5
-              env:
-                  GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              shell: bash
+              run: |
+                  echo ${{ github.event.pull_request.number }} >> pr-event.txt
+                  echo ${{ github.event.pull_request.head.ref }} >> pr-event.txt
+                  echo ${{ github.event.pull_request.base.ref }} >> pr-event.txt
+
+            - name: 'Prepare output artifact'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              shell: bash
+              run: touch output.tar && tar --exclude='./node_modules' --exclude='./dist' --exclude='./**/node_modules/**' --exclude='./**/dist/**' --exclude='./.git' --exclude 'output.tar' -czf output.tar .
+
+            - name: 'Upload sonar artifact'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: sonar-artifact
+                  path: |
+                      pr-event.txt
+                      output.tar
+                  if-no-files-found: error
+                  retention-days: 1
     version:
         # Run version job only on pushes to the main branch. The job depends on completion of the build job.
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -110,8 +124,8 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
               with:
-                run_install: |
-                  - args: [--frozen-lockfile]
+                  run_install: |
+                      - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -156,8 +170,8 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
               with:
-                run_install: |
-                  - args: [--frozen-lockfile]
+                  run_install: |
+                      - args: [--frozen-lockfile]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -173,10 +187,17 @@ jobs:
                   node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
-            - name: Replace placeholder with instrumentation key
+            - name: Set instrumentation key in fiori-mcp-server
               uses: jacobtomlinson/gha-find-replace@v3
               with:
                   include: packages/fiori-mcp-server/src/telemetry/index.ts
+                  find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
+                  replace: ${{ secrets.INSTRUMENTATION_KEY }}
+                  regex: false
+            - name: Set instrumentation key in sap-systems-ext
+              uses: jacobtomlinson/gha-find-replace@v3
+              with:
+                  include: packages/sap-systems-ext/src/utils/telemetryHelper.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
@@ -191,20 +212,72 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-            - name: Prepare Slack notification message
+            - name: Detect extension publication
               if: steps.changesetPublish.outputs.published == 'true'
               run: |
-                # Random delimiter required to support multi-line environment variable value
-                EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-                echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
-                # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
-                echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
-                echo "$EOF" >> $GITHUB_ENV
-            - name: Send Slack notification
+                  PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
+                  # Extract the first package name matching sap-ux-*-ext
+                  EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+
+                  if [ -n "$EXT_PKG" ]; then
+                    echo "EXTENSION_UPDATED=true" >> $GITHUB_ENV
+                    echo "EXT_PKG=$EXT_PKG" >> $GITHUB_ENV
+
+                    # Strip 'sap-ux-' prefix to derive directory name
+                    EXT_DIR_NAME=$(echo "$EXT_PKG" | sed 's/^sap-ux-//')
+                    echo "EXT_DIR=packages/${EXT_DIR_NAME}" >> $GITHUB_ENV
+                  else
+                    echo "EXTENSION_UPDATED=false" >> $GITHUB_ENV
+                  fi
+            - name: Read extension version
+              if: env.EXTENSION_UPDATED == 'true'
+              run: |
+                  EXT_VERSION=$(jq -r '.version' "${{ env.EXT_DIR }}/package.json")
+                  echo "EXT_VERSION=$EXT_VERSION" >> $GITHUB_ENV
+            - name: Package VSCode extension
+              if: env.EXTENSION_UPDATED == 'true'
+              run: pnpm --filter ${{ env.EXT_PKG }} ide-ext:package
+            - name: Create GitHub Release (extension)
+              if: env.EXTENSION_UPDATED == 'true'
+              uses: softprops/action-gh-release@v1
+              with:
+                  tag_name: ${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}
+                  name: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}
+                  body: 'Extension release: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}'
+                  draft: true
+                  prerelease: false
+                  generate_release_notes: true
+                  files: ${{ env.EXT_DIR }}/*.vsix
+                  fail_on_unmatched_files: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+            - name: Prepare Slack notification message (published packages)
+              if: steps.changesetPublish.outputs.published == 'true'
+              run: |
+                  # Random delimiter required to support multi-line environment variable value
+                  EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+                  echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
+                  # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
+                  echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
+                  echo "$EOF" >> $GITHUB_ENV
+            - name: Prepare Slack notification message (extension release only)
+              if: env.EXTENSION_UPDATED == 'true'
+              run: |
+                  RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}"
+                  echo "EXT_RELEASE_MESSAGE=:package: Extension *${{ env.EXT_PKG }}* v${{ env.EXT_VERSION }} released - <${RELEASE_URL}|View on GitHub>" >> $GITHUB_ENV
+            - name: Send Slack notification (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
               uses: slackapi/slack-github-action@v1.26.0
               with:
-                payload: |
-                  {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
+                  payload: |
+                      {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
               env:
-                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+            - name: Send Slack notification (extension release)
+              if: env.EXTENSION_UPDATED == 'true'
+              uses: slackapi/slack-github-action@v1.26.0
+              with:
+                  payload: |
+                      {"text": "${{ env.EXT_RELEASE_MESSAGE }}" }
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

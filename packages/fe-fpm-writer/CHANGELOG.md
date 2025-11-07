@@ -1,5 +1,28 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.17
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-annotation-api@0.7.12
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/logger@0.7.1
+
+## 0.39.16
+
+### Patch Changes
+
+-   Updated dependencies [271847c]
+    -   @sap-ux/fiori-annotation-api@0.7.11
+
+## 0.39.15
+
+### Patch Changes
+
+-   0cff26e: Added new API method `generateCustomField` to support custom field generation.
+
 ## 0.39.14
 
 ### Patch Changes

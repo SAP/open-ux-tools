@@ -1,5 +1,31 @@
 # @sap-ux/store
 
+## 1.3.3
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/logger@0.7.1
+
+## 1.3.2
+
+### Patch Changes
+
+-   cc65eec: adds new vscode sap systems extension
+
+## 1.3.1
+
+### Patch Changes
+
+-   ae8dbc6: correction for merging systems added to legacy path
+
+## 1.3.0
+
+### Minor Changes
+
+-   36b0f19: migrate backend system file from .fioritools to .saptools
+
 ## 1.2.1
 
 ### Patch Changes

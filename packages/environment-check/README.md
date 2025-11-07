@@ -1,4 +1,6 @@
-# @sap-ux/environment-check
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/environment-check/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/environment-check)
+
+# [`@sap-ux/environment-check`](https://github.com/SAP/open-ux-tools/tree/main/packages/environment-check)
 
 Environment check for Business Application Studio and Visual Studio Code.
 

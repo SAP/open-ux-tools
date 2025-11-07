@@ -7,7 +7,8 @@
         "systemMigrationFailed": "Migrating systems from secure store failed",
         "systemAlreadyExistsInHybridStore": "System with ID: [{{systemId}}] already exists in hybrid store. Not migrating",
         "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]",
-        "backendSystemEntityKeyExists": "The 'BackendSystem' entity was not written because a 'BackendSystem' entity key already exists: {{entityKey}}."
+        "backendSystemEntityKeyExists": "The 'BackendSystem' entity was not written because a 'BackendSystem' entity key already exists: {{entityKey}}.",
+        "systemsJsonMigrationFailed": "The migration of the systems.json file from .fioritools to .saptools failed: {{- error}}"
     },
     "info": {
         "foundRefreshToken": "Found refresh token for {{- systemId}}",
