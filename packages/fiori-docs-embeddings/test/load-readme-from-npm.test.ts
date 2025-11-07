@@ -94,7 +94,9 @@ describe('download readme from npmjs', () => {
         await script.execution;
 
         const expectedFileName = `${testPackageName.split('/').pop()}-README.md`;
-        expect(mockLogger.error).toHaveBeenCalledWith(`Error writing README file for ${expectedFileName}: Error: Permission denied`);
+        expect(mockLogger.error).toHaveBeenCalledWith(
+            `Error writing README file for ${expectedFileName}: Error: Permission denied`
+        );
         expect(mockExit).toHaveBeenCalledWith(1);
     });
 
