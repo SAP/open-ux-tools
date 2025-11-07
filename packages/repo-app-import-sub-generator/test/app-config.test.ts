@@ -451,4 +451,26 @@ describe('getAbapDeployConfig', () => {
         const result = await getAbapDeployConfig(context);
         expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
     });
+
+    it('should log and throw error when transport service throws unexpected error', async () => {
+        const errorMsg = 'Some backend error';
+        const mockTransportService = {
+            getTransportRequests: jest.fn().mockRejectedValue(new Error(errorMsg))
+        };
+        const mockServiceProvider = {
+            getAdtService: jest.fn().mockResolvedValue(mockTransportService)
+        } as unknown as AbapServiceProvider;
+
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockServiceProvider
+        };
+
+        await expect(getAbapDeployConfig(context)).rejects.toThrow(
+            t('error.transportCheckFailed', { error: errorMsg })
+        );
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.transportCheckFailed', { error: errorMsg })
+        );
+    });
 });
