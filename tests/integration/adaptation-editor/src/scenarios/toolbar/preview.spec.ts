@@ -89,6 +89,13 @@ test.describe(`@toolbar @preview-scale @cpe @adp`, () => {
     );
 });
 
+/**
+ * Subtract two percent values.
+ *
+ * @param a scaling value in percent format e.g. '50%'
+ * @param b scaling value in percent format e.g. '20%'
+ * @returns the difference between a and b in number format e.g. 30
+ */
 function subtractPercent(a: string, b: string): number {
     const numA = parseFloat(a.replace('%', ''));
     const numB = parseFloat(b.replace('%', ''));

@@ -111,6 +111,9 @@ export class ListReport {
         return getButtonLocator(this.frame, 'Clear', this.context);
     }
 
+    /**
+     * @returns Locator for the "Create" button.
+     */
     get createButton(): Locator {
         return getButtonLocator(this.frame, 'Create', this.context);
     }
@@ -819,6 +822,11 @@ class Toolbar {
         });
     }
 
+    /**
+     * Gets the current preview scale from the combobox.
+     *
+     * @returns Promise resolving to the current preview scale as a string.
+     */
     async getCurrentPreviewScale(): Promise<string> {
         const comboBox = this.page
             .getByTestId('testId-view-changer-combobox')
@@ -915,6 +923,10 @@ class ChangesPanel {
         });
     }
 
+    /**
+     *
+     * @param text
+     */
     async checkText(text: string): Promise<void> {
         await test.step(`Check \`${text}\` text is visible in the ${this.context}`, async () => {
             const textLocator = this.page.getByText(text);
@@ -1106,6 +1118,11 @@ class OutlinePanel {
         });
     }
 
+    /**
+     *
+     * @param text
+     * @param expected
+     */
     async checkOutlineNodeIndicator(text: string, expected: 'UnSaved' | 'Saved' | 'SavedAndUnSaved'): Promise<void> {
         await this.clickOnNode(text);
         await test.step(`Check \`${text}\` node has \`${CHANGE_INDICATOR[expected]} (${expected})\` indicator in the ${this.context}`, async () => {
@@ -1136,7 +1153,7 @@ class OutlinePanel {
 
             // Go to its parent with .tree-cell
             const treeCell = node.closest('.tree-cell');
-            if (!treeCell || !treeCell.parentElement) {
+            if (!treeCell?.parentElement) {
                 return null;
             }
 
@@ -1190,6 +1207,10 @@ class OutlinePanel {
         });
     }
 
+    /**
+     *
+     * @param text
+     */
     async checkOutlineNodeSelected(text: string): Promise<void> {
         await test.step(`Check \`${text}\` node is selected in the ${this.context}`, async () => {
             const node = this.page.locator('.app-panel-selected-bg').first();
@@ -1214,18 +1235,33 @@ class OutlinePanel {
         });
     }
 
+    /**
+     * Gets the locator for the filter options icon.
+     *
+     * @returns Locator for the filter options icon.
+     */
     getFilterOptionFunnel(): Locator {
         return this.page
             .locator('#control-property-editor-funnel-callout-target-id')
             .describe(`\`Funnel\` icon for Manage Filter in the ${this.context}`);
     }
 
+    /**
+     * Checks the title of the filter options icon.
+     *
+     * @param title - The expected title of the filter options icon.
+     */
     async checkFilterOptionsTitle(title: string): Promise<void> {
         await test.step(`\`Hover\` on the filter options icon and check the title is \`${title}\` in the ${this.context}`, async () => {
             expect(await this.getFilterOptionFunnel().getAttribute('title')).toBe(title);
         });
     }
 
+    /**
+     * Get enabled options in the filter outline.
+     *
+     * @returns Promise resolving to an array of enabled option labels.
+     */
     async getEnabledOptionsInFilterOutline(): Promise<(string | null | undefined)[]> {
         const checkedLabels =
             (await this.page.evaluate(() => {
@@ -1239,6 +1275,13 @@ class OutlinePanel {
         return checkedLabels;
     }
 
+    /**
+     * Get outline nodes based on selection and selector.
+     *
+     * @param selection - selection criteria.
+     * @param selector - CSS selector for the outline nodes.
+     * @returns Promise resolving to the outline nodes.
+     */
     async getOutlineNodes<T>(
         selection: 'show_common_only' | 'focus_editable' | 'all',
         selector: '[id=list-outline] [class=tree-row]' | 'span.tree-cell'
@@ -1417,6 +1460,12 @@ class PropertiesPanel {
         );
     }
 
+    /**
+     * Returns a locator for the Expression value button in the properties panel based on the provided property name.
+     *
+     * @param propertyName - name of the property.
+     * @returns Locator for the Expression value button.
+     */
     getExpressionValueButton(propertyName: string): Locator {
         return this.page
             .getByTestId(`${propertyName}--InputTypeToggle--expression`)
@@ -1440,8 +1489,14 @@ class PropertiesPanel {
         });
     }
 
-    checkValue(propertyName: string, expectedValue: string): Promise<void> {
-        return test.step(`Check \`${capitalizeWords(propertyName)}\` property value is \`${expectedValue}\` in the ${
+    /**
+     * Checks the value of a property in the properties panel.
+     *
+     * @param propertyName - name of the property.
+     * @param expectedValue - expected value of the property.
+     */
+    async checkValue(propertyName: string, expectedValue: string): Promise<void> {
+        await test.step(`Check \`${capitalizeWords(propertyName)}\` property value is \`${expectedValue}\` in the ${
             this.context
         }`, async () => {
             const value = (await this.getAllPropertiesEditorTypes()).find(
@@ -1451,9 +1506,15 @@ class PropertiesPanel {
         });
     }
 
-    checkError(propertyName: string, errorMessage: string): Promise<void> {
+    /**
+     * Checks the error message of a property in the properties panel.
+     *
+     * @param propertyName - name of the property.
+     * @param errorMessage - expected error message of the property.
+     */
+    async checkError(propertyName: string, errorMessage: string): Promise<void> {
         const newMessage = errorMessage ? `has error and error message is\`${errorMessage}\`` : 'has no error';
-        return test.step(`Check \`${capitalizeWords(propertyName)}\` property value ${newMessage} in the ${
+        await test.step(`Check \`${capitalizeWords(propertyName)}\` property value ${newMessage} in the ${
             this.context
         }`, async () => {
             const value = (await this.getAllPropertiesEditorTypes()).find(
@@ -1548,7 +1609,7 @@ class PropertiesPanel {
             .describe(`\`${text}\` option to uncheck in the Manage Filters callout in ${this.context}`);
     }
 
-    /*
+    /**
      * @returns Locator for the Filter Options button in the Manage Filters callout.
      */
     get mangeFiltersButton(): Locator {
@@ -1560,7 +1621,7 @@ class PropertiesPanel {
     /**
      * Opens the tooltip for a given property in the properties panel.
      *
-     * @param property
+     * @param property - The property for which to open the tooltip.
      */
     async openTooltip(property: string): Promise<void> {
         await test.step(`Hover property \`${capitalizeWords(property)}\` to open tooltip in the ${
@@ -1761,6 +1822,12 @@ class PropertiesPanel {
         });
     }
 
+    /**
+     * Checks if the properties from the API are rendered in the properties panel.
+     *
+     * @param propertiesFromApi - properties retrieved from the API.
+     * @param propertiesRendered - properties currently rendered in the properties panel.
+     */
     async checkIfPropertiesFromApiAreRendered(
         propertiesFromApi: { name: string; readableName: string; isEnabled: boolean; type: string; value: string }[],
         propertiesRendered: {
@@ -1812,6 +1879,10 @@ class PropertiesPanel {
         });
     }
 
+    /**
+     *
+     * @param filterText
+     */
     async checkPropertiesListIsFilteredByText(filterText: string): Promise<void> {
         await test.step(`Check properties list is filtered by \`${filterText}\` in the ${this.context}`, async () => {
             const propertyNames = await this.findAllPropertiesPanel();
@@ -1821,6 +1892,12 @@ class PropertiesPanel {
         });
     }
 
+    /**
+     * Checks the change indicator for a given property in the properties panel.
+     *
+     * @param propertyName - name of the property.
+     * @param expected - expected indicator type ('Saved', 'UnSaved', or 'SavedAndUnSaved').
+     */
     async checkPropertyIndicator(
         propertyName: string,
         expected: 'Saved' | 'UnSaved' | 'SavedAndUnSaved'
@@ -1843,11 +1920,16 @@ class PropertiesPanel {
             },
             [propertyName]
         );
-        return test.step(`Check \`${CHANGE_INDICATOR[expected]}\` (${expected}) indicator is visible for the property \`${propertyName}\` in the ${this.context}`, async () => {
+        await test.step(`Check \`${CHANGE_INDICATOR[expected]}\` (${expected}) indicator is visible for the property \`${propertyName}\` in the ${this.context}`, async () => {
             expect(indicator).toBe(expected);
         });
     }
 
+    /**
+     *
+     * @param property
+     * @param expectedContent
+     */
     async checkTooltipContent(property: string, expectedContent: any): Promise<void> {
         await this.openTooltip(property);
         const tooltip = await this.extractTooltipContent(property);
@@ -1906,13 +1988,24 @@ export class AdaptationEditorShell {
         return await this.page.getAttribute('html', 'data-theme');
     }
 
+    /**
+     * Check the current selected theme.
+     *
+     * @param expectedTheme - expected theme name
+     */
     async checkTheme(expectedTheme: string): Promise<void> {
-        return await test.step(`Check current theme is \`${expectedTheme}\``, async () => {
+        await test.step(`Check current theme is \`${expectedTheme}\``, async () => {
             const currentTheme = await this.getTheme();
             expect(currentTheme).toBe(expectedTheme);
         });
     }
 
+    /**
+     * Get the CSS transform property of an element by selector.
+     *
+     * @param selector - CSS selector of the element
+     * @returns Promise resolving to the CSS transform value or undefined if the element is not found
+     */
     async getCssTransform(selector: string): Promise<string | undefined> {
         return this.page.evaluate((selector: string) => {
             const element = document.querySelector(selector);
@@ -2236,10 +2329,22 @@ function formatChangesForMarkdown(changes: object[] | undefined): string {
 }
 
 //write a function to capitalize the first letter of each word in a string
+/**
+ * Capitalize the first letter of each word in a string.
+ *
+ * @param input - string to capitalize
+ * @returns capitalized string
+ */
 export function capitalizeWords(input: string): string {
     return input.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+/**
+ * Wait until the given file is deleted.
+ *
+ * @param filePath - absolute path to the file.
+ * @returns Promise resolving to an array of remaining files in the directory.
+ */
 export async function waitUntilFileIsDeleted(filePath: string): Promise<string[]> {
     let retryCount = 0;
     let file: string[] = [];
@@ -2285,6 +2390,11 @@ export async function waitForChangeFile(changesFolderPath: string, filesCount = 
     return false;
 }
 
+/**
+ *
+ * @param webappPath
+ * @param version
+ */
 export async function createChangeFlexFile(webappPath: string, version: string | undefined) {
     const path = join(webappPath, 'changes');
 
@@ -2345,6 +2455,10 @@ export async function getChangeFile(version: string | undefined) {
     };
 }
 
+/**
+ *
+ * @param changesPath
+ */
 export function deleteChanges(changesPath: string): void {
     try {
         if (existsSync(changesPath)) {
