@@ -440,7 +440,7 @@ describe('proxy', () => {
             };
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
-                    Host: 'http://backend.example/sap',
+                    Host: 'http://backend.example/sap'
                 }
             });
             mockIsFullUrlDestination.mockResolvedValueOnce(false);
@@ -480,7 +480,7 @@ describe('proxy', () => {
             };
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
-                    Host: 'http://backend.example/my/other/path',
+                    Host: 'http://backend.example/my/other/path'
                 }
             });
             mockIsFullUrlDestination.mockResolvedValueOnce(true);

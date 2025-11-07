@@ -179,6 +179,17 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
+    "message": "Do you want to store the system credentials?",
+    "name": "systemSelection:storeSystemCredentials",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
     "additionalMessages": [Function],
     "choices": [Function],
     "default": [Function],
@@ -256,6 +267,17 @@ exports[`Test system selection prompts should return system selection prompts an
     "message": "Password",
     "name": "abapOnPrem:systemPassword",
     "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
+    "message": "Do you want to store the system credentials?",
+    "name": "abapOnPrem:storeSystemCredentials",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },

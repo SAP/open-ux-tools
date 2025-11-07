@@ -30,7 +30,7 @@
             "forMoreInfo": "For more information, check the ",
             "outputTab": "OUTPUT tab."
         },
-        "increaseLogLevel": "For more information, you need to increase the log level to <b>Debug</b>."
+        "increaseLogLevel": "You might need to increase the log level to <b>Debug</b>."
     },
 
     "dialog": {
@@ -43,6 +43,10 @@
         "testConnection": "Test Connection",
         "save": "Save",
         "exportSystem": "Export System",
-        "createFioriApp": "Create SAP Fiori Application"
+        "createFioriApp": "Create SAP Fiori Application",
+        "learnMore": "Learn more..."
+    },
+    "warnings": {
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
     }
 }

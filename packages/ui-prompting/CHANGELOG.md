@@ -1,5 +1,13 @@
 # @sap-ux/ui-prompting
 
+## 0.5.5
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/ui-components@1.26.14
+
 ## 0.5.4
 
 ### Patch Changes

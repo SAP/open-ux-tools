@@ -1,5 +1,35 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.7.37
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/cap-config-writer@0.12.24
+
+## 2.7.36
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/ui5-application-writer@1.5.20
+    -   @sap-ux/annotation-generator@0.3.74
+    -   @sap-ux/odata-service-writer@0.27.29
+    -   @sap-ux/cap-config-writer@0.12.23
+    -   @sap-ux/ui5-test-writer@0.7.33
+    -   @sap-ux/fe-fpm-writer@0.39.17
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/logger@0.7.1
+
+## 2.7.35
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.73
+-   @sap-ux/fe-fpm-writer@0.39.16
+
 ## 2.7.34
 
 ### Patch Changes
