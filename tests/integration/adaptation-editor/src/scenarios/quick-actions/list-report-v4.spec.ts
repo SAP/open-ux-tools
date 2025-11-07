@@ -231,4 +231,206 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
             await editor.changesPanel.expectSavedChangesStack(page, 'Move Action Change', 1);
         }
     );
+
+    test(
+        '6: Add Custom Page Action to LR page',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.130.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const dialog = new AdpDialog(previewFrame, ui5Version);
+            const editor = new AdaptationEditorShell(page, ui5Version);
+            await editor.quickActions.addCustomPageAction.click();
+            await dialog.fillField('Fragment Name', 'test-page-action');
+            await dialog.createButton.click();
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'addXML',
+                        content: {
+                            targetAggregation: 'actions',
+                            fragmentPath: 'fragments/test-page-action.fragment.xml',
+                            index: 1
+                        },
+                        selector: {
+                            id: 'fiori.elements.v4.0::RootEntityList--fe::DynamicPageTitle'
+                        }
+                    }
+                ],
+                fragments: {
+                    'test-page-action.fragment.xml': `<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
+</core:FragmentDefinition>`
+                }
+            });
+            await lr.checkControlVisible('New Button');
+        }
+    );
+    test(
+        '7: Add Custom Table Action to LR page',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.130.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const dialog = new AdpDialog(previewFrame, ui5Version);
+            const editor = new AdaptationEditorShell(page, ui5Version);
+            await editor.quickActions.addCustomTableAction.click();
+            await dialog.fillField('Fragment Name', 'test-table-action');
+            await dialog.createButton.click();
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'addXML',
+                        content: {
+                            targetAggregation: 'actions',
+                            fragmentPath: 'fragments/test-table-action.fragment.xml',
+                            index: 0
+                        },
+                        selector: {
+                            id: 'fiori.elements.v4.0::RootEntityList--fe::table::RootEntity::LineItem'
+                        }
+                    }
+                ],
+                fragments: {
+                    'test-table-action.fragment.xml': `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
+   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >
+        <Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />
+    </actiontoolbar:ActionToolbarAction>
+</core:FragmentDefinition>`
+                }
+            });
+            await lr.checkControlVisible('New Action');
+        }
+    );
+
+    test(
+        '8. Enable/Disable Semantic Date Range in Filter Bar',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.130.0'
+            }
+        },
+        async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const editor = new AdaptationEditorShell(page, ui5Version);
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.clickOnDatePropertyValueHelper();
+            await lr.checkSemanticDateOptionsExist('DateProperty', ['Yesterday']);
+            await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.disableSemanticDateRange.click();
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
+                                propertyValue: false,
+                                operation: 'UPSERT'
+                            }
+                        }
+                    }
+                ]
+            });
+
+            await expect(lr.goButton).toBeVisible();
+            await editor.reloadCompleted();
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.clickOnDatePropertyValueHelper(true);
+            await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.enableSemanticDateRange.click();
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/useSemanticDateRange',
+                                propertyValue: true,
+                                operation: 'UPSERT'
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+    );
+
+    test(
+        '9. Enable Table Filtering for Page Variants',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.131.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const editor = new AdaptationEditorShell(page, ui5Version);
+            const tableSettings = new TableSettings(previewFrame, 'View Settings', 'fev4');
+            await editor.quickActions.changeTableColumns.click();
+            await tableSettings.checkTabsExist(['Sort', 'Group', 'Columns']);
+            await tableSettings.closeOrConfirmDialog('Cancel');
+            await editor.quickActions.enableTableFilterForPageVariants.click();
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'RootEntityList',
+                            entityPropertyChange: {
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/tableSettings/personalization',
+                                propertyValue: {
+                                    sort: true,
+                                    column: true,
+                                    filter: true,
+                                    group: true,
+                                    aggregate: true
+                                },
+                                operation: 'UPSERT'
+                            }
+                        }
+                    }
+                ]
+            });
+            await editor.quickActions.checkQADisabled('Enable Table Filtering for Page Variants');
+            await editor.quickActions.changeTableColumns.click();
+            await tableSettings.checkTabsExist(['Filter']);
+            await tableSettings.closeOrConfirmDialog('Cancel');
+        }
+    );
 });
