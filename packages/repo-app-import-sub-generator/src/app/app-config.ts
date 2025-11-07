@@ -31,7 +31,7 @@ export interface AppDownloadContext {
  * @returns { Promise<string> } - Resolved transport request string
  *  - '' when package is local ('$TMP')
  *  - '<transport-request-id>' when transport request is found
- *  - 'REPLACE_WITH_TRANSPORT' when no transport request is found 
+ *  - 'REPLACE_WITH_TRANSPORT' when no transport request is found
  * @throws Error when the transport check fails
  */
 async function resolveTransportRequest(context: AppDownloadContext): Promise<string> {
