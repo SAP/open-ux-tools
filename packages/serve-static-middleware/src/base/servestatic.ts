@@ -22,7 +22,8 @@ export const serveStaticMiddleware = (
     const globalOptions: ServeStaticOptions = resolveServeStaticOptions(config);
     const router = Router();
 
-    // For compatibility reasons also serve srcPath w/o '/resources'
+    // Maintain backward compatibility by creating additional route mappings for paths beginning with /resources,
+    // making them accessible without the /resources prefix (due to flp.libs parameter default value changes in preview-middleware)
     const compatibilityPaths: typeof paths = [];
     for (const pathConfig of paths) {
         if (pathConfig.path !== '/resources' && pathConfig.path.startsWith('/resources')) {
