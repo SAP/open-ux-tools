@@ -63,6 +63,7 @@ if (!packageName) {
     process.exit(1);
 }
 
-export const execution = (async () => { //NOSONAR
+export const execution = (async () => {
+    //NOSONAR
     await fetchAndSaveReadme(packageName, logger);
 })();
