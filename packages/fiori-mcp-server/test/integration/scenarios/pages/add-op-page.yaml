@@ -1,8 +1,8 @@
 config:
-    project: 'lrop'
+    project: 'node-ai-created'
 vars:
-    appPath: '{{PROJECT_PATH}}'
-    query: 'Add booking object page to parent page TravelObjectPage. Application in {{appPath}}'
+    appPath: '{{APP_PATH}}'
+    query: 'Add Expenses object page to parent page TravelsObjectPage. Application in {{appPath}}'
 assert:
     - type: javascript
       value: file://../assertions/snapshots.ts:validate

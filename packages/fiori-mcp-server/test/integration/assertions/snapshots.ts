@@ -39,11 +39,11 @@ export async function validate(
 ): Promise<AssertionValueFunctionResult> {
     let reason = 'Unknown';
     let pass = false;
-    const projectPath = getProjectPath(context.vars);
+    const appPath = getAppPath(context.vars);
     const config = context.config ? getConfiguration(context.config) : undefined;
-    if (projectPath && config) {
+    if (appPath && config) {
         try {
-            const snapshotData = await getSnapshotData(projectPath, config.snapshot, config.file);
+            const snapshotData = await getSnapshotData(appPath, config.snapshot, config.file);
             const compareResult = validateSnapshot(snapshotData, config);
             pass = !compareResult;
             if (!pass) {
@@ -67,13 +67,13 @@ export async function validate(
 }
 
 /**
- * Retrieves the project path from a set of provided variables.
+ * Retrieves the application path from a set of provided variables.
  *
- * @param vars Promptfoo context variables.
- * @returns The project path string if available in passed variables.
+ * @param vars Promptfoo context variables containing potential APP_PATH value.
+ * @returns The application path string if available and valid in passed variables, otherwise undefined.
  */
-function getProjectPath(vars: Record<string, string | object>): string | undefined {
-    return vars.PROJECT_PATH && typeof vars.PROJECT_PATH === 'string' ? vars.PROJECT_PATH : undefined;
+function getAppPath(vars: Record<string, string | object>): string | undefined {
+    return vars.APP_PATH && typeof vars.APP_PATH === 'string' ? vars.APP_PATH : undefined;
 }
 
 /**

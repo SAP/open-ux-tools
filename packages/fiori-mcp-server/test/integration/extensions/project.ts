@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import type { TestSuite, TestCase } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
+import { npmInstall, removeDirectory } from '../../utils';
 
 /** Variable name used to identify project configuration in test config */
 const PROJECT_VARIABLE_NAME = 'project';
@@ -39,26 +40,32 @@ interface TestConfig {
  * Enumeration of available test project names.
  */
 export enum ProjectName {
-    /** List Report Object Page project - V4 */
-    lrop = 'lrop',
+    /** Nodejs based cap project - V4 */
+    node = 'node-ai-created',
     /** List Report Object Page project - V2 */
     lropv2 = 'lrop-v2'
 }
 
 /**
  * Registry of available test projects with their configuration data.
- * Currently contains a single EDMX project, but can be extended with other test projects and applications.
+ * Contains a single Nodejs, EDMX project, but can be extended with other test projects and applications.
  */
 const TEST_PROJECTS = {
-    [ProjectName.lrop]: {
-        type: 'EDMX',
-        originalPath: getProjectOriginalPath(ProjectName.lrop),
-        path: getCopiedProjectPath(ProjectName.lrop)
+    [ProjectName.node]: {
+        type: 'CAPNodejs',
+        originalPath: getProjectOriginalPath(ProjectName.node),
+        path: getCopiedProjectPath(ProjectName.node),
+        appPath: join(getCopiedProjectPath(ProjectName.node), 'app', 'managetravels'),
+        npmInstall: true,
+        skipNodeModulesDel: true
     },
     [ProjectName.lropv2]: {
         type: 'EDMX',
         originalPath: getProjectOriginalPath(ProjectName.lropv2),
-        path: getCopiedProjectPath(ProjectName.lropv2)
+        path: getCopiedProjectPath(ProjectName.lropv2),
+        appPath: getCopiedProjectPath(ProjectName.lropv2),
+        npmInstall: false,
+        skipNodeModulesDel: false
     }
 };
 
@@ -85,10 +92,15 @@ export async function setup(hookName: string, context: HookContext): Promise<voi
     const project = TEST_PROJECTS[projectName];
     if (project) {
         defaultVars['PROJECT_PATH'] = project.path;
+        defaultVars['APP_PATH'] = project.appPath;
     }
     if (hookName === 'beforeEach') {
         // Prepare copy project before running test
-        await copyProject(project.originalPath, project.path, config?.setupFiles);
+        await copyProject(project.originalPath, project.path, project.skipNodeModulesDel, config?.setupFiles);
+        // install dependencies
+        if (project.npmInstall) {
+            npmInstall(project.path);
+        }
     }
 }
 
@@ -118,17 +130,17 @@ function getProjectOriginalPath(name: ProjectName): string {
  *
  * @param source Source directory path of the original project.
  * @param dest Destination directory path where project will be copied.
+ * @param skipNodeModulesDel Whether to skip deletion of node_modules directory during copy.
  * @param setupFiles Array of setup files to copy over the base project files.
  */
-async function copyProject(source: string, dest: string, setupFiles: TestConfigSetupFiles[] = []): Promise<void> {
+async function copyProject(
+    source: string,
+    dest: string,
+    skipNodeModulesDel: boolean,
+    setupFiles: TestConfigSetupFiles[] = []
+): Promise<void> {
     // Remove the copied project from the previous test run — it may contain new files not present in the original project.
-    if (existsSync(dest)) {
-        try {
-            await fs.rm(dest, { recursive: true, force: true });
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    removeDirectory(dest, { skipNodeModules: skipNodeModulesDel });
     // Copy whole project
     await copyFolder(source, dest);
     // Overwrite files with passed setup files

@@ -1,8 +1,8 @@
 config:
-    project: 'lrop'
+    project: 'node-ai-created'
 vars:
-    appPath: '{{PROJECT_PATH}}'
-    query: 'Add Custom page to TravelObjectPage witn name dummy in application with appPath: {{appPath}}'
+    appPath: '{{APP_PATH}}'
+    query: 'Add Custom page to TravelObjectPage with name dummy in application with appPath: {{appPath}}'
 assert:
     - type: javascript
       value: file://../assertions/snapshots.ts:validate

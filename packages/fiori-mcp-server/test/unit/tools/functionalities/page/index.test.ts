@@ -5,7 +5,8 @@ import {
     DELETE_PAGE_FUNCTIONALITY,
     deletePageHandlers
 } from '../../../../../src/tools/functionalities/page';
-import { copyDirectory, npmInstall, removeDirectory } from '../../../utils';
+import { copyDirectory } from '../../../utils';
+import { npmInstall, removeDirectory } from '../../../../utils';
 import { writeFileSync, readFileSync } from 'node:fs';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import { getManifest } from '../../../../../src/page-editor-api/project';

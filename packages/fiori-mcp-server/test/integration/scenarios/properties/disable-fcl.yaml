@@ -1,11 +1,11 @@
 config:
-    project: 'lrop'
+    project: 'node-ai-created'
     # Overwrite original manifest.json by continuing from state of 'fcl-enable' test
     setupFiles:
     - source: fcl-enable/webapp/manifest.json
-      target: webapp/manifest.json
+      target: app/managetravels/webapp/manifest.json
 vars:
-    appPath: '{{PROJECT_PATH}}'
+    appPath: '{{APP_PATH}}'
     query: 'Disable FCL. Application in {{appPath}}'
 assert:
   - type: javascript

@@ -1,7 +1,7 @@
 config:
-    project: 'lrop'
+    project: 'node-ai-created'
 vars:
-    appPath: '{{PROJECT_PATH}}'
+    appPath: '{{APP_PATH}}'
     query: 'Add controller extension for TravelObjectPage, use name dummy. Application in {{appPath}}'
 assert:
     - type: javascript

@@ -1,39 +1,29 @@
 {
-    "_version": "1.32.0",
+    "_version": "1.73.1",
     "sap.app": {
-        "id": "v4travel",
+        "id": "managetravels",
         "type": "application",
         "i18n": "i18n/i18n.properties",
         "applicationVersion": {
-            "version": "1.0.0"
+            "version": "0.0.1"
         },
         "title": "{{appTitle}}",
         "description": "{{appDescription}}",
-        "dataSources": {
-            "mainService": {
-                "uri": "/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/",
-                "type": "OData",
-                "settings": {
-                    "annotations": [
-                        "annotation"
-                    ],
-                    "odataVersion": "4.0",
-                    "localUri": "localService/metadata.xml"
-                }
-            },
-            "annotation": {
-                "type": "ODataAnnotation",
-                "uri": "annotations/annotation.xml",
-                "settings": {
-                    "localUri": "annotations/annotation.xml"
-                }
-            }
-        },
-        "offline": false,
         "resources": "resources.json",
         "sourceTemplate": {
-            "id": "ui5template.fiorielements.v4.lrop",
-            "version": "1.0.0"
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.18.5-pre-20250806170847-b6ac5c6f5.0",
+            "toolsId": "dd1703ae-4a03-406e-8ba8-1bb1d9b7fdfc"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/odata/v4/manage-travels-srv/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
         }
     },
     "sap.ui": {
@@ -53,71 +43,68 @@
         }
     },
     "sap.ui5": {
-        "resources": {
-            "js": [],
-            "css": []
-        },
+        "flexEnabled": true,
         "dependencies": {
-            "minUI5Version": "1.108.0",
+            "minUI5Version": "1.136.0",
             "libs": {
+                "sap.m": {},
                 "sap.ui.core": {},
                 "sap.fe.templates": {}
             }
         },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
         "models": {
             "i18n": {
                 "type": "sap.ui.model.resource.ResourceModel",
-                "uri": "i18n/i18n.properties"
+                "settings": {
+                    "bundleName": "managetravels.i18n.i18n"
+                }
             },
             "": {
                 "dataSource": "mainService",
                 "preload": true,
                 "settings": {
-                    "synchronizationMode": "None",
                     "operationMode": "Server",
                     "autoExpandSelect": true,
                     "earlyRequests": true
                 }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
             }
         },
+        "resources": {
+            "css": []
+        },
         "routing": {
+            "config": {},
             "routes": [
                 {
-                    "name": "BookingList",
+                    "name": "ExpensesList",
                     "pattern": ":?query:",
-                    "target": "BookingList"
+                    "target": "ExpensesList"
                 }
             ],
             "targets": {
-                "BookingList": {
+                "ExpensesList": {
                     "type": "Component",
-                    "id": "BookingList",
+                    "id": "ExpensesList",
                     "name": "sap.fe.templates.ListReport",
                     "options": {
                         "settings": {
                             "navigation": {},
-                            "contextPath": "/Booking"
+                            "contextPath": "/Expenses"
                         }
                     }
                 }
-            },
-            "config": {}
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
+            }
         }
     },
-    "sap.platform.abap": {
-        "_version": "1.1.0",
-        "uri": ""
-    },
-    "sap.platform.hcp": {
-        "_version": "1.1.0",
-        "uri": ""
-    },
     "sap.fiori": {
-        "_version": "1.1.0",
         "registrationIds": [],
         "archeType": "transactional"
     }
