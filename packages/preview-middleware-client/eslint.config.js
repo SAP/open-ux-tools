@@ -2,6 +2,8 @@ const { defineConfig } = require('eslint/config');
 const js = require('@eslint/js');
 
 const jsdoc = require('eslint-plugin-jsdoc');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = defineConfig([
@@ -16,6 +18,7 @@ module.exports = defineConfig([
     ...fioriTools.config.defaultTS,
     {
         languageOptions: {
+            parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
 
@@ -25,6 +28,7 @@ module.exports = defineConfig([
             }
         },
         plugins: {
+            '@typescript-eslint': typescriptEslint,
             jsdoc,
             'fiori-custom': fioriTools // backward compatibility
         },
