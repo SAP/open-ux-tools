@@ -58,7 +58,8 @@
         "viewSystemDetails": "Error executing command to view system details.",
         "noFileSelected": "No file selected for import.",
         "panelActionDispatch": "Error dispatching panel action: {{- error}}",
-        "noneSelected": "No SAP system selected."
+        "noneSelected": "No SAP system selected.",
+        "testConnection": "An error occurred when testing the connection: {{- error}}"
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",

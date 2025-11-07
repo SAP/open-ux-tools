@@ -1,4 +1,6 @@
-# @sap-ux/jest-file-matchers
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/jest-file-matchers/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-file-matchers)
+
+# [`@sap-ux/jest-file-matchers`](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-file-matchers)
 
 Library of jest matchers
 

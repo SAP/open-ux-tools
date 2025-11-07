@@ -1,5 +1,19 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.3.3
+
+### Patch Changes
+
+-   f1a2795: fix: Instrumentation key
+
+## 0.3.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-docs-embeddings@0.4.2
+
 ## 0.3.1
 
 ### Patch Changes
