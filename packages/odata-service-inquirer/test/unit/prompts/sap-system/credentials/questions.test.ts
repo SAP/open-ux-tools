@@ -347,6 +347,9 @@ describe('Test credentials prompts', () => {
             message: t('texts.passwordStoreWarning'),
             severity: Severity.warning
         });
+
+        // Don't show warning if user chooses not to store credentials
+        expect(confirmCredentialStoragePrompt.additionalMessages?.(false)).toBeUndefined();
     });
 
     test('should show store credentials prompt when conditions are met and hide when conditions are not met', async () => {
