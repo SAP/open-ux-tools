@@ -2,6 +2,7 @@ import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '../utils/i18n';
 import type { AppInfo, QfaJsonConfig } from '../app/types';
 import { readManifest } from '../utils/file-helpers';
@@ -15,12 +16,61 @@ import { getUI5Versions, type UI5Version } from '@sap-ux/ui5-info';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 /**
+ * Shared context for downloading and deploying ABAP applications.
+ */
+export interface AppDownloadContext {
+    serviceProvider?: AbapServiceProvider;
+    qfaJson: QfaJsonConfig;
+}
+
+/**
+ * Resolve a transport request for the given app/package context.
+ * This function performs defensive checks and logs clear, actionable messages.
+ *
+ * @param context - AppDownloadContext containing qfaJson and serviceProvider
+ * @returns { Promise<string> } - Resolved transport request string
+ *  - '' when package is local ('$TMP')
+ *  - '<transport-request-id>' when transport request is found
+ *  - 'REPLACE_WITH_TRANSPORT' when no transport request is found
+ * @throws Error when the transport check fails
+ */
+async function resolveTransportRequest(context: AppDownloadContext): Promise<string> {
+    const { serviceProvider, qfaJson } = context;
+
+    const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
+    const packageName = qfaJson.metadata.package;
+    const appName = qfaJson.deploymentDetails.repositoryName;
+
+    if (packageName === '$TMP') {
+        return '';
+    }
+
+    try {
+        const transportRequests = await transportService?.getTransportRequests(packageName, appName);
+        if (transportRequests && transportRequests.length === 1) {
+            return transportRequests[0].transportNumber;
+        }
+        return 'REPLACE_WITH_TRANSPORT';
+    } catch (error) {
+        if (error.message === TransportChecksService.LocalPackageError) {
+            return '';
+        }
+        const msg = t('error.transportCheckFailed', { error: error?.message });
+        RepoAppDownloadLogger.logger?.error(msg);
+        throw new Error(msg);
+    }
+}
+
+/**
  * Generates the deployment configuration for an ABAP application.
  *
- * @param {QfaJsonConfig} qfaJson - The QFA JSON configuration containing app details.
+ * @param {AppDownloadContext} context - The download context with service provider and qfa info.
  * @returns {AbapDeployConfig} The deployment configuration containing `target` and `app` info.
  */
-export const getAbapDeployConfig = (qfaJson: QfaJsonConfig): AbapDeployConfig => {
+export const getAbapDeployConfig = async (context: AppDownloadContext): Promise<AbapDeployConfig> => {
+    const { qfaJson } = context;
+
+    const transportRequest = await resolveTransportRequest(context);
     return {
         target: {
             url: PromptState.baseURL,
@@ -31,7 +81,7 @@ export const getAbapDeployConfig = (qfaJson: QfaJsonConfig): AbapDeployConfig =>
             name: qfaJson.deploymentDetails.repositoryName,
             package: qfaJson.metadata.package,
             description: qfaJson.deploymentDetails.repositoryDescription,
-            transport: 'REPLACE_WITH_TRANSPORT'
+            transport: transportRequest
         }
     } as AbapDeployConfig; // NOSONAR
 };
@@ -45,9 +95,9 @@ export const getAbapDeployConfig = (qfaJson: QfaJsonConfig): AbapDeployConfig =>
  */
 const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: string): Promise<string | undefined> => {
     try {
-        const metdata = await provider.service(serviceUrl).metadata();
+        const metadata = await provider.service(serviceUrl).metadata();
         RepoAppDownloadLogger.logger?.debug('Metadata fetched successfully');
-        return metdata as string | undefined;
+        return metadata as string | undefined;
     } catch (err) {
         RepoAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: err.message }));
     }
@@ -59,7 +109,7 @@ const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: s
  *
  * @param {AppInfo} app - Selected app information.
  * @param {string} extractedProjectPath - Path where the app files are extracted.
- * @param {QfaJsonConfig} qfaJson - The QFA JSON configuration containing app details.
+ * @param {AppDownloadContext} context - The download context with service provider and qfa info.
  * @param {OdataServiceAnswers} systemSelection - User's selection of the OData service and system.
  * @param {Editor} fs - The file system editor to manipulate project files.
  * @returns {Promise<FioriElementsApp<LROPSettings>>} - A promise resolving to the generated app configuration.
@@ -68,13 +118,14 @@ const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: s
 export async function getAppConfig(
     app: AppInfo,
     extractedProjectPath: string,
-    qfaJson: QfaJsonConfig,
+    context: AppDownloadContext,
     systemSelection: OdataServiceAnswers,
     fs: Editor
 ): Promise<FioriElementsApp<LROPSettings>> {
     try {
         const manifest = readManifest(join(extractedProjectPath, FileName.Manifest), fs);
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
+        context.serviceProvider = serviceProvider;
         if (!manifest?.['sap.app']?.dataSources) {
             RepoAppDownloadLogger.logger?.error(t('error.dataSourcesNotFound'));
         }
@@ -116,7 +167,7 @@ export async function getAppConfig(
                 type: TemplateType.ListReportObjectPage,
                 settings: {
                     entityConfig: {
-                        mainEntityName: qfaJson.serviceBindingDetails.mainEntityName
+                        mainEntityName: context.qfaJson.serviceBindingDetails.mainEntityName
                     }
                 }
             },

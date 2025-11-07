@@ -175,7 +175,11 @@ describe('getAppConfig', () => {
                 mainEntityName: mockQfaJson.serviceBindingDetails.mainEntityName
             }
         };
-        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonWithoutNavEntity, mockSystem, mockFs);
+        const context = {
+            qfaJson: mockQfaJsonWithoutNavEntity,
+            serviceProvider: mockServiceProvider
+        };
+        const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(result).toEqual(expectedAppConfig);
     });
 
@@ -207,13 +211,11 @@ describe('getAppConfig', () => {
                 navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
             }
         };
-        const result = await getAppConfig(
-            mockApp,
-            '/path/to/project',
-            mockQfaJsonJsonWithNavEntity,
-            mockSystem,
-            mockFs
-        );
+        const context = {
+            qfaJson: mockQfaJsonJsonWithNavEntity,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+        };
+        const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(result).toEqual(expectedAppConfig);
     });
 
@@ -249,13 +251,11 @@ describe('getAppConfig', () => {
                 navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
             }
         };
-        const result = await getAppConfig(
-            mockApp,
-            '/path/to/project',
-            mockQfaJsonJsonWithNavEntity,
-            mockSystem,
-            mockFs
-        );
+        const context = {
+            qfaJson: mockQfaJsonJsonWithNavEntity,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+        };
+        const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(result).toEqual({
             ...expectedAppConfig,
             ui5: {
@@ -270,7 +270,11 @@ describe('getAppConfig', () => {
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockSystem, mockFs);
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+        };
+        const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.dataSourcesNotFound'));
     });
 
@@ -293,8 +297,11 @@ describe('getAppConfig', () => {
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
-
-        await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockSystem, mockFs);
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+        };
+        await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
             t('error.metadataFetchError', { error: errorMsg })
         );
@@ -343,13 +350,21 @@ describe('getAppConfig', () => {
                 minimum_ui5_version: null
             }
         } as unknown as QfaJsonConfig;
-        await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithoutUi5Version, mockSystem, mockFs);
+        const context = {
+            qfaJson: mockQfaJsonJsonWithoutUi5Version,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider
+        };
+        await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).not.toHaveBeenCalled();
     });
 });
 
 describe('getAbapDeployConfig', () => {
-    it('should generate the correct deployment configuration', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should generate the correct deployment configuration', async () => {
         const expectedConfig = {
             target: {
                 url: 'https://test-url.com',
@@ -363,7 +378,77 @@ describe('getAbapDeployConfig', () => {
                 transport: 'REPLACE_WITH_TRANSPORT'
             }
         };
-        const result = getAbapDeployConfig(mockQfaJson);
+        const transportMock: { transportNumber: string }[] = [];
+        const mockTransportService = {
+            getTransportRequests: jest.fn().mockResolvedValue(transportMock)
+        };
+        const mockServiceProvider = {
+            getAdtService: jest.fn().mockResolvedValue(mockTransportService)
+        } as unknown as AbapServiceProvider;
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockServiceProvider
+        };
+        const result = await getAbapDeployConfig(context);
         expect(result).toEqual(expectedConfig);
+    });
+
+    it('should return empty transport for local package ($TMP)', async () => {
+        const localQfa = {
+            ...mockQfaJson,
+            metadata: { ...mockQfaJson.metadata, package: '$TMP' }
+        } as QfaJsonConfig;
+        const mockServiceProvider = {
+            getAdtService: jest.fn()
+        } as unknown as AbapServiceProvider;
+        const context = {
+            qfaJson: localQfa,
+            serviceProvider: mockServiceProvider
+        };
+        const result = await getAbapDeployConfig(context);
+        expect(result.app.transport).toBe('');
+    });
+
+    it('should use transport returned by transport service when transport request is available', async () => {
+        const transportMock = [{ transportNumber: 'LT12345' }];
+        const mockTransportService = {
+            getTransportRequests: jest.fn().mockResolvedValue(transportMock)
+        };
+        const mockServiceProvider = {
+            getAdtService: jest.fn().mockResolvedValue(mockTransportService)
+        } as unknown as AbapServiceProvider;
+
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockServiceProvider
+        };
+        const result = await getAbapDeployConfig(context);
+        expect(mockServiceProvider.getAdtService).toHaveBeenCalled();
+        expect(result.app.transport).toBe('LT12345');
+    });
+
+    it('should return REPLACE_WITH_TRANSPORT when transport service returns no transports', async () => {
+        const mockTransportService = {
+            getTransportRequests: jest.fn().mockResolvedValue([])
+        };
+        const mockServiceProvider = {
+            getAdtService: jest.fn().mockResolvedValue(mockTransportService)
+        } as unknown as AbapServiceProvider;
+
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockServiceProvider
+        };
+        const result = await getAbapDeployConfig(context);
+        expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
+    });
+
+    it('should generate new transport request when serviceProvider is not available in context', async () => {
+        const context = {
+            qfaJson: mockQfaJson
+        } as unknown as { qfaJson: QfaJsonConfig };
+
+        const result = await getAbapDeployConfig(context);
+        expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
     });
 });
