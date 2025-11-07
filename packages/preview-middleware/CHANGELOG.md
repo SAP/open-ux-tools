@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.49
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
 ## 0.23.48
 
 ### Patch Changes
