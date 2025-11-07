@@ -1,5 +1,14 @@
 # @sap-ux/project-access
 
+## 1.32.8
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/i18n@0.3.5
+
 ## 1.32.7
 
 ### Patch Changes

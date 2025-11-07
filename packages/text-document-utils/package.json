@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/text-document-utils",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "Library for text document utility functions and types",
     "repository": {
         "type": "git",

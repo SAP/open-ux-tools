@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.7.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.7.0
 
 ### Minor Changes

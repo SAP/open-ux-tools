@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.29
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/mockserver-config-writer@0.9.25
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/ui5-config@0.29.9
+
 ## 0.27.28
 
 ### Patch Changes

@@ -1,4 +1,6 @@
-# @sap-ux/deploy-config-sub-generator
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/deploy-config-sub-generator/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-config-sub-generator)
+
+# [`@sap-ux/deploy-config-sub-generator`](https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-config-sub-generator)
 
 ## Features
 
