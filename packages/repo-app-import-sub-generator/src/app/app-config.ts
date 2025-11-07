@@ -46,7 +46,7 @@ async function resolveTransportRequest(context: AppDownloadContext): Promise<str
     try {
         const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
         const transportRequests = await transportService?.getTransportRequests(packageName, appName);
-        if (transportRequests && transportRequests.length === 1) {
+        if (transportRequests?.length === 1) {
             return transportRequests[0].transportNumber;
         }
         return 'REPLACE_WITH_TRANSPORT';
