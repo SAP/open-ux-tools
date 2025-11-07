@@ -11,8 +11,7 @@ import {
     type CustomColumn,
     type RichTextEditor,
     bindingContextAbsolute,
-    type TemplateConfig,
-    type CustomFilterField
+    type TemplateConfig
 } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
@@ -54,8 +53,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     config: BuildingBlockConfig<T>,
     fs?: Editor
 ): Promise<Editor> {
-    debugger;
-    console.log('last attempt');
 
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
@@ -151,44 +148,6 @@ function updateAggregationPathForTableColumns(
 }
 
 /**
- * Updates aggregation path for filter fields based on XML document structure.
- *
- * @param {Document} xmlDocument - The XML document to analyze
- * @param {string} aggregationPath - The current aggregation path
- * @param {CustomFilterField} buildingBlockData - The building block data with embedded fragment
- * @returns {object} Object containing the updated aggregation path
- */
-function updateAggregationPathForFilterBar(
-    xmlDocument: Document,
-    aggregationPath: string,
-    buildingBlockData: CustomFilterField
-): { updatedAggregationPath: string; hasFilterFields: boolean } {
-    if (!buildingBlockData.embededFragment) {
-        return { updatedAggregationPath: aggregationPath, hasFilterFields: false };
-    }
-
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-    const hasFilterFieldsAggregation = xpathSelect("//*[local-name()='filterFields']", xmlDocument);
-    if (
-        hasFilterFieldsAggregation &&
-        Array.isArray(hasFilterFieldsAggregation) &&
-        hasFilterFieldsAggregation.length > 0
-    ) {
-        return {
-            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:filterFields`,
-            hasFilterFields: true
-        };
-    } else {
-        const useDefaultAggregation = xpathSelect("//*[local-name()='FilterField']", xmlDocument);
-        if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
-            return { updatedAggregationPath: aggregationPath, hasFilterFields: true };
-        }
-    }
-
-    return { updatedAggregationPath: aggregationPath, hasFilterFields: false };
-}
-
-/**
  * Processes custom column building block configuration.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
@@ -254,42 +213,6 @@ function processBuildingBlock<T extends BuildingBlock>(
         aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
     }
 
-    if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment) {
-        const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-        const viewPath = join(
-            embededFragment.path,
-            `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
-        );
-
-        // Apply event handler
-        if (buildingBlockData.embededFragment.eventHandler) {
-            buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
-                fs,
-                buildingBlockData.embededFragment,
-                buildingBlockData.embededFragment.eventHandler,
-                {
-                    controllerSuffix: false,
-                    typescript: buildingBlockData.embededFragment.typescript
-                }
-            );
-        }
-
-        buildingBlockData.embededFragment.content = getDefaultFragmentContent(
-            'Sample Text',
-            buildingBlockData.embededFragment.eventHandler
-        );
-        if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
-        }
-
-        // check xmlDocument for macrosFilterBar element
-        const filterBarResult = updateAggregationPathForFilterBar(xmlDocument, aggregationPath, buildingBlockData);
-        updatedAggregationPath = filterBarResult.updatedAggregationPath;
-        hasAggregation = filterBarResult.hasFilterFields;
-
-        aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.filterBar', 'macros');
-    }
-
     return {
         updatedAggregationPath,
         processedBuildingBlockData: buildingBlockData,
@@ -308,15 +231,6 @@ function isCustomColumn(data: BuildingBlock): data is CustomColumn {
     return data.buildingBlockType === BuildingBlockType.CustomColumn;
 }
 
-/**
- * Type guard to check if the building block data is a custom filter field.
- *
- * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a custom filter field
- */
-function isCustomFilterField(data: BuildingBlock): data is CustomFilterField {
-    return data.buildingBlockType === BuildingBlockType.CustomFilterField;
-}
 
 /**
  * Returns the UI5 xml file document (view/fragment).
