@@ -42,6 +42,8 @@ interface TestConfig {
 export enum ProjectName {
     /** Nodejs based cap project - V4 */
     node = 'node-ai-created',
+    /** Java based cap project - V4 */
+    java = 'java-ai-created',
     /** List Report Object Page project - V2 */
     lropv2 = 'lrop-v2'
 }
@@ -56,6 +58,14 @@ const TEST_PROJECTS = {
         originalPath: getProjectOriginalPath(ProjectName.node),
         path: getCopiedProjectPath(ProjectName.node),
         appPath: join(getCopiedProjectPath(ProjectName.node), 'app', 'managetravels'),
+        npmInstall: true,
+        skipNodeModulesDel: true
+    },
+    [ProjectName.java]: {
+        type: 'CAPJava',
+        originalPath: getProjectOriginalPath(ProjectName.java),
+        path: getCopiedProjectPath(ProjectName.java),
+        appPath: join(getCopiedProjectPath(ProjectName.java), 'app', 'managetravels'),
         npmInstall: true,
         skipNodeModulesDel: true
     },
