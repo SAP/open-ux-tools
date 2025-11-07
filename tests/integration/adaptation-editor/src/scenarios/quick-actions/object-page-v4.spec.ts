@@ -113,6 +113,10 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
+            await editor.quickActions.checkQADisabled(
+                'Enable Variant Management in Tables',
+                `This option has been disabled because variant management is already enabled for tables and charts`
+            );
         }
     );
     test(
@@ -153,6 +157,11 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
+
+            await editor.quickActions.checkQADisabled(
+                'Enable Empty Row Mode for Tables',
+                `This option has been disabled because empty row mode is already enabled for this table`
+            );
         }
     );
     test(
@@ -238,6 +247,63 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ]
             });
+
+            await editor.quickActions.checkQADisabled(
+                'Add Subpage',
+                `This option has been disabled because there are no subpages to add`
+            );
+        }
+    );
+    test(
+        '6. Add Custom Table Action to Object page',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.130.0'
+            }
+        },
+        async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            const dialog = new AdpDialog(previewFrame, ui5Version);
+            const lr = new ListReport(previewFrame, 'fev4');
+            const editor = new AdaptationEditorShell(page, ui5Version);
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.clickOnGoButton();
+            await lr.clickOnTableNthRow(0);
+
+            await editor.toolbar.uiAdaptationModeButton.click();
+            // wait until the quick actions label is rendered in the preview
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
+            await editor.quickActions.addCustomTableAction.click();
+
+            await dialog.fillField('Fragment Name', 'op-table-action');
+            await dialog.createButton.click();
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'addXML',
+                        content: {
+                            targetAggregation: 'actions',
+                            index: 0,
+                            fragmentPath: 'fragments/op-table-action.fragment.xml'
+                        }
+                    }
+                ],
+                fragments: {
+                    'op-table-action.fragment.xml': `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
+   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >
+        <Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />
+    </actiontoolbar:ActionToolbarAction>
+</core:FragmentDefinition>`
+                }
+            });
+
+            await editor.reloadCompleted();
+            await lr.checkControlVisible('New Action');
         }
     );
 });

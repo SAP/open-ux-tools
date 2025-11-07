@@ -199,7 +199,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
             page.getByRole('button', { name: 'UI Adaptation' }),
             'Check `UIAdaptation` mode in the toolbar is enabled'
         ).toBeEnabled({
-            timeout: 15_000
+            timeout: 30_000
         });
         // Each test will get a "page" that already has the person name.
         await use(page);

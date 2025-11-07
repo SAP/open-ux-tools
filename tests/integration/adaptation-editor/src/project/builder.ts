@@ -172,19 +172,27 @@ export function createV4Manifest(userParameters: ProjectParameters, workerId: st
  * @param ui5Version - The UI5 version to be used.
  * @param templateName - The name of the template file to be used.
  * @param workerId - The unique worker ID for the project.
+ * @param odataVersion - version of odata.
  * @returns A string representation of the YAML file content.
  */
 export async function createYamlFile(
     userParameters: ProjectParameters,
     ui5Version: string,
     templateName: string,
-    workerId: string
+    workerId: string,
+    odataVersion: 'fe-v4' | 'fe-v2' | 'ui5' = 'fe-v2'
 ): Promise<string> {
     const { id, mainServiceUri } = getProjectParametersWithDefaults(userParameters);
     const template = await readFile(join(__dirname, 'templates', templateName), 'utf-8');
     const document = await YamlDocument.newInstance(template);
 
     document.setIn({ path: 'metadata.name', value: id + '.' + workerId });
+    if (odataVersion === 'fe-v4') {
+        document.setIn({
+            path: 'server.customMiddleware.0.configuration.metadataProcessor.options.odataVersion',
+            value: 'v4'
+        });
+    }
     document.setIn({ path: 'server.customMiddleware.0.configuration.services.urlPath', value: mainServiceUri });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
 
@@ -264,7 +272,7 @@ export async function generateFeV4Project(
 ): Promise<string> {
     const { id } = getProjectParametersWithDefaults(projectConfig);
     const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
-    const yamlContent = await createYamlFile(projectConfig, ui5Version, 'ui5-fe-v4.yaml', workerId);
+    const yamlContent = await createYamlFile(projectConfig, ui5Version, 'ui5.yaml', workerId, 'fe-v4');
     const manifestContent = JSON.stringify(createV4Manifest(projectConfig, workerId), undefined, 2);
 
     if (!existsSync(root)) {
@@ -284,7 +292,7 @@ export async function generateFeV4Project(
         writeFile(join(root, 'package.json'), createPackageJson(id + workerId)),
         writeFile(join(root, 'webapp', 'manifest.json'), manifestContent),
         writeFile(join(root, 'webapp', 'Component.js'), createV4Component(projectConfig, workerId)),
-        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service-v4.cds'), 'utf-8')),
+        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
         writeFile(
             join(root, 'data', 'RootEntity.json'),
             JSON.stringify(
@@ -518,13 +526,12 @@ export async function generateAdpProject(
     if (existsSync(join(root, 'webapp', 'changes'))) {
         await rm(join(root, 'webapp', 'changes'), { recursive: true });
     }
-    const serviceFileName = projectConfig.baseApp.kind === 'fe-v4' ? 'service-v4.cds' : 'service.cds';
 
     await Promise.all([
         writeFile(join(root, 'ui5.yaml'), yamlContent),
         writeFile(join(root, 'package.json'), createPackageJson(id + '.' + workerId)),
         writeFile(join(root, 'webapp', 'manifest.appdescr_variant'), appDescriptorVariant),
-        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', serviceFileName), 'utf-8')),
+        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
         writeFile(
             join(root, 'data', 'RootEntity.json'),
             JSON.stringify(

@@ -107,11 +107,14 @@ export default class ManualTestCaseReporter implements Reporter {
             /^Evaluate$/,
             /^Expect \"toBe\"$/,
             /^Expect \"toEqual\"$/,
+            /^Expect \"toContain\"$/,
+            /^Expect \"toBeAttached\"$/,
             /^Expect \"toBeEnabled\"$/,
             /^Expect \"toHaveAttribute\"$/,
             /^Expect \"toContain\"$/,
             /^Expect "toBeInViewport"$/,
             /^Expect \"toBeDisabled\"$/,
+            /^Expect \"toHaveAttribute\"$/,
             /^Expect \"poll/,
             /^locator\.textContent/,
             /^locator\.count/,
@@ -131,7 +134,8 @@ export default class ManualTestCaseReporter implements Reporter {
             /^Wait for selector/,
             /Expect \"toStrictEqual\"/,
             /^Navigate to "\/adaptation-editor\.html\?fiori-tools-rta-mode=true"$/,
-            /locator\('iframe\[title="Application Preview"\]'\)/
+            /locator\('iframe\[title="Application Preview"\]'\)/,
+            /^Wait for selector getByText/
         ];
 
         const shouldSkip = skipPatterns.some((pattern) => pattern.test(step.title));

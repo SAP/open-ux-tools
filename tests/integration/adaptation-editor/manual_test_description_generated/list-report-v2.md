@@ -243,7 +243,7 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
 3. Click on value help button of `Date Property` filter
-4. Check semantic date `Yesterday` visible in filter
+4. Check semantic date range options have `Yesterday` for `DateProperty` filter
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Disable Semantic Date Range in Filter Bar` button in the Quick Actions Panel
 7. Click `Save and Reload` button in the toolBar
@@ -269,10 +269,11 @@
 
 9. Click `Navigation` button in the toolBar
 10. Click on value help button of `Date Property` filter
-11. Click `UI Adaptation` button in the toolBar
-12. Click `Enable Semantic Date Range in Filter Bar` button in the Quick Actions Panel
-13. Click `Save and Reload` button in the toolBar
-14. Verify changes:
+11. Check that the calendar popover is displayed
+12. Click `UI Adaptation` button in the toolBar
+13. Click `Enable Semantic Date Range in Filter Bar` button in the Quick Actions Panel
+14. Click `Save and Reload` button in the toolBar
+15. Verify changes:
 
 **Change(s)**
 
@@ -327,6 +328,7 @@
 ```
 
 
+6. Check `Enable Variant Management in Tables and Charts` quick action is disabled and tooltip is `This option has been disabled because variant management is already enabled for tables and charts`
 
 ---
 

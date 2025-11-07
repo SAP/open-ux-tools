@@ -7,6 +7,7 @@
 - [3. Enable Empty row mode.](#3-enable-empty-row-mode)
 - [4. Change table actions](#4-change-table-actions)
 - [5. Add SubObject Page Quick Action](#5-add-subobject-page-quick-action)
+- [6. Add Custom Table Action to Object page](#6-add-custom-table-action-to-object-page)
 
 <a id="1-add-custom-table-column"></a>
 ## 1. Add Custom Table Column.
@@ -89,6 +90,7 @@
 ```
 
 
+9. Check `Enable Variant Management in Tables` quick action is disabled and tooltip is `This option has been disabled because variant management is already enabled for tables and charts`
 
 ---
 
@@ -124,6 +126,7 @@
 ```
 
 
+9. Check `Enable Empty Row Mode for Tables` quick action is disabled and tooltip is `This option has been disabled because empty row mode is already enabled for this table`
 
 ---
 
@@ -187,6 +190,52 @@
 ```
 
 
+9. Check `Add Subpage` quick action is disabled and tooltip is `This option has been disabled because there are no subpages to add`
+
+---
+
+<a id="6-add-custom-table-action-to-object-page"></a>
+## 6. Add Custom Table Action to Object page
+
+### Steps
+
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
+3. Click on `Go` button.
+4. Click on row `1` of `Root Entities` table 
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Add Custom Table Action` button in the Quick Actions Panel
+7. Fill `Fragment Name` field with `op-table-action` in the dialog `Add Custom Table Action`
+8. Click `Save and Reload` button in the toolBar
+9. Verify changes:
+
+**Fragment(s)**
+
+**op-table-action.fragment.xml**
+```xml
+<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
+   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-<UNIQUE_ID>" >
+        <Button xmlns:m="sap.m" id="btn-<UNIQUE_ID>" visible="true" text="New Action" />
+    </actiontoolbar:ActionToolbarAction>
+</core:FragmentDefinition>
+```
+
+**Change(s)**
+
+```json
+{
+  "fileType": "change",
+  "changeType": "addXML",
+  "content": {
+    "targetAggregation": "actions",
+    "index": 0,
+    "fragmentPath": "fragments/op-table-action.fragment.xml"
+  }
+}
+```
+
+
+10. Check control with label `New Action` is visible in the `Running Application Preview`
 
 ---
 

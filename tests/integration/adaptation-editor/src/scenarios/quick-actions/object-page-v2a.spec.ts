@@ -59,6 +59,11 @@ test.describe(`@quick-actions @fe-v2 @object-page @op-variant-management`, () =>
                     }
                 ]
             });
+
+            await editor.quickActions.checkQADisabled(
+                'Enable Variant Management in Tables',
+                `This option has been disabled because variant management is already enabled for the ''Table Section' table'`
+            );
         }
     );
 });

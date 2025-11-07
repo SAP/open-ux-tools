@@ -1,5 +1,13 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/odata-annotation-core@0.2.10
+
 ## 0.4.1
 
 ### Patch Changes

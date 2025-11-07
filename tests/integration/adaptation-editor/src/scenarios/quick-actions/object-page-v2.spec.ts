@@ -116,6 +116,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             if (satisfies(ui5Version, '~1.71.0')) {
                 await page.waitForTimeout(1000);
             }
