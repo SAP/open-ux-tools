@@ -63,7 +63,7 @@ if (!packageName) {
     process.exit(1);
 }
 
-export const execution = (async () => {
-    //NOSONAR
+//prettier-ignore
+export const execution = (async () => { //NOSONAR
     await fetchAndSaveReadme(packageName, logger);
 })();
