@@ -443,14 +443,12 @@ describe('getAbapDeployConfig', () => {
         expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
     });
 
-    it('should throw and log error when serviceProvider is not available in context', async () => {
+    it('should generate new transport request when serviceProvider is not available in context', async () => {
         const context = {
             qfaJson: mockQfaJson
         } as unknown as { qfaJson: QfaJsonConfig };
 
-        const expectedError = t('error.serviceProviderUnavailable');
-
-        await expect(getAbapDeployConfig(context as any)).rejects.toThrow(expectedError);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(expectedError);
+        const result = await getAbapDeployConfig(context);
+        expect(result.app.transport).toBe('REPLACE_WITH_TRANSPORT');
     });
 });

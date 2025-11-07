@@ -53,7 +53,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     config: BuildingBlockConfig<T>,
     fs?: Editor
 ): Promise<Editor> {
-
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
     if (!fs) {
@@ -71,7 +70,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
         processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
-
     const templateConfig: TemplateConfig = {
         hasAggregation,
         aggregationNamespace
@@ -230,7 +228,6 @@ function processBuildingBlock<T extends BuildingBlock>(
 function isCustomColumn(data: BuildingBlock): data is CustomColumn {
     return data.buildingBlockType === BuildingBlockType.CustomColumn;
 }
-
 
 /**
  * Returns the UI5 xml file document (view/fragment).

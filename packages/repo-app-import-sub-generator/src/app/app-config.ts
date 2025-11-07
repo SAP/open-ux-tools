@@ -37,12 +37,6 @@ export interface AppDownloadContext {
 async function resolveTransportRequest(context: AppDownloadContext): Promise<string> {
     const { serviceProvider, qfaJson } = context;
 
-    if (!serviceProvider) {
-        const msg = t('error.serviceProviderUnavailable');
-        RepoAppDownloadLogger.logger?.error(msg);
-        throw new Error(msg);
-    }
-
     const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
     const packageName = qfaJson.metadata.package;
     const appName = qfaJson.deploymentDetails.repositoryName;

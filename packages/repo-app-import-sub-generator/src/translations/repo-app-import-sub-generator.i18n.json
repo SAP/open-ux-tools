@@ -40,7 +40,6 @@
         },
         "quickDeployedAppDownloadErrors": {
             "noAppsFound": "No application with the ID {{ appId }} was found in the system. Please check if the application is deployed correctly or select another app.",
-            "serviceProviderMissing": "Service provider is not available in the download context. Cannot generate ABAP deploy configuration.",
             "transportCheckFailed": "Transport request resolution failed with error: {error}."
         }
     },

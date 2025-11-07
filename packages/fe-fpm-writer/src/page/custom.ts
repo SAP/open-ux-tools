@@ -92,7 +92,6 @@ async function handlePageBuildingBlock(
     fs: Editor,
     log?: Logger
 ): Promise<void> {
-
     const minVersion = coerce(data.minUI5Version);
     const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
     if (minVersion && lt(minVersion.version, '1.136.0')) {

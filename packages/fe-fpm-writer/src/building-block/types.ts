@@ -8,7 +8,6 @@ import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, 
 export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
-    CustomFilterField = 'custom-filter-field',
     Field = 'field',
     Page = 'page',
     Table = 'table',
@@ -417,6 +416,7 @@ export interface Page extends BuildingBlock {
      */
     description?: string;
 }
+
 export interface CustomColumn extends BuildingBlock {
     title: string;
     width?: string;
