@@ -42,9 +42,9 @@ export function npmInstall(projectPath: string): void {
  * Recursively removes a directory and its contents with configurable options.
  *
  * @param {string} dirPath - The absolute path to the directory to remove
- * @param {Object} [options={}] - Configuration options for the removal operation
- * @param {boolean} [options.skipNodeModules=true] - If true, skips removal of node_modules directories
- * @param {boolean} [options.preserveRoot=true] - If true, removes only the contents of the root directory but preserves the directory itself
+ * @param {Object} [options] - Configuration options for the removal operation
+ * @param {boolean} [options.skipNodeModules] - If true, skips removal of node_modules directories
+ * @param {boolean} [options.preserveRoot] - If true, removes only the contents of the root directory but preserves the directory itself
  * @throws {Error} Throws an error if the removal operation fails
  * @returns {void}
  */
