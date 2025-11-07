@@ -27,7 +27,7 @@ async function getPackageReadme(packageName: string, logger: ToolsLogger): Promi
         }
         return data.readme;
     } catch (error) {
-        throw new Error(`Error fetching README for ${packageName}:`, error.message ?? error);
+        throw new Error(`Error fetching README for ${packageName}: ${error.message ?? error}`);
     }
 }
 
@@ -63,5 +63,6 @@ if (!packageName) {
     process.exit(1);
 }
 
-// eslint-disable-next-line no-void
-void fetchAndSaveReadme(packageName, logger); //NOSONAR
+export const execution = (async () => {
+    await fetchAndSaveReadme(packageName, logger);
+})();
