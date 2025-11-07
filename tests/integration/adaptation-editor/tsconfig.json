@@ -1,8 +1,10 @@
 {
   "extends": "../../../tsconfig.json",
   "include": [
-    "src/**/*.ts",
-    "src/**/*.json"  
+    "src/**/*.ts/**/*.ts",
+    "src/**/*.json"  ,   
+    "test-project-generator.ts", 
+    "server.ts"  
   ],
   "compilerOptions": {
     "rootDir": "src",
