@@ -36,8 +36,6 @@ export interface AppDownloadContext {
  */
 async function resolveTransportRequest(context: AppDownloadContext): Promise<string> {
     const { serviceProvider, qfaJson } = context;
-
-    const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
     const packageName = qfaJson.metadata.package;
     const appName = qfaJson.deploymentDetails.repositoryName;
 
@@ -46,6 +44,7 @@ async function resolveTransportRequest(context: AppDownloadContext): Promise<str
     }
 
     try {
+        const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
         const transportRequests = await transportService?.getTransportRequests(packageName, appName);
         if (transportRequests && transportRequests.length === 1) {
             return transportRequests[0].transportNumber;
