@@ -1,5 +1,5 @@
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
-import { type Destination, WebIDEUsage, isAppStudio } from '@sap-ux/btp-utils';
+import { type Destination, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
@@ -45,13 +45,6 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
     };
 });
 
-// Mock isAppStudio function
-const mockIsAppStudio = isAppStudio as jest.Mock;
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
-}));
-
 describe('Test credentials prompts', () => {
     const promptNamespace = 'someNamespace';
     const systemUsernamePromptName = `${promptNamespace}:systemUsername`;
@@ -68,7 +61,6 @@ describe('Test credentials prompts', () => {
         mockSystemServiceRead.mockReset();
         connectionValidatorMock.validity = {};
         PromptState.reset();
-        mockIsAppStudio.mockReturnValue(false); // Default to non-AppStudio environment
     });
 
     test('should show username/password prompts when authentication required', async () => {
