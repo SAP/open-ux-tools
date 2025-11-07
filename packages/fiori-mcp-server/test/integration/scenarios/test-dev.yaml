@@ -1,0 +1,11 @@
+# for development purposes only
+providers:
+    - id: file://../provider/index.ts
+      config:
+          model: 'gpt-4o'
+extensions:
+    - file://../extensions/project.ts:setup
+prompts:
+    - '{{query}}'
+tests:
+    - file://./properties/java-disable-fcl.yaml
