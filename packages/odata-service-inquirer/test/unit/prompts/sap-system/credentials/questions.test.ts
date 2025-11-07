@@ -1,5 +1,5 @@
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
-import { type Destination, WebIDEUsage } from '@sap-ux/btp-utils';
+import { type Destination, WebIDEUsage, isAppStudio } from '@sap-ux/btp-utils';
 import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
@@ -45,10 +45,18 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
     };
 });
 
+// Mock isAppStudio function
+const mockIsAppStudio = isAppStudio as jest.Mock;
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isAppStudio: jest.fn()
+}));
+
 describe('Test credentials prompts', () => {
     const promptNamespace = 'someNamespace';
     const systemUsernamePromptName = `${promptNamespace}:systemUsername`;
     const systemPasswordPromptName = `${promptNamespace}:systemPassword`;
+    const confirmCredentialStoragePromptName = `${promptNamespace}:storeSystemCredentials`;
 
     beforeAll(async () => {
         await initI18nOdataServiceInquirer();
@@ -60,6 +68,7 @@ describe('Test credentials prompts', () => {
         mockSystemServiceRead.mockReset();
         connectionValidatorMock.validity = {};
         PromptState.reset();
+        mockIsAppStudio.mockReturnValue(false); // Default to non-AppStudio environment
     });
 
     test('should show username/password prompts when authentication required', async () => {
@@ -324,9 +333,9 @@ describe('Test credentials prompts', () => {
         connectionValidatorMock.ignoreCertError = false;
 
         const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
-        const passwordPrompt = credentialsPrompts.find(
-            (question) => question.name === systemPasswordPromptName
-        ) as PasswordQuestion;
+        const confirmCredentialStoragePrompt = credentialsPrompts.find(
+            (question) => question.name === confirmCredentialStoragePromptName
+        ) as ConfirmQuestion;
 
         // Set up a connected system with newOrUpdated flag
         PromptState.odataService.connectedSystem = {
@@ -342,7 +351,7 @@ describe('Test credentials prompts', () => {
         };
 
         // Should show password store warning when system is new or updated
-        expect(passwordPrompt.additionalMessages?.('123')).toEqual({
+        expect(confirmCredentialStoragePrompt.additionalMessages?.(true)).toEqual({
             message: t('texts.passwordStoreWarning'),
             severity: Severity.warning
         });
