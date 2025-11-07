@@ -1,5 +1,23 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.61
+
+### Patch Changes
+
+-   Updated dependencies [2e75589]
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.7.60
+
+### Patch Changes
+
+-   fef7496: Bump fallback versions
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/launch-config@0.10.34
+    -   @sap-ux/ui5-application-inquirer@0.15.34
+    -   @sap-ux/odata-service-inquirer@2.11.3
+
 ## 0.7.59
 
 ### Patch Changes

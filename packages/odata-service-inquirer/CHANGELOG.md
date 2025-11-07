@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.4
+
+### Patch Changes
+
+-   2e75589: Change condition and location of the password store warning
+
+## 2.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
 ## 2.11.2
 
 ### Patch Changes
