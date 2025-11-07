@@ -77,7 +77,7 @@ test.describe(`@outline @cpe @adp`, () => {
             let nodes = await editor.outlinePanel.getOutlineNodes<any[]>('focus_editable', 'span.tree-cell');
             await test.step(`Check that both \`editable\` and \`non-editable(grayed out)\` controls are present in the Outline Panel.`, async () => {
                 for (const node of nodes) {
-                    expect(typeof node?.focusEditable).toBe('boolean');
+                    expect(typeof node?.focusEditable).toBe('boolean'); // both true and false values should be present
                 }
             });
 
@@ -91,7 +91,7 @@ test.describe(`@outline @cpe @adp`, () => {
 
             await test.step(`Check the controls which were \`disabled (gray out)\` are now \`enabled(not gray out)\` in the Outline Panel.`, async () => {
                 for (const node of nodes) {
-                    expect(node.focusEditable).toEqual(false);
+                    expect(node.focusEditable).toEqual(false); // only false values should be present
                 }
             });
 

@@ -268,7 +268,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();

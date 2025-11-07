@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'fs/promises';
 import { join } from 'node:path';
 import { expect, test, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
-import { gte } from 'semver';
+import { gte, lte } from 'semver';
 import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 
 interface Changes {
@@ -10,6 +10,8 @@ interface Changes {
     fragments: Record<string, string>;
     changes: object[];
 }
+
+const escapedId = (id: string) => id.replace(/\\/g, '\\\\').replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
 const CHANGE_INDICATOR = {
     UnSaved: 'empty circle',
     Saved: 'filled circle',
@@ -94,6 +96,7 @@ const waitForScene = async (sceneValidator: () => Promise<boolean>, timeout = 50
 export class ListReport {
     private readonly frame: FrameLocator;
     private readonly feVersion: 'fev2' | 'fev4';
+    private readonly ui5Version: string;
     private readonly context: string = 'Running Application Preview';
     /**
      * @returns Locator for the "Go" button.
@@ -187,7 +190,7 @@ export class ListReport {
         await test.step(`${clickedButton} on \`${text}\` in the \`${this.context}\``, async () => {
             const controlLocator = getButtonLocator(this.frame, text, this.context);
             const controlId = await controlLocator.getAttribute('id');
-            const escaped = controlId!.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
+            const escaped = escapedId(controlId!);
             const overlayLocator = this.frame.locator(`[data-sap-ui-dt-for="${escaped}"]`);
             await overlayLocator.click({
                 button: button
@@ -208,6 +211,109 @@ export class ListReport {
     }
 
     /**
+     * Helper method to get control ID by its label text.
+     *
+     * @param text - The label text of the control.
+     * @returns Promise resolving to the control ID.
+     */
+    async checkControlVisible(text: string): Promise<void> {
+        await test.step(`Check control with label \`${text}\` is visible in the \`${this.context}\``, async () => {
+            const selector = await this.getControlIdByLabel(text);
+            await expect(this.frame.locator(`[id="${selector}"]`)).toBeVisible();
+        });
+    }
+
+    /*
+     * Clicks on the value help button of the `Date Property` filter.
+     * @param dialog - Whether to check the dialog after clicking the value help button.
+     */
+    clickOnDatePropertyValueHelper = async (dialog = false): Promise<void> => {
+        await test.step('Click on value help button of `Date Property` filter', async () => {
+            const labelId =
+                this.feVersion === 'fev4'
+                    ? 'fiori.elements.v4.0::RootEntityList--fe::FilterBar::RootEntity::FilterField::DateProperty-label'
+                    : 'fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--listReportFilter-filterItem-___INTERNAL_-DateProperty';
+            // Select the parent div of the label, then its sibling div, then the descendant with the required attribute
+            const valueHelpSelector =
+                this.feVersion === 'fev4' || (this.feVersion === 'fev2' && lte(this.ui5Version, '1.130.0'))
+                    ? `div:has(> [id="${escapedId(labelId)}"]) ~ div [title="Open Picker"],
+                    div:has(> [id="${escapedId(labelId)}"]) ~ div [aria-label="Show Value Help"],
+                    div:has(> [id="${escapedId(labelId)}"]) ~ div [aria-label="Open Picker"],
+                    div:has(> [id="${escapedId(
+                        labelId
+                    )}"]) ~ div [id="fiori\\.elements\\.v4\\.0\\:\\:RootEntityList--fe\\:\\:FilterBar\\:\\:RootEntity\\:\\:FilterField\\:\\:DateProperty-inner-input-vhi"]
+                  `
+                    : `div:has(> [id="${escapedId(labelId)}"]) div [title="Open Picker"], div:has(> [id="${escapedId(
+                          labelId
+                      )}"]) div [aria-label="Show Value Help"]`;
+            const locator = this.frame.locator(valueHelpSelector);
+            await expect(locator.first()).toBeAttached();
+            await locator.first().click();
+        });
+        if (dialog) {
+            await test.step('Check `Define Conditions: Date Property` Dialog is open and click on value help button', async () => {
+                const dialog = this.frame.getByRole('dialog');
+                await expect(dialog.getByText('Define Conditions: Date Property')).toBeVisible();
+                await dialog.getByTitle('Open Picker').click();
+                await this.checkCalendarDisplayed();
+                await this.frame
+                    .getByRole('button', { name: 'Cancel' })
+                    .describe(`button \`Cancel\` in the  \`Define Conditions: Date Property\` dialog`)
+                    .click();
+            });
+        }
+    };
+
+    /**
+     * Checks that the calendar popover is displayed.
+     */
+    checkCalendarDisplayed = async (): Promise<void> => {
+        await test.step('Check that the calendar popover is displayed', async () => {
+            await expect(this.frame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
+        });
+    };
+
+    /**
+     * Returns locators for all semantic date range options for a given property name.
+     *
+     * @param frame - FrameLocator for the preview frame.
+     * @param propertyName - Property name, e.g. "Date Property".
+     * @returns Locator for the "li" elements in the popover.
+     */
+    async getSemanticDateOptions(frame: FrameLocator, propertyName: string): Promise<string[]> {
+        const popoverId =
+            this.feVersion === 'fev2'
+                ? escapedId(
+                      `fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--listReportFilter-filterItemControl_BASIC-${propertyName}-RP-popover-cont`
+                  )
+                : escapedId(
+                      `fiori.elements.v4.0::RootEntityList--fe::FilterBar::RootEntity::FilterField::${propertyName}-inner-RP-popover-cont`
+                  );
+        const optionList = frame.locator(`#${popoverId} ul > li`);
+        const count = await optionList.count();
+        const options: string[] = [];
+        for (let i = 0; i < count; i++) {
+            options.push(await optionList.nth(i).innerText());
+        }
+        return options;
+    }
+
+    /**
+     * Check that semantic date range options exist for a given property name.
+     *
+     * @param propertyName - Property name, e.g. "Date Property".
+     * @param expectedOptions - Expected semantic date range options.
+     */
+    async checkSemanticDateOptionsExist(propertyName: string, expectedOptions: string[]): Promise<void> {
+        await test.step(`Check semantic date range options have \`${expectedOptions}\` for \`${propertyName}\` filter`, async () => {
+            const options = await this.getSemanticDateOptions(this.frame, propertyName);
+            for (const expectedOption of expectedOptions) {
+                expect(options).toContain(expectedOption);
+            }
+        });
+    }
+
+    /**
      * Clicks on an item in the context menu.
      *
      * @param itemText - The text of the context menu item to click.
@@ -225,7 +331,7 @@ export class ListReport {
             const overlayLocator = this.frame.locator('[class*="sapUiDtOverlaySelected"]');
             await expect(overlayLocator).toBeVisible();
             const overlayFor = await overlayLocator.getAttribute('data-sap-ui-dt-for');
-            const escape = overlayFor!.replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
+            const escape = escapedId(overlayFor!);
             const controlLocator = this.frame.locator(`#${escape}`);
             await expect(controlLocator).toBeVisible();
             const controlText = await controlLocator.innerText();
@@ -263,10 +369,12 @@ export class ListReport {
     /**
      * @param frame - FrameLocator for the List Report.
      * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
+     * @param ui5Version - UI5 version.
      */
-    constructor(frame: FrameLocator, feVersion: 'fev2' | 'fev4' = 'fev2') {
+    constructor(frame: FrameLocator, feVersion: 'fev2' | 'fev4' = 'fev2', ui5Version: string = '') {
         this.frame = frame;
         this.feVersion = feVersion;
+        this.ui5Version = ui5Version;
     }
 }
 
@@ -349,6 +457,52 @@ export class TableSettings {
             await this.dialog.getByRole('button', { name: 'OK' }).click();
         });
     }
+
+    /**
+     * Get tab names in the dialog.
+     *
+     * @returns An array of tab names.
+     */
+    async getTabNames(): Promise<string[]> {
+        // Find all elements with role="tab"
+        const tabLocators = this.dialog.locator('[role="tab"]');
+        const tabCount = await tabLocators.count();
+        const tabNames: string[] = [];
+        for (let i = 0; i < tabCount; i++) {
+            // Try aria-labelledby first
+            const tab = tabLocators.nth(i);
+            const labelledBy = await tab.getAttribute('aria-labelledby');
+            if (labelledBy) {
+                const labelSpan = this.dialog.locator(`#${labelledBy}`);
+                const labelText = await labelSpan.textContent();
+                if (labelText && labelText.trim()) {
+                    tabNames.push(labelText.trim());
+                    continue;
+                }
+            }
+            // Fallback: get visible text from tab itself
+            const tabText = await tab.textContent();
+            if (tabText && tabText.trim()) {
+                tabNames.push(tabText.trim());
+            }
+        }
+        return tabNames;
+    }
+
+    /**
+     * Checks that the specified tabs exist in the dialog.
+     *
+     * @param expectedTabs - An array of expected tab names.
+     * @returns Locator for the button to enable the "Clear" button in the filter bar.
+     */
+    checkTabsExist = async (expectedTabs: string[]): Promise<void> => {
+        await test.step(`Check tab(s) \`${expectedTabs.join(', ')}\` exist in the \`${
+            this.dialogName
+        }\` dialog`, async () => {
+            const tabNames = await this.getTabNames();
+            expect(tabNames).toEqual(expect.arrayContaining(expectedTabs));
+        });
+    };
 
     /**
      * @param frame - FrameLocator for the dialog.
@@ -531,9 +685,53 @@ class QuickActionPanel {
     get addSubPage(): Locator {
         return this.getButtonLocator('Add Subpage');
     }
-
+    /**
+     * Waits for the Object Page Quick Action panel to be loaded.
+     */
     async waitForObjectPageQuickActionLoaded(): Promise<void> {
         await this.page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true }).waitFor({ state: 'visible' });
+    }
+
+    /**
+     * @returns Locator for the button to Add Custom Page Action.
+     */
+    get addCustomPageAction(): Locator {
+        return this.getButtonLocator('Add Custom Page Action');
+    }
+
+    /**
+     * @returns Locator for the button to enable the "Clear" button in the filter bar.
+     */
+    get enableTableFilterForPageVariants(): Locator {
+        return this.getButtonLocator('Enable Table Filtering for Page Variants');
+    }
+
+    /**
+     * Checks if a quick action button is disabled.
+     *
+     * @param buttonName - Name of the button to check.
+     * @param title - Optional title to check for the disabled button.
+     * @returns Promise that resolves when the assertion passes.
+     */
+    async checkQADisabled(buttonName: string, title?: string): Promise<void> {
+        const button = this.getButtonLocator(buttonName);
+        if (title) {
+            await this.checkDisabledButtonTitle(buttonName, title);
+        }
+        const tooltip = title ? `and tooltip is \`${title}\`` : '';
+        await expect(button, `Check \`${buttonName}\` quick action is disabled ${tooltip}`).toBeDisabled();
+    }
+
+    /**
+     * Checks the title of a disabled button.
+     *
+     * @param buttonName - Name of the button to check.
+     * @param expectedTitle - Expected title of the disabled button.
+     * @returns Promise that resolves when the assertion passes.
+     */
+    private async checkDisabledButtonTitle(buttonName: string, expectedTitle: string): Promise<void> {
+        const button = this.getButtonLocator(buttonName);
+        await expect(button).toHaveAttribute('title', expectedTitle);
     }
 
     /**
@@ -790,6 +988,12 @@ class ChangesPanel {
         );
     }
 
+    /**
+     * Gets the locator for a generic item in the saved changes stack based on the provided text.
+     *
+     * @param text - The text to search for within the saved changes stack.
+     * @returns Locator for the generic item in the saved changes stack.
+     */
     getGenericItemLocatorInSavedStack(text: string[]): Locator {
         const index = 0; // for the second match (0-based)
         let locator = this.page
@@ -803,6 +1007,11 @@ class ChangesPanel {
         return locator;
     }
 
+    /**
+     * Delete button in the dialog to confirm change deletion.
+     *
+     * @returns Locator for the delete button in the dialog to confirm change deletion.
+     */
     get deleteOnDilog(): Locator {
         return this.page
             .getByLabel('Confirm change deletion')
@@ -810,8 +1019,11 @@ class ChangesPanel {
             .describe(`\`Delete\` button in the dialog to confirm change deletion in the ${this.context}`);
     }
 
-    checkFilterBarIsSticky(): Promise<void> {
-        return test.step(`Check \`Changes Panel\` filter bar is sticky in the ${this.context}`, async () => {
+    /**
+     * Checks if the filter bar in the Changes Panel is sticky.
+     */
+    async checkFilterBarIsSticky(): Promise<void> {
+        await test.step(`Check \`Changes Panel\` filter bar is sticky in the ${this.context}`, async () => {
             const scroller = await this.page
                 .getByPlaceholder('Filter Changes')
                 .locator(
@@ -821,7 +1033,7 @@ class ChangesPanel {
             await expect(scroller).toBeVisible();
             const lastItem = scroller.locator(':scope > *').last();
             await lastItem.scrollIntoViewIfNeeded();
-            await expect(this.page.getByPlaceholder('Filter Changes')).toBeVisible();
+            await expect(this.page.getByPlaceholder('Filter Changes')).toBeInViewport();
         });
     }
 }
@@ -897,8 +1109,11 @@ class OutlinePanel {
     async checkOutlineNodeIndicator(text: string, expected: 'UnSaved' | 'Saved' | 'SavedAndUnSaved'): Promise<void> {
         await this.clickOnNode(text);
         await test.step(`Check \`${text}\` node has \`${CHANGE_INDICATOR[expected]} (${expected})\` indicator in the ${this.context}`, async () => {
-            const indicatorType = await this.getChangeIndicator(text);
-            expect(indicatorType).toBe(expected);
+            await expect
+                .poll(async () => await this.getChangeIndicator(text), {
+                    timeout: test.info().timeout
+                })
+                .toBe(expected);
         });
     }
 
@@ -1666,7 +1881,7 @@ export class AdaptationEditorShell {
     readonly toolbar: Toolbar;
     readonly changesPanel: ChangesPanel;
     async reloadCompleted(): Promise<void> {
-        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 15_000 });
+        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: test.info().timeout });
     }
     /**
      * @param page - Page object for the Adaptation Editor.
@@ -2045,7 +2260,7 @@ export async function waitUntilFileIsDeleted(filePath: string): Promise<string[]
 }
 
 /**
- * Check if given files count are present in the changes folder
+ * Check if given files count are present in the changes folder.
  *
  * @param changesFolderPath - absolute path to the changes folder.
  * @param filesCount - number of files to be checked in the changes folder.
@@ -2089,7 +2304,7 @@ export async function createChangeFlexFile(webappPath: string, version: string |
 }
 
 /**
- * this method contains file content after updating text of `Create` button.
+ * This method contains file content after updating text of `Create` button.
  *
  * @param version - ui5 version
  * @returns `name` and `content` for change flex file

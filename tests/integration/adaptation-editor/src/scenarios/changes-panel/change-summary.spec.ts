@@ -4,8 +4,8 @@ import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
 import { AdaptationEditorShell, ListReport, waitUntilFileIsDeleted } from '../test-utils';
 import { join } from 'node:path';
 /**
- * Creates changes under filter by toggling `enabled` property multiple times from properties panel
- * The reason behind multiple iterations is to create many changes and enable scrollbar
+ * Creates changes under filter by toggling `enabled` property multiple times from properties panel,
+ * the reason behind multiple iterations is to create many changes and enable scrollbar.
  *
  * @param page - Page instance from playwright
  */
