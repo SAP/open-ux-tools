@@ -13,7 +13,7 @@ import { ToolsLogger } from '@sap-ux/logger';
  */
 async function getPackageReadme(packageName: string, logger: ToolsLogger): Promise<string | null> {
     // Handle scoped packages by URL-encoding the slash
-    const encodedName: string = packageName.replace(/\//g, '%2F');
+    const encodedName: string = packageName.replaceAll(/\//g, '%2F');
     const url = `https://registry.npmjs.org/${encodedName}`;
     try {
         const response: Response = await fetch(url);
@@ -64,4 +64,4 @@ if (!packageName) {
 }
 
 // eslint-disable-next-line no-void
-void fetchAndSaveReadme(packageName, logger);
+void fetchAndSaveReadme(packageName, logger); //NOSONAR
