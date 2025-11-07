@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.9
+
+### Patch Changes
+
+-   452e49a: correct publisher
+
 ## 0.0.8
 
 ### Patch Changes
