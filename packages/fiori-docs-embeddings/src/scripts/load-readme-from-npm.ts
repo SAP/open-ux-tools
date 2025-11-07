@@ -47,7 +47,7 @@ async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Pro
             await writeFile(outputPath, readmeContent, 'utf-8');
             logger.info(`Successfully saved README to './data_local'`);
         } catch (error) {
-            logger.error(`Error writing README file: ${error}`);
+            logger.error(`Error writing README file for ${outputFileName}: ${error}`);
             process.exit(1);
         }
     } else {
@@ -58,12 +58,13 @@ async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Pro
 
 const packageName: string | undefined = process.argv[2];
 const logger = new ToolsLogger();
-if (!packageName) {
-    logger.error('Please provide a package name as an argument.');
-    process.exit(1);
-}
 
 //prettier-ignore
 export const execution = (async () => { //NOSONAR
-    await fetchAndSaveReadme(packageName, logger);
+    if (!packageName) {
+        logger.error('Please provide a package name as an argument.');
+        process.exit(1);
+    } else {
+        await fetchAndSaveReadme(packageName, logger);
+    }
 })();
