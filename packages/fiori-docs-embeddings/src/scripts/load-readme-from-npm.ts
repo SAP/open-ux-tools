@@ -13,7 +13,7 @@ import { ToolsLogger } from '@sap-ux/logger';
  */
 async function getPackageReadme(packageName: string, logger: ToolsLogger): Promise<string | null> {
     // Handle scoped packages by URL-encoding the slash
-    const encodedName: string = packageName.replaceAll(/\//g, '%2F');
+    const encodedName: string = packageName.replaceAll('/', '%2F');
     const url = `https://registry.npmjs.org/${encodedName}`;
     try {
         const response: Response = await fetch(url);
@@ -63,6 +63,6 @@ if (!packageName) {
     process.exit(1);
 }
 
-export const execution = (async () => {
+export const execution = (async () => { //NOSONAR
     await fetchAndSaveReadme(packageName, logger);
 })();
