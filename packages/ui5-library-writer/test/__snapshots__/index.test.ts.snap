@@ -1595,13 +1595,6 @@ server:
 
 exports[`Reuse lib templates Generate files for config: lib-t-1.113.0 1`] = `
 Object {
-  "com.sap.myui5tslib113/.eslintrc": Object {
-    "contents": "{
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-  \\"root\\": true
-}",
-    "state": "modified",
-  },
   "com.sap.myui5tslib113/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -1612,6 +1605,22 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "com.sap.myui5tslib113/eslint.config.js": Object {
+    "contents": "const { defineConfig } = require('eslint/config');
+
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.config.defaultTS,
+    {
+        plugins: {
+            'fiori-custom': fioriTools // backward compatibility
+        }
+    }
+]);
+",
     "state": "modified",
   },
   "com.sap.myui5tslib113/karma.conf.js": Object {
@@ -1636,8 +1645,8 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.113.0\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"eslint\\": \\"^9.38.0\\",
+    \\"typescript-eslint\\": \\"^8.27.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -2217,13 +2226,6 @@ builder:
 
 exports[`Reuse lib templates Generate files for config: lib-ts 1`] = `
 Object {
-  "com.sap.myui5tslib/.eslintrc": Object {
-    "contents": "{
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-  \\"root\\": true
-}",
-    "state": "modified",
-  },
   "com.sap.myui5tslib/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -2234,6 +2236,22 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "com.sap.myui5tslib/eslint.config.js": Object {
+    "contents": "const { defineConfig } = require('eslint/config');
+
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.config.defaultTS,
+    {
+        plugins: {
+            'fiori-custom': fioriTools // backward compatibility
+        }
+    }
+]);
+",
     "state": "modified",
   },
   "com.sap.myui5tslib/karma.conf.js": Object {
@@ -2258,8 +2276,8 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"eslint\\": \\"^9.38.0\\",
+    \\"typescript-eslint\\": \\"^8.27.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -2839,13 +2857,6 @@ builder:
 
 exports[`Reuse lib templates Generate files for config: lib-ts-1.121.0 1`] = `
 Object {
-  "com.sap.myui5tslib121/.eslintrc": Object {
-    "contents": "{
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-  \\"root\\": true
-}",
-    "state": "modified",
-  },
   "com.sap.myui5tslib121/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -2856,6 +2867,22 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "com.sap.myui5tslib121/eslint.config.js": Object {
+    "contents": "const { defineConfig } = require('eslint/config');
+
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.config.defaultTS,
+    {
+        plugins: {
+            'fiori-custom': fioriTools // backward compatibility
+        }
+    }
+]);
+",
     "state": "modified",
   },
   "com.sap.myui5tslib121/karma.conf.js": Object {
@@ -2880,8 +2907,8 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.121.0\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"eslint\\": \\"^9.38.0\\",
+    \\"typescript-eslint\\": \\"^8.27.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",

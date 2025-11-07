@@ -181,7 +181,7 @@ export const config = {
         const prodConfig = require('../config/eslintrc-prod.js');
         const testConfig = require('../config/eslintrc-test.js');
         const typescriptConfig = require('../config/eslintrc-typescript.js');
-        return [...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig];
+        return [...commonConfig, ...prodConfig, ...testConfig, ...typescriptConfig];
     },
     get defaultJS() {
         const commonConfig = require('../config/eslintrc-common.js');

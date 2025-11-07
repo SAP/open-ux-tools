@@ -41,7 +41,7 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
         // Extend or add
-        if (!fs.exists(outPath)) {
+        if (!fs.exists(outPath) || outPath.includes('eslint.config.js')) {
             fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath

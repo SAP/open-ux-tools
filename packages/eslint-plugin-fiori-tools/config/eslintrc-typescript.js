@@ -10,42 +10,42 @@ const tseslint = require('typescript-eslint');
 
 
 module.exports = defineConfig([
-    ...tseslint.configs.recommended,
-    ...tseslint.configs.recommendedTypeChecked,
     {
-    files: ["./webapp/*.ts", "./webapp/**/*.ts"],
+        files: ["./webapp/*.ts", "./webapp/**/*.ts"],
 
-    ignores: [
-        "target/**",
-        "webapp/test/changes_loader.ts",
-        "webapp/test/changes_preview.ts",
-        "webapp/localservice/**",
-        "webapp/localService/**",
-        "undefined/**/Example.qunit.ts",
-        "backup/**",
-        "**/*.d.ts",
-        "**/*.d.ts",
-    ],
+        ignores: [
+            "target/**",
+            "webapp/test/changes_loader.ts",
+            "webapp/test/changes_preview.ts",
+            "webapp/localservice/**",
+            "webapp/localService/**",
+            "undefined/**/Example.qunit.ts",
+            "backup/**",
+            "**/*.d.ts",
+        ],
 
-    plugins: {
-        "@typescript-eslint": typescriptEslint,
-    },
+        plugins: {
+            "@typescript-eslint": typescriptEslint,
+        },
 
     languageOptions: {
         parser: tsParser,
         ecmaVersion: 5,
         sourceType: "script",
 
-        parserOptions: {
-            project: true,
+            parserOptions: {
+                projectService: true,
+            },
         },
-    },
 
-    rules: {
-        "@typescript-eslint/no-unsafe-call": "warn",
-        "@typescript-eslint/no-unsafe-member-access": "warn",
-        "@typescript-eslint/no-unsafe-return": "warn",
-        "@typescript-eslint/no-unsafe-argument": "warn",
-        "@typescript-eslint/no-unsafe-assignment": "warn",
-    },
-}]);
+        rules: {
+            ...typescriptEslint.configs.recommended.rules,
+            ...typescriptEslint.configs['recommended-type-checked'].rules,
+            "@typescript-eslint/no-unsafe-call": "warn",
+            "@typescript-eslint/no-unsafe-member-access": "warn",
+            "@typescript-eslint/no-unsafe-return": "warn",
+            "@typescript-eslint/no-unsafe-argument": "warn",
+            "@typescript-eslint/no-unsafe-assignment": "warn",
+        },
+    }
+]);
