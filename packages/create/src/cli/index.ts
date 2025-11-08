@@ -50,8 +50,8 @@ function getCommanderProgram(): Command {
     program.addHelpText(
         'after',
         `\nExample Usage:
-  'npx --yes @sap-ux/create@latest add --help'              Get The available subcommands are for the 'add' command.
-  'npx --yes @sap-ux/create@latest add html --help'         Get available options for the 'add html' command.
+  'npx --yes @sap-ux/create@latest add --help'              Get the available subcommands for the 'add' command.
+  'npx --yes @sap-ux/create@latest add html --help'         Get the available options for the 'add html' command.
   'npx --yes @sap-ux/create@latest add html --simulate'     Execute the 'add html' command using the 'simulate' option.\n`
     );
     program.option('--generateJsonSpec', 'Output the command structure as JSON');
