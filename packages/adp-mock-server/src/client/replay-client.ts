@@ -1,72 +1,90 @@
-import { once } from 'lodash';
-import { Expectation, HttpRequest, HttpResponse } from 'mockserver-client';
+import { isEqual, once } from 'lodash';
+import { HttpRequest, HttpResponse } from 'mockserver-client';
 import { mockServerClient, MockServerClient } from 'mockserver-client/mockServerClient';
 import { MOCK_SERVER_PORT } from '../constants';
+import { BinaryBody, Expectation } from '../types';
+import { normalizeZipFileContent } from '../utils/file-utils';
+import { HashMap, HashMapKeyComparator } from '../utils/hash-map';
 import { logger } from '../utils/logger';
 import { isBinaryBody } from '../utils/type-guards';
-import { normalizeZipBody } from '../utils/file-utils';
+import { HashSet } from '../utils/hash-set';
+import { getSapSystemPort } from '../utils/sap-system-utils';
+
+type RequestMatcher = Pick<HttpRequest, 'path' | 'method'>;
 
 const NOT_FOUND_RESPONSE: HttpResponse = {
     statusCode: 404,
     reasonPhrase: '[ADP] Not found.'
 };
 
+const zipRequestsComparator: HashMapKeyComparator<HttpRequest> = (requestA, requestB) =>
+    requestA.path === requestB.path &&
+    requestA.method === requestB.method &&
+    isEqual(requestA.queryStringParameters, requestB.queryStringParameters) &&
+    isBinaryBody(requestA.body) &&
+    isBinaryBody(requestB.body) &&
+    isBinaryBodyEqualWith(requestA.body, requestB.body);
+
+const isBinaryBodyEqualWith = (aBody: BinaryBody, bBody: BinaryBody) => {
+    const aBodyBuffer = Buffer.from(aBody.base64Bytes, 'base64');
+    const bBodyBuffer = Buffer.from(bBody.base64Bytes, 'base64');
+    return normalizeZipFileContent(aBodyBuffer) === normalizeZipFileContent(bBodyBuffer);
+};
+
+const requestMatcherComparator = (matcherA: RequestMatcher, matcherB: RequestMatcher) =>
+    matcherA.path === matcherB.path && matcherA.method === matcherB.method;
+
 export const getReplayClient = once(getReplayClientInternal);
 
 async function getReplayClientInternal(): Promise<MockServerClient> {
     logger.info('Init mock server client.');
     const client = mockServerClient('localhost', MOCK_SERVER_PORT);
-    await patchRequestsWithBinaryBody(client);
+    await patchZipRequests(client);
     return client;
 }
 
-async function patchRequestsWithBinaryBody(client: MockServerClient): Promise<void> {
-    const requestResponseList = await retrieveActiveExpectations(client);
-    const requestWithBinaryBodyResponseList = requestResponseList.filter(({ httpRequest }) =>
-        isBinaryBody((httpRequest as HttpRequest).body)
+async function patchZipRequests(client: MockServerClient): Promise<void> {
+    const expectationsList = await retrieveActiveExpectations(client);
+    const zipExpectationsList = expectationsList.filter(({ httpRequest }) => isBinaryBody(httpRequest?.body));
+    const zipResponsesByRequestMap = new HashMap<HttpRequest, HttpResponse[]>(zipRequestsComparator);
+    zipExpectationsList.forEach(({ httpRequest, httpResponse }) => {
+        if (zipResponsesByRequestMap.has(httpRequest!)) {
+            zipResponsesByRequestMap.get(httpRequest!)?.push(httpResponse!);
+        } else {
+            zipResponsesByRequestMap.set(httpRequest!, [httpResponse!]);
+        }
+    });
+    const zipRequestMatcherSet = new HashSet<RequestMatcher>(requestMatcherComparator);
+    const zipRequestMatcherList = Array.from(zipResponsesByRequestMap.keys()).map(({ path, method }) => ({
+        path,
+        method
+    }));
+    zipRequestMatcherList.forEach((matcher) => {
+        zipRequestMatcherSet.add(matcher);
+    });
+    const zipResponseIteratorsByRequestMap = zipResponsesByRequestMap.map(
+        ([httpRequest, httpResponses]) => [httpRequest, httpResponses.values()],
+        zipRequestsComparator
     );
-    const uniqueRequestPaths = new Set(
-        requestWithBinaryBodyResponseList.map(({ httpRequest }) => (httpRequest as HttpRequest).path)
-    );
+
     await Promise.all(
-        Array.from(uniqueRequestPaths).map((path) =>
+        zipRequestMatcherSet.values().map((matcher) =>
             client.mockWithCallback(
-                { path },
-                (requst) => {
-                    if (requst.path !== path || !isBinaryBody(requst.body)) {
+                matcher,
+                (httpRequest) => {
+                    if (!zipResponseIteratorsByRequestMap.has(httpRequest)) {
                         return NOT_FOUND_RESPONSE;
                     }
-
-                    const expectation = requestWithBinaryBodyResponseList.find(
-                        (expectation) => (expectation.httpRequest as HttpRequest).path === path
-                    );
-
-                    if (!expectation) {
-                        return NOT_FOUND_RESPONSE;
-                    }
-
-                    const expectedRequest = expectation.httpRequest as HttpRequest;
-
-                    if (!isBinaryBody(expectedRequest.body)) {
-                        return NOT_FOUND_RESPONSE;
-                    }
-
-                    const receivedRequestBuffer = Buffer.from(requst.body.base64Bytes, 'base64');
-                    const expectedRequestBuffer = Buffer.from(expectedRequest.body.base64Bytes, 'base64');
-
-                    if (normalizeZipBody(expectedRequestBuffer) === normalizeZipBody(receivedRequestBuffer)) {
-                        return expectation.httpResponse!;
-                    }
-
-                    return NOT_FOUND_RESPONSE;
+                    const httpResponsesIterator = zipResponseIteratorsByRequestMap.get(httpRequest);
+                    const nextResponse = httpResponsesIterator?.next().value;
+                    return nextResponse ?? NOT_FOUND_RESPONSE;
                 },
-                { unlimited: true } // TODO a.vasilev: [optimization] add id param to the mockWithCallback to override
-                // the request from recorded file to reduce the failing attempts.
+                { unlimited: true }
             )
         )
     );
 }
 
 async function retrieveActiveExpectations(client: MockServerClient): Promise<Expectation[]> {
-    return client.retrieveActiveExpectations({});
+    return client.retrieveActiveExpectations({}) as Promise<Expectation[]>;
 }

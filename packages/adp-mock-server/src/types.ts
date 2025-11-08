@@ -1,10 +1,12 @@
-import { HttpRequest, HttpResponse } from 'mockserver-client';
+import { HttpRequest, HttpResponse, Expectation as MockServerExpectation } from 'mockserver-client';
+import { HttpRequestAndHttpResponse as MockServerHttpRequestAndHttpResponse } from 'mockserver-client/mockServer';
 
-export interface HttpRequestAndHttpResponse {
+export type HttpRequestAndHttpResponse = Omit<MockServerHttpRequestAndHttpResponse, 'httpRequest' | 'httpResponse'> & {
     httpRequest?: HttpRequest;
     httpResponse?: HttpResponse;
-    timestamp?: string;
-}
+};
+
+export type Expectation = Omit<MockServerExpectation, 'httpRequest'> & { httpRequest?: HttpRequest };
 
 export type BodyType =
     | 'BINARY'

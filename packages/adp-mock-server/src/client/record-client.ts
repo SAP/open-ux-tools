@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { once } from 'lodash';
+import { omit, once } from 'lodash';
 import { mockServerClient } from 'mockserver-client';
 import type { MockServerClient } from 'mockserver-client/mockServerClient';
 import { MOCK_SERVER_PORT, RESPONSES_JSON_PATH } from '../constants';
@@ -12,19 +12,21 @@ export const getRecordClient = once(getRecordClientInternal);
 export async function recordResponses(): Promise<void> {
     logger.info('Record responses.');
     const client = await getRecordClient();
-    let requestResponseList = await retrieveRecordedRequestsAndResponses(client);
-    requestResponseList = disableRequestsSecureFlag(requestResponseList);
-    await fs.writeFile(RESPONSES_JSON_PATH, JSON.stringify(requestResponseList, null, 2));
+    let requestAndResponseList = await retrieveRecordedRequestsAndResponses(client);
+    requestAndResponseList = disableRequestsSecureFlag(requestAndResponseList);
+    await fs.writeFile(RESPONSES_JSON_PATH, JSON.stringify(requestAndResponseList, null, 2));
 }
 
 async function retrieveRecordedRequestsAndResponses(client: MockServerClient): Promise<HttpRequestAndHttpResponse[]> {
     return client.retrieveRecordedRequestsAndResponses({}) as Promise<HttpRequestAndHttpResponse[]>;
 }
 
-function disableRequestsSecureFlag(requestResponseList: HttpRequestAndHttpResponse[]): HttpRequestAndHttpResponse[] {
-    return requestResponseList.map(({ httpRequest, httpResponse }) => ({
+function disableRequestsSecureFlag(requestAndResponseList: HttpRequestAndHttpResponse[]): HttpRequestAndHttpResponse[] {
+    return requestAndResponseList.map(({ httpRequest, httpResponse }) => ({
         httpRequest: {
-            ...httpRequest,
+            // TODO a.vasilev: Some times the settings request does not match
+            // the recordings due to a changed cookie. How is this possible, sb is changing the SAP_SESSION_ID cookie in replay mode???
+            ...omit(httpRequest, ['headers', 'cookies']),
             secure: false
         },
         httpResponse
@@ -34,16 +36,38 @@ function disableRequestsSecureFlag(requestResponseList: HttpRequestAndHttpRespon
 async function getRecordClientInternal(): Promise<MockServerClient> {
     logger.info('Init mock server client.');
     const client = mockServerClient('localhost', MOCK_SERVER_PORT);
+    const host = process.env.SAP_SYSTEM_HOST;
+    const port = getSapSystemPort();
     await client.mockAnyResponse({
-        httpRequest: {
-            secure: false
-        },
+        // httpRequest: {
+        //     secure: false
+        // },
         httpForward: {
             // Forwards https requests to the actual sap system.
             scheme: 'HTTPS',
-            host: process.env.SAP_SYSTEM_HOST,
-            port: getSapSystemPort()
+            host,
+            port
         }
     });
+    // await client.mockAnyResponse({
+    //     httpRequest: {
+    //         path: '/.*\\.properties'
+    //     },
+    //     httpForward: {
+    //         scheme: 'HTTPS',
+    //         host,
+    //         port
+    //     }
+    // });
+    // await client.mockAnyResponse({
+    //     httpRequest: {
+    //         path: '/.*\\.js'
+    //     },
+    //     httpForward: {
+    //         scheme: 'HTTPS',
+    //         host,
+    //         port
+    //     }
+    // });
     return client;
 }

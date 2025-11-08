@@ -15,19 +15,16 @@ export function createMockDataFolderIfNeeded(): Promise<string | undefined> {
     return fs.mkdir(MOCK_DATA_FOLDER_PATH, { recursive: true });
 }
 
-export function normalizeZipBody(buffer: Buffer): string {
+export function normalizeZipFileContent(buffer: Buffer): string {
     const zip = new AdmZip(buffer);
     const entries = zip.getEntries();
 
     // Create a deterministic stable representation.
-    const fileInfos = entries.map((entry) => {
-        const fileData = Uint8Array.from(entry.getData());
-        return {
-            name: entry.entryName,
-            // Use a stable hash of file content. We use Uint8Array since Buffer inherits Uint8Array.
-            hash: createHash(SHA256_ALGORITHM).update(fileData).digest('hex')
-        };
-    });
+    const fileInfos = entries.map((entry) => ({
+        name: entry.entryName,
+        // Use a stable hash of file content.
+        hash: getFileContentStableHash(entry.getData())
+    }));
 
     // Sort so order doesn’t matter.
     fileInfos.sort(alphabeticalOrder);
@@ -36,6 +33,7 @@ export function normalizeZipBody(buffer: Buffer): string {
 }
 
 function getFileContentStableHash(fileDataBuffer: Buffer): string {
-    const fileDataArray = Uint8Array.from(fileDataBuffer);
-    return createHash(SHA256_ALGORITHM).update(fileDataArray).digest('hex');
+    // We use Uint8Array since Buffer inherits Uint8Array.
+    const fileDataBufferToArray = Uint8Array.from(fileDataBuffer);
+    return createHash(SHA256_ALGORITHM).update(fileDataBufferToArray).digest('hex');
 }
