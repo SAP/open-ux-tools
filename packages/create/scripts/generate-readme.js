@@ -16,7 +16,7 @@ If you prefer to download the module, you can install it globally or add it as \
 
 \`\`\`sh
 # install globally
-npm i -g @sap-ux@latest
+npm i -g @sap-ux/create@latest
 # or install as devDependency
 npm i -D @sap-ux/create@latest
 # then run
