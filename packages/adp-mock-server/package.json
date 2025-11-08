@@ -14,6 +14,8 @@
         "build": "tsc --build",
         "start": "ts-node ./src/index.ts --start",
         "stop": "ts-node ./src/index.ts --stop",
+        "start:record": "ts-node ./src/index.ts --start --record",
+        "stop:record": "ts-node ./src/index.ts --stop --record",
         "clean": "rimraf dist *.tsbuildinfo",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --build --watch"

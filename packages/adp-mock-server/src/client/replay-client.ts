@@ -1,31 +1,31 @@
 import { isEqual, once } from 'lodash';
 import { HttpRequest, HttpResponse } from 'mockserver-client';
 import { mockServerClient, MockServerClient } from 'mockserver-client/mockServerClient';
-import { MOCK_SERVER_PORT } from '../constants';
-import { BinaryBody, Expectation } from '../types';
+import { MOCK_SERVER_PORT } from '../server-constants';
+import { Expectation } from '../types';
 import { normalizeZipFileContent } from '../utils/file-utils';
 import { HashMap, HashMapKeyComparator } from '../utils/hash-map';
-import { logger } from '../utils/logger';
-import { isBinaryBody } from '../utils/type-guards';
 import { HashSet } from '../utils/hash-set';
-import { getSapSystemPort } from '../utils/sap-system-utils';
-
-type RequestMatcher = Pick<HttpRequest, 'path' | 'method'>;
+import { logger } from '../utils/logger';
+import { isZipBody } from '../utils/type-guards';
 
 const NOT_FOUND_RESPONSE: HttpResponse = {
     statusCode: 404,
     reasonPhrase: '[ADP] Not found.'
 };
 
+type RequestMatcher = Pick<HttpRequest, 'path' | 'method'>;
+
 const zipRequestsComparator: HashMapKeyComparator<HttpRequest> = (requestA, requestB) =>
     requestA.path === requestB.path &&
     requestA.method === requestB.method &&
     isEqual(requestA.queryStringParameters, requestB.queryStringParameters) &&
-    isBinaryBody(requestA.body) &&
-    isBinaryBody(requestB.body) &&
-    isBinaryBodyEqualWith(requestA.body, requestB.body);
+    isZipBodyEqualWith(requestA.body, requestB.body);
 
-const isBinaryBodyEqualWith = (aBody: BinaryBody, bBody: BinaryBody) => {
+const isZipBodyEqualWith = (aBody: unknown, bBody: unknown) => {
+    if (!isZipBody(aBody) || !isZipBody(bBody)) {
+        return false;
+    }
     const aBodyBuffer = Buffer.from(aBody.base64Bytes, 'base64');
     const bBodyBuffer = Buffer.from(bBody.base64Bytes, 'base64');
     return normalizeZipFileContent(aBodyBuffer) === normalizeZipFileContent(bBodyBuffer);
@@ -39,19 +39,22 @@ export const getReplayClient = once(getReplayClientInternal);
 async function getReplayClientInternal(): Promise<MockServerClient> {
     logger.info('Init mock server client.');
     const client = mockServerClient('localhost', MOCK_SERVER_PORT);
-    await patchZipRequests(client);
+    await patchZipRequestsAndResponses(client);
     return client;
 }
 
-async function patchZipRequests(client: MockServerClient): Promise<void> {
+async function patchZipRequestsAndResponses(client: MockServerClient): Promise<void> {
     const expectationsList = await retrieveActiveExpectations(client);
-    const zipExpectationsList = expectationsList.filter(({ httpRequest }) => isBinaryBody(httpRequest?.body));
+    const zipExpectationsList = expectationsList.filter(({ httpRequest }) => isZipBody(httpRequest?.body));
     const zipResponsesByRequestMap = new HashMap<HttpRequest, HttpResponse[]>(zipRequestsComparator);
     zipExpectationsList.forEach(({ httpRequest, httpResponse }) => {
-        if (zipResponsesByRequestMap.has(httpRequest!)) {
-            zipResponsesByRequestMap.get(httpRequest!)?.push(httpResponse!);
+        if (!httpRequest || !httpResponse) {
+            return;
+        }
+        if (zipResponsesByRequestMap.has(httpRequest)) {
+            zipResponsesByRequestMap.get(httpRequest)?.push(httpResponse);
         } else {
-            zipResponsesByRequestMap.set(httpRequest!, [httpResponse!]);
+            zipResponsesByRequestMap.set(httpRequest, [httpResponse]);
         }
     });
     const zipRequestMatcherSet = new HashSet<RequestMatcher>(requestMatcherComparator);

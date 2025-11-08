@@ -1,14 +1,15 @@
 import AdmZip from 'adm-zip';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
-import { MOCK_DATA_FOLDER_PATH } from '../constants';
+import { MOCK_DATA_FOLDER_PATH } from '../server-constants';
+
+const SHA256_ALGORITHM = 'sha256';
 
 interface FileInfo {
     name: string;
     hash: string;
 }
 
-const SHA256_ALGORITHM = 'sha256';
 const alphabeticalOrder = (fileA: FileInfo, fileB: FileInfo) => fileA.name.localeCompare(fileB.name);
 
 export function createMockDataFolderIfNeeded(): Promise<string | undefined> {

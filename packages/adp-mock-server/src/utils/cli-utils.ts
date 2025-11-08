@@ -14,11 +14,12 @@ export function getCliParamValueByName<T extends CliParamValue>(name: string): T
         return true as T;
     }
 
-    if (value.toLowerCase() === 'true') {
+    const valueToLowerCase = value.toLowerCase();
+    if (valueToLowerCase === 'true') {
         return true as T;
     }
 
-    if (value.toLowerCase() === 'false') {
+    if (valueToLowerCase === 'false') {
         return false as T;
     }
 

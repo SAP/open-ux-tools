@@ -1,21 +1,18 @@
 import dotenv from 'dotenv';
 import { start_mockserver, stop_mockserver } from 'mockserver-node';
 import path from 'path';
-import { getRecordClient, recordResponses } from './client/record-client';
+import { getRecordClient, recordRequestsAndResponses } from './client/record-client';
 import { getReplayClient } from './client/replay-client';
-import {
-    CLI_PARAM_RECORD,
-    CLI_PARAM_START,
-    CLI_PARAM_STOP,
-    EXPECTATIONS_JSON_PATH,
-    MOCK_SERVER_PORT,
-    NOOP,
-    RESPONSES_JSON_PATH
-} from './constants';
+import { EXPECTATIONS_JSON_PATH, MOCK_SERVER_PORT, RESPONSES_JSON_PATH } from './server-constants';
 import { getCliParamValueByName } from './utils/cli-utils';
 import { createMockDataFolderIfNeeded } from './utils/file-utils';
 import { logger } from './utils/logger';
 import { getSapSystemPort } from './utils/sap-system-utils';
+
+const CLI_PARAM_START = 'start';
+const CLI_PARAM_STOP = 'stop';
+const CLI_PARAM_RECORD = 'record';
+const NOOP = new Promise(() => {});
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -63,7 +60,7 @@ async function startInReplayMode(): Promise<void> {
 
 async function stop(): Promise<void> {
     if (getCliParamValueByName(CLI_PARAM_RECORD)) {
-        await recordResponses();
+        await recordRequestsAndResponses();
     }
     await stop_mockserver({ serverPort: MOCK_SERVER_PORT });
     logger.info('Stop mock server.');

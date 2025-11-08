@@ -23,10 +23,7 @@ export type BodyType =
 export interface Body {
     type: BodyType;
     not?: boolean;
-}
-
-export interface XmlBody extends Body {
-    xml: string;
+    contentType?: string;
 }
 
 export interface BinaryBody extends Body {
