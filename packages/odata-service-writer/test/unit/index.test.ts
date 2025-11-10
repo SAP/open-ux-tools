@@ -1113,7 +1113,7 @@ describe('update', () => {
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
-    it.only('Update an existing service with backend changes', async () => {
+    it('Update an existing service with backend changes', async () => {
         await update(
             testDir,
             {

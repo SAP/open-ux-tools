@@ -574,7 +574,7 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test.only('add with services with value list references', () => {
+        test('add with services with value list references', () => {
             ui5Config.addMockServerMiddleware(
                 basePath,
                 webappPath,
@@ -607,7 +607,7 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test.only('add new service with value list references', () => {
+        test('add new service with value list references', () => {
             ui5Config.addMockServerMiddleware(basePath, webappPath, [], []);
             ui5Config.addServiceToMockserverMiddleware(basePath, webappPath, {
                 serviceName: 'new-service',
