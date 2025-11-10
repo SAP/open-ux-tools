@@ -4,7 +4,7 @@ import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
-import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { generateMockserverConfig, MockserverConfig } from '@sap-ux/mockserver-config-writer';
 import {
     writeLocalServiceAnnotationXMLFiles,
     writeMetadata,
@@ -180,7 +180,7 @@ export async function updateServicesData(
         webappPath = await getWebappPath(basePath, fs);
         // Generate mockserver only when ui5-mock.yaml already exists
         if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMiddlewares) {
-            const config = {
+            const config: MockserverConfig = {
                 webappPath: webappPath,
                 // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
                 packageJsonConfig: {
@@ -191,6 +191,12 @@ export async function updateServicesData(
                     overwrite: true
                 }
             };
+            if (config.ui5MockYamlConfig && service.name && service.valueListReferences?.length) {
+                config.ui5MockYamlConfig.resolveValueListReferences = {
+                    [service.name]: true
+                };
+            }
+
             // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
             await generateMockserverConfig(basePath, config, fs);
             // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml

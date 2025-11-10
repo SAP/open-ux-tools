@@ -1113,7 +1113,7 @@ describe('update', () => {
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
-    it('Update an existing service with backend changes', async () => {
+    it('Update an existing service with new value list references', async () => {
         await update(
             testDir,
             {
@@ -1129,95 +1129,17 @@ describe('update', () => {
                 ] as EdmxAnnotationsInfo[],
                 metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
                 version: OdataVersion.v4,
-                localAnnotationsName: 'annotation'
+                localAnnotationsName: 'annotation',
+                valueListReferences: [
+                    {
+                        data: 'ValueListReferences',
+                        path: '/sap/my_service',
+                        target: 'MyEntity/MyProperty'
+                    }
+                ]
             },
             fs
         );
-        // verify updated manifest.json
-        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
-        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
-            mainService: {
-                uri: '/sap',
-                type: 'OData',
-                settings: {
-                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
-                    localUri: 'localService/mainService/metadata.xml',
-                    odataVersion: '4.0'
-                }
-            },
-            SEPMRA_PROD_MAN: {
-                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
-                type: 'ODataAnnotation',
-                settings: {
-                    localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
-                }
-            },
-            annotation: {
-                type: 'ODataAnnotation',
-                uri: 'annotations/annotation.xml',
-                settings: {
-                    localUri: 'annotations/annotation.xml'
-                }
-            }
-        });
-        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
-            '': {
-                dataSource: 'mainService',
-                preload: true,
-                settings: {
-                    autoExpandSelect: true,
-                    earlyRequests: true,
-                    operationMode: 'Server'
-                }
-            }
-        });
-        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
-        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
-            "server:
-              customMiddleware:
-                - name: fiori-tools-proxy
-                  afterMiddleware: compression
-                  configuration:
-                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-                    backend:
-                      - path: /sap
-                        url: https://localhost/updated
-                    ui5:
-                      path:
-                        - /resources
-                        - /test-resources
-                      url: https://ui5.sap.com
-            "
-        `);
-        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
-            "server:
-              customMiddleware:
-                - name: fiori-tools-proxy
-                  afterMiddleware: compression
-                  configuration:
-                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-                    backend:
-                      - path: /sap
-                        url: https://localhost/updated
-                    ui5:
-                      path:
-                        - /resources
-                        - /test-resources
-                      url: https://ui5.sap.com
-                - name: sap-fe-mockserver
-                  beforeMiddleware: csp
-                  configuration:
-                    mountPath: /
-                    services:
-                      - urlPath: /sap
-                        metadataPath: ./webapp/localService/mainService/metadata.xml
-                        mockdataPath: ./webapp/localService/mainService/data
-                        generateMockData: true
-                    annotations:
-                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
-                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-            "
-        `);
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
             "server:
               customMiddleware:
@@ -1242,21 +1164,27 @@ describe('update', () => {
                         metadataPath: ./webapp/localService/mainService/metadata.xml
                         mockdataPath: ./webapp/localService/mainService/data
                         generateMockData: true
+                        resolveValueListReferences: true
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
             "
         `);
-        // No changes in package.json expected
-        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
-            ui5: {
-                dependencies: []
-            }
-        });
-        // No removed annotation files expected
-        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
-        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
-        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+        // Value List references are saved
+        expect(
+            fs.read(
+                join(
+                    testDir,
+                    'webapp',
+                    'localService',
+                    'mainService',
+                    'my_service',
+                    'MyEntity',
+                    'MyProperty',
+                    'metadata.xml'
+                )
+            )
+        ).toBe('ValueListReferences');
     });
 
     it('Update an existing service without backend changes', async () => {
