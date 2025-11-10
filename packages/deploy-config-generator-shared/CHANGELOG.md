@@ -1,5 +1,33 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.51
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/btp-utils@1.1.5
+
+## 0.1.50
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+
+## 0.1.49
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.30
+
+## 0.1.48
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.29
+
 ## 0.1.47
 
 ### Patch Changes

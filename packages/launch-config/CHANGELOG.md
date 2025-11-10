@@ -1,5 +1,15 @@
 # @sap-ux/launch-config
 
+## 0.10.33
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/ui5-info@0.13.1
+
 ## 0.10.32
 
 ### Patch Changes

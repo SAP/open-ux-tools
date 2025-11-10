@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.5
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 1.1.4
 
 ### Patch Changes

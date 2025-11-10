@@ -1,4 +1,6 @@
-# @sap-ux/eslint-plugin-fiori-tools
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/eslint-plugin-fiori-tools)
+
+# [`@sap-ux/eslint-plugin-fiori-tools`](https://github.com/SAP/open-ux-tools/tree/main/packages/eslint-plugin-fiori-tools)
 
 Custom linting plugin for SAPUI5 Fiori apps
 
@@ -22,20 +24,10 @@ To consume this module, add @sap-ux/eslint-plugin-fiori-tools plugin to your `es
 - testcode: contains rules for typescript and rules for test code from plugin eslint-plugin-fiori-custom
 - prodCode: contains rules for typescript and rules for production code from plugin eslint-plugin-fiori-custom
 
-To use `manifest.json` specific rules update `eslint.config.mjs`:
+To use `manifest.json` specific rules update `eslint.config.mjs` with the relevant configuration:
 
 ```
-import { defineConfig } from "eslint/config";
-import fiori from "@sap-ux/eslint-plugin-fiori-tools";
-
-export default defineConfig([
-  {
-    files: ["**/manifest.json"],
-    plugins: { fiori },
-    extends: ["fiori/manifest"],
-    language: "fiori/json",
-  },
-]);
+export { v4 as default } from "@sap-ux/eslint-plugin-fiori-tools";
 ```
 
 Run with `npx eslint`. (eslint version 9 is required)

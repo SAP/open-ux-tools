@@ -1,5 +1,13 @@
 # @sap-ux/project-integrity
 
+## 0.2.25
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+
 ## 0.2.24
 
 ### Patch Changes

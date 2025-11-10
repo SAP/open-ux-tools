@@ -2,10 +2,6 @@ import { FioriElementsLanguage } from './language/fiori-elements-language';
 import type { Plugin } from '@eslint/config-helpers';
 import rules from './rules';
 
-//------------------------------------------------------------------------------
-// Plugin Definition
-//------------------------------------------------------------------------------
-
 const plugin: Plugin = {
     meta: {
         name: '@sap-ux/eslint-plugin-fiori-tools',

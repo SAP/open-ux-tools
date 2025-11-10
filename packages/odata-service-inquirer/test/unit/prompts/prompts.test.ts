@@ -4,7 +4,6 @@ import { getQuestions } from '../../../src/prompts';
 import { DatasourceType } from '../../../src/types';
 import * as utils from '../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -19,7 +18,7 @@ jest.mock('@sap-ux/btp-utils', () => {
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',
@@ -31,7 +30,25 @@ jest.mock('@sap-ux/store', () => ({
                 url: 'http://url2',
                 systemType: 'BTP'
             }
-        ] as BackendSystem[])
+        ] as BackendSystem[]),
+        read: jest.fn().mockImplementation((key) => {
+            // Mock read to return systems with credentials
+            const systems = [
+                {
+                    name: 'storedSystem1',
+                    url: 'http://url1',
+                    systemType: 'OnPrem',
+                    username: 'user1',
+                    password: 'pass1'
+                },
+                {
+                    name: 'storedSystem2',
+                    url: 'http://url2',
+                    systemType: 'BTP'
+                }
+            ];
+            return Promise.resolve(systems.find((s) => s.url === key.url));
+        })
     }))
 }));
 

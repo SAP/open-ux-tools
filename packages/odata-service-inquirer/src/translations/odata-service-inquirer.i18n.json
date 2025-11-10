@@ -84,6 +84,10 @@
         "systemPassword": {
             "message": "Password"
         },
+        "storeSystemCredentials": {
+            "message": "Do you want to store the system credentials?",
+            "breadcrumb": "Store Credentials"
+        },
         "systemService": {
             "message": "Service",
             "breadcrumb": "Service",
@@ -160,7 +164,8 @@
             "choiceAnalytical": "Analytical",
             "choiceResponsive": "Responsive",
             "choiceTree": "Tree",
-            "analyticalTableDefault": "The 'Analytical' table type is chosen by default because the selected entity supports it."
+            "analyticalTableDefault": "The 'Analytical' table type is chosen by default because the selected entity supports it.",
+            "treeTableDefault": "The 'Tree' table type is chosen by default because the selected entity supports it."
         },
         "hierarchyQualifier": {
             "message": "Hierarchy Qualifier",
@@ -256,6 +261,7 @@
         "forUserName": "(for user [{{username}}])",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
-        "choiceNameNone": "None"
+        "choiceNameNone": "None",
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
     }
 }
