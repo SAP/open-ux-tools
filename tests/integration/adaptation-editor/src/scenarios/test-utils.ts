@@ -704,7 +704,9 @@ class QuickActionPanel {
      * Waits for the Object Page Quick Action panel to be loaded.
      */
     async waitForObjectPageQuickActionLoaded(): Promise<void> {
-        await this.page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true }).waitFor({ state: 'visible' });
+        await this.page
+            .getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })
+            .waitFor({ state: 'visible', timeout: test.info().timeout });
     }
 
     /**
