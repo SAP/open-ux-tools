@@ -1,0 +1,26 @@
+providers:
+    - id: file://../provider/index.ts
+      config:
+        model: "gpt-4o"
+        # model: "gpt-5"
+        # model: "gpt-4o-mini"
+extensions:
+    - file://../extensions/project.ts:setup
+prompts:
+    - '{{query}}'
+tests:
+    # List apps
+    - file://./list-apps/lrop.yaml
+    - file://./list-apps/lrop-v2.yaml
+    # Pages
+    - file://./pages/add-op-page.yaml
+    - file://./pages/add-cp-page.yaml
+    - file://./pages/delete-page.yaml
+    - file://./pages/add-first-lr-page.yaml
+    # Controller extensions
+    - file://./controller-extension/add-extension.yaml
+    # Properties
+    - file://./properties/enable-fcl.yaml
+    - file://./properties/enable-fcl-v2.yaml
+    - file://./properties/disable-fcl.yaml
+    - file://./properties/initial-load.yaml
