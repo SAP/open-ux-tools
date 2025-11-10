@@ -1,5 +1,43 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.17
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/inquirer-common@0.9.3
+
+## 0.6.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.2
+
+## 0.6.15
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/ui5-info@0.13.1
+    -   @sap-ux/logger@0.7.1
+
+## 0.6.14
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
+## 0.6.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.8.10
+
 ## 0.6.12
 
 ### Patch Changes

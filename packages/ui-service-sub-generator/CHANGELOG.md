@@ -1,5 +1,68 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.112
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.49
+
+## 0.1.111
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+-   @sap-ux/ui-service-inquirer@0.2.48
+
+## 0.1.110
+
+### Patch Changes
+
+-   Updated dependencies [56235f8]
+    -   @sap-ux/telemetry@0.6.38
+    -   @sap-ux/fiori-generator-shared@0.13.33
+    -   @sap-ux/inquirer-common@0.9.2
+    -   @sap-ux/ui-service-inquirer@0.2.47
+
+## 0.1.109
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/telemetry@0.6.37
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/ui-service-inquirer@0.2.46
+    -   @sap-ux/axios-extension@1.24.2
+
+## 0.1.108
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.45
+
+## 0.1.107
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+    -   @sap-ux/ui-service-inquirer@0.2.44
+
+## 0.1.106
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/system-access@0.6.27
+-   @sap-ux/telemetry@0.6.36
+-   @sap-ux/ui-service-inquirer@0.2.43
+-   @sap-ux/inquirer-common@0.8.10
+
 ## 0.1.105
 
 ### Patch Changes

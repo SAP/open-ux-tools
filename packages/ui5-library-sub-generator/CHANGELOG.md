@@ -1,5 +1,46 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.74
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/ui5-library-inquirer@0.6.17
+
+## 0.1.73
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/ui5-library-inquirer@0.6.16
+
+## 0.1.72
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/fiori-tools-settings@0.2.2
+    -   @sap-ux/ui5-library-inquirer@0.6.15
+    -   @sap-ux/ui5-library-writer@0.6.26
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/ui5-info@0.13.1
+
+## 0.1.71
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-inquirer@0.6.14
+
+## 0.1.70
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/ui5-library-inquirer@0.6.13
+
 ## 0.1.69
 
 ### Patch Changes
