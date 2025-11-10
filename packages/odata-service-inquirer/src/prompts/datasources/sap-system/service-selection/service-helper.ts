@@ -326,8 +326,6 @@ export async function validateService(
     if (url) {
         origin = new URL(url).origin;
     }
-
-
     PromptState.odataService.annotations = annotations;
     PromptState.odataService.metadata = metadata;
     PromptState.odataService.odataVersion =
