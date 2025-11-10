@@ -1,5 +1,20 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.74
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/ui5-library-inquirer@0.6.17
+
+## 0.1.73
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/ui5-library-inquirer@0.6.16
+
 ## 0.1.72
 
 ### Patch Changes

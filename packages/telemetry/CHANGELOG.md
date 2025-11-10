@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.6.38
+
+### Patch Changes
+
+-   56235f8: bump app insights
+
 ## 0.6.37
 
 ### Patch Changes
