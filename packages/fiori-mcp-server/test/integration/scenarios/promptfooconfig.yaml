@@ -2,8 +2,8 @@ providers:
     - id: file://../provider/index.ts
       config:
         model: "gpt-4o"
-        # model: "gpt-5"
         # model: "gpt-4o-mini"
+        # model: "gpt-5"
 extensions:
     - file://../extensions/project.ts:setup
 prompts:
