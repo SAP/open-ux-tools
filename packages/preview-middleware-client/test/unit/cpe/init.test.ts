@@ -62,7 +62,7 @@ jest.mock('../../../src/cpe/odata-health/odata-health-checker', () => ({
 }));
 
 describe('main', () => {
-    const UNHEALTHY_ODATA_SERVICE_STATUS = new ODataDownStatus('/servica-a', 'Service not configured properly');
+    const UNHEALTHY_ODATA_SERVICE_STATUS = new ODataDownStatus('/service-a', 'Service not configured properly');
 
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
@@ -215,7 +215,8 @@ describe('main', () => {
         expect(sendActionMock.mock.calls[2][0]).toEqual(
             showInfoCenterMessage({
                 title: 'OData Service Health Check',
-                description: 'OData service with endpoint /servica-a is down, reason: Service not configured properly.',
+                description:
+                    'The OData service with the /service-a endpoint is down. Error: Service not configured properly.',
                 type: MessageBarType.warning
             })
         );
