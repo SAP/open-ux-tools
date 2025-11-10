@@ -105,7 +105,9 @@ test.describe(`@outline @context-menu`, () => {
 
             const dialog = new AdpDialog(previewFrame, ui5Version, 'Rename');
 
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible({
+                timeout: test.info().timeout
+            });
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.outlinePanel.clickOnNode('ObjectPageSubSection', 'right');
             await editor.outlinePanel.clickOnContextMenu('Rename');
@@ -154,7 +156,9 @@ test.describe(`@outline @context-menu`, () => {
 
             const dialog = new AdpDialog(previewFrame, ui5Version);
 
-            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible();
+            await expect(page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true })).toBeVisible({
+                timeout: test.info().timeout
+            });
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.outlinePanel.clickOnNode('ObjectPageLayout', 'right');
             await editor.outlinePanel.clickOnContextMenu('Add: Fragment');

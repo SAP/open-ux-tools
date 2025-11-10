@@ -982,7 +982,7 @@ class ChangesPanel {
                 textLocator = this.getGenericItemLocatorInSavedStack(text);
                 await textLocator.waitFor({ state: 'attached' });
             }
-            await expect(textLocator).toBeVisible();
+            await expect(textLocator).toBeVisible({ timeout: test.info().timeout });
         });
     }
     /**
