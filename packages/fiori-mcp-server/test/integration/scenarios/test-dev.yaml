@@ -8,4 +8,5 @@ extensions:
 prompts:
     - '{{query}}'
 tests:
+    # replace with test case you want to run
     - file://./properties/java-disable-fcl.yaml

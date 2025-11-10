@@ -99,10 +99,12 @@ export async function setup(hookName: string, context: HookContext): Promise<voi
     if (!projectName || !(projectName in TEST_PROJECTS) || !defaultVars) {
         return;
     }
+    const snapshotsName = context.test?.assert?.map((assertion) => assertion.config?.snapshot).filter(Boolean) || [];
     const project = TEST_PROJECTS[projectName];
     if (project) {
         defaultVars['PROJECT_PATH'] = project.path;
         defaultVars['APP_PATH'] = project.appPath;
+        defaultVars['SNAPSHOT_NAME'] = snapshotsName.join(',');
     }
     if (hookName === 'beforeEach') {
         // Prepare copy project before running test
