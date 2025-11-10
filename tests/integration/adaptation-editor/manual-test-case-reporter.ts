@@ -103,6 +103,7 @@ export default class ManualTestCaseReporter implements Reporter {
             /^browser\./,
             /^browserContext\./,
             /^Expect \"toBeVisible\"$/,
+            /^Evaluate$/,
             /^Expect \"toMatchObject\"$/,
             /^Evaluate$/,
             /^Expect \"toBe\"$/,
@@ -115,11 +116,15 @@ export default class ManualTestCaseReporter implements Reporter {
             /^Expect "toBeInViewport"$/,
             /^Expect \"toBeDisabled\"$/,
             /^Expect \"toHaveAttribute\"$/,
+            /^Expect \"poll toEqual\"$/,
+            /^Expect \"toHaveAttribute\"$/,
             /^Expect \"poll/,
             /^locator\.textContent/,
             /^locator\.count/,
             /^Click on in Application Preview$/,
             /^Query count getByTestId\(\'saved-changes-stack\'\)/,
+            /^Click locator\(/,
+            /^Query count locator/,
             /getByTestId\(/,
             /^Click locator\(/,
             /^Query count locator/,
@@ -134,6 +139,8 @@ export default class ManualTestCaseReporter implements Reporter {
             /^Wait for selector/,
             /Expect \"toStrictEqual\"/,
             /^Navigate to "\/adaptation-editor\.html\?fiori-tools-rta-mode=true"$/,
+            /locator\('iframe\[title="Application Preview"\]'\)/,
+            /^Wait for selector getByText/
             /locator\('iframe\[title="Application Preview"\]'\)/,
             /^Wait for selector getByText/
         ];

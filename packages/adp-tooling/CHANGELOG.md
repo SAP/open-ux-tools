@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
 ## 0.17.8
 
 ### Patch Changes

@@ -85,9 +85,8 @@
 
 
 6. Click `Navigation` button in the toolBar
-7. Click `Go` button in the Running Application Preview
-8. Check Column Name is `New Column`
-9. Check Column Data is `Sample data`
+7. Check Column Name is `New Column`
+8. Check Column Data is `Sample data`
 
 ---
 
@@ -99,7 +98,8 @@
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Add Local Annotation File` button in the Quick Actions Panel
 3. Click `Save and Reload` button in the toolBar
-4. Verify changes:
+4. Wait for selector `Show Local Annotation File` button in the Quick Actions Panel
+5. Verify changes:
 
 **Annotations**
 ```xml
@@ -139,9 +139,9 @@
 ```
 
 
-5. Click `Show Local Annotation File` button in the Quick Actions Panel
-6. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_<UNIQUE_ID>.xml` is visible in the dialog
-7. Check button `Show File in VSCode` is visible in the dialog
+6. Click `Show Local Annotation File` button in the Quick Actions Panel
+7. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_<UNIQUE_ID>.xml` is visible in the dialog
+8. Check button `Show File in VSCode` is visible in the dialog
 
 ---
 

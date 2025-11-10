@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
 ## 1.5.20
 
 ### Patch Changes

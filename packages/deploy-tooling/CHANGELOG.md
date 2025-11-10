@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
 ## 0.16.76
 
 ### Patch Changes

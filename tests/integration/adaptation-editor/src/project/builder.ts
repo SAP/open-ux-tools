@@ -185,6 +185,73 @@ export function createV4Manifest(userParameters: ProjectParameters, workerId: st
 }
 
 /**
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A manifest object for the project.
+ */
+export function createV4Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
+    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
+    const result = structuredClone(feV4ManifestTemplate) as Manifest;
+    result['sap.app'].id = id + '.' + workerId;
+    result['sap.app'].dataSources!.mainService.uri = mainServiceUri;
+    result['sap.app'].sourceTemplate!.id = 'preview-middleware-tests';
+    result['sap.app'].sourceTemplate!.version = '1.0.0';
+    result['sap.app'].sourceTemplate!.toolsId = id;
+    const listTarget = `${entitySet}List`;
+    const detailTarget = `${entitySet}ObjectPage`;
+    result['sap.ui5']!.routing = {
+        config: {
+            async: true
+        },
+        routes: [
+            {
+                'pattern': ':?query:',
+                'name': listTarget,
+                'target': listTarget
+            },
+            {
+                'pattern': `${entitySet}({key}):?query:`,
+                'name': detailTarget,
+                'target': detailTarget
+            }
+        ],
+        targets: {
+            [listTarget]: {
+                'type': 'Component',
+                id: listTarget,
+                name: 'sap.fe.templates.ListReport',
+                options: {
+                    settings: {
+                        contextPath: `/${entitySet}`,
+                        navigation: {
+                            [entitySet]: {
+                                detail: {
+                                    route: detailTarget
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            [detailTarget]: {
+                type: 'Component',
+                id: detailTarget,
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        contextPath: `/${entitySet}`,
+                        editableHeaderContent: false,
+                        entitySet: entitySet
+                    }
+                }
+            }
+        }
+    };
+
+    return result;
+}
+
+/**
  * Creates a YAML file for the project.
  *
  * @param userParameters - The project parameters provided by the user.
