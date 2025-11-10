@@ -57,7 +57,6 @@ export interface Service {
     serviceId?: string; // id of the service
     edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
     annotations?: Annotations[];
-    valueListReferences?: Record<string, { data?: string; path: string }[]>;
     version?: OdataVersion; // Not present for FF no datasource template flow
     /**
      * While the required type `CapServiceCdsInfo` mandates `cdsUi5PluginInfo` when writing to cap config, this information is not intially available.

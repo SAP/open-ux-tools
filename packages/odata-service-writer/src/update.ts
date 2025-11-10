@@ -162,6 +162,7 @@ export async function updateServicesData(
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5MockConfig: UI5Config | undefined;
+    let webappPath: string | undefined;
     if (updateMiddlewares) {
         if (paths.ui5Yaml) {
             ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
@@ -176,7 +177,7 @@ export async function updateServicesData(
     }
     // For update, updatable files should already exist
     if (service.metadata) {
-        const webappPath = await getWebappPath(basePath, fs);
+        webappPath = await getWebappPath(basePath, fs);
         // Generate mockserver only when ui5-mock.yaml already exists
         if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMiddlewares) {
             const config = {
@@ -209,7 +210,7 @@ export async function updateServicesData(
     }
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
-    if (service.valueListReferences) {
-        await writeValueListReferenceMetadata(basePath, service.valueListReferences, service, fs);
+    if (service.valueListReferences && webappPath) {
+        await writeValueListReferenceMetadata(webappPath, service.valueListReferences, service, fs);
     }
 }

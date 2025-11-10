@@ -820,15 +820,9 @@ importers:
 
   packages/axios-extension:
     dependencies:
-      '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -3055,6 +3049,12 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.3
+        version: 0.10.3
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -3086,6 +3086,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2

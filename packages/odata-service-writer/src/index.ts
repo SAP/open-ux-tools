@@ -17,7 +17,9 @@ import {
     ServiceType,
     CdsAnnotationsInfo,
     EdmxAnnotationsInfo,
-    NamespaceAlias
+    NamespaceAlias,
+    ValueListReference,
+    ValueListReferenceService
 } from './types';
 import { deleteServiceData } from './delete';
 import { getWebappPath } from '@sap-ux/project-access';
@@ -171,5 +173,17 @@ async function remove(basePath: string, service: OdataService, fs?: Editor): Pro
     return fs;
 }
 
-export { generate, update, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export {
+    generate,
+    update,
+    remove,
+    OdataVersion,
+    OdataService,
+    ServiceType,
+    EdmxAnnotationsInfo,
+    CdsAnnotationsInfo,
+    ValueListReference,
+    ValueListReferenceService
+};
 export { getAnnotationNamespaces, NamespaceAlias };
+export { getValueListReferences } from './data';

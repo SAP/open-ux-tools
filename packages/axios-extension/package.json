@@ -26,9 +26,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.3",
         "@sap-ux/btp-utils": "workspace:*",
-        "@sap-ux/edmx-parser": "0.9.1",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "axios": "1.12.2",

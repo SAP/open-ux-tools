@@ -1,6 +1,18 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 
+export interface ValueListReference {
+    serviceRootPath: string;
+    target: string;
+    value: string;
+}
+
+export interface ValueListReferenceService {
+    target: string;
+    data: string;
+    path: string;
+}
+
 export enum OdataVersion {
     v2 = '2',
     v4 = '4'
@@ -69,7 +81,7 @@ export interface OdataService {
     name?: string;
     model?: string;
     metadata?: string;
-    valueListReferences?: Record<string, { data?: string; path: string }[]>;
+    valueListReferences?: ValueListReferenceService[];
     /**
      * Annotations can either be EDMX annotations or CDS annotations.
      */

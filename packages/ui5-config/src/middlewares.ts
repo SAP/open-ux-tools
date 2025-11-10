@@ -1,4 +1,4 @@
-import { join, posix, relative, sep } from 'node:path';
+import { join, posix, relative, resolve, sep } from 'node:path';
 import type {
     FioriToolsProxyConfigBackend,
     CustomMiddleware,
@@ -7,7 +7,8 @@ import type {
     MockserverConfig,
     FioriToolsProxyConfigUI5,
     FioriPreviewConfig,
-    DataSourceConfig
+    DataSourceConfig,
+    MockserverService
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -162,7 +163,7 @@ export const getMockServerMiddlewareConfig = (
     dataSourcesConfig: DataSourceConfig[],
     annotationsConfig: MockserverConfig['annotations']
 ): CustomMiddleware<MockserverConfig> => {
-    const services: MockserverConfig['services'] = [];
+    const services: MockserverService[] = [];
 
     // Populate services based on dataSourcesConfig
     dataSourcesConfig.forEach((dataSource) => {
@@ -170,12 +171,15 @@ export const getMockServerMiddlewareConfig = (
             basePath,
             join(webappPath, 'localService', dataSource.serviceName)
         ).replaceAll(sep, posix.sep)}`;
-        const newServiceData = {
+        const newServiceData: MockserverService = {
             urlPath: dataSource.servicePath.replace(/\/$/, ''), // Mockserver is sensitive to trailing '/'
             metadataPath: dataSource.metadataPath ?? `${serviceRoot}/metadata.xml`,
             mockdataPath: `${serviceRoot}/data`,
             generateMockData: true
         };
+        if (dataSource.resolveValueListReferences === true) {
+            newServiceData.resolveValueListReferences = true;
+        }
         services.push(newServiceData);
     });
     return {

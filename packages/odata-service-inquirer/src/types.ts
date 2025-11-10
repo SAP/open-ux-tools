@@ -58,10 +58,6 @@ export interface OdataServiceAnswers {
     annotations?: Annotations[];
 
     /**
-     * ValueListReferences
-     */
-    valueListReferences?: Record<string, { data?: string; path: string }[]>;
-    /**
      * The selected CAP service.
      */
     capService?: CapService;

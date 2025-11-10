@@ -1,9 +1,5 @@
 import { join as joinPosix } from 'node:path/posix';
 
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { convert } from '@sap-ux/annotation-converter';
-import { parse } from '@sap-ux/edmx-parser';
-
 import { ODataVersion } from '../base/odata-service';
 import { ServiceProvider } from '../base/service-provider';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
@@ -302,72 +298,28 @@ export class AbapServiceProvider extends ServiceProvider {
      */
     public async fetchValueListReferenceServices(
         references: { target: string; rootPath: string; value: string }[]
-    ): Promise<Record<string, { data?: string; path: string }[]>> {
-        const allPromises: Record<string, Promise<string>> = {};
-        const valueListReferences: Record<string, { data?: string; path: string }[]> = {};
-
-        for (const { rootPath, target, value } of references) {
+    ): Promise<{ target: string; data?: string; path: string }[]> {
+        const valueListReferences: { target: string; data?: string; path: string }[] = [];
+        const allPromises = references.map(async ({ rootPath, target, value }) => {
             const externalServicePath = joinPosix(rootPath, value).replace('/$metadata', '');
             const externalService = this.service(externalServicePath);
-            allPromises[externalServicePath] = externalService.metadata().catch(() => {
-                this.log.warn(`Could not fetch value list reference metadata from ${externalServicePath}`);
-                return '';
-            });
-            valueListReferences[target] ??= [];
-            valueListReferences[target].push({
-                path: externalServicePath
-            });
-        }
+            try {
+                const data = await externalService.metadata();
+                valueListReferences.push({
+                    path: externalServicePath,
+                    target,
+                    data
+                });
 
-        await Promise.allSettled(Object.keys(allPromises));
-        for (const values of Object.values(valueListReferences)) {
-            for (const value of values) {
-                const data = await allPromises[value.path];
-                if (data) {
-                    value.data = data;
-                }
+            } catch (error) {
+                this.log.warn(
+                    `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
+                );
             }
-        }
-        return valueListReferences;
-    }
+        });
 
-    /**
-     * Collects ValueListReferences annotation values from the given metadata and annotation files.
-     *
-     * @param servicePath - The service path to which the value list references belong
-     * @param metadata - The metadata of the service
-     * @param annotations - The annotation files
-     * @returns ValueListReferences found in the files.
-     */
-    public getValueListReferences(
-        servicePath: string,
-        metadata: ConvertedMetadata | string | undefined,
-        annotations: { Definitions: string; Uri: string }[]
-    ): { target: string; rootPath: string; value: string }[] {
-        if (!metadata) {
-            return [];
-        }
-        const files = [
-            { data: metadata, path: servicePath },
-            ...annotations.map((annotationFile) => ({ data: annotationFile.Definitions, path: annotationFile.Uri }))
-        ];
+        await Promise.allSettled(allPromises);
 
-        const valueListReferences = [];
-        for (const { data, path } of files) {
-            const schema = typeof data === 'string' ? convert(parse(data)) : data;
-            for (const entityType of schema.entityTypes) {
-                for (const property of entityType.entityProperties) {
-                    const target = `${entityType.name}/${property.name}`;
-                    for (const value of property.annotations.Common?.ValueListReferences ?? []) {
-                        valueListReferences.push({
-                            rootPath: path,
-                            target,
-                            value
-                        });
-                    }
-                }
-            }
-        }
         return valueListReferences;
     }
 
