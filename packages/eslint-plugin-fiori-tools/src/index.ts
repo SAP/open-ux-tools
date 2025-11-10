@@ -1,4 +1,4 @@
-import { JSONLanguage, JSONSourceCode } from '@eslint/json';
+import { FioriElementsLanguage } from './language/fiori-elements-language';
 import type { Plugin } from '@eslint/config-helpers';
 import rules from './rules';
 
@@ -8,24 +8,53 @@ import rules from './rules';
 
 const plugin: Plugin = {
     meta: {
-        name: 'eslint-plugin-fiori-tools',
-        version: '0.0.1'
+        name: '@sap-ux/eslint-plugin-fiori-tools',
+        version: '0.0.1',
+        namespace: '@sap-ux/fiori-tools'
     },
     languages: {
-        json: new JSONLanguage({ mode: 'json' })
+        fioriElements: new FioriElementsLanguage()
     },
     rules,
-    configs: {
-        manifest: {
-            plugins: {},
-            rules: { 'consistency/flex-enabled': 'warn' }
-        }
-    }
+    configs: {},
+    processors: {}
 };
 
-(plugin.configs!.manifest as any).plugins.consistency = plugin;
+Object.assign(plugin.configs as {}, {
+    '@sap-ux/fiori-tools/Base-requirements': {
+        files: ['**/manifest.json'],
+        language: '@sap-ux/fiori-tools/fioriElements',
+        plugins: {
+            '@sap-ux/fiori-tools': plugin
+        },
+        rules: {}
+    },
+    '@sap-ux/fiori-tools/FE-requirements': {
+        files: ['**/manifest.json'],
+        language: '@sap-ux/fiori-tools/fioriElements',
+        plugins: {
+            '@sap-ux/fiori-tools': plugin
+        },
+        rules: {}
+    },
+    '@sap-ux/fiori-tools/SAP-consistency': {
+        files: ['**/manifest.json'],
+        language: '@sap-ux/fiori-tools/fioriElements',
+        plugins: {
+            '@sap-ux/fiori-tools': plugin
+        },
+        rules: { '@sap-ux/fiori-tools/flex-enabled': 'warn' }
+    },
+    '@sap-ux/fiori-tools/ERP-consistency': {
+        files: ['**/manifest.json'],
+        language: '@sap-ux/fiori-tools/fioriElements',
+        plugins: {
+            '@sap-ux/fiori-tools': plugin
+        },
+        rules: {}
+    }
+});
+
+export default plugin;
 
 module.exports = plugin;
-module.exports.default = plugin;
-module.exports.JSONSourceCode = JSONSourceCode;
-export default plugin;
