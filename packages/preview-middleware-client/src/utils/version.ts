@@ -3,6 +3,7 @@ import Log from 'sap/base/Log';
 import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import type { Manifest } from '@sap-ux/project-access';
+import type { LibraryInfo } from 'sap/ui/core/Core';
 
 type UI5VersionDetails = {
     /**
@@ -19,12 +20,7 @@ type UI5VersionDetails = {
      */
     // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
     version: string | Manifest['sap.app']['applicationVersion']['version'];
-    libraries: UI5LibraryVersionInfo[]
-};
-
-type UI5LibraryVersionInfo = {
-    name: string;
-    version: string;
+    libraries: LibraryInfo[]
 };
 
 export type Ui5VersionInfo = {
@@ -165,7 +161,7 @@ export const getUI5Libs = (() => {
     return async function (): Promise<Set<string>> {
         if (!cachedLibs) {
             const versionInfo = await VersionInfo.load() as UI5VersionDetails | undefined;
-            const libNames = versionInfo?.libraries.map(lib => lib.name);
+            const libNames = versionInfo?.libraries.map(lib => lib.name).filter((name): name is string => !!name);
             if (libNames) {
                 cachedLibs = new Set(libNames);
             }
