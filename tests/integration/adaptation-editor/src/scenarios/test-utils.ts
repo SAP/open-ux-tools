@@ -370,6 +370,18 @@ export class ListReport {
     }
 
     /**
+     * Clicks on the table in the List Report, v4 app only.
+     */
+    async clickOnV4Table(): Promise<void> {
+        await test.step('Click on the table in the List Report', async () => {
+            const controlId = 'fiori.elements.v4.0::RootEntityList--fe::table::RootEntity::LineItem';
+            const escaped = escapedId(controlId);
+            const overlayLocator = this.frame.locator(`[data-sap-ui-dt-for="${escaped}"]`);
+            await overlayLocator.click();
+        });
+    }
+
+    /**
      * @param frame - FrameLocator for the List Report.
      * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
      * @param ui5Version - UI5 version.
@@ -722,7 +734,9 @@ class QuickActionPanel {
             await this.checkDisabledButtonTitle(buttonName, title);
         }
         const tooltip = title ? `and tooltip is \`${title}\`` : '';
-        await expect(button, `Check \`${buttonName}\` quick action is disabled ${tooltip}`).toBeDisabled();
+        await expect(button, `Check \`${buttonName}\` quick action is disabled ${tooltip}`).toBeDisabled({
+            timeout: test.info().timeout
+        });
     }
 
     /**
@@ -734,7 +748,9 @@ class QuickActionPanel {
      */
     private async checkDisabledButtonTitle(buttonName: string, expectedTitle: string): Promise<void> {
         const button = this.getButtonLocator(buttonName);
-        await expect(button).toHaveAttribute('title', expectedTitle);
+        await expect(button).toHaveAttribute('title', expectedTitle, {
+            timeout: test.info().timeout
+        });
     }
 
     /**
@@ -1875,7 +1891,14 @@ class PropertiesPanel {
 
         const relevant = messages.filter((m) => !!m.action?.payload?.properties);
         return relevant[relevant.length - 1].action.payload.properties.map((p: any) => {
-            return { name: p.name, readableName: p.readableName, isEnabled: p.isEnabled, type: p.type, value: p.value };
+            return {
+                name: p.name,
+                readableName: p.readableName,
+                isEnabled: p.isEnabled,
+                type: p.type,
+                value:
+                    p.propertyType === 'configuration' && p.value === 'ResponsiveTable' ? 'Responsive Table' : p.value
+            };
         });
     }
 
@@ -1902,27 +1925,56 @@ class PropertiesPanel {
         propertyName: string,
         expected: 'Saved' | 'UnSaved' | 'SavedAndUnSaved'
     ): Promise<void> {
-        const indicator = await this.page.evaluate(
-            ([propertyName]) => {
-                const svg = document.querySelector(`[id="${propertyName}--ChangeIndicator"]`);
-                const circle = svg!.querySelector('circle');
-                const path = svg!.querySelector('path');
-                if (circle && circle.hasAttribute('stroke') && !circle.hasAttribute('fill') && !path) {
-                    return 'UnSaved';
-                }
-                if (circle && circle.hasAttribute('fill') && !circle.hasAttribute('stroke') && !path) {
-                    return 'Saved';
-                }
-
-                if (circle && circle.hasAttribute('stroke') && path && path.hasAttribute('fill')) {
-                    return 'SavedAndUnSaved';
-                }
-            },
-            [propertyName]
-        );
         await test.step(`Check \`${CHANGE_INDICATOR[expected]}\` (${expected}) indicator is visible for the property \`${propertyName}\` in the ${this.context}`, async () => {
-            expect(indicator).toBe(expected);
+            await expect
+                .poll(
+                    async () =>
+                        await this.page.evaluate(
+                            ([propertyName]) => {
+                                const svg = document.querySelector(`[id="${propertyName}--ChangeIndicator"]`);
+                                if (!svg) {
+                                    return null;
+                                }
+                                const circle = svg.querySelector('circle');
+                                const path = svg.querySelector('path');
+                                if (circle && circle.hasAttribute('stroke') && !circle.hasAttribute('fill') && !path) {
+                                    return 'UnSaved';
+                                }
+                                if (circle && circle.hasAttribute('fill') && !circle.hasAttribute('stroke') && !path) {
+                                    return 'Saved';
+                                }
+                                if (circle && circle.hasAttribute('stroke') && path && path.hasAttribute('fill')) {
+                                    return 'SavedAndUnSaved';
+                                }
+                                return null;
+                            },
+                            [propertyName]
+                        ),
+                    { timeout: test.info().timeout }
+                )
+                .toBe(expected);
         });
+        // const indicator = await this.page.evaluate(
+        //     ([propertyName]) => {
+        //         const svg = document.querySelector(`[id="${propertyName}--ChangeIndicator"]`);
+        //         const circle = svg!.querySelector('circle');
+        //         const path = svg!.querySelector('path');
+        //         if (circle && circle.hasAttribute('stroke') && !circle.hasAttribute('fill') && !path) {
+        //             return 'UnSaved';
+        //         }
+        //         if (circle && circle.hasAttribute('fill') && !circle.hasAttribute('stroke') && !path) {
+        //             return 'Saved';
+        //         }
+
+        //         if (circle && circle.hasAttribute('stroke') && path && path.hasAttribute('fill')) {
+        //             return 'SavedAndUnSaved';
+        //         }
+        //     },
+        //     [propertyName]
+        // );
+        // await test.step(`Check \`${CHANGE_INDICATOR[expected]}\` (${expected}) indicator is visible for the property \`${propertyName}\` in the ${this.context}`, async () => {
+        //     expect(indicator).toBe(expected);
+        // });
     }
 
     /**

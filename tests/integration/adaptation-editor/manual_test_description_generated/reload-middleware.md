@@ -24,7 +24,7 @@
   "packageName": "$TMP",
   "support": {
     "generator": "@sap-ux/control-property-editor",
-    "sapui5Version": "1.141.1",
+    "sapui5Version": "1.142.0",
     "command": "property"
   },
   "originalLanguage": "EN",
@@ -75,7 +75,7 @@
   "packageName": "$TMP",
   "support": {
     "generator": "@sap-ux/control-property-editor",
-    "sapui5Version": "1.141.1",
+    "sapui5Version": "1.142.0",
     "command": "property"
   },
   "originalLanguage": "EN",
@@ -124,7 +124,7 @@
   "packageName": "$TMP",
   "support": {
     "generator": "@sap-ux/control-property-editor",
-    "sapui5Version": "1.141.1",
+    "sapui5Version": "1.142.0",
     "command": "property"
   },
   "originalLanguage": "EN",
