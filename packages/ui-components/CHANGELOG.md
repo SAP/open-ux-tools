@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.15
+
+### Patch Changes
+
+-   afb4be5: Update building block icon svg
+
 ## 1.26.14
 
 ### Patch Changes
