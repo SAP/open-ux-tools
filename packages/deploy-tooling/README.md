@@ -156,7 +156,7 @@ Using YAML configuration;
 ```YAML
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "3.1"
+specVersion: "4.0"
 metadata:
   name: my.namespace.myappname
 type: application

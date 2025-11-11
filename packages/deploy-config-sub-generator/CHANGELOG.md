@@ -1,5 +1,32 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.4.46
+
+### Patch Changes
+
+-   Updated dependencies [2e75589]
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.4.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+-   @sap-ux/cf-deploy-config-sub-generator@0.2.80
+-   @sap-ux/deploy-config-generator-shared@0.1.52
+-   @sap-ux/odata-service-inquirer@2.11.3
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.95
+
 ## 0.4.44
 
 ### Patch Changes

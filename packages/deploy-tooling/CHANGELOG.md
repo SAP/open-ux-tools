@@ -1,5 +1,17 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+## 0.16.76
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
 ## 0.16.75
 
 ### Patch Changes

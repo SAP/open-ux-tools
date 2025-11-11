@@ -25,7 +25,15 @@ service Service {
         },
         SelectionFields: [StringProperty, DateProperty]
     }
-    @UI.LineItem : [ { Value: StringProperty }, { Value: DateProperty}]
+    @UI.LineItem : [ { Value: StringProperty }, { Value: DateProperty},  {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'Service.approveRootEntity',
+            Label : 'Approve',
+        },  {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'Service.callBack',
+            Label : 'Callback',
+        }]
     @Capabilities.FilterRestrictions : {
         FilterExpressionRestrictions : [
             {
@@ -46,7 +54,15 @@ service Service {
         DateProperty    : Date          @Common.Label: 'Date Property';
         toFirstAssociatedEntity: Association to many FirstAssociatedEntity on toFirstAssociatedEntity.root = $self;
   };
-  @UI.LineItem #tableSection: [ { Value: StringProperty }, { Value: DateProperty}]
+  @UI.LineItem #tableSection: [ { Value: StringProperty }, { Value: DateProperty}, {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'Service.approveRootEntity',
+            Label : 'Approve',
+        },  {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'Service.callBack',
+            Label : 'Callback',
+        }]
   entity FirstAssociatedEntity {
     key ID              : Integer       @Common.Label: 'Identifier';
         StringProperty  : String        @Common.Label: 'String Property';
@@ -56,4 +72,7 @@ service Service {
         DateProperty    : Date          @Common.Label: 'Date Property';
         root : Association to RootEntity;
   }
+  action approveRootEntity (ID : Integer) returns String;
+  action callBack (ID : Integer) returns String;
+
 }
