@@ -3010,8 +3010,8 @@ importers:
         specifier: 1.12.2
         version: 1.12.2(debug@4.4.3)
       axios-logger:
-        specifier: 2.8.0
-        version: 2.8.0
+        specifier: 2.8.1
+        version: 2.8.1
       circular-reference-remover:
         specifier: 2.1.0
         version: 2.1.0
@@ -15904,8 +15904,8 @@ packages:
       possible-typed-array-names: 1.0.0
     dev: true
 
-  /axios-logger@2.8.0:
-    resolution: {integrity: sha512-MWOBmbyAarx18rkI0xsuMDkK1oaqwROqeZjsfVgsD0Y7IGLzN3ZNZPpcnoCDKeajU0uLxjCs85186CeLU36bXg==}
+  /axios-logger@2.8.1:
+    resolution: {integrity: sha512-Bbl7XRR/Rkxg2Owv/kRgAZ/0qf8kMPLc08LtiUcGCWV5RmoI7vHr+eee6SUc8jRi2nE5KWShziCVh35C1SBEaw==}
     dependencies:
       chalk: 4.1.2
       dateformat: 3.0.3
