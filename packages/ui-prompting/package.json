@@ -41,11 +41,11 @@
         "react-dom": ">=16.14.0"
     },
     "devDependencies": {
-        "@babel/core": "7.28.0",
+        "@babel/core": "7.28.5",
         "@babel/helper-define-map": "7.18.6",
-        "@babel/preset-env": "7.28.0",
-        "@babel/preset-react": "7.27.1",
-        "@babel/preset-typescript": "7.27.1",
+        "@babel/preset-env": "7.28.5",
+        "@babel/preset-react": "7.28.5",
+        "@babel/preset-typescript": "7.28.5",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@storybook/addons": "7.6.20",
