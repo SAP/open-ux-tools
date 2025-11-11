@@ -1,14 +1,15 @@
+import { join } from 'node:path';
+
 import type { Editor } from 'mem-fs-editor';
 import prettifyXml from 'prettify-xml';
 
-import type { ConvertedMetadata, RawMetadata, RawSchema, StringExpression } from '@sap-ux/vocabularies-types';
+import type { ConvertedMetadata, RawSchema, StringExpression } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 
 import { DirName } from '@sap-ux/project-access';
 
 import type { OdataService, ValueListReference, ValueListReferenceService } from '../types';
-import { join } from 'path';
 
 /**
  * Writes service metadata for value list references to the local service folder.
@@ -17,14 +18,13 @@ import { join } from 'path';
  * @param valueListReferences - Value list references to be generated
  * @param service - OData service instance
  * @param fs - Memfs editor instance
- * @returns the updated memfs editor instance
  */
-export async function writeValueListReferenceMetadata(
+export function writeValueListReferenceMetadata(
     webappPath: string,
     valueListReferences: ValueListReferenceService[],
     service: OdataService,
     fs: Editor
-): Promise<void> {
+): void {
     if (!valueListReferences.length || !service.path) {
         return;
     }
@@ -84,7 +84,6 @@ export function getValueListReferences(
                     if (annotation.term === 'com.sap.vocabularies.Common.v1.ValueListReferences') {
                         for (const value of annotation.collection ?? []) {
                             if (value.type === 'String') {
-                                // TODO: check if we can avoid type assertion, there is overlap with AnnotationRecord because type there can be anything.
                                 const stringValue = value as StringExpression;
                                 valueListReferences.push({
                                     serviceRootPath,

@@ -1,5 +1,3 @@
-import { DataSourceConfig } from '@sap-ux/ui5-config';
-
 export interface MockserverConfig {
     webappPath: string;
     packageJsonConfig?: PackageJsonMockConfig;

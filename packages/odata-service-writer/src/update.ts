@@ -4,7 +4,8 @@ import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
-import { generateMockserverConfig, MockserverConfig } from '@sap-ux/mockserver-config-writer';
+import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import {
     writeLocalServiceAnnotationXMLFiles,
     writeMetadata,
@@ -217,6 +218,6 @@ export async function updateServicesData(
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
     if (service.valueListReferences && webappPath) {
-        await writeValueListReferenceMetadata(webappPath, service.valueListReferences, service, fs);
+        writeValueListReferenceMetadata(webappPath, service.valueListReferences, service, fs);
     }
 }

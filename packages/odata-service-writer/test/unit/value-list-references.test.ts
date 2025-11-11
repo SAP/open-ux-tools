@@ -1,7 +1,8 @@
 import { dirname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
 
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
@@ -53,14 +54,14 @@ describe('writeValueListReferenceMetadata', () => {
     test('it should not do anything if there are no references', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        await writeValueListReferenceMetadata(root, [], { version: OdataVersion.v4 }, fs);
+        writeValueListReferenceMetadata(root, [], { version: OdataVersion.v4 }, fs);
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
     test('it should do nothing if there is no service path specified', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        await writeValueListReferenceMetadata(
+        writeValueListReferenceMetadata(
             root,
             [
                 {
@@ -78,7 +79,7 @@ describe('writeValueListReferenceMetadata', () => {
     test('it should default to "mainService" name', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        await writeValueListReferenceMetadata(
+        writeValueListReferenceMetadata(
             root,
             [
                 {
@@ -112,7 +113,7 @@ describe('writeValueListReferenceMetadata', () => {
     test('it should user service name', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        await writeValueListReferenceMetadata(
+        writeValueListReferenceMetadata(
             root,
             [
                 {

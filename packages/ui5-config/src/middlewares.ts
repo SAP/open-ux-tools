@@ -1,4 +1,4 @@
-import { join, posix, relative, resolve, sep } from 'node:path';
+import { join, posix, relative, sep } from 'node:path';
 import type {
     FioriToolsProxyConfigBackend,
     CustomMiddleware,
