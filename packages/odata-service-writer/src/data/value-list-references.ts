@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { join as joinPosix } from 'node:path/posix';
 
 import type { Editor } from 'mem-fs-editor';
 import prettifyXml from 'prettify-xml';
@@ -33,7 +34,7 @@ export function writeValueListReferenceMetadata(
         const segments = valueListServicePath.split('/');
         let prefix = '/';
         while (segments.length) {
-            const next = join(prefix, segments.shift()!);
+            const next = joinPosix(prefix, segments.shift()!);
             if (!service.path.startsWith(next)) {
                 break;
             }
