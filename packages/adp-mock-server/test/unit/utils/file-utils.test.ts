@@ -56,9 +56,9 @@ describe('file-utils', () => {
 
         test('should sort files alphabetically by name', () => {
             const files = [
-                { name: 'c-file.txt', content: 'content-z' },
+                { name: 'c-file.txt', content: 'content-c' },
                 { name: 'a-file.txt', content: 'content-a' },
-                { name: 'b-file.txt', content: 'content-m' }
+                { name: 'b-file.txt', content: 'content-b' }
             ];
             const zipBuffer = createZipBuffer(files);
 
