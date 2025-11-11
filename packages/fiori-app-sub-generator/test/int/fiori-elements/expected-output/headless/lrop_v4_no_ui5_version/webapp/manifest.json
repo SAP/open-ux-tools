@@ -1,5 +1,5 @@
 {
-  "_version": "1.73.1",
+  "_version": "1.76.0",
   "sap.app": {
     "id": "testnamepsace.lropv4noui5version",
     "type": "application",
@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:lrop",
-      "version": "2.5.15",
-      "toolsId": "a4a7f65a-df22-4f27-8d83-a4fe5bd40477"
+      "version": "2.7.37",
+      "toolsId": "833fb937-594d-4828-9c6d-896199066ba6"
     },
     "dataSources": {
       "annotation": {
@@ -55,7 +55,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.136.0",
+      "minUI5Version": "1.142.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},

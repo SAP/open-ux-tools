@@ -1,192 +1,325 @@
-# @sap-ux/create
-Module which provides command line interface to configure features for SAP UX projects or applications.
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/create/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/create)
+# [`@sap-ux/create`](https://github.com/SAP/open-ux-tools/tree/main/packages/create) CLI Reference
 
-## [Installation](#installation)
+Configure features for SAP Fiori applications and projects (@sap-ux/create version 0.13.161).
 
-```sh
-npm init @sap-ux@latest
-# or
-npx @sap-ux/create@latest
-```
-To avoid downloading and installing the module every time it is used, you might consider installing it globally or add it as `devDependency` to a project. Once installed, you can run it using
+# [Usage](#usage)
+
+It is recommended to use the cli using `npx` to always get the latest version without the need to install or update it manually. You can run it using:
 
 ```sh
-# globally installed
-sap-ux
-# locally
-npx sap-ux
+npx -y @sap-ux/create@latest [command] [sub-command] /path/to/project
 ```
-## [Basic usage](#basic-usage)
+
+If you prefer to download the module, you can install it globally or add it as `devDependency` to a project. Once installed, you can run it using
 
 ```sh
-npx sap-ux [command] [sub-command] /path/to/project
+# install globally
+npm i -g @sap-ux/create@latest
+# or install as devDependency
+npm i -D @sap-ux/create@latest
+# then run
+sap-ux [command] [sub-command] /path/to/project
 ```
-`Note:` If the project path is not provided, the current working directory will be used.
+
+`Note:` If the project path is not provided, the current working directory is used.
+
+---
+
+# [Commands](#commands)
+
+## [`generate`](#generate)
+
+Command group for generating SAP Fiori applications. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
+
+The available subcommands are: `adaptation-project`
+
+
+--------------------------------
+
+## [`generate adaptation-project`](#generate-adaptation-project)
+
+Generate a new SAPUI5 adaptation project with optional prompts and configuration.
+
+Example:
+
+`npx --yes @sap-ux/create@latest generate adaptation-project`
 
 Options:
-  - `-v | --version` output the module version number
-  - `-h | --help` display help and options for module
+- `-n, --skip-install` - Skip the `npm install` step.
+- `-s, --simulate` - Simulate only. Do not write or install.
+- `-y, --yes` - Use default values for all prompts.
+- `--id [id]` - The ID of the adaptation project.
+- `--reference [reference]` - The ID of the original application.
+- `--url [url]` - The URL that points to the target system which contains the original application.
+- `--ignoreCertErrors` - Ignore certificate errors when connecting to the target system.
+- `--ft` - Enable SAP Fiori tools for the generated project.
+- `--ts` - Enable TypeScript support for the generated project.
+- `--package [package]` - The ABAP package to be used for deployments.
+- `--transport [transport]` - The ABAP transport to be used for deployments.
 
-### [Command Options](#command-options)
+--------------------------------
 
-To use an option for a specific command run:
-```sh 
-npx sap-ux [command] [sub-command] [options]
-```
-To see options for a specific command run: `npx sap-ux [command] [sub-command] -h`
+## [`add`](#add)
 
-Common Options:
-- `-h | --help` display help and options for command
-- `-v | --verbose` show verbose information
-- `-s | --simulate` simulate only do not write config; sets also --verbose
+Command group for adding features to existing SAP Fiori applications. A subcommand is required.
 
-## [Command Overview](#command-overview)
-The `@sap-ux/create` modules provides commands for the following cases:
-- `sap-ux add` - allows adding a feature
-- `sap-ux change` allows changing a feature
-- `sap-ux convert` allows converting an app to a new feature
-- `sap-ux remove` allows removing a feature
-- `sap-ux generate` allows generating a new project
+Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
+
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config` and `variants-config`
 
 
-## [sap-ux add](#sap-ux-add)
-Calling `sap-ux add` allows adding a feature to a project.
+--------------------------------
+
+## [`add mockserver-config`](#add-mockserver-config)
+
+Add the necessary configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module to enable local OData mocking.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add mockserver-config`
+
+Options:
+- `-i, --interactive` - Ask for config options or otherwise, use the default options.
+- `-n, --skip-install` - Skip the `npm install` step.
+- `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add smartlinks-config`](#add-smartlinks-config)
+
+Add a `smartLinks` configuration to a project for cross-app navigation.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add smartlinks-config`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add cds-plugin-ui5`](#add-cds-plugin-ui5)
+
+Add the `cds-plugin-ui5` module and all prerequisites to a CAP project for UI5 server integration.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add cds-plugin-ui5`
+
+Options:
+- `-n, --skip-install` - Skip the `npm install` step.
+- `-s, --simulate` - Simulate only. Do not write or install. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add inbound-navigation`](#add-inbound-navigation)
+
+Add SAP Fiori launchpad inbound navigation configuration to a project.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add inbound-navigation`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+
+--------------------------------
+
+## [`add cards-editor`](#add-cards-editor)
+
+Add the necessary configuration to an existing YAML file and the script to the `package.json` file for cards generation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add cards-editor`
+
+Options:
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add model`](#add-model)
+
+Add a new OData service and SAPUI5 model to an existing adaptation project.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add model`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write or install.
+
+--------------------------------
+
+## [`add annotations`](#add-annotations)
+
+Adds an annotation to the OData Source of the base application in an adaptation project.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add annotations`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write or install.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+
+--------------------------------
+
+## [`add html`](#add-html)
+
+Add HTML files for local preview and testing to the project. It uses the configuration from the `ui5.yaml` file as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add html`
+
+Options:
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add component-usages`](#add-component-usages)
+
+Add the component usages to an adaptation project.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add component-usages`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write or install.
+
+--------------------------------
+
+## [`add deploy-config`](#add-deploy-config)
+
+Prompt for ABAP deployment configuration details and adds and updates the project files accordingly.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add deploy-config`
+
+Options:
+- `-t, --target <string>` _(required)_ - Target for deployment: ABAP or Cloud Foundry (not yet implemented)
+- `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-b, --base-file <string>` _(required)_ - The base config file of the project. _(default: "ui5.yaml")_
+- `-d, --deploy-file <string>` _(required)_ - The name of the deploy config file to be written. _(default: "ui5-deploy.yaml")_
+
+--------------------------------
+
+## [`add variants-config`](#add-variants-config)
+
+Add the necessary configuration to an existing YAML file and the script to the `package.json` file for variants creation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add variants-config`
+
+Options:
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`convert`](#convert)
+
+Command group for converting existing SAP Fiori applications. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest convert [subcommand] [options]`
+
+The available subcommands are: `preview-config`
 
 
-### [annotations](#add-annotations)<a id="add-annotations"></a>
-Calling `sap-ux add annotations` allows adding an annotation to the OData Source of the base application in an adaptation project.
-```sh
-sap-ux add annotations [path]
-```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
+--------------------------------
+
+## [`convert preview-config`](#convert-preview-config)
+
+Executed in the root folder of an app, it converts the respective app to the preview with virtual endpoints. It uses the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources are deleted and the HTML files previously used for the preview are renamed to `*_old.html`.
+
+Examples:
+
+`npx --yes @sap-ux/create@latest convert preview-config --simulate=false --tests=false`
+
+`npx --yes @sap-ux/create@latest convert preview-config`
+
+Options:
+- `-s, --simulate <boolean>` _(required)_ - Simulate only. Do not write.
+- `-v, --verbose` - Show verbose information.
+- `-t, --tests <boolean>` _(required)_ - Also, convert test suite and test runners.
+
+--------------------------------
+
+## [`remove`](#remove)
+
+Command group for removing features from existing SAP Fiori applications. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest remove [subcommand] [options]`
+
+The available subcommands are: `mockserver-config`
 
 
-### [cards-editor](#add-cards-editor)<a id="add-cards-editor"></a>
-Calling `sap-ux add cards-editor` will add the necessary configuration to an existing yaml file and the script to package.json for cards generation.
-It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.
-```sh
-sap-ux add cards-editor [path]
-```
-- `-c | --config` path to project configuration file in YAML format, e.g.: -c ui5Custom.yaml
-`Note:` Adding the card generator configuration is not supported for CAP projects.
-- 
-### [component-usages](#add-component-usages)<a id="add-component-usages"></a>
-Calling `sap-ux add component-usages` adds the component usages to an adaptation project.
-```sh
-sap-ux add component-usages [path]
-```
+--------------------------------
 
+## [`remove mockserver-config`](#remove-mockserver-config)
 
-### [cds-plugin-ui5](#add-cds-plugin-ui5)<a id="add-cds-plugin-ui5"></a>
-Calling `sap-ux add cds-plugin-ui5` adds the cds-plugin-ui5 and all prerequisites to a CAP project.
-```sh
-sap-ux add cds-plugin-ui5 [path]
-```
-- `-n | --skip-install` skip npm install step
+Removes the configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module.
 
+Example:
 
-### [deploy-config](#add-deploy-config)<a id="add-deploy-config"></a>
-Calling `sap-ux add deploy-config` will prompt for ABAP deployment configuration details and add/update the project files accordingly.
-```sh
-sap-ux add deploy-config [path]
-```
-- `-t | --target` target for deployment; ABAP or Cloud Foundry (not yet implemented)
-- `-b | --base-file` the base file config file of the project; default: ui5.yaml
-- `-d | --deploy-file` the name of the deploy config file to be written; default: ui5-deploy.yaml
+`npx --yes @sap-ux/create@latest remove mockserver-config`
 
+Options:
+- `-v, --verbose` - Show verbose information.
+- `-f, --force` - Do not ask for confirmation when deleting files.
 
-### [html](#add-html)<a id="add-html"></a>
-Calling `sap-ux add html` will add html files for local preview and testing to the project. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
-```sh
-sap-ux add html [path]
-```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
+--------------------------------
 
-### [model](#add-model)<a id="add-model"></a>
-Calling `sap-ux add model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.
-```sh
-sap-ux add model [path]
-```
+## [`change`](#change)
 
-### [mockserver-config](#add-mockserver-config)<a id="add-mockserver-config"></a>
-Calling `sap-ux add mockserver-config` adds the necessary configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver. 
-```sh
-sap-ux add mockserver-config [path]
-```
-- `-i | --interactive` ask for config options, otherwise use defaults'
-- `-n | --skip-install` skip npm install step
+Command group for changing existing SAP Fiori applications. A subcommand is required.
 
-### [smartlinks-config](#add-smartlinks-config)<a id="add-smartlinks-config"></a>
-Calling `sap-ux add smartlinks-config` adds a smartLinks configuration to a project 
-```sh
-sap-ux add smartlinks-config [path]
-```
+Usage: `npx --yes @sap-ux/create@latest change [subcommand] [options]`
 
-### [add inbound-navigation](#add-inbound-navigation)<a id="add-inbound-navigation"></a>
-Calling `sap-ux add inbound-navigation` adds a Fiori Launchpad configuration to a project.
-```sh
-sap-ux add inbound-navigation [path]
-```
+The available subcommands are: `data-source` and `inbound`
 
-### [variants-config](#add-variants-config)<a id="add-variants-config"></a>
-Calling `sap-ux add variants-config` will add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
-```sh
-sap-ux add variants-config [path]
-```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
+--------------------------------
 
-## [sap-ux change](#sap-ux-change)
-Calling `sap-ux change` allows changing a feature of a project.
+## [`change data-source`](#change-data-source)
 
-### [data-source](#change-data-source)<a id="change-data-source"></a>
-Calling `sap-ux change data-source` allows replacing the OData Source of the base application in an adaptation project.  
-```sh
-sap-ux change data-source [path]
-```
-- `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
+Replace the OData Source of the base application in an adaptation project.
 
-### [inbound](#change-inbound)<a id="change-inbound"></a>
-Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations of the base application in an adaptation project.  
-```sh
-sap-ux change inbound [path]
-```
+Example:
 
-## [sap-ux convert](#sap-ux-convert)
-Executing `sap-ux convert` converts an app to a new feature.
+`npx --yes @sap-ux/create@latest change data-source`
 
-### [preview-config](#convert-preview-config)<a id="convert-preview-config"></a>
-Executing `sap-ux convert preview-config` in the root folder of an app will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
-```sh
-sap-ux convert preview-config [path]
-```
-- `-s true | --simulate true | -s false | --simulate false` enable or disable simulate option without prompt
-- `-t true | --tests true | -t false | --tests false` enable or disable option to include test suite and test runners in the conversion to virtual files without prompt
+Options:
+- `-s, --simulate` - Simulate only. Do not write or install.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
-## [sap-ux remove](#sap-ux-remove)
-Calling `sap-ux remove` allows removing a feature from a project.
+--------------------------------
 
-### [mockserver-config](#remove-mockserver-config)<a id="remove-mockserver-config"></a>
-Calling `sap-ux remove mockserver-config` removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver. 
-```sh
-sap-ux remove mockserver-config [path]
-```
-- `-f | --force` do not ask for confirmation when deleting files
+## [`change inbound`](#change-inbound)
 
+Replace the inbound FLP configurations of the base application in an adaptation project.
 
-## [sap-ux generate](#sap-ux-generate)
-Calling `sap-ux generate` allows generating a new project.
+Example:
 
-### [adaptation-project](#adaptation-project)
-Calling `sap-ux generate adaptation-project` allows generating a new adaptation project. Without further parameters the CLI will prompt the required parameters `id`, `reference` and `url`. To run the prompt non-interactively, it is also possible to execute
-```sh
-sap-ux generate adaptation-project --id my.adp --reference the.original.app --url http://my.sapsystem.example
-```
-- `-n | --skip-install` skip npm install step
-- `-y | --yes` use default values for all prompts
-- `--id [id]` id of the adaptation project
-- `--reference [reference]` id of the original application
-- `--url [url]` url pointing to the target system containing the original app
-- `--ignoreCertErrors` ignore certificate errors when connecting to the target system
-- `--ft` enable the Fiori tools for the generated project
-- `--package [package]` ABAP package to be used for deployments
-- `--transport [transport]` ABAP transport to be used for deployments
+`npx --yes @sap-ux/create@latest change inbound`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write or install.
+

@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.7.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.7.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.17.4
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
 ## 0.17.3
 
 ### Patch Changes
