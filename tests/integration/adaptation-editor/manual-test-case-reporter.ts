@@ -101,22 +101,29 @@ export default class ManualTestCaseReporter implements Reporter {
             /^browser\./,
             /^browserContext\./,
             /^Expect \"toBeVisible\"$/,
+            /^Evaluate$/,
             /^Expect \"toBe\"$/,
             /^Expect \"toEqual\"$/,
+            /^Expect \"toContain\"$/,
+            /^Expect \"toBeAttached\"$/,
             /^Expect\.poll\.toEqual$/,
             /^Expect \"toBeEnabled\"$/,
             /^Expect \"toBeDisabled\"$/,
+            /^Expect \"toHaveAttribute\"$/,
             /^Expect \"poll toEqual\"$/,
             /^locator\.textContent/,
             /^locator\.count/,
             /^Click on in Application Preview$/,
             /^Query count getByTestId\(\'saved-changes-stack\'\)/,
+            /^Click locator\(/,
+            /^Query count locator/,
             /^Verifying Changes.../,
             /^page\.goto\(/,
             /^Create context$/,
             /^Create page$/,
             /^Navigate to "\/adaptation-editor\.html\?fiori-tools-rta-mode=true"$/,
-            /locator\('iframe\[title="Application Preview"\]'\)/
+            /locator\('iframe\[title="Application Preview"\]'\)/,
+            /^Wait for selector getByText/
         ];
 
         const shouldSkip = skipPatterns.some((pattern) => pattern.test(step.title));

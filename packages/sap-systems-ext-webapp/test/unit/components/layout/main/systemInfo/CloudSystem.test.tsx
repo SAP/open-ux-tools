@@ -52,4 +52,46 @@ describe('<CloudSystem />', () => {
         const inputField = urlLabel.nextElementSibling?.querySelector('.ms-TextField-field');
         expect((inputField as HTMLInputElement).value).toBe('https://mock.service.key.url');
     });
+
+    it('should only ever return one component', () => {
+        const setUrl = jest.fn();
+        const setIsDetailsUpdated = jest.fn();
+
+        // Test reentrance ticket takes priority over service keys if both are present
+        const { rerender } = render(
+            <CloudSystem
+                systemInfo={{
+                    name: 'btp system',
+                    url: 'https://mock.btp.system',
+                    authenticationType: 'reentranceTicket',
+                    serviceKeys: {
+                        mockKey: 'mockValue'
+                    }
+                }}
+                setUrl={setUrl}
+                setIsDetailsUpdated={setIsDetailsUpdated}
+            />
+        );
+
+        // Should show reentrance ticket input, not service key component
+        const reentranceInput = document.getElementById('reentranceUrl');
+        expect(reentranceInput).toBeTruthy();
+        expect(screen.queryByText(/Service Key/i)).toBeNull();
+
+        // Test system without service keys shows empty div
+        rerender(
+            <CloudSystem
+                systemInfo={{
+                    name: 'btp system',
+                    url: 'https://mock.btp.system',
+                    authenticationType: 'basic'
+                }}
+                setUrl={setUrl}
+                setIsDetailsUpdated={setIsDetailsUpdated}
+            />
+        );
+
+        // Should not show URL or client fields when no service keys
+        expect(screen.queryByDisplayValue('https://mock.btp.system')).toBeNull();
+    });
 });

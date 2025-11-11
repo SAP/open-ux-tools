@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.2
+
+### Patch Changes
+
+-   fef7496: Bump fallback versions
+
 ## 0.13.1
 
 ### Patch Changes

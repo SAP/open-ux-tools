@@ -1,0 +1,10 @@
+config:
+    project: 'lrop-v2'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'What apps are available in {{appPath}}? Please output name and project type'
+assert:
+    - type: contains
+      value: 'product'
+    - type: contains
+      value: 'EDMXBackend'

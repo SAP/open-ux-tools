@@ -264,36 +264,13 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             }
         },
         async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            async function clickOnValueHelp(): Promise<void> {
-                await test.step(`Click on value help button of \`Date Property\` filter`, async () => {
-                    if (satisfies(ui5Version, '~1.96.0')) {
-                        // Try getByTitle first, fallback to aria-label if not found
-                        const btn = previewFrame.getByTitle('Open Picker');
-                        if (await btn.count()) {
-                            await btn.click();
-                        } else {
-                            await previewFrame.locator('[aria-label="Open Picker"]').click();
-                        }
-                    } else {
-                        // click on second filter value help
-                        await previewFrame
-                            .locator(
-                                '[id="fiori\\.elements\\.v2\\.0\\:\\:sap\\.suite\\.ui\\.generic\\.template\\.ListReport\\.view\\.ListReport\\:\\:RootEntity--listReportFilter-filterItemControl_BASIC-DateProperty-input-vhi"]'
-                            )
-                            .click();
-                    }
-                });
-            }
-            const lr = new ListReport(previewFrame);
+            const lr = new ListReport(previewFrame, 'fev2', ui5Version);
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await clickOnValueHelp();
+            await lr.clickOnDatePropertyValueHelper();
 
-            await expect(
-                previewFrame.getByText('Yesterday'),
-                `Check semantic date \`Yesterday\` visible in filter`
-            ).toBeVisible();
+            await lr.checkSemanticDateOptionsExist('DateProperty', ['Yesterday']);
             await editor.toolbar.uiAdaptationModeButton.click();
 
             await editor.quickActions.disableSemanticDateRange.click();
@@ -322,17 +299,8 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.reloadCompleted();
 
             await editor.toolbar.navigationModeButton.click();
-
-            await test.step(`Click on value help button of \`Date Property\` filter`, async () => {
-                const btn = previewFrame.getByTitle('Open Picker');
-                if (await btn.count()) {
-                    await btn.click();
-                } else {
-                    await previewFrame.locator('[aria-label="Open Picker"]').click();
-                }
-            });
-
-            await expect(previewFrame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
+            await lr.clickOnDatePropertyValueHelper();
+            await lr.checkCalendarDisplayed();
             await editor.toolbar.uiAdaptationModeButton.click();
 
             await editor.quickActions.enableSemanticDateRange.click();
@@ -392,6 +360,10 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                     }
                 ]
             });
+            await editor.quickActions.checkQADisabled(
+                'Enable Variant Management in Tables and Charts',
+                `This option has been disabled because variant management is already enabled for tables and charts`
+            );
         }
     );
 

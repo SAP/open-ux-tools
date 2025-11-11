@@ -101,6 +101,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": "Store Credentials",
@@ -193,6 +194,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": "Store Credentials",

@@ -27,9 +27,11 @@ export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonl
 
     const authType = systemInfo?.authenticationType as AuthenticationType;
 
-    return (
-        <div>
-            {authType === 'reentranceTicket' && (
+    let cloudComponent = <div></div>;
+
+    if (authType === 'reentranceTicket') {
+        cloudComponent = (
+            <div>
                 <div className="store-text-field">
                     <label className="store-detail-label">
                         {t('labels.url')} <span className="mandatory-asterisk">*</span>
@@ -46,21 +48,22 @@ export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonl
                         }}
                     />
                 </div>
-            )}
-
-            {systemInfo?.serviceKeys && (
-                <div>
-                    <div className="store-text-field">
-                        <label className="store-detail-label">{t('labels.url')}</label>
-                        <UITextInput tabIndex={-1} name="systemUrl" readOnly={true} value={systemInfo.url} />
-                    </div>
-                    <div className="store-text-field">
-                        <label className="store-detail-label">{t('labels.client')}</label>
-                        <UITextInput tabIndex={-1} name="systemClient" readOnly={true} value={systemInfo.client} />
-                    </div>
-                    <ServiceKey serviceKey={JSON.stringify(systemInfo.serviceKeys)} />
+            </div>
+        );
+    } else if (systemInfo?.serviceKeys) {
+        cloudComponent = (
+            <div>
+                <div className="store-text-field">
+                    <label className="store-detail-label">{t('labels.url')}</label>
+                    <UITextInput tabIndex={-1} name="systemUrl" readOnly={true} value={systemInfo?.url} />
                 </div>
-            )}
-        </div>
-    );
+                <div className="store-text-field">
+                    <label className="store-detail-label">{t('labels.client')}</label>
+                    <UITextInput tabIndex={-1} name="systemClient" readOnly={true} value={systemInfo?.client} />
+                </div>
+                <ServiceKey serviceKey={JSON.stringify(systemInfo?.serviceKeys)} />
+            </div>
+        );
+    }
+    return cloudComponent;
 }
