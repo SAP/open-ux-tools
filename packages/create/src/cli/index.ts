@@ -45,7 +45,7 @@ function getCommanderProgram(): Command {
     const program = new Command();
     const version = getVersion();
     program.description(
-        `Configure features for SAP Fiori applications and projects (@sap-ux/create version ${version}).`
+        `Configure features for SAP Fiori applications and projects.`
     );
     program.addHelpText(
         'after',
