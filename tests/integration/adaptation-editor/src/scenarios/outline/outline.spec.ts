@@ -83,7 +83,7 @@ test.describe(`@outline @cpe @adp`, () => {
 
             await page
                 .locator('label')
-                .filter({ hasText: 'Focus editable' })
+                .filter({ hasText: 'Focus editable' })
                 .locator('i')
                 .describe(`\`Focus Editable\` option to uncheck in the Manage Filters callout in Outline panel`)
                 .click();
@@ -105,7 +105,7 @@ test.describe(`@outline @cpe @adp`, () => {
 
             await page
                 .locator('label')
-                .filter({ hasText: 'Show only commonly used' })
+                .filter({ hasText: 'Show only commonly used' })
                 .locator('i')
                 .describe(
                     `\`Show only commonly used\` option to uncheck in the Manage Filters callout in Outline panel`
@@ -130,7 +130,7 @@ test.describe(`@outline @cpe @adp`, () => {
 
             await page
                 .locator('label')
-                .filter({ hasText: 'Show only commonly used' })
+                .filter({ hasText: 'Show only commonly used' })
                 .locator('i')
                 .describe(`\`Show only commonly used\` option to check in the Manage Filters callout in Outline panel`)
                 .click();

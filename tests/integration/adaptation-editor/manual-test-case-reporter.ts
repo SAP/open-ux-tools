@@ -1,6 +1,6 @@
 import { writeFile, mkdir } from 'fs/promises';
-import { join, basename } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { join, basename, sep } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 import type {
     FullConfig,
     FullResult,
@@ -68,7 +68,7 @@ export default class ManualTestCaseReporter implements Reporter {
         const allTests = suite.allTests();
         allTests.forEach((test) => {
             if (test.location.file) {
-                const filename = basename(test.location.file);
+                const filename = test.location.file.split('scenarios').pop() ?? '';
                 const fileNameWithoutExt = filename.replace(/\.spec\.ts$/, '');
 
                 // Initialize counters if not already set
@@ -179,7 +179,7 @@ export default class ManualTestCaseReporter implements Reporter {
             return;
         }
         if (test.location.file) {
-            const filename = basename(test.location.file);
+            const filename = test.location.file.split('scenarios').pop() ?? '';
             this.manualTestCases[test.title].filePath = filename;
             const fileNameWithoutExt = filename.replace(/\.spec\.ts$/, '');
             this.fileCompletedTests[fileNameWithoutExt] = (this.fileCompletedTests[fileNameWithoutExt] || 0) + 1;
@@ -224,26 +224,29 @@ export default class ManualTestCaseReporter implements Reporter {
     /**
      * Generates documentation for tests from a specific file.
      *
-     * @param fileBaseName Base name of the file to generate documentation for
+     * @param relativePath of the file to generate documentation for
      */
-    private async generateFileDocumentation(fileBaseName: string): Promise<void> {
+    private async generateFileDocumentation(relativePath: string): Promise<void> {
         try {
             // Find all test cases belonging to the specified file (match with or without .spec.ts extension)
             const testsFromFile = Object.entries(this.manualTestCases)
                 .filter(
                     ([_, testCase]) =>
-                        testCase.filePath === fileBaseName || testCase.filePath === `${fileBaseName}.spec.ts`
+                        testCase.filePath === relativePath || testCase.filePath === `${relativePath}.spec.ts`
                 )
                 .map(([_, testCase]) => testCase);
 
             if (testsFromFile.length === 0) {
-                console.log(`No tests found for ${fileBaseName}, skipping documentation generation`);
+                console.log(`No tests found for ${relativePath}, skipping documentation generation`);
                 return;
             }
 
-            console.log(`Generating documentation for ${testsFromFile.length} tests from ${fileBaseName}`);
+            console.log(`Generating documentation for ${testsFromFile.length} tests from ${relativePath}`);
+            const segments = relativePath.split(sep);
+            const scenarioFolder = segments[1] ?? '';
+            const fileBaseName = basename(relativePath).replace(/\.spec\.ts$/, '');
 
-            const outputDir = join(process.cwd(), 'manual_test_description_generated');
+            const outputDir = join(process.cwd(), 'manual_test_description_generated', scenarioFolder);
             if (!existsSync(outputDir)) {
                 await mkdir(outputDir, { recursive: true });
             }
@@ -291,7 +294,7 @@ export default class ManualTestCaseReporter implements Reporter {
             await writeFile(outputFile, content);
             console.log(`Documentation written to ${outputFile}`);
         } catch (error) {
-            console.error(`Error generating documentation for ${fileBaseName}:`, error);
+            console.error(`Error generating documentation for ${relativePath}:`, error);
         }
     }
 
