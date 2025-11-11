@@ -18,7 +18,7 @@
         "node": ">=20.x"
     },
     "scripts": {
-        "build": "tsc --build",
+        "build": "tsc --build && node ./scripts/generate-readme.js",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
