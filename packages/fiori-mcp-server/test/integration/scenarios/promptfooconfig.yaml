@@ -9,6 +9,9 @@ extensions:
 prompts:
     - '{{query}}'
 tests:
+    # Create apps
+    - file://./create-apps/lrop.yaml
+    - file://./create-apps/java-lrop.yaml
     # List apps
     - file://./list-apps/lrop.yaml
     - file://./list-apps/java-lrop.yaml
