@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.13.162
+
+### Patch Changes
+
+-   55b2f11: feat: automatically generate README.md on build
+
 ## 0.13.161
 
 ### Patch Changes
