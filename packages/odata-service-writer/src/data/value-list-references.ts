@@ -4,7 +4,7 @@ import { join as joinPosix } from 'node:path/posix';
 import type { Editor } from 'mem-fs-editor';
 import prettifyXml from 'prettify-xml';
 
-import type { ConvertedMetadata, RawSchema, StringExpression } from '@sap-ux/vocabularies-types';
+import type { AnnotationList, ConvertedMetadata, RawSchema, StringExpression } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 
@@ -81,22 +81,39 @@ export function getValueListReferences(
         for (const annotationLists of Object.values(schema.annotations)) {
             for (const annotationList of annotationLists) {
                 const target = annotationList.target.replace(schema.namespace + '.', '');
-                for (const annotation of annotationList.annotations) {
-                    if (annotation.term === 'com.sap.vocabularies.Common.v1.ValueListReferences') {
-                        for (const value of annotation.collection ?? []) {
-                            if (value.type === 'String') {
-                                const stringValue = value as StringExpression;
-                                valueListReferences.push({
-                                    serviceRootPath,
-                                    target,
-                                    value: stringValue.String
-                                });
-                            }
-                        }
-                    }
-                }
+                collectValueListReferences(valueListReferences, target, annotationList, serviceRootPath);
             }
         }
     }
     return valueListReferences;
+}
+
+/**
+ * Collects ValueListReference values from targets annotations.
+ *
+ * @param valueListReferences - The collected value list references
+ * @param target - The target of the annotation list
+ * @param annotationList - The annotation list to be checked
+ * @param serviceRootPath - The service path to which the value list references belong
+ */
+function collectValueListReferences(
+    valueListReferences: ValueListReference[],
+    target: string,
+    annotationList: AnnotationList,
+    serviceRootPath: string
+): void {
+    for (const annotation of annotationList.annotations) {
+        if (annotation.term === 'com.sap.vocabularies.Common.v1.ValueListReferences') {
+            for (const value of annotation.collection ?? []) {
+                if (value.type === 'String') {
+                    const stringValue = value as StringExpression;
+                    valueListReferences.push({
+                        serviceRootPath,
+                        target,
+                        value: stringValue.String
+                    });
+                }
+            }
+        }
+    }
 }
