@@ -40,7 +40,7 @@ describe('file-utils', () => {
             expect(zipBuffer);
         });
 
-        test('should return deterministic output for same ZIP content when the zip buffer has different base64 byte representation', () => {
+        test('should return deterministic output for same ZIP content when the zip buffer has different base64 byte representation (ABAP behaviour)', () => {
             const zipBase64Bytes1 = readFixture('zipBase64Bytes1.txt');
             const zipBase64Bytes2 = readFixture('zipBase64Bytes2.txt');
 
