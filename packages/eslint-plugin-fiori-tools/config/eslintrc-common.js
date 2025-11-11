@@ -7,7 +7,8 @@ module.exports = defineConfig([
         languageOptions: {
             globals: {
                 ...globals.browser,
-                ...globals.node
+                ...globals.node,
+                'sap': 'readonly'
             }
         }
     }
