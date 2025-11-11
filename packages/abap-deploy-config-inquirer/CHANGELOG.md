@@ -1,5 +1,35 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.46
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
+## 1.6.45
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+
+## 1.6.44
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/guided-answers-helper@0.4.1
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/axios-extension@1.24.2
+
 ## 1.6.43
 
 ### Patch Changes

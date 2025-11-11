@@ -1,5 +1,19 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+## 1.5.20
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/ui5-config@0.29.9
+
 ## 1.5.19
 
 ### Patch Changes

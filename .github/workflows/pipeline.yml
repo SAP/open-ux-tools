@@ -187,12 +187,17 @@ jobs:
                   node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
-            - name: Replace placeholder with instrumentation key
+            - name: Set instrumentation key in fiori-mcp-server
               uses: jacobtomlinson/gha-find-replace@v3
               with:
-                  include: |
-                      packages/fiori-mcp-server/src/telemetry/index.ts
-                      packages/sap-systems-ext/src/utils/telemetryHelper.ts
+                  include: packages/fiori-mcp-server/src/telemetry/index.ts
+                  find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
+                  replace: ${{ secrets.INSTRUMENTATION_KEY }}
+                  regex: false
+            - name: Set instrumentation key in sap-systems-ext
+              uses: jacobtomlinson/gha-find-replace@v3
+              with:
+                  include: packages/sap-systems-ext/src/utils/telemetryHelper.ts
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
@@ -207,33 +212,42 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-            - name: Detect sap-systems-ext publication
+            - name: Detect extension publication
               if: steps.changesetPublish.outputs.published == 'true'
-              id: detect_sap_systems_ext
               run: |
                   PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
-                  if echo "$PUBLISHED" | grep -q '^sap-ux-sap-systems-ext$'; then
-                    echo "SAP_SYSTEMS_EXT_CHANGED=true" >> $GITHUB_ENV
+                  # Extract the first package name matching sap-ux-*-ext
+                  EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+
+                  if [ -n "$EXT_PKG" ]; then
+                    echo "EXTENSION_UPDATED=true" >> $GITHUB_ENV
+                    echo "EXT_PKG=$EXT_PKG" >> $GITHUB_ENV
+
+                    # Strip 'sap-ux-' prefix to derive directory name
+                    EXT_DIR_NAME=$(echo "$EXT_PKG" | sed 's/^sap-ux-//')
+                    echo "EXT_DIR=packages/${EXT_DIR_NAME}" >> $GITHUB_ENV
                   else
-                    echo "SAP_SYSTEMS_EXT_CHANGED=false" >> $GITHUB_ENV
+                    echo "EXTENSION_UPDATED=false" >> $GITHUB_ENV
                   fi
-            - name: Read sap-systems-ext version
-              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
-              run: echo "EXT_VERSION=$(jq -r '.version' packages/sap-systems-ext/package.json)" >> $GITHUB_ENV
-            - name: Package sap-systems-ext VSCode extension
-              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
-              run: pnpm --filter sap-ux-sap-systems-ext ide-ext:package
-            - name: Create GitHub Release (sap-systems-ext)
-              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+            - name: Read extension version
+              if: env.EXTENSION_UPDATED == 'true'
+              run: |
+                  EXT_VERSION=$(jq -r '.version' "${{ env.EXT_DIR }}/package.json")
+                  echo "EXT_VERSION=$EXT_VERSION" >> $GITHUB_ENV
+            - name: Package VSCode extension
+              if: env.EXTENSION_UPDATED == 'true'
+              run: pnpm --filter ${{ env.EXT_PKG }} ide-ext:package
+            - name: Create GitHub Release (extension)
+              if: env.EXTENSION_UPDATED == 'true'
               uses: softprops/action-gh-release@v1
               with:
-                  tag_name: sap-ux-sap-systems-ext@${{ env.EXT_VERSION }}
-                  name: sap-ux-sap-systems-ext v${{ env.EXT_VERSION }}
-                  body: 'VSCode SAP Systems extension v${{ env.EXT_VERSION }} release.'
-                  draft: false
+                  tag_name: ${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}
+                  name: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}
+                  body: 'Extension release: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}'
+                  draft: true
                   prerelease: false
                   generate_release_notes: true
-                  files: packages/sap-systems-ext/*.vsix
+                  files: ${{ env.EXT_DIR }}/*.vsix
                   fail_on_unmatched_files: true
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
@@ -247,10 +261,10 @@ jobs:
                   echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
                   echo "$EOF" >> $GITHUB_ENV
             - name: Prepare Slack notification message (extension release only)
-              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              if: env.EXTENSION_UPDATED == 'true'
               run: |
-                  RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/sap-ux-sap-systems-ext@${{ env.EXT_VERSION }}"
-                  echo "EXT_RELEASE_MESSAGE=:package: VSCode SAP Systems extension v${{ env.EXT_VERSION }} released - <${RELEASE_URL}|View on GitHub>" >> $GITHUB_ENV
+                  RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}"
+                  echo "EXT_RELEASE_MESSAGE=:package: Extension *${{ env.EXT_PKG }}* v${{ env.EXT_VERSION }} released - <${RELEASE_URL}|View on GitHub>" >> $GITHUB_ENV
             - name: Send Slack notification (published packages)
               if: steps.changesetPublish.outputs.published == 'true'
               uses: slackapi/slack-github-action@v1.26.0
@@ -260,7 +274,7 @@ jobs:
               env:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Send Slack notification (extension release)
-              if: env.SAP_SYSTEMS_EXT_CHANGED == 'true'
+              if: env.EXTENSION_UPDATED == 'true'
               uses: slackapi/slack-github-action@v1.26.0
               with:
                   payload: |

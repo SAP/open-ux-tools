@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -34,7 +34,10 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
+        "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
+        "view:integration": "promptfoo view -y",
+        "test:integration:once": "promptfoo eval --config test/integration/scenarios/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
+        "test:integration:multiple": "npm run test:promptfoo -- --repeat 5"
     },
     "files": [
         "LICENSE",
@@ -58,6 +61,7 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
+        "@types/diff": "5.0.9",
         "@types/json-schema": "7.0.5",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
@@ -67,7 +71,12 @@
         "@sap-ux/telemetry": "workspace:*",
         "i18next": "25.3.0",
         "os-name": "4.0.1",
-        "zod": "4.1.5"
+        "zod": "4.1.5",
+        "@sap-ai-sdk/foundation-models": "2.0.0",
+        "@sap-ai-sdk/langchain": "2.0.0",
+        "promptfoo": "0.118.6",
+        "@langchain/mcp-adapters": "0.6.0",
+        "@langchain/core": "0.3.75"
     },
     "dependencies": {
         "@sap-ux/fiori-docs-embeddings": "*",

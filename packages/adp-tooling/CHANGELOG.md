@@ -1,5 +1,45 @@
 # @sap-ux/adp-tooling
 
+## 0.18.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/inquirer-common@0.9.3
+
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.2
+
+## 0.17.6
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/odata-service-writer@0.27.29
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/ui5-info@0.13.1
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/store@1.3.3
+    -   @sap-ux/i18n@0.3.5
+    -   @sap-ux/axios-extension@1.24.2
+
 ## 0.17.5
 
 ### Patch Changes

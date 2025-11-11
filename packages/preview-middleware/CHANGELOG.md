@@ -1,5 +1,44 @@
 # @sap-ux/preview-middleware
 
+## 0.23.51
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+
+## 0.23.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+
+## 0.23.49
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
+## 0.23.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.7
+
+## 0.23.47
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/adp-tooling@0.17.6
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/i18n@0.3.5
+
 ## 0.23.46
 
 ### Patch Changes

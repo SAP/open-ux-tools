@@ -1,10 +1,10 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.0.4",
+    "version": "0.0.9",
     "displayName": "SAP Systems Extension",
     "description": "SAP Systems Visual Studio Code Extension",
     "main": "./dist/extension.js",
-    "publisher": "SAP-OSS",
+    "publisher": "SAPOSS",
     "icon": "resources/icon-extension-plug-systems.png",
     "repository": {
         "type": "git",
