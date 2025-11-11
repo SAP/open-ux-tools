@@ -92,8 +92,6 @@ async function handlePageBuildingBlock(
     fs: Editor,
     log?: Logger
 ): Promise<void> {
-    debugger;
-
     const minVersion = coerce(data.minUI5Version);
     const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
     if (minVersion && lt(minVersion.version, '1.136.0')) {
@@ -127,8 +125,6 @@ async function handlePageBuildingBlock(
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 export async function generate(basePath: string, data: CustomPage, fs?: Editor, log?: Logger): Promise<Editor> {
-    debugger;
-
     if (!fs) {
         fs = create(createStorage());
     }
