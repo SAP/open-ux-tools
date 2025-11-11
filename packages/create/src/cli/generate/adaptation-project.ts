@@ -13,18 +13,22 @@ import { join } from 'node:path';
  */
 export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
-        .description('Generate a new UI5 adaptation project with optional prompts and configuration.')
-        .option('-n, --skip-install', 'skip npm install step')
-        .option('-s, --simulate', 'simulate only do not write or install')
-        .option('-y, --yes', 'use default values for all prompts')
-        .option('--id [id]', 'id of the adaptation project')
-        .option('--reference [reference]', 'id of the original application')
-        .option('--url [url]', 'url pointing to the target system containing the original app')
-        .option('--ignoreCertErrors', 'ignore certificate errors when connecting to the target system')
-        .option('--ft', 'enable the Fiori tools for the generated project')
-        .option('--ts', 'enable the TypeScript support for the generated project')
-        .option('--package [package]', 'ABAP package to be used for deployments')
-        .option('--transport [transport]', 'ABAP transport to be used for deployments')
+        .description(
+            `Generate a new SAPUI5 adaptation project with optional prompts and configuration.\n
+Example:
+    \`npx --yes @sap-ux/create@latest generate adaptation-project\``
+        )
+        .option('-n, --skip-install', 'Skip the `npm install` step.')
+        .option('-s, --simulate', 'Simulate only. Do not write or install.')
+        .option('-y, --yes', 'Use default values for all prompts.')
+        .option('--id [id]', 'The ID of the adaptation project.')
+        .option('--reference [reference]', 'The ID of the original application.')
+        .option('--url [url]', 'The URL that points to the target system which contains the original application.')
+        .option('--ignoreCertErrors', 'Ignore certificate errors when connecting to the target system.')
+        .option('--ft', 'Enable SAP Fiori tools for the generated project.')
+        .option('--ts', 'Enable TypeScript support for the generated project.')
+        .option('--package [package]', 'The ABAP package to be used for deployments.')
+        .option('--transport [transport]', 'The ABAP transport to be used for deployments.')
         .action(async (path, options) => {
             console.log(
                 `\nThe generation of adaptation projects outside of SAP Business Application Studio is currently ${chalk.bold(
