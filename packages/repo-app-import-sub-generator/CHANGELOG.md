@@ -1,5 +1,19 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.152
+
+### Patch Changes
+
+-   d2aae59: Resolve Transport request in adt app download logic
+
+## 0.3.151
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/fiori-elements-writer@2.8.0
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
 ## 0.3.150
 
 ### Patch Changes

@@ -9,7 +9,7 @@ const mockFs = fs as jest.Mocked<typeof fs>;
 
 describe('project', () => {
     describe('Test getFlexChangeLayer()', () => {
-        const commonPath = join(__dirname, '../../test-data/ai-created-cap');
+        const commonPath = join(__dirname, '../../test-data/original/node-ai-created');
         test('Project without sapuxLayer', async () => {
             const layer = await getFlexChangeLayer(commonPath);
             expect(layer).toEqual(FlexChangeLayer.Customer);
