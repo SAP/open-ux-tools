@@ -179,6 +179,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": "Store Credentials",
@@ -271,6 +272,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": "Store Credentials",

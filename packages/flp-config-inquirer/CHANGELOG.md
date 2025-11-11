@@ -1,5 +1,19 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.59
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+
+## 0.4.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+-   @sap-ux/inquirer-common@0.9.3
+
 ## 0.4.57
 
 ### Patch Changes
