@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.152
+
+### Patch Changes
+
+-   d2aae59: Resolve Transport request in adt app download logic
+
 ## 0.3.151
 
 ### Patch Changes
