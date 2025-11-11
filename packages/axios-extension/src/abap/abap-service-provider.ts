@@ -310,7 +310,6 @@ export class AbapServiceProvider extends ServiceProvider {
                     target,
                     data
                 });
-
             } catch (error) {
                 this.log.warn(
                     `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
