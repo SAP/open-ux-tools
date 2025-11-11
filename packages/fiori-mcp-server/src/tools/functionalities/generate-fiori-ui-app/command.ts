@@ -1,28 +1,16 @@
+import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
+import type { GeneratorConfigCAP } from '../../schemas';
+import type { PackageInfo } from '@sap-ux/nodejs-utils';
+
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'node:path';
-import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
+import { findInstalledPackages } from '@sap-ux/nodejs-utils';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
-import { findInstalledPackages, type PackageInfo } from '@sap-ux/nodejs-utils';
-import packageJson from '../../../../package.json';
 import { logger } from '../../../utils/logger';
-import { GeneratorConfigSchemaCAP, type GeneratorConfigCAP } from './schema';
+import { generatorConfigCAP } from '../../schemas';
 import { validateWithSchema } from '../../utils';
-
-// Extended type generators API use
-const PREDEFINED_GENERATOR_VALUES = {
-    // Config schema version
-    version: '0.2',
-    telemetryData: {
-        'generationSourceName': packageJson.name,
-        'generationSourceVersion': packageJson.version
-    },
-    project: {
-        sapux: true
-    }
-};
-type GeneratorConfigCAPWithAPI = GeneratorConfigCAP & typeof PREDEFINED_GENERATOR_VALUES;
 
 const exec = promisify(execAsync);
 
@@ -33,24 +21,12 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const generatorConfigCAP: GeneratorConfigCAP = validateWithSchema(GeneratorConfigSchemaCAP, params?.parameters);
-    const generatorConfig: GeneratorConfigCAPWithAPI = {
-        ...PREDEFINED_GENERATOR_VALUES,
-        ...generatorConfigCAP,
-        project: {
-            ...PREDEFINED_GENERATOR_VALUES.project,
-            ...generatorConfigCAP.project
-        }
-    };
+    const generatorConfig: GeneratorConfigCAP = validateWithSchema(generatorConfigCAP, params?.parameters);
     generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
+
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');
-    }
-    if (generatorConfig?.service.servicePath) {
-        generatorConfig.service.servicePath = generatorConfig?.service.servicePath?.startsWith('/')
-            ? generatorConfig?.service.servicePath
-            : `/${generatorConfig?.service.servicePath}`;
     }
     const appName = (generatorConfig?.project.name as string) ?? 'default';
     const appPath = join(projectPath, 'app', appName);
