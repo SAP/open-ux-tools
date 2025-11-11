@@ -105,6 +105,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": "Store Credentials",
@@ -201,6 +202,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": "Store Credentials",

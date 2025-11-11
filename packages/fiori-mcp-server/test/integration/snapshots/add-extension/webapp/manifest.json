@@ -1,0 +1,155 @@
+{
+    "_version": "1.32.0",
+    "sap.app": {
+        "id": "v4travel",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "odataVersion": "4.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        },
+        "offline": false,
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "ui5template.fiorielements.v4.lrop",
+            "version": "1.0.0"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "resources": {
+            "js": [],
+            "css": []
+        },
+        "dependencies": {
+            "minUI5Version": "1.108.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            }
+        },
+        "routing": {
+            "routes": [
+                {
+                    "name": "TravelList",
+                    "pattern": ":?query:",
+                    "target": "TravelList"
+                },
+                {
+                    "pattern": "Travel({TravelKey}):?query:",
+                    "name": "TravelObjectPage",
+                    "target": "TravelObjectPage"
+                }
+            ],
+            "targets": {
+                "TravelList": {
+                    "type": "Component",
+                    "id": "TravelList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "navigation": {
+                                "Travel": {
+                                    "detail": {
+                                        "route": "TravelObjectPage"
+                                    }
+                                }
+                            },
+                            "contextPath": "/Travel"
+                        }
+                    }
+                },
+                "TravelObjectPage": {
+                    "type": "Component",
+                    "id": "TravelObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Travel",
+                            "navigation": {}
+                        }
+                    }
+                }
+            },
+            "config": {}
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ObjectPage.ObjectPageController#v4travel::TravelObjectPage": {
+                        "controllerName": "v4travel.ext.controller.dummy"
+                    }
+                }
+            }
+        }
+    },
+    "sap.platform.abap": {
+        "_version": "1.1.0",
+        "uri": ""
+    },
+    "sap.platform.hcp": {
+        "_version": "1.1.0",
+        "uri": ""
+    },
+    "sap.fiori": {
+        "_version": "1.1.0",
+        "registrationIds": [],
+        "archeType": "transactional"
+    }
+}
