@@ -7,7 +7,7 @@ jest.doMock('../../src/constants', () => ({
 }));
 import * as fsMock from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
-import { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from '../../src';
+import { FileName, getSpecification, getSpecificationPath, refreshSpecificationDistTags } from '../../src';
 import * as commandMock from '../../src/command';
 import * as moduleMock from '../../src/project/module-loader';
 import * as fileMock from '../../src/file';
@@ -54,6 +54,37 @@ describe('Test getSpecification', () => {
         expect(npmCommandSpy).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
             logger
         });
+    });
+
+    test('Get specification from cache when error is in "specification-dist-tags.json" file', async () => {
+        // Mock content of 'specification-dist-tags.json' with error
+        const originalReadFile = fsMock.promises.readFile;
+        let returnError = true;
+        const readFileSpy = jest
+            .spyOn(fsMock.promises, 'readFile')
+            .mockImplementation(async (path: fsMock.PathLike | fsMock.promises.FileHandle) => {
+                if (returnError && typeof path === 'string' && path.endsWith(FileName.SpecificationDistTags)) {
+                    returnError = false;
+                    return '{"error":{"code":"ENOTFOUND"}}';
+                }
+                return originalReadFile(path);
+            });
+        const npmCommandSpy = jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"UI5-1.2": "0.1.2"}');
+        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
+        const logger = getMockLogger();
+        const root = join(__dirname, '../test-data/specification/app');
+        const specification = await getSpecification<Specification>(root, { logger });
+        expect(specification.exec()).toBe('specification-mock');
+        expect(logger.debug).toHaveBeenNthCalledWith(
+            1,
+            expect.stringContaining('Specification dist-tags file has error at')
+        );
+        expect(logger.debug).toHaveBeenNthCalledWith(2, "Specification loaded from cache using version '0.1.2'");
+        expect(npmCommandSpy).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
+            logger
+        });
+        // Reset mock
+        readFileSpy.mockRestore();
     });
 
     test('Get specification with invalid app root, should throw error, with logger', async () => {
@@ -119,6 +150,16 @@ describe('Test refreshSpecificationDistTags()', () => {
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
         expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('NPM_ERROR'));
+    });
+
+    test('Refresh specification dist tags - error in response. Contains code and summary.', async () => {
+        const refreshResponse = '{"error": {"code": "ENOTFOUND", "summary": "Request to uri failed."}}';
+        jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce(refreshResponse);
+        const logger = getMockLogger();
+        await refreshSpecificationDistTags({ logger });
+        expect(logger.error).toHaveBeenCalledWith(
+            `Error refreshing specification dist-tags: Error: ${refreshResponse}`
+        );
     });
 });
 

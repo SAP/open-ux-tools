@@ -19,6 +19,9 @@ import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { SystemSelectionAnswers } from '../system-selection/questions';
+import type { AbapOnPremAnswers } from '../abap-on-prem/questions';
+import { BasicCredentialsPromptNames } from '../credentials/questions';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -48,13 +51,15 @@ function systemAuthTypeToAuthenticationType(
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  * @param requiredOdataVersion The required OData version for the system connection, only catalogs supporting the specifc odata version will be used.
  * @param cachedConnectedSystem An existing connection may be passed which will prevent reauthentication
+ * @param showExistingSystemWarning if the url exists in secure store a validation message will be returned
  * @returns the system url prompt
  */
 export function getSystemUrlQuestion<T extends Answers>(
     connectValidator: ConnectionValidator,
     promptNamespace?: string,
     requiredOdataVersion?: OdataVersion,
-    cachedConnectedSystem?: ConnectedSystem
+    cachedConnectedSystem?: ConnectedSystem,
+    showExistingSystemWarning = true
 ): InputQuestion<T> {
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${newSystemPromptNames.newSystemUrl}`;
     const newSystemUrlQuestion = {
@@ -76,7 +81,7 @@ export function getSystemUrlQuestion<T extends Answers>(
                 cachedConnectedSystem.backendSystem?.authenticationType === 'reentranceTicket'
             ) {
                 connectValidator.setConnectedSystem(cachedConnectedSystem);
-            } else {
+            } else if (showExistingSystemWarning) {
                 const existingBackend = isBackendSystemKeyExisting(PromptState.backendSystemsCache, url);
                 if (existingBackend) {
                     // Not a cached connection so re-validate as new backend system entry
@@ -127,7 +132,7 @@ export function getSystemUrlQuestion<T extends Answers>(
 export function getUserSystemNameQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace?: string
-): InputQuestion<Partial<NewSystemAnswers>> {
+): InputQuestion<Partial<NewSystemAnswers & AbapOnPremAnswers & SystemSelectionAnswers>> {
     let defaultSystemName: string;
     let userModifiedSystemName: boolean = false;
     const promptNamespacePart = `${promptNamespace ? promptNamespace + ':' : ''}`;
@@ -151,7 +156,10 @@ export function getUserSystemNameQuestion(
             }
             return defaultSystemName;
         },
-        validate: async (systemName: string) => {
+        validate: async (
+            systemName: string,
+            previousAnswers: NewSystemAnswers & Partial<AbapOnPremAnswers> & Partial<SystemSelectionAnswers>
+        ) => {
             if (!systemName) {
                 return false;
             }
@@ -165,6 +173,13 @@ export function getUserSystemNameQuestion(
                 isValid = await validateSystemName(systemName);
             }
 
+            const shouldStoreCreds =
+                !!previousAnswers?.[
+                    `${promptNamespacePart}${BasicCredentialsPromptNames.storeSystemCredentials}` as keyof (
+                        | AbapOnPremAnswers
+                        | SystemSelectionAnswers
+                    )
+                ];
             if (isValid === true) {
                 // Update or create the BackendSystem with the new system details for persistent storage
                 if (connectValidator.validatedUrl && PromptState.odataService.connectedSystem) {
@@ -173,8 +188,8 @@ export function getUserSystemNameQuestion(
                         name: systemName,
                         url: connectValidator.validatedUrl,
                         client: connectValidator.validatedClient,
-                        username: connectValidator.axiosConfig?.auth?.username,
-                        password: connectValidator.axiosConfig?.auth?.password,
+                        username: shouldStoreCreds ? connectValidator.axiosConfig?.auth?.username : undefined,
+                        password: shouldStoreCreds ? connectValidator.axiosConfig?.auth?.password : undefined,
                         serviceKeys: connectValidator.serviceInfo, // This will not be persisted and is only used to determine cached connection equality for CF provided uaa keys
                         userDisplayName: connectValidator.connectedUserName,
                         systemType: getBackendSystemType({
@@ -188,7 +203,7 @@ export function getUserSystemNameQuestion(
             }
             return isValid;
         }
-    } as InputQuestion<Partial<NewSystemAnswers>>;
+    } as InputQuestion<Partial<NewSystemAnswers & AbapOnPremAnswers & SystemSelectionAnswers>>;
 
     return newSystemNamePrompt;
 }

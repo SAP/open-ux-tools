@@ -689,6 +689,8 @@ export class CDSWriter implements ChangeHandler {
                 this.textDocument,
                 this.comments,
                 this.tokens,
+                this.processedChanges,
+                this.document,
                 anchor.position,
                 ranges,
                 indentLevel
@@ -930,31 +932,36 @@ function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockI
     edits.push(TextEdit.del(block.range));
     const previous = content[blockIndex - 1];
     const next = content[blockIndex + 1];
-    if (next?.range) {
-        // there could be whitespace to the next element which should be removed
-        edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
-    } else if (previous?.range) {
+    if (previous?.range) {
+        removeWhitespaceForConsequentDeletes(edits, content, blockIndex, block, next);
         // if the last child element is being deleted then white space between the last and previous should be removed as well
         deletePreviousElementWhiteSpaces(previous, block, edits);
-        // iterate over the previous of previous element, if the previous element is already deleted.ß
-        enhanceDeletionRange(edits, content, blockIndex);
+    } else if (next?.range) {
+        // there could be whitespace to the next element which should be removed
+        edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
     }
 }
 
-function enhanceDeletionRange(edits: TextEdit[], content: ContainerContentBlock[], blockIndex: number) {
-    for (let i = blockIndex - 1; i > -1; i--) {
+function removeWhitespaceForConsequentDeletes(
+    edits: TextEdit[],
+    content: ContainerContentBlock[],
+    blockIndex: number,
+    block: ElementWithComments,
+    next?: ContainerContentBlock
+): void {
+    let hasDeleteSequence = true;
+    for (let i = 0; i <= blockIndex; i++) {
         const prev = content[i];
-        if (edits.some((item) => isRangesEqual(item.range, prev.range))) {
-            // previous element is being deleted
-            // the space above it should be included in deletion scope
-            const beforePrev = content[i - 1];
-            if (beforePrev?.range) {
-                deletePreviousElementWhiteSpaces(beforePrev, prev, edits);
-            } else {
-                break;
-            }
-        } else {
+        if (!edits.some((item) => isRangesEqual(item.range, prev.range))) {
+            hasDeleteSequence = false;
             break;
+        }
+    }
+    if (hasDeleteSequence && next?.range) {
+        const edit = TextEdit.del(Range.create(block.range.end, next.range.start));
+        // other deletion edits with the same range may already exist
+        if (!edits.some((item) => isRangesEqual(item.range, edit.range))) {
+            edits.push(edit);
         }
     }
 }
@@ -1249,6 +1256,8 @@ function getTextEditsForMove(
     document: TextDocument,
     comments: Comment[],
     tokens: CompilerToken[],
+    changes: CDSDocumentChange[],
+    cdsDocument: CDSDocument,
     position: Position,
     ranges: ReturnType<typeof createElementRanges>,
     indentLevel: number
@@ -1257,7 +1266,7 @@ function getTextEditsForMove(
     const text: string[] = [];
     for (const range of ranges) {
         const sourceContent = getContainerContent(range.parent, comments, tokens);
-        cutRange(document, sourceContent, range, indentLevel, text, edits);
+        cutRange(document, changes, cdsDocument, sourceContent, range, indentLevel, text, edits);
     }
     edits.push(TextEdit.insert(position, ''.concat(...text)));
     return edits;
@@ -1304,8 +1313,22 @@ function isComma(token: AstNode | Comment | ContainerContentBlock | undefined): 
     return token?.type === 'token' && token.value === ',';
 }
 
+function findDeletionChange(document: CDSDocument, changes: CDSDocumentChange[], range: Range): boolean {
+    return changes.some((change) => {
+        if (change.type.startsWith('delete-')) {
+            const [leaf] = getAstNodesFromPointer(document, change.pointer).reverse();
+            if (leaf?.range) {
+                return rangeContained(leaf.range, range);
+            }
+        }
+        return false;
+    });
+}
+
 function cutRange(
     textDocument: TextDocument,
+    changes: CDSDocumentChange[],
+    cdsDocument: CDSDocument,
     content: ContainerContentBlock[],
     cutRange: CutRange,
     indentLevel: number,
@@ -1337,7 +1360,9 @@ function cutRange(
             //  |        |
             // cut    suffix  range
             const range = copyRange(Range.create(endElement.element.range.end, endElement.trailingComment.range.end));
-            edits.push(TextEdit.del(range));
+            if (!findDeletionChange(cdsDocument, changes, range)) {
+                edits.push(TextEdit.del(range));
+            }
             suffix = ',' + textDocument.getText(range);
             updatePosition(endPosition, endElement.element.range.end);
         } else if (!endElement.trailingComma) {
@@ -1349,7 +1374,9 @@ function cutRange(
     const range = copyRange(Range.create(startPosition, endPosition));
     const originalText = textDocument.getText(range);
     text.push(makeCut(originalText, suffix, cutRange, indentLevel));
-    edits.push(TextEdit.del(range));
+    if (!findDeletionChange(cdsDocument, changes, range)) {
+        edits.push(TextEdit.del(range));
+    }
 }
 
 function makeCut(originalText: string, suffix: string | undefined, cutRange: CutRange, indentLevel: number): string {

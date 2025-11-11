@@ -1,4 +1,6 @@
-# @sap-ux/fiori-mcp-server
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-mcp-server/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server)
+
+# [`@sap-ux/fiori-mcp-server`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server)
 
 This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with AI coding assistants.
 
@@ -99,6 +101,37 @@ Gets the required parameters and detailed information for a specific functionali
 
 #### `execute_functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
+
+
+## [Telemetry](#telemetry)
+
+You can enable and disable the collection of analytics. By default, non-personally identifiable information is used to help understand how you use the product to improve the Fiori MCP Server. In case you want to opt-out there exist two ways to disable the telemetry.
+
+### Method 1: Configuration File
+
+Create or change the file `~/.fioritools/telemetrysettings.json`:
+
+```json
+{
+  "telemetrysettings": {
+    "telemetrySetting": {
+      "enableTelemetry": false
+    }
+  }
+}
+```
+
+Set `enableTelemetry` to `false` to disable telemetry collection.
+
+### Method 2: Environment Variable
+
+Set the environment variable `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` to `true`:
+
+```bash
+export SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true
+```
+
+Setting this environment variable will disable the telemetry client.
 
 ## Code of Conduct
 

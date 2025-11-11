@@ -3,13 +3,13 @@
     "version": "0.0.1",
     "description": "Build and deployment scripts",
     "scripts": {
-        "clean": "rimraf resources mta_archives mta-op*",
+        "clean": "rimraf --glob resources mta_archives mta-op*",
         "build": "rimraf resources mta_archives && mbt build --mtar archive",
         "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
         "undeploy": "cf undeploy sap-ux-test --delete-services --delete-service-keys --delete-service-brokers"
     },
     "devDependencies": {
         "mbt": "^1.2.29",
-        "rimraf": "^5.0.5"
+        "rimraf": "^6.0.1"
     }
 }

@@ -1,5 +1,108 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/ui5-application-writer@1.6.0
+    -   @sap-ux/ui5-test-writer@0.7.34
+
+## 2.4.61
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/cap-config-writer@0.12.24
+
+## 2.4.60
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/ui5-application-writer@1.5.20
+    -   @sap-ux/odata-service-writer@0.27.29
+    -   @sap-ux/cap-config-writer@0.12.23
+    -   @sap-ux/ui5-test-writer@0.7.33
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/logger@0.7.1
+
+## 2.4.59
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/cap-config-writer@0.12.22
+
+## 2.4.58
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/cap-config-writer@0.12.21
+
+## 2.4.57
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/cap-config-writer@0.12.20
+
+## 2.4.56
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.12.19
+-   @sap-ux/fiori-generator-shared@0.13.28
+-   @sap-ux/odata-service-writer@0.27.28
+-   @sap-ux/ui5-application-writer@1.5.19
+-   @sap-ux/ui5-test-writer@0.7.32
+
+## 2.4.55
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.12.18
+-   @sap-ux/fiori-generator-shared@0.13.27
+-   @sap-ux/odata-service-writer@0.27.27
+-   @sap-ux/ui5-application-writer@1.5.19
+-   @sap-ux/ui5-test-writer@0.7.31
+
+## 2.4.54
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.12.17
+-   @sap-ux/fiori-generator-shared@0.13.26
+-   @sap-ux/odata-service-writer@0.27.26
+-   @sap-ux/ui5-application-writer@1.5.19
+-   @sap-ux/ui5-test-writer@0.7.30
+
+## 2.4.53
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.25
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/cap-config-writer@0.12.16
+
+## 2.4.52
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+    -   @sap-ux/cap-config-writer@0.12.15
+
 ## 2.4.51
 
 ### Patch Changes

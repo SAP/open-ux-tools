@@ -21,7 +21,7 @@ jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',
@@ -33,13 +33,35 @@ jest.mock('@sap-ux/store', () => ({
                 url: 'http://url2',
                 systemType: 'BTP'
             }
-        ] as BackendSystem[])
+        ] as BackendSystem[]),
+        read: jest.fn().mockImplementation((key) => {
+            // Mock read to return systems with credentials
+            const systems = [
+                {
+                    name: 'storedSystem1',
+                    url: 'http://url1',
+                    systemType: 'OnPrem',
+                    username: 'user1',
+                    password: 'pass1'
+                },
+                {
+                    name: 'storedSystem2',
+                    url: 'http://url2',
+                    systemType: 'BTP'
+                }
+            ];
+            return Promise.resolve(systems.find((s) => s.url === key.url));
+        })
     }))
 }));
 
 describe('API tests', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     test('getPrompts', async () => {
@@ -102,7 +124,6 @@ describe('API tests', () => {
 
     test('getPrompts, i18n is loaded', async () => {
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
-
         expect(questions).toMatchSnapshot();
     });
 });

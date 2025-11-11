@@ -9,10 +9,9 @@ import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import {
     filterAggregateTransformations,
     hasAggregateTransformations,
-    hasAggregateTransformationsForEntitySet,
-    transformationsRequiredForAnalyticalTable,
     hasRecursiveHierarchyForEntitySet,
-    findEntitySetByName
+    findEntitySetByName,
+    shouldUseAnalyticalTable
 } from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
@@ -242,102 +241,52 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
 }
 
 /**
- * Determines if AnalyticalTable should be used based on entity annotations and service type.
+ * Get the default table type based on the template type and entity capabilities.
  *
- * AnalyticalTable is used when entity has hierarchical and analytical data together, for CAP services with analytical data,
- * or for non-CAP services with complete analytical transformations.
- *
- * @param entitySet The entity set to check for annotations.
- * @param isCapService Whether the service is a CAP service (affects analytical requirements).
- * @returns True if AnalyticalTable should be used, false otherwise.
- */
-function shouldUseAnalyticalTable(entitySet: EntitySet, isCapService: boolean): boolean {
-    // Evaluate annotations once to avoid multiple iterations
-    const hasAnalytical = hasAggregateTransformations(entitySet);
-    const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
-
-    // No analytical data means no need for AnalyticalTable
-    if (!hasAnalytical) {
-        return false;
-    }
-
-    // If entity has both analytical and hierarchical data, always use AnalyticalTable
-    if (hasHierarchy) {
-        return true;
-    }
-
-    // For CAP services, analytical annotations are sufficient
-    if (isCapService) {
-        return true;
-    }
-
-    // For non-CAP services, require complete analytical transformations
-    return hasAggregateTransformationsForEntitySet(entitySet, transformationsRequiredForAnalyticalTable);
-}
-
-/**
- * Get the default table type based on the template type and previous answers.
- *
- * @param templateType the template type of the application to be generated from the prompt answers
+ * @param templateType the template type of the application to be generated
  * @param metadata the metadata (edmx) string of the service
  * @param odataVersion the OData version of the service
  * @param isCapService whether the service is a CAP service or not
  * @param mainEntitySetName the name of the main entity set
- * @param currentTableType the current table type selected by the user
- * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
+ * @returns the optimal table type for the given entity
  */
 export function getDefaultTableType(
     templateType: TemplateType,
     metadata: ConvertedMetadata,
     odataVersion: OdataVersion,
     isCapService: boolean,
-    mainEntitySetName?: string,
-    currentTableType?: TableType
-): { tableType: TableType; setAnalyticalTableDefault: boolean } {
-    let tableType: TableType;
-    let setAnalyticalTableDefault = false;
-
+    mainEntitySetName?: string
+): TableType {
     // Find the entity set once for all annotation checks
     const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
 
-    if (entitySet) {
-        if (
-            (templateType === 'lrop' || templateType === 'worklist') &&
-            odataVersion === OdataVersion.v4 &&
-            shouldUseAnalyticalTable(entitySet, isCapService)
-        ) {
-            // Use AnalyticalTable for entities with analytical data based on optimized annotation evaluation
-            tableType = 'AnalyticalTable';
-            setAnalyticalTableDefault = true;
-        } else if (
-            (templateType === 'lrop' || templateType === 'worklist') &&
-            odataVersion === OdataVersion.v4 &&
-            hasRecursiveHierarchyForEntitySet(entitySet)
-        ) {
-            // If the main entity type is annotated with Hierarchy.RecursiveHierarchy, use TreeTable as default
-            tableType = 'TreeTable';
-        } else if (templateType === 'alp') {
-            // For ALP, use AnalyticalTable as default
-            tableType = 'AnalyticalTable';
-        } else if (currentTableType) {
-            // If the user has already selected a table type use it
-            tableType = currentTableType;
-        } else {
-            // Default to ResponsiveTable for other cases
-            tableType = 'ResponsiveTable';
-        }
-    } else if (templateType === 'alp') {
-        // For ALP, use AnalyticalTable as default even if entity set is not found
-        tableType = 'AnalyticalTable';
-    } else if (currentTableType) {
-        // If the user has already selected a table type use it
-        tableType = currentTableType;
-    } else {
-        // Default to ResponsiveTable for other cases
-        tableType = 'ResponsiveTable';
+    // Handle ALP template with OData v2 - always use AnalyticalTable
+    if (templateType === 'alp' && odataVersion === OdataVersion.v2) {
+        return 'AnalyticalTable';
     }
-    return {
-        tableType,
-        setAnalyticalTableDefault
-    };
+
+    // Handle OData v4 specific logic
+    if (odataVersion === OdataVersion.v4 && entitySet) {
+        const canUseAnalytical = templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp';
+        const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
+        const hasAnalyticalData = hasAggregateTransformations(entitySet);
+
+        // Check for analytical capabilities first (highest priority)
+        if (canUseAnalytical && hasAnalyticalData) {
+            // For CAP services, any analytical data is sufficient
+            // For non-CAP services, require complete transformations
+            const hasAnalyticalCapabilities = shouldUseAnalyticalTable(entitySet, !isCapService);
+            if (hasAnalyticalCapabilities) {
+                return 'AnalyticalTable';
+            }
+        }
+
+        // Check for hierarchical data only (no analytical data or analytical requirements not met)
+        if ((templateType === 'lrop' || templateType === 'worklist') && hasHierarchy) {
+            return 'TreeTable';
+        }
+    }
+
+    // Default fallback to ResponsiveTable
+    return 'ResponsiveTable';
 }

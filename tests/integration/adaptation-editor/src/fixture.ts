@@ -17,10 +17,12 @@ import {
     type ProjectConfig
 } from './project';
 import { satisfies } from 'semver';
+import { generateFeV4Project } from './project/builder';
 
 export type TestOptions = {
     previewFrame: FrameLocator;
     testSkipper: boolean;
+    projectConfigAnnotation: boolean;
 };
 
 // Avoid installing npm packages every time, but use symlink instead
@@ -82,6 +84,28 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         }
     ],
     projectConfig: [SIMPLE_APP, { option: true, scope: 'worker' }],
+    // Inject projectConfig into test annotations so reporters can consume it reliably
+    projectConfigAnnotation: [
+        async ({ projectConfig }, use, testInfo): Promise<void> => {
+            try {
+                const payload = (() => {
+                    try {
+                        return JSON.stringify({ projectConfig });
+                    } catch {
+                        return JSON.stringify({ projectConfig: projectConfig.id ?? projectConfig });
+                    }
+                })();
+                testInfo.annotations.push({
+                    type: 'projectConfig',
+                    description: payload
+                });
+            } catch {
+                // ignore annotation failures
+            }
+            await use(true);
+        },
+        { scope: 'test', auto: true }
+    ],
     log: [
         async ({}, use, testInfo): Promise<void> => {
             const logger = createLogger(testInfo.parallelIndex);
@@ -97,7 +121,19 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
 
             if (projectConfig.type === 'generated') {
                 if (projectConfig.kind === 'adp') {
-                    await generateUi5Project(projectConfig.baseApp, workerInfo.parallelIndex.toString(), ui5Version);
+                    if (projectConfig.baseApp.kind === 'fe-v4') {
+                        await generateFeV4Project(
+                            projectConfig.baseApp,
+                            workerInfo.parallelIndex.toString(),
+                            ui5Version
+                        );
+                    } else {
+                        await generateUi5Project(
+                            projectConfig.baseApp,
+                            workerInfo.parallelIndex.toString(),
+                            ui5Version
+                        );
+                    }
                     const root = await generateAdpProject(
                         projectConfig,
                         workerInfo.parallelIndex.toString(),
@@ -159,7 +195,12 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         await page.goto(
             `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`
         );
-        await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 15_000 });
+        await expect(
+            page.getByRole('button', { name: 'UI Adaptation' }),
+            'Check `UIAdaptation` mode in the toolbar is enabled'
+        ).toBeEnabled({
+            timeout: 30_000
+        });
         // Each test will get a "page" that already has the person name.
         await use(page);
 
