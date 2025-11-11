@@ -1,33 +1,14 @@
-export type ObjectPageHeaderAction = 'edit' | 'save' | 'delete' | 'custom';
-
-export interface ObjectPageHeaderToolbar {
-    readonly hasBreadcrumbs: boolean;
-    readonly actions: readonly ObjectPageHeaderAction[];
-}
-
-export type ObjectPageHeaderFeature = 'title' | 'subtitle' | 'content' | 'expandCollapse' | 'pin';
-
-export interface ObjectPageHeaderContent {
-    readonly features: readonly ObjectPageHeaderFeature[];
-}
-
-export type ObjectPageSectionKind = 'form' | 'table' | 'custom';
-
-export interface ObjectPageSectionSummary {
-    readonly id: string;
-    readonly title?: string;
-    readonly kind: ObjectPageSectionKind;
-    readonly buildingBlocks?: readonly string[];
-}
-
-export interface ObjectPageFooterToolbar {
-    readonly actions: readonly string[];
-}
+import type { ObjectPageHeader } from '@sap/ux-specification/dist/types/src/v4/controls/ObjectPageHeader';
+import type { ObjectPageLayout } from '@sap/ux-specification/dist/types/src/v4/controls/ObjectPageLayout';
+import type {
+    GenericSections,
+    CustomSections
+} from '@sap/ux-specification/dist/types/src/v4/controls/ObjectPageSection';
+import type { ObjectPageFooter } from '@sap/ux-specification/dist/types/src/v4/controls/ObjectPageFooter';
 
 export interface ObjectPageAnalysis {
-    readonly headerToolbar?: ObjectPageHeaderToolbar;
-    readonly headerContent?: ObjectPageHeaderContent;
-    readonly sectionCount?: number;
-    readonly sections?: readonly ObjectPageSectionSummary[];
-    readonly footerToolbar?: ObjectPageFooterToolbar;
+    readonly header?: ObjectPageHeader;
+    readonly layout?: ObjectPageLayout;
+    readonly sections?: GenericSections | CustomSections;
+    readonly footer?: ObjectPageFooter;
 }

@@ -1,47 +1,18 @@
-export type ListReportHeaderAction = 'share' | 'sendEmail' | 'edit' | 'custom';
-export type ListReportHeaderFeature = 'expandCollapse' | 'pin';
+import type { Header } from '@sap/ux-specification/dist/types/src/v4/controls/Header';
+import type { FilterBar } from '@sap/ux-specification/dist/types/src/v4/controls/FilterBar';
+import type {
+    TableSettings,
+    SelectionMode,
+    TableTypeV4,
+    EnableMassEdit
+} from '@sap/ux-specification/dist/types/src/v4/controls/Table';
 
-export interface ListReportHeaderAnalysis {
-    readonly hasVariantManagement: boolean;
-    readonly actions: readonly ListReportHeaderAction[];
-    readonly features: readonly ListReportHeaderFeature[];
-}
-
-export type FilterBarMode = 'standard' | 'custom' | 'hybrid' | 'unknown';
-export type FilterBarAction = 'autoLoad' | 'adaptFilters';
-
-export interface ListReportFilterBarAnalysis {
-    readonly mode: FilterBarMode;
-    readonly actions: readonly FilterBarAction[];
-    readonly standardFilterCount?: number;
-    readonly customFilterCount?: number;
-}
-
-export type TableType = 'grid' | 'responsive' | 'tree' | 'analytical' | 'unknown';
-export type SelectionMode = 'none' | 'single' | 'multi';
-
-export interface TableToolbarActions {
-    readonly standardActions: readonly string[];
-    readonly customActions: readonly string[];
-}
-
-export interface TableColumnSummary {
-    readonly kind: string;
-    readonly isCustom: boolean;
-}
-
-export interface ListReportTableAnalysis {
-    readonly type: TableType;
-    readonly columnCount: number;
-    readonly customColumnCount: number;
-    readonly toolbar: TableToolbarActions;
-    readonly massEditEnabled: boolean;
-    readonly selectionMode: SelectionMode;
-    readonly columns: readonly TableColumnSummary[];
-}
+export type ListReportSelectionMode = SelectionMode;
+export type ListReportTableType = TableTypeV4;
+export type ListReportMassEdit = EnableMassEdit;
 
 export interface ListReportAnalysis {
-    readonly header?: ListReportHeaderAnalysis;
-    readonly filterBar?: ListReportFilterBarAnalysis;
-    readonly table?: ListReportTableAnalysis;
+    readonly header?: Header;
+    readonly filterBar?: FilterBar;
+    readonly table?: TableSettings;
 }

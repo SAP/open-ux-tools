@@ -1,3 +1,5 @@
+import type { AppType, ProjectType } from '@sap-ux/project-access';
+
 export type AnalysisStatus = 'not-implemented' | 'success' | 'unsupported-template';
 
 export interface AnalyseAppOptions {
@@ -6,9 +8,10 @@ export interface AnalyseAppOptions {
 }
 
 export interface UsageDimensions {
-    readonly templateId: string;
+    readonly templateId?: string;
     readonly templateVersion?: string;
-    readonly deployTarget?: string;
+    readonly projectType?: ProjectType;
+    readonly appType?: AppType;
 }
 
 export interface BillOfMaterialsSummary {

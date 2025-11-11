@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 import type { AnalyseAppOptions } from '../types';
 import type { ManifestDocument } from '../types/resources';
+import type { Manifest } from '@sap-ux/project-access';
 
 /**
  * Load the manifest.json file for the given Fiori application.
@@ -20,7 +21,7 @@ export async function loadManifestDocument(
         const manifestContent = await fs.readFile(manifestPath, 'utf8');
         return {
             path: manifestPath,
-            content: JSON.parse(manifestContent) as Record<string, unknown>
+            content: JSON.parse(manifestContent) as Manifest
         };
     } catch (error: unknown) {
         logger?.debug(`Unable to load manifest.json: ${String(error)}`);

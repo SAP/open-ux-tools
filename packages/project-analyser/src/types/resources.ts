@@ -1,6 +1,8 @@
+import type { Manifest } from '@sap-ux/project-access';
+
 export interface ManifestDocument {
     readonly path: string;
-    readonly content: Record<string, unknown>;
+    readonly content: Manifest;
 }
 
 export interface AnnotationDocument {

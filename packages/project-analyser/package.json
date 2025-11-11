@@ -33,6 +33,7 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap/ux-specification": "1.136.6",
         "fast-glob": "3.3.3"
     },
     "devDependencies": {
