@@ -7,6 +7,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Adds a command to add the virtual html files hosted by the preview middleware to the file system.
@@ -15,10 +16,14 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
  */
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
-        .description('Add HTML files for local preview and testing, using the preview middleware configuration.')
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
-        .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .description(
+            `Add HTML files for local preview and testing to the project. It uses the configuration from the \`ui5.yaml\` file as default, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add html\``
+        )
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();

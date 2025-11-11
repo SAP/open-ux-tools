@@ -15,11 +15,15 @@ import { runNpmInstallCommand } from '../../common';
  */
 export function addAddMockserverConfigCommand(cmd: Command): void {
     cmd.command('mockserver-config [path]')
-        .description('Add configuration for the mockserver module to enable local OData mocking.')
-        .option('-i, --interactive', 'ask for config options, otherwise use defaults')
-        .option('-n, --skip-install', 'skip npm install step')
-        .option('-s, --simulate', 'simulate only do not write or install; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .description(
+            `Add the necessary configuration for the \`@sap-ux/ui5-middleware-fe-mockserver\` mockserver module to enable local OData mocking.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add mockserver-config\``
+        )
+        .option('-i, --interactive', 'Ask for config options or otherwise, use the default options.')
+        .option('-n, --skip-install', 'Skip the `npm install` step.')
+        .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets `--verbose`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
