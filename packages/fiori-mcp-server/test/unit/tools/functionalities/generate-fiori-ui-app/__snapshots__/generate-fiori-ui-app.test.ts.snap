@@ -158,7 +158,7 @@ Object {
             "type": "string",
           },
           "generationSourceVersion": Object {
-            "default": "0.2.4",
+            "default": "0.4.0",
             "type": "string",
           },
         },
