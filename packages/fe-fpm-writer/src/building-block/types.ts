@@ -413,10 +413,9 @@ export interface CustomFilterField extends BuildingBlock {
      */
     label: string;
     /**
-     * Defines where this filter should be placed relative to the defined anchor.
-     * Allowed values are `Before` and `After`.
+     * Position of a custom filter relative to an anchor element.
      */
-    placement: 'Before' | 'After';
+    position?: Position;
     /**
      * The property used to filter by.
      */

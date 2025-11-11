@@ -14,6 +14,8 @@ import {
     type TemplateConfig,
     type CustomFilterField
 } from './types';
+import type { InternalCustomFilter } from '../filter/types';
+
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -55,7 +57,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     fs?: Editor
 ): Promise<Editor> {
     debugger;
-    console.log('last attempt');
+    console.log('last  kitty');
 
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
@@ -256,33 +258,39 @@ function processBuildingBlock<T extends BuildingBlock>(
 
     if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment) {
         const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
+
+        const config: InternalCustomFilter = {} as InternalCustomFilter;
+        if (buildingBlockData.embededFragment) {
+            config.controlID = buildingBlockData.filterFieldKey!;
+            config.label = buildingBlockData.label!;
+            config.property = buildingBlockData.property!;
+            config.required = buildingBlockData.required ?? false;
+            config.position = buildingBlockData.position!;
+
+            config.eventHandler = buildingBlockData.embededFragment.eventHandler;
+            config.ns = embededFragment.ns;
+            config.name = embededFragment.name;
+            config.path = embededFragment.path;
+        }
+
         const viewPath = join(
             embededFragment.path,
             `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
         );
 
         // Apply event handler
-        if (buildingBlockData.embededFragment.eventHandler) {
-            buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
-                fs,
-                buildingBlockData.embededFragment,
-                buildingBlockData.embededFragment.eventHandler,
-                {
-                    controllerSuffix: false,
-                    typescript: buildingBlockData.embededFragment.typescript
-                }
-            );
+        if (config.eventHandler) {
+            config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, {
+                controllerSuffix: false,
+                typescript: buildingBlockData.embededFragment.typescript,
+                templatePath: 'filter/Controller'
+            });
         }
 
-        buildingBlockData.embededFragment.content = getDefaultFragmentContent(
-            'Sample Text',
-            buildingBlockData.embededFragment.eventHandler
-        );
         if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
+            fs.copyTpl(getTemplatePath('filter/Fragment.xml'), viewPath, config);
         }
 
-        // check xmlDocument for macrosFilterBar element
         const filterBarResult = updateAggregationPathForFilterBar(xmlDocument, aggregationPath, buildingBlockData);
         updatedAggregationPath = filterBarResult.updatedAggregationPath;
         hasAggregation = filterBarResult.hasFilterFields;
