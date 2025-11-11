@@ -61,10 +61,10 @@ const logger = new ToolsLogger();
 
 //prettier-ignore
 export const execution = (async () => { //NOSONAR
-    if (!packageName) {
+    if (packageName) {
+        await fetchAndSaveReadme(packageName, logger);
+    } else {
         logger.error('Please provide a package name as an argument.');
         process.exit(1);
-    } else {
-        await fetchAndSaveReadme(packageName, logger);
     }
 })();
