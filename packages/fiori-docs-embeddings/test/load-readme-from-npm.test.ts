@@ -44,7 +44,7 @@ describe('download readme from npmjs', () => {
         const expectedFileName = `${testPackageName.split('/').pop()}-README.md`;
         expect(mockedWriteFile).toHaveBeenCalledWith(
             expect.stringContaining(expectedFileName),
-            testReadmeContent,
+            `\n--------------------------------\n${testReadmeContent}`,
             'utf-8'
         );
     });
