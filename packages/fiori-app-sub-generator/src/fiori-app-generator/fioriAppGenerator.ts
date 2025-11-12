@@ -282,6 +282,12 @@ export class FioriAppGenerator extends Generator {
                         this.env.adapter as unknown as Adapter
                     );
                 this.state.project = Object.assign(this.state.project ?? {}, ui5AppAnswers, {
+                    // Ensure required properties are always set (required by Project interface)
+                    targetFolder: ui5AppAnswers.targetFolder ?? this.state.project?.targetFolder ?? '',
+                    name: ui5AppAnswers.name ?? this.state.project?.name ?? '',
+                    title: ui5AppAnswers.title ?? this.state.project?.title ?? '',
+                    description: ui5AppAnswers.description ?? this.state.project?.description ?? '',
+                    ui5Theme: ui5AppAnswers.ui5Theme ?? this.state.project?.ui5Theme ?? '',
                     ui5Version: ui5AppAnswers?.ui5Version || localUI5Version,
                     localUI5Version
                 });

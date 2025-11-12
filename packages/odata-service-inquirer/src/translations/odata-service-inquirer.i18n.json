@@ -183,6 +183,10 @@
             "breadcrumb": "Generate Annotations",
             "valueHelpsAnnotationsInfoMessage": "Basic value helps will also be created."
         },
+        "valueHelpDownload": {
+            "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+            "hint": "Download value help metadata for improved user experience with dropdowns and search helps."
+        },
         "presentationQualifier": {
             "message": "Qualifier",
             "hint": "Represents the qualifier of the `SelectionPresentationVariant`. The analytical list page looks for a `SelectionPresentationVariant` with this qualifier and if not found, it looks for a `PresentationVariant` with this qualifier."

@@ -24,6 +24,7 @@ import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '..
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
+import { getValueHelpDownloadPrompt } from '../../../shared-prompts/shared-prompts';
 import {
     getSelectedServiceLabel,
     getSelectedServiceMessage,
@@ -180,6 +181,9 @@ export function getSystemServiceQuestion(
     }
 
     const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
+
+    // Add value help download prompt for V4 services
+    questions.push(getValueHelpDownloadPrompt(connectValidator, promptNamespace));
 
     // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
     if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.useAutoComplete) {

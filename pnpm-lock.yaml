@@ -2289,7 +2289,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.3
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -3082,6 +3082,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -3104,9 +3107,6 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
-      '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -11391,6 +11391,10 @@ packages:
       - debug
       - typescript
     dev: true
+
+  /@sap-ux/fiori-docs-embeddings@0.4.3:
+    resolution: {integrity: sha512-BtiB/VLoEi3EpB6ZzwSRiCB3RQWoTslzsOnOgfy7/LH91FqaZ5OFldfsj9OhzWXMEENQBcF3AnKwFHBuafB5+w==}
+    dev: false
 
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}

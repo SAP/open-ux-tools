@@ -220,7 +220,8 @@ export async function transformState<T>(
                 project.skipAnnotations !== true
                     ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
                     : undefined,
-            ignoreCertError: service.ignoreCertError
+            ignoreCertError: service.ignoreCertError,
+            valueListReferences: service.valueListReferences
         };
 
         const destinationName = service.destinationName ?? service.connectedSystem?.destination?.Name;
