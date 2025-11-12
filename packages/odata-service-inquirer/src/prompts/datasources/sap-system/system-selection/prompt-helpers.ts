@@ -274,24 +274,25 @@ export async function createSystemChoices(
  */
 export function findDefaultSystemSelectionIndex(
     systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
-    defaultChoice: string | undefined
+    defaultChoice: string | { value?: string | undefined } | undefined
 ): number {
-    if (!defaultChoice) {
+    const choice = typeof defaultChoice === 'string' ? defaultChoice : defaultChoice?.value;
+    if (!choice) {
         return -1;
     }
-    const defaultChoiceIndex = systemChoices.findIndex((choice) => {
-        const { type: systemType, system } = choice.value as SystemSelectionAnswerType;
+    const defaultChoiceIndex = systemChoices.findIndex((systemChoice) => {
+        const { type: systemType, system } = systemChoice.value as SystemSelectionAnswerType;
         if (systemType === 'destination') {
-            return (system as Destination).Name === defaultChoice;
+            return (system as Destination).Name === choice;
         }
         if (systemType === 'backendSystem') {
-            return (system as BackendSystem).name === defaultChoice;
+            return (system as BackendSystem).name === choice;
         }
         if (systemType === 'newSystemChoice') {
-            return defaultChoice === NewSystemChoice;
+            return choice as string === NewSystemChoice;
         }
         if (systemType === 'cfAbapEnvService') {
-            return defaultChoice === CfAbapEnvServiceChoice;
+            return choice as string === CfAbapEnvServiceChoice;
         }
     });
     return defaultChoiceIndex;

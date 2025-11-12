@@ -154,7 +154,9 @@ export async function getServiceChoices(
     }
 
     if (serviceFilter) {
-        flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
+        flatServices = flatServices.filter(
+            (service) => serviceFilter.includes(service.id) || serviceFilter.includes(service.path)
+        );
     }
     return createServiceChoices(flatServices);
 }

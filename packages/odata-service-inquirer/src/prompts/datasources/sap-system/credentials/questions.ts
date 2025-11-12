@@ -6,11 +6,12 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
-import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -30,7 +31,8 @@ export enum BasicCredentialsPromptNames {
 export function getCredentialsPrompts<T extends Answers>(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
-    sapClient?: { sapClient: string | undefined; isValid: boolean }
+    sapClient?: { sapClient: string | undefined; isValid: boolean },
+    requiredOdataVersion?: OdataVersion
 ): (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
@@ -105,7 +107,8 @@ export function getCredentialsPrompts<T extends Answers>(
                     password,
                     {
                         sapClient: sapClient?.sapClient || selectedSystemClient,
-                        isSystem
+                        isSystem,
+                        odataVersion: convertODataVersionType(requiredOdataVersion)
                     }
                 );
                 if (valResult === true && connectionValidator.serviceProvider) {
@@ -128,6 +131,13 @@ export function getCredentialsPrompts<T extends Answers>(
                 ) {
                     return {
                         message: t('warnings.certErrorIgnoredByNodeSetting'),
+                        severity: Severity.warning
+                    };
+                }
+                // Lower priority than the cert error warning - we can only show one at a time, hence this should always be last
+                if (PromptState.odataService.connectedSystem?.backendSystem) {
+                    return {
+                        message: t('texts.passwordStoreWarning'),
                         severity: Severity.warning
                     };
                 }
