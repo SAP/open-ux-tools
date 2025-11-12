@@ -1,5 +1,47 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.113
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+-   Updated dependencies [92ec778]
+    -   @sap-ux/adp-tooling@0.18.2
+    -   @sap-ux/flp-config-inquirer@0.4.61
+
+## 0.1.112
+
+### Patch Changes
+
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+    -   @sap-ux/flp-config-inquirer@0.4.60
+
+## 0.1.111
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+    -   @sap-ux/flp-config-inquirer@0.4.59
+
+## 0.1.110
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+-   @sap-ux/inquirer-common@0.9.3
+-   @sap-ux/flp-config-inquirer@0.4.58
+
+## 0.1.109
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/flp-config-inquirer@0.4.57
+-   @sap-ux/adp-tooling@0.17.7
+
 ## 0.1.108
 
 ### Patch Changes

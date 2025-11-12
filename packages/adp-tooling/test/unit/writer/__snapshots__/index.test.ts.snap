@@ -34,7 +34,7 @@ Object {
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -57,7 +57,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -151,7 +151,7 @@ Object {
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -174,7 +174,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -268,7 +268,7 @@ Object {
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -291,7 +291,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -389,7 +389,7 @@ Object {
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -454,7 +454,7 @@ dist/
   "../minimal/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -560,7 +560,7 @@ Object {
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -583,7 +583,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -682,7 +682,7 @@ Object {
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -705,7 +705,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -804,7 +804,7 @@ dist/
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -918,7 +918,7 @@ dist/
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1035,7 +1035,7 @@ dist/
   "../deploy/ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1058,7 +1058,7 @@ builder:
   "../deploy/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1167,7 +1167,7 @@ dist/
   "../fiori-tools/ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1190,7 +1190,7 @@ builder:
   "../fiori-tools/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1297,7 +1297,7 @@ dist/
   "../minimal/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1406,7 +1406,7 @@ dist/
   "../s4hana/ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1429,7 +1429,7 @@ builder:
   "../s4hana/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1491,11 +1491,6 @@ builder:
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
-
-# FLP Configuration
-
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title=testTitle
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=testSubTitle
 ",
     "state": "modified",
   },
@@ -1515,33 +1510,6 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
-      \\"content\\": {
-        \\"inbound\\": {
-          \\"my.test.app.InboundID\\": {
-            \\"action\\": \\"sampleAction\\",
-            \\"semanticObject\\": \\"sampleObj\\",
-            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
-            \\"signature\\": {
-              \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {}
-            },
-            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
-          }
-        }
-      },
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
-      \\"content\\": {
-        \\"inboundId\\": \\"my.test.app.InboundID\\"
-      },
-      \\"texts\\": {}
     }
   ]
 }
@@ -1588,7 +1556,7 @@ dist/
   "../s4hanaDestination/ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1611,7 +1579,7 @@ builder:
   "../s4hanaDestination/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1674,11 +1642,6 @@ builder:
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
-
-# FLP Configuration
-
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title=testTitle
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=testSubTitle
 ",
     "state": "modified",
   },
@@ -1698,33 +1661,6 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
-      \\"content\\": {
-        \\"inbound\\": {
-          \\"my.test.app.InboundID\\": {
-            \\"action\\": \\"sampleAction\\",
-            \\"semanticObject\\": \\"sampleObj\\",
-            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
-            \\"signature\\": {
-              \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {}
-            },
-            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
-          }
-        }
-      },
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
-      \\"content\\": {
-        \\"inboundId\\": \\"my.test.app.InboundID\\"
-      },
-      \\"texts\\": {}
     }
   ]
 }
@@ -1771,7 +1707,7 @@ dist/
   "../s4hanaWithInboundId/ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1794,7 +1730,7 @@ builder:
   "../s4hanaWithInboundId/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1856,11 +1792,6 @@ builder:
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
-
-# FLP Configuration
-
-my.test.app_sap.app.crossNavigation.inbounds.sampleId.title=
-my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
 ",
     "state": "modified",
   },
@@ -1880,31 +1811,6 @@ my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
-      \\"content\\": {
-        \\"inbound\\": {
-          \\"sampleId\\": {
-            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.title}}\\",
-            \\"signature\\": {
-              \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {}
-            },
-            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle}}\\"
-          }
-        }
-      },
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
-      \\"content\\": {
-        \\"inboundId\\": \\"sampleId\\"
-      },
-      \\"texts\\": {}
     }
   ]
 }
@@ -1976,7 +1882,7 @@ dist/
   "../ts-support/ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -1999,7 +1905,7 @@ builder:
   "../ts-support/ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application
@@ -2128,7 +2034,7 @@ dist/
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: my-test-app
 type: application

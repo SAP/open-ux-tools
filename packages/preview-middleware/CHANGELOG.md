@@ -1,5 +1,44 @@
 # @sap-ux/preview-middleware
 
+## 0.23.53
+
+### Patch Changes
+
+-   Updated dependencies [92ec778]
+    -   @sap-ux/adp-tooling@0.18.2
+
+## 0.23.52
+
+### Patch Changes
+
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+
+## 0.23.51
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+
+## 0.23.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+
+## 0.23.49
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
+## 0.23.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.7
+
 ## 0.23.47
 
 ### Patch Changes

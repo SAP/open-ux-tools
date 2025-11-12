@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'fs/promises';
 import { join } from 'node:path';
 import { expect, test, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
-import { gte } from 'semver';
+import { gte, lte } from 'semver';
 
 interface Changes {
     annotations: Record<string, string>;
@@ -9,6 +9,8 @@ interface Changes {
     fragments: Record<string, string | RegExp>;
     changes: object[];
 }
+
+const escapedId = (id: string) => id.replace(/\\/g, '\\\\').replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
 
 /**
  * Creates a locator for a button element with description for better test reporting.
@@ -27,7 +29,9 @@ export function getButtonLocator(page: Page | FrameLocator, name: string, contex
  */
 export class ListReport {
     private readonly frame: FrameLocator;
+    private readonly feVersion: 'fev2' | 'fev4';
     private readonly ui5Version: string;
+    private readonly context: string = 'Running Application Preview';
     /**
      * @returns Locator for the "Go" button.
      */
@@ -78,6 +82,9 @@ export class ListReport {
      * @returns Locator for the table title/header.
      */
     get tableTitle(): Locator {
+        if (this.feVersion === 'fev4') {
+            return this.frame.locator('.sapMListHdr .sapMTitle');
+        }
         return this.frame.locator('.sapMTitle.sapUiCompSmartTableHeader');
     }
 
@@ -91,10 +98,129 @@ export class ListReport {
     }
 
     /**
-     * @param frame - FrameLocator for the List Report.
+     * Gets the control ID by its label.
+     *
+     * @param text - The label of the control.
+     * @returns Promise resolving to the control ID.
      */
-    constructor(frame: FrameLocator) {
+    async getControlIdByLabel(text: string): Promise<string> {
+        const controlLocator = getButtonLocator(this.frame, text, this.context);
+        const controlId = await controlLocator.getAttribute('id');
+        return controlId!;
+    }
+
+    /**
+     * Helper method to get control ID by its label text.
+     *
+     * @param text - The label text of the control.
+     * @returns Promise resolving to the control ID.
+     */
+    async checkControlVisible(text: string): Promise<void> {
+        await test.step(`Check control with label \`${text}\` is visible in the \`${this.context}\``, async () => {
+            const selector = await this.getControlIdByLabel(text);
+            await expect(this.frame.locator(`[id="${selector}"]`)).toBeVisible();
+        });
+    }
+
+    /*
+     * Clicks on the value help button of the `Date Property` filter.
+     * @param dialog - Whether to check the dialog after clicking the value help button.
+     */
+    clickOnDatePropertyValueHelper = async (dialog = false): Promise<void> => {
+        await test.step('Click on value help button of `Date Property` filter', async () => {
+            const labelId =
+                this.feVersion === 'fev4'
+                    ? 'fiori.elements.v4.0::RootEntityList--fe::FilterBar::RootEntity::FilterField::DateProperty-label'
+                    : 'fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--listReportFilter-filterItem-___INTERNAL_-DateProperty';
+            // Select the parent div of the label, then its sibling div, then the descendant with the required attribute
+            const valueHelpSelector =
+                this.feVersion === 'fev4' || (this.feVersion === 'fev2' && lte(this.ui5Version, '1.130.0'))
+                    ? `div:has(> [id="${escapedId(labelId)}"]) ~ div [title="Open Picker"],
+                    div:has(> [id="${escapedId(labelId)}"]) ~ div [aria-label="Show Value Help"],
+                    div:has(> [id="${escapedId(labelId)}"]) ~ div [aria-label="Open Picker"],
+                    div:has(> [id="${escapedId(
+                        labelId
+                    )}"]) ~ div [id="fiori\\.elements\\.v4\\.0\\:\\:RootEntityList--fe\\:\\:FilterBar\\:\\:RootEntity\\:\\:FilterField\\:\\:DateProperty-inner-input-vhi"]
+                  `
+                    : `div:has(> [id="${escapedId(labelId)}"]) div [title="Open Picker"], div:has(> [id="${escapedId(
+                          labelId
+                      )}"]) div [aria-label="Show Value Help"]`;
+            const locator = this.frame.locator(valueHelpSelector);
+            await expect(locator.first()).toBeAttached();
+            await locator.first().click();
+        });
+        if (dialog) {
+            await test.step('Check `Define Conditions: Date Property` Dialog is open and click on value help button', async () => {
+                const dialog = this.frame.getByRole('dialog');
+                await expect(dialog.getByText('Define Conditions: Date Property')).toBeVisible();
+                await dialog.getByTitle('Open Picker').click();
+                await this.checkCalendarDisplayed();
+                await this.frame
+                    .getByRole('button', { name: 'Cancel' })
+                    .describe(`button \`Cancel\` in the  \`Define Conditions: Date Property\` dialog`)
+                    .click();
+            });
+        }
+    };
+
+    /**
+     * Checks that the calendar popover is displayed.
+     */
+    checkCalendarDisplayed = async (): Promise<void> => {
+        await test.step('Check that the calendar popover is displayed', async () => {
+            await expect(this.frame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
+        });
+    };
+
+    /**
+     * Returns locators for all semantic date range options for a given property name.
+     *
+     * @param frame - FrameLocator for the preview frame.
+     * @param propertyName - Property name, e.g. "Date Property".
+     * @returns Locator for the "li" elements in the popover.
+     */
+    async getSemanticDateOptions(frame: FrameLocator, propertyName: string): Promise<string[]> {
+        const popoverId =
+            this.feVersion === 'fev2'
+                ? escapedId(
+                      `fiori.elements.v2.0::sap.suite.ui.generic.template.ListReport.view.ListReport::RootEntity--listReportFilter-filterItemControl_BASIC-${propertyName}-RP-popover-cont`
+                  )
+                : escapedId(
+                      `fiori.elements.v4.0::RootEntityList--fe::FilterBar::RootEntity::FilterField::${propertyName}-inner-RP-popover-cont`
+                  );
+        const optionList = frame.locator(`#${popoverId} ul > li`);
+        const count = await optionList.count();
+        const options: string[] = [];
+        for (let i = 0; i < count; i++) {
+            options.push(await optionList.nth(i).innerText());
+        }
+        return options;
+    }
+
+    /**
+     * Check that semantic date range options exist for a given property name.
+     *
+     * @param propertyName - Property name, e.g. "Date Property".
+     * @param expectedOptions - Expected semantic date range options.
+     */
+    async checkSemanticDateOptionsExist(propertyName: string, expectedOptions: string[]): Promise<void> {
+        await test.step(`Check semantic date range options have \`${expectedOptions}\` for \`${propertyName}\` filter`, async () => {
+            const options = await this.getSemanticDateOptions(this.frame, propertyName);
+            for (const expectedOption of expectedOptions) {
+                expect(options).toContain(expectedOption);
+            }
+        });
+    }
+
+    /**
+     * @param frame - FrameLocator for the List Report.
+     * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
+     * @param ui5Version - UI5 version.
+     */
+    constructor(frame: FrameLocator, feVersion: 'fev2' | 'fev4' = 'fev2', ui5Version: string = '') {
         this.frame = frame;
+        this.feVersion = feVersion;
+        this.ui5Version = ui5Version;
     }
 }
 
@@ -104,6 +230,7 @@ export class ListReport {
 export class TableSettings {
     private readonly frame: FrameLocator;
     private dialogName: string;
+    private feVersion: 'fev2' | 'fev4';
     /**
      * @returns Locator for the dialog containing table settings.
      */
@@ -117,6 +244,25 @@ export class TableSettings {
      * @returns {Promise<string[]>} An array of visible texts from the first column.
      */
     async getSettingsTexts(): Promise<string[]> {
+        if (this.feVersion === 'fev4') {
+            const rows = this.dialog.locator('tbody > tr');
+            const count = await rows.count();
+            const texts: string[] = [];
+            for (let i = 0; i < count; i++) {
+                const row = rows.nth(i);
+                // skip group/header rows
+                const roleDesc = await row.getAttribute('aria-roledescription');
+                if (roleDesc === 'Group Row') {
+                    continue;
+                }
+                const bdi = row.locator('bdi');
+                if ((await bdi.count()) === 0) {
+                    continue;
+                }
+                texts.push((await bdi.first().innerText()).trim());
+            }
+            return texts;
+        }
         const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
         const count = await rows.count();
         const texts: string[] = [];
@@ -132,12 +278,19 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move up.
      */
     async moveActionUp(index: number): Promise<void> {
-        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        let rows;
+        let modifiedIndex = index;
+        if (this.feVersion === 'fev4') {
+            modifiedIndex = index + 1; // adjust for header row
+            rows = this.dialog.locator('tbody > tr');
+        } else {
+            rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        }
         await test.step(`Hover over row \`${index + 1}\` and click on \`Move up\` button in the row of \`${
             this.dialogName
         }\` table`, async () => {
-            await rows.nth(index).hover();
-            await rows.nth(index).getByRole('button', { name: 'Move Up' }).click();
+            await rows.nth(modifiedIndex).hover();
+            await rows.nth(modifiedIndex).getByRole('button', { name: 'Move Up' }).click();
         });
     }
     /**
@@ -150,13 +303,62 @@ export class TableSettings {
             await this.dialog.getByRole('button', { name: 'OK' }).click();
         });
     }
+
+    /**
+     * Get tab names in the dialog.
+     *
+     * @returns An array of tab names.
+     */
+    async getTabNames(): Promise<string[]> {
+        // Find all elements with role="tab"
+        const tabLocators = this.dialog.locator('[role="tab"]');
+        const tabCount = await tabLocators.count();
+        const tabNames: string[] = [];
+        for (let i = 0; i < tabCount; i++) {
+            // Try aria-labelledby first
+            const tab = tabLocators.nth(i);
+            const labelledBy = await tab.getAttribute('aria-labelledby');
+            if (labelledBy) {
+                const labelSpan = this.dialog.locator(`#${labelledBy}`);
+                const labelText = await labelSpan.textContent();
+                if (labelText && labelText.trim()) {
+                    tabNames.push(labelText.trim());
+                    continue;
+                }
+            }
+            // Fallback: get visible text from tab itself
+            const tabText = await tab.textContent();
+            if (tabText && tabText.trim()) {
+                tabNames.push(tabText.trim());
+            }
+        }
+        return tabNames;
+    }
+
+    /**
+     * Checks that the specified tabs exist in the dialog.
+     *
+     * @param expectedTabs - An array of expected tab names.
+     * @returns Locator for the button to enable the "Clear" button in the filter bar.
+     */
+    checkTabsExist = async (expectedTabs: string[]): Promise<void> => {
+        await test.step(`Check tab(s) \`${expectedTabs.join(', ')}\` exist in the \`${
+            this.dialogName
+        }\` dialog`, async () => {
+            const tabNames = await this.getTabNames();
+            expect(tabNames).toEqual(expect.arrayContaining(expectedTabs));
+        });
+    };
+
     /**
      * @param frame - FrameLocator for the dialog.
      * @param dialogName - Name of the dialog.
+     * @param feVersion - The Fiori Elements version, either 'fev2' or 'fev4'. Defaults to 'fev2'.
      */
-    constructor(frame: FrameLocator, dialogName = 'View Settings') {
+    constructor(frame: FrameLocator, dialogName = 'View Settings', feVersion: 'fev2' | 'fev4' = 'fev2') {
         this.frame = frame;
         this.dialogName = dialogName;
+        this.feVersion = feVersion;
     }
 
     /**
@@ -165,7 +367,13 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move down.
      */
     async moveActionDown(index: number): Promise<void> {
-        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        let rows;
+        if (this.feVersion === 'fev4') {
+            rows = this.dialog.locator('tbody > tr');
+        } else {
+            rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        }
+
         await test.step(`Hover over row \`${index + 1}\` and click on Move down button in the row of \`${
             this.dialogName
         }\` table`, async () => {
@@ -173,7 +381,6 @@ export class TableSettings {
             await rows.nth(index).getByRole('button', { name: 'Move Down' }).click();
         });
     }
-
     /**
      * Checks given elements are visible.
      *
@@ -317,6 +524,62 @@ class QuickActionPanel {
      */
     get addLocalAnnotationFile(): Locator {
         return this.getButtonLocator('Add Local Annotation File');
+    }
+    /**
+     * @returns Locator for the button to Add Subpage.
+     */
+    get addSubPage(): Locator {
+        return this.getButtonLocator('Add Subpage');
+    }
+    /**
+     * Waits for the Object Page Quick Action panel to be loaded.
+     */
+    async waitForObjectPageQuickActionLoaded(): Promise<void> {
+        await this.page.getByText('OBJECT PAGE QUICK ACTIONS', { exact: true }).waitFor({ state: 'visible' });
+    }
+
+    /**
+     * @returns Locator for the button to Add Custom Page Action.
+     */
+    get addCustomPageAction(): Locator {
+        return this.getButtonLocator('Add Custom Page Action');
+    }
+
+    /**
+     * @returns Locator for the button to enable the "Clear" button in the filter bar.
+     */
+    get enableTableFilterForPageVariants(): Locator {
+        return this.getButtonLocator('Enable Table Filtering for Page Variants');
+    }
+
+    /**
+     * Checks if a quick action button is disabled.
+     *
+     * @param buttonName - Name of the button to check.
+     * @param title - Optional title to check for the disabled button.
+     * @returns Promise that resolves when the assertion passes.
+     */
+    async checkQADisabled(buttonName: string, title?: string): Promise<void> {
+        const button = this.getButtonLocator(buttonName);
+        if (title) {
+            await this.checkDisabledButtonTitle(buttonName, title);
+        }
+        const tooltip = title ? `and tooltip is \`${title}\`` : '';
+        await expect(button, `Check \`${buttonName}\` quick action is disabled ${tooltip}`).toBeDisabled({
+            timeout: 10000
+        });
+    }
+
+    /**
+     * Checks the title of a disabled button.
+     *
+     * @param buttonName - Name of the button to check.
+     * @param expectedTitle - Expected title of the disabled button.
+     * @returns Promise that resolves when the assertion passes.
+     */
+    private async checkDisabledButtonTitle(buttonName: string, expectedTitle: string): Promise<void> {
+        const button = this.getButtonLocator(buttonName);
+        await expect(button).toHaveAttribute('title', expectedTitle, { timeout: 10000 });
     }
 
     /**
@@ -560,42 +823,6 @@ export async function readChanges(root: string): Promise<Changes> {
 }
 
 /**
- * Compare changes against expected changes and create appropriate matchers.
- *
- * @param projectCopy path to projectCopy to check for changes
- * @param expected The actual changes object from test results
- * @returns An expect matcher for use in tests
- */
-export async function expectChanges(projectCopy: string, expected: Partial<Changes>): Promise<void> {
-    const matcher: Record<string, any> = {};
-
-    // Process file-based properties (fragments, annotations, coding) in a single pattern
-    const fileBasedProperties: (keyof Changes)[] = ['fragments', 'annotations', 'coding'];
-
-    for (const prop of fileBasedProperties) {
-        if (expected[prop]) {
-            const matchers: Record<string, any> = {};
-            for (const [filename, content] of Object.entries(expected[prop])) {
-                matchers[filename] = expect.stringMatching(new RegExp(content));
-            }
-            matcher[prop] = expect.objectContaining(matchers);
-        }
-    }
-
-    // Handle changes array with deep conversion
-    if (expected.changes) {
-        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
-        matcher.changes = expect.arrayContaining(changeMatchers);
-    }
-
-    await expect
-        .poll(async () => readChanges(projectCopy), {
-            message: 'make sure change file is created'
-        })
-        .toEqual(matcher);
-}
-
-/**
  * Recursively convert an object to expect matchers.
  *
  * @param obj Object to convert to expect matchers
@@ -620,10 +847,6 @@ function convertToExpectMatchers(obj: any): unknown {
             // Recursively convert nested objects/arrays
             if (value !== null && typeof value === 'object') {
                 result[key] = convertToExpectMatchers(value) as any;
-            }
-            // Convert strings to stringMatching
-            else if (typeof value === 'string') {
-                result[key] = expect.stringMatching(value);
             }
             // Keep other primitive types as is
             else {
@@ -668,6 +891,12 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
             }
             matcher[prop] = expect.objectContaining(matchers);
         }
+    }
+
+    // Handle changes array with deep conversion
+    if (expected.changes) {
+        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
+        matcher.changes = expect.arrayContaining(changeMatchers);
     }
 
     await test.step(description, async () => {

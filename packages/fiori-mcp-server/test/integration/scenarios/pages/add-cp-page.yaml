@@ -1,0 +1,11 @@
+config:
+    project: 'node-ai-created'
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Add Custom page to TravelObjectPage with name dummy in application with appPath: {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:validate
+      config:
+          file: webapp/manifest.json
+          snapshot: add-cp-page

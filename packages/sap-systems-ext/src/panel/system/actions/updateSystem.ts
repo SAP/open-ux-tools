@@ -131,7 +131,10 @@ async function postSavingError(
  * @returns true if the systems are the same, false otherwise
  */
 function compareSystems(currentSystem: BackendSystem, newSystem: BackendSystem): boolean {
-    return currentSystem.url === newSystem?.url && currentSystem.client === newSystem?.client;
+    return (
+        currentSystem.url.replace(/\/$/, '') === newSystem?.url.replace(/\/$/, '') &&
+        currentSystem.client === newSystem?.client
+    );
 }
 
 /**
