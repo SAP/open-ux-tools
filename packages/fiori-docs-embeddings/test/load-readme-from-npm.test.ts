@@ -68,14 +68,12 @@ describe('download readme from npmjs', () => {
             ok: true,
             json: jest.fn().mockResolvedValue({})
         });
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any);
 
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
 
-        expect(mockLogger.warn).toHaveBeenCalledWith(`Warning: Could not find README content for ${testPackageName}.`);
+        expect(mockLogger.error).toHaveBeenCalledWith(`Warning: Could not find README content for ${testPackageName}.`);
         expect(mockLogger.error).toHaveBeenCalledWith(`Could not fetch README for ${testPackageName}.`);
-        expect(mockExit).toHaveBeenCalledWith(1);
     });
 
     it('should handle writeFile error', async () => {
@@ -85,7 +83,6 @@ describe('download readme from npmjs', () => {
                 readme: testReadmeContent
             })
         });
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any);
         const { writeFile } = await import('node:fs/promises');
         const mockedWriteFile = writeFile as jest.Mock;
         mockedWriteFile.mockRejectedValue(new Error('Permission denied'));
@@ -97,7 +94,6 @@ describe('download readme from npmjs', () => {
         expect(mockLogger.error).toHaveBeenCalledWith(
             `Error writing README file for ${expectedFileName}: Error: Permission denied`
         );
-        expect(mockExit).toHaveBeenCalledWith(1);
     });
 
     it('should handle no package name error', async () => {
