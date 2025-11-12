@@ -205,6 +205,15 @@
       "path": "packages/repo-app-import-sub-generator"
     },
     {
+      "path": "packages/sap-systems-ext-types"
+    },
+    {
+      "path": "packages/sap-systems-ext-webapp"
+    },
+    {
+      "path": "packages/sap-systems-ext"
+    },
+    {
       "path": "packages/serve-static-middleware"
     },
     {

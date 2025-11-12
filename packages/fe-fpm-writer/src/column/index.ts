@@ -70,10 +70,10 @@ function enhanceConfig(
 /**
  * Add a custom column to an existing UI5 application.
  *
- * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {CustomTableColumn} customColumn - the custom column configuration
  * @param {Promise<Editor>} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export async function generateCustomColumn(
     basePath: string,

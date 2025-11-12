@@ -1,5 +1,14 @@
 # @sap-ux/reload-middleware
 
+## 0.3.5
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+
 ## 0.3.4
 
 ### Patch Changes

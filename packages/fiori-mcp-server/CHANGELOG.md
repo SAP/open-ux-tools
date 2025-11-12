@@ -1,5 +1,32 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.3.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-docs-embeddings@0.4.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
+
+## 0.3.0
+
+### Minor Changes
+
+-   d895232: - fix: V2 app crash when running `list-functionalities`
+    -   feat: add support for changing flex properties in V2 app
+
+## 0.2.5
+
+### Patch Changes
+
+-   8b7171e: chore: readme update - how to disable telemetry
+
 ## 0.2.4
 
 ### Patch Changes
