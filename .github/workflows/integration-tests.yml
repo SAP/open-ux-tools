@@ -11,6 +11,8 @@ jobs:
         outputs:
             ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
         steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v4
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@v4
               with:
@@ -25,14 +27,12 @@ jobs:
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
    
     playwright-tests:
-        # if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         strategy:
             fail-fast: false
             matrix:
                 os: [ubuntu-latest, windows-2025]
                 # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
                 ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-                node-version: [20.x, 22.x]
         runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
@@ -51,9 +51,9 @@ jobs:
                   cache-name: cache-pnpm-modules
               with:
                   path: ~/.pnpm-store
-                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  key: ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
+                      ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
@@ -70,7 +70,7 @@ jobs:
               with:
                 path: |
                     ~/.cache/ms-playwright
-                key: playwright-browsers-os-ubuntu-latest-node-version-20.x
+                key: playwright-browsers-${{ matrix.os }}-node-20.x
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
@@ -79,8 +79,8 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-
-                restore-keys: ui5-versions
+                key: ui5-versions
+                restore-keys: ui5-versions-
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
@@ -89,10 +89,10 @@ jobs:
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
-                
-                name: blob-report-${{ matrix.ui5-version }}
+                name: blob-report-${{ matrix.os }}-${{ matrix.ui5-version }}
                 path: tests/integration/adaptation-editor/blob-report
                 retention-days: 1
+    
     merge-reports:
         # Merge reports after playwright-tests, even if some shards have failed
         if: ${{ !cancelled() }}
@@ -115,7 +115,7 @@ jobs:
                   path: ~/.pnpm-store
                   key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
+                      ubuntu-latest-build-${{ env.cache-name }}-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
@@ -128,10 +128,8 @@ jobs:
                   path: tests/integration/adaptation-editor/all-blob-reports
                   pattern: blob-report-*
                   merge-multiple: true
-
             - name: Merge into HTML Report
               run: cd tests/integration/adaptation-editor && npx playwright merge-reports --reporter html ./all-blob-reports
-
             - name: Upload HTML report
               uses: actions/upload-artifact@v4
               with:
