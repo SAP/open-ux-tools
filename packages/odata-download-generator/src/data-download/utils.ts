@@ -1,6 +1,6 @@
 import { Answers, CheckboxChoiceOptions } from 'inquirer';
 import { Entity, ReferencedEntities } from './prompts';
-import { add } from 'lodash';
+import { add, isArray } from 'lodash';
 
 /**
  * Parses the OData result and converts it into separate entity data containing rows of data for each entity.
@@ -34,11 +34,11 @@ export function convertODataResultToEntityFileData(
                     additionalEntities?.forEach((addEntity) => {
                         pageEntityArray.forEach((pageEntity: any) => {
                             if (pageEntity[addEntity.entity.entityPath]) {
+                                let entityData = pageEntity[addEntity.entity.entityPath];
+                                entityData = Array.isArray(entityData) ? entityData : [entityData];
                                 entityFileData[addEntity.entity.entitySetName] =
                                     entityFileData[addEntity.entity.entitySetName] || [];
-                                entityFileData[addEntity.entity.entitySetName].push(
-                                    ...pageEntity[addEntity.entity.entityPath]
-                                );
+                                entityFileData[addEntity.entity.entitySetName].push(...entityData);
                             }
                         });
                         // delete

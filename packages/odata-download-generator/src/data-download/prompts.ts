@@ -1,17 +1,16 @@
-import { getSystemSelectionQuestions, OdataServiceAnswers, promptNames } from '@sap-ux/odata-service-inquirer';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
+import { Logger } from '@sap-ux/logger';
+import { getSystemSelectionQuestions, OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { ApplicationAccess, createApplicationAccess, FileName, Manifest } from '@sap-ux/project-access';
+import { BackendSystem, BackendSystemKey, getService } from '@sap-ux/store';
+import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { ConvertedMetadata, EntitySet, Singleton } from '@sap-ux/vocabularies-types';
 import { readFile } from 'fs/promises';
 import { Answers, CheckboxChoiceOptions, InputQuestion, PromptFunction, Question } from 'inquirer';
-import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
-import type { ConvertedMetadata, EntitySet, Singleton } from '@sap-ux/vocabularies-types';
 import { join } from 'path';
-import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import { BackendSystem, BackendSystemKey, getService } from '@sap-ux/store';
-import { createRelatedEntityChoices, SelectedEntityAnswer } from './utils';
-import Generator from 'yeoman-generator';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import { Logger } from '@sap-ux/logger';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { createRelatedEntityChoices, SelectedEntityAnswer } from './utils';
 
 export type AppConfig = {
     referencedEntities?: ReferencedEntities;
@@ -256,15 +255,6 @@ export async function getServiceSelectionPrompts(
                     appAnswer.backendConfig?.destination ??
                     (await getSystemNameFromStore(appAnswer.backendConfig.url, appAnswer.backendConfig?.client));
             }
-
-            /* if (appAnswer.referencedEntities?.listEntity.keys) {
-                selectSourceQuestions.push(...getKeyPrompts(appAnswer.referencedEntities?.listEntity.keys));
-                generator;
-                promptPromise.then(async () => {
-                    systemSelectionQuestions.answers = await promptFuncRef(selectSourceQuestions);
-                    return systemSelectionQuestions.answers;
-                });
-            } */
             return true;
         }
     } as InputQuestion;
@@ -319,7 +309,7 @@ export async function getServiceSelectionPrompts(
     };
 }
 
-export function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQuestion[] {
+ function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
     const getEntityKeyInputPrompt = (keypart: number) =>
