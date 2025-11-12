@@ -1,8 +1,7 @@
-import type { AnyNode, DocumentNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
+import type { AnyNode, DocumentNode, MemberNode, ObjectNode, ValueNode } from '@humanwhocodes/momoa';
 import fs from 'fs';
 import path from 'path';
 import type { FioriPropertyDefinition } from './property-definitions';
-
 /**
  * Compares two version strings in the format 'x.y.z'.
  * Returns true if version a is greater than or equal to version b.
@@ -73,6 +72,25 @@ function getManifestProperty(currentNode: AnyNode, propName: string): AnyNode | 
     if (isObjectNode(currentNode)) {
         return getProperty(currentNode, propName);
     }
+    return undefined;
+}
+
+/**
+ * Retrieves nested property nodes from the manifest AST node based on the provided property names.
+ *
+ * @param currentNode - The current AST node.
+ * @param props - An array of property names representing the path to the desired property.
+ * @returns - The nested property node if found, otherwise undefined.
+ */
+function getManifestProperties(currentNode: AnyNode, props: string[]): AnyNode | undefined {
+    let node: AnyNode | undefined = currentNode;
+    for (const prop of props) {
+        node = getManifestProperty(node, prop);
+        if (!node) {
+            return undefined;
+        }
+    }
+    return node;
 }
 
 /**
@@ -82,7 +100,7 @@ function getManifestProperty(currentNode: AnyNode, propName: string): AnyNode | 
  * @param pathArray - An array of property names representing the path to the desired property.
  * @returns
  */
-function getManifestPropertyValue(node: DocumentNode | MemberNode, pathArray: string[]): AnyNode | undefined {
+function getManifestPropertyValue(node: DocumentNode | AnyNode, pathArray: string[]): AnyNode | undefined {
     let currentNode: AnyNode | undefined = isMemberNode(node) ? node.value : node;
     for (const path of pathArray) {
         if (currentNode) {
@@ -92,16 +110,17 @@ function getManifestPropertyValue(node: DocumentNode | MemberNode, pathArray: st
     if (currentNode && isMemberNode(currentNode)) {
         return currentNode.value;
     }
+    return undefined;
 }
 
 /**
  * Extracts the minUI5Version string from the manifest's AST source code.
  * Looks for sap.ui5 > dependencies > minUI5Version property.
  *
- * @param {DocumentNode} node - The manifest AST node.
+ * @param {ValueNode} node - The manifest AST node.
  * @returns {string|null} The minUI5Version string if found, otherwise null.
  */
-function getMinUI5Version(node: DocumentNode): string | null {
+function getMinUI5Version(node: ValueNode): string | null {
     const prop = getManifestPropertyValue(node, ['sap.ui5', 'dependencies', 'minUI5Version']);
     return prop && prop.type === 'String' ? prop.value : null;
 }
@@ -110,10 +129,10 @@ function getMinUI5Version(node: DocumentNode): string | null {
  * Determines if a rule is applicable based on the minUI5Version specified in the rule definition.
  *
  * @param {string | undefined} ruleMinUI5Version
- * @param {DocumentNode} node
+ * @param {ValueNode} node
  * @returns
  */
-function checkMinUI5VersionApplicable(ruleMinUI5Version: string | undefined, node: DocumentNode): boolean {
+function checkMinUI5VersionApplicable(ruleMinUI5Version: string | undefined, node: ValueNode): boolean {
     if (ruleMinUI5Version) {
         const sapui5Version = getMinUI5Version(node);
         if (!sapui5Version || !compareVersions(sapui5Version, ruleMinUI5Version)) {
@@ -127,10 +146,10 @@ function checkMinUI5VersionApplicable(ruleMinUI5Version: string | undefined, nod
  * Extracts the OData version string from the manifest's AST source code.
  * Traverses sap.app > dataSources > mainService > settings > odataVersion.
  *
- * @param {DocumentNode} node - The manifest AST node.
+ * @param {ValueNode} node - The manifest AST node.
  * @returns {string|null} The OData version string if found, otherwise null.
  */
-function getODataVersion(node: DocumentNode): string | null {
+function getODataVersion(node: ValueNode): string | null {
     const prop = getManifestPropertyValue(node, ['sap.app', 'dataSources', 'mainService', 'settings', 'odataVersion']);
     return prop && prop.type === 'String' ? prop.value : null;
 }
@@ -159,13 +178,13 @@ function readPackageJson(packageJsonPath: string): AnyNode | undefined {
  * Determines if a rule is applicable based on OData version and app type (Fiori Elements vs Freestyle).
  *
  * @param {object} ruleDefinition - The rule definition object.
- * @param {DocumentNode} node - The manifest AST node.
+ * @param {ValueNode} node - The manifest AST node.
  * @param {string} manifestPath - The path to the manifest file.
  * @returns
  */
 function checkODataVersionApplicable(
     ruleDefinition: FioriPropertyDefinition,
-    node: DocumentNode,
+    node: ValueNode,
     manifestPath: string
 ): boolean {
     const odataVersion = getODataVersion(node);
@@ -199,15 +218,14 @@ function checkODataVersionApplicable(
  * Determines if a rule is applicable based on minUI5Version and OData version.
  *
  * @param {object} ruleDefinition - The rule definition object.
- * @param {DocumentNode} node - The manifest AST node.
+ * @param {ValueNode} node - The manifest document body node.
  * @param {string} manifestPath - The path to the manifest file.
  * @returns
  */
-function checkRuleApplicable(
-    ruleDefinition: FioriPropertyDefinition,
-    node: DocumentNode,
-    manifestPath: string
-): boolean {
+function checkRuleApplicable(ruleDefinition: FioriPropertyDefinition, node: ValueNode, manifestPath: string): boolean {
+    if (!manifestPath.endsWith('manifest.json')) {
+        return false;
+    }
     if (!checkMinUI5VersionApplicable((ruleDefinition as FioriPropertyDefinition).minUI5Version, node)) {
         return false;
     }
@@ -232,11 +250,13 @@ function findMember(objectNode: any, name: string): MemberNode | undefined {
     if (node && isMemberNode(node)) {
         return node;
     }
+    return undefined;
 }
 
 export default {
     compareVersions,
     getManifestProperty,
+    getManifestProperties,
     getManifestPropertyValue,
     getMinUI5Version,
     getODataVersion,
