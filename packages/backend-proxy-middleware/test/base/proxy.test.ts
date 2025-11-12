@@ -37,15 +37,18 @@ import {
     WebIDEUsage,
     WebIDEAdditionalData,
     getCredentialsForDestinationService,
-    isAppStudio
+    isAppStudio,
+    isFullUrlDestination
 } from '@sap-ux/btp-utils';
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     listDestinations: jest.fn(),
+    isFullUrlDestination: jest.fn(),
     getCredentialsForDestinationService: jest.fn(),
     isAppStudio: jest.fn()
 }));
 const mockListDestinations = listDestinations as jest.Mock;
+const mockIsFullUrlDestination = isFullUrlDestination as jest.Mock;
 const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
@@ -62,10 +65,15 @@ describe('proxy', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockListDestinations.mockReset();
+        mockIsFullUrlDestination.mockReset();
+        mockGetCredentialsForDestinationService.mockReset();
+        mockIsAppStudio.mockReset();
+        mockPrompt.mockReset();
     });
 
     describe('PathRewriters', () => {
-        const { replacePrefix, replaceClient, getPathRewrite } = PathRewriters;
+        const { replacePrefix, replaceClient, getPathRewrite, convertAppDescriptorToManifest } = PathRewriters;
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
@@ -80,6 +88,14 @@ describe('proxy', () => {
             expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
         });
 
+        test('convertAppDescriptorToManifest', () => {
+            const rewrite = convertAppDescriptorToManifest('/my/bsp');
+            expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
+            expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
+            expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
+            expect(rewrite('/test')).toBe('/test');
+        });
+
         test('getPathRewrite', () => {
             // no rewrite required
             const pathOutput = getPathRewrite({} as BackendConfig, logger);
@@ -91,7 +107,8 @@ describe('proxy', () => {
                 {
                     client: '012',
                     path: '/old',
-                    pathReplace: '/my/new'
+                    pathReplace: '/my/new',
+                    bsp: '/my/bsp'
                 } as BackendConfig,
                 logger
             );
@@ -101,7 +118,14 @@ describe('proxy', () => {
                     originalUrl: '/old/my/bsp/test?sap-client=000'
                 } as EnhancedIncomingMessage)
             ).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).toBe(
+                '/test?sap-client=012'
+            ); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(
+                writerChain!('/bsp/manifest.appdescr', {
+                    originalUrl: '/my/bsp/manifest.appdescr'
+                } as EnhancedIncomingMessage)
+            ).toBe('/manifest.json');
         });
     });
 
@@ -240,6 +264,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
@@ -257,6 +282,7 @@ describe('proxy', () => {
                     WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
 
@@ -294,7 +320,7 @@ describe('proxy', () => {
         test('simple system', async () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigForSystem({ ...proxyOptions }, system, false, jest.fn());
+            await enhanceConfigForSystem({ ...proxyOptions }, system, 'basic', jest.fn());
             expect(proxyOptions).toEqual(proxyOptions);
         });
 
@@ -302,12 +328,12 @@ describe('proxy', () => {
             mockCreateForAbapOnCloud.mockImplementationOnce(() => {
                 return {
                     cookies: '~cookies',
-                    getAtoInfo: jest.fn()
+                    getAtoInfo: jest.fn().mockReturnValue({})
                 };
             });
 
             try {
-                await enhanceConfigForSystem({ headers: {} }, system, true, jest.fn());
+                await enhanceConfigForSystem({ headers: {} }, system, 'oauth2', jest.fn());
                 fail('Should have thrown an error because no service keys have been provided.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -320,13 +346,14 @@ describe('proxy', () => {
                 refreshToken: '~token'
             };
             const callback = jest.fn();
-            await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
+            await enhanceConfigForSystem(proxyOptions, cloudSystem, 'oauth2', callback);
             expect(mockCreateForAbapOnCloud).toHaveBeenCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,
                 refreshToken: cloudSystem.refreshToken,
                 refreshTokenChangedCb: callback
             });
+            expect(proxyOptions.headers.cookie).toBe('~cookies');
         });
 
         test('user/password authentication', async () => {
@@ -337,13 +364,13 @@ describe('proxy', () => {
             };
 
             // provided from config
-            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, 'basic', jest.fn());
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
 
             // provided from env variables
             process.env.FIORI_TOOLS_USER = creds.username;
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
-            await enhanceConfigForSystem(proxyOptions, system, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, system, 'basic', jest.fn());
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
         });
 
@@ -361,7 +388,7 @@ describe('proxy', () => {
                     ...system,
                     authenticationType: AuthenticationType.ReentranceTicket
                 },
-                false,
+                'reentranceTicket',
                 jest.fn()
             );
 
@@ -375,7 +402,6 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
-
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -412,8 +438,11 @@ describe('proxy', () => {
                 path: '/my/path'
             };
             mockListDestinations.mockResolvedValueOnce({
-                [backend.destination]: {}
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap',
+                }
             });
+            mockIsFullUrlDestination.mockResolvedValueOnce(false);
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
@@ -440,6 +469,30 @@ describe('proxy', () => {
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
+        });
+
+        test('generate proxy middleware inside of BAS with minimal parameters (destination with full url)', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: DestinationBackendConfig = {
+                destination: '~destination',
+                path: '/my/path'
+            };
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/my/other/path',
+                }
+            });
+            mockIsFullUrlDestination.mockResolvedValueOnce(true);
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
+            expect(options.changeOrigin).toBe(true);
+            expect(options.agent).toBeUndefined();
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+            expect((options.pathRewrite as Function)('/my/other/path/to/chicken', {})).toBe('/to/chicken');
         });
 
         test('generate proxy middleware options for FLP Embedded flow', async () => {
@@ -491,7 +544,7 @@ describe('proxy', () => {
                     ...jest.requireActual('@sap-ux/logger'),
                     ToolsLogger: jest.fn().mockImplementation(() => ({
                         debug: debugSpy,
-                        info: jest.fn(),
+                        info: jest.fn()
                     }))
                 };
             });

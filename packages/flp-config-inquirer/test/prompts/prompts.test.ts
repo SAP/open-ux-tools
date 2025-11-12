@@ -20,7 +20,7 @@ describe('getQuestions', () => {
         const questions = getQuestions({ 'new-upsert': { semanticObject: '', action: '' } });
 
         expect(mockGetHostEnv).toHaveBeenCalled();
-        expect(questions.length).toBe(9);
+        expect(questions.length).toBe(10);
     });
 
     it('should return questions array with correct prompts when no arguments are passed', () => {
@@ -29,7 +29,7 @@ describe('getQuestions', () => {
         const questions = getQuestions();
 
         expect(mockGetHostEnv).toHaveBeenCalled();
-        expect(questions.length).toBe(9);
+        expect(questions.length).toBe(10);
     });
 });
 

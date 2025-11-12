@@ -2,7 +2,11 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices } from '@sap-ux/inquirer-common';
+import {
+    searchChoices,
+    getRecursiveHierarchyQualifierForEntitySet,
+    findEntitySetByName
+} from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n';
@@ -268,7 +272,9 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
-        let setAnalyticalTableDefault = false;
+        // Variables to track selected entity and default table type
+        let selectedEntity: EntityAnswer | undefined;
+        let defaultTableType: TableType | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -281,23 +287,41 @@ function getTableLayoutQuestions(
             },
             choices: tableTypeChoices,
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                const tableTypeDefault = getDefaultTableType(
-                    templateType,
-                    metadata,
-                    odataVersion,
-                    prevAnswers?.mainEntity?.entitySetName,
-                    prevAnswers?.tableType
-                );
-                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
-                return tableTypeDefault.tableType;
+                const currentEntity = prevAnswers?.mainEntity;
+
+                // Only re-evaluate if entity has changed or no previous selection exists
+                if (currentEntity?.entitySetName !== selectedEntity?.entitySetName || !prevAnswers?.tableType) {
+                    defaultTableType = getDefaultTableType(
+                        templateType,
+                        metadata,
+                        odataVersion,
+                        isCapService,
+                        currentEntity?.entitySetName
+                    );
+
+                    // Update tracking variables
+                    selectedEntity = currentEntity;
+                    return defaultTableType;
+                }
+
+                // Entity hasn't changed and user has a selection - preserve their choice
+                // Reset the default table type since this is user's choice, not system default
+                defaultTableType = undefined;
+                return prevAnswers.tableType;
             },
-            additionalMessages: (tableType: TableType) => {
-                if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {
+            additionalMessages: () => {
+                if (defaultTableType === 'AnalyticalTable') {
                     return {
                         message: t('prompts.tableType.analyticalTableDefault'),
                         severity: Severity.information
                     };
+                } else if (defaultTableType === 'TreeTable') {
+                    return {
+                        message: t('prompts.tableType.treeTableDefault'),
+                        severity: Severity.information
+                    };
                 }
+                return undefined;
             }
         } as ListQuestion<TableConfigAnswers>);
 
@@ -312,7 +336,14 @@ function getTableLayoutQuestions(
                 breadcrumb: true,
                 mandatory: true
             },
-            default: '',
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                // Auto-populate qualifier from RecursiveHierarchy annotation if available
+                if (prevAnswers?.mainEntity?.entitySetName) {
+                    const entitySet = findEntitySetByName(metadata, prevAnswers.mainEntity.entitySetName);
+                    return entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : '';
+                }
+                return '';
+            },
             validate: (input: string) => {
                 if (!input) {
                     return t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning');

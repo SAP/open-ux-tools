@@ -23,15 +23,10 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
     getPromptHostEnvironment: jest.fn()
-}));
-
-jest.mock('@sap-ux/feature-toggle', () => ({
-    isFeatureEnabled: jest.fn()
 }));
 
 const backendSystemBasic: BackendSystem = {
@@ -78,7 +73,7 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => systemServiceMock)
+    getService: jest.fn().mockImplementation(() => systemServiceMock)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -172,7 +167,6 @@ describe('Test system selection prompts', () => {
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
         validateUrlResultMock = true;
-        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
@@ -363,7 +357,7 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        expect(systemConnectionQuestions).toHaveLength(4);
+        expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
         expect(systemConnectionQuestions[1].name).toBe('systemSelectionCli');
         expect(systemConnectionQuestions[2].name).toBe('systemSelection:systemUsername');
@@ -375,7 +369,7 @@ describe('Test system selection prompts', () => {
         // validate backend system selection
         validateAuthResultMock = { valResult: true };
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
-        systemServiceReadMock.mockResolvedValue(backendSystemBasic);
+        systemServiceReadMock.mockResolvedValueOnce(backendSystemBasic);
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
@@ -394,6 +388,11 @@ describe('Test system selection prompts', () => {
         // If auth failed using creds from BackendSystem, the creds prompts should be displayed and the user notified that the backend system creds will be updated
         validateAuthResultMock = { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
         const loggerErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
+        systemServiceReadMock.mockResolvedValueOnce({
+            url: backendSystemBasic.url,
+            client: backendSystemBasic.client,
+            name: backendSystemBasic.name
+        });
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
@@ -586,12 +585,12 @@ describe('Test system selection prompts', () => {
         );
     });
 
-    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys, RefreshToken)', async () => {
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys)', async () => {
         mockIsAppStudio = false;
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const validateServiceInfoSpy = jest.spyOn(connectValidator, 'validateServiceInfo');
-        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys, refreshToken: '123refreshToken456' };
+        const backendSystemServiceKeysClone = { ...backendSystemServiceKeys };
         backendSystems.push(backendSystemServiceKeysClone);
 
         systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemServiceKeysClone);
@@ -603,11 +602,7 @@ describe('Test system selection prompts', () => {
                 system: backendSystemServiceKeysClone
             } as SystemSelectionAnswerType)
         ).toBe(true);
-        expect(validateServiceInfoSpy).toHaveBeenCalledWith(
-            backendSystemServiceKeysClone.serviceKeys,
-            undefined,
-            backendSystemServiceKeysClone.refreshToken
-        );
+        expect(validateServiceInfoSpy).toHaveBeenCalledWith(backendSystemServiceKeysClone.serviceKeys, undefined);
     });
 
     test('should execute additional prompt on CLI (if autocomplete is not used) to handle YUI validate function', async () => {

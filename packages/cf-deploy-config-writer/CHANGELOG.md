@@ -1,5 +1,53 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.36
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/yaml@0.17.2
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+
+## 0.3.34
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+
+## 0.3.32
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+
+## 0.3.31
+
+### Patch Changes
+
+-   Updated dependencies [9e94382]
+    -   @sap-ux/ui5-config@0.29.8
+    -   @sap-ux/project-access@1.32.4
+
 ## 0.3.30
 
 ### Patch Changes

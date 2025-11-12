@@ -37,7 +37,7 @@ import type {
     UpdateElementName,
     XMLDocumentChange
 } from './changes';
-import { REPLACE_ELEMENT_CONTENT } from './changes';
+import { DELETE_ELEMENT, REPLACE_ELEMENT_CONTENT } from './changes';
 import { getNodeFromPointer } from './pointer';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
@@ -75,7 +75,7 @@ export class XMLWriter {
         const changes = preprocessChanges(this.changes, this.document);
         const batches = getBatches(changes);
         for (const pointer of Object.keys(batches)) {
-            edits.push(...this.getTextEditsForPointer(pointer, batches[pointer]));
+            edits.push(...this.getTextEditsForPointer(pointer, batches[pointer], changes));
         }
         edits.sort(compareByRange);
         return edits;
@@ -92,7 +92,8 @@ export class XMLWriter {
 
     private getTextEditsForPointer(
         pointer: string,
-        byType: Map<XMLDocumentChange['type'], XMLDocumentChange[]>
+        byType: Map<XMLDocumentChange['type'], XMLDocumentChange[]>,
+        changes: XMLDocumentChange[]
     ): TextEdit[] {
         const edits: TextEdit[] = [];
         const element = getNodeFromPointer(this.document, pointer);
@@ -119,7 +120,9 @@ export class XMLWriter {
                     attributeInserts: (byType.get('insert-attribute') ?? []) as InsertAttribute[],
                     moveInCollection: (byType.get('move-collection-value') ?? []) as MoveCollectionValue[]
                 };
-                edits.push(...this.handleXmlElementChanges(elementChanges, element, pointer, childIndentLevel));
+                edits.push(
+                    ...this.handleXmlElementChanges(elementChanges, element, pointer, childIndentLevel, changes)
+                );
                 break;
             }
             case 'XMLAttribute': {
@@ -147,7 +150,8 @@ export class XMLWriter {
         },
         element: XMLElement,
         pointer: string,
-        childIndentLevel: number
+        childIndentLevel: number,
+        changes: XMLDocumentChange[]
     ) {
         const edits: TextEdit[] = [];
         const { replacements, contentReplacements, elementDeletions, attributeInserts, moveInCollection } =
@@ -166,7 +170,7 @@ export class XMLWriter {
                 if (!insertPosition) {
                     continue;
                 }
-                const { textEdits, text } = this.prepareXmlElementMoveChange(moveChange);
+                const { textEdits, text } = this.prepareXmlElementMoveChange(moveChange, changes);
                 edits.push(...textEdits);
                 edits.push(...handleXmlElementMoveChange(element, childIndentLevel, text, insertPosition));
             }
@@ -176,7 +180,10 @@ export class XMLWriter {
         return edits;
     }
 
-    private prepareXmlElementMoveChange(moveChange: MoveCollectionValue): {
+    private prepareXmlElementMoveChange(
+        moveChange: MoveCollectionValue,
+        changes: XMLDocumentChange[]
+    ): {
         textEdits: TextEdit[];
         text: string[];
     } {
@@ -190,6 +197,18 @@ export class XMLWriter {
                 continue;
             }
             text.push(this.textDocument.getText(range));
+            if (
+                changes.some((change) => {
+                    if (change.type !== DELETE_ELEMENT) {
+                        return false;
+                    }
+                    const element = getNodeFromPointer(this.document, change.pointer);
+                    const changeRange = element?.type === 'XMLElement' && transformRange(element.position);
+                    return changeRange && rangeContained(changeRange, range);
+                })
+            ) {
+                continue;
+            }
             textEdits.push(TextEdit.del(range));
         }
         return { textEdits, text };

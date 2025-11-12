@@ -24,10 +24,15 @@ export class WorkspaceConnectorService {
                 this.isReloadPending = true;
             }
         });
-
-        if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 73 })) {
-            const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
-            FakeLrepConnector.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
+        const ui5Version = await getUi5Version();
+        if (isLowerThanMinimalUi5Version(ui5Version, { major: 1, minor: 84 })) {
+            if (ui5Version.isCdn) {
+                const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
+                FakeLrepConnector.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
+            } else {
+                // For UI5 versions below 1.84 served from npmjs, we do not support any connector service
+                return;
+            }
         } else {
             const connector = (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector

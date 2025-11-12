@@ -1,7 +1,7 @@
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
-import path, { join } from 'node:path';
+import { join, basename } from 'node:path';
 import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
 import {
     getVariant,
@@ -23,9 +23,11 @@ import {
     getAdpFlpInboundsWriterConfig,
     getTileSettingsQuestions,
     type FLPConfigAnswers,
-    type TileSettingsAnswers
+    type TileSettingsAnswers,
+    tilePromptNames,
+    tileActions
 } from '@sap-ux/flp-config-inquirer';
-import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType, type IPrompt } from '@sap-devx/yeoman-ui-types';
 import {
     DefaultLogger,
     TelemetryHelper,
@@ -143,6 +145,11 @@ export default class AdpFlpConfigGenerator extends Generator {
         }
 
         this.tileSettingsAnswers = await this._promptTileActions();
+
+        if (this.tileSettingsAnswers?.[tilePromptNames.tileHandlingAction] === tileActions.REPLACE) {
+            this._setupReplacePage();
+        }
+
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
             this.inbounds,
             getAdpFlpConfigPromptOptions(this.tileSettingsAnswers as TileSettingsAnswers, this.inbounds, this.variant)
@@ -158,9 +165,10 @@ export default class AdpFlpConfigGenerator extends Generator {
             const config = getAdpFlpInboundsWriterConfig(
                 this.answers,
                 this.layer,
-                this.tileSettingsAnswers as TileSettingsAnswers
+                this.tileSettingsAnswers as TileSettingsAnswers,
+                this.inbounds
             );
-            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
+            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation[], this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -262,11 +270,34 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (!this.launchAsSubGen) {
             this.prompts.splice(0, 0, [
                 {
-                    name: t('yuiNavSteps.flpConfigName', { projectName: path.basename(this.projectRootPath) }),
+                    name: t('yuiNavSteps.flpConfigName'),
                     description: ''
                 }
             ]);
         }
+    }
+
+    /**
+     * Sets up the FLP configuration page to display current tile entries.
+     */
+    private _setupReplacePage(): void {
+        const tileEntries = this.inbounds
+            ? Object.values(this.inbounds).map((inboundData) => {
+                  const title = inboundData.title ?? '';
+                  const navigationIntent = `${inboundData.semanticObject}-${inboundData.action}`;
+                  return t('yuiNavSteps.flpConfigReplaceTile', { navigationIntent, title });
+              })
+            : [];
+
+        const pages = this.prompts['items'] as IPrompt[];
+        const flpConfigPageIndex = pages.findIndex((p) => p.name === t('yuiNavSteps.flpConfigName'));
+
+        this.prompts.splice(flpConfigPageIndex, 1, [
+            {
+                name: t('yuiNavSteps.flpConfigName'),
+                description: t('yuiNavSteps.flpConfigReplaceCurrentTiles', { currentTiles: tileEntries.join('\n') })
+            }
+        ]);
     }
 
     /**
@@ -281,7 +312,29 @@ export default class AdpFlpConfigGenerator extends Generator {
                     this.prompts.setCallback(fn);
                 }
             };
+            return;
         }
+        this.prompts = this.options.prompts as Prompts;
+    }
+
+    /**
+     * Sets the tile settings prompts based on the current state of the generator.
+     */
+    private _setTileSettingsPrompts(): void {
+        if (this.launchAsSubGen) {
+            return;
+        }
+
+        const pages = this.prompts['items'] as IPrompt[];
+        const credentialsPageIndex = pages.findIndex((p) => p.name === t('yuiNavSteps.flpCredentialsName'));
+        this.prompts.splice(credentialsPageIndex + 1, 0, [
+            {
+                name: t('yuiNavSteps.tileSettingsName'),
+                description: t('yuiNavSteps.tileSettingsDescr', {
+                    projectName: basename(this.projectRootPath)
+                })
+            }
+        ]);
     }
 
     /**
@@ -367,6 +420,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (!this.inbounds) {
             return undefined;
         }
+
         this._setTileSettingsPrompts();
         const existingFlpConfig = !this.launchAsSubGen && flpConfigurationExists(this.variant);
         const promptOptions = {
@@ -375,25 +429,8 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
         };
         const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
-        return this.prompt(tileSettingsPrompts);
-    }
 
-    /**
-     * Sets the tile settings prompts based on the current state of the generator.
-     */
-    private _setTileSettingsPrompts(): void {
-        if (this.launchAsSubGen) {
-            return;
-        }
-        const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
-        this.prompts.splice(promptsIndex, 0, [
-            {
-                name: t('yuiNavSteps.tileSettingsName', {
-                    projectName: path.basename(this.projectRootPath)
-                }),
-                description: ''
-            }
-        ]);
+        return this.prompt(tileSettingsPrompts);
     }
 
     /**

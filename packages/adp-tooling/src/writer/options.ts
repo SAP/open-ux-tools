@@ -15,8 +15,10 @@ import type {
     CloudApp,
     InternalInboundNavigation,
     CloudCustomTaskConfig,
-    CloudCustomTaskConfigTarget
+    CloudCustomTaskConfigTarget,
+    CfAdpWriterConfig
 } from '../types';
+import { UI5_CDN_URL } from '../base/constants';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -299,34 +301,24 @@ function getInboundChangeContentWithNewInboundID(
         ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
-    content.inbound[flpConfiguration.inboundId].signature.parameters['sap-appvar-id'] = {
-        required: true,
-        filter: {
-            value: appId,
-            format: 'plain'
-        },
-        launcherValue: {
-            value: appId
-        }
-    };
-
     return content;
 }
 
 /**
  * Generate Inbound change content required for manifest.appdescriptor.
  *
- * @param flpConfiguration FLP cloud project configuration
+ * @param flpConfigurations FLP cloud project configuration
  * @param appId Application variant id
  * @param manifestChangeContent Application variant change content
  */
 export function enhanceManifestChangeContentWithFlpConfig(
-    flpConfiguration: InternalInboundNavigation,
+    flpConfigurations: InternalInboundNavigation[],
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId);
-    if (inboundChangeContent) {
+    for (const [index, flpConfig] of flpConfigurations.entries()) {
+        const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
+
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',
             content: inboundChangeContent,
@@ -334,15 +326,77 @@ export function enhanceManifestChangeContentWithFlpConfig(
                 'i18n': 'i18n/i18n.properties'
             }
         };
-        const removeOtherInboundsChange = {
-            changeType: 'appdescr_app_removeAllInboundsExceptOne',
-            content: {
-                'inboundId': flpConfiguration.inboundId
-            },
-            texts: {}
-        };
-
         manifestChangeContent.push(addInboundChange);
-        manifestChangeContent.push(removeOtherInboundsChange);
+
+        // Remove all inbounds except one should be only after the first inbound is added
+        // This is implemented this way to avoid issues with the merged on ABAP side
+        if (index === 0) {
+            const removeOtherInboundsChange = {
+                changeType: 'appdescr_app_removeAllInboundsExceptOne',
+                content: {
+                    'inboundId': flpConfig.inboundId
+                },
+                texts: {}
+            };
+
+            manifestChangeContent.push(removeOtherInboundsChange);
+        }
     }
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
+ */
+export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
+    const { baseApp, cf, project } = config;
+    ui5Config.addCustomTasks([
+        {
+            name: 'app-variant-bundler-build',
+            beforeTask: 'escapeNonAsciiCharacters',
+            configuration: {
+                module: project.name,
+                appHostId: baseApp.appHostId,
+                appName: baseApp.appName,
+                appVersion: baseApp.appVersion,
+                html5RepoRuntime: cf.html5RepoRuntimeGuid,
+                org: cf.org.GUID,
+                space: cf.space.GUID,
+                sapCloudService: cf.businessSolutionName ?? '',
+                serviceInstanceName: cf.businessService
+            }
+        }
+    ]);
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ */
+export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void {
+    const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
+        url: UI5_CDN_URL
+    };
+
+    ui5Config.addFioriToolsProxyMiddleware(
+        {
+            ui5: ui5ConfigOptions,
+            backend: []
+        },
+        'compression'
+    );
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-proxy',
+            configuration: {
+                flp: {
+                    theme: 'sap_horizon'
+                }
+            }
+        }
+    ]);
 }

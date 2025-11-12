@@ -1,5 +1,17 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
+## 0.2.0
+
+### Minor Changes
+
+-   f4cd036: Move rimraf to dependencies.
+
 ## 0.1.2
 
 ### Patch Changes

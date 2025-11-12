@@ -1,5 +1,140 @@
 # @sap-ux/inquirer-common
 
+## 0.9.3
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+
+## 0.9.2
+
+### Patch Changes
+
+-   Updated dependencies [56235f8]
+    -   @sap-ux/telemetry@0.6.38
+    -   @sap-ux/fiori-generator-shared@0.13.33
+
+## 0.9.1
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/guided-answers-helper@0.4.1
+    -   @sap-ux/odata-service-writer@0.27.29
+    -   @sap-ux/feature-toggle@0.3.4
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/telemetry@0.6.37
+    -   @sap-ux/ui5-info@0.13.1
+    -   @sap-ux/logger@0.7.1
+
+## 0.9.0
+
+### Minor Changes
+
+-   4ddcff3: Add a message for the Tree table default. Move and export shouldUseAnalyticalTable() for use in other repos.
+
+## 0.8.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+-   @sap-ux/telemetry@0.6.36
+
+## 0.8.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.30
+-   @sap-ux/telemetry@0.6.35
+
+## 0.8.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.29
+-   @sap-ux/telemetry@0.6.34
+
+## 0.8.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.28
+-   @sap-ux/telemetry@0.6.33
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [fa9580c]
+    -   @sap-ux/feature-toggle@0.3.3
+    -   @sap-ux/fiori-generator-shared@0.13.27
+
+## 0.8.5
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.27
+-   @sap-ux/telemetry@0.6.32
+
+## 0.8.4
+
+### Patch Changes
+
+-   06bc541: Check Transformations for Analytical default table.
+
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.26
+-   @sap-ux/telemetry@0.6.31
+
+## 0.8.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.25
+-   @sap-ux/telemetry@0.6.30
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [d4dabbd]
+    -   @sap-ux/fiori-generator-shared@0.13.24
+
+## 0.8.0
+
+### Minor Changes
+
+-   4053369: Determine the default table type based on the service capabilities. Auto-populate qualifier from RecursiveHierarchy annotation if available.
+
+## 0.7.51
+
+### Patch Changes
+
+-   Updated dependencies [bacaf93]
+    -   @sap-ux/fiori-generator-shared@0.13.23
+    -   @sap-ux/feature-toggle@0.3.2
+    -   @sap-ux/telemetry@0.6.29
+
+## 0.7.50
+
+### Patch Changes
+
+-   Updated dependencies [bba16a6]
+    -   @sap-ux/ui5-info@0.13.0
+
+## 0.7.49
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.28
+-   @sap-ux/fiori-generator-shared@0.13.22
+
 ## 0.7.48
 
 ### Patch Changes

@@ -6,6 +6,8 @@ import * as fs from 'fs/promises';
 import * as path from 'node:path';
 import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { default as matter } from 'gray-matter';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import { setTimeout } from 'node:timers/promises';
 
 // Create promisified version of spawn for async/await
 const execCommand = (
@@ -52,6 +54,26 @@ interface BuildConfig {
     outputPath: string;
     gitReposPath?: string;
     sources: SourceConfig[];
+}
+
+interface LLMClient {
+    /**
+     *
+     */
+    send(payload: LLMPayload): Promise<LLMResponse>;
+}
+
+interface LLMPayload {
+    deployment_id: string;
+    messages: Array<{ role: string; content: string }>;
+}
+
+interface LLMResponse {
+    choices: Array<{
+        message: {
+            content: string;
+        };
+    }>;
 }
 
 interface FileContent {
@@ -125,6 +147,184 @@ type ApiData = {
     symbols: ApiSymbol[];
 } & Record<string, unknown>;
 
+interface AICoreCredentials {
+    url: string;
+    clientid: string;
+    clientsecret: string;
+    serviceurls: {
+        AI_API_URL: string;
+    };
+}
+
+interface TokenResponse {
+    access_token: string;
+}
+
+interface Configuration {
+    id: string;
+    name: string;
+}
+
+interface ConfigurationsResponse {
+    resources: Configuration[];
+}
+
+interface Deployment {
+    id: string;
+    configurationId: string;
+    status: string;
+    deploymentUrl: string;
+}
+
+interface DeploymentsResponse {
+    resources: Deployment[];
+}
+
+/**
+ * HTTP AI Core LLM Client
+ */
+class HTTPAICoreClient implements LLMClient {
+    private credentials?: AICoreCredentials;
+    private token?: string;
+    private deploymentUrl: Record<string, string> = {};
+
+    /**
+     * Sends a payload to the LLM service.
+     *
+     * @param payload - The LLM payload to send
+     * @returns The LLM response
+     */
+    async send(payload: LLMPayload): Promise<LLMResponse> {
+        if (!this.credentials) {
+            try {
+                this.credentials = JSON.parse(process.env.AI_CORE_SERVICE_KEY || '');
+            } catch {
+                throw new Error('You need to provide the service key in environment variable AI_CORE_SERVICE_KEY');
+            }
+        }
+
+        if (!this.token && this.credentials) {
+            const resp = await fetch(this.credentials.url + '/oauth/token?grant_type=client_credentials', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Basic ${Buffer.from(
+                        this.credentials.clientid + ':' + this.credentials.clientsecret
+                    ).toString('base64')}`
+                }
+            });
+            const tokenData = (await resp.json()) as TokenResponse;
+            this.token = tokenData.access_token;
+        }
+
+        if (!this.deploymentUrl[payload.deployment_id] && this.credentials) {
+            const configurations = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations', {
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    'AI-Resource-Group': 'default'
+                }
+            });
+            const configurationsData = (await configurations.json()) as ConfigurationsResponse;
+
+            const configName = 'embeddingsscript-' + payload.deployment_id;
+            const config = configurationsData.resources.find((r) => r.name === configName);
+            let configurationId;
+
+            if (config) {
+                configurationId = config.id;
+            } else {
+                const postConfig = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/configurations', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: configName,
+                        executableId: 'azure-openai',
+                        scenarioId: 'foundation-models',
+                        parameterBindings: [{ key: 'modelName', value: payload.deployment_id }]
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                        'AI-Resource-Group': 'default',
+                        'content-type': 'application/json'
+                    }
+                });
+                const postConfigData = (await postConfig.json()) as Configuration;
+                configurationId = postConfigData.id;
+            }
+
+            const deployments = await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments', {
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    'AI-Resource-Group': 'default'
+                }
+            });
+            const deploymentsData = (await deployments.json()) as DeploymentsResponse;
+
+            const deployment = deploymentsData.resources.find((r) => r.configurationId === configurationId);
+
+            if (!deployment) {
+                await fetch(this.credentials.serviceurls.AI_API_URL + '/v2/lm/deployments', {
+                    method: 'POST',
+                    body: JSON.stringify({ configurationId }),
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                        'AI-Resource-Group': 'default',
+                        'content-type': 'application/json'
+                    }
+                });
+                throw new Error(
+                    'Deployment created, please run again in a few minutes.\nReason: The AI Core Service needs a deployment to query LLMs, the deployment was created but it takes a few minutes to complete.'
+                );
+            }
+
+            if (deployment.status !== 'RUNNING') {
+                throw new Error('Deployment not ready, please run again in a few minutes');
+            }
+            this.deploymentUrl[payload.deployment_id] = deployment.deploymentUrl;
+        }
+
+        const res = await fetch(
+            this.deploymentUrl[payload.deployment_id] + '/chat/completions?api-version=2023-05-15',
+            {
+                method: 'POST',
+                body: JSON.stringify({ messages: payload.messages }),
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    'AI-Resource-Group': 'default',
+                    'content-type': 'application/json'
+                }
+            }
+        );
+        return (await res.json()) as LLMResponse;
+    }
+}
+
+/**
+ * LLM wrapper
+ */
+class LLM {
+    private readonly client: LLMClient;
+
+    constructor() {
+        this.client = new HTTPAICoreClient();
+    }
+
+    /**
+     * Sends a payload to the LLM client with error handling.
+     *
+     * @param payload - The LLM payload to send
+     * @returns The LLM response
+     */
+    async send(payload: LLMPayload): Promise<LLMResponse> {
+        try {
+            return await this.client.send(payload);
+        } catch (e: unknown) {
+            const error = e as Error & { body?: { data?: { error?: string }; error?: string } };
+            const err = new Error(error.body?.data?.error || error.body?.error || error.message || String(e));
+            (err as Error & { code: string }).code = 'LLM';
+            throw err;
+        }
+    }
+}
+
 /**
  * Multi-source documentation builder for fetching and processing documentation from various sources.
  */
@@ -135,10 +335,13 @@ class MultiSourceDocumentationBuilder {
     private readonly categories: Map<string, string[]>;
     private readonly sourceResults: Map<string, SourceResult>;
     private readonly gitReposPath: string;
+    private readonly logger: Logger;
+    private readonly llm: LLM;
+    private readonly sourceMarkdown: Map<string, string[]>;
 
     constructor() {
         this.config = {
-            outputPath: './data/docs',
+            outputPath: './data_local',
             gitReposPath: './data/git_repos',
             sources: [
                 {
@@ -149,7 +352,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: 'docs',
                     category: 'fiori-tools',
-                    enabled: true
+                    enabled: false
                 },
                 {
                     id: 'sapui5',
@@ -169,7 +372,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-samples',
-                    enabled: true
+                    enabled: false
                 },
                 {
                     id: 'fiori-showcase',
@@ -179,14 +382,14 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-features',
-                    enabled: true
+                    enabled: false
                 },
                 {
                     id: 'ui5-api',
                     type: 'json-api',
                     url: 'https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json',
                     category: 'api-reference',
-                    enabled: true
+                    enabled: false
                 }
             ]
         };
@@ -195,6 +398,97 @@ class MultiSourceDocumentationBuilder {
         this.categories = new Map();
         this.sourceResults = new Map();
         this.gitReposPath = path.resolve(this.config.gitReposPath!);
+        this.logger = new ToolsLogger();
+        this.llm = new LLM();
+        this.sourceMarkdown = new Map();
+    }
+
+    /**
+     * Gets the system message for LLM processing.
+     *
+     * @returns The system message object with role and content
+     */
+    private getSystemMessage(): { role: string; content: string } {
+        return {
+            role: 'system',
+            content: `You are a documentation optimizer for RAG-based code generation.
+You are given a documentation snippet and you need to optimize it for AI agents to use when writing code.
+The output will be used by AI code generation tools, so focus on making the content clear, concise, and code-focused.
+
+Your task:
+1. Extract and enhance code examples with proper context
+2. Improve descriptions to be action-oriented for code generation
+3. Combine related information that belongs together
+4. Preserve all technical details, file paths, and code snippets
+5. Format the output as markdown following this structure:
+
+**TITLE**: [Clear, descriptive title]
+
+**INTRODUCTION**: [Brief introduction explaining the purpose and use case]
+
+**TAGS**: [Comma-separated relevant tags for searching]
+
+**STEP**: [Step title/number]
+
+**DESCRIPTION**: [Clear description of what needs to be done]
+
+**LANGUAGE**: [Programming language name like TypeScript, JavaScript, XML, JSON, CDS, etc.]
+
+**CODE**:
+\`\`\`[language]
+[code block]
+\`\`\`
+
+Repeat STEP/DESCRIPTION/LANGUAGE/CODE blocks as needed for multiple steps.
+
+Return ONLY the formatted markdown. Do not add any explanations or meta-commentary outside the markdown format.`
+        };
+    }
+
+    /**
+     * Processes document content with LLM to optimize for RAG code generation.
+     *
+     * @param doc - The parsed document to process
+     * @returns The optimized document content
+     */
+    private async processDocumentWithLLM(doc: ParsedDocument): Promise<string> {
+        const maxRetries = 4;
+        let retryCount = 0;
+
+        while (retryCount < maxRetries) {
+            try {
+                const messages = [
+                    this.getSystemMessage(),
+                    {
+                        role: 'user',
+                        content: `Document Title: ${doc.title}\n\nCategory: ${doc.category}\n\nContent:\n${doc.content}`
+                    }
+                ];
+
+                const response = await this.llm.send({
+                    deployment_id: 'gpt-5-mini',
+                    messages
+                });
+
+                return response.choices[0].message.content;
+            } catch (error) {
+                retryCount++;
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                this.logger.warn(`LLM processing failed (attempt ${retryCount}/${maxRetries}): ${errorMessage}`);
+
+                if (retryCount < maxRetries) {
+                    await setTimeout(5000);
+                } else {
+                    this.logger.error(
+                        `Failed to process document ${doc.id} after ${maxRetries} attempts, using original content`
+                    );
+                    // Fallback to original content in markdown format
+                    return `# ${doc.title}\n\n${doc.content}`;
+                }
+            }
+        }
+
+        return `# ${doc.title}\n\n${doc.content}`;
     }
 
     /**
@@ -216,23 +510,23 @@ class MultiSourceDocumentationBuilder {
             const repoExists = await this.directoryExists(repoPath);
 
             if (repoExists) {
-                console.log(`📂 Repository ${repoName} already exists, updating...`);
+                this.logger.info(`📂 Repository ${repoName} already exists, updating...`);
                 try {
                     // Pull latest changes
                     await execCommand('git', ['pull', 'origin', source.branch ?? 'main'], { cwd: repoPath });
-                    console.log(`✓ Updated repository: ${repoName}`);
+                    this.logger.info(`✓ Updated repository: ${repoName}`);
                 } catch (pullError) {
                     const errorMessage = pullError instanceof Error ? pullError.message : String(pullError);
-                    console.warn(`Failed to pull updates for ${repoName}, using existing version:`, errorMessage);
+                    this.logger.warn(`Failed to pull updates for ${repoName}, using existing version: ${errorMessage}`);
                 }
             } else {
-                console.log(`🔄 Cloning repository: ${repoUrl}`);
+                this.logger.info(`🔄 Cloning repository: ${repoUrl}`);
                 await execCommand(
                     'git',
                     ['clone', '--depth', '1', '--branch', source.branch ?? 'main', repoUrl, repoName],
                     { cwd: this.gitReposPath }
                 );
-                console.log(`✓ Cloned repository: ${repoName}`);
+                this.logger.info(`✓ Cloned repository: ${repoName}`);
             }
 
             return repoPath;
@@ -257,6 +551,55 @@ class MultiSourceDocumentationBuilder {
     }
 
     /**
+     * Check if a directory should be skipped during traversal.
+     *
+     * @param dirName - Directory name to check
+     * @returns True if directory should be skipped
+     */
+    private shouldSkipDirectory(dirName: string): boolean {
+        return ['node_modules', '.git', 'dist', 'build', 'target'].includes(dirName);
+    }
+
+    /**
+     * Check if a file has a supported extension.
+     *
+     * @param fileName - File name to check
+     * @returns True if file has a supported extension
+     */
+    private hasSupportedExtension(fileName: string): boolean {
+        const supportedExtensions = ['.md'];
+        return supportedExtensions.some((ext) => fileName.endsWith(ext));
+    }
+
+    /**
+     * Read a single file and create a GitHubFile object.
+     *
+     * @param fullEntryPath - Full path to the file
+     * @param entryPath - Relative path to the file
+     * @param entryName - Name of the file
+     * @returns GitHubFile object or null if read fails
+     */
+    private async readSingleFile(
+        fullEntryPath: string,
+        entryPath: string,
+        entryName: string
+    ): Promise<GitHubFile | null> {
+        try {
+            const content = await fs.readFile(fullEntryPath, 'utf-8');
+            return {
+                name: entryName,
+                path: entryPath,
+                type: 'file',
+                content
+            };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to read file ${fullEntryPath}: ${errorMessage}`);
+            return null;
+        }
+    }
+
+    /**
      * Read files recursively from a local directory.
      *
      * @param basePath - Base directory path to search
@@ -270,45 +613,23 @@ class MultiSourceDocumentationBuilder {
         try {
             const entries = await fs.readdir(fullPath, { withFileTypes: true });
 
-            const supportedExtensions = [
-                '.md',
-                '.ts',
-                '.js',
-                '.xml',
-                '.cds',
-                '.json',
-                '.html',
-                '.properties',
-                '.yaml',
-                '.yml'
-            ];
-
             for (const entry of entries) {
                 const entryPath = path.join(relativePath, entry.name);
                 const fullEntryPath = path.join(fullPath, entry.name);
 
-                if (entry.isDirectory()) {
-                    // Skip common directories that don't contain documentation
-                    if (!['node_modules', '.git', 'dist', 'build', 'target'].includes(entry.name)) {
-                        const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
-                        files.push(...subFiles);
-                    }
-                } else if (entry.isFile() && supportedExtensions.some((ext) => entry.name.endsWith(ext))) {
-                    try {
-                        const content = await fs.readFile(fullEntryPath, 'utf-8');
-                        files.push({
-                            name: entry.name,
-                            path: entryPath,
-                            type: 'file',
-                            content
-                        });
-                    } catch (error) {
-                        console.warn(`Failed to read file ${fullEntryPath}:`, error.message);
+                if (entry.isDirectory() && !this.shouldSkipDirectory(entry.name)) {
+                    const subFiles = await this.readFilesFromDirectory(basePath, entryPath);
+                    files.push(...subFiles);
+                } else if (entry.isFile() && this.hasSupportedExtension(entry.name)) {
+                    const file = await this.readSingleFile(fullEntryPath, entryPath, entry.name);
+                    if (file) {
+                        files.push(file);
                     }
                 }
             }
         } catch (error) {
-            console.warn(`Failed to read directory ${fullPath}:`, error.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to read directory ${fullPath}: ${errorMessage}`);
         }
 
         return files;
@@ -425,7 +746,7 @@ class MultiSourceDocumentationBuilder {
                 parsed: { data: {}, content }
             };
         } catch (error) {
-            console.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${error.message}`);
+            this.logger.debug(`Failed to parse JSON for file ${file.path}, treating as plain text. ${error.message}`);
             return this.parsePlainTextFile(file);
         }
     }
@@ -581,7 +902,7 @@ class MultiSourceDocumentationBuilder {
     }
 
     async buildFilestore(): Promise<void> {
-        console.log('🚀 Starting multi-source documentation build...');
+        this.logger.info('🚀 Starting multi-source documentation build...');
 
         try {
             // Ensure output directory exists
@@ -589,7 +910,7 @@ class MultiSourceDocumentationBuilder {
 
             // Process sources in parallel (but limit concurrency to avoid rate limits)
             const enabledSources = this.config.sources.filter((source) => source.enabled);
-            console.log(`📚 Processing ${enabledSources.length} enabled sources in parallel...`);
+            this.logger.info(`📚 Processing ${enabledSources.length} enabled sources in parallel...`);
 
             const concurrentSources = 2; // Process 2 sources at once to balance speed vs rate limits
             for (let i = 0; i < enabledSources.length; i += concurrentSources) {
@@ -597,22 +918,22 @@ class MultiSourceDocumentationBuilder {
 
                 await Promise.all(
                     batch.map(async (source) => {
-                        console.log(`🔄 Starting source: ${source.id}`);
+                        this.logger.info(`🔄 Starting source: ${source.id}`);
                         await this.processSource(source);
                     })
                 );
 
-                console.log(
+                this.logger.info(
                     `✅ Completed batch ${Math.floor(i / concurrentSources) + 1}/${Math.ceil(
                         enabledSources.length / concurrentSources
                     )}`
                 );
             }
 
-            console.log(`\n📊 Multi-source build summary:`);
+            this.logger.info(`\n📊 Multi-source build summary:`);
             for (const [sourceId, result] of this.sourceResults.entries()) {
                 const status = result.success ? '✅' : '❌';
-                console.log(`${status} ${sourceId}: ${result.documentsAdded} docs (${result.message})`);
+                this.logger.info(`${status} ${sourceId}: ${result.documentsAdded} docs (${result.message})`);
             }
 
             // Save individual document files
@@ -621,13 +942,14 @@ class MultiSourceDocumentationBuilder {
             // Create master index
             await this.createMasterIndex();
 
-            console.log(`\n🎉 Multi-source documentation build completed!`);
-            console.log(`📊 Total documents: ${this.documents.size}`);
-            console.log(`📁 Categories: ${this.categories.size}`);
-            console.log(`🌐 GitHub API requests: ${this.requestCount}`);
-            console.log(`🔗 Sources processed: ${this.sourceResults.size}`);
+            this.logger.info(`\n🎉 Multi-source documentation build completed!`);
+            this.logger.info(`📊 Total documents: ${this.documents.size}`);
+            this.logger.info(`📁 Categories: ${this.categories.size}`);
+            this.logger.info(`🌐 GitHub API requests: ${this.requestCount}`);
+            this.logger.info(`🔗 Sources processed: ${this.sourceResults.size}`);
         } catch (error) {
-            console.error('❌ Build failed:', error.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`❌ Build failed: ${errorMessage}`);
             process.exit(1);
         }
     }
@@ -637,7 +959,7 @@ class MultiSourceDocumentationBuilder {
      * @param source
      */
     async processSource(source: SourceConfig): Promise<void> {
-        console.log(`\n📚 Processing source: ${source.id} (${source.type})`);
+        this.logger.info(`\n📚 Processing source: ${source.id} (${source.type})`);
 
         const result: SourceResult = {
             success: false,
@@ -660,15 +982,24 @@ class MultiSourceDocumentationBuilder {
                     throw new Error(`Unsupported source type: ${source.type}`);
             }
 
-            console.log(`📄 Found ${files.length} files from ${source.id}`);
+            this.logger.info(`📄 Found ${files.length} files from ${source.id}`);
 
             let successCount = 0;
             let failureCount = 0;
 
-            // Process files in parallel batches for parsing
-            const parseBatchSize = 20;
+            // Process files in parallel batches for parsing and LLM optimization
+            const parseBatchSize = 5; // Reduced batch size for LLM processing
+            const startTime = Date.now();
+
             for (let i = 0; i < files.length; i += parseBatchSize) {
                 const batch = files.slice(i, i + parseBatchSize);
+                const batchStartTime = Date.now();
+
+                this.logger.info(
+                    `  🤖 Processing batch with LLM: ${i + 1}-${Math.min(i + parseBatchSize, files.length)}/${
+                        files.length
+                    }`
+                );
 
                 const parseResults = await Promise.allSettled(
                     batch.map(async (file) => {
@@ -680,16 +1011,36 @@ class MultiSourceDocumentationBuilder {
                         doc.source = source.id;
                         doc.sourceType = source.type;
 
-                        return { docId, doc };
+                        // Process with LLM to optimize for RAG
+                        const optimizedMarkdown = await this.processDocumentWithLLM(doc);
+
+                        return { docId, doc, optimizedMarkdown };
                     })
+                );
+
+                const batchTime = Date.now() - batchStartTime;
+                const avgTimePerBatch = (Date.now() - startTime) / (i / parseBatchSize + 1);
+                const remainingBatches = Math.ceil((files.length - (i + parseBatchSize)) / parseBatchSize);
+                const estimatedRemainingTime = (avgTimePerBatch * remainingBatches) / 1000 / 60;
+
+                this.logger.info(
+                    `  ⏱️  Batch processed in ${(batchTime / 1000).toFixed(
+                        1
+                    )}s. Estimated remaining: ${estimatedRemainingTime.toFixed(1)} minutes`
                 );
 
                 // Process results and count successes/failures
                 const batchResults = parseResults.reduce(
                     (counts, result, index) => {
                         if (result.status === 'fulfilled') {
-                            const { docId, doc } = result.value;
+                            const { docId, doc, optimizedMarkdown } = result.value;
                             this.documents.set(docId, doc);
+
+                            // Store markdown for this source
+                            if (!this.sourceMarkdown.has(source.id)) {
+                                this.sourceMarkdown.set(source.id, []);
+                            }
+                            this.sourceMarkdown.get(source.id)!.push(optimizedMarkdown);
 
                             // Add to category mapping
                             if (!this.categories.has(doc.category)) {
@@ -702,7 +1053,7 @@ class MultiSourceDocumentationBuilder {
                             const file = batch[index];
                             const errorMessage =
                                 result.reason instanceof Error ? result.reason.message : String(result.reason);
-                            console.warn(`Failed to parse document ${file.path || file.name}:`, errorMessage);
+                            this.logger.warn(`Failed to parse document ${file.path || file.name}: ${errorMessage}`);
                             counts.failure++;
                         }
                         return counts;
@@ -715,7 +1066,7 @@ class MultiSourceDocumentationBuilder {
 
                 // Progress update
                 const processed = Math.min(i + parseBatchSize, files.length);
-                console.log(`  📝 Parsed ${processed}/${files.length} files from ${source.id}`);
+                this.logger.info(`  📝 Parsed ${processed}/${files.length} files from ${source.id}`);
             }
 
             result.success = true;
@@ -723,11 +1074,12 @@ class MultiSourceDocumentationBuilder {
             result.message = `${successCount} docs added, ${failureCount} failed`;
 
             const duration = Date.now() - result.startTime;
-            console.log(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
+            this.logger.info(`✅ ${source.id} completed in ${duration}ms: ${result.message}`);
         } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
             result.success = false;
-            result.message = error.message;
-            console.error(`❌ Failed to process source ${source.id}:`, error.message);
+            result.message = errorMessage;
+            this.logger.error(`❌ Failed to process source ${source.id}: ${errorMessage}`);
 
             // Continue with other sources instead of failing completely
         }
@@ -749,12 +1101,12 @@ class MultiSourceDocumentationBuilder {
             // Determine the path to read from within the repository
             const docsPath = source.docsPath ? path.join(repoPath, source.docsPath) : repoPath;
 
-            console.log(`📖 Reading files from: ${docsPath}`);
+            this.logger.info(`📖 Reading files from: ${docsPath}`);
 
             // Read files from the local repository
             const files = await this.readFilesFromDirectory(docsPath);
 
-            console.log(`✓ Found ${files.length} files in ${source.id}`);
+            this.logger.info(`✓ Found ${files.length} files in ${source.id}`);
 
             return files as FileContent[];
         } catch (error) {
@@ -799,7 +1151,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(`Source directory not found, trying fallback structure: ${error.message}`);
+            this.logger.warn(`Source directory not found, trying fallback structure: ${error.message}`);
             return [];
         }
     }
@@ -834,7 +1186,7 @@ class MultiSourceDocumentationBuilder {
 
             return files;
         } catch (error) {
-            console.warn(`Skipping category directory due to error: ${error.message}`);
+            this.logger.warn(`Skipping category directory due to error: ${error.message}`);
             return [];
         }
     }
@@ -858,7 +1210,8 @@ class MultiSourceDocumentationBuilder {
                 download_url: 'cached'
             };
         } catch (error) {
-            console.warn(`Failed to load document file ${fileName}:`, error.message);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Failed to load document file ${fileName}: ${errorMessage}`);
             return null;
         }
     }
@@ -870,7 +1223,7 @@ class MultiSourceDocumentationBuilder {
      * @returns Promise resolving to array of file contents
      */
     async processJsonApiSource(source: SourceConfig): Promise<FileContent[]> {
-        console.log(`Fetching API documentation from: ${source.url}`);
+        this.logger.info(`Fetching API documentation from: ${source.url}`);
 
         try {
             const response = await fetch(source.url!);
@@ -929,7 +1282,7 @@ class MultiSourceDocumentationBuilder {
             });
         }
 
-        console.log(`Generated ${documents.length} API documents`);
+        this.logger.info(`Generated ${documents.length} API documents`);
         return documents;
     }
 
@@ -1064,25 +1417,31 @@ class MultiSourceDocumentationBuilder {
     }
 
     async saveDocuments(): Promise<void> {
-        console.log('\n💾 Saving document files organized by source...');
+        this.logger.info('\n💾 Saving aggregated markdown files by source...');
 
-        for (const [docId, doc] of this.documents) {
-            // Organize by source first, then by category within source
-            const sourceDir = path.join(this.config.outputPath, doc.source ?? 'unknown');
-            const categoryDir = path.join(sourceDir, doc.category);
-            await fs.mkdir(categoryDir, { recursive: true });
+        await fs.mkdir(this.config.outputPath, { recursive: true });
 
-            const sourcePrefix = `${doc.source}-`;
-            const cleanDocId = docId.replace(sourcePrefix, '');
-            const filePath = path.join(categoryDir, `${cleanDocId}.json`);
-            await fs.writeFile(filePath, JSON.stringify(doc, null, 2));
+        for (const [sourceId, markdownChunks] of this.sourceMarkdown) {
+            const outputFilePath = path.join(this.config.outputPath, `${sourceId}.md`);
+
+            // Combine all markdown chunks with separators
+            let aggregatedMarkdown = '\n';
+            for (const chunk of markdownChunks) {
+                aggregatedMarkdown += '--------------------------------\n\n';
+                aggregatedMarkdown += chunk;
+                aggregatedMarkdown += '\n';
+            }
+            aggregatedMarkdown += '--------------------------------\n';
+
+            await fs.writeFile(outputFilePath, aggregatedMarkdown, 'utf-8');
+            this.logger.info(`✓ Saved ${markdownChunks.length} documents to ${outputFilePath}`);
         }
 
-        console.log(`✓ Saved ${this.documents.size} document files organized by source`);
+        this.logger.info(`✓ Saved ${this.sourceMarkdown.size} markdown files (one per source)`);
     }
 
     async createMasterIndex(): Promise<void> {
-        console.log('\n📋 Creating master index...');
+        this.logger.info('\n📋 Creating master index...');
 
         const categories = Array.from(this.categories.entries()).map(([id, docIds]) => {
             const categoryName = id
@@ -1098,10 +1457,12 @@ class MultiSourceDocumentationBuilder {
             };
         });
 
-        const documentPaths: Record<string, string> = {};
-        for (const [docId, doc] of this.documents) {
-            const cleanDocId = docId.replace(`${doc.source}-`, '');
-            documentPaths[docId] = `${doc.source}/${doc.category}/${cleanDocId}.json`;
+        const sourceFiles: Record<string, { path: string; documentCount: number }> = {};
+        for (const [sourceId, markdownChunks] of this.sourceMarkdown) {
+            sourceFiles[sourceId] = {
+                path: `${sourceId}.md`,
+                documentCount: markdownChunks.length
+            };
         }
 
         const index = {
@@ -1109,13 +1470,13 @@ class MultiSourceDocumentationBuilder {
             generatedAt: new Date().toISOString(),
             totalDocuments: this.documents.size,
             categories,
-            documents: documentPaths
+            sources: sourceFiles
         };
 
         const indexPath = path.join(this.config.outputPath, 'index.json');
         await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
 
-        console.log(`✓ Created master index: ${indexPath}`);
+        this.logger.info(`✓ Created master index: ${indexPath}`);
     }
 }
 
@@ -1123,10 +1484,13 @@ class MultiSourceDocumentationBuilder {
 export { MultiSourceDocumentationBuilder };
 
 // Run the builder
+/* istanbul ignore if */
 if (require.main === module) {
+    const logger = new ToolsLogger();
     const builder = new MultiSourceDocumentationBuilder();
     builder.buildFilestore().catch((error) => {
-        console.error('Build failed:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Build failed: ${errorMessage}`);
         process.exit(1);
     });
 }

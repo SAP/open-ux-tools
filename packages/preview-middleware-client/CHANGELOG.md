@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.17.4
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
+## 0.17.3
+
+### Patch Changes
+
+-   9e94382: Disable flex changes for preview with virtual endpoints using UI5 sources from npmjs
+
 ## 0.17.2
 
 ### Patch Changes

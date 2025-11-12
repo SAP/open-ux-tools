@@ -1,5 +1,30 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.14
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/cds-annotation-parser@0.2.21
+    -   @sap-ux/odata-annotation-core@0.2.10
+    -   @sap-ux/text-document-utils@0.3.2
+    -   @sap-ux/odata-vocabularies@0.4.18
+
+## 0.6.13
+
+### Patch Changes
+
+-   Updated dependencies [ccb5285]
+    -   @sap-ux/odata-vocabularies@0.4.17
+    -   @sap-ux/cds-annotation-parser@0.2.20
+
+## 0.6.12
+
+### Patch Changes
+
+-   376daf5: chore update `@sap/ux-cds-compiler-facade` dependency
+
 ## 0.6.11
 
 ### Patch Changes

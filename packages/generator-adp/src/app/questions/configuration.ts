@@ -60,6 +60,7 @@ import {
 } from './helper/conditions';
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -106,6 +107,10 @@ export class ConfigPrompter {
      * Error message to be shown in the confirm extension project prompt.
      */
     private appValidationErrorMessage: string | undefined;
+    /**
+     * System additional message.
+     */
+    private systemAdditionalMessage: IMessageSeverity | undefined;
     /**
      * Indicates whether views are loaded synchronously.
      */
@@ -273,7 +278,10 @@ export class ConfigPrompter {
             },
             default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
-            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
+            additionalMessages: () => {
+                this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                return this.systemAdditionalMessage;
+            }
         };
     }
 
@@ -341,7 +349,13 @@ export class ConfigPrompter {
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
-            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
+            additionalMessages: () => {
+                if (!this.systemAdditionalMessage) {
+                    this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                    return this.systemAdditionalMessage;
+                }
+                return undefined;
+            }
         };
     }
 
@@ -598,6 +612,7 @@ export class ConfigPrompter {
         try {
             this.targetApps = [];
             this.flexUISystem = undefined;
+            this.isCloudProject = undefined;
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
             if (!this.isAuthRequired) {
@@ -674,7 +689,13 @@ export class ConfigPrompter {
      * @returns {Promise<void>} A promise that resolves once all version data is loaded and assigned.
      */
     private async loadUI5Versions(): Promise<void> {
-        const version = await getSystemUI5Version(this.abapProvider);
+        let version: string | undefined;
+        try {
+            version = await getSystemUI5Version(this.abapProvider, this.logger);
+        } catch (error) {
+            this.logger.debug(`Could not fetch the system UI5 version: ${error.message}.`);
+        }
+
         this.systemVersion = checkSystemVersionPattern(version);
         this.publicVersions = await fetchPublicVersions(this.logger);
         this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);

@@ -395,7 +395,11 @@ describe('FlpSandbox', () => {
                 );
 
                 test('test/flp.html UI5 2.x', async () => {
-                    const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -407,7 +411,25 @@ describe('FlpSandbox', () => {
 
                 test('test/flp.html UI5 legacy-free', async () => {
                     const jsonSpy = () =>
-                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+                        });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html UI5 1.76.0 from npmjs', async () => {
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'myApp',
+                            libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -419,7 +441,10 @@ describe('FlpSandbox', () => {
 
                 test('test/flp.html UI5 snapshot', async () => {
                     const jsonSpy = () =>
-                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
+                        Promise.resolve({
+                            name: 'SAPUI5 Distribution',
+                            libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }]
+                        });
                     fetchMock.mockResolvedValue({
                         json: jsonSpy,
                         text: jest.fn(),
@@ -464,7 +489,10 @@ describe('FlpSandbox', () => {
                 if (enableEnhancedHomePage) {
                     test('test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0', async () => {
                         const jsonSpy = () =>
-                            Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
+                            Promise.resolve({
+                                name: 'SAPUI5 Distribution',
+                                libraries: [{ name: 'sap.ui.core', version: '1.120.0' }]
+                            });
                         fetchMock.mockResolvedValue({
                             json: jsonSpy,
                             text: jest.fn(),
@@ -507,7 +535,11 @@ describe('FlpSandbox', () => {
         });
 
         test('rta with developerMode=true UI5 version 2.x', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+                });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),
@@ -703,7 +735,11 @@ describe('FlpSandbox', () => {
         });
 
         test('test/flp.html UI5 1.71 with asyncHints.requests', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.71.0' }] });
+            const jsonSpy = () =>
+                Promise.resolve({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.71.0' }]
+                });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),
@@ -784,9 +820,9 @@ describe('FlpSandbox', () => {
         afterEach(() => {
             fetchMock.mockRestore();
         });
-
+        let flp: FlpSandbox;
         const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+            flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
 
@@ -795,7 +831,6 @@ describe('FlpSandbox', () => {
 
             server = supertest(app);
         };
-
         beforeAll(async () => {
             await setupMiddleware(mockConfig as MiddlewareConfig);
         });
@@ -890,62 +925,68 @@ describe('FlpSandbox', () => {
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
         });
-    });
-
-    describe('router with enableCardGenerator in CAP project', () => {
-        let server!: SuperTest<Test>;
-        const mockConfig = {
-            editors: {
-                cardGenerator: {
-                    path: 'test/flpCardGeneratorSandbox.html'
-                }
-            }
-        };
-
-        let mockFsPromisesWriteFile: jest.Mock;
-
-        beforeEach(() => {
-            mockFsPromisesWriteFile = jest.fn();
-            promises.writeFile = mockFsPromisesWriteFile;
-        });
-
-        afterEach(() => {
-            fetchMock.mockRestore();
-        });
-
-        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
-            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+        test('should handle string i18n path', async () => {
+            const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            jest.spyOn(projectAccess, 'getProjectType').mockImplementationOnce(() => Promise.resolve('CAPNodejs'));
+            manifest['sap.app'].i18n = 'i18n/custom.properties';
+            await flp.init(manifest);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+        });
+
+        test('should handle bundleUrl with supported and fallback locales', async () => {
+            const newI18nEntry = [{ key: 'GREETING', value: 'Hallo Welt' }];
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['de', 'es'],
+                fallbackLocale: 'de'
+            };
             await flp.init(manifest);
 
-            const app = express();
-            app.use(flp.router);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
 
-            server = supertest(app);
-        };
-
-        beforeAll(async () => {
-            await setupMiddleware(mockConfig as MiddlewareConfig);
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
 
-        test('GET /test/flpCardGeneratorSandbox.html', async () => {
-            const response = await server.get(
-                `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
-            );
-            expect(response.status).toBe(200);
-            expect(response.type).toBe('text/html');
-            expect(logger.warn).toHaveBeenCalledWith('The Card Generator is not available for CAP projects.');
-        });
+        test('should reject unsupported locale', async () => {
+            const newI18nEntry = [{ key: 'GREETING', value: 'Bonjour' }];
 
-        test('POST /cards/store with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send('hello');
-            expect(response.status).toBe(404);
-        });
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].i18n = {
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: ['de', 'es']
+            };
+            await flp.init(manifest);
 
-        test('POST /editor/i18n with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send('hello');
-            expect(response.status).toBe(404);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=fr`).send(newI18nEntry);
+
+            expect(response.status).toBe(400);
+            expect(response.text).toContain('Locale "fr" is not supported');
+        });
+        test('should fallback to default i18n/i18n.properties if no i18n defined', async () => {
+            const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
+
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            delete manifest['sap.app'].i18n;
+            await flp.init(manifest);
+            const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
+
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
     });
 

@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 1.26.15
+
+### Patch Changes
+
+-   afb4be5: Update building block icon svg
+
+## 1.26.14
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
+## 1.26.13
+
+### Patch Changes
+
+-   6debb89: style update for disabled combobox option
+
+## 1.26.12
+
+### Patch Changes
+
+-   4c448a7: UIDialog: updated interface to support multiple elements within the footer
+
 ## 1.26.11
 
 ### Patch Changes

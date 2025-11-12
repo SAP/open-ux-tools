@@ -1,5 +1,65 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.0
+
+### Minor Changes
+
+-   bfbdb77: - First integration tests using promptfoo
+    -   Updated input schema for 'execute-functionality' - sometimes input parameters was passed outside of `parameters` property
+
+## 0.3.3
+
+### Patch Changes
+
+-   f1a2795: fix: Instrumentation key
+
+## 0.3.2
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-docs-embeddings@0.4.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
+
+## 0.3.0
+
+### Minor Changes
+
+-   d895232: - fix: V2 app crash when running `list-functionalities`
+    -   feat: add support for changing flex properties in V2 app
+
+## 0.2.5
+
+### Patch Changes
+
+-   8b7171e: chore: readme update - how to disable telemetry
+
+## 0.2.4
+
+### Patch Changes
+
+-   e75b594: Add Fiori Development portal documentation to embeddings
+-   Updated dependencies [e75b594]
+    -   @sap-ux/fiori-docs-embeddings@0.3.0
+
+## 0.2.3
+
+### Patch Changes
+
+-   e015869: chore: patch inquirer dependency
+
+## 0.2.2
+
+### Patch Changes
+
+-   8a97bcc: fix "Error [ERR_REQUIRE_ESM]" when starting fiori mcp server e.g. Nodejs 22.8.0
+
 ## 0.2.1
 
 ### Patch Changes
