@@ -146,11 +146,10 @@ export default class ManualTestCaseReporter implements Reporter {
 
         if (!shouldSkip) {
             this.manualTestCases[test.title].steps ??= [];
-            const parsedStep = parseActionStep(step.title);
             const lastStep = this.manualTestCases[test.title].steps[this.manualTestCases[test.title].steps.length - 1];
-            const isDuplicate = lastStep && parsedStep === lastStep.name;
+            const isDuplicate = lastStep && step.title === lastStep.name;
             if (!isDuplicate) {
-                this.manualTestCases[test.title].steps.push({ name: parsedStep });
+                this.manualTestCases[test.title].steps.push({ name: step.title });
             }
         }
     }
@@ -355,116 +354,4 @@ export default class ManualTestCaseReporter implements Reporter {
             return null;
         }
     }
-}
-
-/**
- * Parses a Playwright step title into a human-readable action description.
- *
- * @param stepTitle The title of the step to parse.
- * @returns A human-readable string describing the action.
- */
-function parseActionStep(stepTitle: string): string {
-    // Action mapping - common Playwright methods to human verbs with optional prefix and suffix
-    const actionMap: Record<string, { prefix: string; suffix?: string }> = {
-        'click': { prefix: 'Click on' },
-        'hover': { prefix: 'Hover over' },
-        'isDisabled': { prefix: 'Check if', suffix: 'is disabled' }
-    };
-
-    // Element type mapping - detect element types from selectors/roles
-    const elementMap: Record<string, string> = {
-        'button': 'button'
-    };
-
-    // Try to find action verb from the main step title
-    let actionInfo: { prefix: string; suffix?: string } | null = null;
-    for (const [actionKey, actionVerb] of Object.entries(actionMap)) {
-        if (stepTitle.includes(`.${actionKey}`) || stepTitle.startsWith(actionKey)) {
-            actionInfo = actionVerb;
-            break;
-        }
-    }
-
-    let element = '';
-    const getByMethodMap: Record<string, string> = {
-        'getByRole': 'role-based'
-    };
-
-    for (const [method, elementType] of Object.entries(getByMethodMap)) {
-        const methodMatch = stepTitle.match(new RegExp(`${method}\\(`));
-        if (methodMatch) {
-            if (method === 'getByRole') {
-                // Special handling for getByRole - extract the role type
-                const roleMatch = stepTitle.match(/getByRole\('(\w+)'/);
-                if (roleMatch) {
-                    const roleType = roleMatch[1];
-                    element = elementMap[roleType] || roleType;
-                }
-            } else {
-                element = elementType;
-            }
-            break;
-        }
-    }
-
-    // Try to extract element name using a map of patterns
-    let name = '';
-    const nameExtractionPatterns: Record<string, RegExp> = {
-        'getByRole': /getByRole\('\w+',\s*{\s*name:\s*'([^']+)'|getByRole\('\w+',\s*{\s*name:\s*"([^"]+)"/
-    };
-
-    // Try each pattern until we find a match
-    for (const [_method, pattern] of Object.entries(nameExtractionPatterns)) {
-        const nameMatch = stepTitle.match(pattern);
-        if (nameMatch) {
-            name = nameMatch[1] || nameMatch[2];
-            break;
-        }
-    }
-
-    // Build human-readable step using priority order with prefix and suffix
-    const resultBuilders = [
-        () => {
-            if (actionInfo && element && name) {
-                const { prefix, suffix } = actionInfo;
-                if (suffix) {
-                    return `${prefix} \`${name}\` ${suffix}`;
-                }
-                return `${prefix} ${element} \`${name}\``;
-            }
-            return null;
-        },
-        () => {
-            if (actionInfo && element) {
-                const { prefix, suffix } = actionInfo;
-                if (suffix) {
-                    return `${prefix} ${element} ${suffix}`;
-                }
-                return `${prefix} ${element}`;
-            }
-            return null;
-        },
-        () => {
-            if (actionInfo && name) {
-                const { prefix, suffix } = actionInfo;
-                if (suffix) {
-                    return `${prefix} \`${name}\` ${suffix}`;
-                }
-                return `${prefix} \`${name}\``;
-            }
-            return null;
-        },
-        () => (actionInfo ? actionInfo.prefix : null),
-        () => stepTitle
-    ];
-
-    let result = ``;
-    for (const builder of resultBuilders) {
-        const buildResult = builder();
-        if (buildResult) {
-            result = buildResult;
-            break;
-        }
-    }
-    return result;
 }
