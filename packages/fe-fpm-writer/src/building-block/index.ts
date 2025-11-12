@@ -286,7 +286,7 @@ function processBuildingBlock<T extends BuildingBlock>(
         }
 
         if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('filter/Fragment.xml'), viewPath, config);
+            fs.copyTpl(getTemplatePath('filter/fragment.xml'), viewPath, config);
         }
 
         const filterBarResult = updateAggregationPathForFilterBar(xmlDocument, aggregationPath, buildingBlockData);
