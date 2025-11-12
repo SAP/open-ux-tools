@@ -169,7 +169,15 @@ export class AdpPreview {
             zip.addFile(file.getPath().substring(1), await file.getBuffer());
         }
         const buffer = zip.toBuffer();
-
+        const entries = zip.getEntries();
+        // Create a deterministic stable representation.
+        const fileInfos = entries.map((entry) => ({
+            name: entry.entryName,
+            // Use a stable hash of file content.
+            data: entry.getData().toString()
+        }));
+        this.logger.info('[avasilev][zip]' + JSON.stringify(fileInfos));
+        this.logger.info('[buffer base64 string]' + buffer.toString('base64'));
         this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer, '//'))[this.descriptorVariantId];
         global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
     }

@@ -57,13 +57,13 @@ function logAxiosTrafficInternal(logger: ToolsLogger, isGeneratorWorkflow: boole
         // so wee need to do the same here.
         const method = (mergedConfig.method ?? GET_REQUEST_METHOD).toUpperCase();
 
-        logger.info(`[axios][=>][${method}] ${requestUrl}`);
-        if (mergedConfig.headers) {
-            logger.info(`[axios] headers: ${mergedConfig.headers}`);
-        }
-        if (mergedConfig.data) {
-            logger.info(`[axios] body: ${mergedConfig.data}`);
-        }
+        // logger.info(`[axios][=>][${method}] ${requestUrl}`);
+        // if (mergedConfig.headers) {
+        //     logger.info(`[axios] headers: ${mergedConfig.headers}`);
+        // }
+        // if (mergedConfig.data) {
+        //     logger.info(`[axios] body: ${mergedConfig.data}`);
+        // }
 
         try {
             const response = await originalRequest.call(this, config);
@@ -75,13 +75,13 @@ function logAxiosTrafficInternal(logger: ToolsLogger, isGeneratorWorkflow: boole
                 responseConfig.params
             );
 
-            logger.info(`[axios][<=][${response.status}] ${responseUrl}`);
-            if (response.headers) {
-                logger.info(`[axios] headers: ${response.headers}`);
-            }
-            if (response.data) {
-                logger.info(`[axios] body: ${response.data}`);
-            }
+            // logger.info(`[axios][<=][${response.status}] ${responseUrl}`);
+            // if (response.headers) {
+            //     logger.info(`[axios] headers: ${response.headers}`);
+            // }
+            // if (response.data) {
+            //     logger.info(`[axios] body: ${response.data}`);
+            // }
 
             appendMuabResponse(
                 muabConfigStream,

@@ -148,6 +148,15 @@ export class ManifestService {
         const buffer = zip.toBuffer();
         const lrep = this.provider.getLayeredRepository();
         await lrep.getCsrfToken();
+        const entries = zip.getEntries();
+        // Create a deterministic stable representation.
+        const fileInfos = entries.map((entry) => ({
+            name: entry.entryName,
+            // Use a stable hash of file content.
+            data: entry.getData().toString()
+        }));
+        this.logger.info('[avasilev][zip]' + JSON.stringify(fileInfos));
+        this.logger.info('[buffer base64 string]' + buffer.toString('base64'));
         const response = await lrep.mergeAppDescriptorVariant(buffer);
         this.manifest = response[descriptorVariantId].manifest;
     }
