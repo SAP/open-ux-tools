@@ -9,6 +9,9 @@ import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config
 import { BackendSystem, BackendSystemKey, getService } from '@sap-ux/store';
 import { createRelatedEntityChoices, SelectedEntityAnswer } from './utils';
 import Generator from 'yeoman-generator';
+import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import { Logger } from '@sap-ux/logger';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 export type AppConfig = {
     referencedEntities?: ReferencedEntities;
@@ -22,14 +25,13 @@ type EntityKey = { name: string; type: string; value: string | undefined };
 export type ReferencedEntities = {
     listEntity: {
         entitySetName: string;
-        keys: EntityKey[]
+        keys: EntityKey[];
     };
     pageObjectEntities?: Entity[];
     navPropEntities?: Map<Entity, Entity[]>;
 };
 export type Entity = { entitySetName: string; entityPath: string; entitySet: EntitySet | Singleton };
 
-const draftAdminEntityType = 'I_DraftAdministrativeDataType';
 const navPropNameExclusions = ['DraftAdministrativeData', 'SiblingEntity'];
 
 export async function getAppConfig(appAccess: ApplicationAccess): Promise<AppConfig | undefined> {
@@ -106,15 +108,11 @@ export async function getAppConfig(appAccess: ApplicationAccess): Promise<AppCon
  * @param convertedEdmx
  * @returns
  */
-function getEntityKeyProperties(
-    entitySetName: string,
-    convertedEdmx: ConvertedMetadata
-): EntityKey[] {
+function getEntityKeyProperties(entitySetName: string, convertedEdmx: ConvertedMetadata): EntityKey[] {
     const entity = convertedEdmx.entitySets.find((es) => es.name === entitySetName);
     const keyNames: EntityKey[] = [];
     if (entity) {
         entity.entityType.keys.forEach((key) => {
-
             keyNames.push({
                 name: key.name,
                 type: key.type,
@@ -214,8 +212,7 @@ async function getSystemNameFromStore(systemUrl: string, client?: string): Promi
  * @param mainEntity
  */
 export async function getServiceSelectionPrompts(
-    promptFunc: PromptFunction,
-    generator: Generator
+    promptFunc: PromptFunction
 ): Promise<{ questions: Question[]; answers: { system: Partial<OdataServiceAnswers>; application: ApplicationInfo } }> {
     const selectSourceQuestions: Question[] = [];
     const promptFuncRef = promptFunc;
@@ -245,7 +242,7 @@ export async function getServiceSelectionPrompts(
             if (appPath === appAnswer.appAccess?.app.appRoot) {
                 return true;
             }
-            // validate application exists at path 
+            // validate application exists at path
             appAnswer.appAccess = await createApplicationAccess(appPath);
             // todo: dont need 2 refs (appAnswer and appConfig)
             appConfig = await getAppConfig(appAnswer.appAccess);
@@ -271,18 +268,22 @@ export async function getServiceSelectionPrompts(
             return true;
         }
     } as InputQuestion;
-    const systemSelectionQuestions = await getSystemSelectionQuestions({
-        datasourceType: {
-            includeNone: false
+    const systemSelectionQuestions = await getSystemSelectionQuestions(
+        {
+            datasourceType: {
+                includeNone: false
+            },
+            systemSelection: {
+                includeCloudFoundryAbapEnvChoice: false,
+                defaultChoice: appAnswer.systemName
+            },
+            serviceSelection: {
+                serviceFilter: appAnswer.servicePaths
+            }
         },
-        systemSelection: {
-            includeCloudFoundryAbapEnvChoice: false,
-            defaultChoice: appAnswer.systemName
-        },
-        serviceSelection: {
-            serviceFilter: appAnswer.servicePaths
-        }
-    });
+        getHostEnvironment() !== hostEnvironment.cli,
+        ODataDownloadGenerator.logger as Logger
+    );
 
     let relatedEntityChoices: CheckboxChoiceOptions<SelectedEntityAnswer>[] = [];
     const relatedEntitySelectionQuestion = {
@@ -324,7 +325,7 @@ export function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQues
     const getEntityKeyInputPrompt = (keypart: number) =>
         ({
             when: () => {
-                return !!appInfo.referencedEntities?.listEntity.keys[keypart]?.name
+                return !!appInfo.referencedEntities?.listEntity.keys[keypart]?.name;
             },
             name: `entityKeyIdx:${keypart}`,
             message: () => `Enter value for: ${appInfo.referencedEntities?.listEntity.keys[keypart]?.name}`,
@@ -341,13 +342,13 @@ export function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQues
     for (let i = 0; i < size; i++) {
         questions.push(getEntityKeyInputPrompt(i));
     }
-        
-   /*  Object.entries(entityKey).forEach(([entityKeyName, entityKeyValue]) => {
+
+    /*  Object.entries(entityKey).forEach(([entityKeyName, entityKeyValue]) => {
         questions.push(getEntityKeyInputPrompt(entityKeyName, entityKeyValue));
     });
     */
     return questions;
-} 
+}
 
 /* export function getKeyPrompts(entityKey: EntityKey): InputQuestion[] {
     const questions: InputQuestion[] = [];

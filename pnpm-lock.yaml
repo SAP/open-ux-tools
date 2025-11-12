@@ -2973,6 +2973,9 @@ importers:
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/odata-service-inquirer':
         specifier: workspace:*
         version: link:../odata-service-inquirer
@@ -2985,6 +2988,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.3)

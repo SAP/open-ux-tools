@@ -1,14 +1,22 @@
 import { type AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import { DefaultLogger, getHostEnvironment, hostEnvironment, ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import {
+    DefaultLogger,
+    getHostEnvironment,
+    hostEnvironment,
+    ILogWrapper,
+    LogWrapper
+} from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
+import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import Generator, { GeneratorOptions } from 'yeoman-generator';
-import { getKeyPrompts, getServiceSelectionPrompts, ReferencedEntities } from './prompts';
+import { getServiceSelectionPrompts, ReferencedEntities } from './prompts';
 import { PromptFunction } from 'inquirer';
 import { type ODataService } from '@sap-ux/axios-extension';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import { join } from 'path';
 import { fetchData } from './odataQuery';
 import { convertODataResultToEntityFileData, SelectedEntityAnswer } from './utils';
+import { t } from '../utils/i18n';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -62,8 +70,6 @@ export class ODataDownloadGenerator extends Generator {
             unique: 'namespace'
         });
 
-        ODataDownloadGenerator._logger = this.options.logWrapper ?? DefaultLogger;
-
         this.prompts = new Prompts([
             {
                 description: 'Download data from an OData service for use with the UX Tools Mockdata Server',
@@ -102,6 +108,11 @@ export class ODataDownloadGenerator extends Generator {
         TelemetryHelper.createTelemetryData({
             ...this.options.telemetryData
         }); */
+        ODataDownloadGenerator._logger = this._configureLogging(
+            this.options.logLevel,
+            this.options.logger,
+            this.options.vscode
+        ) as ILogWrapper & Logger;
     }
 
     async prompting(): Promise<void> {
@@ -109,7 +120,7 @@ export class ODataDownloadGenerator extends Generator {
             const {
                 answers: { system, application },
                 questions
-            } = await getServiceSelectionPrompts(this.prompt.bind(this) as PromptFunction, this);
+            } = await getServiceSelectionPrompts(this.prompt.bind(this) as PromptFunction);
             const promptAnswers = await this.prompt(questions);
             if (system.metadata && application.appAccess) {
                 if (system.servicePath && application.appAccess && application.referencedEntities) {
@@ -149,7 +160,11 @@ export class ODataDownloadGenerator extends Generator {
             // Set target dir to mock data path
             this.destinationRoot(join(this.state.appRootPath!, this.state.mockDataRootPath!));
 
-            const entityFileData = convertODataResultToEntityFileData(this.state.appEntities!, this.state.entityData!, this.state.selectedEntities);
+            const entityFileData = convertODataResultToEntityFileData(
+                this.state.appEntities!,
+                this.state.entityData!,
+                this.state.selectedEntities
+            );
 
             // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
             // Write main entity data file (todo: do we need to treat this differently? )
@@ -179,5 +194,21 @@ export class ODataDownloadGenerator extends Generator {
             this.appWizard?.showError(error, MessageType.notification);
         }
         throw new Error(error);
+    }
+
+    /**
+     * Configures the vscode logger and yeoman logger to share single wrapper.
+     * Set as an option to be passed to sub-gens.
+     */
+    _configureLogging(logLevel: LogLevel, vscLogger: IVSCodeExtLogger, vscode?: object): ILogWrapper {
+        const logWrapper = new LogWrapper(
+            this.rootGeneratorName(),
+            this.log,
+            logLevel, // Only used for CLI
+            vscLogger,
+            vscode
+        );
+        logWrapper.debug(t('LOGGING_INITIALISED', { logLevel }));
+        return logWrapper;
     }
 }
