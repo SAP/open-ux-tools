@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';
 import { getAppHostIds, getCfApps } from '../../../../src/cf/app/discovery';
-import type { CFApp, CfConfig, CfCredentials, Organization, Space, Uaa } from '../../../../src/types';
+import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa } from '../../../../src/types';
 
 jest.mock('../../../../src/cf/services/api', () => ({
     ...jest.requireActual('../../../../src/cf/services/api'),
@@ -42,169 +42,193 @@ describe('CF App Discovery', () => {
 
     describe('getAppHostIds', () => {
         test('should extract single app host id from credentials', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123'
+                        }
                     }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual(['host-123']);
         });
 
         test('should extract multiple app host ids from single credential', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123, host-456, host-789'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123, host-456, host-789'
+                        }
                     }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual(['host-123', 'host-456', 'host-789']);
         });
 
         test('should extract app host ids from multiple credentials', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-1',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123, host-456'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-1',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123, host-456'
+                        }
                     }
                 },
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-2',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-789'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-789'
+                        }
                     }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual(['host-123', 'host-456', 'host-789']);
         });
 
         test('should handle credentials with spaces around app host ids', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: ' host-123 , host-456 , host-789 '
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: ' host-123 , host-456 , host-789 '
+                        }
                     }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual(['host-123', 'host-456', 'host-789']);
         });
 
         test('should remove duplicate app host ids', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-1',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123, host-456'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-1',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123, host-456'
+                        }
                     }
                 },
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-2',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123, host-789'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123, host-789'
+                        }
                     }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual(['host-123', 'host-456', 'host-789']);
         });
 
         test('should handle credentials without html5-apps-repo', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {}
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {}
+                    }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual([]);
         });
 
         test('should handle credentials with empty html5-apps-repo', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {}
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {}
+                    }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual([]);
         });
 
         test('should handle empty credentials array', () => {
-            const credentials: CfCredentials[] = [];
+            const serviceKeys: ServiceKeys[] = [];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual([]);
         });
 
         test('should handle mixed credentials with and without app host ids', () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-1',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-1',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123'
+                        }
                     }
                 },
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-2',
-                    endpoints: {}
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2',
+                        endpoints: {}
+                    }
                 },
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri-3',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-456, host-789'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-3',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-456, host-789'
+                        }
                     }
                 }
             ];
 
-            const result = getAppHostIds(credentials);
+            const result = getAppHostIds(serviceKeys);
 
             expect(result).toEqual(['host-123', 'host-456', 'host-789']);
         });
@@ -223,20 +247,22 @@ describe('CF App Discovery', () => {
         };
 
         test('should successfully discover apps with valid credentials', async () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123, host-456'
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123, host-456'
+                        }
                     }
                 }
             ];
 
             mockGetFDCApps.mockResolvedValue(mockApps);
 
-            const result = await getCfApps(credentials, mockCfConfig, mockLogger);
+            const result = await getCfApps(serviceKeys, mockCfConfig, mockLogger);
 
             expect(result).toEqual(mockApps);
             expect(mockGetFDCApps).toHaveBeenCalledWith(['host-123', 'host-456'], mockCfConfig, mockLogger);
@@ -244,27 +270,29 @@ describe('CF App Discovery', () => {
         });
 
         test('should throw error when app host ids exceed 100', async () => {
-            const credentials: CfCredentials[] = Array.from({ length: 101 }, (_, i) => ({
-                uaa: {} as Uaa,
-                uri: `test-uri-${i}`,
-                endpoints: {},
-                'html5-apps-repo': {
-                    app_host_id: `host-${i}`
+            const serviceKeys: ServiceKeys[] = Array.from({ length: 101 }, (_, i) => ({
+                credentials: {
+                    uaa: {} as Uaa,
+                    uri: `test-uri-${i}`,
+                    endpoints: {},
+                    'html5-apps-repo': {
+                        app_host_id: `host-${i}`
+                    }
                 }
             }));
 
-            await expect(getCfApps(credentials, mockCfConfig, mockLogger)).rejects.toThrow(
+            await expect(getCfApps(serviceKeys, mockCfConfig, mockLogger)).rejects.toThrow(
                 t('error.tooManyAppHostIds', { appHostIdsLength: 101 })
             );
             expect(mockGetFDCApps).not.toHaveBeenCalled();
         });
 
         test('should handle empty credentials array', async () => {
-            const credentials: CfCredentials[] = [];
+            const serviceKeys: ServiceKeys[] = [];
 
             mockGetFDCApps.mockResolvedValue([]);
 
-            const result = await getCfApps(credentials, mockCfConfig, mockLogger);
+            const result = await getCfApps(serviceKeys, mockCfConfig, mockLogger);
 
             expect(result).toEqual([]);
             expect(mockGetFDCApps).toHaveBeenCalledWith([], mockCfConfig, mockLogger);
@@ -272,13 +300,15 @@ describe('CF App Discovery', () => {
         });
 
         test('should propagate errors from getFDCApps', async () => {
-            const credentials: CfCredentials[] = [
+            const serviceKeys: ServiceKeys[] = [
                 {
-                    uaa: {} as Uaa,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123'
+                    credentials: {
+                        uaa: {} as Uaa,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {
+                            app_host_id: 'host-123'
+                        }
                     }
                 }
             ];
@@ -286,7 +316,7 @@ describe('CF App Discovery', () => {
             const error = new Error('API Error');
             mockGetFDCApps.mockRejectedValue(error);
 
-            await expect(getCfApps(credentials, mockCfConfig, mockLogger)).rejects.toThrow('API Error');
+            await expect(getCfApps(serviceKeys, mockCfConfig, mockLogger)).rejects.toThrow('API Error');
         });
     });
 });

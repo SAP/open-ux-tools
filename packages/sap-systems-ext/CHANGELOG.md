@@ -1,5 +1,29 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.10
+
+### Patch Changes
+
+-   caff0ca: fix for saving systems
+
+## 0.0.9
+
+### Patch Changes
+
+-   452e49a: correct publisher
+
+## 0.0.8
+
+### Patch Changes
+
+-   fea04a4: Adjust cloud system component rendering logic, adjust log message. Add log message when testing connection, service summary include catalog results log.
+
+## 0.0.7
+
+### Patch Changes
+
+-   f1a2795: fix: Instrumentation key
+
 ## 0.0.6
 
 ### Patch Changes
