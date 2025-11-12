@@ -97,7 +97,7 @@ export class ODataHealthChecker {
      * @param oDataVersion The OData version.
      * @returns Resolved with valid metadata.
      */
-    private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
+    private getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
         switch (oDataVersion) {
             case 'v2':
             case '2.0':
