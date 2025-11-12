@@ -2,19 +2,19 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
 import { getFDCApps } from '../services/api';
-import type { CfConfig, CFApp, CfCredentials } from '../../types';
+import type { CfConfig, CFApp, ServiceKeys } from '../../types';
 
 /**
  * Get the app host ids.
  *
- * @param {CfCredentials[]} credentials - The credentials.
+ * @param {ServiceKeys[]} serviceKeys - The service keys.
  * @returns {string[]} The app host ids.
  */
-export function getAppHostIds(credentials: CfCredentials[]): string[] {
+export function getAppHostIds(serviceKeys: ServiceKeys[]): string[] {
     const appHostIds: string[] = [];
 
-    for (const credential of credentials) {
-        const appHostId = credential['html5-apps-repo']?.app_host_id;
+    for (const serviceKey of serviceKeys) {
+        const appHostId = serviceKey.credentials['html5-apps-repo']?.app_host_id;
         if (appHostId) {
             // There might be multiple appHostIds separated by comma
             const ids = appHostId.split(',').map((item: string) => item.trim());
@@ -28,17 +28,13 @@ export function getAppHostIds(credentials: CfCredentials[]): string[] {
 /**
  * Discover apps from FDC API based on credentials.
  *
- * @param {CfCredentials[]} credentials - The credentials containing app host IDs
+ * @param {ServiceKeys[]} serviceKeys - The service keys containing app host IDs
  * @param {CfConfig} cfConfig - The CF configuration
  * @param {ToolsLogger} logger - The logger
  * @returns {Promise<CFApp[]>} The discovered apps
  */
-export async function getCfApps(
-    credentials: CfCredentials[],
-    cfConfig: CfConfig,
-    logger: ToolsLogger
-): Promise<CFApp[]> {
-    const appHostIds = getAppHostIds(credentials);
+export async function getCfApps(serviceKeys: ServiceKeys[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
+    const appHostIds = getAppHostIds(serviceKeys);
     logger?.log(`App Host Ids: ${JSON.stringify(appHostIds)}`);
 
     // Validate appHostIds array length (max 100 as per API specification)
