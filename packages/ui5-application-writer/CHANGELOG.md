@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.1
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
 ## 1.6.0
 
 ### Minor Changes
