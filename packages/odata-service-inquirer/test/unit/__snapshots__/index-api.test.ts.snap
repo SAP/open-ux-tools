@@ -129,6 +129,14 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "systemSelection:valueHelpDownloadConfirm",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
     "choices": [
       {
         "name": "ABAP Environment on SAP Business Technology Platform",
@@ -236,6 +244,14 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "abapOnPrem:valueHelpDownloadConfirm",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
     "choices": [
       {
         "name": "Discover a Cloud Foundry Service",
@@ -305,6 +321,14 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "name": "abapOnBtp:serviceSelection",
     "source": [Function],
     "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "abapOnBtp:valueHelpDownloadConfirm",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },

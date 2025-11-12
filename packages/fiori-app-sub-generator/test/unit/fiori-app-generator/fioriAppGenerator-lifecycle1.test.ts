@@ -542,7 +542,8 @@ describe('Test FioriAppGenerator', () => {
             namespace: ui5ApplicationAnswers.namespace,
             description: ui5ApplicationAnswers.description,
             localUI5Version: '3.2.1',
-            flpAppId: 'testNamespacetestAppName-display'
+            flpAppId: 'testNamespacetestAppName-display',
+            ui5Theme: ''
         });
     });
 
@@ -613,9 +614,9 @@ describe('Test FioriAppGenerator', () => {
             title: ui5ApplicationAnswers.title,
             namespace: ui5ApplicationAnswers.namespace,
             description: ui5ApplicationAnswers.description,
-            enableNpmWorkspaces: undefined,
             localUI5Version: '3.2.1',
-            flpAppId: 'testNamespacetestAppName-display'
+            flpAppId: 'testNamespacetestAppName-display',
+            ui5Theme: ''
         });
     });
 
@@ -669,7 +670,8 @@ describe('Test FioriAppGenerator', () => {
             localUI5Version: '3.2.1',
             addDeployConfig: true,
             addFlpConfig: true,
-            flpAppId: 'testNamespacetestAppName-display'
+            flpAppId: 'testNamespacetestAppName-display',
+            ui5Theme: ''
         });
 
         expect(addDeployGen).toHaveBeenCalledWith(

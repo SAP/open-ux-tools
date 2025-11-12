@@ -107,6 +107,14 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 "when": [Function],
               },
               {
+                "default": false,
+                "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+                "name": "cfAbapBas:valueHelpDownloadConfirm",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
                 "name": "cfAbapBas:cliServiceSelection",
                 "when": [Function],
               },

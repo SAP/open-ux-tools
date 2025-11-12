@@ -84,6 +84,14 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "systemSelection:valueHelpDownloadConfirm",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
     "choices": [Function],
     "default": [Function],
     "guiOptions": {
@@ -109,6 +117,14 @@ exports[`Test system selection prompts should return system selection prompts an
     "name": "cfAbapBas:serviceSelection",
     "source": [Function],
     "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "cfAbapBas:valueHelpDownloadConfirm",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },
@@ -203,6 +219,14 @@ exports[`Test system selection prompts should return system selection prompts an
     "name": "systemSelection:serviceSelection",
     "source": [Function],
     "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "systemSelection:valueHelpDownloadConfirm",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },
@@ -314,6 +338,14 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "abapOnPrem:valueHelpDownloadConfirm",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
     "choices": [
       {
         "name": "Discover a Cloud Foundry Service",
@@ -383,6 +415,14 @@ exports[`Test system selection prompts should return system selection prompts an
     "name": "abapOnBtp:serviceSelection",
     "source": [Function],
     "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+    "name": "abapOnBtp:valueHelpDownloadConfirm",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },

@@ -132,6 +132,14 @@ describe('Test new system prompt', () => {
                 "when": [Function],
               },
               {
+                "default": false,
+                "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+                "name": "someNamespace:valueHelpDownloadConfirm",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
                 "name": "someNamespace:cliServiceSelection",
                 "when": [Function],
               },
