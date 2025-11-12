@@ -5,6 +5,8 @@ import type { CustomElement, InternalCustomElement, Position, EventHandler } fro
  * Properties to create a custom filter.
  */
 export interface CustomFilter extends CustomElement, EventHandler {
+    // Unique filter field ID.
+    id: string;
     /**
      * Filter label in the application.
      */

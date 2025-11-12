@@ -56,9 +56,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     config: BuildingBlockConfig<T>,
     fs?: Editor
 ): Promise<Editor> {
-    debugger;
-    console.log('last  kitty');
-
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
     if (!fs) {
@@ -261,6 +258,7 @@ function processBuildingBlock<T extends BuildingBlock>(
 
         const config: InternalCustomFilter = {} as InternalCustomFilter;
         if (buildingBlockData.embededFragment) {
+            config.id = buildingBlockData.id!;
             config.controlID = buildingBlockData.filterFieldKey!;
             config.label = buildingBlockData.label!;
             config.property = buildingBlockData.property!;
