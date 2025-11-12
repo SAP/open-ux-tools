@@ -29,8 +29,10 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
+                os: [ubuntu-latest, windows-2025]
+                # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
                 ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-        runs-on: [ubuntu-latest, windows-2025]
+        runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
         steps:
