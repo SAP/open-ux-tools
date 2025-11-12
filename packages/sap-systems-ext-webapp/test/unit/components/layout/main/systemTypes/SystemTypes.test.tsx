@@ -52,5 +52,6 @@ describe('<SystemTypes />', () => {
         fireEvent.change(dropdown, { target: { value: 'OnPrem' } });
 
         expect(setType).toHaveBeenCalledWith('OnPrem');
+        expect(setAuthenticationType).toHaveBeenCalledWith('basic');
     });
 });

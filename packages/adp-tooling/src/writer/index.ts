@@ -3,7 +3,6 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
 import { getManifestContent } from './manifest';
-import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
@@ -24,7 +23,6 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
         options: { ...config.options },
-        flp: config.flp ? ({ ...config.flp } as InternalInboundNavigation) : undefined,
         customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
@@ -45,18 +43,6 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     );
     configWithDefaults.app.appType ??= getApplicationType(configWithDefaults.app.manifest);
     configWithDefaults.app.content ??= getManifestContent(configWithDefaults);
-
-    if (configWithDefaults.flp && !configWithDefaults.flp.inboundId) {
-        configWithDefaults.flp.inboundId = `${configWithDefaults.app.id}.InboundID`;
-    }
-
-    if (configWithDefaults.customConfig?.adp.environment === 'C' && configWithDefaults.flp) {
-        enhanceManifestChangeContentWithFlpConfig(
-            configWithDefaults.flp as InternalInboundNavigation,
-            configWithDefaults.app.id,
-            configWithDefaults.app.content
-        );
-    }
 
     return configWithDefaults;
 }

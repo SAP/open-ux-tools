@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.10
+
+### Patch Changes
+
+-   caff0ca: fix for saving systems
+
 ## 0.0.9
 
 ### Patch Changes
