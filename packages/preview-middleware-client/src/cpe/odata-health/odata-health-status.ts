@@ -8,9 +8,8 @@ export class ODataUpStatus {
      * Creates an instance representing a healthy OData service.
      *
      * @param serviceUrl The service url.
-     * @param metadata The OData metadata.
      */
-    constructor(public readonly serviceUrl: string, public readonly metadata: ODataMetadata) {}
+    constructor(public readonly serviceUrl: string) {}
 }
 
 /**
@@ -30,10 +29,10 @@ export class ODataDownStatus {
     }
 
     /**
-     * Fromats the reason.
+     * Formats the reason.
      *
      * @param reason The provided reason for the failure.
-     * @returns Formated reasion as string.
+     * @returns Formatted reason as string.
      */
     private formatReason(reason: unknown): string {
         if (reason instanceof Error) {
@@ -51,14 +50,3 @@ export class ODataDownStatus {
 }
 
 export type ODataHealthStatus = ODataUpStatus | ODataDownStatus;
-
-/**
- * Determines if an OData service is healthy based on its status.
- * A service is considered healthy if it has metadata available.
- *
- * @param status The OData service healths status.
- * @returns True if the service is up otherwise false.
- */
-export function isODataServiceHealthy(status: ODataHealthStatus): status is ODataUpStatus {
-    return 'metadata' in status;
-}

@@ -1,8 +1,12 @@
+import type * as ManifestNamespace from '@ui5/manifest/types/manifest';
+import Log from 'sap/base/Log';
 import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ODataDownStatus, ODataHealthStatus, ODataMetadata, ODataUpStatus } from './odata-health-status';
-import Log from 'sap/base/Log';
+
+type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
+type DataSource = ManifestNamespace.DataSource;
 
 /**
  * The OData version type.
@@ -22,20 +26,6 @@ interface ODataServiceInfo {
      */
     oDataVersion: ODataVersion;
 }
-
-/**
- * Represents the OData service data source from the manifest.
- */
-interface DataSource {
-    uri: string;
-    type: string;
-    settings: {
-        odataVersion?: ODataVersion;
-        localUri: string;
-    };
-}
-
-type DataSourceRecord = Record<string, DataSource>;
 
 /**
  * Use this class to do a health check for all available OData services, supports both v2 and v4
@@ -68,7 +58,7 @@ export class ODataHealthChecker {
      */
     private readonly toOdataServiceInfo = (src: DataSource): ODataServiceInfo => ({
         serviceUrl: src.uri,
-        oDataVersion: src.settings.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
+        oDataVersion: src.settings?.odataVersion ?? ODataHealthChecker.DEFAULT_ODATA_VERSION
     });
 
     constructor(private readonly rta: RuntimeAuthoring) {}
@@ -87,12 +77,12 @@ export class ODataHealthChecker {
             services.map(({ serviceUrl, oDataVersion }) => this.getServiceMetadata(serviceUrl, oDataVersion))
         );
 
-        const oDataHelathCheckDurationInSec = ((Date.now() - oDataHealthCheckStartTime) / 1000).toFixed(2);
-        Log.info(`OData service health check took ${oDataHelathCheckDurationInSec} sec.`);
+        const oDataHealthCheckDurationInSec = ((Date.now() - oDataHealthCheckStartTime) / 1000).toFixed(2);
+        Log.info(`OData service health check took ${oDataHealthCheckDurationInSec} sec.`);
 
         return metadataPromises.map((metadataPromise, idx) =>
             metadataPromise.status === 'fulfilled'
-                ? new ODataUpStatus(services[idx].serviceUrl, metadataPromise.value)
+                ? new ODataUpStatus(services[idx].serviceUrl)
                 : new ODataDownStatus(services[idx].serviceUrl, metadataPromise.reason)
         );
     }
@@ -105,7 +95,7 @@ export class ODataHealthChecker {
      *
      * @param serviceUrl The OData service url.
      * @param oDataVersion The OData version.
-     * @returns Rsolved with valid metadata.
+     * @returns Resolved with valid metadata.
      */
     private async getServiceMetadata(serviceUrl: string, oDataVersion: ODataVersion): Promise<ODataMetadata> {
         switch (oDataVersion) {
@@ -122,12 +112,12 @@ export class ODataHealthChecker {
         const oModel = new ODataModelV2({
             serviceUrl,
             json: true,
-            // We do not want the annotatations concatenated to the final result.
+            // We do not want the annotations concatenated to the final result.
             loadAnnotationsJoined: false
         });
         // This method actually returns promise which is resolved with the metadata.
         return oModel.metadataLoaded(true).finally(
-            // Do cleant up in case the helath check is done multiplpe times.
+            // Do clean up in case the helath check is done multiple times.
             () => oModel.destroy()
         );
     }
@@ -144,14 +134,14 @@ export class ODataHealthChecker {
             .getMetaModel()
             .requestObject('/')
             .finally(
-                // Do cleant up in case the helath check is done multiplpe times.
+                // Do clean up in case the helath check is done multiple times.
                 () => oModel.destroy()
             );
     }
 
     private getServices(): ODataServiceInfo[] {
-        const manifest = this.rta.getRootControlInstance().getManifest();
-        const dataSources = manifest?.['sap.app']?.dataSources as unknown as DataSourceRecord;
+        const manifest: Manifest = this.rta.getRootControlInstance().getManifest() as unknown as Manifest;
+        const dataSources = manifest?.['sap.app']?.dataSources;
         return Object.values(dataSources ?? {})
             .filter(this.isOdataService)
             .map(this.toOdataServiceInfo);

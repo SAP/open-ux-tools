@@ -23,7 +23,7 @@ import type { ActionHandler, Service } from './types';
 import { getIcons } from './ui5-utils';
 import { ODataHealthChecker } from './odata-health/odata-health-checker';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { isODataServiceHealthy } from './odata-health/odata-health-status';
+import { ODataUpStatus } from './odata-health/odata-health-status';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -69,7 +69,7 @@ export default function init(
         .getHealthStatus()
         .then((healthStatus) =>
             healthStatus.map((status) =>
-                isODataServiceHealthy(status)
+                status instanceof ODataUpStatus
                     ? Promise.resolve()
                     : sendInfoCenterMessage({
                           title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
