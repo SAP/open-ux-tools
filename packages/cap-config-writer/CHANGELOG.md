@@ -1,5 +1,64 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+
+## 0.12.23
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/fiori-generator-shared@0.13.32
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/yaml@0.17.2
+
+## 0.12.22
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.31
+
+## 0.12.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.30
+
+## 0.12.20
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.29
+
+## 0.12.19
+
+### Patch Changes
+
+-   Updated dependencies [d895232]
+    -   @sap-ux/project-access@1.32.7
+    -   @sap-ux/fiori-generator-shared@0.13.28
+
+## 0.12.18
+
+### Patch Changes
+
+-   Updated dependencies [ea0a942]
+    -   @sap-ux/project-access@1.32.6
+    -   @sap-ux/fiori-generator-shared@0.13.27
+
+## 0.12.17
+
+### Patch Changes
+
+-   Updated dependencies [c5d7915]
+    -   @sap-ux/project-access@1.32.5
+    -   @sap-ux/fiori-generator-shared@0.13.26
+
 ## 0.12.16
 
 ### Patch Changes

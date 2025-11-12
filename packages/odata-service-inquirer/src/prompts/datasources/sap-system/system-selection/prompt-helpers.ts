@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { type BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
+import { type BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -19,6 +19,7 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { ValidationResult } from '../../../types';
 import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
+import { getBackendSystemService } from '../../../../utils/store';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -51,7 +52,9 @@ export async function connectWithBackendSystem(
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
-    const backendSystem = await new SystemService(LoggerHelper.logger).read(backendKey);
+
+    const backendService = await getBackendSystemService();
+    const backendSystem = await backendService.read(backendKey);
 
     if (backendSystem) {
         // Backend systems validation supports using a cached service provider to prevent re-authentication (e.g. re-opening a browser window)
@@ -85,11 +88,7 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (
-                errorType === ERROR_TYPE.AUTH &&
-                typeof backendSystem.username === 'string' &&
-                typeof backendSystem.password === 'string'
-            ) {
+            if (errorType === ERROR_TYPE.AUTH) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', {
                         systemName: backendSystem.name,
@@ -238,7 +237,8 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
+        const backendService = await getBackendSystemService();
+        const backendSystems = await backendService.getAll({ includeSensitiveData: false });
         // Cache the backend systems
         PromptState.backendSystemsCache = backendSystems;
 

@@ -106,6 +106,18 @@ exports[`getQuestions getQuestions 1`] = `
   },
   {
     "additionalMessages": [Function],
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
+    "message": "Do you want to store the system credentials?",
+    "name": "systemSelection:storeSystemCredentials",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
     "choices": [Function],
     "default": [Function],
     "guiOptions": {
@@ -186,6 +198,18 @@ exports[`getQuestions getQuestions 1`] = `
     "message": "Password",
     "name": "abapOnPrem:systemPassword",
     "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
+    "message": "Do you want to store the system credentials?",
+    "name": "abapOnPrem:storeSystemCredentials",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },

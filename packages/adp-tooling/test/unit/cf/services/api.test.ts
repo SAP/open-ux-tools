@@ -1,35 +1,34 @@
 import axios from 'axios';
 import { readFileSync } from 'node:fs';
-import * as CFLocal from '@sap/cf-tools/out/src/cf-local';
-import * as CFToolsCli from '@sap/cf-tools/out/src/cli';
+import { cfGetAvailableOrgs } from '@sap/cf-tools';
+import { Cli } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import {
-    getBusinessServiceKeys,
+    getBusinessServiceInfo,
     getFDCApps,
     getFDCRequestArguments,
-    createService,
+    createServiceInstance,
+    getServiceNameByTags,
     createServices,
     getServiceInstanceKeys
 } from '../../../../src/cf/services/api';
 import { initI18n, t } from '../../../../src/i18n';
 import { isLoggedInCf } from '../../../../src/cf/core/auth';
 import { getProjectNameForXsSecurity } from '../../../../src/cf/project';
-import type { CfConfig, ServiceKeys, MtaYaml } from '../../../../src/types';
+import type { CfConfig, ServiceInfo, MtaYaml } from '../../../../src/types';
 import { getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
 
 jest.mock('fs', () => ({
     readFileSync: jest.fn()
 }));
 jest.mock('axios');
-jest.mock('@sap/cf-tools/out/src/cf-local', () => ({
+jest.mock('@sap/cf-tools', () => ({
     cfGetServiceKeys: jest.fn(),
     cfCreateServiceKey: jest.fn(),
-    cfGetAvailableOrgs: jest.fn()
-}));
-jest.mock('@sap/cf-tools/out/src/cli', () => ({
+    cfGetAvailableOrgs: jest.fn(),
     Cli: {
         execute: jest.fn()
     }
@@ -50,18 +49,14 @@ jest.mock('../../../../src/cf/project', () => ({
 }));
 
 const mockAxios = axios as jest.Mocked<typeof axios>;
-const mockCFLocal = CFLocal as jest.Mocked<typeof CFLocal>;
-const mockCFToolsCli = CFToolsCli as jest.Mocked<typeof CFToolsCli>;
 const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
 const mockRequestCfApi = requestCfApi as jest.MockedFunction<typeof requestCfApi>;
 const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
 const mockIsLoggedInCf = isLoggedInCf as jest.MockedFunction<typeof isLoggedInCf>;
 const mockGetServiceKeys = getServiceKeys as jest.MockedFunction<typeof getServiceKeys>;
 const mockCreateServiceKey = createServiceKey as jest.MockedFunction<typeof createServiceKey>;
-const mockCFToolsCliExecute = mockCFToolsCli.Cli.execute as jest.MockedFunction<typeof mockCFToolsCli.Cli.execute>;
-const mockCfGetAvailableOrgs = mockCFLocal.cfGetAvailableOrgs as jest.MockedFunction<
-    typeof mockCFLocal.cfGetAvailableOrgs
->;
+const mockCFToolsCliExecute = Cli.execute as jest.MockedFunction<typeof Cli.execute>;
+const mockCfGetAvailableOrgs = cfGetAvailableOrgs as jest.MockedFunction<typeof cfGetAvailableOrgs>;
 const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.MockedFunction<
     typeof getProjectNameForXsSecurity
 >;
@@ -80,7 +75,7 @@ describe('CF Services API', () => {
         jest.clearAllMocks();
     });
 
-    describe('getBusinessServiceKeys', () => {
+    describe('getBusinessServiceInfo', () => {
         test('should return service keys when service instance is found', async () => {
             const businessService = 'test-service';
             const config: CfConfig = {
@@ -90,19 +85,21 @@ describe('CF Services API', () => {
                 token: 'test-token'
             };
 
-            const mockServiceKeys: ServiceKeys = {
-                credentials: [
+            const mockServiceKeys: ServiceInfo = {
+                serviceKeys: [
                     {
-                        clientid: 'test-client-id',
-                        clientsecret: 'test-client-secret',
-                        url: 'test-url',
-                        uaa: {
-                            clientid: 'test-uaa-clientid',
-                            clientsecret: 'test-uaa-clientsecret',
-                            url: 'test-uaa-url'
-                        },
-                        uri: 'test-uri',
-                        endpoints: {}
+                        credentials: {
+                            clientid: 'test-client-id',
+                            clientsecret: 'test-client-secret',
+                            url: 'test-url',
+                            uaa: {
+                                clientid: 'test-uaa-clientid',
+                                clientsecret: 'test-uaa-clientsecret',
+                                url: 'test-uaa-url'
+                            },
+                            uri: 'test-uri',
+                            endpoints: {}
+                        }
                     }
                 ],
                 serviceInstance: {
@@ -119,9 +116,9 @@ describe('CF Services API', () => {
                     }
                 ]
             });
-            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.credentials);
+            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.serviceKeys);
 
-            const result = await getBusinessServiceKeys(businessService, config, mockLogger);
+            const result = await getBusinessServiceInfo(businessService, config, mockLogger);
 
             expect(result).toEqual(mockServiceKeys);
             expect(mockLogger.log).toHaveBeenCalledWith(
@@ -140,7 +137,7 @@ describe('CF Services API', () => {
 
             mockRequestCfApi.mockResolvedValue({ resources: [] });
 
-            const result = await getBusinessServiceKeys(businessService, config, mockLogger);
+            const result = await getBusinessServiceInfo(businessService, config, mockLogger);
 
             expect(result).toBeNull();
         });
@@ -161,7 +158,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(false);
             mockIsLoggedInCf.mockResolvedValue(true);
-            mockCfGetAvailableOrgs.mockResolvedValue([{ name: 'test-org', guid: 'test-org-guid' }]);
+            mockCfGetAvailableOrgs.mockResolvedValue([{ label: 'test-org', guid: 'test-org-guid' }]);
             mockAxios.get.mockResolvedValue({
                 data: { results: mockApps },
                 status: 200
@@ -190,7 +187,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(false);
             mockIsLoggedInCf.mockResolvedValue(true);
-            mockCfGetAvailableOrgs.mockResolvedValue([{ name: 'test-org', guid: 'test-org-guid' }]);
+            mockCfGetAvailableOrgs.mockResolvedValue([{ label: 'test-org', guid: 'test-org-guid' }]);
             mockAxios.get.mockResolvedValue({
                 data: { results: [] },
                 status: 404
@@ -214,7 +211,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(false);
             mockIsLoggedInCf.mockResolvedValue(true);
-            mockCfGetAvailableOrgs.mockResolvedValue([{ name: 'test-org', guid: 'test-org-guid' }]);
+            mockCfGetAvailableOrgs.mockResolvedValue([{ label: 'test-org', guid: 'test-org-guid' }]);
             mockAxios.get.mockRejectedValue(new Error(errorMsg));
 
             await expect(getFDCApps(['test-app-host-id'], config, mockLogger)).rejects.toThrow(
@@ -305,69 +302,86 @@ describe('CF Services API', () => {
         });
     });
 
-    describe('createService', () => {
-        const spaceGuid = 'test-space-guid';
+    describe('createServiceInstance', () => {
         const plan = 'test-plan';
         const serviceInstanceName = 'test-service';
+        const serviceName = 'test-offering';
 
         test('should create service with service name provided', async () => {
-            const serviceOffering = 'test-offering';
-
             mockCFToolsCliExecute.mockResolvedValue({
                 exitCode: 0,
                 stdout: 'Service created successfully',
                 stderr: ''
             });
 
-            await createService(
-                spaceGuid,
-                plan,
-                serviceInstanceName,
-                [],
-                serviceOffering,
-                undefined,
-                undefined,
-                mockLogger
-            );
+            await createServiceInstance(plan, serviceInstanceName, serviceName, { logger: mockLogger });
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
-                serviceOffering,
+                serviceName,
                 plan,
                 serviceInstanceName
             ]);
         });
 
         test('should create service with XS security configuration', async () => {
-            const serviceOffering = 'xsuaa';
-
+            const xsSecurityContent = '{"xsappname": "test-app"}';
+            mockReadFileSync.mockReturnValue(xsSecurityContent);
             mockCFToolsCliExecute.mockResolvedValue({
                 exitCode: 0,
                 stdout: 'Service created successfully',
                 stderr: ''
             });
 
-            await createService(
-                spaceGuid,
-                plan,
-                serviceInstanceName,
-                [],
-                serviceOffering,
-                undefined,
-                undefined,
-                mockLogger
-            );
+            await createServiceInstance(plan, serviceInstanceName, 'xsuaa', {
+                xsSecurityProjectName: 'test-project',
+                logger: mockLogger
+            });
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
                 'create-service',
-                serviceOffering,
+                'xsuaa',
                 plan,
-                serviceInstanceName
+                serviceInstanceName,
+                '-c',
+                JSON.stringify({ xsappname: 'test-project' })
             ]);
         });
 
-        test('should create service without service name provided', async () => {
-            const tags = ['test-tag'];
+        test('should handle service creation failure', async () => {
+            mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
+
+            await expect(
+                createServiceInstance(plan, serviceInstanceName, serviceName, { logger: mockLogger })
+            ).rejects.toThrow(
+                t('error.failedToCreateServiceInstance', {
+                    serviceInstanceName: serviceInstanceName,
+                    error: 'Service creation failed'
+                })
+            );
+        });
+
+        test('should handle xs-security.json parsing failure', async () => {
+            mockReadFileSync.mockReturnValue('invalid json content');
+
+            await expect(
+                createServiceInstance(plan, serviceInstanceName, 'xsuaa', {
+                    xsSecurityProjectName: 'test-project',
+                    logger: mockLogger
+                })
+            ).rejects.toThrow(t('error.xsSecurityJsonCouldNotBeParsed'));
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to parse xs-security.json file:')
+            );
+        });
+    });
+
+    describe('getServiceNameByTags', () => {
+        const spaceGuid = 'test-space-guid';
+        const tags = ['test-tag'];
+
+        test('should get service name using tags', async () => {
             const mockServiceOfferings = {
                 resources: [
                     {
@@ -378,86 +392,35 @@ describe('CF Services API', () => {
             };
 
             mockRequestCfApi.mockResolvedValue(mockServiceOfferings);
-            mockCFToolsCliExecute.mockResolvedValue({
-                exitCode: 0,
-                stdout: 'Service created successfully',
-                stderr: ''
-            });
 
-            await createService(
-                spaceGuid,
-                plan,
-                serviceInstanceName,
-                tags,
-                undefined,
-                undefined,
-                undefined,
-                mockLogger
-            );
+            const serviceName = await getServiceNameByTags(spaceGuid, tags);
 
             expect(mockRequestCfApi).toHaveBeenCalledWith(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
             );
-
-            expect(mockCFToolsCliExecute).toHaveBeenCalledWith([
-                'create-service',
-                'test-service-offering',
-                plan,
-                serviceInstanceName
-            ]);
+            expect(serviceName).toBe('test-service-offering');
         });
 
-        test('should handle service creation failure', async () => {
-            mockCFToolsCliExecute.mockRejectedValue(new Error('Service creation failed'));
+        test('should return empty string when no service found', async () => {
+            const mockServiceOfferings = {
+                resources: []
+            };
 
-            await expect(
-                createService(
-                    spaceGuid,
-                    plan,
-                    serviceInstanceName,
-                    [],
-                    'test-offering',
-                    undefined,
-                    undefined,
-                    mockLogger
-                )
-            ).rejects.toThrow(
-                t('error.failedToCreateServiceInstance', {
-                    serviceInstanceName: serviceInstanceName,
-                    error: 'Service creation failed'
-                })
-            );
+            mockRequestCfApi.mockResolvedValue(mockServiceOfferings);
+
+            const serviceName = await getServiceNameByTags(spaceGuid, tags);
+            expect(serviceName).toBe('');
         });
 
-        test('should handle xs-security.json parsing failure', async () => {
-            const serviceOffering = 'xsuaa';
-            const securityFilePath = '/path/to/xs-security.json';
-            const xsSecurityProjectName = 'test-project';
+        test('should handle API request failure', async () => {
+            mockRequestCfApi.mockRejectedValue(new Error('API request failed'));
 
-            mockReadFileSync.mockReturnValue('invalid json content');
-
-            await expect(
-                createService(
-                    spaceGuid,
-                    plan,
-                    serviceInstanceName,
-                    [],
-                    serviceOffering,
-                    { filePath: securityFilePath, xsappname: xsSecurityProjectName },
-                    undefined,
-                    mockLogger
-                )
-            ).rejects.toThrow(t('error.xsSecurityJsonCouldNotBeParsed'));
-
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining('Failed to parse xs-security.json file:')
-            );
+            await expect(getServiceNameByTags(spaceGuid, tags)).rejects.toThrow('API request failed');
         });
     });
 
     describe('createServices', () => {
         test('should create all required services', async () => {
-            const projectPath = '/test/project';
             const yamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
                 ID: 'test-project',
@@ -476,7 +439,6 @@ describe('CF Services API', () => {
                 ]
             };
             const initialServices = ['portal'];
-            const spaceGuid = 'test-space-guid';
 
             mockGetProjectNameForXsSecurity.mockReturnValue('test-project-1234567890');
             mockReadFileSync.mockReturnValue('{"xsappname": "test-app"}');
@@ -486,15 +448,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(
-                projectPath,
-                yamlContent,
-                initialServices,
-                '1234567890',
-                spaceGuid,
-                undefined,
-                mockLogger
-            );
+            await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining([
@@ -537,15 +491,7 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(
-                projectPath,
-                yamlContent,
-                initialServices,
-                '1234567890',
-                spaceGuid,
-                undefined,
-                mockLogger
-            );
+            await createServices(yamlContent, initialServices, '1234567890', undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining(['create-service', 'destination', 'lite', 'test-destination-service'])
@@ -562,19 +508,21 @@ describe('CF Services API', () => {
                 spaceGuids: ['test-space-guid'],
                 names: ['test-service']
             };
-            const mockServiceKeys: ServiceKeys = {
-                credentials: [
+            const mockServiceKeys: ServiceInfo = {
+                serviceKeys: [
                     {
-                        clientid: 'test-client-id',
-                        clientsecret: 'test-client-secret',
-                        url: 'test-url',
-                        uaa: {
-                            clientid: 'test-uaa-clientid',
-                            clientsecret: 'test-uaa-clientsecret',
-                            url: 'test-uaa-url'
-                        },
-                        uri: 'test-uri',
-                        endpoints: {}
+                        credentials: {
+                            clientid: 'test-client-id',
+                            clientsecret: 'test-client-secret',
+                            url: 'test-url',
+                            uaa: {
+                                clientid: 'test-uaa-clientid',
+                                clientsecret: 'test-uaa-clientsecret',
+                                url: 'test-uaa-url'
+                            },
+                            uri: 'test-uri',
+                            endpoints: {}
+                        }
                     }
                 ],
                 serviceInstance: {
@@ -591,7 +539,7 @@ describe('CF Services API', () => {
                     }
                 ]
             });
-            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.credentials);
+            mockGetServiceKeys.mockResolvedValue(mockServiceKeys.serviceKeys);
 
             const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
 
@@ -667,24 +615,7 @@ describe('CF Services API', () => {
 
             mockGetServiceKeys.mockResolvedValueOnce([]).mockResolvedValueOnce([
                 {
-                    clientid: 'test-client-id',
-                    clientsecret: 'test-client-secret',
-                    url: 'test-url',
-                    uaa: {
-                        clientid: 'test-uaa-clientid',
-                        clientsecret: 'test-uaa-clientsecret',
-                        url: 'test-uaa-url'
-                    },
-                    uri: 'test-uri',
-                    endpoints: {}
-                }
-            ]);
-
-            const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
-
-            expect(result).toEqual({
-                credentials: [
-                    {
+                    credentials: {
                         clientid: 'test-client-id',
                         clientsecret: 'test-client-secret',
                         url: 'test-url',
@@ -695,6 +626,27 @@ describe('CF Services API', () => {
                         },
                         uri: 'test-uri',
                         endpoints: {}
+                    }
+                }
+            ]);
+
+            const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
+
+            expect(result).toEqual({
+                serviceKeys: [
+                    {
+                        credentials: {
+                            clientid: 'test-client-id',
+                            clientsecret: 'test-client-secret',
+                            url: 'test-url',
+                            uaa: {
+                                clientid: 'test-uaa-clientid',
+                                clientsecret: 'test-uaa-clientsecret',
+                                url: 'test-uaa-url'
+                            },
+                            uri: 'test-uri',
+                            endpoints: {}
+                        }
                     }
                 ],
                 serviceInstance: {

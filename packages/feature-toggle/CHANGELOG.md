@@ -1,5 +1,17 @@
 # @sap-ux/feature-toggle
 
+## 0.3.4
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
+## 0.3.3
+
+### Patch Changes
+
+-   fa9580c: chore - Rimraf upgrade
+
 ## 0.3.2
 
 ### Patch Changes

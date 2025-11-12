@@ -39,7 +39,8 @@
             "invalidManifestStructureError": "Invalid `manifest.json file` structure: `sap.ui5` or `sap.app` are missing. Check they exist."
         },
         "quickDeployedAppDownloadErrors": {
-            "noAppsFound": "No application with the ID {{ appId }} was found in the system. Please check if the application is deployed correctly or select another app."
+            "noAppsFound": "No application with the ID {{ appId }} was found in the system. Please check if the application is deployed correctly or select another app.",
+            "transportCheckFailed": "Transport request resolution failed with error: {error}."
         }
     },
     "warn": {
