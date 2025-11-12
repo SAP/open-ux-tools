@@ -38,7 +38,7 @@ async function getPackageReadme(packageName: string, logger: ToolsLogger): Promi
  * @returns The enhanced README content.
  */
 function enhanceReadmeContent(content: string): string {
-    return content.replace(/^(?!(?:-){32,}\n)(#{1,2} [^\n]*)/gm, '\n--------------------------------\n$1');
+    return content.replaceAll(/^(?!(?:-){32,}\n)(#{1,2} [^\n]*)/gm, '\n--------------------------------\n$1');
 }
 
 /**
