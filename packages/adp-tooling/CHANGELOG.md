@@ -1,5 +1,31 @@
 # @sap-ux/adp-tooling
 
+## 0.18.1
+
+### Patch Changes
+
+-   3017ce7: chore: Update @sap/cf-tools version to latest to avoid security issues
+
+## 0.18.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/inquirer-common@0.9.3
+
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.2
+
 ## 0.17.6
 
 ### Patch Changes

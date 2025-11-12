@@ -81,6 +81,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": false,
                 "guiOptions": {
                   "breadcrumb": "Store Credentials",

@@ -1,5 +1,39 @@
 # @sap-ux/generator-adp
 
+## 0.7.1
+
+### Patch Changes
+
+-   3017ce7: chore: Update @sap/cf-tools version to latest to avoid security issues
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+
+## 0.6.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+-   @sap-ux/inquirer-common@0.9.3
+
+## 0.6.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/adp-tooling@0.17.7
+
 ## 0.6.6
 
 ### Patch Changes

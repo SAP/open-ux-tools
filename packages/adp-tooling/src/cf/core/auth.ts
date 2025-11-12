@@ -1,8 +1,8 @@
-import CFLocal = require('@sap/cf-tools/out/src/cf-local');
+import { cfGetAvailableOrgs } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CfConfig, Organization } from '../../types';
+import type { CfConfig } from '../../types';
 
 /**
  * Check if the external login is enabled.
@@ -29,7 +29,7 @@ export async function isLoggedInCf(cfConfig: CfConfig, logger: ToolsLogger): Pro
     }
 
     try {
-        const orgs = (await CFLocal.cfGetAvailableOrgs()) as Organization[];
+        const orgs = await cfGetAvailableOrgs();
         logger?.log(`Available organizations: ${JSON.stringify(orgs)}`);
         return true;
     } catch (e) {
