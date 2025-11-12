@@ -8,7 +8,7 @@ import {
     validateODataEndpoints
 } from '../../../../src/cf/utils/validation';
 import { initI18n, t } from '../../../../src/i18n';
-import { ApplicationType, type CfCredentials, type XsApp } from '../../../../src/types';
+import { ApplicationType, type ServiceKeys, type XsApp } from '../../../../src/types';
 import { getApplicationType } from '../../../../src/source/manifest';
 
 jest.mock('../../../../src/source/manifest', () => ({
@@ -181,16 +181,18 @@ describe('CF Utils Validation', () => {
                 ]
             };
 
-            const mockCredentials: CfCredentials[] = [
+            const mockServiceKeys: ServiceKeys[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: {
-                        'odata-endpoint': '/odata.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: {
+                            'odata-endpoint': '/odata.test.com'
+                        }
                     }
                 }
             ];
@@ -207,7 +209,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).resolves.not.toThrow();
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).resolves.not.toThrow();
             expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('ODATA endpoints:'));
             expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Extracted manifest:'));
         });
@@ -222,16 +224,18 @@ describe('CF Utils Validation', () => {
                 ]
             };
 
-            const mockCredentials: CfCredentials[] = [
+            const mockServiceKeys: ServiceKeys[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: {
-                        'odata-endpoint': '/odata.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: {
+                            'odata-endpoint': '/odata.test.com'
+                        }
                     }
                 }
             ];
@@ -248,7 +252,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
             expect(mockLogger.error).toHaveBeenCalledWith(
@@ -266,16 +270,18 @@ describe('CF Utils Validation', () => {
                 ]
             };
 
-            const mockCredentials: CfCredentials[] = [
+            const mockServiceKeys: ServiceKeys[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: {
-                        'odata-endpoint': '/odata.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: {
+                            'odata-endpoint': '/odata.test.com'
+                        }
                     }
                 }
             ];
@@ -292,7 +298,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
         });
@@ -302,7 +308,7 @@ describe('CF Utils Validation', () => {
                 routes: []
             };
 
-            const mockCredentials: CfCredentials[] = [];
+            const mockServiceKeys: ServiceKeys[] = [];
 
             const mockXsAppEntry = {
                 entryName: 'webapp/xs-app.json',
@@ -316,7 +322,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
         });
@@ -337,7 +343,7 @@ describe('CF Utils Validation', () => {
                 }
             } as unknown as Manifest;
 
-            const mockCredentials: CfCredentials[] = [];
+            const mockServiceKeys: ServiceKeys[] = [];
 
             const mockXsAppEntry = {
                 entryName: 'webapp/xs-app.json',
@@ -351,7 +357,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
         });
@@ -363,7 +369,7 @@ describe('CF Utils Validation', () => {
                 }
             } as unknown as Manifest;
 
-            const mockCredentials: CfCredentials[] = [];
+            const mockServiceKeys: ServiceKeys[] = [];
 
             const mockXsAppEntry = {
                 entryName: 'webapp/xs-app.json',
@@ -377,7 +383,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
         });
@@ -387,7 +393,7 @@ describe('CF Utils Validation', () => {
                 routes: []
             };
 
-            const mockCredentials: CfCredentials[] = [];
+            const mockServiceKeys: ServiceKeys[] = [];
 
             const mockXsAppEntry = {
                 entryName: 'webapp/xs-app.json',
@@ -401,7 +407,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
         });
@@ -416,15 +422,17 @@ describe('CF Utils Validation', () => {
                 ]
             };
 
-            const mockCredentials: CfCredentials[] = [
+            const mockServiceKeys: ServiceKeys[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: '/uaa.test.com'
-                    },
-                    uri: '/service.test.com',
-                    endpoints: undefined
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client',
+                            clientsecret: 'test-secret',
+                            url: '/uaa.test.com'
+                        },
+                        uri: '/service.test.com',
+                        endpoints: undefined
+                    }
                 }
             ];
 
@@ -440,7 +448,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).rejects.toThrow(
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).rejects.toThrow(
                 t('error.oDataEndpointsValidationFailed')
             );
         });
@@ -475,27 +483,31 @@ describe('CF Utils Validation', () => {
                 }
             } as unknown as Manifest;
 
-            const mockCredentials: CfCredentials[] = [
+            const mockServiceKeys: ServiceKeys[] = [
                 {
-                    uaa: {
-                        clientid: 'test-client-1',
-                        clientsecret: 'test-secret-1',
-                        url: '/uaa1.test.com'
-                    },
-                    uri: '/service1.test.com',
-                    endpoints: {
-                        'odata-endpoint-1': '/odata1.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client-1',
+                            clientsecret: 'test-secret-1',
+                            url: '/uaa1.test.com'
+                        },
+                        uri: '/service1.test.com',
+                        endpoints: {
+                            'odata-endpoint-1': '/odata1.test.com'
+                        }
                     }
                 },
                 {
-                    uaa: {
-                        clientid: 'test-client-2',
-                        clientsecret: 'test-secret-2',
-                        url: '/uaa2.test.com'
-                    },
-                    uri: '/service2.test.com',
-                    endpoints: {
-                        'odata-endpoint-2': '/odata2.test.com'
+                    credentials: {
+                        uaa: {
+                            clientid: 'test-client-2',
+                            clientsecret: 'test-secret-2',
+                            url: '/uaa2.test.com'
+                        },
+                        uri: '/service2.test.com',
+                        endpoints: {
+                            'odata-endpoint-2': '/odata2.test.com'
+                        }
                     }
                 }
             ];
@@ -512,7 +524,7 @@ describe('CF Utils Validation', () => {
 
             const zipEntries = [mockXsAppEntry, mockManifestEntry] as unknown as AdmZip.IZipEntry[];
 
-            await expect(validateODataEndpoints(zipEntries, mockCredentials, mockLogger)).resolves.not.toThrow();
+            await expect(validateODataEndpoints(zipEntries, mockServiceKeys, mockLogger)).resolves.not.toThrow();
         });
     });
 });
