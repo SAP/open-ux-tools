@@ -127,11 +127,16 @@ describe('FlpSandbox', () => {
 
         test('minimal manifest with CAPNodejs project type', async () => {
             jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
-            const flp = new FlpSandbox({
-                flp: {
-                    libs: true
-                }
-            }, mockProject, mockUtils, logger);
+            const flp = new FlpSandbox(
+                {
+                    flp: {
+                        libs: true
+                    }
+                },
+                mockProject,
+                mockUtils,
+                logger
+            );
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
