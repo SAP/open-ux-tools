@@ -1491,11 +1491,6 @@ builder:
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
-
-# FLP Configuration
-
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title=testTitle
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=testSubTitle
 ",
     "state": "modified",
   },
@@ -1515,33 +1510,6 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
-      \\"content\\": {
-        \\"inbound\\": {
-          \\"my.test.app.InboundID\\": {
-            \\"action\\": \\"sampleAction\\",
-            \\"semanticObject\\": \\"sampleObj\\",
-            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
-            \\"signature\\": {
-              \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {}
-            },
-            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
-          }
-        }
-      },
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
-      \\"content\\": {
-        \\"inboundId\\": \\"my.test.app.InboundID\\"
-      },
-      \\"texts\\": {}
     }
   ]
 }
@@ -1674,11 +1642,6 @@ builder:
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
-
-# FLP Configuration
-
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title=testTitle
-my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=testSubTitle
 ",
     "state": "modified",
   },
@@ -1698,33 +1661,6 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
-      \\"content\\": {
-        \\"inbound\\": {
-          \\"my.test.app.InboundID\\": {
-            \\"action\\": \\"sampleAction\\",
-            \\"semanticObject\\": \\"sampleObj\\",
-            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
-            \\"signature\\": {
-              \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {}
-            },
-            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
-          }
-        }
-      },
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
-      \\"content\\": {
-        \\"inboundId\\": \\"my.test.app.InboundID\\"
-      },
-      \\"texts\\": {}
     }
   ]
 }
@@ -1856,11 +1792,6 @@ builder:
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
-
-# FLP Configuration
-
-my.test.app_sap.app.crossNavigation.inbounds.sampleId.title=
-my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
 ",
     "state": "modified",
   },
@@ -1880,31 +1811,6 @@ my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
-      \\"content\\": {
-        \\"inbound\\": {
-          \\"sampleId\\": {
-            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.title}}\\",
-            \\"signature\\": {
-              \\"additionalParameters\\": \\"allowed\\",
-              \\"parameters\\": {}
-            },
-            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle}}\\"
-          }
-        }
-      },
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
-      \\"content\\": {
-        \\"inboundId\\": \\"sampleId\\"
-      },
-      \\"texts\\": {}
     }
   ]
 }
