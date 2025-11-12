@@ -13,6 +13,7 @@ describe('CustomFilter', () => {
         const testDir = '' + Date.now();
         let fs: Editor;
         const filter: CustomFilter = {
+            id: 'testID',
             name: 'NewCustomFilter',
             label: 'Test Custom Filter',
             controlID: 'testID',
@@ -61,6 +62,7 @@ describe('CustomFilter', () => {
 
         test('Create several new custom filters', async () => {
             const secondFilter = {
+                id: 'testID2',
                 name: 'NewCustomFilter2',
                 label: 'Test Custom Filter 2',
                 controlID: 'testID2',
