@@ -113,3 +113,5 @@ export {
     getAdpFlpInboundsWriterConfig,
     getTileSettingsQuestions
 };
+
+export { tileActions, tilePromptNames } from './types';
