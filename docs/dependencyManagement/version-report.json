@@ -1,0 +1,6184 @@
+{
+  "generatedDate": "2025-11-12",
+  "analysisScope": "All dependencies (including @sap-ux/* packages)",
+  "summary": {
+    "totalPackages": 95,
+    "totalUniqueExternalDependencies": 282,
+    "dependenciesOlderThan6Months": 225,
+    "majorUpdates": 100,
+    "minorUpdates": 47,
+    "patchUpdates": 40,
+    "upToDate": 90,
+    "multipleVersionsUsed": 37
+  },
+  "dependencies": [
+    {
+      "name": "@changesets/cli",
+      "currentVersion": "2.29.7",
+      "latestVersion": "2.29.7",
+      "currentVersionAge": "2025-09-09 (2 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/changesets/changesets.git#main",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.29.7"
+      ]
+    },
+    {
+      "name": "@playwright/test",
+      "currentVersion": "1.56.1",
+      "latestVersion": "1.56.1",
+      "currentVersionAge": "2025-10-17 (26 days old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/playwright",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/microsoft/playwright",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.56.1"
+      ]
+    },
+    {
+      "name": "@types/jest",
+      "currentVersion": "30.0.0",
+      "latestVersion": "30.0.0",
+      "currentVersionAge": "2025-06-16 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "30.0.0"
+      ]
+    },
+    {
+      "name": "@types/node",
+      "currentVersion": "18.19.130",
+      "latestVersion": "24.10.1",
+      "currentVersionAge": "2025-10-09 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "18.19.130",
+        "20.0.0"
+      ]
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "currentVersion": "5.59.0",
+      "latestVersion": "8.46.4",
+      "currentVersionAge": "2023-04-17 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/typescript-eslint/typescript-eslint",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.59.0",
+        "7.1.1",
+        "7.18.0"
+      ]
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "currentVersion": "5.59.0",
+      "latestVersion": "8.46.4",
+      "currentVersionAge": "2023-04-17 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/typescript-eslint/typescript-eslint",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.59.0",
+        "5.62.0",
+        "7.18.0"
+      ]
+    },
+    {
+      "name": "autoprefixer",
+      "currentVersion": "10.4.21",
+      "latestVersion": "10.4.22",
+      "currentVersionAge": "2025-03-09 (8 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/postcss/autoprefixer",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "10.4.21"
+      ]
+    },
+    {
+      "name": "check-dependency-version-consistency",
+      "currentVersion": "5.0.1",
+      "latestVersion": "5.0.1",
+      "currentVersionAge": "2025-06-22 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/bmish/check-dependency-version-consistency",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.0.1"
+      ]
+    },
+    {
+      "name": "esbuild",
+      "currentVersion": "0.25.11",
+      "latestVersion": "0.27.0",
+      "currentVersionAge": "2025-10-15 (28 days old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/evanw/esbuild",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "0.25.11",
+        "0.25.6"
+      ]
+    },
+    {
+      "name": "esbuild-sass-plugin",
+      "currentVersion": "3.3.1",
+      "latestVersion": "3.3.1",
+      "currentVersionAge": "2024-06-06 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/glromeo/esbuild-sass-plugin",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.3.1"
+      ]
+    },
+    {
+      "name": "eslint",
+      "currentVersion": "8",
+      "latestVersion": "9.39.1",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "UNKNOWN",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/eslint/eslint",
+      "recommendedAction": "Manual check required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "8",
+        "8.57.0",
+        "8.57.1"
+      ]
+    },
+    {
+      "name": "eslint-config-prettier",
+      "currentVersion": "8.10.2",
+      "latestVersion": "10.1.8",
+      "currentVersionAge": "2025-07-18 (3 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/prettier/eslint-config-prettier",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.10.2"
+      ]
+    },
+    {
+      "name": "eslint-import-resolver-typescript",
+      "currentVersion": "3.10.1",
+      "latestVersion": "4.4.4",
+      "currentVersionAge": "2025-04-21 (6 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/import-js/eslint-import-resolver-typescript",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.10.1"
+      ]
+    },
+    {
+      "name": "eslint-plugin-import",
+      "currentVersion": "2.32.0",
+      "latestVersion": "2.32.0",
+      "currentVersionAge": "2025-06-20 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/import-js/eslint-plugin-import",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.32.0"
+      ]
+    },
+    {
+      "name": "eslint-plugin-jsdoc",
+      "currentVersion": "46.10.1",
+      "latestVersion": "61.2.0",
+      "currentVersionAge": "2023-12-30 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/gajus/eslint-plugin-jsdoc",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "46.10.1"
+      ]
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "currentVersion": "4.2.5",
+      "latestVersion": "5.5.4",
+      "currentVersionAge": "2025-07-18 (3 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/prettier/eslint-plugin-prettier",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.2.5"
+      ]
+    },
+    {
+      "name": "eslint-plugin-promise",
+      "currentVersion": "6.6.0",
+      "latestVersion": "7.2.1",
+      "currentVersionAge": "2024-07-21 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/eslint-community/eslint-plugin-promise",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.6.0"
+      ]
+    },
+    {
+      "name": "eslint-plugin-sonarjs",
+      "currentVersion": "0.25.1",
+      "latestVersion": "3.0.5",
+      "currentVersionAge": "2024-04-03 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/SonarSource/SonarJS",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.25.1"
+      ]
+    },
+    {
+      "name": "husky",
+      "currentVersion": "8.0.3",
+      "latestVersion": "9.1.7",
+      "currentVersionAge": "2023-01-03 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/typicode/husky",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.0.3"
+      ]
+    },
+    {
+      "name": "jest",
+      "currentVersion": "30.2.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2025-09-28 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "30.2.0"
+      ]
+    },
+    {
+      "name": "jest-sonar",
+      "currentVersion": "0.2.16",
+      "latestVersion": "0.2.16",
+      "currentVersionAge": "2023-04-21 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "ssh://git@github.com/sh33dafi/jest-sonar",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.2.16"
+      ]
+    },
+    {
+      "name": "knip",
+      "currentVersion": "5.69.0",
+      "latestVersion": "5.69.1",
+      "currentVersionAge": "2025-11-11 (1 day old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/webpro-nl/knip",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.69.0"
+      ]
+    },
+    {
+      "name": "npm-run-all2",
+      "currentVersion": "5.0.0",
+      "latestVersion": "8.0.4",
+      "currentVersionAge": "2020-10-04 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux-private/control-property-editor-common",
+        "@sap-ux-private/preview-middleware-client",
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/annotation-generator",
+        "@sap-ux/cds-annotation-parser",
+        "@sap-ux/cds-odata-annotation-converter",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-docs-embeddings",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/i18n",
+        "@sap-ux/odata-annotation-core",
+        "@sap-ux/odata-annotation-core-types",
+        "@sap-ux/odata-entity-model",
+        "@sap-ux/odata-vocabularies",
+        "@sap-ux/open-ux-tools-root",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting",
+        "@sap-ux/xml-odata-annotation-converter",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/bcomnes/npm-run-all2",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.0.0",
+        "6.2.0",
+        "7.0.2",
+        "8.0.4"
+      ]
+    },
+    {
+      "name": "nx",
+      "currentVersion": "21.6.5",
+      "latestVersion": "22.0.3",
+      "currentVersionAge": "2025-10-15 (28 days old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/nrwl/nx",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "21.6.5"
+      ]
+    },
+    {
+      "name": "postcss",
+      "currentVersion": "8.5.6",
+      "latestVersion": "8.5.6",
+      "currentVersionAge": "2025-06-16 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/postcss/postcss",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.5.6"
+      ]
+    },
+    {
+      "name": "prebuild-install",
+      "currentVersion": "7.1.3",
+      "latestVersion": "7.1.3",
+      "currentVersionAge": "2025-01-22 (9 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/prebuild/prebuild-install",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.1.3"
+      ]
+    },
+    {
+      "name": "prettier",
+      "currentVersion": "2.5.1",
+      "latestVersion": "3.6.2",
+      "currentVersionAge": "2021-12-04 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/odata-vocabularies",
+        "@sap-ux/open-ux-tools-root",
+        "@sap-ux/xml-odata-annotation-converter"
+      ],
+      "changelogUrl": "https://github.com/prettier/prettier",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "2.5.1",
+        "2.8.8"
+      ]
+    },
+    {
+      "name": "pretty-quick",
+      "currentVersion": "3.3.1",
+      "latestVersion": "4.2.2",
+      "currentVersionAge": "2024-01-17 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/prettier/pretty-quick",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.3.1"
+      ]
+    },
+    {
+      "name": "react-select",
+      "currentVersion": "5.10.2",
+      "latestVersion": "5.10.2",
+      "currentVersionAge": "2025-07-11 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/JedWatson/react-select.git#master",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.10.2",
+        "5.8.0"
+      ]
+    },
+    {
+      "name": "react-virtualized",
+      "currentVersion": "9.22.5",
+      "latestVersion": "9.22.6",
+      "currentVersionAge": "2023-04-17 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/bvaughn/react-virtualized",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "9.22.5",
+        "9.22.6"
+      ]
+    },
+    {
+      "name": "rimraf",
+      "currentVersion": "6.0.1",
+      "latestVersion": "6.1.0",
+      "currentVersionAge": "2024-07-10 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/control-property-editor-common",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/feature-toggle",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/jest-runner-puppeteer",
+        "@sap-ux/open-ux-tools-root",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/system-access",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "ssh://git@github.com/isaacs/rimraf",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.0.1"
+      ]
+    },
+    {
+      "name": "ts-jest",
+      "currentVersion": "29.4.5",
+      "latestVersion": "29.4.5",
+      "currentVersionAge": "2025-10-10 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/control-property-editor-common",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/kulshekhar/ts-jest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "29.4.5"
+      ]
+    },
+    {
+      "name": "typescript",
+      "currentVersion": "5.9.3",
+      "latestVersion": "5.9.3",
+      "currentVersionAge": "2025-09-30 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/microsoft/TypeScript",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.9.3"
+      ]
+    },
+    {
+      "name": "update-ts-references",
+      "currentVersion": "3.6.2",
+      "latestVersion": "4.0.0",
+      "currentVersionAge": "2025-08-12 (3 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/eBayClassifiedsGroup/update-ts-references",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.6.2"
+      ]
+    },
+    {
+      "name": "yargs-parser",
+      "currentVersion": "21.1.1",
+      "latestVersion": "22.0.0",
+      "currentVersionAge": "2022-08-04 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/launch-config",
+        "@sap-ux/open-ux-tools-root"
+      ],
+      "changelogUrl": "https://github.com/yargs/yargs-parser",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "21.1.1"
+      ]
+    },
+    {
+      "name": "inquirer",
+      "currentVersion": "8.0.0",
+      "latestVersion": "12.11.1",
+      "currentVersionAge": "2021-02-25 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-library-inquirer",
+        "@sap-ux/ui5-library-reference-inquirer"
+      ],
+      "changelogUrl": "https://github.com/SBoudrias/Inquirer.js",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "8.0.0",
+        "8.2.7"
+      ]
+    },
+    {
+      "name": "mem-fs",
+      "currentVersion": "2.1.0",
+      "latestVersion": "4.1.2",
+      "currentVersionAge": "2021-04-30 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/annotation-generator",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/create",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/fiori-tools-settings",
+        "@sap-ux/i18n",
+        "@sap-ux/launch-config",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/project-access",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-reference-writer",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "https://github.com/SBoudrias/mem-fs",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.1.0"
+      ]
+    },
+    {
+      "name": "mem-fs-editor",
+      "currentVersion": "9.4.0",
+      "latestVersion": "11.1.4",
+      "currentVersionAge": "2021-12-22 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/annotation-generator",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/create",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/fiori-tools-settings",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/i18n",
+        "@sap-ux/launch-config",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/project-access",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-reference-writer",
+        "@sap-ux/ui5-library-sub-generator",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "https://github.com/SBoudrias/mem-fs-editor",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "9.4.0"
+      ]
+    },
+    {
+      "name": "@types/inquirer",
+      "currentVersion": "8.0.0",
+      "latestVersion": "9.0.9",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/create",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-prompting",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-library-inquirer",
+        "@sap-ux/ui5-library-reference-inquirer"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "8.0.0",
+        "8.2.6"
+      ]
+    },
+    {
+      "name": "@types/mem-fs",
+      "currentVersion": "1.1.2",
+      "latestVersion": "2.2.0",
+      "currentVersionAge": "2018-12-15 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/annotation-generator",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/create",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/fiori-tools-settings",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/i18n",
+        "@sap-ux/launch-config",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/project-access",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-reference-writer",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.1.2"
+      ]
+    },
+    {
+      "name": "@types/mem-fs-editor",
+      "currentVersion": "7.0.1",
+      "latestVersion": "10.0.1",
+      "currentVersionAge": "2021-07-08 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/annotation-generator",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/create",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/fiori-tools-settings",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/i18n",
+        "@sap-ux/launch-config",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/project-access",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/types",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-reference-writer",
+        "@sap-ux/ui5-library-sub-generator",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.1"
+      ]
+    },
+    {
+      "name": "@types/vinyl",
+      "currentVersion": "2.0.7",
+      "latestVersion": "2.0.12",
+      "currentVersionAge": "2022-11-07 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fe-fpm-cli",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/types"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.7"
+      ]
+    },
+    {
+      "name": "dotenv",
+      "currentVersion": "16.3.1",
+      "latestVersion": "17.2.3",
+      "currentVersionAge": "2023-06-17 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/odata-cli",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/telemetry",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "git://github.com/motdotla/dotenv",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "16.3.1"
+      ]
+    },
+    {
+      "name": "fast-xml-parser",
+      "currentVersion": "4.3.4",
+      "latestVersion": "5.3.1",
+      "currentVersionAge": "2024-01-30 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/axios-extension",
+        "@sap-ux/fiori-docs-embeddings",
+        "@sap-ux/odata-cli",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/project-access"
+      ],
+      "changelogUrl": "https://github.com/NaturalIntelligence/fast-xml-parser",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "4.3.4",
+        "4.4.1"
+      ]
+    },
+    {
+      "name": "yeoman-generator",
+      "currentVersion": "5.10.0",
+      "latestVersion": "7.5.1",
+      "currentVersionAge": "2023-10-21 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/generator-simple-fe",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/yeoman/generator",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.10.0"
+      ]
+    },
+    {
+      "name": "@types/yeoman-environment",
+      "currentVersion": "2.10.11",
+      "latestVersion": "4.0.0",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/generator-simple-fe",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "2.10.11",
+        "2.10.8"
+      ]
+    },
+    {
+      "name": "@types/yeoman-generator",
+      "currentVersion": "5.2.11",
+      "latestVersion": "6.0.0",
+      "currentVersionAge": "2022-08-15 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/generator-simple-fe",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.2.11",
+        "5.2.14"
+      ]
+    },
+    {
+      "name": "axios",
+      "currentVersion": "1.12.2",
+      "latestVersion": "1.13.2",
+      "currentVersionAge": "2025-09-14 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/axios-extension",
+        "@sap-ux/btp-utils",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/environment-check",
+        "@sap-ux/generator-simple-fe",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/odata-vocabularies",
+        "@sap-ux/reload-middleware",
+        "@sap-ux/telemetry",
+        "@sap-ux/ui5-config",
+        "@sap-ux/ui5-info"
+      ],
+      "changelogUrl": "https://github.com/axios/axios",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.12.2"
+      ]
+    },
+    {
+      "name": "react-markdown",
+      "currentVersion": "5.0.2",
+      "latestVersion": "10.1.0",
+      "currentVersionAge": "2020-10-23 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/remarkjs/react-markdown",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.0.2"
+      ]
+    },
+    {
+      "name": "sanitize-html",
+      "currentVersion": "2.12.1",
+      "latestVersion": "2.17.0",
+      "currentVersionAge": "2024-02-22 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/apostrophecms/sanitize-html",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.12.1"
+      ]
+    },
+    {
+      "name": "@babel/core",
+      "currentVersion": "7.28.0",
+      "latestVersion": "7.28.5",
+      "currentVersionAge": "2025-07-02 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/babel/babel",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.28.0"
+      ]
+    },
+    {
+      "name": "@babel/helper-define-map",
+      "currentVersion": "7.18.6",
+      "latestVersion": "7.18.6",
+      "currentVersionAge": "2022-06-27 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/babel/babel",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.18.6"
+      ]
+    },
+    {
+      "name": "@babel/preset-env",
+      "currentVersion": "7.28.0",
+      "latestVersion": "7.28.5",
+      "currentVersionAge": "2025-07-02 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/babel/babel",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.28.0"
+      ]
+    },
+    {
+      "name": "@babel/preset-react",
+      "currentVersion": "7.27.1",
+      "latestVersion": "7.28.5",
+      "currentVersionAge": "2025-04-30 (6 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/babel/babel",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.27.1"
+      ]
+    },
+    {
+      "name": "@babel/preset-typescript",
+      "currentVersion": "7.27.1",
+      "latestVersion": "7.28.5",
+      "currentVersionAge": "2025-04-30 (6 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/babel/babel",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.27.1"
+      ]
+    },
+    {
+      "name": "@storybook/addons",
+      "currentVersion": "7.6.20",
+      "latestVersion": "7.6.17",
+      "currentVersionAge": "2024-06-24 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/storybookjs/storybook",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.6.20"
+      ]
+    },
+    {
+      "name": "@storybook/components",
+      "currentVersion": "8.4.2",
+      "latestVersion": "8.6.14",
+      "currentVersionAge": "2024-11-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/storybookjs/storybook",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.4.2"
+      ]
+    },
+    {
+      "name": "@storybook/react",
+      "currentVersion": "8.4.2",
+      "latestVersion": "10.0.7",
+      "currentVersionAge": "2024-11-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/storybookjs/storybook",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.4.2"
+      ]
+    },
+    {
+      "name": "@storybook/react-webpack5",
+      "currentVersion": "8.4.2",
+      "latestVersion": "10.0.7",
+      "currentVersionAge": "2024-11-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/storybookjs/storybook",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.4.2"
+      ]
+    },
+    {
+      "name": "@types/react",
+      "currentVersion": "16.14.55",
+      "latestVersion": "19.2.4",
+      "currentVersionAge": "2023-12-28 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "16.14.55"
+      ]
+    },
+    {
+      "name": "@types/react-dom",
+      "currentVersion": "16.9.24",
+      "latestVersion": "19.2.3",
+      "currentVersionAge": "2023-11-22 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "16.9.24"
+      ]
+    },
+    {
+      "name": "@types/sanitize-html",
+      "currentVersion": "2.11.0",
+      "latestVersion": "2.16.0",
+      "currentVersionAge": "2024-02-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.11.0"
+      ]
+    },
+    {
+      "name": "@types/uuid",
+      "currentVersion": "10.0.0",
+      "latestVersion": "11.0.0",
+      "currentVersionAge": "2024-06-20 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/generator-adp",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "10.0.0",
+        "3.4.11"
+      ]
+    },
+    {
+      "name": "@types/ws",
+      "currentVersion": "8.5.12",
+      "latestVersion": "8.18.1",
+      "currentVersionAge": "2024-07-29 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.5.12"
+      ]
+    },
+    {
+      "name": "babel-loader",
+      "currentVersion": "9.1.3",
+      "latestVersion": "10.0.0",
+      "currentVersionAge": "2023-07-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/babel/babel-loader",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "9.1.3"
+      ]
+    },
+    {
+      "name": "copyfiles",
+      "currentVersion": "2.4.1",
+      "latestVersion": "2.4.1",
+      "currentVersionAge": "2020-11-27 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "git://github.com/calvinmetcalf/copyfiles",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.4.1"
+      ]
+    },
+    {
+      "name": "css-loader",
+      "currentVersion": "6.8.1",
+      "latestVersion": "7.1.2",
+      "currentVersionAge": "2023-05-28 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/webpack-contrib/css-loader",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.8.1"
+      ]
+    },
+    {
+      "name": "eslint-plugin-react",
+      "currentVersion": "7.33.2",
+      "latestVersion": "7.37.5",
+      "currentVersionAge": "2023-08-16 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/jsx-eslint/eslint-plugin-react",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.33.2"
+      ]
+    },
+    {
+      "name": "eslint-plugin-storybook",
+      "currentVersion": "0.6.15",
+      "latestVersion": "10.0.7",
+      "currentVersionAge": "2023-10-08 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/storybookjs/storybook",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.6.15"
+      ]
+    },
+    {
+      "name": "react",
+      "currentVersion": "16.14.0",
+      "latestVersion": "19.2.0",
+      "currentVersionAge": "2020-10-14 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/facebook/react",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "16.14.0"
+      ]
+    },
+    {
+      "name": "react-dom",
+      "currentVersion": "16.14.0",
+      "latestVersion": "19.2.0",
+      "currentVersionAge": "2020-10-14 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/facebook/react",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "16.14.0"
+      ]
+    },
+    {
+      "name": "sass",
+      "currentVersion": "1.66.1",
+      "latestVersion": "1.94.0",
+      "currentVersionAge": "2023-08-18 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/sass/dart-sass",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.66.1"
+      ]
+    },
+    {
+      "name": "sass-loader",
+      "currentVersion": "13.3.2",
+      "latestVersion": "16.0.6",
+      "currentVersionAge": "2023-06-09 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/webpack/sass-loader",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "13.3.2"
+      ]
+    },
+    {
+      "name": "storybook",
+      "currentVersion": "8.4.2",
+      "latestVersion": "10.0.7",
+      "currentVersionAge": "2024-11-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/storybookjs/storybook",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.4.2"
+      ]
+    },
+    {
+      "name": "storybook-addon-turbo-build",
+      "currentVersion": "2.0.1",
+      "latestVersion": "2.0.1",
+      "currentVersionAge": "2023-05-01 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/pocka/storybook-addon-turbo-build",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.1"
+      ]
+    },
+    {
+      "name": "style-loader",
+      "currentVersion": "3.3.3",
+      "latestVersion": "4.0.0",
+      "currentVersionAge": "2023-05-19 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/webpack-contrib/style-loader",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.3.3"
+      ]
+    },
+    {
+      "name": "ts-loader",
+      "currentVersion": "9.4.4",
+      "latestVersion": "9.5.4",
+      "currentVersionAge": "2023-06-28 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/TypeStrong/ts-loader",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "9.4.4"
+      ]
+    },
+    {
+      "name": "ts-node",
+      "currentVersion": "10.9.2",
+      "latestVersion": "10.9.2",
+      "currentVersionAge": "2023-12-08 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples",
+        "@sap-ux/i18n",
+        "@sap-ux/odata-vocabularies",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "git://github.com/TypeStrong/ts-node",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "10.9.2"
+      ]
+    },
+    {
+      "name": "ws",
+      "currentVersion": "8.18.0",
+      "latestVersion": "8.18.3",
+      "currentVersionAge": "2024-07-03 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/ui-prompting-examples"
+      ],
+      "changelogUrl": "https://github.com/websockets/ws",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.18.0"
+      ]
+    },
+    {
+      "name": "i18next",
+      "currentVersion": "25.3.0",
+      "latestVersion": "25.6.2",
+      "currentVersionAge": "2025-06-30 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cds-odata-annotation-converter",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/environment-check",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/launch-config",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/project-input-validator",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/store",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-inquirer",
+        "@sap-ux/ui5-library-reference-inquirer",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-proxy-middleware",
+        "@sap-ux/ui5-test-writer",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/i18next/i18next",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "25.3.0"
+      ]
+    },
+    {
+      "name": "@sap-devx/yeoman-ui-types",
+      "currentVersion": "1.14.4",
+      "latestVersion": "1.20.2",
+      "currentVersionAge": "2024-02-08 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-library-reference-inquirer",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/SAP/yeoman-ui",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "1.14.4",
+        "1.16.9"
+      ]
+    },
+    {
+      "name": "inquirer-autocomplete-prompt",
+      "currentVersion": "2.0.1",
+      "latestVersion": "3.0.1",
+      "currentVersionAge": "2023-09-25 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-library-inquirer"
+      ],
+      "changelogUrl": "ssh://git@github.com/mokkabonna/inquirer-autocomplete-prompt",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.1"
+      ]
+    },
+    {
+      "name": "@types/inquirer-autocomplete-prompt",
+      "currentVersion": "2.0.2",
+      "latestVersion": "3.0.3",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-library-inquirer"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.2"
+      ]
+    },
+    {
+      "name": "@types/yeoman-test",
+      "currentVersion": "4.0.6",
+      "latestVersion": "7.0.0",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.6"
+      ]
+    },
+    {
+      "name": "memfs",
+      "currentVersion": "3.3.0",
+      "latestVersion": "4.51.0",
+      "currentVersionAge": "2021-09-19 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/store",
+        "@sap-ux/telemetry"
+      ],
+      "changelogUrl": "https://github.com/streamich/memfs",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "3.3.0",
+        "3.4.13"
+      ]
+    },
+    {
+      "name": "unionfs",
+      "currentVersion": "4.4.0",
+      "latestVersion": "4.6.0",
+      "currentVersionAge": "2020-03-12 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/store",
+        "@sap-ux/telemetry"
+      ],
+      "changelogUrl": "https://github.com/streamich/unionfs",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.4.0"
+      ]
+    },
+    {
+      "name": "yeoman-test",
+      "currentVersion": "6.3.0",
+      "latestVersion": "11.1.0",
+      "currentVersionAge": "2022-02-01 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-sub-generator",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/yeoman/yeoman-test",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.3.0"
+      ]
+    },
+    {
+      "name": "fast-glob",
+      "currentVersion": "3.3.1",
+      "latestVersion": "3.3.3",
+      "currentVersionAge": "2023-07-22 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/nodejs-utils",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/mrmlnc/fast-glob",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.3.1"
+      ]
+    },
+    {
+      "name": "lodash",
+      "currentVersion": "4.17.21",
+      "latestVersion": "4.17.21",
+      "currentVersionAge": "2021-02-20 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/axios-extension",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/logger",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-config",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/yaml"
+      ],
+      "changelogUrl": "https://github.com/lodash/lodash",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.17.21"
+      ]
+    },
+    {
+      "name": "semver",
+      "currentVersion": "7.5.4",
+      "latestVersion": "7.7.3",
+      "currentVersionAge": "2023-07-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/nodejs-utils",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/project-access",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-config",
+        "@sap-ux/ui5-info",
+        "@sap-ux/ui5-library-writer"
+      ],
+      "changelogUrl": "https://github.com/npm/node-semver",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "7.5.4",
+        "7.6.3",
+        "7.7.1"
+      ]
+    },
+    {
+      "name": "@types/fs-extra",
+      "currentVersion": "11.0.4",
+      "latestVersion": "11.0.4",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/playwright",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/generator-adp",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-reference-writer",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "11.0.4",
+        "9.0.13"
+      ]
+    },
+    {
+      "name": "@types/lodash",
+      "currentVersion": "4.14.202",
+      "latestVersion": "4.17.20",
+      "currentVersionAge": "2023-11-21 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/axios-extension",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/flp-config-inquirer",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/logger",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-config",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/yaml"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.14.202"
+      ]
+    },
+    {
+      "name": "@types/semver",
+      "currentVersion": "7.5.2",
+      "latestVersion": "7.7.1",
+      "currentVersionAge": "2023-09-14 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cap-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/nodejs-utils",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/project-access",
+        "@sap-ux/ui5-application-inquirer",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-config",
+        "@sap-ux/ui5-info",
+        "@sap-ux/ui5-library-writer"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "7.5.2",
+        "7.5.4",
+        "7.5.8",
+        "7.7.0"
+      ]
+    },
+    {
+      "name": "fs-extra",
+      "currentVersion": "10.0.0",
+      "latestVersion": "11.3.2",
+      "currentVersionAge": "2021-05-03 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/playwright",
+        "@sap-ux/abap-deploy-config-writer",
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/generator-adp",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-reference-writer",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "https://github.com/jprichardson/node-fs-extra",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "10.0.0",
+        "11.1.1"
+      ]
+    },
+    {
+      "name": "@jest/types",
+      "currentVersion": "30.0.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2025-06-10 (5 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "30.0.0",
+        "30.0.1"
+      ]
+    },
+    {
+      "name": "@types/vscode",
+      "currentVersion": "1.102.0",
+      "latestVersion": "1.106.0",
+      "currentVersionAge": "2025-07-10 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/environment-check",
+        "@sap-ux/feature-toggle",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/generator-adp",
+        "@sap-ux/logger",
+        "@sap-ux/nodejs-utils",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "1.102.0",
+        "1.73.1"
+      ]
+    },
+    {
+      "name": "@vscode-logging/logger",
+      "currentVersion": "2.0.0",
+      "latestVersion": "2.0.0",
+      "currentVersionAge": "2024-01-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-flp-config-sub-generator",
+        "@sap-ux/deploy-config-generator-shared",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/flp-config-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/sap/vscode-logging",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.0"
+      ]
+    },
+    {
+      "name": "@sap/cf-tools",
+      "currentVersion": "3.2.2",
+      "latestVersion": "3.2.2",
+      "currentVersionAge": "2024-09-16 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/btp-utils",
+        "@sap-ux/cf-deploy-config-inquirer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer"
+      ],
+      "changelogUrl": "https://github.com/sap/cloud-foundry-tools-api",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.2.2"
+      ]
+    },
+    {
+      "name": "adm-zip",
+      "currentVersion": "0.5.10",
+      "latestVersion": "0.5.16",
+      "currentVersionAge": "2022-12-20 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/repo-app-import-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/cthackers/adm-zip",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "0.5.10",
+        "0.5.16"
+      ]
+    },
+    {
+      "name": "ejs",
+      "currentVersion": "3.1.10",
+      "latestVersion": "3.1.10",
+      "currentVersionAge": "2024-04-12 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "git://github.com/mde/ejs",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.1.10"
+      ]
+    },
+    {
+      "name": "js-yaml",
+      "currentVersion": "3.14.0",
+      "latestVersion": "4.1.1",
+      "currentVersionAge": "2020-05-22 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/ui5-config"
+      ],
+      "changelogUrl": "https://github.com/nodeca/js-yaml",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "3.14.0",
+        "4.1.0"
+      ]
+    },
+    {
+      "name": "prompts",
+      "currentVersion": "2.4.2",
+      "latestVersion": "2.4.2",
+      "currentVersionAge": "2021-10-07 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/create",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/environment-check",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/system-access"
+      ],
+      "changelogUrl": "https://github.com/terkelg/prompts",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.4.2"
+      ]
+    },
+    {
+      "name": "sanitize-filename",
+      "currentVersion": "1.6.3",
+      "latestVersion": "1.6.3",
+      "currentVersionAge": "2019-08-26 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling"
+      ],
+      "changelogUrl": "ssh://git@github.com/parshap/node-sanitize-filename",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.6.3"
+      ]
+    },
+    {
+      "name": "uuid",
+      "currentVersion": "10.0.0",
+      "latestVersion": "13.0.0",
+      "currentVersionAge": "2024-06-09 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/generator-adp",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/uuidjs/uuid",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "10.0.0",
+        "11.0.5",
+        "3.4.0"
+      ]
+    },
+    {
+      "name": "@types/adm-zip",
+      "currentVersion": "0.5.5",
+      "latestVersion": "0.5.7",
+      "currentVersionAge": "2023-11-20 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/repo-app-import-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.5.5"
+      ]
+    },
+    {
+      "name": "@types/ejs",
+      "currentVersion": "3.1.2",
+      "latestVersion": "3.1.5",
+      "currentVersionAge": "2023-02-14 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/odata-service-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/ui5-application-writer",
+        "@sap-ux/ui5-library-writer",
+        "@sap-ux/ui5-test-writer"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.1.2"
+      ]
+    },
+    {
+      "name": "@types/express",
+      "currentVersion": "4.17.21",
+      "latestVersion": "5.0.5",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/reload-middleware",
+        "@sap-ux/serve-static-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.17.21"
+      ]
+    },
+    {
+      "name": "@types/js-yaml",
+      "currentVersion": "4.0.9",
+      "latestVersion": "4.0.9",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/ui5-config"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.9"
+      ]
+    },
+    {
+      "name": "@types/prompts",
+      "currentVersion": "2.4.4",
+      "latestVersion": "2.4.9",
+      "currentVersionAge": "2023-03-30 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/create",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/environment-check",
+        "@sap-ux/mockserver-config-writer",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/system-access"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.4.4"
+      ]
+    },
+    {
+      "name": "@types/supertest",
+      "currentVersion": "2.0.12",
+      "latestVersion": "6.0.3",
+      "currentVersionAge": "2022-03-21 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/reload-middleware",
+        "@sap-ux/serve-static-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.12"
+      ]
+    },
+    {
+      "name": "cross-env",
+      "currentVersion": "7.0.3",
+      "latestVersion": "10.1.0",
+      "currentVersionAge": "2020-12-01 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/jest-environment-ui5",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/kentcdodds/cross-env",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.3"
+      ]
+    },
+    {
+      "name": "express",
+      "currentVersion": "4",
+      "latestVersion": "5.1.0",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "UNKNOWN",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux/adp-tooling",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/reload-middleware",
+        "@sap-ux/serve-static-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/expressjs/express",
+      "recommendedAction": "Manual check required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "4",
+        "4.21.2"
+      ]
+    },
+    {
+      "name": "nock",
+      "currentVersion": "13.4.0",
+      "latestVersion": "14.0.10",
+      "currentVersionAge": "2023-11-27 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/app-config-writer",
+        "@sap-ux/axios-extension",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/btp-utils",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/system-access",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui5-info",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/nock/nock",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "13.4.0",
+        "13.5.6"
+      ]
+    },
+    {
+      "name": "supertest",
+      "currentVersion": "7.1.4",
+      "latestVersion": "7.1.4",
+      "currentVersionAge": "2025-07-22 (3 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/adp-tooling",
+        "@sap-ux/axios-extension",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/preview-middleware",
+        "@sap-ux/reload-middleware",
+        "@sap-ux/serve-static-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/ladjs/supertest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.1.4"
+      ]
+    },
+    {
+      "name": "@sap-ux/annotation-converter",
+      "currentVersion": "0.10.2",
+      "latestVersion": "0.10.7",
+      "currentVersionAge": "2025-01-21 (9 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/annotation-generator",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer"
+      ],
+      "changelogUrl": "https://github.com/SAP/open-ux-odata",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "0.10.2",
+        "0.10.3"
+      ]
+    },
+    {
+      "name": "@sap-ux/vocabularies-types",
+      "currentVersion": "0.13.0",
+      "latestVersion": "0.13.0",
+      "currentVersionAge": "2025-01-15 (10 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/annotation-generator",
+        "@sap-ux/fe-fpm-writer",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer"
+      ],
+      "changelogUrl": "https://github.com/SAP/open-ux-odata",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.13.0"
+      ]
+    },
+    {
+      "name": "chalk",
+      "currentVersion": "4.1.2",
+      "latestVersion": "5.6.2",
+      "currentVersionAge": "2021-07-30 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/app-config-writer",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/create",
+        "@sap-ux/deploy-tooling",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/jest-file-matchers",
+        "@sap-ux/jest-runner-puppeteer",
+        "@sap-ux/logger"
+      ],
+      "changelogUrl": "https://github.com/chalk/chalk",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.1.2"
+      ]
+    },
+    {
+      "name": "detect-content-type",
+      "currentVersion": "1.2.0",
+      "latestVersion": "1.2.0",
+      "currentVersionAge": "2018-02-02 (7 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/axios-extension"
+      ],
+      "changelogUrl": "https://github.com/deepakjois/node-detect-content-type",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.0"
+      ]
+    },
+    {
+      "name": "open",
+      "currentVersion": "7.0.3",
+      "latestVersion": "10.2.0",
+      "currentVersionAge": "2020-03-09 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/axios-extension"
+      ],
+      "changelogUrl": "https://github.com/sindresorhus/open",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.3"
+      ]
+    },
+    {
+      "name": "qs",
+      "currentVersion": "6.11.0",
+      "latestVersion": "6.14.0",
+      "currentVersionAge": "2022-06-27 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/axios-extension"
+      ],
+      "changelogUrl": "https://github.com/ljharb/qs",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.11.0"
+      ]
+    },
+    {
+      "name": "xpath",
+      "currentVersion": "0.0.33",
+      "latestVersion": "0.0.34",
+      "currentVersionAge": "2023-07-14 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/axios-extension",
+        "@sap-ux/fe-fpm-writer"
+      ],
+      "changelogUrl": "https://github.com/goto100/xpath",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.0.33"
+      ]
+    },
+    {
+      "name": "@xmldom/xmldom",
+      "currentVersion": "0.8.10",
+      "latestVersion": "0.8.11",
+      "currentVersionAge": "2023-07-19 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/axios-extension",
+        "@sap-ux/fe-fpm-writer"
+      ],
+      "changelogUrl": "git://github.com/xmldom/xmldom",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.8.10"
+      ]
+    },
+    {
+      "name": "https-proxy-agent",
+      "currentVersion": "5.0.1",
+      "latestVersion": "7.0.6",
+      "currentVersionAge": "2022-04-14 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/axios-extension",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/TooTallNate/proxy-agents",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.0.1",
+        "7.0.5"
+      ]
+    },
+    {
+      "name": "http-proxy-agent",
+      "currentVersion": "7.0.2",
+      "latestVersion": "7.0.2",
+      "currentVersionAge": "2024-02-15 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/axios-extension"
+      ],
+      "changelogUrl": "https://github.com/TooTallNate/proxy-agents",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.2"
+      ]
+    },
+    {
+      "name": "proxy-from-env",
+      "currentVersion": "1.1.0",
+      "latestVersion": "1.1.0",
+      "currentVersionAge": "2020-03-04 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/axios-extension",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/Rob--W/proxy-from-env",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.1.0"
+      ]
+    },
+    {
+      "name": "@types/proxy-from-env",
+      "currentVersion": "1.0.1",
+      "latestVersion": "1.0.4",
+      "currentVersionAge": "2020-02-19 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/axios-extension",
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.1"
+      ]
+    },
+    {
+      "name": "http-proxy-middleware",
+      "currentVersion": "2.0.9",
+      "latestVersion": "3.0.5",
+      "currentVersionAge": "2025-04-10 (7 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/control-property-editor",
+        "@sap-ux/ui5-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/chimurai/http-proxy-middleware",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "2.0.9",
+        "3.0.5"
+      ]
+    },
+    {
+      "name": "@types/http-proxy",
+      "currentVersion": "1.17.5",
+      "latestVersion": "1.17.17",
+      "currentVersionAge": "2021-01-15 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/backend-proxy-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.17.5"
+      ]
+    },
+    {
+      "name": "yaml",
+      "currentVersion": "2.2.2",
+      "latestVersion": "2.8.1",
+      "currentVersionAge": "2023-04-24 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/eslint-plugin-fiori-tools",
+        "@sap-ux/telemetry",
+        "@sap-ux/ui5-proxy-middleware",
+        "@sap-ux/yaml"
+      ],
+      "changelogUrl": "https://github.com/eemeli/yaml",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "2.2.2",
+        "2.3.3"
+      ]
+    },
+    {
+      "name": "connect",
+      "currentVersion": "3.7.0",
+      "latestVersion": "3.7.0",
+      "currentVersionAge": "2019-05-18 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/preview-middleware"
+      ],
+      "changelogUrl": "https://github.com/senchalabs/connect",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.7.0"
+      ]
+    },
+    {
+      "name": "@types/connect",
+      "currentVersion": "3.4.38",
+      "latestVersion": "3.4.38",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/backend-proxy-middleware",
+        "@sap-ux/preview-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.4.38"
+      ]
+    },
+    {
+      "name": "@sap/bas-sdk",
+      "currentVersion": "3.12.0",
+      "latestVersion": "3.12.0",
+      "currentVersionAge": "2025-09-17 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/btp-utils",
+        "@sap-ux/environment-check",
+        "@sap-ux/preview-middleware"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.12.0"
+      ]
+    },
+    {
+      "name": "xml-js",
+      "currentVersion": "1.6.11",
+      "latestVersion": "1.6.11",
+      "currentVersionAge": "2019-02-13 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/cap-config-writer"
+      ],
+      "changelogUrl": "https://github.com/nashwaan/xml-js",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.6.11"
+      ]
+    },
+    {
+      "name": "chevrotain",
+      "currentVersion": "7.1.1",
+      "latestVersion": "11.0.3",
+      "currentVersionAge": "2021-02-05 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/cds-annotation-parser",
+        "@sap-ux/xml-odata-annotation-converter"
+      ],
+      "changelogUrl": "git://github.com/Chevrotain/chevrotain",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.1.1"
+      ]
+    },
+    {
+      "name": "@sap/ux-cds-compiler-facade",
+      "currentVersion": "1.19.0",
+      "latestVersion": "1.19.0",
+      "currentVersionAge": "2025-10-02 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/cds-odata-annotation-converter",
+        "@sap-ux/fiori-annotation-api"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.19.0"
+      ]
+    },
+    {
+      "name": "hasbin",
+      "currentVersion": "1.2.3",
+      "latestVersion": "1.2.3",
+      "currentVersionAge": "2016-05-27 (9 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/springernature/hasbin",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.3"
+      ]
+    },
+    {
+      "name": "@types/hasbin",
+      "currentVersion": "1.2.2",
+      "latestVersion": "1.2.2",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.2"
+      ]
+    },
+    {
+      "name": "@sap/mta-lib",
+      "currentVersion": "1.7.4",
+      "latestVersion": "1.7.4",
+      "currentVersionAge": "2021-10-17 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/cf-deploy-config-sub-generator",
+        "@sap-ux/cf-deploy-config-writer",
+        "@sap-ux/deploy-config-sub-generator"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.7.4"
+      ]
+    },
+    {
+      "name": "mta",
+      "currentVersion": "1.0.8",
+      "latestVersion": "1.0.8",
+      "currentVersionAge": "2024-01-18 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/cf-deploy-config-writer"
+      ],
+      "changelogUrl": "https://github.com/SAP/cloud-mta",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.8"
+      ]
+    },
+    {
+      "name": "@fluentui/react",
+      "currentVersion": "8.120.5",
+      "latestVersion": "8.125.1",
+      "currentVersionAge": "2024-08-15 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/microsoft/fluentui",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.120.5"
+      ]
+    },
+    {
+      "name": "@fluentui/react-hooks",
+      "currentVersion": "8.6.14",
+      "latestVersion": "8.10.1",
+      "currentVersionAge": "2022-11-15 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/microsoft/fluentui",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.6.14"
+      ]
+    },
+    {
+      "name": "@reduxjs/toolkit",
+      "currentVersion": "1.6.1",
+      "latestVersion": "2.10.1",
+      "currentVersionAge": "2021-07-17 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/reduxjs/redux-toolkit",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.6.1"
+      ]
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "currentVersion": "5.17.0",
+      "latestVersion": "6.9.1",
+      "currentVersionAge": "2023-07-18 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/testing-library/jest-dom",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "5.17.0",
+        "6.4.8"
+      ]
+    },
+    {
+      "name": "@testing-library/react",
+      "currentVersion": "12.1.5",
+      "latestVersion": "16.3.0",
+      "currentVersionAge": "2022-04-11 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/testing-library/react-testing-library",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "12.1.5"
+      ]
+    },
+    {
+      "name": "@testing-library/dom",
+      "currentVersion": "9.3.3",
+      "latestVersion": "10.4.1",
+      "currentVersionAge": "2023-09-17 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/testing-library/dom-testing-library",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "9.3.3"
+      ]
+    },
+    {
+      "name": "@types/react-redux",
+      "currentVersion": "7.1.33",
+      "latestVersion": "7.1.34",
+      "currentVersionAge": "2023-12-12 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.1.33"
+      ]
+    },
+    {
+      "name": "@types/redux-logger",
+      "currentVersion": "3.0.7",
+      "latestVersion": "3.0.13",
+      "currentVersionAge": "2019-02-13 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.7"
+      ]
+    },
+    {
+      "name": "@types/remote-redux-devtools",
+      "currentVersion": "0.5.4",
+      "latestVersion": "0.5.8",
+      "currentVersionAge": "2020-01-16 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.5.4"
+      ]
+    },
+    {
+      "name": "@types/source-map-support",
+      "currentVersion": "0.5.0",
+      "latestVersion": "0.5.10",
+      "currentVersionAge": "2019-03-05 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.5.0"
+      ]
+    },
+    {
+      "name": "body-parser",
+      "currentVersion": "1.20.3",
+      "latestVersion": "2.2.0",
+      "currentVersionAge": "2024-09-09 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/expressjs/body-parser",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.20.3"
+      ]
+    },
+    {
+      "name": "jest-scss-transform",
+      "currentVersion": "1.0.4",
+      "latestVersion": "1.0.4",
+      "currentVersionAge": "2024-08-29 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/routablehq/jest-scss-transform",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.4"
+      ]
+    },
+    {
+      "name": "react-i18next",
+      "currentVersion": "15.4.1",
+      "latestVersion": "16.3.1",
+      "currentVersionAge": "2025-02-18 (8 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/i18next/react-i18next",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "15.4.1"
+      ]
+    },
+    {
+      "name": "react-redux",
+      "currentVersion": "7.2.9",
+      "latestVersion": "9.2.0",
+      "currentVersionAge": "2022-09-23 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/reduxjs/react-redux",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.2.9"
+      ]
+    },
+    {
+      "name": "redux",
+      "currentVersion": "4.0.4",
+      "latestVersion": "5.0.1",
+      "currentVersionAge": "2019-07-10 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/reduxjs/redux",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.4"
+      ]
+    },
+    {
+      "name": "redux-logger",
+      "currentVersion": "3.0.6",
+      "latestVersion": "3.0.6",
+      "currentVersionAge": "2017-05-17 (8 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/theaqua/redux-logger",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.6"
+      ]
+    },
+    {
+      "name": "source-map-support",
+      "currentVersion": "0.5.16",
+      "latestVersion": "0.5.21",
+      "currentVersionAge": "2019-10-29 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/evanw/node-source-map-support",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.5.16"
+      ]
+    },
+    {
+      "name": "stream-browserify",
+      "currentVersion": "3.0.0",
+      "latestVersion": "3.0.0",
+      "currentVersionAge": "2020-04-16 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "git://github.com/browserify/stream-browserify",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.0"
+      ]
+    },
+    {
+      "name": "ts-import-plugin",
+      "currentVersion": "1.6.3",
+      "latestVersion": "3.0.0",
+      "currentVersionAge": "2020-02-11 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "ssh://git@github.com/Brooooooklyn/ts-import-plugin",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.6.3"
+      ]
+    },
+    {
+      "name": "postcss-modules",
+      "currentVersion": "6.0.1",
+      "latestVersion": "6.0.1",
+      "currentVersionAge": "2024-11-11 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/css-modules/postcss-modules",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.0.1"
+      ]
+    },
+    {
+      "name": "@ui5/fs",
+      "currentVersion": "3.0.4",
+      "latestVersion": "4.0.3",
+      "currentVersionAge": "2023-05-23 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "ssh://git@github.com/SAP/ui5-fs",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.4"
+      ]
+    },
+    {
+      "name": "esbuild-plugin-alias",
+      "currentVersion": "0.2.1",
+      "latestVersion": "0.2.1",
+      "currentVersionAge": "2021-11-11 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/igoradamenko/esbuild-plugin-alias",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.2.1"
+      ]
+    },
+    {
+      "name": "esbuild-plugin-copy",
+      "currentVersion": "2.1.1",
+      "latestVersion": "2.1.1",
+      "currentVersionAge": "2023-03-26 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor"
+      ],
+      "changelogUrl": "https://github.com/LinbuduLab/esbuild-plugins",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.1.1"
+      ]
+    },
+    {
+      "name": "@esbuild-plugins/node-modules-polyfill",
+      "currentVersion": "0.2.2",
+      "latestVersion": "0.2.2",
+      "currentVersionAge": "2023-01-27 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/control-property-editor",
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/remorses/esbuild-plugins",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.2.2"
+      ]
+    },
+    {
+      "name": "commander",
+      "currentVersion": "9.4.0",
+      "latestVersion": "14.0.2",
+      "currentVersionAge": "2022-07-15 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/create",
+        "@sap-ux/deploy-tooling"
+      ],
+      "changelogUrl": "https://github.com/tj/commander.js",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "9.4.0"
+      ]
+    },
+    {
+      "name": "diff",
+      "currentVersion": "5.1.0",
+      "latestVersion": "8.0.2",
+      "currentVersionAge": "2022-05-23 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/create"
+      ],
+      "changelogUrl": "git://github.com/kpdecker/jsdiff",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.1.0"
+      ]
+    },
+    {
+      "name": "@types/diff",
+      "currentVersion": "5.0.9",
+      "latestVersion": "8.0.0",
+      "currentVersionAge": "2023-12-06 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/create",
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.0.9"
+      ]
+    },
+    {
+      "name": "os-name",
+      "currentVersion": "4.0.1",
+      "latestVersion": "6.1.0",
+      "currentVersionAge": "2021-07-28 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/deploy-config-sub-generator",
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/fiori-mcp-server",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/sindresorhus/os-name",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.1"
+      ]
+    },
+    {
+      "name": "archiver",
+      "currentVersion": "7.0.1",
+      "latestVersion": "7.0.1",
+      "currentVersionAge": "2024-03-10 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "https://github.com/archiverjs/node-archiver",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.1"
+      ]
+    },
+    {
+      "name": "glob-gitignore",
+      "currentVersion": "1.0.14",
+      "latestVersion": "1.0.15",
+      "currentVersionAge": "2019-02-26 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "git://github.com/kaelzhang/node-glob-gitignore",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.14"
+      ]
+    },
+    {
+      "name": "ignore",
+      "currentVersion": "5.2.4",
+      "latestVersion": "7.0.5",
+      "currentVersionAge": "2022-12-19 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "ssh://git@github.com/kaelzhang/node-ignore",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.2.4"
+      ]
+    },
+    {
+      "name": "minimist",
+      "currentVersion": "1.2.8",
+      "latestVersion": "1.2.8",
+      "currentVersionAge": "2023-02-09 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "git://github.com/minimistjs/minimist",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.8"
+      ]
+    },
+    {
+      "name": "yamljs",
+      "currentVersion": "0.3.0",
+      "latestVersion": "0.3.0",
+      "currentVersionAge": "2017-06-24 (8 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "git://github.com/jeremyfa/yaml.js",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.3.0"
+      ]
+    },
+    {
+      "name": "@types/archiver",
+      "currentVersion": "5.3.4",
+      "latestVersion": "7.0.0",
+      "currentVersionAge": "2023-10-17 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.3.4"
+      ]
+    },
+    {
+      "name": "@types/minimist",
+      "currentVersion": "1.2.2",
+      "latestVersion": "1.2.5",
+      "currentVersionAge": "2021-07-07 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/environment-check"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.2"
+      ]
+    },
+    {
+      "name": "eslint-plugin-fiori-custom",
+      "currentVersion": "2.6.7",
+      "latestVersion": "2.6.7",
+      "currentVersionAge": "2023-04-11 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/eslint-plugin-fiori-tools"
+      ],
+      "changelogUrl": "private",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.6.7"
+      ]
+    },
+    {
+      "name": "xml-formatter",
+      "currentVersion": "2.6.1",
+      "latestVersion": "3.6.7",
+      "currentVersionAge": "2022-02-03 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/fe-fpm-writer"
+      ],
+      "changelogUrl": "https://github.com/chrisbottin/xml-formatter",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.6.1"
+      ]
+    },
+    {
+      "name": "@types/jest-when",
+      "currentVersion": "3.5.5",
+      "latestVersion": "3.5.5",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/feature-toggle"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.5.5"
+      ]
+    },
+    {
+      "name": "jest-when",
+      "currentVersion": "3.7.0",
+      "latestVersion": "3.7.0",
+      "currentVersionAge": "2024-12-03 (11 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/feature-toggle"
+      ],
+      "changelogUrl": "https://github.com/timkindberg/jest-when/",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.7.0"
+      ]
+    },
+    {
+      "name": "@xml-tools/ast",
+      "currentVersion": "5.0.5",
+      "latestVersion": "5.0.5",
+      "currentVersionAge": "2021-06-03 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/xml-odata-annotation-converter"
+      ],
+      "changelogUrl": "https://github.com/sap/xml-tools",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.0.5"
+      ]
+    },
+    {
+      "name": "@xml-tools/parser",
+      "currentVersion": "1.0.11",
+      "latestVersion": "1.0.11",
+      "currentVersionAge": "2021-06-03 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/xml-odata-annotation-converter"
+      ],
+      "changelogUrl": "https://github.com/sap/xml-tools",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.11"
+      ]
+    },
+    {
+      "name": "vscode-languageserver-textdocument",
+      "currentVersion": "1.0.11",
+      "latestVersion": "1.0.12",
+      "currentVersionAge": "2023-09-26 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/preview-middleware-client",
+        "@sap-ux/fiori-annotation-api",
+        "@sap-ux/i18n"
+      ],
+      "changelogUrl": "https://github.com/Microsoft/vscode-languageserver-node",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.11"
+      ]
+    },
+    {
+      "name": "@sap/cds-compiler",
+      "currentVersion": "4.8.0",
+      "latestVersion": "6.4.6",
+      "currentVersionAge": "2024-03-25 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/fiori-annotation-api"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.8.0"
+      ]
+    },
+    {
+      "name": "@sap-ux/edmx-parser",
+      "currentVersion": "0.9.1",
+      "latestVersion": "0.9.6",
+      "currentVersionAge": "2025-05-26 (5 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/odata-service-inquirer"
+      ],
+      "changelogUrl": "https://github.com/SAP/open-ux-odata",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.9.1"
+      ]
+    },
+    {
+      "name": "@sap/service-provider-apis",
+      "currentVersion": "2.5.1",
+      "latestVersion": "2.5.1",
+      "currentVersionAge": "2025-09-17 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/ui-service-sub-generator"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.5.1"
+      ]
+    },
+    {
+      "name": "jest-extended",
+      "currentVersion": "6.0.0",
+      "latestVersion": "7.0.0",
+      "currentVersionAge": "2025-06-08 (5 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/inquirer-common",
+        "@sap-ux/logger",
+        "@sap-ux/odata-service-inquirer",
+        "@sap-ux/project-input-validator",
+        "@sap-ux/store",
+        "@sap-ux/telemetry",
+        "@sap-ux/ui-service-inquirer",
+        "@sap-ux/ui-service-sub-generator",
+        "@sap-ux/ui5-library-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/jest-community/jest-extended",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.0.0"
+      ]
+    },
+    {
+      "name": "jest-mock",
+      "currentVersion": "30.2.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2025-09-28 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-app-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "30.2.0"
+      ]
+    },
+    {
+      "name": "mock-spawn",
+      "currentVersion": "0.2.6",
+      "latestVersion": "0.2.6",
+      "currentVersionAge": "2015-07-01 (10 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-app-sub-generator",
+        "@sap-ux/nodejs-utils",
+        "@sap-ux/ui5-info"
+      ],
+      "changelogUrl": "git://github.com/gotwarlost/mock-spawn",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.2.6"
+      ]
+    },
+    {
+      "name": "@npm/types",
+      "currentVersion": "2.1.0",
+      "latestVersion": "2.1.0",
+      "currentVersionAge": "2025-04-28 (6 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings"
+      ],
+      "changelogUrl": "https://github.com/npm/types",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.1.0"
+      ]
+    },
+    {
+      "name": "@lancedb/lancedb",
+      "currentVersion": "0.22.0",
+      "latestVersion": "0.22.3",
+      "currentVersionAge": "2025-09-04 (2 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings",
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.22.0"
+      ]
+    },
+    {
+      "name": "@xenova/transformers",
+      "currentVersion": "2.17.2",
+      "latestVersion": "2.17.2",
+      "currentVersionAge": "2024-05-29 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings",
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/xenova/transformers.js",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.17.2"
+      ]
+    },
+    {
+      "name": "node-fetch",
+      "currentVersion": "3.3.2",
+      "latestVersion": "3.3.2",
+      "currentVersionAge": "2023-07-25 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings"
+      ],
+      "changelogUrl": "https://github.com/node-fetch/node-fetch",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.3.2"
+      ]
+    },
+    {
+      "name": "marked",
+      "currentVersion": "12.0.0",
+      "latestVersion": "17.0.0",
+      "currentVersionAge": "2024-02-03 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings"
+      ],
+      "changelogUrl": "git://github.com/markedjs/marked",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "12.0.0"
+      ]
+    },
+    {
+      "name": "gray-matter",
+      "currentVersion": "4.0.3",
+      "latestVersion": "4.0.3",
+      "currentVersionAge": "2021-04-24 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings"
+      ],
+      "changelogUrl": "https://github.com/jonschlinkert/gray-matter",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.3"
+      ]
+    },
+    {
+      "name": "tsx",
+      "currentVersion": "4.7.0",
+      "latestVersion": "4.20.6",
+      "currentVersionAge": "2023-12-19 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-docs-embeddings"
+      ],
+      "changelogUrl": "https://github.com/privatenumber/tsx",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.7.0"
+      ]
+    },
+    {
+      "name": "read-pkg-up",
+      "currentVersion": "7.0.1",
+      "latestVersion": "11.0.0",
+      "currentVersionAge": "2019-12-06 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/fiori-elements-writer",
+        "@sap-ux/fiori-freestyle-writer",
+        "@sap-ux/nodejs-utils"
+      ],
+      "changelogUrl": "https://github.com/sindresorhus/read-pkg-up",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.1"
+      ]
+    },
+    {
+      "name": "logform",
+      "currentVersion": "2.4.0",
+      "latestVersion": "2.7.0",
+      "currentVersionAge": "2022-02-12 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-generator-shared",
+        "@sap-ux/logger"
+      ],
+      "changelogUrl": "https://github.com/winstonjs/logform",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "2.4.0",
+        "2.6.0"
+      ]
+    },
+    {
+      "name": "@sap-ux/fiori-docs-embeddings",
+      "currentVersion": "*",
+      "latestVersion": "0.4.3",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "UNKNOWN",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Manual check required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "*"
+      ]
+    },
+    {
+      "name": "@modelcontextprotocol/sdk",
+      "currentVersion": "1.17.5",
+      "latestVersion": "1.21.1",
+      "currentVersionAge": "2025-09-02 (2 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/modelcontextprotocol/typescript-sdk",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.17.5"
+      ]
+    },
+    {
+      "name": "@sap/ux-specification",
+      "currentVersion": "1.136.6",
+      "latestVersion": "1.139.0",
+      "currentVersionAge": "2025-09-15 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.136.6"
+      ]
+    },
+    {
+      "name": "@types/json-schema",
+      "currentVersion": "7.0.5",
+      "latestVersion": "7.0.15",
+      "currentVersionAge": "2020-06-09 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "7.0.5"
+      ]
+    },
+    {
+      "name": "zod",
+      "currentVersion": "4.1.5",
+      "latestVersion": "4.1.12",
+      "currentVersionAge": "2025-08-28 (2 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/colinhacks/zod",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.1.5"
+      ]
+    },
+    {
+      "name": "@sap-ai-sdk/foundation-models",
+      "currentVersion": "2.0.0",
+      "latestVersion": "2.1.0",
+      "currentVersionAge": "2025-09-22 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/SAP/ai-sdk-js",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.0"
+      ]
+    },
+    {
+      "name": "@sap-ai-sdk/langchain",
+      "currentVersion": "2.0.0",
+      "latestVersion": "2.1.0",
+      "currentVersionAge": "2025-09-22 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/SAP/ai-sdk-js",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.0"
+      ]
+    },
+    {
+      "name": "promptfoo",
+      "currentVersion": "0.118.6",
+      "latestVersion": "0.119.6",
+      "currentVersionAge": "2025-09-18 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "https://github.com/promptfoo/promptfoo",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.118.6"
+      ]
+    },
+    {
+      "name": "@langchain/mcp-adapters",
+      "currentVersion": "0.6.0",
+      "latestVersion": "1.0.0",
+      "currentVersionAge": "2025-07-20 (3 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "ssh://git@github.com/langchain-ai/langchainjs",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.6.0"
+      ]
+    },
+    {
+      "name": "@langchain/core",
+      "currentVersion": "0.3.75",
+      "latestVersion": "1.0.4",
+      "currentVersionAge": "2025-09-05 (2 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/fiori-mcp-server"
+      ],
+      "changelogUrl": "ssh://git@github.com/langchain-ai/langchainjs",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.3.75"
+      ]
+    },
+    {
+      "name": "@sap-devx/feature-toggle-node",
+      "currentVersion": "2.0.3",
+      "latestVersion": "2.0.3",
+      "currentVersionAge": "2025-03-10 (8 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/generator-adp"
+      ],
+      "changelogUrl": "ssh://git@github.com/SAP/feature-toggle-node",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.3"
+      ]
+    },
+    {
+      "name": "jsonc-parser",
+      "currentVersion": "3.2.0",
+      "latestVersion": "3.3.1",
+      "currentVersionAge": "2022-08-30 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/i18n",
+        "@sap-ux/launch-config",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/microsoft/node-jsonc-parser",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.2.0"
+      ]
+    },
+    {
+      "name": "figures",
+      "currentVersion": "3.2.0",
+      "latestVersion": "6.1.0",
+      "currentVersionAge": "2020-02-16 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/inquirer-common"
+      ],
+      "changelogUrl": "https://github.com/sindresorhus/figures",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.2.0"
+      ]
+    },
+    {
+      "name": "fuzzy",
+      "currentVersion": "0.1.3",
+      "latestVersion": "0.1.3",
+      "currentVersionAge": "2016-10-01 (9 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/inquirer-common"
+      ],
+      "changelogUrl": "git://github.com/mattyork/fuzzy",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.1.3"
+      ]
+    },
+    {
+      "name": "jest-environment-jsdom",
+      "currentVersion": "29.7.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2023-09-12 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-environment-ui5",
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "29.7.0"
+      ]
+    },
+    {
+      "name": "tsconfig-paths",
+      "currentVersion": "3.15.0",
+      "latestVersion": "4.2.0",
+      "currentVersionAge": "2023-12-14 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-environment-ui5"
+      ],
+      "changelogUrl": "https://github.com/dividab/tsconfig-paths",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.15.0"
+      ]
+    },
+    {
+      "name": "@ui5/cli",
+      "currentVersion": "4",
+      "latestVersion": "error",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "UNKNOWN",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/preview-middleware-client",
+        "@sap-ux/jest-environment-ui5",
+        "test-project"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Manual check required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "4",
+        "4.0.33"
+      ]
+    },
+    {
+      "name": "@ui5/project",
+      "currentVersion": "3.9.0 || ^4.0.0",
+      "latestVersion": "4.0.8",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/jest-environment-ui5"
+      ],
+      "changelogUrl": "ssh://git@github.com/SAP/ui5-project",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "3.9.0 || ^4.0.0",
+        "4.0.8"
+      ]
+    },
+    {
+      "name": "dir-compare",
+      "currentVersion": "5.0.0",
+      "latestVersion": "5.0.0",
+      "currentVersionAge": "2024-05-04 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/jest-file-matchers"
+      ],
+      "changelogUrl": "https://github.com/gliviu/dir-compare",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.0.0"
+      ]
+    },
+    {
+      "name": "filenamify",
+      "currentVersion": "4.2.0",
+      "latestVersion": "7.0.1",
+      "currentVersionAge": "2020-09-24 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-file-matchers"
+      ],
+      "changelogUrl": "https://github.com/sindresorhus/filenamify",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.2.0"
+      ]
+    },
+    {
+      "name": "jest-diff",
+      "currentVersion": "30.2.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2025-09-28 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/jest-file-matchers"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "30.2.0"
+      ]
+    },
+    {
+      "name": "minimatch",
+      "currentVersion": "3.0.5",
+      "latestVersion": "10.1.1",
+      "currentVersionAge": "2022-02-06 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-file-matchers"
+      ],
+      "changelogUrl": "ssh://git@github.com/isaacs/minimatch",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.5"
+      ]
+    },
+    {
+      "name": "mkdirp",
+      "currentVersion": "1.0.4",
+      "latestVersion": "3.0.1",
+      "currentVersionAge": "2020-04-03 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-file-matchers",
+        "@sap-ux/jest-runner-puppeteer"
+      ],
+      "changelogUrl": "https://github.com/isaacs/node-mkdirp",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.4"
+      ]
+    },
+    {
+      "name": "jest-environment-node",
+      "currentVersion": "30.2.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2025-09-28 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/jest-runner-puppeteer"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "30.2.0"
+      ]
+    },
+    {
+      "name": "puppeteer-core",
+      "currentVersion": "22.15.0",
+      "latestVersion": "24.29.1",
+      "currentVersionAge": "2024-07-31 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-runner-puppeteer"
+      ],
+      "changelogUrl": "https://github.com/puppeteer/puppeteer.git#main",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "22.15.0"
+      ]
+    },
+    {
+      "name": "which",
+      "currentVersion": "2.0.2",
+      "latestVersion": "6.0.0",
+      "currentVersionAge": "2019-11-18 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/jest-runner-puppeteer"
+      ],
+      "changelogUrl": "https://github.com/npm/node-which",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.2"
+      ]
+    },
+    {
+      "name": "@types/yargs-parser",
+      "currentVersion": "21.0.3",
+      "latestVersion": "21.0.3",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/launch-config"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "21.0.3"
+      ]
+    },
+    {
+      "name": "winston",
+      "currentVersion": "3.11.0",
+      "latestVersion": "3.18.3",
+      "currentVersionAge": "2023-10-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/logger"
+      ],
+      "changelogUrl": "https://github.com/winstonjs/winston",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.11.0"
+      ]
+    },
+    {
+      "name": "winston-transport",
+      "currentVersion": "4.7.0",
+      "latestVersion": "4.9.0",
+      "currentVersionAge": "2024-02-04 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/logger"
+      ],
+      "changelogUrl": "ssh://git@github.com/winstonjs/winston-transport",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.7.0"
+      ]
+    },
+    {
+      "name": "@types/debug",
+      "currentVersion": "4.1.12",
+      "latestVersion": "4.1.12",
+      "currentVersionAge": "2023-11-09 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/logger"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.1.12"
+      ]
+    },
+    {
+      "name": "axios-logger",
+      "currentVersion": "2.8.0",
+      "latestVersion": "2.8.1",
+      "currentVersionAge": "2024-03-14 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/odata-service-inquirer"
+      ],
+      "changelogUrl": "https://github.com/hg-pyun/axios-logger",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.8.0"
+      ]
+    },
+    {
+      "name": "circular-reference-remover",
+      "currentVersion": "2.1.0",
+      "latestVersion": "2.1.0",
+      "currentVersionAge": "2021-12-20 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/odata-service-inquirer"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.1.0"
+      ]
+    },
+    {
+      "name": "prettify-xml",
+      "currentVersion": "1.2.0",
+      "latestVersion": "1.2.0",
+      "currentVersionAge": "2017-06-20 (8 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/odata-service-writer"
+      ],
+      "changelogUrl": "https://github.com/jonathanewerner/prettify-xml",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.0"
+      ]
+    },
+    {
+      "name": "@sap-ux/logger",
+      "currentVersion": "0.7.1",
+      "latestVersion": "0.7.1",
+      "currentVersionAge": "2025-11-05 (7 days old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/playwright"
+      ],
+      "changelogUrl": "https://github.com/SAP/open-ux-tools",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.7.1"
+      ]
+    },
+    {
+      "name": "jest-dev-server",
+      "currentVersion": "10.0.0",
+      "latestVersion": "11.0.0",
+      "currentVersionAge": "2024-02-10 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux-private/playwright"
+      ],
+      "changelogUrl": "https://github.com/argos-ci/jest-puppeteer",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": true,
+      "allVersionsUsed": [
+        "10.0.0",
+        "11.0.0"
+      ]
+    },
+    {
+      "name": "folder-hash",
+      "currentVersion": "4.0.4",
+      "latestVersion": "4.1.1",
+      "currentVersionAge": "2023-01-11 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/playwright"
+      ],
+      "changelogUrl": "https://github.com/marc136/node-folder-hash",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.4"
+      ]
+    },
+    {
+      "name": "@types/folder-hash",
+      "currentVersion": "4.0.4",
+      "latestVersion": "4.0.4",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/playwright"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.4"
+      ]
+    },
+    {
+      "name": "portfinder",
+      "currentVersion": "1.0.32",
+      "latestVersion": "1.0.38",
+      "currentVersionAge": "2022-08-13 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/adaptation-editor-tests",
+        "@sap-ux-private/playwright",
+        "@sap-ux/reload-middleware"
+      ],
+      "changelogUrl": "ssh://git@github.com/http-party/node-portfinder",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.32"
+      ]
+    },
+    {
+      "name": "promisify-child-process",
+      "currentVersion": "4.1.2",
+      "latestVersion": "4.1.2",
+      "currentVersionAge": "2023-07-10 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/playwright"
+      ],
+      "changelogUrl": "https://github.com/jcoreio/promisify-child-process",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.1.2"
+      ]
+    },
+    {
+      "name": "qrcode",
+      "currentVersion": "1.5.4",
+      "latestVersion": "1.5.4",
+      "currentVersionAge": "2024-08-05 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/preview-middleware"
+      ],
+      "changelogUrl": "git://github.com/soldair/node-qrcode",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.5.4"
+      ]
+    },
+    {
+      "name": "@sap-ux-private/playwright",
+      "currentVersion": "0.2.2",
+      "latestVersion": "unknown",
+      "currentVersionAge": "unknown",
+      "isOlderThan6Months": false,
+      "updateType": "UNKNOWN",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/preview-middleware"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Manual check required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.2.2"
+      ]
+    },
+    {
+      "name": "@types/qrcode",
+      "currentVersion": "1.5.5",
+      "latestVersion": "1.5.6",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/preview-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.5.5"
+      ]
+    },
+    {
+      "name": "@sapui5/types",
+      "currentVersion": "1.120.5",
+      "latestVersion": "1.142.0",
+      "currentVersionAge": "2024-02-01 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux-private/preview-middleware-client"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.120.5"
+      ]
+    },
+    {
+      "name": "ui5-tooling-modules",
+      "currentVersion": "3.33.0",
+      "latestVersion": "3.33.6",
+      "currentVersionAge": "2025-10-14 (29 days old)",
+      "isOlderThan6Months": false,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/preview-middleware-client"
+      ],
+      "changelogUrl": "https://github.com/ui5-community/ui5-ecosystem-showcase",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.33.0"
+      ]
+    },
+    {
+      "name": "ui5-tooling-transpile",
+      "currentVersion": "3.9.2",
+      "latestVersion": "3.9.2",
+      "currentVersionAge": "2025-09-17 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux-private/preview-middleware-client"
+      ],
+      "changelogUrl": "https://github.com/ui5-community/ui5-ecosystem-showcase",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.9.2"
+      ]
+    },
+    {
+      "name": "findit2",
+      "currentVersion": "2.2.3",
+      "latestVersion": "2.2.3",
+      "currentVersionAge": "2014-10-18 (11 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/project-access"
+      ],
+      "changelogUrl": "http://github.com/andrewrk/node-findit",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.2.3"
+      ]
+    },
+    {
+      "name": "json-parse-even-better-errors",
+      "currentVersion": "4.0.0",
+      "latestVersion": "5.0.0",
+      "currentVersionAge": "2024-09-04 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/project-access"
+      ],
+      "changelogUrl": "https://github.com/npm/json-parse-even-better-errors",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.0"
+      ]
+    },
+    {
+      "name": "@ui5/manifest",
+      "currentVersion": "1.76.0",
+      "latestVersion": "1.80.0",
+      "currentVersionAge": "2025-07-02 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/project-access",
+        "@sap-ux/ui5-application-writer"
+      ],
+      "changelogUrl": "https://github.com/SAP/ui5-manifest",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.76.0"
+      ]
+    },
+    {
+      "name": "vscode-uri",
+      "currentVersion": "3.0.7",
+      "latestVersion": "3.1.0",
+      "currentVersionAge": "2022-12-13 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/project-access",
+        "@sap-ux/ui5-library-reference-sub-generator",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/microsoft/vscode-uri",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.7"
+      ]
+    },
+    {
+      "name": "validate-npm-package-name",
+      "currentVersion": "5.0.0",
+      "latestVersion": "7.0.0",
+      "currentVersionAge": "2022-10-14 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/project-input-validator"
+      ],
+      "changelogUrl": "https://github.com/npm/validate-npm-package-name",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "5.0.0"
+      ]
+    },
+    {
+      "name": "@types/validate-npm-package-name",
+      "currentVersion": "4.0.1",
+      "latestVersion": "4.0.2",
+      "currentVersionAge": "2023-10-18 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/project-input-validator"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "4.0.1"
+      ]
+    },
+    {
+      "name": "lz-string",
+      "currentVersion": "1.5.0",
+      "latestVersion": "1.5.0",
+      "currentVersionAge": "2023-03-04 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/project-integrity"
+      ],
+      "changelogUrl": "https://github.com/pieroxy/lz-string",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.5.0"
+      ]
+    },
+    {
+      "name": "connect-livereload",
+      "currentVersion": "0.6.1",
+      "latestVersion": "0.6.1",
+      "currentVersionAge": "2018-12-20 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/reload-middleware"
+      ],
+      "changelogUrl": "git://github.com/intesso/connect-livereload",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.6.1"
+      ]
+    },
+    {
+      "name": "livereload",
+      "currentVersion": "0.9.3",
+      "latestVersion": "0.10.3",
+      "currentVersionAge": "2021-03-18 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/reload-middleware"
+      ],
+      "changelogUrl": "ssh://git@github.com/napcs/node-livereload",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.9.3"
+      ]
+    },
+    {
+      "name": "@types/connect-livereload",
+      "currentVersion": "0.6.3",
+      "latestVersion": "0.6.3",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/reload-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.6.3"
+      ]
+    },
+    {
+      "name": "@types/livereload",
+      "currentVersion": "0.9.5",
+      "latestVersion": "0.9.5",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/reload-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.9.5"
+      ]
+    },
+    {
+      "name": "yeoman-environment",
+      "currentVersion": "3.8.0",
+      "latestVersion": "5.0.0",
+      "currentVersionAge": "2021-11-09 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/repo-app-import-sub-generator",
+        "@sap-ux/ui-service-sub-generator"
+      ],
+      "changelogUrl": "https://github.com/yeoman/environment",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.8.0"
+      ]
+    },
+    {
+      "name": "@types/normalize-path",
+      "currentVersion": "3.0.0",
+      "latestVersion": "3.0.2",
+      "currentVersionAge": "2018-12-25 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.0"
+      ]
+    },
+    {
+      "name": "@zowe/secrets-for-zowe-sdk",
+      "currentVersion": "8.1.2",
+      "latestVersion": "8.29.1",
+      "currentVersionAge": "2024-10-11 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/store",
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/zowe/zowe-cli",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.1.2"
+      ]
+    },
+    {
+      "name": "normalize-path",
+      "currentVersion": "3.0.0",
+      "latestVersion": "3.0.0",
+      "currentVersionAge": "2018-04-19 (7 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/jonschlinkert/normalize-path",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.0.0"
+      ]
+    },
+    {
+      "name": "@vscode/vsce",
+      "currentVersion": "3.6.0",
+      "latestVersion": "3.7.0",
+      "currentVersionAge": "2025-06-25 (4 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "sap-ux-sap-systems-ext"
+      ],
+      "changelogUrl": "https://github.com/Microsoft/vsce",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.6.0"
+      ]
+    },
+    {
+      "name": "@testing-library/user-event",
+      "currentVersion": "14.5.1",
+      "latestVersion": "14.6.1",
+      "currentVersionAge": "2023-09-15 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/sap-systems-ext-webapp"
+      ],
+      "changelogUrl": "https://github.com/testing-library/user-event",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "14.5.1"
+      ]
+    },
+    {
+      "name": "serve-static",
+      "currentVersion": "1.16.2",
+      "latestVersion": "2.2.0",
+      "currentVersionAge": "2024-09-11 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/serve-static-middleware"
+      ],
+      "changelogUrl": "https://github.com/expressjs/serve-static",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.16.2"
+      ]
+    },
+    {
+      "name": "@types/serve-static",
+      "currentVersion": "1.15.5",
+      "latestVersion": "2.2.0",
+      "currentVersionAge": "2023-11-07 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/serve-static-middleware"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.15.5"
+      ]
+    },
+    {
+      "name": "pluralize",
+      "currentVersion": "8.0.0",
+      "latestVersion": "8.0.0",
+      "currentVersionAge": "2019-05-25 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/store"
+      ],
+      "changelogUrl": "https://github.com/blakeembrey/pluralize",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.0.0"
+      ]
+    },
+    {
+      "name": "reflect-metadata",
+      "currentVersion": "0.1.13",
+      "latestVersion": "0.2.2",
+      "currentVersionAge": "2019-01-15 (6 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/store"
+      ],
+      "changelogUrl": "https://github.com/rbuckton/reflect-metadata",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.1.13"
+      ]
+    },
+    {
+      "name": "@types/pluralize",
+      "currentVersion": "0.0.30",
+      "latestVersion": "0.0.33",
+      "currentVersionAge": "2023-07-06 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/store"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "0.0.30"
+      ]
+    },
+    {
+      "name": "@types/qs",
+      "currentVersion": "6.9.1",
+      "latestVersion": "6.14.0",
+      "currentVersionAge": "2020-02-07 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/store"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "6.9.1"
+      ]
+    },
+    {
+      "name": "fast-check",
+      "currentVersion": "2.25.0",
+      "latestVersion": "4.3.0",
+      "currentVersionAge": "2022-04-26 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/store"
+      ],
+      "changelogUrl": "https://github.com/dubzzz/fast-check",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.25.0"
+      ]
+    },
+    {
+      "name": "applicationinsights",
+      "currentVersion": "2.9.8",
+      "latestVersion": "3.12.0",
+      "currentVersionAge": "2025-08-12 (3 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MAJOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/telemetry"
+      ],
+      "changelogUrl": "https://github.com/microsoft/ApplicationInsights-node.js",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.9.8"
+      ]
+    },
+    {
+      "name": "performance-now",
+      "currentVersion": "2.1.0",
+      "latestVersion": "2.1.0",
+      "currentVersionAge": "2017-02-19 (8 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/telemetry"
+      ],
+      "changelogUrl": "git://github.com/braveg1rl/performance-now",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.1.0"
+      ]
+    },
+    {
+      "name": "vscode-languageserver-types",
+      "currentVersion": "3.17.2",
+      "latestVersion": "3.17.5",
+      "currentVersionAge": "2022-07-13 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/text-document-utils"
+      ],
+      "changelogUrl": "https://github.com/Microsoft/vscode-languageserver-node",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.17.2"
+      ]
+    },
+    {
+      "name": "react-movable",
+      "currentVersion": "2.5.4",
+      "latestVersion": "3.4.1",
+      "currentVersionAge": "2021-05-04 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/tajo/react-movable",
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.5.4"
+      ]
+    },
+    {
+      "name": "@types/enzyme",
+      "currentVersion": "3.10.13",
+      "latestVersion": "3.10.19",
+      "currentVersionAge": "2023-04-15 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.10.13"
+      ]
+    },
+    {
+      "name": "@types/enzyme-adapter-react-16",
+      "currentVersion": "1.0.6",
+      "latestVersion": "1.0.9",
+      "currentVersionAge": "2020-02-07 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.0.6"
+      ]
+    },
+    {
+      "name": "@types/react-virtualized",
+      "currentVersion": "9.21.29",
+      "latestVersion": "9.22.3",
+      "currentVersionAge": "2023-12-06 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "9.21.29"
+      ]
+    },
+    {
+      "name": "babel-jest",
+      "currentVersion": "30.2.0",
+      "latestVersion": "30.2.0",
+      "currentVersionAge": "2025-09-28 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-components",
+        "@sap-ux/ui-prompting"
+      ],
+      "changelogUrl": "https://github.com/jestjs/jest",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "30.2.0"
+      ]
+    },
+    {
+      "name": "enzyme",
+      "currentVersion": "3.11.0",
+      "latestVersion": "3.11.0",
+      "currentVersionAge": "2019-12-20 (5 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/airbnb/enzyme",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "3.11.0"
+      ]
+    },
+    {
+      "name": "enzyme-adapter-react-16",
+      "currentVersion": "1.15.7",
+      "latestVersion": "1.15.8",
+      "currentVersionAge": "2022-11-05 (3 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "PATCH",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/enzymejs/enzyme",
+      "recommendedAction": "Safe to update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.15.7"
+      ]
+    },
+    {
+      "name": "require-from-string",
+      "currentVersion": "2.0.2",
+      "latestVersion": "2.0.2",
+      "currentVersionAge": "2018-04-09 (7 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-components"
+      ],
+      "changelogUrl": "https://github.com/floatdrop/require-from-string",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.0.2"
+      ]
+    },
+    {
+      "name": "@sap/subaccount-destination-service-provider",
+      "currentVersion": "2.9.1",
+      "latestVersion": "2.9.1",
+      "currentVersionAge": "2025-09-18 (1 month old)",
+      "isOlderThan6Months": false,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui-service-sub-generator"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.9.1"
+      ]
+    },
+    {
+      "name": "ajv",
+      "currentVersion": "8.17.1",
+      "latestVersion": "8.17.1",
+      "currentVersionAge": "2024-07-12 (1 year old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "@sap-ux/ui5-config"
+      ],
+      "changelogUrl": "https://github.com/ajv-validator/ajv",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "8.17.1"
+      ]
+    },
+    {
+      "name": "@types/prettier",
+      "currentVersion": "2.7.3",
+      "latestVersion": "3.0.0",
+      "currentVersionAge": "2023-05-31 (2 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MAJOR",
+      "status": "red",
+      "statusEmoji": "🔴",
+      "usedInPackages": [
+        "@sap-ux/xml-odata-annotation-converter"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Review required",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.7.3"
+      ]
+    },
+    {
+      "name": "@types/i18next-fs-backend",
+      "currentVersion": "1.1.2",
+      "latestVersion": "1.2.0",
+      "currentVersionAge": "2021-09-22 (4 years old)",
+      "isOlderThan6Months": true,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "@sap-ux/yaml"
+      ],
+      "changelogUrl": null,
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.1.2"
+      ]
+    },
+    {
+      "name": "@sap-ux/ui5-middleware-fe-mockserver",
+      "currentVersion": "2.2.97",
+      "latestVersion": "2.3.20",
+      "currentVersionAge": "2025-06-13 (5 months old)",
+      "isOlderThan6Months": false,
+      "updateType": "MINOR",
+      "status": "yellow",
+      "statusEmoji": "🟡",
+      "usedInPackages": [
+        "test-project"
+      ],
+      "changelogUrl": "https://github.com/SAP/open-ux-odata",
+      "recommendedAction": "Should update",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "2.2.97"
+      ]
+    },
+    {
+      "name": "@sap-ux/fe-mockserver-plugin-cds",
+      "currentVersion": "1.2.6",
+      "latestVersion": "1.2.6",
+      "currentVersionAge": "2024-11-27 (11 months old)",
+      "isOlderThan6Months": true,
+      "updateType": "NONE",
+      "status": "green",
+      "statusEmoji": "🟢",
+      "usedInPackages": [
+        "test-project"
+      ],
+      "changelogUrl": "https://github.com/SAP/open-ux-odata",
+      "recommendedAction": "Up to date",
+      "hasMultipleVersions": false,
+      "allVersionsUsed": [
+        "1.2.6"
+      ]
+    }
+  ]
+}
