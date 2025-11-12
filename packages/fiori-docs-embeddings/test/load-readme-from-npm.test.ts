@@ -58,12 +58,8 @@ describe('download readme from npmjs', () => {
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
 
-        expect(mockLogger.error).toHaveBeenCalledWith(
-            `Failed to fetch package: Not Found.`
-        );
-        expect(mockLogger.error).toHaveBeenCalledWith(
-            `Could not fetch README for ${testPackageName}.`
-        );
+        expect(mockLogger.error).toHaveBeenCalledWith(`Failed to fetch package: Not Found.`);
+        expect(mockLogger.error).toHaveBeenCalledWith(`Could not fetch README for ${testPackageName}.`);
     });
 
     it('should handle fetch throwing an exception', async () => {
@@ -78,7 +74,6 @@ describe('download readme from npmjs', () => {
         );
         expect(mockLogger.error).toHaveBeenCalledWith(`Could not fetch README for ${testPackageName}.`);
     });
-
 
     it('should handle missing readme content', async () => {
         global.fetch = jest.fn().mockResolvedValue({
