@@ -18,12 +18,12 @@ async function getPackageReadme(packageName: string, logger: ToolsLogger): Promi
     try {
         const response: Response = await fetch(url);
         if (!response.ok) {
-            logger.error(`Failed to fetch package: ${response.statusText}`);
+            logger.error(`Failed to fetch package: ${response.statusText}.`);
             return null;
         }
         const data: Packument = await response.json();
         if (!data.readme) {
-            logger.error(`Warning: Could not find README content for ${packageName}.`);
+            logger.error(`Could not find README content for ${packageName}.`);
             return null;
         }
         return data.readme;
@@ -49,7 +49,7 @@ async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Pro
             await writeFile(outputPath, readmeContent, 'utf-8');
             logger.info(`Successfully saved README to './data_local'`);
         } catch (error) {
-            logger.error(`Error writing README file for ${outputFileName}: ${error}`);
+            logger.error(`Error writing README file for ${outputFileName}: ${error}.`);
         }
     } else {
         logger.error(`Could not fetch README for ${packageName}.`);

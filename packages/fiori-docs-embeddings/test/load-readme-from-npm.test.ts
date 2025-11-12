@@ -55,13 +55,30 @@ describe('download readme from npmjs', () => {
             statusText: 'Not Found'
         });
 
-        try {
-            const script = await import('../src/scripts/load-readme-from-npm');
-            await script.execution;
-        } catch (e) {
-            expect(e.message).toBe(`Error fetching README for ${testPackageName}: Failed to fetch package: Not Found`);
-        }
+        const script = await import('../src/scripts/load-readme-from-npm');
+        await script.execution;
+
+        expect(mockLogger.error).toHaveBeenCalledWith(
+            `Failed to fetch package: Not Found.`
+        );
+        expect(mockLogger.error).toHaveBeenCalledWith(
+            `Could not fetch README for ${testPackageName}.`
+        );
     });
+
+    it('should handle fetch throwing an exception', async () => {
+        const fetchError = new Error('Network error');
+        global.fetch = jest.fn().mockRejectedValue(fetchError);
+
+        const script = await import('../src/scripts/load-readme-from-npm');
+        await script.execution;
+
+        expect(mockLogger.error).toHaveBeenCalledWith(
+            `Error fetching README for ${testPackageName}: ${fetchError.message}`
+        );
+        expect(mockLogger.error).toHaveBeenCalledWith(`Could not fetch README for ${testPackageName}.`);
+    });
+
 
     it('should handle missing readme content', async () => {
         global.fetch = jest.fn().mockResolvedValue({
@@ -72,7 +89,7 @@ describe('download readme from npmjs', () => {
         const script = await import('../src/scripts/load-readme-from-npm');
         await script.execution;
 
-        expect(mockLogger.error).toHaveBeenCalledWith(`Warning: Could not find README content for ${testPackageName}.`);
+        expect(mockLogger.error).toHaveBeenCalledWith(`Could not find README content for ${testPackageName}.`);
         expect(mockLogger.error).toHaveBeenCalledWith(`Could not fetch README for ${testPackageName}.`);
     });
 
@@ -92,7 +109,7 @@ describe('download readme from npmjs', () => {
 
         const expectedFileName = `${testPackageName.split('/').pop()}-README.md`;
         expect(mockLogger.error).toHaveBeenCalledWith(
-            `Error writing README file for ${expectedFileName}: Error: Permission denied`
+            `Error writing README file for ${expectedFileName}: Error: Permission denied.`
         );
     });
 
