@@ -112,12 +112,31 @@ describe('FlpSandbox', () => {
     });
 
     describe('init', () => {
+        beforeEach(() => {
+            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+        });
+
         test('minimal manifest', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
             await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('minimal manifest with CAPNodejs project type', async () => {
+            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+            const flp = new FlpSandbox({
+                flp: {
+                    libs: true
+                }
+            }, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(flp.templateConfig.locateReuseLibsScript).toBe(false);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
