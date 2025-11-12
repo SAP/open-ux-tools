@@ -172,6 +172,7 @@ export {
     EdmxAnnotationsInfo,
     CdsAnnotationsInfo,
     ValueListReference,
-    ValueListReferenceService
+    ValueListReferenceService,
+    NamespaceAlias
 } from './types';
 export { getValueListReferences, getAnnotationNamespaces } from './data';
