@@ -9,6 +9,6 @@
         "@sap-ux/reload-middleware": "workspace:*",
         "@sap-ux/backend-proxy-middleware": "workspace:*",
         "@sap-ux/ui5-proxy-middleware": "workspace:*",
-        "@ui5/cli": "3"
+        "@ui5/cli": "4"
     }
 }
