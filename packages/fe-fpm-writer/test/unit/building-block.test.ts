@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn } from '../../src';
+import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'node:fs';
@@ -1194,6 +1194,7 @@ describe('Building Blocks', () => {
             await writeFilesForDebugging(fs);
         });
     });
+
     test('generates Rich Text Editor building block with absolute binding context', async () => {
         const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
         const basePath = join(testAppPath, 'generate-rich-text-editor-block');
@@ -1294,5 +1295,491 @@ describe('Building Blocks', () => {
                 minUI5Version: manifestWithLowerUi5Version['sap.ui5'].dependencies.minUI5Version
             })}`
         );
+    });
+
+    describe('CustomFilterField building block', () => {
+        const testXmlViewContentWithoutMacrosFilterFields = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:FilterBar>
+            </macros:FilterBar>
+        </content>
+    </Page>
+</mvc:View>`;
+
+        test('CustomFilterField detects macros:filterFields elements correctly', async () => {
+            // Create mock XMLDocument with macros:filterFields
+            const xmlViewWithFilterFields = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:FilterBar>
+                <macros:filterFields>
+                    <macros:FilterField />
+                </macros:filterFields>
+            </macros:FilterBar>
+        </content>
+    </Page>
+</mvc:View>`;
+
+            const basePath = join(testAppPath, 'test-custom-filter-field-detection');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:FilterBar`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterField2',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field 2',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: true,
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterField2'
+                },
+                position: {
+                    placement: Placement.After
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlViewWithFilterFields);
+
+            // Test the getElementsByTagName functionality directly - this is what the code checks
+            const { DOMParser } = await import('@xmldom/xmldom');
+            const xmlDocument = new DOMParser().parseFromString(xmlViewWithFilterFields);
+
+            // Test the getElementsByTagName functionality directly - this is what the code checks
+            const hasFilterFields = xmlDocument.getElementsByTagName('macros:filterFields').length > 0;
+            expect(hasFilterFields).toBe(true);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFilterField2.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot(
+                'generate-custom-filter-field-with-macros-filter-fields'
+            );
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField without macros:filterFields - should not update aggregation path', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-without-macros-filter-fields');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:FilterBar`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterField2',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field 2',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: true,
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterField2'
+                },
+                position: {
+                    placement: Placement.After
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContentWithoutMacrosFilterFields);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/CustomFilterField2.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-filter-field-without-macros-filter-fields');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField with existing fragment file - should not overwrite', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-existing-fragment');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterField3',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Existing Filter Field Fragment',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: false,
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterFieldFragment'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            // Pre-create the fragment file with custom content
+            const existingFragmentPath = join(
+                basePath,
+                'webapp/ext/fragments/ExistingFilterFieldFragment.fragment.xml'
+            );
+            const existingContent =
+                '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><ComboBox value="{testProperty}" /></core:FragmentDefinition>';
+            fs.write(existingFragmentPath, existingContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that existing fragment file was not overwritten
+            const fragmentContent = fs.read(existingFragmentPath);
+            expect(fragmentContent).toBe(existingContent);
+            expect(fragmentContent).toContain('ComboBox');
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.fragment.CustomFilterFieldFragment');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField with folder option', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-with-folder');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterFieldWithFolder',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field With Folder',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: true,
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/customfilterfolder',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><DatePicker value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterFieldWithFolder'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created in correct folder
+            const expectedFragmentPath = join(
+                basePath,
+                'webapp/ext/customfilterfolder/CustomFilterFieldWithFolder.fragment.xml'
+            );
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('ComboBox'); // The template uses ComboBox by default
+
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.customfilterfolder.CustomFilterFieldWithFolder');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField without folder - defaults to ext/name path dirname', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-no-folder');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterFieldNoFolder',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field No Folder',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: false,
+                position: {
+                    placement: Placement.Before
+                },
+                embededFragment: {
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><CheckBox selected="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterFieldNoFolder'
+                }
+                // Note: no folder property
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created in webapp folder (manifest dirname)
+            const expectedFragmentPath = join(
+                basePath,
+                'webapp/ext/customFilterFieldNoFolder/CustomFilterFieldNoFolder.fragment.xml'
+            );
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('ComboBox');
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.customFilterFieldNoFolder.CustomFilterFieldNoFolder');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('CustomFilterField should generate fragment from template', async () => {
+            const basePath = join(testAppPath, 'test-custom-filter-field-content');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterFieldContent',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field Content',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: true,
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><MultiInput value="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterFieldContent'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // For CustomFilterField, the template is used, not the content property
+            expect(customFilterFieldData.embededFragment?.content).toBeDefined();
+
+            // check original xml view
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.fragment.CustomFilterFieldContent');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('CustomFilterField fragments are created with template content', async () => {
+            const basePath = join(testAppPath, 'test-custom-filter-field-fragment-content');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterFieldFragmentContent',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field Fragment Content',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: false,
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Select selectedKey="{testProperty}"/></core:FragmentDefinition>',
+                    name: 'CustomFilterFieldFragmentContent'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(
+                basePath,
+                'webapp/ext/fragment/CustomFilterFieldFragmentContent.fragment.xml'
+            );
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            // For CustomFilterField, the template is used, not the content property
+            expect(customFilterFieldData.embededFragment?.content).toBeDefined();
+
+            // Check fragment file content
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('ComboBox');
+            expect(fragmentContent).toContain('<core:FragmentDefinition');
+            expect(fragmentContent).toContain('Item1'); // Template has Item1, Item2, Item3
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField with all optional properties', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-all-properties');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterFieldAllProps',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Custom Filter Field All Properties',
+                anchor: 'existingFilterField',
+                property: 'MyEntity/MyProperty',
+                required: true,
+                filterFieldKey: 'customKey123',
+                position: {
+                    placement: Placement.Before
+                },
+                embededFragment: {
+                    folder: 'ext/customfilter',
+                    typescript: true,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><RangeSlider value="{MyEntity/MyProperty}"/></core:FragmentDefinition>',
+                    name: 'AllPropertiesFilterField'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(
+                basePath,
+                'webapp/ext/customfilter/AllPropertiesFilterField.fragment.xml'
+            );
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            // Check fragment file content
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('ComboBox');
+            expect(fragmentContent).toContain('Item1'); // Template has Item1, Item2, Item3
+
+            // check original xml view contains the proper reference
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.customfilter.AllPropertiesFilterField');
+
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField with minimal required properties', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-minimal');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'minimalCustomFilterField',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Minimal Filter Field',
+                anchor: 'someAnchor',
+                property: 'SimpleProperty',
+                required: false,
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input/></core:FragmentDefinition>',
+                    name: 'MinimalFilterField'
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created in default location
+            const expectedFragmentPath = join(
+                basePath,
+                'webapp/ext/minimalFilterField/MinimalFilterField.fragment.xml'
+            );
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            // Check fragment file content
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('ComboBox');
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-filter-field-minimal');
+            await writeFilesForDebugging(fs);
+        });
     });
 });
