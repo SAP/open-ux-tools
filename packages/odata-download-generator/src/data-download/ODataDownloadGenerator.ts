@@ -1,0 +1,183 @@
+import { type AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import { DefaultLogger, getHostEnvironment, hostEnvironment, ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import type { Logger } from '@sap-ux/logger';
+import Generator, { GeneratorOptions } from 'yeoman-generator';
+import { getKeyPrompts, getServiceSelectionPrompts, ReferencedEntities } from './prompts';
+import { PromptFunction } from 'inquirer';
+import { type ODataService } from '@sap-ux/axios-extension';
+import { DirName, getMockServerConfig } from '@sap-ux/project-access';
+import { join } from 'path';
+import { fetchData } from './odataQuery';
+import { convertODataResultToEntityFileData, SelectedEntityAnswer } from './utils';
+
+export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
+
+/**
+ * The root generator for Fiori Elements and Fiori Freestyle generators.
+ * All common functionality is implemented here.
+ */
+export class ODataDownloadGenerator extends Generator {
+    private readonly vscode: unknown;
+    // Performance measurement
+    private generationTime0: number; // start of writing phase millisecond timestamp
+    private appWizard: AppWizard | undefined;
+
+    // The logger is static to allow convenient access from everywhere, cross-cutting concern
+    private static _logger: ILogWrapper & Logger = DefaultLogger;
+    // Generator name for use in telemetry, readmes etc.
+    protected generatorVersion = this.rootGeneratorVersion();
+    prompts: Prompts;
+    setPromptsCallback: (fn: object) => void;
+
+    private state: {
+        /**
+         * The root path to the application being used as the data source
+         */
+        appRootPath?: string;
+        /**
+         * Root disk path for mockdata
+         */
+        mockDataRootPath?: string;
+        /**
+         * The application referenced entities used as the roots for data download
+         */
+        appEntities?: ReferencedEntities;
+        /**
+         * User selected entities
+         */
+        selectedEntities?: SelectedEntityAnswer[];
+        /**
+         * The downloaded entity data as JSON
+         */
+        entityData?: object;
+    } = {};
+
+    /**
+     *
+     * @param args
+     * @param opts
+     */
+    constructor(args: string | string[], opts: GeneratorOptions) {
+        super(args, opts, {
+            unique: 'namespace'
+        });
+
+        ODataDownloadGenerator._logger = this.options.logWrapper ?? DefaultLogger;
+
+        this.prompts = new Prompts([
+            {
+                description: 'Download data from an OData service for use with the UX Tools Mockdata Server',
+                name: 'OData Downloader'
+            } /* , {
+            description: 'Entity selection for data download',
+            name: 'Entity Selection'
+        } */
+        ]);
+
+        this.setPromptsCallback = (fn): void => {
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
+    }
+
+    /**
+     * Static getter for the logger.
+     *
+     * @returns {ILogWrapper & Logger}
+     */
+    public static get logger(): ILogWrapper & Logger {
+        return ODataDownloadGenerator._logger;
+    }
+
+    async initializing(): Promise<void> {
+        // Ensure i18n bundles are loaded, default loading is unreliable
+        // await initI18nODataDownloadGnerator();
+        /* await initTelemetrySettings({
+            consumerModule: { name: APP_GENERATOR_MODULE, version: this.rootGeneratorVersion() },
+            internalFeature: isInternalFeaturesSettingEnabled(),
+            watchTelemetrySettingStore: false
+        });
+
+        TelemetryHelper.createTelemetryData({
+            ...this.options.telemetryData
+        }); */
+    }
+
+    async prompting(): Promise<void> {
+        try {
+            const {
+                answers: { system, application },
+                questions
+            } = await getServiceSelectionPrompts(this.prompt.bind(this) as PromptFunction, this);
+            const promptAnswers = await this.prompt(questions);
+            if (system.metadata && application.appAccess) {
+                if (system.servicePath && application.appAccess && application.referencedEntities) {
+                    const odataService = system.connectedSystem?.serviceProvider.service<ODataService>(
+                        system.servicePath
+                    );
+                    this.state.appEntities = application.referencedEntities;
+
+                    this.state.selectedEntities = promptAnswers['relatedEntitySelection'];
+                    const result = await fetchData(this.state.appEntities, odataService!, this.state.selectedEntities);
+                    if (result.entityData) {
+                        this.log.info('Got result rows:' + `${result.entityData.length}`);
+
+                        this.state.entityData = result.entityData;
+                        this.state.appRootPath = application.appAccess.getAppRoot();
+                        const mockConfig = await getMockServerConfig(this.state.appRootPath);
+
+                        this.log.info(`Mock config: ${JSON.stringify(mockConfig)}`);
+
+                        // todo: Find the matching service, for now use the first one
+                        this.state.mockDataRootPath =
+                            mockConfig.services?.[0]?.mockdataPath ??
+                            join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+                    }
+                }
+            }
+        } catch (error) {
+            // Fatal prompting error
+            ODataDownloadGenerator.logger.error(error);
+            this._exitOnError(error);
+        }
+    }
+
+    async writing(): Promise<void> {
+        try {
+            this.generationTime0 = performance.now();
+            // Set target dir to mock data path
+            this.destinationRoot(join(this.state.appRootPath!, this.state.mockDataRootPath!));
+
+            const entityFileData = convertODataResultToEntityFileData(this.state.appEntities!, this.state.entityData!, this.state.selectedEntities);
+
+            // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
+            // Write main entity data file (todo: do we need to treat this differently? )
+            // this.writeDestinationJSON(mainEntityPath, this.state.entityData);
+
+            Object.entries(entityFileData).forEach(([entityName, entityData]) => {
+                // Writes relative to destination root path
+                this.writeDestinationJSON(join(`${entityName}.json`), entityData);
+            });
+        } catch (error) {
+            ODataDownloadGenerator.logger.fatal(error);
+            this._exitOnError(error);
+        }
+    }
+
+    async end(): Promise<void> {
+        // await runPostGenerationTasks
+    }
+
+    /**
+     *
+     * @param error
+     */
+    private _exitOnError(error: string): void {
+        /*   sendTelemetry('GENERATION_WRITING_FAIL', TelemetryHelper.telemetryData); */
+        if (getHostEnvironment() !== hostEnvironment.cli) {
+            this.appWizard?.showError(error, MessageType.notification);
+        }
+        throw new Error(error);
+    }
+}
