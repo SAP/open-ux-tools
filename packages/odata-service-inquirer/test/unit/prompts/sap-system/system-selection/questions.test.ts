@@ -369,7 +369,7 @@ describe('Test system selection prompts', () => {
         // validate backend system selection
         validateAuthResultMock = { valResult: true };
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
-        systemServiceReadMock.mockResolvedValue(backendSystemBasic);
+        systemServiceReadMock.mockResolvedValueOnce(backendSystemBasic);
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
@@ -388,6 +388,11 @@ describe('Test system selection prompts', () => {
         // If auth failed using creds from BackendSystem, the creds prompts should be displayed and the user notified that the backend system creds will be updated
         validateAuthResultMock = { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
         const loggerErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
+        systemServiceReadMock.mockResolvedValueOnce({
+            url: backendSystemBasic.url,
+            client: backendSystemBasic.client,
+            name: backendSystemBasic.name
+        });
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',

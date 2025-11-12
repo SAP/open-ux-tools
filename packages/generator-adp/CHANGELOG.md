@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.7.1
+
+### Patch Changes
+
+-   3017ce7: chore: Update @sap/cf-tools version to latest to avoid security issues
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+
 ## 0.7.0
 
 ### Minor Changes
