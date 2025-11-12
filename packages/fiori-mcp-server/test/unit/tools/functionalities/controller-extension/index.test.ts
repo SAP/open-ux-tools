@@ -4,7 +4,7 @@ import {
     createControllerExtensionHandlers
 } from '../../../../../src/tools/functionalities/controller-extension';
 import { mockSpecificationImport } from '../../../utils';
-import * as toolUtils from '../../../../../src/tools/utils';
+import * as toolUtils from '../../../../../src/utils';
 import * as projectUtils from '../../../../../src/page-editor-api/project';
 import { join } from 'node:path';
 

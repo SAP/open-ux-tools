@@ -2,15 +2,22 @@ import * as z from 'zod';
 import { LATEST_UI5_VERSION } from '../../constant';
 import packageJson from '../../../package.json';
 
-export const version = z.string().default('0.2').describe('Config schema version.');
+// Extended type generators API use
+export const PREDEFINED_GENERATOR_VALUES = {
+    // Config schema version
+    version: '0.2',
+    telemetryData: {
+        generationSourceName: packageJson.name,
+        generationSourceVersion: packageJson.version
+    },
+    project: {
+        sapux: true
+    }
+};
 
 export const floorplan = z
     .literal(['FE_FPM', 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_FEOP', 'FE_WORKLIST', 'FF_SIMPLE'])
     .describe('SAP Fiori Elements floor plan type.');
-
-export const projectType = z
-    .literal(['LIST_REPORT_OBJECT_PAGE', 'FORM_ENTRY_OBJECT_PAGE', 'FLEXIBLE_PROGRAMMING_MODEL'])
-    .describe('SAP Fiori Elements project type. Corresponds to the SAP Fiori Elements floor plan.');
 
 export const project = z.object({
     name: z
@@ -20,8 +27,7 @@ export const project = z.object({
     title: z.optional(z.string()),
     description: z.string(),
     targetFolder: z.string().describe('Absolute path to the project folder (projectPath).'),
-    ui5Version: z.string().default(LATEST_UI5_VERSION),
-    sapux: z.boolean().default(true)
+    ui5Version: z.string().default(LATEST_UI5_VERSION)
 });
 
 export const serviceOdata = z.object({
@@ -76,9 +82,4 @@ export const entityConfig = z.object({
     }),
     generateFormAnnotations: z.boolean(),
     generateLROPAnnotations: z.boolean()
-});
-
-export const telemetryData = z.object({
-    generationSourceName: z.string().default(packageJson.name),
-    generationSourceVersion: z.string().default(packageJson.version)
 });
