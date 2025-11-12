@@ -272,7 +272,7 @@ export function createPackageJson(id: string): string {
     "private": true,
     "devDependencies": {
         "@sap-ux/ui5-middleware-fe-mockserver": "2.1.112",
-        "@ui5/cli": "3"
+        "@ui5/cli": "4"
     }
 }
 `;
