@@ -192,7 +192,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
+        version: 5.10.0
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -1495,7 +1495,7 @@ importers:
         version: 25.3.0(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
+        version: 5.10.0
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -2958,6 +2958,64 @@ importers:
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
+
+  packages/odata-download-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      i18next:
+        specifier: 25.3.0
+        version: 25.3.0(typescript@5.9.3)
+      inquirer:
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.19.130)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      odata-query:
+        specifier: 8.0.5
+        version: 8.0.5
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0
+    devDependencies:
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/yeoman-generator':
+        specifier: 5.2.14
+        version: 5.2.14
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
 
   packages/odata-entity-model:
     devDependencies:
@@ -13845,7 +13903,7 @@ packages:
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
-      '@types/node': 18.11.9
+      '@types/node': 20.0.0
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
     dev: true
@@ -14330,7 +14388,7 @@ packages:
       jsdoc: 4.0.2
       less-openui5: 0.11.6
       pretty-data: 0.40.0
-      rimraf: 5.0.10
+      rimraf: 5.0.5
       semver: 7.7.1
       terser: 5.44.0
       workerpool: 6.5.1
@@ -20510,7 +20568,7 @@ packages:
       extend: 3.0.2
       https-proxy-agent: 7.0.5
       node-fetch: 3.3.2
-      rimraf: 5.0.10
+      rimraf: 5.0.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -25580,6 +25638,12 @@ packages:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
     dev: true
 
+  /odata-query@8.0.5:
+    resolution: {integrity: sha512-uteX6kmx4Y8LkEjdLuhXagI2GXQbJHvmfbI6z4PKcGj7vv5bLM6cX3vrBQsLr2JQStk0MUouRtkcja4pQhFKhg==}
+    dependencies:
+      tslib: 2.8.1
+    dev: false
+
   /on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
@@ -28281,6 +28345,14 @@ packages:
       glob: 10.4.5
     dev: true
 
+  /rimraf@5.0.5:
+    resolution: {integrity: sha512-CqDakW+hMe/Bz202FPEymy68P+G50RfMQK+Qo5YUqc9SPipvbGjCGKd0RSKEelbsfQuw3g5NZDSrlZZAJurH1A==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dependencies:
+      glob: 10.4.5
+    dev: true
+
   /rimraf@6.0.1:
     resolution: {integrity: sha512-9dkvaxAsk/xNXSJzMgFqqMCuFgt2+KsOFek3TMLfo8NCPfWpBmqwyNn5Y+NX56QUYfCtsyhF3ayiboEoUmJk/A==}
     engines: {node: 20 || >=22}
@@ -28905,6 +28977,7 @@ packages:
   /semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
+    dev: false
 
   /semver@7.7.1:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
@@ -32363,7 +32436,7 @@ packages:
       - bluebird
       - supports-color
 
-  /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0):
+  /yeoman-generator@5.10.0:
     resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
     engines: {node: '>=12.10.0'}
     peerDependencies:
@@ -32384,6 +32457,37 @@ packages:
       read-pkg-up: 7.0.1
       run-async: 2.4.1
       semver: 7.6.3
+      shelljs: 0.8.5
+      sort-keys: 4.2.0
+      text-table: 0.2.0
+    transitivePeerDependencies:
+      - bluebird
+      - encoding
+      - mem-fs
+      - supports-color
+    dev: false
+
+  /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0):
+    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      yeoman-environment: ^3.2.0
+    peerDependenciesMeta:
+      yeoman-environment:
+        optional: true
+    dependencies:
+      chalk: 4.1.2
+      dargs: 7.0.0
+      debug: 4.4.3
+      execa: 5.1.1
+      github-username: 6.0.0
+      lodash: 4.17.21
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      minimist: 1.2.8
+      pacote: 15.2.0
+      read-pkg-up: 7.0.1
+      run-async: 2.4.1
+      semver: 7.7.1
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0
