@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.27
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
 ## 0.6.26
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.37
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
 ## 0.3.36
 
 ### Patch Changes

@@ -10,7 +10,7 @@
   "main": "webapp/index.html",
   "dependencies": {},
   "devDependencies": {
-    "@ui5/cli": "^4.0.16",
+    "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
     "@sapui5/ts-types-esm": "~1.94.0",
     "ui5-tooling-transpile": "^3.3.7",

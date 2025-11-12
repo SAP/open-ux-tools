@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.12
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
 ## 5.3.11
 
 ### Patch Changes
