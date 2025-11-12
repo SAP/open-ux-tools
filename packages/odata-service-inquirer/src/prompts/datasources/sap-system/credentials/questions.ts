@@ -134,13 +134,6 @@ export function getCredentialsPrompts<T extends Answers>(
                         severity: Severity.warning
                     };
                 }
-                // Lower priority than the cert error warning - we can only show one at a time, hence this should always be last
-                if (PromptState.odataService.connectedSystem?.backendSystem) {
-                    return {
-                        message: t('texts.passwordStoreWarning'),
-                        severity: Severity.warning
-                    };
-                }
             }
         } as PasswordQuestion<T>
     ];
