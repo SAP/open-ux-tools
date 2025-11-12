@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.2
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+
 ## 0.18.1
 
 ### Patch Changes
