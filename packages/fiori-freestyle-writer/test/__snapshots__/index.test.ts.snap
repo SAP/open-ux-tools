@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -49,7 +49,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -101,7 +101,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -150,7 +150,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -1156,7 +1156,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -1177,7 +1177,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -1229,7 +1229,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -1278,7 +1278,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -3841,7 +3841,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -3862,7 +3862,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -3914,7 +3914,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application
@@ -3963,7 +3963,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: test.me
 type: application

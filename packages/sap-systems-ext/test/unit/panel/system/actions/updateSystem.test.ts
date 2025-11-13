@@ -119,17 +119,20 @@ describe('Test Update System Action', () => {
         expect(systemServiceWriteMock).not.toHaveBeenCalled();
     });
 
-    it('should update an existing system without errors', async () => {
+    it('should update an existing system without errors (should handle trailing slash)', async () => {
         jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
         jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(backendSystem);
         systemServiceWriteMock.mockResolvedValue(backendSystem);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.View };
-
+        const backendUrlWithTrailingSlash = backendSystem.url + '/';
         await expect(
-            updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: backendSystem } })
+            updateSystem(panelContext, {
+                type: 'UPDATE_SYSTEM',
+                payload: { system: { ...backendSystem, url: backendUrlWithTrailingSlash } }
+            })
         ).resolves.toBeUndefined();
 
-        expect(updateBackendSystemMock).toHaveBeenCalledWith(backendSystem);
+        expect(updateBackendSystemMock).toHaveBeenCalledWith({ ...backendSystem, url: backendUrlWithTrailingSlash });
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
@@ -138,7 +141,7 @@ describe('Test Update System Action', () => {
             }
         });
         expect(systemServiceWriteMock).toHaveBeenCalledWith(
-            { ...backendSystem, userDisplayName: 'testuser' },
+            { ...backendSystem, userDisplayName: 'testuser', url: backendUrlWithTrailingSlash },
             { force: true }
         );
     });

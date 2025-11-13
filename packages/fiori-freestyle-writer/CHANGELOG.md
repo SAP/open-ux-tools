@@ -1,5 +1,26 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.1
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+-   Updated dependencies [744fa93]
+    -   @sap-ux/ui5-application-writer@1.6.1
+    -   @sap-ux/ui5-test-writer@0.7.35
+
+## 2.5.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/ui5-application-writer@1.6.0
+    -   @sap-ux/ui5-test-writer@0.7.34
+
 ## 2.4.61
 
 ### Patch Changes

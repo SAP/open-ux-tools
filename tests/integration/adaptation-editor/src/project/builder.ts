@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import type { Manifest } from '@sap-ux/project-access';
 import { YamlDocument } from '@sap-ux/yaml';
 import template from './templates/manifest-fe-v2.json';
-import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2 } from './projects';
+import feV4ManifestTemplate from './templates/manifest-fe-v4.json';
+import type { FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V2, ADP_FIORI_ELEMENTS_V4, FIORI_ELEMENTS_V4 } from './projects';
 import { existsSync } from 'node:fs';
 
 export interface ProjectParameters {
@@ -98,23 +99,100 @@ export function createV2Manifest(userParameters: ProjectParameters, workerId: st
 }
 
 /**
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A manifest object for the project.
+ */
+export function createV4Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
+    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
+    const result = structuredClone(feV4ManifestTemplate) as Manifest;
+    result['sap.app'].id = id + '.' + workerId;
+    result['sap.app'].dataSources!.mainService.uri = mainServiceUri;
+    result['sap.app'].sourceTemplate!.id = 'preview-middleware-tests';
+    result['sap.app'].sourceTemplate!.version = '1.0.0';
+    result['sap.app'].sourceTemplate!.toolsId = id;
+    const listTarget = `${entitySet}List`;
+    const detailTarget = `${entitySet}ObjectPage`;
+    result['sap.ui5']!.routing = {
+        config: {
+            async: true
+        },
+        routes: [
+            {
+                'pattern': ':?query:',
+                'name': listTarget,
+                'target': listTarget
+            },
+            {
+                'pattern': `${entitySet}({key}):?query:`,
+                'name': detailTarget,
+                'target': detailTarget
+            }
+        ],
+        targets: {
+            [listTarget]: {
+                'type': 'Component',
+                id: listTarget,
+                name: 'sap.fe.templates.ListReport',
+                options: {
+                    settings: {
+                        contextPath: `/${entitySet}`,
+                        navigation: {
+                            [entitySet]: {
+                                detail: {
+                                    route: detailTarget
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            [detailTarget]: {
+                type: 'Component',
+                id: detailTarget,
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        contextPath: `/${entitySet}`,
+                        editableHeaderContent: false,
+                        entitySet: entitySet
+                    }
+                }
+            }
+        }
+    };
+
+    return result;
+}
+
+/**
  * Creates a YAML file for the project.
  *
  * @param userParameters - The project parameters provided by the user.
  * @param ui5Version - The UI5 version to be used.
+ * @param templateName - The name of the template file to be used.
  * @param workerId - The unique worker ID for the project.
+ * @param odataVersion - version of odata.
  * @returns A string representation of the YAML file content.
  */
 export async function createYamlFile(
     userParameters: ProjectParameters,
     ui5Version: string,
-    workerId: string
+    templateName: string,
+    workerId: string,
+    odataVersion: 'fe-v4' | 'fe-v2' | 'ui5' = 'fe-v2'
 ): Promise<string> {
     const { id, mainServiceUri } = getProjectParametersWithDefaults(userParameters);
-    const template = await readFile(join(__dirname, 'templates', 'ui5.yaml'), 'utf-8');
+    const template = await readFile(join(__dirname, 'templates', templateName), 'utf-8');
     const document = await YamlDocument.newInstance(template);
 
     document.setIn({ path: 'metadata.name', value: id + '.' + workerId });
+    if (odataVersion === 'fe-v4') {
+        document.setIn({
+            path: 'server.customMiddleware.0.configuration.metadataProcessor.options.odataVersion',
+            value: 'v4'
+        });
+    }
     document.setIn({ path: 'server.customMiddleware.0.configuration.services.urlPath', value: mainServiceUri });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
 
@@ -145,6 +223,24 @@ export function createComponent(userParameters: ProjectParameters, workerId: str
 }
 
 /**
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A string representation of the UI5 component definition.
+ */
+export function createV4Component(userParameters: ProjectParameters, workerId: string): string {
+    const { id } = getProjectParametersWithDefaults(userParameters);
+    return `sap.ui.define(["sap/fe/core/AppComponent"], function (Component) {
+        "use strict";
+        return Component.extend("${id}.${workerId}.Component", {
+            metadata: {
+                manifest: "json"
+            }
+        });
+    }
+);`;
+}
+
+/**
  * Creates a package.json file for the project.
  *
  * @param id - The project ID.
@@ -157,10 +253,66 @@ export function createPackageJson(id: string): string {
     "private": true,
     "devDependencies": {
         "@sap-ux/ui5-middleware-fe-mockserver": "2.1.112",
-        "@ui5/cli": "3"
+        "@ui5/cli": "4"
     }
 }
 `;
+}
+
+/**
+ * @param projectConfig - The project configuration.
+ * @param workerId - The unique worker ID for the project.
+ * @param ui5Version - The UI5 version to be used.
+ * @returns The root path of the generated project.
+ */
+export async function generateFeV4Project(
+    projectConfig: typeof FIORI_ELEMENTS_V4,
+    workerId: string,
+    ui5Version: string
+): Promise<string> {
+    const { id } = getProjectParametersWithDefaults(projectConfig);
+    const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
+    const yamlContent = await createYamlFile(projectConfig, ui5Version, 'ui5.yaml', workerId, 'fe-v4');
+    const manifestContent = JSON.stringify(createV4Manifest(projectConfig, workerId), undefined, 2);
+
+    if (!existsSync(root)) {
+        await mkdir(root, { recursive: true });
+    }
+
+    if (!existsSync(join(root, 'webapp'))) {
+        await mkdir(join(root, 'webapp'), { recursive: true });
+    }
+
+    if (!existsSync(join(root, 'data'))) {
+        await mkdir(join(root, 'data'), { recursive: true });
+    }
+
+    await Promise.all([
+        writeFile(join(root, 'ui5.yaml'), yamlContent),
+        writeFile(join(root, 'package.json'), createPackageJson(id + workerId)),
+        writeFile(join(root, 'webapp', 'manifest.json'), manifestContent),
+        writeFile(join(root, 'webapp', 'Component.js'), createV4Component(projectConfig, workerId)),
+        writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
+        writeFile(
+            join(root, 'data', 'RootEntity.json'),
+            JSON.stringify(
+                [
+                    {
+                        'ID': 1,
+                        'StringProperty': 'Hello',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'JPY',
+                        'TextProperty': 'Description'
+                    }
+                ],
+                undefined,
+                2
+            )
+        )
+    ]);
+    return root;
 }
 
 /**
@@ -178,7 +330,7 @@ export async function generateUi5Project(
 ): Promise<string> {
     const { id } = getProjectParametersWithDefaults(projectConfig);
     const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
-    const yamlContent = await createYamlFile(projectConfig, ui5Version, workerId);
+    const yamlContent = await createYamlFile(projectConfig, ui5Version, 'ui5.yaml', workerId);
     const manifestContent = JSON.stringify(createV2Manifest(projectConfig, workerId), undefined, 2);
 
     if (!existsSync(root)) {
@@ -271,6 +423,7 @@ function getAdpProjectParametersWithDefaults(parameters: AdpProjectParameters): 
  *
  * @param userParameters - The ADP project parameters provided by the user.
  * @param ui5Version - The UI5 version to be used.
+ * @param odataVersion - The OData version to be used.
  * @param backendUrl - The backend URL for the ADP project.
  * @param mainServiceUri - The main service URI for the ADP project.
  * @param livereloadPort - The livereload port for the ADP project.
@@ -279,6 +432,7 @@ function getAdpProjectParametersWithDefaults(parameters: AdpProjectParameters): 
 async function createAdpYamlFile(
     userParameters: AdpProjectParameters,
     ui5Version: string,
+    odataVersion: 'v2' | 'v4',
     backendUrl: string,
     mainServiceUri: string,
     livereloadPort: number
@@ -288,6 +442,10 @@ async function createAdpYamlFile(
     const document = await YamlDocument.newInstance(template);
 
     document.setIn({ path: 'metadata.name', value: id });
+    document.setIn({
+        path: 'server.customMiddleware.0.configuration.metadataProcessor.options.odataVersion',
+        value: odataVersion
+    });
     document.setIn({ path: 'server.customMiddleware.0.configuration.services.urlPath', value: mainServiceUri });
     document.setIn({
         path: 'server.customMiddleware.1.configuration.port',
@@ -332,7 +490,7 @@ export async function createAppDescriptorVariant(
  * @returns The root path of the generated ADP project.
  */
 export async function generateAdpProject(
-    projectConfig: typeof ADP_FIORI_ELEMENTS_V2,
+    projectConfig: typeof ADP_FIORI_ELEMENTS_V2 | typeof ADP_FIORI_ELEMENTS_V4,
     workerId: string,
     ui5Version: string,
     backendUrl: string,
@@ -343,6 +501,7 @@ export async function generateAdpProject(
     const yamlContent = await createAdpYamlFile(
         projectConfig,
         ui5Version,
+        projectConfig.baseApp.kind === 'fe-v4' ? 'v4' : 'v2',
         backendUrl,
         projectConfig.baseApp.mainServiceUri,
         livereloadPort
