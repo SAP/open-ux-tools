@@ -128,7 +128,7 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
     private async createAppDescriptorChangeForV4(templatePath: string) {
         const fragmentName = this.model.getProperty('/newFragmentName');
         const template = `${this.options.appDescriptor?.projectId}.changes.${templatePath}`;
-        let sectionId = this.options.appDescriptor?.anchor;
+        const sectionId = this.options.appDescriptor?.anchor;
         const flexSettings = this.rta.getFlexSettings();
         const modifiedValue = {
             reference: this.options.appDescriptor?.projectId,

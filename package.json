@@ -23,7 +23,6 @@
         "eslint-plugin-prettier": "5.2.3",
         "eslint-plugin-promise": "7.2.1",
         "eslint-plugin-sonarjs": "3.0.2",
-        "typescript-eslint": "8.46.2",
         "globals": "16.0.0",
         "husky": "8.0.3",
         "jest": "30.2.0",
@@ -39,6 +38,7 @@
         "rimraf": "6.0.1",
         "ts-jest": "29.4.5",
         "typescript": "5.9.3",
+        "typescript-eslint": "8.46.2",
         "update-ts-references": "3.6.2",
         "yargs-parser": "21.1.1"
     },

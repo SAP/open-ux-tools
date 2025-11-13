@@ -44,6 +44,7 @@ export type ModuleName = string;
 /**
  * Version with which the documented entity has been introduced the first time, no matter in what state it has been introduced
  */
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 export type Since = LibraryVersion | 'undefined';
 /**
  * references to internal or external sources of information that are related to the documented entity. References can be URLs, absolute or relative JSDoc symbol names. Relative JSDoc symbols usually are meant to be relative to the documented entity

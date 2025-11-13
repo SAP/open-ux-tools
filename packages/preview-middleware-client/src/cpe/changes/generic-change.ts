@@ -205,7 +205,7 @@ export async function getControlIdByChange(
     }
 
     try {
-        let control = JsControlTreeModifier.bySelector(selector, appComponent);
+        const control = JsControlTreeModifier.bySelector(selector, appComponent);
         if (!control) {
             return selector.id;
         }
@@ -329,7 +329,7 @@ function getV4ConfigurationChange(
     }
     const configMapKey = getConfigMapControlIdMap(change.content.page, propertyPathSegments);
     const controlIds = configPropertyControlIdMap?.get(configMapKey) || [];
-    let value = change.content.entityPropertyChange.propertyValue;
+    const value = change.content.entityPropertyChange.propertyValue;
     const properties =
         typeof value === 'object'
             ? [
