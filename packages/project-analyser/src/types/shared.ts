@@ -1,4 +1,10 @@
-import type { AppType, ProjectType } from '@sap-ux/project-access';
+export type ProjectType = 'EDMXBackend' | 'CAPJava' | 'CAPNodejs';
+export type AppType =
+    | 'SAP Fiori elements'
+    | 'SAPUI5 freestyle'
+    | 'SAPUI5 Extension'
+    | 'Fiori Reuse'
+    | 'Fiori Adaptation';
 
 export type AnalysisStatus = 'not-implemented' | 'success' | 'unsupported-template';
 

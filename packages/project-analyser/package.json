@@ -13,6 +13,7 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc --build",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
@@ -32,12 +33,11 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "@sap-ux/project-access": "workspace:*",
         "@sap/ux-specification": "1.136.6",
         "fast-glob": "3.3.3"
     },
     "devDependencies": {
-        "@sap-ux/fiori-annotation-api": "workspace:*"
+        "@ui5/manifest": "1.76.0"
     },
     "engines": {
         "node": ">=20.x"

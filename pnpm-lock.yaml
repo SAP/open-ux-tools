@@ -2286,7 +2286,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.3
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -3286,6 +3286,9 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/project-analyser':
+        specifier: workspace:*
+        version: link:../project-analyser
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -3332,9 +3335,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@sap/ux-specification':
         specifier: 1.136.6
         version: 1.136.6(typescript@5.9.3)
@@ -3342,9 +3342,9 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
     devDependencies:
-      '@sap-ux/fiori-annotation-api':
-        specifier: workspace:*
-        version: link:../fiori-annotation-api
+      '@ui5/manifest':
+        specifier: 1.76.0
+        version: 1.76.0
 
   packages/project-input-validator:
     dependencies:
@@ -9540,6 +9540,10 @@ packages:
     transitivePeerDependencies:
       - debug
       - typescript
+
+  /@sap-ux/fiori-docs-embeddings@0.4.3:
+    resolution: {integrity: sha512-BtiB/VLoEi3EpB6ZzwSRiCB3RQWoTslzsOnOgfy7/LH91FqaZ5OFldfsj9OhzWXMEENQBcF3AnKwFHBuafB5+w==}
+    dev: false
 
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}

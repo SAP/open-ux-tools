@@ -1,4 +1,4 @@
-import type { Manifest } from '@sap-ux/project-access';
+import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '@ui5/manifest/types/manifest';
 
 export interface ManifestDocument {
     readonly path: string;

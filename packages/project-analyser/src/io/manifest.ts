@@ -1,9 +1,10 @@
+import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '@ui5/manifest/types/manifest';
+
 import { join } from 'node:path';
 import { promises as fs } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 import type { AnalyseAppOptions } from '../types';
 import type { ManifestDocument } from '../types/resources';
-import type { Manifest } from '@sap-ux/project-access';
 
 /**
  * Load the manifest.json file for the given Fiori application.

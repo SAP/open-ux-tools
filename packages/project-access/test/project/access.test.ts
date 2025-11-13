@@ -1,4 +1,7 @@
 import { join } from 'node:path';
+import type { AnalysisResult } from '@sap-ux/project-analyser';
+import { analyzeApp } from '@sap-ux/project-analyser';
+import * as ui5Config from '../../src/project/ui5-config';
 import type { Manifest, Package } from '../../src';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
@@ -7,10 +10,17 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'node:fs';
 
+jest.mock('@sap-ux/project-analyser', () => ({
+    analyzeApp: jest.fn()
+}));
+
 describe('Test function createApplicationAccess()', () => {
     const memFs = create(createStorage());
+    const analyzeAppMock = analyzeApp as jest.MockedFunction<typeof analyzeApp>;
     beforeEach(() => {
         jest.restoreAllMocks();
+        analyzeAppMock.mockReset();
+        analyzeAppMock.mockResolvedValue({ status: 'not-implemented' });
     });
 
     const sampleRoot = join(__dirname, '../test-data/project/info');
@@ -363,6 +373,44 @@ describe('Test function createApplicationAccess()', () => {
         const spec = await appAccess.getSpecification();
         // Result check
         expect(spec).toEqual({ test: 'specification' });
+    });
+
+    test('getAppAnalysis delegates to analyser with resolved webapp path', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot);
+        const expected: AnalysisResult = { status: 'success' };
+        analyzeAppMock.mockResolvedValueOnce(expected);
+
+        const result = await appAccess.getAppAnalysis();
+
+        expect(result).toBe(expected);
+        expect(analyzeAppMock).toHaveBeenCalledWith({ appPath: join(appRoot, 'webapp') }, undefined);
+    });
+
+    test('getAppAnalysis respects custom webapp path from ui5.yaml', async () => {
+        const projectRoot = join(__dirname, '../test-data/project/webapp-path/custom-webapp-path');
+        const projectAccess = await createProjectAccess(projectRoot);
+        const appAccess = projectAccess.getApplication(projectAccess.getApplicationIds()[0]);
+        const expected: AnalysisResult = { status: 'success' };
+        analyzeAppMock.mockResolvedValueOnce(expected);
+
+        const result = await appAccess.getAppAnalysis();
+
+        expect(result).toBe(expected);
+        expect(analyzeAppMock).toHaveBeenCalledWith({ appPath: join(projectRoot, 'src/webapp') }, undefined);
+    });
+
+    test('getAppAnalysis falls back to default path when ui5.yaml cannot be parsed', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot);
+        const expected: AnalysisResult = { status: 'success' };
+        analyzeAppMock.mockResolvedValueOnce(expected);
+        jest.spyOn(ui5Config, 'getWebappPath').mockRejectedValueOnce(new Error('invalid yaml'));
+
+        const result = await appAccess.getAppAnalysis();
+
+        expect(result).toBe(expected);
+        expect(analyzeAppMock).toHaveBeenCalledWith({ appPath: join(appRoot, 'webapp') }, undefined);
     });
 
     test('Error handling for non existing app', async () => {

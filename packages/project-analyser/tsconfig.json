@@ -10,13 +10,7 @@
   },
   "references": [
     {
-      "path": "../fiori-annotation-api"
-    },
-    {
       "path": "../logger"
-    },
-    {
-      "path": "../project-access"
     }
   ]
 }
