@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.5
+
+### Patch Changes
+
+-   caff0ca: fix for saving systems
+
 ## 2.11.4
 
 ### Patch Changes

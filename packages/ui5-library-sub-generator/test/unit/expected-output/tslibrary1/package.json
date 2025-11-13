@@ -2,7 +2,7 @@
   "name": "tslibrary1",
   "version": "1.0.0",
   "devDependencies": {
-    "@ui5/cli": "^3.9.1",
+    "@ui5/cli": "^4.0.33",
     "karma": "^6.3.17",
     "karma-chrome-launcher": "^3.1.1",
     "karma-cli": "^2.0.0",
