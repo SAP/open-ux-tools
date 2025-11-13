@@ -1,8 +1,16 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import { coerce, lt } from 'semver';
 import { join, parse, relative } from 'node:path';
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import format from 'xml-formatter';
+import * as xpath from 'xpath';
+import type { Editor } from 'mem-fs-editor';
+
+import { getMinimumUI5Version } from '@sap-ux/project-access';
+
+import type { Manifest } from '../common/types';
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -15,22 +23,23 @@ import {
     type CustomFilterField
 } from './types';
 import type { InternalCustomFilter } from '../filter/types';
+import type {
+    CustomElement,
+    CustomFragment,
+    InternalCustomElement,
+    EventHandler,
+    FragmentContentData
+} from '../common/types';
 
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
-import * as xpath from 'xpath';
-import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { coerce, lt } from 'semver';
-import type { Manifest } from '../common/types';
-import { getMinimumUI5Version } from '@sap-ux/project-access';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -294,12 +303,12 @@ function processBuildingBlock<T extends BuildingBlock>(
  * Creates an InternalCustomFilter configuration from CustomFilterField building block data.
  *
  * @param {CustomFilterField} buildingBlockData - The building block data
- * @param {object} embededFragment - The embedded fragment data with defaults applied
+ * @param {InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData} embededFragment - The embedded fragment data with defaults applied
  * @returns {InternalCustomFilter} The internal custom filter configuration
  */
 function createCustomFilterConfig(
     buildingBlockData: CustomFilterField,
-    embededFragment: CustomFilterField['embededFragment'] & { ns: string; name: string; path: string }
+    embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData
 ): InternalCustomFilter {
     return {
         id: buildingBlockData.id!,
