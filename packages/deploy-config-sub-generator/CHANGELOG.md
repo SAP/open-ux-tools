@@ -1,5 +1,21 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.2
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+-   Updated dependencies [744fa93]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.81
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [caff0ca]
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
 ## 0.5.0
 
 ### Minor Changes
