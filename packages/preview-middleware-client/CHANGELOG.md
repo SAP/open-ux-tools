@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.0
+
+### Minor Changes
+
+-   a0a1570: feat(ADP)(OData): Display in the Info center the OData service connectivity status at startup of the Visual Editor.
+
+## 0.17.4
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
 ## 0.17.3
 
 ### Patch Changes

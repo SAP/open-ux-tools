@@ -1,5 +1,17 @@
 # Change Log
 
+## 5.3.12
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
+## 5.3.11
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 5.3.10
 
 ### Patch Changes

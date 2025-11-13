@@ -15,6 +15,6 @@
     },
     "devDependencies": {
         "ui5-task-zipper": "^3.4.x",
-        "@ui5/cli": "^4.0.16"
+        "@ui5/cli": "^4.0.33"
     }
 }

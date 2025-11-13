@@ -1,5 +1,33 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.67
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
+## 0.4.66
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.2
+
+## 0.4.65
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/project-access@1.32.8
+
+## 0.4.64
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
 ## 0.4.63
 
 ### Patch Changes

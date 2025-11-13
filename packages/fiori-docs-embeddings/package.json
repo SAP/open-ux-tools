@@ -1,11 +1,13 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.4.1",
+    "version": "0.4.3",
     "description": "SAP Fiori documentation indexing",
     "private": false,
     "scripts": {
         "build-compile": "tsc --noEmit",
-        "build": "npm-run-all -l -s build-compile update-embeddings-script",
+        "copy-create-readme": "node -e \"require('fs').copyFileSync('node_modules/@sap-ux/create/README.md', 'data_local/create-README.md')\"",
+        "fetch-ux-ui5-tooling-readme": "tsx src/scripts/load-readme-from-npm.ts @sap/ux-ui5-tooling",
+        "build": "npm-run-all -l -p build-compile copy-create-readme fetch-ux-ui5-tooling-readme update-embeddings-script",
         "update-docs-script": "tsx src/scripts/build-docs.ts",
         "update-local-docs": "tsx src/scripts/build-local-docs.ts",
         "update-docs": "npm-run-all -l -s clean-data update-docs-script",
@@ -22,9 +24,11 @@
     },
     "dependencies": {},
     "devDependencies": {
+        "@npm/types": "2.1.0",
         "@types/node": "20.0.0",
         "@lancedb/lancedb": "0.22.0",
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/create": "workspace:*",
         "@xenova/transformers": "2.17.2",
         "npm-run-all2": "8.0.4",
         "node-fetch": "^3.3.2",

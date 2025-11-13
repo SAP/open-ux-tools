@@ -1,11 +1,12 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import {
     ADD_PAGE_FUNCTIONALITY,
     addPageHandlers,
     DELETE_PAGE_FUNCTIONALITY,
     deletePageHandlers
 } from '../../../../../src/tools/functionalities/page';
-import { copyDirectory, npmInstall, removeDirectory } from '../../../utils';
+import { copyDirectory } from '../../../utils';
+import { npmInstall, removeDirectory } from '../../../../utils';
 import { writeFileSync, readFileSync } from 'node:fs';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import { getManifest } from '../../../../../src/page-editor-api/project';
@@ -22,8 +23,8 @@ jest.mock('@sap-ux/project-access', () => {
     };
 });
 
-const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'ai-created-cap');
-const copyProjectRoot = `${originProjectRoot}-add-page-copy`;
+const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'original', 'node-ai-created');
+const copyProjectRoot = join(originProjectRoot, '..', '..', 'copy', `node-ai-created-add-page`);
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
 let importProjectMock = jest.fn();

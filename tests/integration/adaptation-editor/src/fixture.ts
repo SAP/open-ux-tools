@@ -17,6 +17,7 @@ import {
     type ProjectConfig
 } from './project';
 import { satisfies } from 'semver';
+import { generateFeV4Project } from './project/builder';
 
 export type TestOptions = {
     previewFrame: FrameLocator;
@@ -120,7 +121,19 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
 
             if (projectConfig.type === 'generated') {
                 if (projectConfig.kind === 'adp') {
-                    await generateUi5Project(projectConfig.baseApp, workerInfo.parallelIndex.toString(), ui5Version);
+                    if (projectConfig.baseApp.kind === 'fe-v4') {
+                        await generateFeV4Project(
+                            projectConfig.baseApp,
+                            workerInfo.parallelIndex.toString(),
+                            ui5Version
+                        );
+                    } else {
+                        await generateUi5Project(
+                            projectConfig.baseApp,
+                            workerInfo.parallelIndex.toString(),
+                            ui5Version
+                        );
+                    }
                     const root = await generateAdpProject(
                         projectConfig,
                         workerInfo.parallelIndex.toString(),
@@ -186,7 +199,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
             page.getByRole('button', { name: 'UI Adaptation' }),
             'Check `UIAdaptation` mode in the toolbar is enabled'
         ).toBeEnabled({
-            timeout: 15_000
+            timeout: 30_000
         });
         // Each test will get a "page" that already has the person name.
         await use(page);
