@@ -10,7 +10,6 @@ import type { Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 
-import type { Manifest } from '../common/types';
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -24,6 +23,7 @@ import {
 } from './types';
 import type { InternalCustomFilter } from '../filter/types';
 import type {
+    Manifest,
     CustomElement,
     CustomFragment,
     InternalCustomElement,
