@@ -3,7 +3,10 @@
     xmlns:core='sap.ui.core'
     xmlns='sap.m'
 >
-    <HBox id="<%- ids.hBox %>">
-        <!--  add your xml here -->
+    <HBox id="<%- ids.hBox %>"><% if (targetAggregation && controlType && viewName) { %>
+        <!-- viewName: <%= viewName %> -->
+        <!-- controlType: <%= controlType %> -->
+        <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
+        <!-- add your xml here -->
     </HBox>
 </core:FragmentDefinition>

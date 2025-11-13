@@ -6,7 +6,7 @@ import { gte, lte } from 'semver';
 interface Changes {
     annotations: Record<string, string>;
     coding: Record<string, string | RegExp>;
-    fragments: Record<string, string>;
+    fragments: Record<string, string | RegExp>;
     changes: object[];
 }
 
@@ -883,7 +883,11 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
         if (expected[prop]) {
             const matchers: Record<string, any> = {};
             for (const [filename, content] of Object.entries(expected[prop])) {
-                matchers[filename] = expect.stringMatching(new RegExp(content));
+                if (content instanceof RegExp) {
+                    matchers[filename] = expect.stringMatching(content);
+                } else {
+                    matchers[filename] = expect.stringMatching(new RegExp(content));
+                }
             }
             matcher[prop] = expect.objectContaining(matchers);
         }
@@ -911,7 +915,7 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
  * @returns sanitized string
  */
 function sanitizeIds(input: string): string {
-    return input
+    return String(input)
         .replace(/\[a-z0-9\]\+/g, '<UNIQUE_ID>')
         .replace(/\[0-9\]\+/g, '<UNIQUE_ID>')
         .replace(/\\\[a-z0-9\\\]\+/g, '<UNIQUE_ID>')

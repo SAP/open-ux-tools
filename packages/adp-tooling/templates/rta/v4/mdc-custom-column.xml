@@ -1,4 +1,7 @@
-<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table"><% if (targetAggregation && controlType && viewName) { %>
+    <!-- viewName: <%= viewName %> -->
+    <!-- controlType: <%= controlType %> -->
+    <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
     <table:Column
         id="<%- ids.column %>"
         width="10%"
