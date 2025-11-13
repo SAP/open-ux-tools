@@ -16,8 +16,11 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions
-                restore-keys: ui5-versions-
+                key: ui5-versions-
+                restore-keys: |
+                    ui5-versions-ubuntu-latest-
+                    ui5-versions-windows-2025-
+                    ui5-versions-
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
@@ -29,8 +32,9 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
+                os: [ubuntu-latest, windows-2025]
                 ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-        runs-on: [ubuntu-latest, windows-2025]
+        runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
         steps:
@@ -47,10 +51,10 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path: ~/.pnpm-store
-                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  path: ${{ matrix.os == 'windows-2025' && '~\AppData\Local\pnpm\store' || '~/.pnpm-store' }}
+                  key: ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
+                      ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
@@ -59,15 +63,12 @@ jobs:
               run: pnpm install
             - name: Run build
               run: pnpm run build
-              env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@v4
               with:
-                path: |
-                    ~/.cache/ms-playwright
-                key: playwright-browsers-os-ubuntu-latest-node-version-20.x
+                path: ${{ matrix.os == 'windows-2025' && '~\AppData\Local\ms-playwright' || '~/.cache/ms-playwright' }}
+                key: playwright-browsers-os-${{ matrix.os }}-node-version-20.x
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
@@ -76,8 +77,10 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-
-                restore-keys: ui5-versions
+                key: ui5-versions-${{ matrix.os }}-
+                restore-keys: |
+                    ui5-versions-${{ matrix.os }}-
+                    ui5-versions-
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
@@ -86,8 +89,7 @@ jobs:
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
-                
-                name: blob-report-${{ matrix.ui5-version }}
+                name: blob-report-${{ matrix.os }}-${{ matrix.ui5-version }}
                 path: tests/integration/adaptation-editor/blob-report
                 retention-days: 1
     merge-reports:

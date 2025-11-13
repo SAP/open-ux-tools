@@ -4,7 +4,11 @@ on:
     workflow_dispatch:
 jobs:
     ui5-versions:
-        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-2025]
+        runs-on: ${{ matrix.os }}
         timeout-minutes: 10
         outputs:
             ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
@@ -22,10 +26,10 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path: ~/.pnpm-store
-                  key: ubuntu-latest-build-cache-pnpm-modules-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  path: ${{ matrix.os == 'windows-2025' && '~\AppData\Local\pnpm\store' || '~/.pnpm-store' }}
+                  key: ${{ matrix.os }}-build-cache-pnpm-modules-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-$cache-pnpm-modules-20.x-
+                      ${{ matrix.os }}-build-cache-pnpm-modules-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
@@ -39,7 +43,10 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions
+                  key: ui5-versions-${{ matrix.os }}-
+                  restore-keys: |
+                      ui5-versions-${{ matrix.os }}-
+                      ui5-versions-
             - name: List previously cached UI5 maintenance versions
               id: previous-ui5-versions
               run: |
@@ -48,14 +55,21 @@ jobs:
                 else
                   echo "No previous versions found."
                 fi
+              shell: bash
             - name: Load UI5 maintenance versions
               id: current-ui5-versions
               run: |
                   cd tests/integration/adaptation-editor && pnpm exec node version.js
                   cat versions.json
                   echo "versions=$(cat versions.json)" >> $GITHUB_OUTPUT
+              shell: bash
+            - name: Output UI5 versions
+              id: output-ui5-versions  
+              run: |
+                  echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
+              shell: bash
             - name: Cache ui5-versions modules
               uses: actions/cache/save@v4
               with:
                   path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions-${{fromJson(steps.current-ui5-versions.outputs.versions)[0]}}
+                  key: ui5-versions-${{ matrix.os }}-${{fromJson(steps.current-ui5-versions.outputs.versions)[0]}}
