@@ -311,10 +311,10 @@ function createCustomFilterConfig(
     embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData
 ): InternalCustomFilter {
     return {
-        id: buildingBlockData.id!,
+        id: buildingBlockData.id,
         controlID: buildingBlockData.filterFieldKey!,
-        label: buildingBlockData.label!,
-        property: buildingBlockData.property!,
+        label: buildingBlockData.label,
+        property: buildingBlockData.property,
         required: buildingBlockData.required ?? false,
         position: buildingBlockData.position!,
         eventHandler: buildingBlockData.embededFragment?.eventHandler,
