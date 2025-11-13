@@ -368,8 +368,8 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
                         `<!-- Use stable and unique IDs!-->\\s*` +
                             `<core:FragmentDefinition[\\s\\S]*?>\\s*` +
                             `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
-                            `<!-- controlType: sap\\.uxap\\.ObjectPageLayout -->\\s*` +
-                            `<!-- targetAggregation: headerContent -->\\s*` +
+                            `<!-- controlType: (sap.uxap.ObjectPageLayout|sap.m.FlexBox) -->\\s*` +
+                            `<!-- targetAggregation: (headerContent|items) -->\\s*` +
                             `<VBox id="vBox-[a-z0-9]+"\\s*>\\s*` +
                             `<Label id="label-[a-z0-9]+" text="New Field"><\\/Label>\\s*` +
                             `<\\/VBox>\\s*` +
