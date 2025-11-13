@@ -1,5 +1,24 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.37
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
+## 0.3.36
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-access@1.32.8
+    -   @sap-ux/nodejs-utils@0.2.8
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/yaml@0.17.2
+
 ## 0.3.35
 
 ### Patch Changes

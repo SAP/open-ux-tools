@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.6
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 0.2.5
 
 ### Patch Changes

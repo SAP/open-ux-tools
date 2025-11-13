@@ -1,5 +1,52 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+## 0.16.76
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
+## 0.16.75
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.2
+
+## 0.16.74
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+-   Updated dependencies [cfe9c13]
+    -   @sap-ux/project-input-validator@0.6.30
+    -   @sap-ux/inquirer-common@0.9.1
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/ui5-config@0.29.9
+    -   @sap-ux/btp-utils@1.1.5
+    -   @sap-ux/logger@0.7.1
+    -   @sap-ux/axios-extension@1.24.2
+
+## 0.16.73
+
+### Patch Changes
+
+-   Updated dependencies [4ddcff3]
+    -   @sap-ux/inquirer-common@0.9.0
+
+## 0.16.72
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.27
+-   @sap-ux/ui5-config@0.29.8
+-   @sap-ux/inquirer-common@0.8.10
+
 ## 0.16.71
 
 ### Patch Changes

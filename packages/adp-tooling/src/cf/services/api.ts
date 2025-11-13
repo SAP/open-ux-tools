@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
 import type { AxiosRequestConfig } from 'axios';
-import CFToolsCli = require('@sap/cf-tools/out/src/cli');
+import { Cli } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -17,8 +17,8 @@ import type {
     GetServiceInstanceParams,
     ServiceInstance,
     CfServiceInstance,
-    CfCredentials,
-    MtaYaml
+    MtaYaml,
+    ServiceInfo
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -41,18 +41,18 @@ const PARAM_MAP: Map<string, string> = new Map([
 ]);
 
 /**
- * Get the business service keys.
+ * Get the business service info.
  *
  * @param {string} businessService - The business service.
  * @param {CfConfig} config - The CF config.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<ServiceKeys | null>} The service keys.
+ * @returns {Promise<ServiceInfo | null>} The service info.
  */
-export async function getBusinessServiceKeys(
+export async function getBusinessServiceInfo(
     businessService: string,
     config: CfConfig,
     logger: ToolsLogger
-): Promise<ServiceKeys | null> {
+): Promise<ServiceInfo | null> {
     const serviceKeys = await getServiceInstanceKeys(
         {
             spaceGuids: [config.space.GUID],
@@ -179,7 +179,7 @@ export async function createServiceInstance(
             commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
-        await CFToolsCli.Cli.execute(commandParameters);
+        await Cli.execute(commandParameters);
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
         logger?.error(e);
@@ -256,19 +256,19 @@ export async function createServices(
  *
  * @param {GetServiceInstanceParams} serviceInstanceQuery - The service instance query.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<ServiceKeys | null>} The service instance keys.
+ * @returns {Promise<ServiceInfo | null>} The service instance keys.
  */
 export async function getServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
     logger: ToolsLogger
-): Promise<ServiceKeys | null> {
+): Promise<ServiceInfo | null> {
     try {
         const serviceInstances = await getServiceInstance(serviceInstanceQuery);
         if (serviceInstances?.length > 0) {
             // We can use any instance in the list to connect to HTML5 Repo
             logger?.log(`Use '${serviceInstances[0].name}' HTML5 Repo instance`);
             return {
-                credentials: await getOrCreateServiceKeys(serviceInstances[0], logger),
+                serviceKeys: await getOrCreateServiceKeys(serviceInstances[0], logger),
                 serviceInstance: serviceInstances[0]
             };
         }
@@ -313,12 +313,12 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  *
  * @param {ServiceInstance} serviceInstance - The service instance.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<ServiceKeys | null>} The service instance keys.
+ * @returns {Promise<ServiceKeys[]>} The service instance keys.
  */
 export async function getOrCreateServiceKeys(
     serviceInstance: ServiceInstance,
     logger: ToolsLogger
-): Promise<CfCredentials[]> {
+): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {
         const credentials = await getServiceKeys(serviceInstance.guid);

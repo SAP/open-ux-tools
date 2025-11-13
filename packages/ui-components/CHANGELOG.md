@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.26.15
+
+### Patch Changes
+
+-   afb4be5: Update building block icon svg
+
+## 1.26.14
+
+### Patch Changes
+
+-   cfe9c13: Add deep link to package and changelog to README.md
+
 ## 1.26.13
 
 ### Patch Changes
