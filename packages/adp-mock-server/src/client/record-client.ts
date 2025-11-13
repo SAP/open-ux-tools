@@ -13,6 +13,8 @@ export async function recordRequestsAndResponses(): Promise<void> {
     logger.info('Record responses.');
     const client = await getRecordClient();
     let requestAndResponseList = await retrieveRecordedRequestsAndResponses(client);
+    // TODO a.vasilev reponse.body = true does not work, mock server validation schema error is thrown when the server is started,
+    // need to be "true" what about false, maybe we can set the body to undefined for false values?!
     requestAndResponseList = disableRequestsSecureFlag(requestAndResponseList);
     await fs.writeFile(RESPONSES_JSON_PATH, JSON.stringify(requestAndResponseList, null, 2));
 }
@@ -24,7 +26,7 @@ async function retrieveRecordedRequestsAndResponses(client: MockServerClient): P
 function disableRequestsSecureFlag(requestAndResponseList: HttpRequestAndHttpResponse[]): HttpRequestAndHttpResponse[] {
     return requestAndResponseList.map(({ httpRequest, httpResponse }) => ({
         httpRequest: {
-            // TODO a.vasilev: Some times the settings request does not match
+            // TODO a.vasilev: Sometimes the settings request does not match
             // the recordings due to a changed cookie. How is this possible, sb
             // is changing the SAP_SESSIONID cookie in replay mode, how is that even
             // possible???
