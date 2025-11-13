@@ -21,6 +21,7 @@ import { EventName } from '../src/telemetryEvents';
 import * as sysAccess from '@sap-ux/system-access';
 import { t, initI18n } from '../src/utils/i18n';
 import * as appWizardCache from '../src/utils/appWizardCache';
+import { prompts } from 'inquirer';
 
 const originalCwd = process.cwd();
 
@@ -162,7 +163,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
             action: 'testAction',
             title: 'testTitle',
             subTitle: 'testSubTitle',
-            additionalParameters: '{"param1":"test1","param2":"test2"}'
+            additionalParameters: '{"param1":"test1","param2":"test2"}',
+            confirmReplace: true
         };
     });
 
@@ -224,15 +226,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.baseAppSo-baseAppAction',
-                semanticObject: 'baseAppSo',
-                action: 'baseAppAction',
-                title: 'testTitle',
-                subTitle: 'testSubTitle',
-                icon: 'sap-icon://baseAppIcon',
-                additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
-            }),
+            expect.arrayContaining([
+                {
+                    inboundId: 'customer.display-bank',
+                    semanticObject: 'baseAppSo',
+                    action: 'baseAppAction',
+                    title: 'baseAppTitle',
+                    subTitle: 'baseAppSubTitle',
+                    icon: 'sap-icon://baseAppIcon',
+                    additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
+                }
+            ]),
             expect.anything()
         );
     });
@@ -285,15 +289,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.testSo_New-testAct_New',
-                semanticObject: 'testSo_New',
-                action: 'testAct_New',
-                title: 'testTitle',
-                subTitle: 'testSubTitle',
-                icon: 'sap-icon://baseAppIcon',
-                additionalParameters: '{"param1":"test1","param2":"test2"}'
-            }),
+            [
+                expect.objectContaining({
+                    inboundId: 'customer.testSo_New-testAct_New',
+                    semanticObject: 'testSo_New',
+                    action: 'testAct_New',
+                    title: 'testTitle',
+                    subTitle: 'testSubTitle',
+                    icon: 'sap-icon://baseAppIcon',
+                    additionalParameters: '{"param1":"test1","param2":"test2"}'
+                })
+            ],
             expect.anything()
         );
     });
@@ -350,15 +356,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.testSo_New-testAct_New',
-                semanticObject: 'testSo_New',
-                action: 'testAct_New',
-                title: 'testTitle_New',
-                subTitle: 'testSubTitle_New',
-                icon: 'sap-icon://Icon_New',
-                additionalParameters: '{"param1":"test1","param2":"test2"}'
-            }),
+            [
+                expect.objectContaining({
+                    inboundId: 'customer.testSo_New-testAct_New',
+                    semanticObject: 'testSo_New',
+                    action: 'testAct_New',
+                    title: 'testTitle_New',
+                    subTitle: 'testSubTitle_New',
+                    icon: 'sap-icon://Icon_New',
+                    additionalParameters: '{"param1":"test1","param2":"test2"}'
+                })
+            ],
             expect.anything()
         );
     });
@@ -415,6 +423,19 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('should generate FLP configuration successfully - use provider from wizard cache', async () => {
+        const mockPrompts = {
+            items: [
+                {
+                    name: 'Tile settings',
+                    description: 'Configure the tile settings for the application'
+                },
+                {
+                    name: 'SAP Fiori Launchpad Configuration',
+                    description: ''
+                }
+            ],
+            splice: jest.fn()
+        };
         const testPath = join(testOutputDir, 'test_project1');
         fs.mkdirSync(testPath, { recursive: true });
         fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
@@ -453,7 +474,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 loggerMock,
                 launchAsSubGen: true,
                 inbounds: inbounds,
-                layer: adpTooling.FlexLayer.CUSTOMER_BASE
+                layer: adpTooling.FlexLayer.CUSTOMER_BASE,
+                prompts: mockPrompts
             })
             .withPrompts(answers);
         await expect(runContext.run()).resolves.not.toThrow();
@@ -468,15 +490,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(createAbapServiceProviderSpy).not.toHaveBeenCalled();
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.baseAppSo-baseAppAction',
-                semanticObject: 'baseAppSo',
-                action: 'baseAppAction',
-                title: 'testTitle',
-                subTitle: 'testSubTitle',
-                icon: 'sap-icon://baseAppIcon',
-                additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
-            }),
+            [
+                expect.objectContaining({
+                    inboundId: 'customer.display-bank',
+                    semanticObject: 'baseAppSo',
+                    action: 'baseAppAction',
+                    title: 'baseAppTitle',
+                    subTitle: 'baseAppSubTitle',
+                    icon: 'sap-icon://baseAppIcon',
+                    additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
+                })
+            ],
             expect.anything()
         );
     });

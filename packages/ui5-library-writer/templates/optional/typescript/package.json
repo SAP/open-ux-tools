@@ -5,7 +5,7 @@
       "<%= tsTypes %>": "<%= tsTypesVersion %>",
       "eslint": "^9.38.0",
       "typescript-eslint": "^8.27.0",
-      "@ui5/cli": "^4.0.0",
+      "@ui5/cli": "^4.0.33",
       "@ui5/ts-interface-generator": "^0.8.1",
       "karma": "^6.3.17",
       "karma-chrome-launcher": "^3.1.1",

@@ -1,6 +1,6 @@
 import { writeFile, mkdir } from 'fs/promises';
-import { join, basename } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { join, basename, sep } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 import type {
     FullConfig,
     FullResult,
@@ -68,7 +68,7 @@ export default class ManualTestCaseReporter implements Reporter {
         const allTests = suite.allTests();
         allTests.forEach((test) => {
             if (test.location.file) {
-                const filename = basename(test.location.file);
+                const filename = test.location.file.split('scenarios').pop() ?? '';
                 const fileNameWithoutExt = filename.replace(/\.spec\.ts$/, '');
 
                 // Initialize counters if not already set
@@ -91,6 +91,8 @@ export default class ManualTestCaseReporter implements Reporter {
         }
         const skipPatterns = [
             /^Before Hooks$/,
+            /^beforeEach hook$/,
+            /^afterEach hook$/,
             /^Close context$/,
             /^Launch browser/,
             /^After Hooks$/,
@@ -102,39 +104,52 @@ export default class ManualTestCaseReporter implements Reporter {
             /^browserContext\./,
             /^Expect \"toBeVisible\"$/,
             /^Evaluate$/,
+            /^Expect \"toMatchObject\"$/,
+            /^Evaluate$/,
             /^Expect \"toBe\"$/,
             /^Expect \"toEqual\"$/,
             /^Expect \"toContain\"$/,
             /^Expect \"toBeAttached\"$/,
-            /^Expect\.poll\.toEqual$/,
             /^Expect \"toBeEnabled\"$/,
+            /^Expect \"toHaveAttribute\"$/,
+            /^Expect \"toContain\"$/,
+            /^Expect "toBeInViewport"$/,
             /^Expect \"toBeDisabled\"$/,
             /^Expect \"toHaveAttribute\"$/,
             /^Expect \"poll toEqual\"$/,
+            /^Expect \"toHaveAttribute\"$/,
+            /^Expect \"poll/,
             /^locator\.textContent/,
             /^locator\.count/,
             /^Click on in Application Preview$/,
             /^Query count getByTestId\(\'saved-changes-stack\'\)/,
             /^Click locator\(/,
             /^Query count locator/,
+            /getByTestId\(/,
+            /^Click locator\(/,
+            /^Query count locator/,
+            /^Query selector all locator/,
             /^Verifying Changes.../,
             /^page\.goto\(/,
             /^Create context$/,
             /^Create page$/,
+            /^Reload$/,
+            /getByPlaceholder\(/,
+            /^Set viewport size$/,
+            /^Wait for selector/,
+            /Expect \"toStrictEqual\"/,
             /^Navigate to "\/adaptation-editor\.html\?fiori-tools-rta-mode=true"$/,
-            /locator\('iframe\[title="Application Preview"\]'\)/,
-            /^Wait for selector getByText/
+            /locator\('iframe\[title="Application Preview"\]'\)/
         ];
 
         const shouldSkip = skipPatterns.some((pattern) => pattern.test(step.title));
 
         if (!shouldSkip) {
             this.manualTestCases[test.title].steps ??= [];
-            const parsedStep = parseActionStep(step.title);
             const lastStep = this.manualTestCases[test.title].steps[this.manualTestCases[test.title].steps.length - 1];
-            const isDuplicate = parsedStep === lastStep?.name;
+            const isDuplicate = lastStep && step.title === lastStep.name;
             if (!isDuplicate) {
-                this.manualTestCases[test.title].steps.push({ name: parsedStep });
+                this.manualTestCases[test.title].steps.push({ name: step.title });
             }
         }
     }
@@ -163,7 +178,7 @@ export default class ManualTestCaseReporter implements Reporter {
             return;
         }
         if (test.location.file) {
-            const filename = basename(test.location.file);
+            const filename = test.location.file.split('scenarios').pop() ?? '';
             this.manualTestCases[test.title].filePath = filename;
             const fileNameWithoutExt = filename.replace(/\.spec\.ts$/, '');
             this.fileCompletedTests[fileNameWithoutExt] = (this.fileCompletedTests[fileNameWithoutExt] || 0) + 1;
@@ -208,26 +223,29 @@ export default class ManualTestCaseReporter implements Reporter {
     /**
      * Generates documentation for tests from a specific file.
      *
-     * @param fileBaseName Base name of the file to generate documentation for
+     * @param relativePath of the file to generate documentation for
      */
-    private async generateFileDocumentation(fileBaseName: string): Promise<void> {
+    private async generateFileDocumentation(relativePath: string): Promise<void> {
         try {
             // Find all test cases belonging to the specified file (match with or without .spec.ts extension)
             const testsFromFile = Object.entries(this.manualTestCases)
                 .filter(
                     ([_, testCase]) =>
-                        testCase.filePath === fileBaseName || testCase.filePath === `${fileBaseName}.spec.ts`
+                        testCase.filePath === relativePath || testCase.filePath === `${relativePath}.spec.ts`
                 )
                 .map(([_, testCase]) => testCase);
 
             if (testsFromFile.length === 0) {
-                console.log(`No tests found for ${fileBaseName}, skipping documentation generation`);
+                console.log(`No tests found for ${relativePath}, skipping documentation generation`);
                 return;
             }
 
-            console.log(`Generating documentation for ${testsFromFile.length} tests from ${fileBaseName}`);
+            console.log(`Generating documentation for ${testsFromFile.length} tests from ${relativePath}`);
+            const segments = relativePath.split(sep);
+            const scenarioFolder = segments[1] ?? '';
+            const fileBaseName = basename(relativePath).replace(/\.spec\.ts$/, '');
 
-            const outputDir = join(process.cwd(), 'manual_test_description_generated');
+            const outputDir = join(process.cwd(), 'manual_test_description_generated', scenarioFolder);
             if (!existsSync(outputDir)) {
                 await mkdir(outputDir, { recursive: true });
             }
@@ -275,7 +293,7 @@ export default class ManualTestCaseReporter implements Reporter {
             await writeFile(outputFile, content);
             console.log(`Documentation written to ${outputFile}`);
         } catch (error) {
-            console.error(`Error generating documentation for ${fileBaseName}:`, error);
+            console.error(`Error generating documentation for ${relativePath}:`, error);
         }
     }
 
@@ -336,116 +354,4 @@ export default class ManualTestCaseReporter implements Reporter {
             return null;
         }
     }
-}
-
-/**
- * Parses a Playwright step title into a human-readable action description.
- *
- * @param stepTitle The title of the step to parse.
- * @returns A human-readable string describing the action.
- */
-function parseActionStep(stepTitle: string): string {
-    // Action mapping - common Playwright methods to human verbs with optional prefix and suffix
-    const actionMap: Record<string, { prefix: string; suffix?: string }> = {
-        'click': { prefix: 'Click on' },
-        'hover': { prefix: 'Hover over' },
-        'isDisabled': { prefix: 'Check if', suffix: 'is disabled' }
-    };
-
-    // Element type mapping - detect element types from selectors/roles
-    const elementMap: Record<string, string> = {
-        'button': 'button'
-    };
-
-    // Try to find action verb from the main step title
-    let actionInfo: { prefix: string; suffix?: string } | null = null;
-    for (const [actionKey, actionVerb] of Object.entries(actionMap)) {
-        if (stepTitle.includes(`.${actionKey}`) || stepTitle.startsWith(actionKey)) {
-            actionInfo = actionVerb;
-            break;
-        }
-    }
-
-    let element = '';
-    const getByMethodMap: Record<string, string> = {
-        'getByRole': 'role-based'
-    };
-
-    for (const [method, elementType] of Object.entries(getByMethodMap)) {
-        const methodMatch = stepTitle.match(new RegExp(`${method}\\(`));
-        if (methodMatch) {
-            if (method === 'getByRole') {
-                // Special handling for getByRole - extract the role type
-                const roleMatch = stepTitle.match(/getByRole\('(\w+)'/);
-                if (roleMatch) {
-                    const roleType = roleMatch[1];
-                    element = elementMap[roleType] || roleType;
-                }
-            } else {
-                element = elementType;
-            }
-            break;
-        }
-    }
-
-    // Try to extract element name using a map of patterns
-    let name = '';
-    const nameExtractionPatterns: Record<string, RegExp> = {
-        'getByRole': /getByRole\('\w+',\s*{\s*name:\s*'([^']+)'|getByRole\('\w+',\s*{\s*name:\s*"([^"]+)"/
-    };
-
-    // Try each pattern until we find a match
-    for (const [_method, pattern] of Object.entries(nameExtractionPatterns)) {
-        const nameMatch = stepTitle.match(pattern);
-        if (nameMatch) {
-            name = nameMatch[1] || nameMatch[2];
-            break;
-        }
-    }
-
-    // Build human-readable step using priority order with prefix and suffix
-    const resultBuilders = [
-        () => {
-            if (actionInfo && element && name) {
-                const { prefix, suffix } = actionInfo;
-                if (suffix) {
-                    return `${prefix} \`${name}\` ${suffix}`;
-                }
-                return `${prefix} ${element} \`${name}\``;
-            }
-            return null;
-        },
-        () => {
-            if (actionInfo && element) {
-                const { prefix, suffix } = actionInfo;
-                if (suffix) {
-                    return `${prefix} ${element} ${suffix}`;
-                }
-                return `${prefix} ${element}`;
-            }
-            return null;
-        },
-        () => {
-            if (actionInfo && name) {
-                const { prefix, suffix } = actionInfo;
-                if (suffix) {
-                    return `${prefix} \`${name}\` ${suffix}`;
-                }
-                return `${prefix} \`${name}\``;
-            }
-            return null;
-        },
-        () => (actionInfo ? actionInfo.prefix : null),
-        () => stepTitle
-    ];
-
-    let result = ``;
-    for (const builder of resultBuilders) {
-        const buildResult = builder();
-        if (buildResult) {
-            result = buildResult;
-            break;
-        }
-    }
-    return result;
 }

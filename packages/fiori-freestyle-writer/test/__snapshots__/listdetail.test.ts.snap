@@ -44,7 +44,7 @@ module.exports = defineConfig([
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -2779,7 +2779,7 @@ module.exports = defineConfig([
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -5514,7 +5514,7 @@ module.exports = defineConfig([
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -8249,7 +8249,7 @@ module.exports = defineConfig([
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"^9\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
@@ -10839,7 +10839,7 @@ module.exports = defineConfig([
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",

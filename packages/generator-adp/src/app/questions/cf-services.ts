@@ -7,7 +7,7 @@ import type {
     AppRouterType,
     CfConfig,
     CFApp,
-    ServiceKeys
+    ServiceInfo
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -20,7 +20,7 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getBusinessServiceKeys
+    getBusinessServiceInfo
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
@@ -53,9 +53,9 @@ export class CFServicesPrompter {
      */
     private businessServices: string[] = [];
     /**
-     * The keys of the business service.
+     * The info of the business service.
      */
-    private businessServiceKeys: ServiceKeys | null = null;
+    private businessServiceInfo: ServiceInfo | null = null;
     /**
      * The base apps available.
      */
@@ -238,7 +238,7 @@ export class CFServicesPrompter {
                     this.html5RepoServiceInstanceGuid = serviceInstanceGuid;
 
                     await validateSmartTemplateApplication(manifest);
-                    await validateODataEndpoints(entries, this.businessServiceKeys!.credentials, this.logger);
+                    await validateODataEndpoints(entries, this.businessServiceInfo!.serviceKeys, this.logger);
                 } catch (e) {
                     return e.message;
                 }
@@ -275,12 +275,12 @@ export class CFServicesPrompter {
                 }
 
                 try {
-                    this.businessServiceKeys = await getBusinessServiceKeys(value, cfConfig, this.logger);
-                    if (this.businessServiceKeys === null) {
+                    this.businessServiceInfo = await getBusinessServiceInfo(value, cfConfig, this.logger);
+                    if (this.businessServiceInfo === null) {
                         return t('error.businessServiceDoesNotExist');
                     }
 
-                    this.apps = await getCfApps(this.businessServiceKeys.credentials, cfConfig, this.logger);
+                    this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
                     this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                 } catch (e) {
                     this.apps = [];
