@@ -1,5 +1,36 @@
 # @sap-ux/create
 
+## 0.13.165
+
+### Patch Changes
+
+-   Updated dependencies [744fa93]
+    -   @sap-ux/adp-tooling@0.18.3
+    -   @sap-ux/flp-config-inquirer@0.4.62
+    -   @sap-ux/preview-middleware@0.23.54
+    -   @sap-ux/app-config-writer@0.6.56
+
+## 0.13.164
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+-   Updated dependencies [92ec778]
+    -   @sap-ux/adp-tooling@0.18.2
+    -   @sap-ux/flp-config-inquirer@0.4.61
+    -   @sap-ux/preview-middleware@0.23.53
+    -   @sap-ux/app-config-writer@0.6.56
+
+## 0.13.163
+
+### Patch Changes
+
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+    -   @sap-ux/flp-config-inquirer@0.4.60
+    -   @sap-ux/preview-middleware@0.23.52
+    -   @sap-ux/app-config-writer@0.6.56
+
 ## 0.13.162
 
 ### Patch Changes

@@ -306,17 +306,18 @@ function getInboundChangeContentWithNewInboundID(
 /**
  * Generate Inbound change content required for manifest.appdescriptor.
  *
- * @param flpConfiguration FLP cloud project configuration
+ * @param flpConfigurations FLP cloud project configuration
  * @param appId Application variant id
  * @param manifestChangeContent Application variant change content
  */
 export function enhanceManifestChangeContentWithFlpConfig(
-    flpConfiguration: InternalInboundNavigation,
+    flpConfigurations: InternalInboundNavigation[],
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId);
-    if (inboundChangeContent) {
+    for (const [index, flpConfig] of flpConfigurations.entries()) {
+        const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
+
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',
             content: inboundChangeContent,
@@ -324,16 +325,21 @@ export function enhanceManifestChangeContentWithFlpConfig(
                 'i18n': 'i18n/i18n.properties'
             }
         };
-        const removeOtherInboundsChange = {
-            changeType: 'appdescr_app_removeAllInboundsExceptOne',
-            content: {
-                'inboundId': flpConfiguration.inboundId
-            },
-            texts: {}
-        };
-
         manifestChangeContent.push(addInboundChange);
-        manifestChangeContent.push(removeOtherInboundsChange);
+
+        // Remove all inbounds except one should be only after the first inbound is added
+        // This is implemented this way to avoid issues with the merged on ABAP side
+        if (index === 0) {
+            const removeOtherInboundsChange = {
+                changeType: 'appdescr_app_removeAllInboundsExceptOne',
+                content: {
+                    'inboundId': flpConfig.inboundId
+                },
+                texts: {}
+            };
+
+            manifestChangeContent.push(removeOtherInboundsChange);
+        }
     }
 }
 
