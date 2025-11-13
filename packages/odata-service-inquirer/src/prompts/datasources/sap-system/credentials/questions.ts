@@ -6,11 +6,12 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
-import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -25,12 +26,14 @@ export enum BasicCredentialsPromptNames {
  * @param sapClient
  * @param sapClient.sapClient the sapClient value to be used along with the credentials validation
  * @param sapClient.isValid validation of credentials is deferred until a valid sapClient is provided or undefined
+ * @param requiredOdataVersion
  * @returns the credentials prompts
  */
 export function getCredentialsPrompts<T extends Answers>(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
-    sapClient?: { sapClient: string | undefined; isValid: boolean }
+    sapClient?: { sapClient: string | undefined; isValid: boolean },
+    requiredOdataVersion?: OdataVersion
 ): (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
@@ -105,7 +108,8 @@ export function getCredentialsPrompts<T extends Answers>(
                     password,
                     {
                         sapClient: sapClient?.sapClient || selectedSystemClient,
-                        isSystem
+                        isSystem,
+                        odataVersion: convertODataVersionType(requiredOdataVersion)
                     }
                 );
                 if (valResult === true && connectionValidator.serviceProvider) {

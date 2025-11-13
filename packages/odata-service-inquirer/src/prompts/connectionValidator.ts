@@ -1094,28 +1094,28 @@ export class ConnectionValidator {
     }
 
     /**
-     * Get the specific authorization reason user message.
+     * Get the specific authorization reason user message. This may be catalog version specific.
      *
      * @param httpStatusCode the http error code returned from a request
      * @param odataVersion optional, the odata version specific request, for example for specific catalog requests
      * @returns the text message indicting the authentication or authorization failure speific to an odata catalog request
      */
     private getAuthFailureReasonText(httpStatusCode: string | number, odataVersion?: ODataVersion): string {
-        let errorType;
+        let authFailType;
         if ([403, '403'].includes(httpStatusCode)) {
-            errorType = t('texts.authorization');
+            authFailType = t('texts.authorizationFailed');
         } else if ([401, '401'].includes(httpStatusCode)) {
-            errorType = t('texts.authentication');
+            authFailType = t('texts.authenticationFailed');
         }
 
         let authFailureReason;
         if (odataVersion) {
-            authFailureReason = t('errors.authenticationFailureToCatalogReason', {
+            authFailureReason = t('errors.authenticationFailedSpecificCatalog', {
                 odataVersion,
-                errorType: errorType
+                authFailType
             });
         } else {
-            authFailureReason = t('errors.authenticationFailureToAllCatalogsReason', { errorType });
+            authFailureReason = t('errors.authenticationFailedAllCatalogs', { authFailType });
         }
         return authFailureReason;
     }

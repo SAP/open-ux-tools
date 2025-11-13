@@ -111,7 +111,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "$t(texts.authenticationFailed). Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -217,9 +217,9 @@
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services: {{- error, addMsgWithColonFormatter}}.",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
         "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
-        "authenticationFailed": "Authentication incorrect: {{error}}.",
-        "authenticationFailureToCatalogReason": "Could not access OData V{{odataVersion}} service catalog due to {{errorType}} failure",
-        "authenticationFailureToAllCatalogsReason": "Could not access any service catalogs due to {{errorType}} failure",
+        "authenticationFailed": "$t(texts.authenticationFailed): {{error}}.",
+        "authenticationFailedSpecificCatalog": "{{authFailType}}: Could not access OData V{{odataVersion}} service catalog",
+        "authenticationFailedAllCatalogs": "{{authFailType}}: Could not access any service catalogs",
         "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
         "urlNotFound": "URL not found.",
@@ -265,7 +265,7 @@
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None",
         "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
-        "authorization": "authorization",
-        "authentication": "authentication"
+        "authorizationFailed": "Authorization failed",
+        "authenticationFailed": "Authentication failed"
     }
 }
