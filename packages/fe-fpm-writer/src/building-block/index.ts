@@ -255,21 +255,7 @@ function processBuildingBlock<T extends BuildingBlock>(
 
     if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment) {
         const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-
-        const config: InternalCustomFilter = {} as InternalCustomFilter;
-        if (buildingBlockData.embededFragment) {
-            config.id = buildingBlockData.id!;
-            config.controlID = buildingBlockData.filterFieldKey!;
-            config.label = buildingBlockData.label!;
-            config.property = buildingBlockData.property!;
-            config.required = buildingBlockData.required ?? false;
-            config.position = buildingBlockData.position!;
-
-            config.eventHandler = buildingBlockData.embededFragment.eventHandler;
-            config.ns = embededFragment.ns;
-            config.name = embededFragment.name;
-            config.path = embededFragment.path;
-        }
+        const config = createCustomFilterConfig(buildingBlockData, embededFragment);
 
         const viewPath = join(
             embededFragment.path,
@@ -301,6 +287,31 @@ function processBuildingBlock<T extends BuildingBlock>(
         processedBuildingBlockData: buildingBlockData,
         hasAggregation,
         aggregationNamespace
+    };
+}
+
+/**
+ * Creates an InternalCustomFilter configuration from CustomFilterField building block data.
+ *
+ * @param {CustomFilterField} buildingBlockData - The building block data
+ * @param {object} embededFragment - The embedded fragment data with defaults applied
+ * @returns {InternalCustomFilter} The internal custom filter configuration
+ */
+function createCustomFilterConfig(
+    buildingBlockData: CustomFilterField,
+    embededFragment: CustomFilterField['embededFragment'] & { ns: string; name: string; path: string }
+): InternalCustomFilter {
+    return {
+        id: buildingBlockData.id!,
+        controlID: buildingBlockData.filterFieldKey!,
+        label: buildingBlockData.label!,
+        property: buildingBlockData.property!,
+        required: buildingBlockData.required ?? false,
+        position: buildingBlockData.position!,
+        eventHandler: buildingBlockData.embededFragment?.eventHandler,
+        ns: embededFragment.ns,
+        name: embededFragment.name,
+        path: embededFragment.path
     };
 }
 

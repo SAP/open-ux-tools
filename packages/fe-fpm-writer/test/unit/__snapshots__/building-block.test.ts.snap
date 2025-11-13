@@ -82,10 +82,7 @@ exports[`Building Blocks CustomFilterField building block CustomFilterField dete
             <macros:FilterBar>
                 <macros:filterFields>
                     <macros:FilterField/>
-                    <macros:FilterField key=\\"\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\">
-                        placement=\\"After\\"
-		 required=\\"true\\"
-		 property=\\"testProperty\\"&gt;
+                    <macros:FilterField key=\\"\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\" placement=\\"After\\" required=\\"true\\" property=\\"testProperty\\">
                         <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFilterField2\\" type=\\"XML\\"/>
                     </macros:FilterField>
                 </macros:filterFields>
@@ -102,10 +99,7 @@ Object {
     <Page title=\\"Main\\">
         <content>
             <macros:filterFields>
-                <macros:FilterField key=\\"\\" label=\\"Minimal Filter Field\\" id=\\"minimalCustomFilterField\\">
-                    placement=\\"After\\"
-		
-		 property=\\"SimpleProperty\\"&gt;
+                <macros:FilterField key=\\"\\" label=\\"Minimal Filter Field\\" id=\\"minimalCustomFilterField\\" placement=\\"After\\" property=\\"SimpleProperty\\">
                     <core:Fragment fragmentName=\\"my.test.App.ext.minimalFilterField.MinimalFilterField\\" type=\\"XML\\"/>
                 </macros:FilterField>
             </macros:filterFields>
@@ -180,10 +174,7 @@ Object {
         <content>
             <macros:FilterBar>
                 <macros:filterFields>
-                    <macros:FilterField key=\\"\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\">
-                        placement=\\"After\\"
-		 required=\\"true\\"
-		 property=\\"testProperty\\"&gt;
+                    <macros:FilterField key=\\"\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\" placement=\\"After\\" required=\\"true\\" property=\\"testProperty\\">
                         <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFilterField2\\" type=\\"XML\\"/>
                     </macros:FilterField>
                 </macros:filterFields>
