@@ -2,7 +2,7 @@
     <<%- config?.aggregationNamespace %>:FilterField 
 		key="<%- data.filterFieldKey %>" 
 		label="<%- data.label %>"
-		<% if (data.id) { %> id="<%- data.id %>"<% } %>>
+		<% if (data.id) { %> id="<%- data.id %>"<% } %>
 		<% if (data.position.anchor) { %> anchor="<%- data.position.anchor %>"<% } %>
 		<% if (data.position.placement) { %> placement="<%- data.position.placement %>"<% } %>
 		<% if (data.required) { %> required="<%- data.required %>"<% } %>
