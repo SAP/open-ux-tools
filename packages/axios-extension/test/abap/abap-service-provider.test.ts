@@ -291,7 +291,7 @@ describe('AbapServiceProvider', () => {
             const result = await provider.fetchValueListReferenceServices([
                 {
                     target: 'target',
-                    rootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/$metadata'
                 }
             ]);
@@ -314,12 +314,12 @@ describe('AbapServiceProvider', () => {
             const result = await provider.fetchValueListReferenceServices([
                 {
                     target: 'target',
-                    rootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/one/$metadata'
                 },
                 {
                     target: 'target',
-                    rootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/two/$metadata'
                 }
             ]);
@@ -342,12 +342,12 @@ describe('AbapServiceProvider', () => {
             const result = await provider.fetchValueListReferenceServices([
                 {
                     target: 'target',
-                    rootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/one/$metadata'
                 },
                 {
                     target: 'target',
-                    rootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/two/$metadata'
                 }
             ]);
