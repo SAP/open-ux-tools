@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.18
+
+### Patch Changes
+
+-   3d3c18b: Fix: `generateCustomField` now includes the `core:require` attribute with the handler file in new fragment files when `eventHandler` is set.
+
 ## 0.39.17
 
 ### Patch Changes

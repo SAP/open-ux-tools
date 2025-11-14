@@ -18,7 +18,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Enable Empty Row Mode for Tables` button in the Quick Actions Panel
@@ -55,7 +55,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Change Table Actions` button in the Quick Actions Panel
@@ -75,7 +75,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click `UI Adaptation` button in the toolBar
 5. Click `Add Controller to Page` button in the Quick Actions Panel
 6. Fill `Controller Name` field with `TestController` in the dialog `Extend With Controller`
@@ -117,7 +117,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click `UI Adaptation` button in the toolBar
 5. Click `Add Custom Table Action` button in the Quick Actions Panel
 6. Fill `Fragment Name` field with `op-table-action` in the dialog `Add Custom Table Action`
@@ -161,7 +161,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Change Table Columns` button in the Quick Actions Panel
@@ -176,7 +176,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Column` button in the Quick Actions Panel
@@ -256,7 +256,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Header Field` button in the Quick Actions Panel
@@ -306,7 +306,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Section` button in the Quick Actions Panel

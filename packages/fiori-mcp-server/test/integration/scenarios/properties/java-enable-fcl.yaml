@@ -1,0 +1,18 @@
+config:
+    project: 'java-ai-created'
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Enable FCL with two columns mid expanded. Application in {{appPath}}'
+assert:
+  - type: javascript
+    value: file://../assertions/snapshots.ts:validate
+    config:
+      snapshot: java-fcl-enable
+      file: webapp/manifest.json
+      segments:
+        - path: ["sap.ui5", "dependencies"]
+        - path: ["sap.ui5", "routing", "routes"]
+        - path: ["sap.ui5", "routing", "targets"]
+        - path: ["sap.ui5", "routing", "config"]
+          mode: contains
+        - path: ["sap.ui5", "rootView"]

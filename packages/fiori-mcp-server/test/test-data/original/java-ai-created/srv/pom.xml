@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>java-ai-created-parent</artifactId>
+		<groupId>customer</groupId>
+		<version>${revision}</version>
+	</parent>
+
+	<artifactId>java-ai-created</artifactId>
+	<packaging>jar</packaging>
+
+	<name>java-ai-created</name>
+
+	<!-- ACTUAL DEPENDENCIES -->
+	<dependencies>
+		<!-- CDS SPRING BOOT STARTER -->
+		<dependency>
+			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-starter-spring-boot</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-adapter-odata-v4</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<!-- SPRING BOOT PLUGIN -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>repackage</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>exec</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- STEPS TO BUILD CDS MODEL AND GENERATE POJOs -->
+			<plugin>
+				<groupId>com.sap.cds</groupId>
+				<artifactId>cds-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>cds.clean</id>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>cds.install-node</id>
+						<goals>
+							<goal>install-node</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>cds.npm-ci</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>ci</arguments>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>cds.resolve</id>
+						<goals>
+							<goal>resolve</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>cds.build</id>
+						<goals>
+							<goal>cds</goal>
+						</goals>
+						<configuration>
+							<commands>
+								<command>build --for java</command>
+								<command>deploy --to h2 --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
+							</commands>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>cds.generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<basePackage>cds.gen</basePackage>
+							<betterNames>true</betterNames>
+							<cqnServiceGetters>true</cqnServiceGetters>
+							<linkedInterfaces>true</linkedInterfaces>
+							<interfacesForAspects>true</interfacesForAspects>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

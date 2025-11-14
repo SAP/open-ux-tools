@@ -30,7 +30,7 @@ Object {
 
 exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.DummyOnAction\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction'}\\" text=\\"NewCustomField\\" press=\\"handler.DummyOnAction\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -56,7 +56,7 @@ exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - c
 
 exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.DummyOnAction\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomField'}\\" text=\\"NewCustomField\\" press=\\"handler.DummyOnAction\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -82,7 +82,7 @@ exports[`CustomField Test property "eventHandler" "eventHandler" is "object" - c
 
 exports[`CustomField Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomField'}\\" text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -108,7 +108,7 @@ exports[`CustomField Test property "eventHandler" "eventHandler" is empty "objec
 
 exports[`CustomField Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.onHandleSecondAction\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomField\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -132,7 +132,7 @@ exports[`CustomField Test property "eventHandler" "eventHandler" is object. Appe
 
 exports[`CustomField Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.onHandleSecondAction\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomField\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -181,7 +181,7 @@ Object {
 
 exports[`CustomField Typescript - generate with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomField'}\\" text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -446,7 +446,7 @@ Object {
 
 exports[`CustomField with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomField'}\\" text=\\"NewCustomField\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
 

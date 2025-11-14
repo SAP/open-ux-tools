@@ -38,10 +38,7 @@ function enhanceConfig(fs: Editor, data: CustomField, manifestPath: string, mani
     if (config.control) {
         config.content = config.control;
     } else {
-        Object.assign(
-            config,
-            getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false)
-        );
+        Object.assign(config, getDefaultFragmentContentData(config.name, config.eventHandler));
     }
 
     return config as InternalCustomField;

@@ -1,0 +1,15 @@
+config:
+    project: 'java-ai-created'
+    # Overwrite original manifest.json by continuing from state when no any page
+    setupFiles:
+        - source: java-delete-page/webapp/manifest.json
+          target: app/managetravels/webapp/manifest.json
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Add list report page with entity Expenses in application with appPath: {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:validate
+      config:
+          file: webapp/manifest.json
+          snapshot: java-add-first-lr-page

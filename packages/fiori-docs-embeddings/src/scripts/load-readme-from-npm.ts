@@ -18,16 +18,18 @@ async function getPackageReadme(packageName: string, logger: ToolsLogger): Promi
     try {
         const response: Response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Failed to fetch package: ${response.statusText}`);
+            logger.error(`Failed to fetch package: ${response.statusText}.`);
+            return null;
         }
         const data: Packument = await response.json();
         if (!data.readme) {
-            logger.warn(`Warning: Could not find README content for ${packageName}.`);
+            logger.error(`Could not find README content for ${packageName}.`);
             return null;
         }
         return data.readme;
     } catch (error) {
-        throw new Error(`Error fetching README for ${packageName}: ${error.message ?? error}`);
+        logger.error(`Error fetching README for ${packageName}: ${error.message ?? error}`);
+        return null;
     }
 }
 
@@ -39,20 +41,18 @@ async function getPackageReadme(packageName: string, logger: ToolsLogger): Promi
  */
 async function fetchAndSaveReadme(packageName: string, logger: ToolsLogger): Promise<void> {
     logger.info(`Fetching README for ${packageName}...`);
-    const readmeContent: string | null = await getPackageReadme(packageName, logger);
-    const outputFileName = `${packageName.split('/').pop()}-README.md`;
+    const readmeContent = await getPackageReadme(packageName, logger);
     if (readmeContent) {
+        const outputFileName = `${packageName.split('/').pop()}-README.md`;
         try {
             const outputPath = join('data_local', outputFileName);
             await writeFile(outputPath, readmeContent, 'utf-8');
             logger.info(`Successfully saved README to './data_local'`);
         } catch (error) {
-            logger.error(`Error writing README file for ${outputFileName}: ${error}`);
-            process.exit(1);
+            logger.error(`Error writing README file for ${outputFileName}: ${error}.`);
         }
     } else {
         logger.error(`Could not fetch README for ${packageName}.`);
-        process.exit(1);
     }
 }
 

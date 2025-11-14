@@ -16,7 +16,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Column` button in the Quick Actions Panel
@@ -65,7 +65,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Enable Variant Management in Tables` button in the Quick Actions Panel
@@ -101,7 +101,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Enable Empty Row Mode for Tables` button in the Quick Actions Panel
@@ -137,7 +137,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Change Table Actions` button in the Quick Actions Panel
@@ -156,7 +156,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Subpage` button in the Quick Actions Panel
@@ -201,7 +201,7 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Navigation` button in the toolBar
-3. Click on `Go` button.
+3. Click `Go` button in the Running Application Preview
 4. Click on row `1` of `Root Entities` table 
 5. Click `UI Adaptation` button in the toolBar
 6. Click `Add Custom Table Action` button in the Quick Actions Panel

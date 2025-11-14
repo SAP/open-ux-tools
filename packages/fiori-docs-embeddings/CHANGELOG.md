@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.4
+
+### Patch Changes
+
+-   10eb73e: fix: use existing version of ux-ui5-tooling-README.md in case of download errors
+
 ## 0.4.3
 
 ### Patch Changes
