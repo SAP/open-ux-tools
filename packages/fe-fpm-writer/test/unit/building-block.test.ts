@@ -3,6 +3,7 @@ import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
+import { BUILDING_BLOCK_CONFIG } from '../../src/building-block';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'node:fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
@@ -1783,6 +1784,262 @@ describe('Building Blocks', () => {
 
             expect(fs.dump(testAppPath)).toMatchSnapshot('generate-custom-filter-field-minimal');
             await writeFilesForDebugging(fs);
+        });
+
+        test('generate CustomFilterField with eventHandler set to true', async () => {
+            const basePath = join(testAppPath, 'generate-custom-filter-field-with-event-handler');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            const customFilterFieldData: CustomFilterField = {
+                id: 'customFilterFieldWithEventHandler',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Filter Field With Event Handler',
+                anchor: 'someAnchor',
+                property: 'TestProperty',
+                required: true,
+                filterFieldKey: 'eventHandlerKey',
+                position: {
+                    placement: Placement.After
+                },
+                embededFragment: {
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input/></core:FragmentDefinition>',
+                    name: 'EventHandlerFilterField',
+                    eventHandler: true // This will create a new event handler
+                }
+            };
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: customFilterFieldData
+                },
+                fs
+            );
+
+            // Check that fragment file was created
+            const expectedFragmentPath = join(basePath, 'webapp/ext/fragment/EventHandlerFilterField.fragment.xml');
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+
+            // Check that a controller extension was created
+            const expectedControllerPath = join(basePath, 'webapp/ext/fragment/EventHandlerFilterField.js');
+            expect(fs.exists(expectedControllerPath)).toBe(true);
+
+            // Check controller file content contains the event handler function
+            const controllerContent = fs.read(expectedControllerPath);
+            expect(controllerContent).toContain('onPress');
+            expect(controllerContent).toContain('function(sValue)');
+            expect(controllerContent).toContain('Filter');
+            expect(controllerContent).toContain('TestProperty');
+
+            // Check fragment file content
+            const fragmentContent = fs.read(expectedFragmentPath);
+            expect(fragmentContent).toContain('ComboBox');
+
+            // Check that the view contains the generated filter field
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toContain('my.test.App.ext.fragment.EventHandlerFilterField');
+            expect(viewContent).toContain('eventHandlerKey');
+
+            await writeFilesForDebugging(fs);
+        });
+    });
+
+    describe('Building Block Configuration and Type Safety', () => {
+        test('BUILDING_BLOCK_CONFIG export contains correct configuration', () => {
+            // Test CustomColumn configuration
+            const customColumnConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomColumn]!;
+            expect(customColumnConfig).toBeDefined();
+            expect(customColumnConfig.nodes.explicit).toBe('columns');
+            expect(customColumnConfig.nodes.default).toBe('Column');
+            expect(customColumnConfig.templateFile).toBe('common/Fragment.xml');
+            expect(customColumnConfig.namespace.uri).toBe('sap.fe.macros.table');
+            expect(customColumnConfig.namespace.prefix).toBe('macrosTable');
+            expect(customColumnConfig.resultPropertyName).toBe('hasTableColumns');
+            expect(typeof customColumnConfig.processor).toBe('function');
+
+            // Test CustomFilterField configuration
+            const customFilterFieldConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!;
+            expect(customFilterFieldConfig).toBeDefined();
+            expect(customFilterFieldConfig.nodes.explicit).toBe('filterFields');
+            expect(customFilterFieldConfig.nodes.default).toBe('FilterField');
+            expect(customFilterFieldConfig.templateFile).toBe('filter/fragment.xml');
+            expect(customFilterFieldConfig.namespace.uri).toBe('sap.fe.macros.filterBar');
+            expect(customFilterFieldConfig.namespace.prefix).toBe('macros');
+            expect(customFilterFieldConfig.resultPropertyName).toBe('hasFilterFields');
+            expect(typeof customFilterFieldConfig.processor).toBe('function');
+        });
+
+        test('processor function type validation - CustomColumn with wrong type throws error', async () => {
+            const mockFs = create(createStorage());
+
+            const customColumnProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomColumn]!.processor;
+            const mockConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomColumn]!;
+
+            // Create a building block with wrong type
+            const wrongTypeBuildingBlock = {
+                id: 'wrongType',
+                buildingBlockType: BuildingBlockType.FilterBar, // Wrong type for CustomColumn processor
+                label: 'Wrong Type'
+            };
+
+            // Should throw error when processor is called with wrong type
+            expect(() => {
+                customColumnProcessor(wrongTypeBuildingBlock, mockFs, '/mock/path', mockConfig);
+            }).toThrow('Expected CustomColumn building block data');
+        });
+
+        test('processor function type validation - CustomFilterField with wrong type throws error', async () => {
+            const mockFs = create(createStorage());
+
+            const customFilterFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!.processor;
+            const mockConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!;
+
+            // Create a building block with wrong type
+            const wrongTypeBuildingBlock = {
+                id: 'wrongType',
+                buildingBlockType: BuildingBlockType.Chart, // Wrong type for CustomFilterField processor
+                title: 'Wrong Type'
+            };
+
+            // Should throw error when processor is called with wrong type
+            expect(() => {
+                customFilterFieldProcessor(wrongTypeBuildingBlock, mockFs, '/mock/path', mockConfig);
+            }).toThrow('Expected CustomFilterField building block data');
+        });
+
+        test('CustomFilterField processor throws error when embededFragment is missing', async () => {
+            const mockFs = create(createStorage());
+
+            const customFilterFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!.processor;
+            const mockConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!;
+
+            // Create a valid CustomFilterField building block
+            const customFilterFieldData = {
+                id: 'testCustomFilterField',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Test Filter Field',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: false
+            };
+
+            // Should throw error when processor is called without embededFragment
+            expect(() => {
+                customFilterFieldProcessor(customFilterFieldData, mockFs, '/mock/path', mockConfig);
+            }).toThrow('EmbeddedFragment is required for CustomFilterField');
+        });
+
+        test('CustomColumn processor works correctly with valid CustomColumn data', async () => {
+            const mockFs = create(createStorage());
+
+            const customColumnProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomColumn]!.processor;
+            const mockConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomColumn]!;
+
+            // Create a valid CustomColumn building block
+            const customColumnData: CustomColumn = {
+                id: 'testCustomColumn',
+                buildingBlockType: BuildingBlockType.CustomColumn,
+                title: 'Test Column',
+                embededFragment: {
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Text text="Test"/></core:FragmentDefinition>',
+                    name: 'TestColumn'
+                }
+            };
+
+            // Mock the template file
+            const templatePath = join(__dirname, '../../src/templates/common/Fragment.xml');
+            mockFs.write(templatePath, '<core:FragmentDefinition><Text text="Template"/></core:FragmentDefinition>');
+
+            // Should not throw error and should process correctly
+            expect(() => {
+                customColumnProcessor(customColumnData, mockFs, '/mock/path/fragment.xml', mockConfig);
+            }).not.toThrow();
+
+            // Verify that content was set
+            expect(customColumnData.embededFragment?.content).toBeDefined();
+        });
+
+        test('CustomFilterField processor works correctly with valid data and embeddedFragment', async () => {
+            const mockFs = create(createStorage());
+
+            const customFilterFieldProcessor = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!.processor;
+            const mockConfig = BUILDING_BLOCK_CONFIG[BuildingBlockType.CustomFilterField]!;
+
+            // Create a valid CustomFilterField building block
+            const customFilterFieldData: CustomFilterField = {
+                id: 'testCustomFilterField',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'Test Filter Field',
+                anchor: 'testAnchor',
+                property: 'testProperty',
+                required: false,
+                filterFieldKey: 'testKey',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input/></core:FragmentDefinition>',
+                    name: 'TestFilterField'
+                }
+            };
+
+            // Create mock embedded fragment data
+            const mockEmbeddedFragment = {
+                ns: 'test.namespace',
+                name: 'TestFilterField',
+                path: 'ext/fragment',
+                typescript: false,
+                content:
+                    '<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"><Input/></core:FragmentDefinition>'
+            };
+
+            // Mock the template file
+            const templatePath = join(__dirname, '../../src/templates/filter/fragment.xml');
+            mockFs.write(templatePath, '<core:FragmentDefinition><Input/></core:FragmentDefinition>');
+
+            // Should not throw error and should process correctly
+            expect(() => {
+                customFilterFieldProcessor(
+                    customFilterFieldData,
+                    mockFs,
+                    '/mock/path/fragment.xml',
+                    mockConfig,
+                    mockEmbeddedFragment
+                );
+            }).not.toThrow();
+        });
+
+        test('BuildingBlockTemplateConfig interface ensures type safety', () => {
+            // Verify that all configurations have the correct structure
+            Object.values(BUILDING_BLOCK_CONFIG).forEach((config) => {
+                if (config) {
+                    expect(config).toHaveProperty('nodes');
+                    expect(config.nodes).toHaveProperty('explicit');
+                    expect(config.nodes).toHaveProperty('default');
+                    expect(config).toHaveProperty('templateType');
+                    expect(config).toHaveProperty('templateFile');
+                    expect(config).toHaveProperty('namespace');
+                    expect(config.namespace).toHaveProperty('uri');
+                    expect(config.namespace).toHaveProperty('prefix');
+                    expect(config).toHaveProperty('resultPropertyName');
+                    expect(config).toHaveProperty('processor');
+                    expect(typeof config.processor).toBe('function');
+
+                    // Verify processor function signature by checking its length (parameter count)
+                    // processor(buildingBlockData, fs, viewPath, config, embeddedFragment?)
+                    expect(config.processor.length).toBeGreaterThanOrEqual(4);
+                    expect(config.processor.length).toBeLessThanOrEqual(5);
+                }
+            });
         });
     });
 });
