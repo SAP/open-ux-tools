@@ -78,7 +78,8 @@
             "router@^2.0.0>path-to-regexp": "8.2.0",
             "@storybook/manager-api>store2": "2.14.4",
             "mta-local": "1.0.4",
-            "axios@<1.12.0": "^1.12.2"
+            "axios@<1.12.0": "^1.12.2",
+            "js-yaml@<3.14.2": "^3.14.2"
         }
     }
 }
