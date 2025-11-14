@@ -10,6 +10,7 @@ jobs:
         timeout-minutes: 5
         outputs:
             ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
+            latest_ui5_version: ${{ steps.output-ui5-versions.outputs.latest_ui5_version }}
         steps:
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@v4
@@ -23,14 +24,20 @@ jobs:
               run: |
                   cat tests/integration/adaptation-editor/versions.json
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
+                  echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
    
     playwright-tests:
         # if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, windows-2025]
-                ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
+                include:
+                  # Ubuntu runs all UI5 versions
+                  - os: ubuntu-latest
+                    ui5-versions: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
+                  # Windows runs only latest UI5 version
+                  - os: windows-2025
+                    ui5-versions: [${{ needs.ui5-versions.outputs.latest_ui5_version }}]
         runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
@@ -71,26 +78,28 @@ jobs:
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
-            - name: Run playwright tests
-              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
+            - name: Run playwright tests for each UI5 version
+              run: |
+                for version in ${{ join(matrix.ui5-versions, ' ') }}; do
+                  echo "Running tests for UI5 version: $version"
+                  cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
+                done
+              shell: bash
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload blob report to GitHub Actions Artifacts
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
-                name: blob-report-${{ matrix.os }}-${{ matrix.ui5-version }}
+                name: blob-report-${{ matrix.os }}-all-versions
                 path: tests/integration/adaptation-editor/blob-report
                 retention-days: 1
+
     merge-reports:
         # Merge reports after playwright-tests, even if some shards have failed
         if: ${{ !cancelled() }}
         needs: [playwright-tests]
-        strategy:
-            fail-fast: false
-            matrix:
-                os: [ubuntu-latest, windows-2025]
-        runs-on: ${{ matrix.os }}
+        runs-on: ubuntu-latest
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v4
@@ -105,10 +114,10 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path: ${{ matrix.os == 'windows-2025' && '~\AppData\Local\pnpm\store' || '~/.pnpm-store' }}
-                  key: ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  path: ~/.pnpm-store
+                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-
+                      ubuntu-latest-build-${{ env.cache-name }}-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
@@ -119,15 +128,15 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   path: tests/integration/adaptation-editor/all-blob-reports
-                  pattern: blob-report-${{ matrix.os }}-*
+                  pattern: blob-report-*
                   merge-multiple: true
 
             - name: Merge into HTML Report
               run: cd tests/integration/adaptation-editor && npx playwright merge-reports --reporter html ./all-blob-reports
 
-            - name: Upload HTML report
+            - name: Upload unified HTML report
               uses: actions/upload-artifact@v4
               with:
-                  name: playwright-report-${{ matrix.os }}-${{ github.run_attempt }}
+                  name: playwright-report-unified-${{ github.run_attempt }}
                   path: tests/integration/adaptation-editor/playwright-report
                   retention-days: 15
