@@ -297,11 +297,11 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns A list of ValueListReferences found in the metadata and annotations.
      */
     public async fetchValueListReferenceServices(
-        references: { target: string; rootPath: string; value: string }[]
+        references: { target: string; serviceRootPath: string; value: string }[]
     ): Promise<{ target: string; data?: string; path: string }[]> {
         const valueListReferences: { target: string; data?: string; path: string }[] = [];
-        const allPromises = references.map(async ({ rootPath, target, value }) => {
-            const externalServicePath = joinPosix(rootPath, value).replace('/$metadata', '');
+        const allPromises = references.map(async ({ serviceRootPath, target, value }) => {
+            const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
             const externalService = this.service(externalServicePath);
             try {
                 const data = await externalService.metadata();
