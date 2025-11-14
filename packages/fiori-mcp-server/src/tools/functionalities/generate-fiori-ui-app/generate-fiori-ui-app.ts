@@ -25,6 +25,7 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
 /**
  * Retrieves the details of the Generate SAP Fiori UI Application functionality.
  *
+ * @param input
  * @returns A promise that resolves to the functionality details output.
  */
 async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Promise<GetFunctionalityDetailsOutput> {
