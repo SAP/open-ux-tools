@@ -53,6 +53,15 @@ interface MetadataPath {
 }
 
 /**
+ * Configuration for aggregation path update.
+ */
+interface AggregationConfig {
+    aggregationName: string;
+    elementName: string;
+    resultPropertyName: string;
+}
+
+/**
  * Generates a building block into the provided xml view file.
  *
  * @param {string} basePath - the base path
@@ -125,75 +134,39 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 }
 
 /**
- * Updates aggregation path for table columns based on XML document structure.
+ * Updates aggregation path based on XML document structure.
  *
  * @param {Document} xmlDocument - The XML document to analyze
  * @param {string} aggregationPath - The current aggregation path
- * @param {CustomColumn} buildingBlockData - The building block data with embedded fragment
+ * @param {CustomColumn | CustomFilterField} buildingBlockData - The building block data with embedded fragment
+ * @param {AggregationConfig} config - Configuration specifying aggregation and element names
  * @returns {object} Object containing the updated aggregation path
  */
-function updateAggregationPathForTableColumns(
+function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
     xmlDocument: Document,
     aggregationPath: string,
-    buildingBlockData: CustomColumn
-): { updatedAggregationPath: string; hasTableColumns: boolean } {
+    buildingBlockData: T,
+    config: AggregationConfig
+): { updatedAggregationPath: string; hasElement: boolean } {
     if (!buildingBlockData.embededFragment) {
-        return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
+        return { updatedAggregationPath: aggregationPath, hasElement: false };
     }
 
     const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-    const hasColumnsAggregation = xpathSelect("//*[local-name()='columns']", xmlDocument);
-    if (hasColumnsAggregation && Array.isArray(hasColumnsAggregation) && hasColumnsAggregation.length > 0) {
+    const hasAggregation = xpathSelect(`//*[local-name()='${config.aggregationName}']`, xmlDocument);
+    if (hasAggregation && Array.isArray(hasAggregation) && hasAggregation.length > 0) {
         return {
-            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:columns`,
-            hasTableColumns: true
+            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:${config.aggregationName}`,
+            hasElement: true
         };
     } else {
-        const useDefaultAggregation = xpathSelect("//*[local-name()='Column']", xmlDocument);
+        const useDefaultAggregation = xpathSelect(`//*[local-name()='${config.elementName}']`, xmlDocument);
         if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
-            return { updatedAggregationPath: aggregationPath, hasTableColumns: true };
+            return { updatedAggregationPath: aggregationPath, hasElement: true };
         }
     }
 
-    return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
-}
-
-/**
- * Updates aggregation path for filter fields based on XML document structure.
- *
- * @param {Document} xmlDocument - The XML document to analyze
- * @param {string} aggregationPath - The current aggregation path
- * @param {CustomFilterField} buildingBlockData - The building block data with embedded fragment
- * @returns {object} Object containing the updated aggregation path
- */
-function updateAggregationPathForFilterBar(
-    xmlDocument: Document,
-    aggregationPath: string,
-    buildingBlockData: CustomFilterField
-): { updatedAggregationPath: string; hasFilterFields: boolean } {
-    if (!buildingBlockData.embededFragment) {
-        return { updatedAggregationPath: aggregationPath, hasFilterFields: false };
-    }
-
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-    const hasFilterFieldsAggregation = xpathSelect("//*[local-name()='filterFields']", xmlDocument);
-    if (
-        hasFilterFieldsAggregation &&
-        Array.isArray(hasFilterFieldsAggregation) &&
-        hasFilterFieldsAggregation.length > 0
-    ) {
-        return {
-            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:filterFields`,
-            hasFilterFields: true
-        };
-    } else {
-        const useDefaultAggregation = xpathSelect("//*[local-name()='FilterField']", xmlDocument);
-        if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
-            return { updatedAggregationPath: aggregationPath, hasFilterFields: true };
-        }
-    }
-
-    return { updatedAggregationPath: aggregationPath, hasFilterFields: false };
+    return { updatedAggregationPath: aggregationPath, hasElement: false };
 }
 
 /**
@@ -251,13 +224,13 @@ function processBuildingBlock<T extends BuildingBlock>(
             fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
         }
         // check xmlDocument for macrosTable element
-        const tableColumnsResult = updateAggregationPathForTableColumns(
-            xmlDocument,
-            aggregationPath,
-            buildingBlockData
-        );
+        const tableColumnsResult = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
+            aggregationName: 'columns',
+            elementName: 'Column',
+            resultPropertyName: 'hasTableColumns'
+        });
         updatedAggregationPath = tableColumnsResult.updatedAggregationPath;
-        hasAggregation = tableColumnsResult.hasTableColumns;
+        hasAggregation = tableColumnsResult.hasElement;
 
         aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
     }
@@ -284,9 +257,13 @@ function processBuildingBlock<T extends BuildingBlock>(
             fs.copyTpl(getTemplatePath('filter/fragment.xml'), viewPath, config);
         }
 
-        const filterBarResult = updateAggregationPathForFilterBar(xmlDocument, aggregationPath, buildingBlockData);
+        const filterBarResult = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
+            aggregationName: 'filterFields',
+            elementName: 'FilterField',
+            resultPropertyName: 'hasFilterFields'
+        });
         updatedAggregationPath = filterBarResult.updatedAggregationPath;
-        hasAggregation = filterBarResult.hasFilterFields;
+        hasAggregation = filterBarResult.hasElement;
 
         aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.filterBar', 'macros');
     }
