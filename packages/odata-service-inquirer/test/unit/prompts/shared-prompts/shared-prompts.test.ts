@@ -459,6 +459,23 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(result).toBe(true);
             expect(mockAbapServiceProvider.fetchValueListReferenceServices).not.toHaveBeenCalled();
         });
+
+        it('should handle non-ABAP system errors gracefully', async () => {
+            // Mock createForAbap to throw an error (simulating non-ABAP system)
+            mockCreateForAbap.mockImplementation(() => {
+                throw new Error('Not an ABAP system');
+            });
+
+            const newPrompt = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
+            mockAnswers.datasourceType = DatasourceType.odataServiceUrl;
+
+            const validateFn = newPrompt.validate as (input: boolean, answers: OdataServiceAnswers) => Promise<boolean>;
+            const result = await validateFn(true, mockAnswers);
+
+            expect(result).toBe(true);
+            expect(PromptState.odataService.valueListReferences).toBeUndefined();
+            expect(mockCreateForAbap).toHaveBeenCalled();
+        });
     });
 
     describe('prompt configuration', () => {

@@ -83,26 +83,34 @@ export function getValueHelpDownloadPrompt(
             ) {
                 // Check if we have value list references for this service
                 if (detectValueListReferences() && currentValueListRefsAnnotations) {
-                    // Since odata service url prompts do not create abap service providers we need to create one
-                    let abapServiceProvider: AbapServiceProvider | undefined;
-                    if (answers.datasourceType === DatasourceType.odataServiceUrl) {
-                        abapServiceProvider = createForAbap(connectionValidator.axiosConfig);
-                    } else if (connectionValidator.serviceProvider instanceof AbapServiceProvider) {
-                        abapServiceProvider = connectionValidator.serviceProvider;
-                    }
-                    if (abapServiceProvider) {
-                        lastProcessedServicePath = PromptState.odataService.servicePath;
+                    // Best effort attempt to get value list references but don't throw an error if it fails as this may not be an ABAP system
+                    try {
+                        // Since odata service url prompts do not create abap service providers we need to create one
+                        let abapServiceProvider: AbapServiceProvider | undefined;
+                        if (answers.datasourceType === DatasourceType.odataServiceUrl) {
+                            abapServiceProvider = createForAbap(connectionValidator.axiosConfig);
+                        } else if (connectionValidator.serviceProvider instanceof AbapServiceProvider) {
+                            abapServiceProvider = connectionValidator.serviceProvider;
+                        }
+                        if (abapServiceProvider) {
+                            lastProcessedServicePath = PromptState.odataService.servicePath;
 
-                        const valueListReferences = await abapServiceProvider
-                            .fetchValueListReferenceServices(currentValueListRefsAnnotations)
-                            .catch(() => {
-                                LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
-                                return undefined;
-                            });
-                        // Backend already filters out invalid entries and ensures data is always present
-                        PromptState.odataService.valueListReferences = valueListReferences as
-                            | ValueListReferenceService[]
-                            | undefined;
+                            const valueListReferences = await abapServiceProvider
+                                .fetchValueListReferenceServices(currentValueListRefsAnnotations)
+                                .catch(() => {
+                                    LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
+                                    return undefined;
+                                });
+                            // Backend already filters out invalid entries and ensures data is always present
+                            PromptState.odataService.valueListReferences = valueListReferences as
+                                | ValueListReferenceService[]
+                                | undefined;
+                        }
+                    } catch (err) {
+                        LoggerHelper.logger.info(
+                            'Failed to fetch value list references - this may not be an ABAP system'
+                        );
+                        PromptState.odataService.valueListReferences = undefined;
                     }
                 }
             } else {
