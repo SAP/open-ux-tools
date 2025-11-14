@@ -24,7 +24,12 @@ jobs:
               run: |
                   cat tests/integration/adaptation-editor/versions.json
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
-                  echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
+                  # Extract first element using jq or fallback to head/cut
+                  if command -v jq >/dev/null 2>&1; then
+                    echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
+                  else
+                    echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | sed 's/\["//' | sed 's/".*//' | head -n1)" >> $GITHUB_OUTPUT
+                  fi
    
     playwright-tests:
         # if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
