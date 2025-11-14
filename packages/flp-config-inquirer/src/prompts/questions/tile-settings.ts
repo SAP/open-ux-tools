@@ -14,8 +14,8 @@ export function getTileSettingsPrompts(): YUIQuestion<TileSettingsAnswers>[] {
             name: tilePromptNames.tileHandlingAction,
             message: t('prompts.tileHandlingAction'),
             choices: [
-                { name: t('choices.replaceOriginalTile'), value: tileActions.REPLACE },
-                { name: t('choices.addNewTile'), value: tileActions.ADD }
+                { name: t('choices.addNewTile'), value: tileActions.ADD },
+                { name: t('choices.replaceOriginalTile'), value: tileActions.REPLACE }
             ],
             store: false,
             guiOptions: {
