@@ -22,7 +22,7 @@
         "eslint": "9.38.0"
     },
     "dependencies": {
-        "yaml": "2.2.2",
+        "@eslint/core": "0.16.0",
         "@humanwhocodes/momoa": "^3.3.9",
         "@sap-ux/project-access": "1.32.7"
     },
