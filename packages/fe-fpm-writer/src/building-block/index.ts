@@ -19,16 +19,10 @@ import {
     type RichTextEditor,
     bindingContextAbsolute,
     type TemplateConfig,
-    type CustomFilterField
+    type CustomFilterField,
+    EmbededFragment
 } from './types';
-import type {
-    Manifest,
-    CustomElement,
-    CustomFragment,
-    InternalCustomElement,
-    EventHandler,
-    FragmentContentData
-} from '../common/types';
+import type { Manifest, InternalCustomElement } from '../common/types';
 
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
@@ -49,7 +43,7 @@ const PLACEHOLDERS = {
 /**
  * Type for embedded fragment data used in building block processing.
  */
-type EmbeddedFragmentData = InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData;
+type EmbeddedFragmentData = InternalCustomElement & EmbededFragment;
 
 /**
  * Configuration for building block templates.
