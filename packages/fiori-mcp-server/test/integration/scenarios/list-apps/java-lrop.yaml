@@ -1,0 +1,10 @@
+config:
+    project: 'java-ai-created'
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'What apps are available in {{appPath}}? Please output name and project type'
+assert:
+    - type: contains
+      value: 'managetravels'
+    - type: contains
+      value: 'Java'
