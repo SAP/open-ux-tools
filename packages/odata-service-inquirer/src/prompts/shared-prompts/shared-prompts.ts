@@ -102,13 +102,12 @@ export function getValueHelpDownloadPrompt(
                             .fetchValueListReferenceServices(currentValueListRefsAnnotations)
                             .catch(() => {
                                 LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
+                                return undefined;
                             });
-                        // Filter out undefined entries and ensure all have required properties
-                        PromptState.odataService.valueListReferences =
-                            valueListReferences?.filter(
-                                (ref): ref is ValueListReferenceService =>
-                                    ref !== undefined && typeof ref.data === 'string' && typeof ref.path === 'string'
-                            ) ?? undefined;
+                        // Backend already filters out invalid entries and ensures data is always present
+                        PromptState.odataService.valueListReferences = valueListReferences as
+                            | ValueListReferenceService[]
+                            | undefined;
                     }
                 }
             } else {
