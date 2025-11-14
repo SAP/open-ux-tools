@@ -37,17 +37,14 @@ jobs:
                   fi
    
     playwright-tests:
-        # if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         strategy:
             fail-fast: false
             matrix:
                 include:
-                  # Ubuntu runs all UI5 versions
                   - os: ubuntu-latest
-                    ui5-versions: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-                  # Windows runs only latest UI5 version
+                    test_all_versions: true
                   - os: windows-2025
-                    ui5-versions: [${{ needs.ui5-versions.outputs.latest_ui5_version }}]
+                    test_all_versions: false
         runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
@@ -88,12 +85,21 @@ jobs:
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
-            - name: Run playwright tests for each UI5 version
+            - name: Run playwright tests
               run: |
-                for version in ${{ join(matrix.ui5-versions, ' ') }}; do
-                  echo "Running tests for UI5 version: $version"
+                if [ "${{ matrix.test_all_versions }}" == "true" ]; then
+                  # Ubuntu: test all versions
+                  versions='${{ needs.ui5-versions.outputs.ui5_versions }}'
+                  for version in $(echo $versions | jq -r '.[]'); do
+                    echo "Running tests for UI5 version: $version"
+                    cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
+                  done
+                else
+                  # Windows: test only latest version
+                  version="${{ needs.ui5-versions.outputs.latest_ui5_version }}"
+                  echo "Running tests for latest UI5 version: $version"
                   cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
-                done
+                fi
               shell: bash
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -106,7 +112,6 @@ jobs:
                 retention-days: 1
 
     merge-reports:
-        # Merge reports after playwright-tests, even if some shards have failed
         if: ${{ !cancelled() }}
         needs: [playwright-tests]
         runs-on: ubuntu-latest
