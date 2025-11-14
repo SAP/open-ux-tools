@@ -1,30 +1,24 @@
 // provides a "language" according to the eslint documentation (see https://eslint.org/docs/latest/extend/languages) to deal with fiori elements apps
 // in contrast to usual eslint languages, this one does not deal only with one file but with a set of files belonging to one app (e.g. manifest.json, annotations, ...)
 
-import {
+import type {
     File,
     Language,
     LanguageContext,
     LanguageOptions,
     OkParseResult,
     ParseResult,
-    SourceCode,
-    SourceLocation,
-    TraversalStep
+    SourceCode
 } from '@eslint/core';
-
-import { JSONLanguage, JSONOkParseResult, JSONSourceCode } from '@eslint/json';
-
-import { visitorKeys, parse, iterator } from '@humanwhocodes/momoa';
-
-import { createApplicationAccess } from '@sap-ux/project-access';
+import { JSONLanguage, type JSONOkParseResult } from '@eslint/json';
+import { parse } from '@humanwhocodes/momoa';
 
 export class FioriElementsLanguage implements Language {
     // required by eslint
-    fileType: 'text';
-    lineStart: 0; // | 1;
-    columnStart: 0; // | 1;
-    nodeTypeKey: 'type'; // 'kind';
+    fileType = 'text' as const;
+    lineStart = 1 as const;
+    columnStart = 1 as const;
+    nodeTypeKey = 'type';
 
     validateLanguageOptions() {
         // TODO implement language features if needed
@@ -38,9 +32,16 @@ export class FioriElementsLanguage implements Language {
         //const appAccess = await createApplicationAccess(file.path);
         //parse(appAccess.app.manifest);
 
+        const root = parse(typeof file.body === 'string' ? file.body : new TextDecoder().decode(file.body), {
+            mode: 'json',
+            ranges: true,
+            tokens: true,
+            allowTrailingCommas: false
+        });
+
         return {
             ok: true,
-            ast: parse(typeof file.body === 'string' ? file.body : new TextDecoder().decode(file.body))
+            ast: root
         };
     }
 
