@@ -5,6 +5,7 @@ import type {
     ExecuteFunctionalityInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
+    GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
 } from '../../../types';
 import { convertToSchema } from '../../utils';
@@ -18,7 +19,7 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                 The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
                 The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
                 The configuration **MUST** be based on the project files in the projectPath.`,
-    parameters: convertToSchema(GeneratorConfigSchemaCAP)
+    parameters: convertToSchema(GeneratorConfigSchemaCAP())
 };
 
 /**
@@ -26,8 +27,12 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
  *
  * @returns A promise that resolves to the functionality details output.
  */
-async function getFunctionalityDetails(): Promise<GetFunctionalityDetailsOutput> {
-    return GENERATE_FIORI_UI_APP;
+async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Promise<GetFunctionalityDetailsOutput> {
+    const details = GENERATE_FIORI_UI_APP;
+    return {
+        ...details,
+        parameters: convertToSchema(GeneratorConfigSchemaCAP(input.appPath))
+    };
 }
 
 /**
