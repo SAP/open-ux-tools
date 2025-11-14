@@ -46,6 +46,52 @@ const PLACEHOLDERS = {
     'qualifier': 'REPLACE_WITH_A_QUALIFIER'
 };
 
+/**
+ * Configuration for building block templates.
+ */
+interface BuildingBlockTemplateConfig {
+    nodes: {
+        explicit: string;
+        default: string;
+    };
+    templateType: string;
+    templateFile: string;
+    namespace: {
+        uri: string;
+        prefix: string;
+    };
+    resultPropertyName: string;
+    processor: (
+        buildingBlockData: any,
+        fs: Editor,
+        viewPath: string,
+        config: BuildingBlockTemplateConfig,
+        embededFragment?: any
+    ) => void;
+}
+
+/**
+ * Configuration map for building block types.
+ */
+export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBlockTemplateConfig>> = {
+    [BuildingBlockType.CustomColumn]: {
+        nodes: { explicit: 'columns', default: 'Column' },
+        templateType: 'common',
+        templateFile: 'common/Fragment.xml',
+        namespace: { uri: 'sap.fe.macros.table', prefix: 'macrosTable' },
+        resultPropertyName: 'hasTableColumns',
+        processor: processCustomColumn
+    },
+    [BuildingBlockType.CustomFilterField]: {
+        nodes: { explicit: 'filterFields', default: 'FilterField' },
+        templateType: 'filter',
+        templateFile: 'filter/fragment.xml',
+        namespace: { uri: 'sap.fe.macros.filterBar', prefix: 'macros' },
+        resultPropertyName: 'hasFilterFields',
+        processor: processCustomFilterField
+    }
+};
+
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
@@ -169,7 +215,7 @@ function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
 }
 
 /**
- * Processes custom column building block configuration.
+ * Processes building block configuration.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
  * @param {Document} xmlDocument - The XML document
@@ -195,84 +241,42 @@ function processBuildingBlock<T extends BuildingBlock>(
     let updatedAggregationPath = aggregationPath;
     let hasAggregation = false;
     let aggregationNamespace = 'macrosTable';
-    let embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData;
+    let embededFragment:
+        | (InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData)
+        | undefined;
     let viewPath: string | undefined;
 
+    // Get configuration for the building block type
+    const config = BUILDING_BLOCK_CONFIG[buildingBlockData.buildingBlockType];
+    if (!config) {
+        // Return defaults if no configuration is found
+        return {
+            updatedAggregationPath,
+            processedBuildingBlockData: buildingBlockData,
+            hasAggregation,
+            aggregationNamespace
+        };
+    }
+
+    // Process embedded fragment for types that support it
     if (
         (isCustomColumn(buildingBlockData) || isCustomFilterField(buildingBlockData)) &&
         buildingBlockData.embededFragment
     ) {
         embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
         viewPath = join(embededFragment.path, `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`);
-    }
 
-    if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment && viewPath) {
-        // Apply event handler
-        if (buildingBlockData.embededFragment.eventHandler) {
-            buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
-                fs,
-                buildingBlockData.embededFragment,
-                buildingBlockData.embededFragment.eventHandler,
-                {
-                    controllerSuffix: false,
-                    typescript: buildingBlockData.embededFragment.typescript
-                }
-            );
-        }
-        buildingBlockData.embededFragment.content = getDefaultFragmentContent(
-            'Sample Text',
-            buildingBlockData.embededFragment.eventHandler
-        );
-        if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
-        }
-        // check xmlDocument for macrosTable element
-        const tableColumnsResult = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
-            aggregationName: 'columns',
-            elementName: 'Column',
-            resultPropertyName: 'hasTableColumns'
+        // Use the processor function from the configuration
+        config.processor(buildingBlockData, fs, viewPath, config, embededFragment);
+
+        const result = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
+            aggregationName: config.nodes.explicit,
+            elementName: config.nodes.default,
+            resultPropertyName: config.resultPropertyName
         });
-        updatedAggregationPath = tableColumnsResult.updatedAggregationPath;
-        hasAggregation = tableColumnsResult.hasElement;
-
-        aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
-    }
-
-    if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment && viewPath) {
-        const config = {
-            controlID: buildingBlockData.filterFieldKey!,
-            label: buildingBlockData.label,
-            property: buildingBlockData.property,
-            required: buildingBlockData.required ?? false,
-            position: buildingBlockData.position!,
-            eventHandler: buildingBlockData.embededFragment?.eventHandler,
-            ns: embededFragment!.ns,
-            name: embededFragment!.name,
-            path: embededFragment!.path
-        };
-
-        // Apply event handler
-        if (config.eventHandler) {
-            config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, {
-                controllerSuffix: false,
-                typescript: buildingBlockData.embededFragment.typescript,
-                templatePath: 'filter/Controller'
-            });
-        }
-
-        if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('filter/fragment.xml'), viewPath, config);
-        }
-
-        const filterBarResult = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
-            aggregationName: 'filterFields',
-            elementName: 'FilterField',
-            resultPropertyName: 'hasFilterFields'
-        });
-        updatedAggregationPath = filterBarResult.updatedAggregationPath;
-        hasAggregation = filterBarResult.hasElement;
-
-        aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.filterBar', 'macros');
+        updatedAggregationPath = result.updatedAggregationPath;
+        hasAggregation = result.hasElement;
+        aggregationNamespace = getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
     }
 
     return {
@@ -281,6 +285,80 @@ function processBuildingBlock<T extends BuildingBlock>(
         hasAggregation,
         aggregationNamespace
     };
+}
+
+/**
+ * Processes custom column building block.
+ *
+ * @param {CustomColumn} buildingBlockData - The custom column building block data
+ * @param {Editor} fs - The memfs editor instance
+ * @param {string} viewPath - The view path
+ * @param {BuildingBlockTemplateConfig} config - The building block configuration
+ */
+function processCustomColumn(
+    buildingBlockData: CustomColumn,
+    fs: Editor,
+    viewPath: string,
+    config: BuildingBlockTemplateConfig
+): void {
+    const columnConfig = buildingBlockData.embededFragment!;
+    let processedEventHandler: string | undefined;
+
+    // Apply event handler
+    if (columnConfig.eventHandler) {
+        processedEventHandler = applyEventHandlerConfiguration(fs, columnConfig, columnConfig.eventHandler, {
+            controllerSuffix: false,
+            typescript: columnConfig.typescript
+        });
+        columnConfig.eventHandler = processedEventHandler;
+    }
+
+    columnConfig.content = getDefaultFragmentContent('Sample Text', processedEventHandler);
+    if (!fs.exists(viewPath)) {
+        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, columnConfig);
+    }
+}
+
+/**
+ * Processes custom filter field building block.
+ *
+ * @param {CustomFilterField} buildingBlockData - The custom filter field building block data
+ * @param {Editor} fs - The memfs editor instance
+ * @param {string} viewPath - The view path
+ * @param {BuildingBlockTemplateConfig} config - The building block configuration
+ * @param {object} embededFragment - The embedded fragment data
+ */
+function processCustomFilterField(
+    buildingBlockData: CustomFilterField,
+    fs: Editor,
+    viewPath: string,
+    config: BuildingBlockTemplateConfig,
+    embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData
+): void {
+    const filterConfig = {
+        controlID: buildingBlockData.filterFieldKey!,
+        label: buildingBlockData.label,
+        property: buildingBlockData.property,
+        required: buildingBlockData.required ?? false,
+        position: buildingBlockData.position!,
+        eventHandler: buildingBlockData.embededFragment?.eventHandler,
+        ns: embededFragment.ns,
+        name: embededFragment.name,
+        path: embededFragment.path
+    };
+
+    // Apply event handler
+    if (filterConfig.eventHandler) {
+        filterConfig.eventHandler = applyEventHandlerConfiguration(fs, filterConfig, filterConfig.eventHandler, {
+            controllerSuffix: false,
+            typescript: buildingBlockData.embededFragment?.typescript,
+            templatePath: 'filter/Controller'
+        });
+    }
+
+    if (!fs.exists(viewPath)) {
+        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, filterConfig);
+    }
 }
 
 /**
