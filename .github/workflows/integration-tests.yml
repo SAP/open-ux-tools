@@ -88,14 +88,16 @@ jobs:
             - name: Run playwright tests
               run: |
                 if [ "${{ matrix.test_all_versions }}" == "true" ]; then
-                  # Ubuntu: test all versions
+                  # Ubuntu: test all versions - create full versions.json
+                  echo '${{ needs.ui5-versions.outputs.ui5_versions }}' > tests/integration/adaptation-editor/versions.json
                   versions='${{ needs.ui5-versions.outputs.ui5_versions }}'
                   for version in $(echo $versions | jq -r '.[]'); do
                     echo "Running tests for UI5 version: $version"
                     cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
                   done
                 else
-                  # Windows: test only latest version
+                  # Windows: test only latest version - create versions.json with single version
+                  echo '["${{ needs.ui5-versions.outputs.latest_ui5_version }}"]' > tests/integration/adaptation-editor/versions.json
                   version="${{ needs.ui5-versions.outputs.latest_ui5_version }}"
                   echo "Running tests for latest UI5 version: $version"
                   cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
