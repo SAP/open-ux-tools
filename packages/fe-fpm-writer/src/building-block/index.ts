@@ -196,14 +196,18 @@ function processBuildingBlock<T extends BuildingBlock>(
     let updatedAggregationPath = aggregationPath;
     let hasAggregation = false;
     let aggregationNamespace = 'macrosTable';
+    let embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData;
+    let viewPath: string | undefined;
 
-    if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
-        const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-        const viewPath = join(
-            embededFragment.path,
-            `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
-        );
+    if (
+        (isCustomColumn(buildingBlockData) || isCustomFilterField(buildingBlockData)) &&
+        buildingBlockData.embededFragment
+    ) {
+        embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
+        viewPath = join(embededFragment.path, `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`);
+    }
 
+    if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment && viewPath) {
         // Apply event handler
         if (buildingBlockData.embededFragment.eventHandler) {
             buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
@@ -235,14 +239,8 @@ function processBuildingBlock<T extends BuildingBlock>(
         aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
     }
 
-    if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment) {
-        const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-        const config = createCustomFilterConfig(buildingBlockData, embededFragment);
-
-        const viewPath = join(
-            embededFragment.path,
-            `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
-        );
+    if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment && viewPath) {
+        const config = createCustomFilterConfig(buildingBlockData, embededFragment!);
 
         // Apply event handler
         if (config.eventHandler) {
