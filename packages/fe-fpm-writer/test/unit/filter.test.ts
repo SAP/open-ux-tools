@@ -13,7 +13,6 @@ describe('CustomFilter', () => {
         const testDir = '' + Date.now();
         let fs: Editor;
         const filter: CustomFilter = {
-            id: 'testID',
             name: 'NewCustomFilter',
             label: 'Test Custom Filter',
             controlID: 'testID',
