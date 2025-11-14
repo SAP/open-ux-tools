@@ -6,7 +6,7 @@ import LoggerHelper from '../logger-helper';
 import { t } from '../../i18n';
 import type { OdataServiceAnswers } from '../../types';
 import { DatasourceType } from '../../types';
-import type { ValueListReferenceService } from '@sap-ux/odata-service-writer';
+import type { ValueListReference, ValueListReferenceService } from '@sap-ux/odata-service-writer';
 import { getValueListReferences, OdataVersion } from '@sap-ux/odata-service-writer';
 
 /**
@@ -22,7 +22,7 @@ export function getValueHelpDownloadPrompt(
 ): ConfirmQuestion {
     const valueHelpDownloadConfirmName = `${promptNamespace}:valueHelpDownloadConfirm`;
     let lastProcessedServicePath: string | undefined;
-    let currentValueListRefsAnnotations: { target: string; rootPath: string; value: string }[] | undefined;
+    let currentValueListRefsAnnotations: ValueListReference[] | undefined;
 
     /**
      * Helper function to detect and cache value list references for the current service.
@@ -52,12 +52,7 @@ export function getValueHelpDownloadPrompt(
                 PromptState.odataService.metadata,
                 PromptState.odataService.annotations ?? []
             );
-
-            currentValueListRefsAnnotations = valueListReferences.map((ref) => ({
-                target: ref.target,
-                rootPath: ref.serviceRootPath,
-                value: ref.value
-            }));
+            currentValueListRefsAnnotations = valueListReferences;
 
             lastProcessedServicePath = currentServicePath;
             // Clear any stale value list references when service changes
