@@ -27,7 +27,14 @@ To consume this module, add @sap-ux/eslint-plugin-fiori-tools plugin to your `es
 To use `manifest.json` specific rules update `eslint.config.mjs` with the relevant configuration:
 
 ```
-export { v4 as default } from "@sap-ux/eslint-plugin-fiori-tools";
+import fioriToolsPlugin from "@sap-ux/eslint-plugin-fiori-tools";
+import { defineConfig } from "eslint/config";
+
+export default defineConfig([
+  {
+    extends: [fioriToolsPlugin.configs["SAP-consistency"]],
+  },
+]);
 ```
 
 Run with `npx eslint`. (eslint version 9 is required)

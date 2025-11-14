@@ -11,42 +11,34 @@ const plugin: Plugin = {
     languages: {
         fioriElements: new FioriElementsLanguage()
     },
-    rules,
+    rules: rules as Record<string, any>,
     configs: {},
     processors: {}
 };
 
+const commonConfig = {
+    files: ['**/manifest.json'],
+    language: '@sap-ux/eslint-plugin-fiori-tools/fioriElements',
+    plugins: {
+        '@sap-ux/eslint-plugin-fiori-tools': plugin
+    }
+};
+
 Object.assign(plugin.configs as {}, {
-    '@sap-ux/fiori-tools/Base-requirements': {
-        files: ['**/manifest.json'],
-        language: '@sap-ux/fiori-tools/fioriElements',
-        plugins: {
-            '@sap-ux/fiori-tools': plugin
-        },
+    'Base-requirements': {
+        ...commonConfig,
         rules: {}
     },
-    '@sap-ux/fiori-tools/FE-requirements': {
-        files: ['**/manifest.json'],
-        language: '@sap-ux/fiori-tools/fioriElements',
-        plugins: {
-            '@sap-ux/fiori-tools': plugin
-        },
+    'FE-requirements': {
+        ...commonConfig,
         rules: {}
     },
-    '@sap-ux/fiori-tools/SAP-consistency': {
-        files: ['**/manifest.json'],
-        language: '@sap-ux/fiori-tools/fioriElements',
-        plugins: {
-            '@sap-ux/fiori-tools': plugin
-        },
-        rules: { '@sap-ux/fiori-tools/flex-enabled': 'warn' }
+    'SAP-consistency': {
+        ...commonConfig,
+        rules: { '@sap-ux/eslint-plugin-fiori-tools/flex-enabled': 'warn' }
     },
-    '@sap-ux/fiori-tools/ERP-consistency': {
-        files: ['**/manifest.json'],
-        language: '@sap-ux/fiori-tools/fioriElements',
-        plugins: {
-            '@sap-ux/fiori-tools': plugin
-        },
+    'ERP-consistency': {
+        ...commonConfig,
         rules: {}
     }
 });
