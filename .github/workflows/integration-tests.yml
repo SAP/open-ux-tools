@@ -16,7 +16,7 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions
+                key: ui5-versions-
                 restore-keys: ui5-versions-
             - name: Output UI5 versions
               id: output-ui5-versions
@@ -71,15 +71,6 @@ jobs:
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
-            - name: Read UI5 versions from cache
-              uses: actions/cache/restore@v4
-              with:
-                path: |
-                  tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-${{ matrix.os }}-
-                restore-keys: |
-                    ui5-versions-${{ matrix.os }}-
-                    ui5-versions-
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
