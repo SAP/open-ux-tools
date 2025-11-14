@@ -16,11 +16,8 @@ jobs:
               with:
                 path: |
                   tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-
-                restore-keys: |
-                    ui5-versions-ubuntu-latest-
-                    ui5-versions-windows-2025-
-                    ui5-versions-
+                key: ui5-versions
+                restore-keys: ui5-versions-
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
