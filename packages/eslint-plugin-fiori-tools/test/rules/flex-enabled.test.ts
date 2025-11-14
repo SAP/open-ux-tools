@@ -1,12 +1,11 @@
 import { RuleTester } from 'eslint';
 import flexEnabledRule from '../../src/rules/flex-enabled';
 import consistency from '../../src/index';
+import type { Plugin } from '@eslint/core';
 
 const ruleTester = new RuleTester({
-    plugins: {
-        consistency
-    },
-    language: 'consistency/json'
+    plugins: { consistency: consistency as Plugin },
+    language: 'consistency/fioriElements'
 });
 
 ruleTester.run('flex-enabled', flexEnabledRule, {
