@@ -1730,6 +1730,9 @@ describe('Building Blocks', () => {
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
             expect(viewContent).toContain('my.test.App.ext.customfilter.AllPropertiesFilterField');
 
+            // Check that the generated view.xml contains the filterFieldKey
+            expect(viewContent).toContain('customKey123');
+
             await writeFilesForDebugging(fs);
         });
 

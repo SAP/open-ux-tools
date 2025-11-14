@@ -1,6 +1,6 @@
 <% if (!config?.hasAggregation) { %><<%- macrosNamespace %>:filterFields><% } %>
     <<%- config?.aggregationNamespace %>:FilterField 
-		key="<%- data.filterFieldKey %>" 
+		key="<%- data.filterFieldKey || 'myFilterFieldKey'%>" 
 		label="<%- data.label %>"
 		<% if (data.id) { %> id="<%- data.id %>"<% } %>
 		<% if (data.position.anchor) { %> anchor="<%- data.position.anchor %>"<% } %>
