@@ -12,6 +12,10 @@ jobs:
             ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
             latest_ui5_version: ${{ steps.output-ui5-versions.outputs.latest_ui5_version }}
         steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@v4
               with:
@@ -22,13 +26,14 @@ jobs:
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
-                  cat tests/integration/adaptation-editor/versions.json
-                  echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
-                  # Extract first element using jq or fallback to head/cut
-                  if command -v jq >/dev/null 2>&1; then
+                  if [[ -f tests/integration/adaptation-editor/versions.json ]]; then
+                    cat tests/integration/adaptation-editor/versions.json
+                    echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
                     echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
                   else
-                    echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | sed 's/\["//' | sed 's/".*//' | head -n1)" >> $GITHUB_OUTPUT
+                    echo "versions.json not found - using fallback"
+                    echo "ui5_versions=[\"1.142.0\"]" >> $GITHUB_OUTPUT
+                    echo "latest_ui5_version=1.142.0" >> $GITHUB_OUTPUT
                   fi
    
     playwright-tests:
@@ -106,42 +111,19 @@ jobs:
         needs: [playwright-tests]
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout code repository
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  run_install: true
-            - name: Cache pnpm modules
-              uses: actions/cache@v4
-              env:
-                  cache-name: cache-pnpm-modules
-              with:
-                  path: ~/.pnpm-store
-                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ubuntu-latest-build-${{ env.cache-name }}-20.x-
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20.x
-            - name: Install pnpm modules
-              run: pnpm install
             - name: Download blob reports from GitHub Actions Artifacts
               uses: actions/download-artifact@v4
               with:
-                  path: tests/integration/adaptation-editor/all-blob-reports
+                  path: all-blob-reports
                   pattern: blob-report-*
                   merge-multiple: true
 
             - name: Merge into HTML Report
-              run: cd tests/integration/adaptation-editor && npx playwright merge-reports --reporter html ./all-blob-reports
+              run: npx playwright merge-reports --reporter html ./all-blob-reports
 
             - name: Upload unified HTML report
               uses: actions/upload-artifact@v4
               with:
                   name: playwright-report-unified-${{ github.run_attempt }}
-                  path: tests/integration/adaptation-editor/playwright-report
+                  path: playwright-report
                   retention-days: 15
