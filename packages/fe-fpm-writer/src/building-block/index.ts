@@ -47,6 +47,11 @@ const PLACEHOLDERS = {
 };
 
 /**
+ * Type for embedded fragment data used in building block processing.
+ */
+type EmbeddedFragmentData = InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData;
+
+/**
  * Configuration for building block templates.
  */
 interface BuildingBlockTemplateConfig {
@@ -62,11 +67,11 @@ interface BuildingBlockTemplateConfig {
     };
     resultPropertyName: string;
     processor: (
-        buildingBlockData: any,
+        buildingBlockData: BuildingBlock,
         fs: Editor,
         viewPath: string,
         config: BuildingBlockTemplateConfig,
-        embededFragment?: any
+        embededFragment?: EmbeddedFragmentData
     ) => void;
 }
 
@@ -241,9 +246,7 @@ function processBuildingBlock<T extends BuildingBlock>(
     let updatedAggregationPath = aggregationPath;
     let hasAggregation = false;
     let aggregationNamespace = 'macrosTable';
-    let embededFragment:
-        | (InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData)
-        | undefined;
+    let embededFragment: EmbeddedFragmentData | undefined;
     let viewPath: string | undefined;
 
     // Get configuration for the building block type
@@ -290,17 +293,21 @@ function processBuildingBlock<T extends BuildingBlock>(
 /**
  * Processes custom column building block.
  *
- * @param {CustomColumn} buildingBlockData - The custom column building block data
+ * @param {BuildingBlock} buildingBlockData - The building block data
  * @param {Editor} fs - The memfs editor instance
  * @param {string} viewPath - The view path
  * @param {BuildingBlockTemplateConfig} config - The building block configuration
  */
 function processCustomColumn(
-    buildingBlockData: CustomColumn,
+    buildingBlockData: BuildingBlock,
     fs: Editor,
     viewPath: string,
     config: BuildingBlockTemplateConfig
 ): void {
+    if (!isCustomColumn(buildingBlockData)) {
+        throw new Error('Expected CustomColumn building block data');
+    }
+
     const columnConfig = buildingBlockData.embededFragment!;
     let processedEventHandler: string | undefined;
 
@@ -322,19 +329,27 @@ function processCustomColumn(
 /**
  * Processes custom filter field building block.
  *
- * @param {CustomFilterField} buildingBlockData - The custom filter field building block data
+ * @param {BuildingBlock} buildingBlockData - The building block data
  * @param {Editor} fs - The memfs editor instance
  * @param {string} viewPath - The view path
  * @param {BuildingBlockTemplateConfig} config - The building block configuration
- * @param {object} embededFragment - The embedded fragment data
+ * @param {EmbeddedFragmentData} embededFragment - The embedded fragment data
  */
 function processCustomFilterField(
-    buildingBlockData: CustomFilterField,
+    buildingBlockData: BuildingBlock,
     fs: Editor,
     viewPath: string,
     config: BuildingBlockTemplateConfig,
-    embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData
+    embededFragment?: EmbeddedFragmentData
 ): void {
+    if (!isCustomFilterField(buildingBlockData)) {
+        throw new Error('Expected CustomFilterField building block data');
+    }
+
+    if (!embededFragment) {
+        throw new Error('EmbeddedFragment is required for CustomFilterField');
+    }
+
     const filterConfig = {
         controlID: buildingBlockData.filterFieldKey!,
         label: buildingBlockData.label,
