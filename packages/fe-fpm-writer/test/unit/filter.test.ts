@@ -61,7 +61,6 @@ describe('CustomFilter', () => {
 
         test('Create several new custom filters', async () => {
             const secondFilter = {
-                id: 'testID2',
                 name: 'NewCustomFilter2',
                 label: 'Test Custom Filter 2',
                 controlID: 'testID2',
