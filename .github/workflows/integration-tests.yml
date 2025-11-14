@@ -14,8 +14,6 @@ jobs:
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@v4
               with:
@@ -26,25 +24,24 @@ jobs:
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
-                  if [[ -f tests/integration/adaptation-editor/versions.json ]]; then
-                    cat tests/integration/adaptation-editor/versions.json
-                    echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
-                    echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
-                  else
-                    echo "versions.json not found - using fallback"
-                    echo "ui5_versions=[\"1.142.0\"]" >> $GITHUB_OUTPUT
-                    echo "latest_ui5_version=1.142.0" >> $GITHUB_OUTPUT
-                  fi
+                  cat tests/integration/adaptation-editor/versions.json
+                  echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
+                  echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
    
     playwright-tests:
         strategy:
             fail-fast: false
             matrix:
-                include:
-                  - os: ubuntu-latest
-                    test_all_versions: true
+                os: [ubuntu-latest, windows-2025]
+                ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
+                exclude:
+                  # Exclude all Windows + UI5 version combinations except the latest
                   - os: windows-2025
-                    test_all_versions: false
+                    ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
+                include:
+                  # Add back only Windows + latest version
+                  - os: windows-2025
+                    ui5-version: ${{ needs.ui5-versions.outputs.latest_ui5_version }}
         runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
@@ -85,31 +82,22 @@ jobs:
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
+            - name: Read UI5 versions from cache
+              uses: actions/cache/restore@v4
+              with:
+                path: |
+                  tests/integration/adaptation-editor/versions.json
+                key: ui5-versions-
+                restore-keys: ui5-versions-
             - name: Run playwright tests
-              run: |
-                if [ "${{ matrix.test_all_versions }}" == "true" ]; then
-                  # Ubuntu: test all versions - create full versions.json
-                  echo '${{ needs.ui5-versions.outputs.ui5_versions }}' > tests/integration/adaptation-editor/versions.json
-                  versions='${{ needs.ui5-versions.outputs.ui5_versions }}'
-                  for version in $(echo $versions | jq -r '.[]'); do
-                    echo "Running tests for UI5 version: $version"
-                    cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
-                  done
-                else
-                  # Windows: test only latest version - create versions.json with single version
-                  echo '["${{ needs.ui5-versions.outputs.latest_ui5_version }}"]' > tests/integration/adaptation-editor/versions.json
-                  version="${{ needs.ui5-versions.outputs.latest_ui5_version }}"
-                  echo "Running tests for latest UI5 version: $version"
-                  cd tests/integration/adaptation-editor && pnpm exec playwright test --project=$version --reporter=blob
-                fi
-              shell: bash
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload blob report to GitHub Actions Artifacts
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
-                name: blob-report-${{ matrix.os }}-all-versions
+                name: blob-report-${{ matrix.os }}-${{ matrix.ui5-version }}
                 path: tests/integration/adaptation-editor/blob-report
                 retention-days: 1
 
@@ -124,10 +112,8 @@ jobs:
                   path: all-blob-reports
                   pattern: blob-report-*
                   merge-multiple: true
-
             - name: Merge into HTML Report
               run: npx playwright merge-reports --reporter html ./all-blob-reports
-
             - name: Upload unified HTML report
               uses: actions/upload-artifact@v4
               with:
