@@ -17,25 +17,22 @@ jobs:
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@v4
               with:
-                path: |
-                  tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-
-                restore-keys: ui5-versions-
+                  path: tests/integration/adaptation-editor/versions.json
+                  key: ui5-versions-
+                  restore-keys: ui5-versions-
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
                   cat tests/integration/adaptation-editor/versions.json
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
                   echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
-   
-    playwright-tests:
-        if: ${{ (matrix.os == 'ubuntu-latest') || (matrix.os == 'windows-2025' && matrix.ui5-version == needs.ui5-versions.outputs.latest_ui5_version) }}
+
+    ubuntu-tests:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, windows-2025]
                 ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-        runs-on: ${{ matrix.os }}
+        runs-on: ubuntu-latest
         needs: ui5-versions
         timeout-minutes: 30
         steps:
@@ -52,10 +49,9 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path: ${{ matrix.os == 'windows-2025' && '~\AppData\Local\pnpm\store' || '~/.pnpm-store' }}
-                  key: ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ matrix.os }}-build-${{ env.cache-name }}-20.x-
+                  path: ~/.pnpm-store
+                  key: ubuntu-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: ubuntu-build-${{ env.cache-name }}-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
@@ -65,41 +61,98 @@ jobs:
             - name: Run build
               run: pnpm run build
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@v4
               with:
-                path: ${{ matrix.os == 'windows-2025' && '~\AppData\Local\ms-playwright' || '~/.cache/ms-playwright' }}
-                key: playwright-browsers-os-${{ matrix.os }}-node-version-20.x
+                  path: ~/.cache/ms-playwright
+                  key: playwright-browsers-ubuntu-20.x
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@v4
               with:
-                path: |
-                  tests/integration/adaptation-editor/versions.json
-                key: ui5-versions-
-                restore-keys: ui5-versions-
+                  path: tests/integration/adaptation-editor/versions.json
+                  key: ui5-versions-
+                  restore-keys: ui5-versions-
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
-                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-            - name: Upload blob report to GitHub Actions Artifacts
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Upload blob report
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
-                name: blob-report-${{ matrix.os }}-${{ matrix.ui5-version }}
-                path: tests/integration/adaptation-editor/blob-report
-                retention-days: 1
+                  name: blob-report-ubuntu-${{ matrix.ui5-version }}
+                  path: tests/integration/adaptation-editor/blob-report
+                  retention-days: 1
+
+    windows-tests:
+        runs-on: windows-2025
+        needs: ui5-versions
+        timeout-minutes: 30
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  run_install: true
+            - name: Cache pnpm modules
+              uses: actions/cache@v4
+              env:
+                  cache-name: cache-pnpm-modules
+              with:
+                  path: ~\AppData\Local\pnpm\store
+                  key: windows-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: windows-build-${{ env.cache-name }}-20.x-
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20.x
+            - name: Install pnpm modules
+              run: pnpm install
+            - name: Run build
+              run: pnpm run build
+              env:
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Cache playwright browsers
+              id: cache-playwright-browsers
+              uses: actions/cache@v4
+              with:
+                  path: ~\AppData\Local\ms-playwright
+                  key: playwright-browsers-windows-20.x
+            - name: Install playwright chrome browsers
+              if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+              run: npx playwright install chrome
+            - name: Read UI5 versions from cache
+              uses: actions/cache/restore@v4
+              with:
+                  path: tests/integration/adaptation-editor/versions.json
+                  key: ui5-versions-
+                  restore-keys: ui5-versions-
+            - name: Run playwright tests
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ needs.ui5-versions.outputs.latest_ui5_version }} --reporter=blob
+              env:
+                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Upload blob report
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: blob-report-windows-${{ needs.ui5-versions.outputs.latest_ui5_version }}
+                  path: tests/integration/adaptation-editor/blob-report
+                  retention-days: 1
 
     merge-reports:
         if: ${{ !cancelled() }}
-        needs: [playwright-tests]
+        needs: [ubuntu-tests, windows-tests]
         runs-on: ubuntu-latest
         steps:
-            - name: Download blob reports from GitHub Actions Artifacts
+            - name: Download blob reports
               uses: actions/download-artifact@v4
               with:
                   path: all-blob-reports
