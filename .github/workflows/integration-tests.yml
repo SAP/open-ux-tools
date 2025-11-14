@@ -29,19 +29,12 @@ jobs:
                   echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
    
     playwright-tests:
+        if: ${{ (matrix.os == 'ubuntu-latest') || (matrix.os == 'windows-2025' && matrix.ui5-version == needs.ui5-versions.outputs.latest_ui5_version) }}
         strategy:
             fail-fast: false
             matrix:
                 os: [ubuntu-latest, windows-2025]
                 ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-                exclude:
-                  # Exclude all Windows + UI5 version combinations except the latest
-                  - os: windows-2025
-                    ui5-version: ${{ fromJson(needs.ui5-versions.outputs.ui5_versions) }}
-                include:
-                  # Add back only Windows + latest version
-                  - os: windows-2025
-                    ui5-version: ${{ needs.ui5-versions.outputs.latest_ui5_version }}
         runs-on: ${{ matrix.os }}
         needs: ui5-versions
         timeout-minutes: 30
