@@ -20,7 +20,7 @@ import {
     bindingContextAbsolute,
     type TemplateConfig,
     type CustomFilterField,
-    EmbededFragment
+    type EmbededFragment
 } from './types';
 import type { Manifest, InternalCustomElement } from '../common/types';
 
