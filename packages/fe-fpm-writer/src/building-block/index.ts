@@ -21,7 +21,6 @@ import {
     type TemplateConfig,
     type CustomFilterField
 } from './types';
-import type { InternalCustomFilter } from '../filter/types';
 import type {
     Manifest,
     CustomElement,
@@ -240,7 +239,17 @@ function processBuildingBlock<T extends BuildingBlock>(
     }
 
     if (isCustomFilterField(buildingBlockData) && buildingBlockData.embededFragment && viewPath) {
-        const config = createCustomFilterConfig(buildingBlockData, embededFragment!);
+        const config = {
+            controlID: buildingBlockData.filterFieldKey!,
+            label: buildingBlockData.label,
+            property: buildingBlockData.property,
+            required: buildingBlockData.required ?? false,
+            position: buildingBlockData.position!,
+            eventHandler: buildingBlockData.embededFragment?.eventHandler,
+            ns: embededFragment!.ns,
+            name: embededFragment!.name,
+            path: embededFragment!.path
+        };
 
         // Apply event handler
         if (config.eventHandler) {
@@ -271,30 +280,6 @@ function processBuildingBlock<T extends BuildingBlock>(
         processedBuildingBlockData: buildingBlockData,
         hasAggregation,
         aggregationNamespace
-    };
-}
-
-/**
- * Creates an InternalCustomFilter configuration from CustomFilterField building block data.
- *
- * @param {CustomFilterField} buildingBlockData - The building block data
- * @param {InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData} embededFragment - The embedded fragment data with defaults applied
- * @returns {InternalCustomFilter} The internal custom filter configuration
- */
-function createCustomFilterConfig(
-    buildingBlockData: CustomFilterField,
-    embededFragment: InternalCustomElement & EventHandler & CustomFragment & CustomElement & FragmentContentData
-): InternalCustomFilter {
-    return {
-        controlID: buildingBlockData.filterFieldKey!,
-        label: buildingBlockData.label,
-        property: buildingBlockData.property,
-        required: buildingBlockData.required ?? false,
-        position: buildingBlockData.position!,
-        eventHandler: buildingBlockData.embededFragment?.eventHandler,
-        ns: embededFragment.ns,
-        name: embededFragment.name,
-        path: embededFragment.path
     };
 }
 
