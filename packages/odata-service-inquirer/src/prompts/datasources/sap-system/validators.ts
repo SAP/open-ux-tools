@@ -1,7 +1,7 @@
 import { t } from '../../../i18n';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'node:fs';
-import { getBackendSystemService } from '../../../utils/store';
+import { getAllBackendSystems } from '../../../utils/store';
 
 /**
  * Check if the system name is already in use.
@@ -10,10 +10,7 @@ import { getBackendSystemService } from '../../../utils/store';
  * @returns true if the system name is already in use, otherwise false
  */
 async function isSystemNameInUse(systemName: string): Promise<boolean> {
-    const backendService = await getBackendSystemService();
-    const backendSystems = await backendService.getAll({
-        includeSensitiveData: false
-    });
+    const backendSystems = await getAllBackendSystems(false);
     return !!backendSystems.find((system) => system.name === systemName);
 }
 
