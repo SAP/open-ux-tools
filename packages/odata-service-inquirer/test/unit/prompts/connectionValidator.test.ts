@@ -169,10 +169,29 @@ describe('ConnectionValidator', () => {
         );
         expect(serviceProviderSpy).toHaveBeenCalledWith('/some/path/to/service/');
 
-        // Username/pword are invalid
+        // Username/pword are invalid, authorization
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(403));
         expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({
-            valResult: t('errors.authenticationFailed'),
+            valResult: t('errors.authenticationFailedAllCatalogs', { authFailType: t('texts.authorizationFailed') }),
+            errorType: 'AUTH'
+        });
+
+        // Username/pword are invalid, authorization, specific catalog
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(403));
+        expect(
+            await validator.validateAuth(serviceUrl, 'user1', 'password1', { odataVersion: ODataVersion.v4 })
+        ).toEqual({
+            valResult: t('errors.authenticationFailedSpecificCatalog', {
+                authFailType: t('texts.authorizationFailed'),
+                odataVersion: '4'
+            }),
+            errorType: 'AUTH'
+        });
+
+        // Username/pword are invalid, authentication
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(401));
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({
+            valResult: t('errors.authenticationFailedAllCatalogs', { authFailType: t('texts.authenticationFailed') }),
             errorType: 'AUTH'
         });
 
