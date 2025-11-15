@@ -36,7 +36,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "connect-livereload": "0.6.1",
-        "livereload": "0.9.3",
+        "livereload": "0.10.3",
         "portfinder": "1.0.32"
     },
     "devDependencies": {
