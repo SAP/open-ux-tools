@@ -1,10 +1,6 @@
 import UI5Element from 'sap/ui/core/Element';
 import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
 import type IconTabBar from 'sap/m/IconTabBar';
-import type IconTabFilter from 'sap/m/IconTabFilter';
-import type Table from 'sap/m/Table';
-import type MdcTable from 'sap/ui/mdc/Table';
-import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
@@ -14,7 +10,6 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import ManagedObject from 'sap/ui/base/ManagedObject';
 import { EnablementValidator } from './enablement-validator';
 import { QuickActionDefinitionBase } from './quick-action-base';
 import {
@@ -26,7 +21,6 @@ import {
     TREE_TABLE_TYPE
 } from './control-types';
 import { isVariantManagementEnabledOPPage } from './fe-v2/utils';
-
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
@@ -145,7 +139,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             this.controlTypes
         )) {
             const tabKey = Object.keys(iconTabBarfilterMap).find((key) => table.getId().endsWith(key));
-            const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
+            const section = getParentContainer(table, 'sap.uxap.ObjectPageSection');
             if (section) {
                 await this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
@@ -176,17 +170,27 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
      */
     protected getInternalTable(table: UI5Element): UI5Element | undefined {
         try {
-            let tableInternal: ManagedObject | undefined;
-
-            if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-                const itemsAggregation = table.getAggregation('items') as ManagedObject[];
-                tableInternal = itemsAggregation.find((item) =>
-                    [M_TABLE_TYPE, TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((tType) =>
-                        isA(tType, item)
-                    )
-                );
+            if (!isA(SMART_TABLE_TYPE, table)) {
+                return undefined;
             }
-            return tableInternal as UI5Element | undefined;
+
+            const itemsAggregation = table.getAggregation('items');
+            if (!Array.isArray(itemsAggregation)) {
+                return undefined;
+            }
+
+            for (const item of itemsAggregation) {
+                if (
+                    isA(M_TABLE_TYPE, item) ||
+                    isA(TREE_TABLE_TYPE, item) ||
+                    isA(ANALYTICAL_TABLE_TYPE, item) ||
+                    isA(GRID_TABLE_TYPE, item)
+                ) {
+                    return item;
+                }
+            }
+
+            return undefined;
         } catch (error) {
             return undefined;
         }
@@ -198,12 +202,12 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
      * @returns table label if found or 'Unnamed table'
      */
     private getTableLabel(table: UI5Element): string {
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<MdcTable>(MDC_TABLE_TYPE, table)) {
+        if (isA(SMART_TABLE_TYPE, table) || isA(MDC_TABLE_TYPE, table)) {
             const header = table.getHeader();
             if (header) {
                 return `'${header}' table`;
             }
-        } else if (isA<Table>(M_TABLE_TYPE, table)) {
+        } else if (isA(M_TABLE_TYPE, table)) {
             const title = table?.getHeaderToolbar()?.getTitleControl()?.getText();
             if (title) {
                 return `'${title}' table`;
@@ -226,10 +230,10 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
         ])[0];
         if (tabBar) {
             const control = getControlById(tabBar.getId());
-            if (isA<IconTabBar>(ICON_TAB_BAR_TYPE, control)) {
+            if (isA(ICON_TAB_BAR_TYPE, control)) {
                 this.iconTabBar = control;
                 for (const item of control.getItems()) {
-                    if (isManagedObject(item) && isA<IconTabFilter>('sap.m.IconTabFilter', item)) {
+                    if (isManagedObject(item) && isA('sap.m.IconTabFilter', item)) {
                         iconTabBarFilterMap[item.getKey()] = item.getText();
                     }
                 }
@@ -245,9 +249,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
      * @param table - table element
      */
     private async collectChildrenInSection(section: ObjectPageSection, table: UI5Element): Promise<void> {
-        const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
+        const layout = getParentContainer(table, 'sap.uxap.ObjectPageLayout');
         const subSections = section.getSubSections();
-        const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
+        const subSection = getParentContainer(table, 'sap.uxap.ObjectPageSubSection');
         if (subSection) {
             if (subSections?.length === 1) {
                 await this.processTable(table, { section, subSection: subSections[0], layout });
@@ -293,14 +297,12 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
     ): Promise<void> {
         const tableMapKey = this.children.length.toString();
         if (
-            [
-                SMART_TABLE_TYPE,
-                M_TABLE_TYPE,
-                MDC_TABLE_TYPE,
-                TREE_TABLE_TYPE,
-                GRID_TABLE_TYPE,
-                ANALYTICAL_TABLE_TYPE
-            ].some((type) => isA(type, table))
+            isA(SMART_TABLE_TYPE, table) ||
+            isA(M_TABLE_TYPE, table) ||
+            isA(MDC_TABLE_TYPE, table) ||
+            isA(TREE_TABLE_TYPE, table) ||
+            isA(GRID_TABLE_TYPE, table) ||
+            isA(ANALYTICAL_TABLE_TYPE, table)
         ) {
             const label = this.getTableLabel(table);
             const child = this.createChild(label, table, tableMapKey);

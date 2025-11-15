@@ -1,6 +1,4 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type Table from 'sap/m/Table';
-import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
@@ -51,9 +49,9 @@ export class ChangeTableColumnsQuickAction
         if (changeColumnActionId) {
             const executeAction = async () =>
                 await this.context.actionService.execute(table.getId(), changeColumnActionId);
-            if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+            if (isA(SMART_TABLE_TYPE, table)) {
                 await executeAction();
-            } else if (isA<Table>(M_TABLE_TYPE, table)) {
+            } else if (isA(M_TABLE_TYPE, table)) {
                 // if table is busy, i.e. lazy loading, then we subscribe to 'updateFinished' event and call action service when loading is done
                 // to avoid reopening the dialog after close
                 if (this.isTableLoaded(table)) {
