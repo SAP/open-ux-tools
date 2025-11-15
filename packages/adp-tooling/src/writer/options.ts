@@ -365,7 +365,8 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
                 org: cf.org.GUID,
                 space: cf.space.GUID,
                 sapCloudService: cf.businessSolutionName ?? '',
-                serviceInstanceName: cf.businessService
+                serviceInstanceName: cf.businessService,
+                serviceInstanceGuid: cf.serviceInstanceGuid
             }
         }
     ]);
@@ -375,19 +376,48 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
  * Generate custom configuration required for the ui5.yaml.
  *
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
  */
-export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void {
+export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
     const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
         url: UI5_CDN_URL
     };
 
-    ui5Config.addFioriToolsProxyMiddleware(
-        {
-            ui5: ui5ConfigOptions,
-            backend: []
-        },
-        'compression'
-    );
+    const oauthPaths = config.cf?.oauthPaths;
+    if (oauthPaths && oauthPaths.length > 0) {
+        const backendConfig: FioriToolsProxyConfigBackend[] = [];
+        if (config.cf.backendUrl) {
+            backendConfig.push({
+                path: '/odata',
+                url: config.cf.backendUrl
+            });
+        }
+
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'cf-oauth-middleware',
+                afterMiddleware: 'compression',
+                configuration: {
+                    paths: oauthPaths
+                }
+            }
+        ]);
+        ui5Config.addFioriToolsProxyMiddleware(
+            {
+                ui5: ui5ConfigOptions,
+                backend: backendConfig
+            },
+            'cf-oauth-middleware'
+        );
+    } else {
+        ui5Config.addFioriToolsProxyMiddleware(
+            {
+                ui5: ui5ConfigOptions,
+                backend: []
+            },
+            'compression'
+        );
+    }
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-preview',
@@ -395,6 +425,9 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void
             configuration: {
                 flp: {
                     theme: 'sap_horizon'
+                },
+                adp: {
+                    useLocal: 'dist'
                 }
             }
         }

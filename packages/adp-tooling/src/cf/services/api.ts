@@ -315,7 +315,10 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceKeys[]>} The service instance keys.
  */
-async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: ToolsLogger): Promise<ServiceKeys[]> {
+export async function getOrCreateServiceKeys(
+    serviceInstance: ServiceInstance,
+    logger: ToolsLogger
+): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {
         const credentials = await getServiceKeys(serviceInstance.guid);
