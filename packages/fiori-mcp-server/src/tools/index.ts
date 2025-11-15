@@ -9,6 +9,7 @@ export { listFioriApps } from './list-fiori-apps';
 export { listFunctionalities } from './list-functionalities';
 export { getFunctionalityDetails } from './get-functionality-details';
 export { executeFunctionality } from './execute-functionality';
+export { getFioriRules } from '../rules/get-fiori-rules';
 
 export const tools = [
     {
@@ -71,5 +72,20 @@ export const tools = [
                     You MUST provide the exact parameter information obtained from get_functionality_details (Step 2).`,
         inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+    },
+    {
+        name: 'get_fiori_rules',
+        description: `Returns the complete set of rules and best practices for creating or modifying SAP Fiori elements applications.
+                    Use this tool to understand constraints and guidelines for Fiori development, including:
+                    - Application structure requirements (List Report, Object Pages)
+                    - Data model requirements (entities, navigation properties, UUIDs)
+                    - Sample data format requirements
+                    - Preview and testing guidelines
+                    You MUST use this tool when starting any Fiori application creation or modification task.`,
+        inputSchema: {
+            type: 'object',
+            properties: {},
+            required: []
+        }
     }
 ] as Tool[];
