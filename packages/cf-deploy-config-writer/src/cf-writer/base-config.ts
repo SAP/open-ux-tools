@@ -25,7 +25,7 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     }
     logger?.debug(`Generate base configuration using: \n ${JSON.stringify(config)}`);
     validateMtaConfig(config);
-    if (fileExists(fs, join(config.mtaPath, config.mtaId))) {
+    if (await fileExists(join(config.mtaPath, config.mtaId), fs)) {
         throw new Error(t('error.mtaFolderAlreadyExists'));
     }
     createMTA(config as MTABaseConfig);
