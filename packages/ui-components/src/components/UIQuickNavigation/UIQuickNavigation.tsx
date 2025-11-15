@@ -169,7 +169,6 @@ function stopEventBubling(event: KeyboardEvent | FocusEvent): void {
     event.preventDefault();
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const UIQuickNavigation: React.FC<UIQuickNavigationProps> = (props: UIQuickNavigationProps) => {
     const { className, children, inline, offset } = props;
     const [enabled, setEnabled] = useState(false);

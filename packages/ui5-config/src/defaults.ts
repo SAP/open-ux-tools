@@ -6,7 +6,7 @@ export const enum UI5_DEFAULT {
     MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
     SAPUI5_CDN = 'https://ui5.sap.com',
     OPENUI5_CDN = 'https://sdk.openui5.org',
-    TYPES_VERSION_SINCE = '1.76.0', // eslint-disable-line @typescript-eslint/no-duplicate-enum-values
+    TYPES_VERSION_SINCE = '1.76.0',
     ESM_TYPES_VERSION_SINCE = '1.94.0',
     TYPES_VERSION_BEST = '1.136.0',
     NEW_TYPES_PACKAGE_SINCE = '1.113.0',

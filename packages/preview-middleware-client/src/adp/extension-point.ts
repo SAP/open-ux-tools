@@ -4,9 +4,11 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import AddXMLAtExtensionPoint from 'sap/ui/rta/plugin/AddXMLAtExtensionPoint';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
-import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
-import { Deferred, createDeferred } from './utils';
+import type { Deferred } from './utils';
+import { createDeferred } from './utils';
 import { DialogFactory, DialogNames } from './dialog-factory';
 
 import { CommunicationService } from '../cpe/communication-service';
@@ -38,6 +40,9 @@ export interface ExtensionPointData {
     info: ExtensionPointInfo[];
 }
 
+/**
+ *
+ */
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
     private selectedExtensionPointName: string;
@@ -64,7 +69,7 @@ export default class ExtensionPointService {
 
                     service.execute(baseControlId, this.actionId);
                     this.selectedExtensionPointName = name;
-                } catch (e) {
+                } catch {
                     throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
                 }
             }
@@ -99,7 +104,7 @@ export default class ExtensionPointService {
      * @returns Deferred extension point data that is provided to the plugin
      */
     public async fragmentHandler(overlay: UI5Element, info: ExtensionPointInfo[]): Promise<DeferredExtPointData> {
-        let deferred = createDeferred<DeferredExtPointData>();
+        const deferred = createDeferred<DeferredExtPointData>();
         const name = this.selectedExtensionPointName;
 
         await DialogFactory.createDialog(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {

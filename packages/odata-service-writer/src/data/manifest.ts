@@ -376,7 +376,7 @@ async function addMultipleServiceSupportToManifest(
     const dataSources = manifest?.['sap.app']?.dataSources;
     for (const dataSourceKey in dataSources) {
         const dataSource = dataSources[dataSourceKey];
-        if (dataSource && dataSource.type === 'OData') {
+        if (dataSource?.type === 'OData') {
             convertSingleService(webappPath, dataSourceKey, dataSource, fs);
             const annotations = dataSource.settings?.annotations;
             if (annotations) {

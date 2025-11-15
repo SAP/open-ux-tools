@@ -1,5 +1,6 @@
 import ZipFile from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { DuplexCollection } from '@ui5/fs';
 
 /**

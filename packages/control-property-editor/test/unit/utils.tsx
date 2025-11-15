@@ -7,8 +7,7 @@ import type { RenderOptions, RenderResult } from '@testing-library/react';
 import { render as rtlRender } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
-import { initialState } from '../../src/slice';
-import reducer from '../../src/slice';
+import reducer, { initialState } from '../../src/slice';
 
 export type State = ReturnType<typeof reducer>;
 
@@ -25,6 +24,7 @@ export function render(
         ...renderOptions
     }: Options<ReturnType<typeof createInitialState>> = {}
 ): RenderResult & { store: Store; dispatch: jest.SpyInstance<Dispatch> } {
+    // eslint-disable-next-line  @typescript-eslint/no-empty-object-type
     function Wrapper({ children }: PropsWithChildren<{}>): ReactElement {
         return <Provider store={store}>{children}</Provider>;
     }
@@ -37,16 +37,19 @@ export function render(
 export interface DOMEventListenerMock {
     simulateEvent: (name: string, value: object) => void;
     cleanDomEventListeners: () => void;
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-function-type
     domEventListeners: { [k: string]: Array<Function> };
 }
 
 export const mockDomEventListener = (handler: Document | Window | Element = document): DOMEventListenerMock => {
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-function-type
     const domEventListeners: { [k: string]: Array<Function> } = {};
     // Mock for add event listener
     handler.addEventListener = jest.fn((event, cb) => {
         if (!domEventListeners[event]) {
             domEventListeners[event] = [];
         }
+        // eslint-disable-next-line  @typescript-eslint/no-unsafe-function-type
         domEventListeners[event].push(cb as Function);
     });
     handler.removeEventListener = jest.fn((event, cb) => {

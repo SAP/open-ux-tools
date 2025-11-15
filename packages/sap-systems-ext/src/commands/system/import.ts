@@ -31,7 +31,6 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
         if (existingSystem) {
             overwrite = await confirmPrompt(ConfirmationPromptType.Overwrite, existingSystem.name);
             if (!overwrite) {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 window.showWarningMessage(t('warn.importCancelled'));
                 return;
             }
@@ -46,7 +45,7 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
         }
     } catch (err) {
         const msg = err instanceof Error ? err.message : t('error.importConfigFailed');
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
         window.showErrorMessage(msg);
         logImportTelemetry(SystemActionStatus.IMPORT_FAIL);
     }

@@ -30,7 +30,7 @@ export function defaultTargetSystem(targetSystems?: AbapSystemChoice[]): string 
  * @returns default url
  */
 export function defaultUrl(targetSystem?: string): string {
-    return targetSystem === TargetSystemType.Url ? '' : PromptState.abapDeployConfig.url ?? '';
+    return targetSystem === TargetSystemType.Url ? '' : (PromptState.abapDeployConfig.url ?? '');
 }
 
 /**

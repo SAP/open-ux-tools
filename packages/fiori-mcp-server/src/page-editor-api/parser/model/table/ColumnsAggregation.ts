@@ -42,7 +42,7 @@ const PAGE_TYPE_DEFAULT_EXTENSION_MAP: Map<PageType, TableColumnExtensionType> =
  * Represents an aggregation for columns objects.
  */
 export class ColumnsAggregation extends ObjectAggregation {
-    public declare formSchema?: ObjectAggregation;
+    declare public formSchema?: ObjectAggregation;
     // Array of end result ordered columns
     public customColumns: Array<ColumnBase> = [];
     private columnKeys: Array<string> = [];
