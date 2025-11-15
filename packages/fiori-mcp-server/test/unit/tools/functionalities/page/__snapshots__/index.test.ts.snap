@@ -124,6 +124,79 @@ Object {
 }
 `;
 
+exports[`add-page getFunctionalityDetails case 4: v2 1`] = `
+Object {
+  "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
+  "functionalityId": "add-page",
+  "name": "Add new page to application by updating manifest.json",
+  "parameters": Object {
+    "anyOf": Array [
+      Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "pageNavigation": Object {
+            "enum": Array [
+              "Travels",
+              "Expenses",
+              "TravelsStatusCodeList",
+              "TravelsStatusCodeList_texts",
+            ],
+            "type": "string",
+          },
+          "pageType": Object {
+            "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
+            "enum": Array [
+              "ObjectPage",
+            ],
+            "type": "string",
+          },
+          "parentPage": Object {
+            "const": "TravelsList",
+            "description": "Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options",
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "parentPage",
+          "pageNavigation",
+          "pageType",
+        ],
+        "type": "object",
+      },
+      Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "pageNavigation": Object {
+            "enum": Array [
+              "Expenses",
+            ],
+            "type": "string",
+          },
+          "pageType": Object {
+            "description": "Type of page to be created. First try to extract page type from user input, if not possible suggest content defined in options.",
+            "enum": Array [
+              "ObjectPage",
+            ],
+            "type": "string",
+          },
+          "parentPage": Object {
+            "const": "TravelsObjectPage",
+            "description": "Parent page is id/name of parent page. First try to extract parent page from user input, if not possible suggest content defined in options",
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "parentPage",
+          "pageNavigation",
+          "pageType",
+        ],
+        "type": "object",
+      },
+    ],
+  },
+}
+`;
+
 exports[`delete-page getFunctionalityDetails case 2: zero or more pages 1`] = `
 Object {
   "description": "Remove existing fiori elements page from the application",
