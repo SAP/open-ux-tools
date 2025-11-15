@@ -1,3 +1,5 @@
+
+--------------------------------
 # @sap/ux-ui5-tooling
 
 The SAP Fiori Tools - UI5 Tooling contains a selection of custom [middlewares](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware/) that can be used with the command `ui5 serve` as well as custom [tasks](https://sap.github.io/ui5-tooling/pages/extensibility/CustomTasks/) that can be used with the command `ui5 build`. 
@@ -7,6 +9,8 @@ Furthermore, the module expose the cli `fiori` offering e.g. the [`fiori run`](#
 - For more information about migration to the latest `@ui5/cli`, see [here](https://sap.github.io/ui5-tooling/stable/).
 - Starting with version `1.17.6`, the minimum required Node.js version is 20.19.2 or higher!
 
+
+--------------------------------
 ## [**Middlewares**](#middlewares)
 
 SAP Fiori tools use the capabilities of custom middlewares to start and preview SAP Fiori elements or SAPUI5 freestyle applications, e.g. to enable auto refresh, to switch the version of SAPUI5 sources or to serve static resources. Starting with version `1.3.0` the behaviour of the preview of the SAP Fiori applications has changed. Now the persistent iAppState is ignored in order to have the source code changes always apply when application is refreshed. If you want to enable the iAppState then you need to add the URL parameter `fiori-tools-iapp-state=true` to the browser URL, e.g. `http://localhost:8080/test/flpSandbox.html?fiori-tools-iapp-state=true#masterDetail-display`.
@@ -518,6 +522,8 @@ sap.ui.require(['sap/base/i18n/Formatting'], function(Formatting) {
         init: /test/myCustomInit
 ```
 
+
+--------------------------------
 ## [**Tasks**](#tasks)
 
 SAP Fiori Tools use the capabilities of custom tasks to deploy the SAP Fiori projects to ABAP servers.
@@ -532,6 +538,8 @@ The deployment to ABAP task allows deploying SAP Fiori applications to SAP syste
 * Service `/UI5/ABAP_REPOSITORY_SRV` needs to be enabled and accessible from your development environment ([how to check this](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8))
 * For operations on a SAPUI5 ABAP repository, you need the `S_DEVELOP` authorization.
 
+
+--------------------------------
 ## Example Configuration
 
 Executing the command `npm run deploy` from the root of your project, using the `ui5-deploy.yaml` configuration below, will deploy all files of your `dist` folder except files found in the `test` folder. The `username` and `password` for authentication will be read from the environment variables `XYZ_USER` and `XYZ_PASSWORD`, continue reading to see more examples of how to configure credentials.
@@ -575,6 +583,8 @@ XYZ_USER=[MY_USER_NAME]
 XYZ_PASSWORD=[MY_PASSWORD]
 ```
 
+
+--------------------------------
 ## Command to deploy
 
 After completing the changes in the configuration files, execute the command `npm run deploy`.
@@ -605,6 +615,8 @@ builder:
 
 Based on the sample configurations above, after deploying the app, you can access the app using URL: <https://XYZ.sap-system.corp:44311/sap/bc/ui5-ui5/test/sample_app/index.html?sap-client=200#app-preview>
 
+
+--------------------------------
 ## Documentation on the Configuration options
 
 In addition to defining parameters in the main yaml file, every parameter can also be defined as environment variable that is referenced in yaml. Using the `dotenv` module, the task also supports project specific environment variables defined in a `.env` file in the root of your project. To reference an environment variable the pattern `env:VAR_NAME` must be used.
@@ -698,6 +710,8 @@ The app object describes the backend object that is created/updated as result of
 - `boolean` (default: `false`)
 - If set to `true`, the task will log additional information about the deployment process. This is useful for debugging purposes.
 
+
+--------------------------------
 ## [CLI Commands](#commands)
 ### [fiori run](#fiori-run---starts-a-local-web-server-for-running-a-fe-application) - starts a local web server for running a FE application
 #### Options
@@ -793,6 +807,8 @@ Deploys an application to an ABAP frontend server.
 * `--ignore-cert-error, -ic` - Deprecated. Use `ignoreCertErrors` (plural) instead.
 * `--ignore-cert-errors, -ics` - Disabled by default. If set to `true`, the task will not validate the SSL certificate of the target system. This is useful for development purposes but must not be used in production environments.
 
+
+--------------------------------
 ## [FAQ](#faq)
 
 **My backend system contains the SAP_UI component version 7.53 or newer, but the SAPUI5 repository service cannot be reached.**
@@ -807,6 +823,8 @@ This could have multiple reasons, please check the console for more information 
 
 Most probably the `OpenSSL` package is not installed on your OS. Please install it and make sure that it is available in your `PATH` environment variable.
 
+
+--------------------------------
 ## [Support](#support)
 
 Join the [SAP Fiori Tools Community](https://pages.community.sap.com/topics/fiori-tools). Ask Questions, Read the Latest Blogs, Explore Content.  
@@ -814,10 +832,14 @@ Please assign tag: _SAP Fiori tools_.
 
 To log an issue with SAP Fiori Tools, please see [Contact SAP Support](https://help.sap.com/viewer/1bb01966b27a429ebf62fa2e45354fea/Latest/en-US).
 
+
+--------------------------------
 ## [Documentation](#documentation) 
 
 - Visit **SAP Help Portal** for [SAP Fiori Tools](https://help.sap.com/viewer/product/SAP_FIORI_tools/Latest/en-US) documentation. 
 
+
+--------------------------------
 ## [License](#license)
 
 <details>
