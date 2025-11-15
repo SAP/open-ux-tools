@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import type { Manifest, Package } from '../../src';
-import { createApplicationAccess, createProjectAccess } from '../../src';
+import { createApplicationAccess, createProjectAccess, getProject } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import * as specMock from '../../src/project/specification';
 import { create as createStorage } from 'mem-fs';
@@ -372,6 +372,19 @@ describe('Test function createApplicationAccess()', () => {
         } catch (error) {
             expect(error.message).toContain('non-existing-app');
         }
+    });
+
+    test('Pass project through options', async () => {
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const project = await getProject(projectRoot);
+        const appRoot = join(projectRoot, 'apps/two');
+        const appAccess = await createApplicationAccess(appRoot, {
+            project
+        });
+
+        expect(appAccess).toBeDefined();
+        expect(appAccess.root).toBe(projectRoot);
+        expect(appAccess.project === project).toBeTruthy();
     });
 });
 
