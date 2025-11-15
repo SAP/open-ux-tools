@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.19
+
+### Patch Changes
+
+-   5ed4083: feat(fpm-writer): Filter building block custom filter
+
 ## 0.39.18
 
 ### Patch Changes
