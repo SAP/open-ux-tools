@@ -1,19 +1,48 @@
-//------------------------------------------------------------------------------
-// Plugin Definition
-//------------------------------------------------------------------------------
+import { FioriElementsLanguage } from './language/fiori-elements-language';
+import type { Plugin } from '@eslint/config-helpers';
+import rules from './rules';
 
-module.exports.configs = {
-    defaultTS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js', '../eslintrc-test.js'],
-        parser: '@typescript-eslint/parser' // override parser used in eslint-plugin-fiori-custom to support TS
+const plugin: Plugin = {
+    meta: {
+        name: '@sap-ux/eslint-plugin-fiori-tools',
+        version: '0.0.1',
+        namespace: '@sap-ux/fiori-tools'
     },
-    defaultJS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-prod.js', '../eslintrc-test.js']
+    languages: {
+        fioriElements: new FioriElementsLanguage()
     },
-    testCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-test.js']
-    },
-    prodCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js']
+    rules: rules as Record<string, any>,
+    configs: {},
+    processors: {}
+};
+
+const commonConfig = {
+    files: ['**/manifest.json'],
+    language: '@sap-ux/eslint-plugin-fiori-tools/fioriElements',
+    plugins: {
+        '@sap-ux/eslint-plugin-fiori-tools': plugin
     }
 };
+
+Object.assign(plugin.configs as {}, {
+    'Base-requirements': {
+        ...commonConfig,
+        rules: {}
+    },
+    'FE-requirements': {
+        ...commonConfig,
+        rules: {}
+    },
+    'SAP-consistency': {
+        ...commonConfig,
+        rules: { '@sap-ux/eslint-plugin-fiori-tools/flex-enabled': 'warn' }
+    },
+    'ERP-consistency': {
+        ...commonConfig,
+        rules: {}
+    }
+});
+
+export default plugin;
+
+module.exports = plugin;
