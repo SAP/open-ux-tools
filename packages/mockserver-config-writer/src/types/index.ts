@@ -15,4 +15,8 @@ export interface PackageJsonMockConfig {
 export interface Ui5MockYamlConfig {
     // overwrites all services and annotations based on manifest
     overwrite?: boolean;
+    /**
+     * Mapping for which data source value list references should be resolved.
+     */
+    resolveValueListReferences?: Record<string, boolean>;
 }

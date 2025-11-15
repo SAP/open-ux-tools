@@ -1,3 +1,5 @@
+import { join as joinPosix } from 'node:path/posix';
+
 import { ODataVersion } from '../base/odata-service';
 import { ServiceProvider } from '../base/service-provider';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
@@ -286,6 +288,38 @@ export class AbapServiceProvider extends ServiceProvider {
         generator.setContentType(this.getContentType(config));
         generator.configure(config, packageName || '$TMP');
         return generator;
+    }
+
+    /**
+     * Collects ValueListReferences annotation values from the service metadata and annotation files.
+     *
+     * @param references - Service references for which metadata should be fetched.
+     * @returns A list of ValueListReferences found in the metadata and annotations.
+     */
+    public async fetchValueListReferenceServices(
+        references: { target: string; serviceRootPath: string; value: string }[]
+    ): Promise<{ target: string; data?: string; path: string }[]> {
+        const valueListReferences: { target: string; data?: string; path: string }[] = [];
+        const allPromises = references.map(async ({ serviceRootPath, target, value }) => {
+            const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
+            const externalService = this.service(externalServicePath);
+            try {
+                const data = await externalService.metadata();
+                valueListReferences.push({
+                    path: externalServicePath,
+                    target,
+                    data
+                });
+            } catch (error) {
+                this.log.warn(
+                    `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
+                );
+            }
+        });
+
+        await Promise.allSettled(allPromises);
+
+        return valueListReferences;
     }
 
     /**
