@@ -41,7 +41,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "i18next": "25.3.0",
-        "@sap-devx/yeoman-ui-types": "1.14.4"
+        "@sap-devx/yeoman-ui-types": "1.20.2"
     },
     "devDependencies": {
         "@types/mem-fs": "1.1.2",
