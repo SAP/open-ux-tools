@@ -323,9 +323,10 @@ export class FlpSandbox {
             pluginScript: editor.pluginScript
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
-        config.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        config.baseUrl = baseUrl;
 
-        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, baseUrl);
 
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
 
