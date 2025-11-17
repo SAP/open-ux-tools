@@ -231,6 +231,20 @@
                 <Parameter Name="MessageText" Type="Edm.String" MaxLength="4" />
                 <ReturnType Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType" />
             </Action>
+            <Annotations Target="SAP__self.Container">
+                <Annotation Term="SAP__CodeList.CurrencyCodes">
+                    <Record>
+                        <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__CodeList.UnitsOfMeasure">
+                    <Record>
+                        <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="UnitsOfMeasure"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
             <Annotations Target="SAP__self.CustomerParameters/P_CompanyCode">
                 <Annotation Term="SAP__core.Computed" />
                 <Annotation Term="SAP__common.ValueListReferences">

@@ -6,6 +6,7 @@ Array [
     "data": "metadata",
     "path": "/sap/opu/odata/srv_f4/two",
     "target": "target",
+    "type": "value-list",
   },
 ]
 `;
@@ -16,6 +17,17 @@ Array [
     "data": "metadata",
     "path": "/sap/opu/odata/srv_f4/two",
     "target": "target",
+    "type": "value-list",
+  },
+]
+`;
+
+exports[`AbapServiceProvider fetchValueListReferenceServices should return code list data 1`] = `
+Array [
+  Object {
+    "data": "metadata",
+    "path": "/sap/opu/odata/srv_f4",
+    "type": "code-list",
   },
 ]
 `;
@@ -26,6 +38,7 @@ Array [
     "data": "metadata",
     "path": "/sap/opu/odata/srv_f4",
     "target": "target",
+    "type": "value-list",
   },
 ]
 `;

@@ -288,9 +288,29 @@ describe('AbapServiceProvider', () => {
             const serviceSpy = jest.spyOn(provider, 'service').mockReturnValue({
                 metadata: metadataSpy
             } as any);
-            const result = await provider.fetchValueListReferenceServices([
+            const result = await provider.fetchExternalServices([
                 {
+                    type: 'value-list',
                     target: 'target',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/$metadata'
+                }
+            ]);
+
+            expect(result).toMatchSnapshot();
+            expect(serviceSpy).toHaveBeenCalledWith('/sap/opu/odata/srv_f4');
+            expect(metadataSpy).toHaveBeenCalled();
+        });
+
+        test('should return code list data', async () => {
+            const metadataSpy = jest.fn().mockResolvedValue('metadata');
+            const serviceSpy = jest.spyOn(provider, 'service').mockReturnValue({
+                metadata: metadataSpy
+            } as any);
+            const result = await provider.fetchExternalServices([
+                {
+                    type: 'code-list',
+                    collectionPath: 'Currencies',
                     serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/$metadata'
                 }
@@ -311,13 +331,15 @@ describe('AbapServiceProvider', () => {
                     metadata: metadataSpy
                 } as any;
             });
-            const result = await provider.fetchValueListReferenceServices([
+            const result = await provider.fetchExternalServices([
                 {
+                    type: 'value-list',
                     target: 'target',
                     serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/one/$metadata'
                 },
                 {
+                    type: 'value-list',
                     target: 'target',
                     serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/two/$metadata'
@@ -339,13 +361,15 @@ describe('AbapServiceProvider', () => {
                     metadata: metadataSpy
                 } as any;
             });
-            const result = await provider.fetchValueListReferenceServices([
+            const result = await provider.fetchExternalServices([
                 {
+                    type: 'value-list',
                     target: 'target',
                     serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/one/$metadata'
                 },
                 {
+                    type: 'value-list',
                     target: 'target',
                     serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
                     value: '../../srv_f4/two/$metadata'

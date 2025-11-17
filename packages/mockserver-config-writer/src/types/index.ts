@@ -16,7 +16,7 @@ export interface Ui5MockYamlConfig {
     // overwrites all services and annotations based on manifest
     overwrite?: boolean;
     /**
-     * Mapping for which data source value list references should be resolved.
+     * Mapping for which data source external service references should be resolved.
      */
-    resolveValueListReferences?: Record<string, boolean>;
+    resolveExternalServiceReferences?: Record<string, boolean>;
 }

@@ -1130,11 +1130,18 @@ describe('update', () => {
                 metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
                 version: OdataVersion.v4,
                 localAnnotationsName: 'annotation',
-                valueListReferences: [
+                externalServices: [
                     {
+                        type: 'value-list',
                         data: 'ValueListReferences',
                         path: '/sap/my_service',
                         target: 'MyEntity/MyProperty'
+                    },
+                    {
+                        type: 'code-list',
+                        data: 'CodeListReferences',
+                        path: '/sap/my_service2',
+                        collectionPath: 'Currencies'
                     }
                 ]
             },
@@ -1164,7 +1171,7 @@ describe('update', () => {
                         metadataPath: ./webapp/localService/mainService/metadata.xml
                         mockdataPath: ./webapp/localService/mainService/data
                         generateMockData: true
-                        resolveValueListReferences: true
+                        resolveExternalServiceReferences: true
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/

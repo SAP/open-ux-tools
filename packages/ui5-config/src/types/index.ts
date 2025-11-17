@@ -90,5 +90,5 @@ export type DataSourceConfig = {
     serviceName: string;
     servicePath: string;
     metadataPath?: string;
-    resolveValueListReferences?: boolean;
+    resolveExternalServiceReferences?: boolean;
 };

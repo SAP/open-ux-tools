@@ -5,4 +5,4 @@
 '@sap-ux/ui5-config': patch
 ---
 
-feat: save service metadata referenced in ValueListReferences annotations.
+feat: save service metadata referenced in ValueListReferences and CodeList annotations.
