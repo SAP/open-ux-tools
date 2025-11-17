@@ -363,7 +363,12 @@ export class FlpSandbox {
      * @param previewUrl the url of the preview
      * @private
      */
-    private async editorGetHandlerDeveloperMode(req: EnhancedRequest, res: Response, rta: RtaConfig, previewUrl: string): Promise<void> {
+    private async editorGetHandlerDeveloperMode(
+        req: EnhancedRequest,
+        res: Response,
+        rta: RtaConfig,
+        previewUrl: string
+    ): Promise<void> {
         const scenario = rta.options?.scenario;
         let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
