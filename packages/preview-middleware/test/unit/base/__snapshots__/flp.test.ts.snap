@@ -12,6 +12,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -82,6 +83,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -146,6 +148,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -193,6 +196,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -240,6 +244,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -287,6 +292,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -334,6 +340,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -381,6 +388,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -430,6 +438,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -508,8 +517,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -673,8 +682,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -731,10 +740,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -901,8 +906,8 @@ exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -976,8 +981,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1051,8 +1056,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 1.76.0 f
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1126,8 +1131,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1199,8 +1204,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1272,8 +1277,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1349,8 +1354,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html sap-ui-xx-vi
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1408,10 +1413,6 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
          for productive scenarios.
     -->
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1468,10 +1469,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1544,8 +1541,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 1.76.0 fr
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1619,8 +1616,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1692,8 +1689,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1748,10 +1745,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1809,10 +1802,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1885,8 +1874,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html should fallba
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -1938,6 +1927,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -2019,8 +2009,8 @@ exports[`FlpSandbox router rta with adp instance - preview 2`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2070,6 +2060,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -2151,8 +2142,8 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2216,6 +2207,9 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id=\\"root\\"></div>
+        <script>
+            window['data-open-ux-preview-base-url'] = '';
+        </script>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -2250,6 +2244,9 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 1`] = `
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id=\\"root\\"></div>
+        <script>
+            window['data-open-ux-preview-base-url'] = '';
+        </script>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -2311,8 +2308,8 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2403,8 +2400,8 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2499,8 +2496,8 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2553,6 +2550,7 @@ Object {
     },
   },
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -2634,8 +2632,8 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2756,8 +2754,8 @@ exports[`FlpSandbox rta with new config rta w/o layer 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -2805,6 +2803,9 @@ exports[`FlpSandbox rta with new config rta with developerMode=true 1`] = `
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id=\\"root\\"></div>
+        <script>
+            window['data-open-ux-preview-base-url'] = '';
+        </script>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -2868,8 +2869,8 @@ exports[`FlpSandbox rta with new config rta with url parameters 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>

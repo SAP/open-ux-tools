@@ -93,6 +93,17 @@ type Ui5Version = {
     isCdn: boolean;
 };
 
+type RtaDeveloperModeTemplateConfig = {
+    previewUrl: string;
+    telemetry: boolean;
+    appName: string | undefined;
+    scenario?: string;
+    livereloadPort: number;
+    livereloadUrl?: string;
+    features: string;
+    baseUrl: string;
+};
+
 /**
  * Class handling preview of a sandbox FLP.
  */
@@ -297,7 +308,7 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
-        const config = { ...this.templateConfig };
+        const config:TemplateConfig = { ...this.templateConfig };
         /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             const libs = config.ui5.libs.split(',');
@@ -312,6 +323,7 @@ export class FlpSandbox {
             pluginScript: editor.pluginScript
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
+        config.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
 
@@ -344,12 +356,13 @@ export class FlpSandbox {
     /**
      * Handler for the GET requests to the runtime adaptation editor in developer mode.
      *
+     * @param req the request
      * @param res the response
      * @param rta runtime adaptation configuration
      * @param previewUrl the url of the preview
      * @private
      */
-    private async editorGetHandlerDeveloperMode(res: Response, rta: RtaConfig, previewUrl: string): Promise<void> {
+    private async editorGetHandlerDeveloperMode(req: EnhancedRequest, res: Response, rta: RtaConfig, previewUrl: string): Promise<void> {
         const scenario = rta.options?.scenario;
         let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
@@ -363,13 +376,14 @@ export class FlpSandbox {
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
         const html = render(template, {
             previewUrl: templatePreviewUrl,
-            telemetry: rta.options?.telemetry ?? false,
+            telemetry: !!rta.options?.telemetry,
             appName: rta.options?.appName,
             scenario,
             livereloadPort,
             livereloadUrl: envLivereloadUrl,
-            features: JSON.stringify(features)
-        });
+            features: JSON.stringify(features),
+            baseUrl: req['ui5-patched-router']?.baseUrl ?? ''
+        } satisfies RtaDeveloperModeTemplateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }
 
@@ -421,8 +435,8 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, async (_req: Request, res: Response) => {
-                    await this.editorGetHandlerDeveloperMode(res, rta, previewUrl);
+                this.router.get(editor.path, async (req: EnhancedRequest, res: Response) => {
+                    await this.editorGetHandlerDeveloperMode(req, res, rta, previewUrl);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {

@@ -11,6 +11,9 @@
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
+        <script>
+            window['data-open-ux-preview-base-url'] = '<%- baseUrl %>';
+        </script>
         <script type="module">
             import { start } from './editor/app.js';
             start({

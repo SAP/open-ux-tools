@@ -1,5 +1,6 @@
 import type { Layer } from 'sap/ui/fl';
 import { getError } from '../utils/error';
+import { Window } from '../../types/global';
 
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
@@ -83,7 +84,8 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
     };
 
     try {
-        const response: Response = await fetch(endpoint, config);
+        const baseUrl = (window as unknown as Window)["data-open-ux-preview-base-url"] ?? '';
+        const response: Response = await fetch(`${baseUrl}${endpoint}`, config);
 
         if (!response.ok) {
             const errorData = (await response.json()) as ResponseMessage;
