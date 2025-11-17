@@ -132,8 +132,7 @@ const rule: Rule.RuleModule = {
             // check if node is an object, only objects have properties
             if (isObject(node)) {
                 // iterate properties
-                for (let i = 0; i < (node as any).properties.length; i++) {
-                    const property = (node as any).properties[i];
+                for (const property of (node as any).properties) {
                     // return property value if property key matches given key
                     if (isProperty(property) && getName((property as any).key) === key) {
                         return (property as any).value;
