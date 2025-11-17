@@ -5,6 +5,6 @@
 
 import { generateTemplate } from './template-generator';
 
-export = function (results: any) {
+export = function (results: any): string {
     return generateTemplate(results, false);
 };

@@ -41,7 +41,7 @@ const styles = _.template(fs.readFileSync(path.join(__dirname, 'helpers/styles.h
  * Given a word and a count, append an s if count is not one.
  *
  * @param {string} word A word in its singular form.
- * @param {int} count A number controlling whether word should be pluralized.
+ * @param {number} count A number controlling whether word should be pluralized.
  * @returns {string} The original word with an s on the end if count is not one.
  */
 function pluralize(word, count) {
@@ -49,10 +49,10 @@ function pluralize(word, count) {
 }
 
 /**
- * Renders text along the template of x problems (x errors, x warnings)
+ * Renders text along the template of x problems (x errors, x warnings).
  *
- * @param {int} totalErrors Total errors
- * @param {int} totalWarnings Total warnings
+ * @param {number} totalErrors Total errors
+ * @param {number} totalWarnings Total warnings
  * @returns {string} The formatted string, pluralized where necessary
  */
 function renderSummary(totalErrors, totalWarnings) {
@@ -66,7 +66,7 @@ function renderSummary(totalErrors, totalWarnings) {
 }
 
 /**
- * Takes in a rule Id and returns the correct link for the description
+ * Takes in a rule Id and returns the correct link for the description.
  *
  * @param {string} ruleId A eslint rule Id
  * @returns {string} The link to the rules description
@@ -130,8 +130,8 @@ function renderSummaryDetails(rules, problemFiles, currDir) {
 /**
  * Get the color based on whether there are errors/warnings...
  *
- * @param {int} totalErrors Total errors
- * @param {int} totalWarnings Total warnings
+ * @param {number} totalErrors Total errors
+ * @param {number} totalWarnings Total warnings
  * @returns {string} The color code (success = green, warning = yellow, error = red)
  */
 function renderColor(totalErrors, totalWarnings) {
@@ -144,9 +144,9 @@ function renderColor(totalErrors, totalWarnings) {
 }
 
 /**
- * Converts the severity number to a string
+ * Converts the severity number to a string.
  *
- * @param {int} severity severity number
+ * @param {number} severity severity number
  * @returns {string} The color string based on severity number (0 = success, 1 = warning, 2 = error)
  */
 function severityString(severity) {
@@ -156,7 +156,7 @@ function severityString(severity) {
 }
 
 /**
- * Renders an issue
+ * Renders an issue.
  *
  * @param {object} message a message object with an issue
  * @returns {string} HTML string of an issue
@@ -174,11 +174,11 @@ function renderIssue(message) {
 }
 
 /**
- * Renders the source code for the files that have issues and marks the lines that have problems
+ * Renders the source code for the files that have issues and marks the lines that have problems.
  *
  * @param {string} sourceCode source code string
  * @param {Array} messages array of messages with the problems in a file
- * @param {int} parentIndex file index
+ * @param {number} parentIndex file index
  * @returns {string} HTML string of the code file that is being linted
  */
 function renderSourceCode(sourceCode, messages, parentIndex) {
@@ -208,11 +208,11 @@ function renderSourceCode(sourceCode, messages, parentIndex) {
 }
 
 /**
- * Renders the result details with tabs for source code and a summary
+ * Renders the result details with tabs for source code and a summary.
  *
  * @param {string} sourceCode source code string
  * @param {Array} messages array of messages with the problems in a file
- * @param {int} parentIndex file index
+ * @param {number} parentIndex file index
  * @returns {string} HTML string of result details
  */
 function renderResultDetails(sourceCode, messages, parentIndex) {
@@ -229,7 +229,7 @@ function renderResultDetails(sourceCode, messages, parentIndex) {
 }
 
 /**
- * Formats the source code before adding it to the HTML
+ * Formats the source code before adding it to the HTML.
  *
  * @param {string} sourceCode Source code string
  * @returns {string} Source code string which will not cause issues in the HTML
@@ -239,7 +239,7 @@ function formatSourceCode(sourceCode) {
 }
 
 /**
- * Creates the test results HTML
+ * Creates the test results HTML.
  *
  * @param {Array} results Test results.
  * @param {string} currDir Current working directory
@@ -289,9 +289,9 @@ function renderRules(rules) {
 }
 
 /**
- * Renders list of problem files
+ * Renders list of problem files.
  *
- * @param {Array} files
+ * @param {Array} files List of files with problems
  * @param {string} currDir Current working directory
  * @returns {string} HTML string describing the files.
  */
@@ -307,7 +307,7 @@ function renderProblemFiles(files, currDir) {
 }
 
 /**
- * Writes a file at the specified location and removes the specified strings
+ * Writes a file at the specified location and removes the specified strings.
  *
  * @param {string} filePath The path of the new file
  * @param {string} fileContent The contents of the new file
@@ -319,7 +319,7 @@ function writeFile(filePath, fileContent, regex) {
 }
 
 /**
- * Returns the output directory for the report
+ * Returns the output directory for the report.
  *
  * @returns {string} the output directory for the report
  */
@@ -344,9 +344,9 @@ function getOutputDir() {
 }
 
 /**
- * Returns the full path to the report
+ * Returns the full path to the report.
  *
- * @param currWorkingDir
+ * @param {string} currWorkingDir Current working directory
  * @returns {string} the full path to the report
  */
 function getOutputPath(currWorkingDir) {
@@ -354,7 +354,7 @@ function getOutputPath(currWorkingDir) {
 }
 
 /**
- * Creates a styles.css and a main.js file for the report
+ * Creates a styles.css and a main.js file for the report.
  *
  * @param {string} outputPath The output path for the report
  * @returns {void} n/a
@@ -374,7 +374,7 @@ function buildScriptsAndStyleFiles(outputPath) {
 }
 
 /**
- * Returns whether or not the output directory is known
+ * Returns whether or not the output directory is known.
  *
  * @returns {boolean} Whether or not the output directory is known
  */
@@ -387,9 +387,11 @@ function isOutputDirKnown() {
 //------------------------------------------------------------------------------
 
 /**
+ * Generates the HTML template for linting results.
  *
- * @param results
- * @param isMultiOn
+ * @param {Array} results The linting results array
+ * @param {boolean} isMultiOn Whether multi-format is enabled
+ * @returns {string} The generated HTML template
  */
 export function generateTemplate(results: any[], isMultiOn: boolean): string {
     const currWorkingDir = process.cwd() || '',

@@ -131,14 +131,14 @@ Object.keys(rulesMap).forEach((ruleName: string) => {
 // may not be available when the plugin itself is loaded
 export const configs = {
     // Recommended config for JavaScript projects (prod + test)
-    get recommended() {
+    get recommended(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         const testConfig = require('../config/eslintrc-test.js');
         return [...commonConfig, ...prodConfig, ...testConfig];
     },
     // Recommended config for TypeScript projects (prod + test)
-    get 'recommended-typescript'() {
+    get 'recommended-typescript'(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         const testConfig = require('../config/eslintrc-test.js');
@@ -146,26 +146,26 @@ export const configs = {
         return [...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig];
     },
     // Production code only
-    get 'prod-code'() {
+    get 'prod-code'(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         return [...commonConfig, ...prodConfig];
     },
     // Production code with TypeScript
-    get 'prod-code-typescript'() {
+    get 'prod-code-typescript'(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         const typescriptConfig = require('../config/eslintrc-typescript.js');
         return [...commonConfig, ...typescriptConfig, ...prodConfig];
     },
     // Test code only
-    get 'test-code'() {
+    get 'test-code'(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const testConfig = require('../config/eslintrc-test.js');
         return [...commonConfig, ...testConfig];
     },
     // Test code with TypeScript
-    get 'test-code-typescript'() {
+    get 'test-code-typescript'(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const testConfig = require('../config/eslintrc-test.js');
         const typescriptConfig = require('../config/eslintrc-typescript.js');
@@ -176,26 +176,26 @@ export const configs = {
 // Legacy config export for backward compatibility
 // @deprecated Use `configs` instead
 export const config = {
-    get defaultTS() {
+    get defaultTS(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         const testConfig = require('../config/eslintrc-test.js');
         const typescriptConfig = require('../config/eslintrc-typescript.js');
         return [...commonConfig, ...prodConfig, ...testConfig, ...typescriptConfig];
     },
-    get defaultJS() {
+    get defaultJS(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         const testConfig = require('../config/eslintrc-test.js');
         return [...commonConfig, ...prodConfig, ...testConfig];
     },
-    get testCode() {
+    get testCode(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const testConfig = require('../config/eslintrc-test.js');
         const typescriptConfig = require('../config/eslintrc-typescript.js');
         return [...commonConfig, ...typescriptConfig, ...testConfig];
     },
-    get prodCode() {
+    get prodCode(): any[] {
         const commonConfig = require('../config/eslintrc-common.js');
         const prodConfig = require('../config/eslintrc-prod.js');
         const typescriptConfig = require('../config/eslintrc-typescript.js');

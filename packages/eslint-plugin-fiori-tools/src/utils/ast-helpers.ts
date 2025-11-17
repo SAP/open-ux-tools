@@ -44,7 +44,7 @@ type LiteralNode = BaseNode & {
 /**
  * Check if a node is of a specific type
  *
- * @param node
+ * @param node The AST node
  * @param type
  */
 export function isType(node: unknown, type: string): boolean {
@@ -54,7 +54,7 @@ export function isType(node: unknown, type: string): boolean {
 /**
  * Check if a node is an Identifier
  *
- * @param node
+ * @param node The AST node
  */
 export function isIdentifier(node: unknown): boolean {
     return isType(node, 'Identifier');
@@ -63,7 +63,7 @@ export function isIdentifier(node: unknown): boolean {
 /**
  * Check if a node is a MemberExpression
  *
- * @param node
+ * @param node The AST node
  */
 export function isMember(node: unknown): boolean {
     return isType(node, 'MemberExpression');
@@ -72,7 +72,7 @@ export function isMember(node: unknown): boolean {
 /**
  * Check if a node is a CallExpression
  *
- * @param node
+ * @param node The AST node
  */
 export function isCall(node: unknown): boolean {
     return isType(node, 'CallExpression');
@@ -81,7 +81,7 @@ export function isCall(node: unknown): boolean {
 /**
  * Check if a node is a Literal
  *
- * @param node
+ * @param node The AST node
  */
 export function isLiteral(node: unknown): boolean {
     return isType(node, 'Literal');
@@ -90,7 +90,7 @@ export function isLiteral(node: unknown): boolean {
 /**
  * Check if a node is a Property
  *
- * @param node
+ * @param node The AST node
  */
 export function isProperty(node: unknown): boolean {
     return isType(node, 'Property');
@@ -99,7 +99,7 @@ export function isProperty(node: unknown): boolean {
 /**
  * Check if a node is an ObjectExpression
  *
- * @param node
+ * @param node The AST node
  */
 export function isObject(node: unknown): boolean {
     return isType(node, 'ObjectExpression');
@@ -108,7 +108,7 @@ export function isObject(node: unknown): boolean {
 /**
  * Check if a node is an ArrayExpression
  *
- * @param node
+ * @param node The AST node
  */
 export function isArray(node: unknown): boolean {
     return isType(node, 'ArrayExpression');
@@ -168,7 +168,7 @@ export function containsString(str: string, substring: string): boolean {
 /**
  * Check if a node represents the global 'window' variable
  *
- * @param node
+ * @param node The AST node
  */
 export function isWindow(node: unknown): boolean {
     return !!node && isIdentifier(node) && (node as IdentifierNode).name === 'window';
@@ -273,7 +273,7 @@ export function createRememberDocument(
 /**
  * Build a path string from a callee node
  *
- * @param node
+ * @param node The AST node
  */
 export function buildCalleePath(node: unknown): string {
     const memberNode = node as MemberExpressionNode;
@@ -290,7 +290,7 @@ export function buildCalleePath(node: unknown): string {
 /**
  * Convert a MemberExpression to a string representation
  *
- * @param node
+ * @param node The AST node
  */
 export function getMemberAsString(node: unknown): string {
     if (isMember(node)) {
