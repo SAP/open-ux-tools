@@ -3,7 +3,7 @@ import { lt, satisfies } from 'semver';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
@@ -176,7 +176,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
             if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
                 await editor.toolbar.navigationModeButton.click();
-                await lr.clickOnGoButton();
+                await lr.clickOnButton();
                 await editor.toolbar.uiAdaptationModeButton.click();
             }
 
@@ -245,7 +245,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.reloadCompleted();
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await expect(
                 previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div'),
                 `Check Column Name is \`New Column\``
