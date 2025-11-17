@@ -1371,7 +1371,11 @@ describe('FlpSandbox', () => {
 
         test('rta', async () => {
             await server.get(`${baseUrl}/my/rta.html`).expect(302);
-            const response = await server.get(`${baseUrl}/my/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true`).expect(200);
+            const response = await server
+                .get(
+                    `${baseUrl}/my/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true`
+                )
+                .expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
