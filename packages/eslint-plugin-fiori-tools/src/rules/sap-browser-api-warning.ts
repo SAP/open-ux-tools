@@ -277,9 +277,6 @@ const rule: Rule.RuleModule = {
                         default:
                     }
                 }
-                // ELSE:
-                // TODO: check if node.callee is identifier and identifier is a reference to history.back / .go / .forward
-                // processing const go = history.go; go();
             }
         }
 
