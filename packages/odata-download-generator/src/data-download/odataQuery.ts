@@ -2,6 +2,7 @@ import { ODataService } from '@sap-ux/axios-extension';
 import buildQuery from 'odata-query';
 import { Entity, ReferencedEntities } from './prompts';
 import { SelectedEntityAnswer } from './utils';
+import { ODataDownloadGenerator } from './odataDownloadGenerator';
 
 /**
  * todo: take a single entity list to download
@@ -14,14 +15,15 @@ import { SelectedEntityAnswer } from './utils';
 export async function fetchData(
     entities: ReferencedEntities,
     odataService: ODataService,
-    selectedEntities?: SelectedEntityAnswer[]
-): Promise<{ entityData: [] }> {
+    selectedEntities?: SelectedEntityAnswer[],
+    top?: number
+): Promise<{ entityData?: []; error?: string }> {
     // const query = createQueryBuilderV4(entities.listEntity).build();
 
-    let entitiesToExpand: { [path: string]: { expand : string[]} } = {};
+    let entitiesToExpand: { [path: string]: { expand: string[] } } = {};
 
     for (const pageEntity of entities.pageObjectEntities ?? []) {
-       /*  const skip = selectedEntities?.find((entityPath) => {
+        /*  const skip = selectedEntities?.find((entityPath) => {
             return entityPath.fullPath.startsWith(pageEntity.entityPath);
         }); */
         // Skip expansion of the list entity itself
@@ -40,9 +42,9 @@ export async function fetchData(
             //entitiesToExpand.push(entityPath.fullPath);
             const parentPath = entity.fullPath.match(/^.*?(?=\/)/)?.[0];
             if (parentPath && entitiesToExpand?.[parentPath]) {
-                entitiesToExpand[parentPath].expand 
-                ? entitiesToExpand[parentPath].expand.push(entity.entity.entityPath)
-                : entitiesToExpand[parentPath].expand = [entity.entity.entityPath]
+                entitiesToExpand[parentPath].expand
+                    ? entitiesToExpand[parentPath].expand.push(entity.entity.entityPath)
+                    : (entitiesToExpand[parentPath].expand = [entity.entity.entityPath]);
             }
 
             /* entitiesToExpand.forEach((entity) => {
@@ -51,16 +53,38 @@ export async function fetchData(
         }
     }
     const mainEntity = entities.listEntity;
-    let mainEntityKeys: { [key: string]: string } | undefined;
-    mainEntity.keys.forEach((key) => {
+    let mainEntityFilters: { [key: string]: string } | undefined;
+    mainEntity.semanticKeys.forEach((key) => {
         if (key.value) {
-            mainEntityKeys = mainEntityKeys ?? {};
-            mainEntityKeys[key.name] = key.value;
+            mainEntityFilters = mainEntityFilters ?? {};
+            mainEntityFilters[key.name] = key.value;
         }
     });
-    const keyQuery = mainEntityKeys ? buildQuery({ key: mainEntityKeys }).replaceAll('\'','') : '';
-    const expandQuery = buildQuery({ expand: entitiesToExpand });
-    const data = await odataService?.get(`${mainEntity.entitySetName}${keyQuery}${expandQuery}`);
-    // Process the result set into individual entity data for files
-    return { entityData: data?.odata() };
+
+    // Build the query object
+    let queryInput = {};
+
+    if (entitiesToExpand) {
+        Object.assign(queryInput, { expand: entitiesToExpand })
+    }
+    if (mainEntityFilters) {
+        Object.assign(queryInput, { 
+            filter: mainEntityFilters 
+        });
+    } else if (top){
+        Object.assign(queryInput, {
+            top
+        })
+    }
+    const queryString = buildQuery(queryInput);
+    const query = `${mainEntity.entitySetName}${queryString}`;
+    ODataDownloadGenerator.logger.info(`Query for odata: ${query}`);
+    try {
+        const data = await odataService?.get(query);
+        // Process the result set into individual entity data for files
+        return { entityData: data?.odata() };
+    } catch (error) {
+        ODataDownloadGenerator.logger.error(`An error occurred when querying for odata: ${error}`);
+        return { error: 'An error occurred when querying for odata. See the log for details.' };
+    }
 }

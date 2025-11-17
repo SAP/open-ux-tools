@@ -9,7 +9,7 @@ import {
 import type { Logger } from '@sap-ux/logger';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import Generator, { GeneratorOptions } from 'yeoman-generator';
-import { getServiceSelectionPrompts, ReferencedEntities } from './prompts';
+import { getServiceSelectionPrompts, promptNames, ReferencedEntities } from './prompts';
 import { PromptFunction } from 'inquirer';
 import { type ODataService } from '@sap-ux/axios-extension';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
@@ -69,6 +69,12 @@ export class ODataDownloadGenerator extends Generator {
         super(args, opts, {
             unique: 'namespace'
         });
+        // @ts-ignore - available types are not up-to-date
+        if (this.env.conflicter) {
+            // @ts-ignore
+            this.env.conflicter.force = true;
+        }
+        this.options.force = true;
 
         this.prompts = new Prompts([
             {
@@ -122,28 +128,33 @@ export class ODataDownloadGenerator extends Generator {
                 questions
             } = await getServiceSelectionPrompts(this.prompt.bind(this) as PromptFunction);
             const promptAnswers = await this.prompt(questions);
-            if (system.metadata && application.appAccess) {
+            if (system.metadata && application.appAccess && system.connectedSystem) {
                 if (system.servicePath && application.appAccess && application.referencedEntities) {
+                    system.connectedSystem.serviceProvider.log = ODataDownloadGenerator.logger;
                     const odataService = system.connectedSystem?.serviceProvider.service<ODataService>(
                         system.servicePath
                     );
-                    this.state.appEntities = application.referencedEntities;
+                    
+                    if (promptAnswers[promptNames.confirmDownload] === true) {
+                        this.state.appEntities = application.referencedEntities;
+                        this.state.selectedEntities = promptAnswers[promptNames.relatedEntitySelection];
+                        const result = await fetchData(this.state.appEntities, odataService!, this.state.selectedEntities, 10);
+                        if (result.entityData) {
+                            ODataDownloadGenerator.logger.info('Got result rows:' + `${result.entityData.length}`);
 
-                    this.state.selectedEntities = promptAnswers['relatedEntitySelection'];
-                    const result = await fetchData(this.state.appEntities, odataService!, this.state.selectedEntities);
-                    if (result.entityData) {
-                        this.log.info('Got result rows:' + `${result.entityData.length}`);
+                            this.state.entityData = result.entityData;
+                            this.state.appRootPath = application.appAccess.getAppRoot();
+                            const mockConfig = await getMockServerConfig(this.state.appRootPath);
 
-                        this.state.entityData = result.entityData;
-                        this.state.appRootPath = application.appAccess.getAppRoot();
-                        const mockConfig = await getMockServerConfig(this.state.appRootPath);
+                            this.log.info(`Mock config: ${JSON.stringify(mockConfig)}`);
 
-                        this.log.info(`Mock config: ${JSON.stringify(mockConfig)}`);
-
-                        // todo: Find the matching service, for now use the first one
-                        this.state.mockDataRootPath =
-                            mockConfig.services?.[0]?.mockdataPath ??
-                            join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+                            // todo: Find the matching service, for now use the first one
+                            this.state.mockDataRootPath =
+                                mockConfig.services?.[0]?.mockdataPath ??
+                                join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+                        } else if (result.error) {
+                            this.appWizard?.showError(result.error, MessageType.notification);
+                        }
                     }
                 }
             }
@@ -155,28 +166,33 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
-        try {
-            this.generationTime0 = performance.now();
-            // Set target dir to mock data path
-            this.destinationRoot(join(this.state.appRootPath!, this.state.mockDataRootPath!));
 
-            const entityFileData = convertODataResultToEntityFileData(
-                this.state.appEntities!,
-                this.state.entityData!,
-                this.state.selectedEntities
-            );
+        if (this.state.entityData) {
+            try {
+                this.generationTime0 = performance.now();
+                // Set target dir to mock data path
+                this.destinationRoot(join(this.state.appRootPath!, this.state.mockDataRootPath!));
 
-            // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
-            // Write main entity data file (todo: do we need to treat this differently? )
-            // this.writeDestinationJSON(mainEntityPath, this.state.entityData);
+                const entityFileData = convertODataResultToEntityFileData(
+                    this.state.appEntities!,
+                    this.state.entityData!,
+                    this.state.selectedEntities
+                );
 
-            Object.entries(entityFileData).forEach(([entityName, entityData]) => {
-                // Writes relative to destination root path
-                this.writeDestinationJSON(join(`${entityName}.json`), entityData);
-            });
-        } catch (error) {
-            ODataDownloadGenerator.logger.fatal(error);
-            this._exitOnError(error);
+                // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
+                // Write main entity data file (todo: do we need to treat this differently? )
+                // this.writeDestinationJSON(mainEntityPath, this.state.entityData);
+
+                Object.entries(entityFileData).forEach(([entityName, entityData]) => {
+                    // Writes relative to destination root path
+                    this.writeDestinationJSON(join(`${entityName}.json`), entityData);
+                });
+            } catch (error) {
+                ODataDownloadGenerator.logger.fatal(error);
+                this._exitOnError(error);
+            }
+        } else {
+            ODataDownloadGenerator.logger.info('No data to write. All done.');
         }
     }
 
