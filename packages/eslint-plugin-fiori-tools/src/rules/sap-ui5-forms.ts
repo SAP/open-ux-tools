@@ -44,7 +44,7 @@ const rule: Rule.RuleModule = {
          * @param type
          */
         function isType(node: any, type: any) {
-            return node && node.type === type;
+            return node?.type === type;
         }
         /**
          *
