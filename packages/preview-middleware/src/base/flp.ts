@@ -308,7 +308,7 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
-        const config:TemplateConfig = { ...this.templateConfig };
+        const config = structuredClone(this.templateConfig);
         /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             const libs = config.ui5.libs.split(',');
