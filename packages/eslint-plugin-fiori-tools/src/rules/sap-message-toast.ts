@@ -17,10 +17,6 @@ const INTERESTING_PATH = {
 };
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/* eslint-disable strict */
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -39,17 +35,11 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-
         const X_MEMBER = 'MemberExpression';
         const X_UNARY = 'UnaryExpression';
-        // const X_CALL = "CallExpression";
         const X_IDENTIFIER = 'Identifier';
-        // const X_LITERAL = "Literal";
-        // const P_OBJECT = "ObjectPattern";
-        // const P_ARRAY = "ArrayPattern";
 
-        const VARIABLES = {};
+        const VARIABLES: Record<string, string[]> = {};
 
         const _CALLEE_NAME = 'sap.m.MessageToast.show';
 
@@ -61,7 +51,7 @@ const rule: Rule.RuleModule = {
          *
          * @param i
          */
-        function isInteger(i) {
+        function isInteger(i: number): boolean {
             return Number(i) === i && i % 1 === 0;
         }
 
@@ -70,7 +60,7 @@ const rule: Rule.RuleModule = {
          * @param s
          * @param sub
          */
-        function endsWith(s, sub) {
+        function endsWith(s: string, sub: string): boolean {
             return (
                 typeof s === 'string' && typeof sub === 'string' && s.substring(s.length - sub.length, s.length) === sub
             );
@@ -80,7 +70,7 @@ const rule: Rule.RuleModule = {
          *
          * @param value
          */
-        function getEMValue(value) {
+        function getEMValue(value: string): number {
             if (endsWith(value, 'em')) {
                 return Number(value.replace('em', ''));
             }
@@ -91,12 +81,12 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function getLiteralOrIdentifiertName(node: any) {
+        function getLiteralOrIdentifiertName(node: Rule.Node): string {
             let result = '';
             if (node.type === X_IDENTIFIER) {
-                result = node.name;
+                result = (node as any).name;
             } else {
-                result = node.value;
+                result = (node as any).value;
             }
             return result;
         }
@@ -105,15 +95,15 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function getIdentifierPath(node: any) {
+        function getIdentifierPath(node: Rule.Node | undefined): string {
             let result = '';
             if (node) {
                 switch (node.type) {
                     case X_IDENTIFIER:
-                        result = node.name;
+                        result = (node as any).name;
                         break;
                     case X_MEMBER:
-                        result = getIdentifierPath(node.object) + '.' + getLiteralOrIdentifiertName(node.property);
+                        result = `${getIdentifierPath((node as any).object)}.${getLiteralOrIdentifiertName((node as any).property)}`;
                         break;
                     default:
                 }
@@ -121,19 +111,19 @@ const rule: Rule.RuleModule = {
             return result;
         }
 
-        // Method resolved IdentifierNames with known variables
         /**
+         * Method resolved IdentifierNames with known variables
          *
          * @param path
          */
-        function resolveIdentifierPath(path) {
+        function resolveIdentifierPath(path: string): string {
             const parts = path.split('.');
-            let substitution = false;
+            let substitution: string | undefined;
             // check if current identifier is remembered as an interesting variable
             for (const name in VARIABLES) {
                 if (name === parts[0]) {
                     // get last stored variable value
-                    substitution = VARIABLES[name].slice(-1).pop();
+                    substitution = VARIABLES[name].at(-1);
                 }
             }
             // if so, replace current identifier with its value
@@ -148,10 +138,10 @@ const rule: Rule.RuleModule = {
          *
          * @param path
          */
-        function isInterestingPath(path) {
+        function isInterestingPath(path: string): boolean {
             const parts = path.split('.');
             let isInteresting = false;
-            let interestingPath = INTERESTING_PATH;
+            let interestingPath: Record<string, any> = INTERESTING_PATH;
             for (const key in parts) {
                 if (interestingPath.hasOwnProperty(parts[key])) {
                     isInteresting = true;
@@ -169,48 +159,45 @@ const rule: Rule.RuleModule = {
          * @param node
          * @param name
          */
-        function rememberInterestingVariable(node: any, name: any) {
-            //        if (node.id.type === X_IDENTIFIER) {
-            if (typeof VARIABLES[node.id.name] === 'undefined') {
-                VARIABLES[node.id.name] = [];
+        function rememberInterestingVariable(node: Rule.Node, name: string): void {
+            if (typeof VARIABLES[(node as any).id.name] === 'undefined') {
+                VARIABLES[(node as any).id.name] = [];
             }
-            VARIABLES[node.id.name].push(name);
-            //        }
+            VARIABLES[(node as any).id.name].push(name);
         }
 
         /**
          *
          * @param node
          */
-        function processVariableDeclarator(node: any) {
-            //        if (node.init) {
-            let path = getIdentifierPath(node.init);
+        function processVariableDeclarator(node: Rule.Node): void {
+            let path = getIdentifierPath((node as any).init);
             path = resolveIdentifierPath(path);
             // if declaration is interesting, remember identifier and resolved value
             if (isInterestingPath(path)) {
                 rememberInterestingVariable(node, path);
             }
-            //        }
         }
 
         /**
          *
          * @param node
          */
-        function validateFunctionOptions(node: any) {
-            if (node.arguments.length === 2) {
-                const optionList = node.arguments[1].properties;
+        function validateFunctionOptions(node: Rule.Node): void {
+            if ((node as any).arguments.length === 2) {
+                const optionList = (node as any).arguments[1].properties;
                 for (const key in optionList) {
                     if (optionList.hasOwnProperty(key) && optionList[key].type === 'Property') {
                         const property = optionList[key];
-                        const name = property.key.name;
-                        const value = property.value.value;
+                        const name = (property as any).key.name;
+                        const value = (property as any).value.value;
                         switch (name) {
                             case 'duration':
                                 if (
                                     (isInteger(value) && value < DURATION_MIN) ||
                                     // check if value is a negative value
-                                    (property.value.type === X_UNARY && property.value.operator === '-')
+                                    ((property as any).value.type === X_UNARY &&
+                                        (property as any).value.operator === '-')
                                 ) {
                                     context.report({
                                         node,
@@ -249,15 +236,13 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function processCallExpression(node: any) {
-            //        if (node && node.type === X_CALL) {
-            let path = getIdentifierPath(node.callee);
+        function processCallExpression(node: Rule.Node): void {
+            let path = getIdentifierPath((node as any).callee);
             path = resolveIdentifierPath(path);
 
             if (isInterestingPath(path)) {
                 validateFunctionOptions(node);
             }
-            //        }
         }
 
         return {

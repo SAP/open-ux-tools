@@ -8,7 +8,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
 // ------------------------------------------------------------------------------
@@ -29,7 +29,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const WINDOW_OBJECTS: any[] = [];
         const DOCUMENT_OBJECTS: any[] = [];
         const FORBIDDEN_DOM_INSERTION = [

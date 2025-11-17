@@ -6,13 +6,6 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
-/*eslint-disable strict*/
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -29,8 +22,7 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        const WINDOW_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
         const FORBIDDEN_PROPERTIES = ['top', 'addEventListener'];
 
         // --------------------------------------------------------------------------
@@ -41,15 +33,15 @@ const rule: Rule.RuleModule = {
          * @param node
          * @param type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: Rule.Node | undefined, type: string): boolean {
+            return node?.type === type;
         }
 
         /**
          *
          * @param node
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
 
@@ -57,7 +49,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isLiteral(node: any) {
+        function isLiteral(node: Rule.Node | undefined): boolean {
             return isType(node, 'Literal');
         }
 
@@ -65,40 +57,29 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isMember(node: any) {
+        function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
 
         /**
          *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
          * @param node
          */
-        function isWindow(node: any) {
+        function isWindow(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window'
-            return isIdentifier(node) && node.name === 'window';
+            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
 
         /**
          *
          * @param node
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
+            return !!(
+                isWindow(node) ||
+                (node && isIdentifier(node) && 'name' in node && WINDOW_OBJECTS.includes(node.name))
+            );
         }
 
         // --------------------------------------------------------------------------
@@ -109,8 +90,8 @@ const rule: Rule.RuleModule = {
          * @param left
          * @param right
          */
-        function rememberWindow(left, right) {
-            if (isWindowObject(right) && isIdentifier(left)) {
+        function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
+            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
             }
@@ -121,25 +102,25 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isInteresting(node: any) {
-            return isMember(node) && isWindowObject(node.object);
+        function isInteresting(node: Rule.Node): boolean {
+            return isMember(node) && isWindowObject((node as any).object);
         }
 
         /**
          *
          * @param node
          */
-        function isValid(node: any) {
+        function isValid(node: Rule.Node): boolean {
             let method = '';
 
-            if (isIdentifier(node.property)) {
-                method = node.property.name;
+            if (isIdentifier((node as any).property) && 'name' in (node as any).property) {
+                method = (node as any).property.name;
             }
 
-            if (isLiteral(node.property)) {
-                method = node.property.value;
+            if (isLiteral((node as any).property) && 'value' in (node as any).property) {
+                method = (node as any).property.value;
             }
-            return !contains(FORBIDDEN_PROPERTIES, method);
+            return !FORBIDDEN_PROPERTIES.includes(method);
         }
 
         // --------------------------------------------------------------------------
@@ -147,10 +128,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         return {
             'VariableDeclarator': function (node) {
-                return rememberWindow(node.id, node.init);
+                return rememberWindow((node as any).id, (node as any).init);
             },
             'AssignmentExpression': function (node) {
-                return rememberWindow(node.left, node.right);
+                return rememberWindow((node as any).left, (node as any).right);
             },
             'MemberExpression': function (node) {
                 if (isInteresting(node) && !isValid(node)) {

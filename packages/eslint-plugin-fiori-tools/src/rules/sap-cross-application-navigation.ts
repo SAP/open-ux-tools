@@ -6,10 +6,6 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/* eslint-disable strict */
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -26,64 +22,63 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        const VARIABLES = {};
+        const VARIABLES: Record<string, boolean> = {};
 
         /**
          *
          * @param node
          * @param type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: Rule.Node | undefined, type: string): boolean {
+            return node?.type === type;
         }
         /**
          *
          * @param node
          */
-        function isObject(node: any) {
+        function isObject(node: Rule.Node | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
         /**
          *
          * @param node
          */
-        function isMember(node: any) {
+        function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
          *
          * @param node
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
          *
          * @param node
          */
-        function isCall(node: any) {
+        function isCall(node: Rule.Node | undefined): boolean {
             return isType(node, 'CallExpression');
         }
         /**
          *
          * @param node
          */
-        function isLogical(node: any) {
+        function isLogical(node: Rule.Node | undefined): boolean {
             return isType(node, 'LogicalExpression');
         }
         /**
          *
          * @param node
          */
-        function isLiteral(node: any) {
+        function isLiteral(node: Rule.Node | undefined): boolean {
             return isType(node, 'Literal');
         }
         /**
          *
          * @param node
          */
-        function isProperty(node: any) {
+        function isProperty(node: Rule.Node | undefined): boolean {
             return isType(node, 'Property');
         }
 
@@ -92,7 +87,7 @@ const rule: Rule.RuleModule = {
          * @param string
          * @param suffix
          */
-        function endsWith(string, suffix) {
+        function endsWith(string: string, suffix: string): boolean {
             return (
                 typeof string === 'string' &&
                 typeof suffix === 'string' &&
@@ -104,13 +99,13 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function getIdentifierPath(node: any) {
+        function getIdentifierPath(node: Rule.Node): string {
             if (isIdentifier(node)) {
-                return node.name;
+                return (node as any).name;
             } else if (isLiteral(node)) {
-                return node.value;
+                return (node as any).value;
             } else if (isMember(node)) {
-                return getIdentifierPath(node.object) + '.' + getIdentifierPath(node.property);
+                return `${getIdentifierPath((node as any).object)}.${getIdentifierPath((node as any).property)}`;
             } else {
                 return '';
             }
@@ -120,11 +115,11 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function getName(node: any) {
+        function getName(node: Rule.Node): string | null {
             if (isIdentifier(node)) {
-                return node.name;
+                return (node as any).name;
             } else if (isLiteral(node)) {
-                return node.value;
+                return (node as any).value;
             }
             return null;
         }
@@ -134,36 +129,32 @@ const rule: Rule.RuleModule = {
          * @param node
          * @param key
          */
-        function getProperty(node: any, key: any) {
+        function getProperty(node: Rule.Node, key: string): Rule.Node | null {
             // check if node is an object, only objects have properties
             if (isObject(node)) {
                 // iterate properties
-                for (let i = 0; i < node.properties.length; i++) {
-                    const property = node.properties[i];
+                for (let i = 0; i < (node as any).properties.length; i++) {
+                    const property = (node as any).properties[i];
                     // return property value if property key matches given key
-                    if (isProperty(property) && getName(property.key) === key) {
-                        return property.value;
+                    if (isProperty(property) && getName((property as any).key) === key) {
+                        return (property as any).value;
                     }
                 }
             }
             return null;
         }
 
-        /*
+        /**
          * Method checks the given node, if it's a method call with 'CrossApplicationNavigation' as the only argument.
          *
          * @param node - a CallExpression node
-         **/
-        /**
-         *
-         * @param node
          */
-        function isGetServiceCall(node: any) {
+        function isGetServiceCall(node: Rule.Node | undefined): boolean {
             if (isCall(node)) {
                 if (
-                    node.arguments?.length === 1 &&
-                    isLiteral(node.arguments[0]) &&
-                    node.arguments[0].value === 'CrossApplicationNavigation'
+                    (node as any).arguments?.length === 1 &&
+                    isLiteral((node as any).arguments[0]) &&
+                    (node as any).arguments[0].value === 'CrossApplicationNavigation'
                 ) {
                     return true;
                 }
@@ -171,18 +162,17 @@ const rule: Rule.RuleModule = {
             return false;
         }
 
-        /*
-         * Method checks if the assignment node contains any interesting nodes. Can handle nested conditions.
-         **/
         /**
+         * Method checks if the assignment node contains any interesting nodes. Can handle nested conditions.
          *
          * @param node
          */
-        function isInterestingAssignment(node: any) {
+        function isInterestingAssignment(node: Rule.Node | undefined): boolean {
             return (
                 isGetServiceCall(node) || // const x = fgetService('CrossApplicationNavigation');
                 // const x = fgetService && fgetService('CrossApplicationNavigation');
-                (isLogical(node) && (isInterestingAssignment(node.left) || isInterestingAssignment(node.right)))
+                (isLogical(node) &&
+                    (isInterestingAssignment((node as any).left) || isInterestingAssignment((node as any).right)))
             );
         }
 
@@ -190,10 +180,10 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isInterestingCall(node: any) {
-            const path = getIdentifierPath(node.callee);
+        function isInterestingCall(node: Rule.Node): boolean {
+            const path = getIdentifierPath((node as any).callee);
             if (isCall(node) && endsWith(path, 'toExternal')) {
-                const callee = node.callee;
+                const callee = (node as any).callee;
                 if (isMember(callee)) {
                     const object = callee.object;
                     if (isGetServiceCall(object) || (isIdentifier(object) && VARIABLES[object.name])) {
@@ -201,23 +191,24 @@ const rule: Rule.RuleModule = {
                     }
                 }
             }
+            return false;
         }
 
         /**
          *
          * @param node
          */
-        function isValid(node: any) {
-            if (node?.arguments && node.arguments.length > 0) {
-                const target = getProperty(node.arguments[0], 'target');
+        function isValid(node: Rule.Node): boolean {
+            if ((node as any).arguments?.length > 0) {
+                const target = getProperty((node as any).arguments[0], 'target');
                 if (target) {
                     // get property target from first argument, get property shellHash from property target
                     const shellHash = getProperty(target, 'shellHash');
                     // check if property shellHash has value '#' or '#Shell-home' or ""
                     if (
                         (shellHash && getName(shellHash) === '#Shell-home') ||
-                        getName(shellHash) === '#' ||
-                        getName(shellHash) === ''
+                        (shellHash && getName(shellHash) === '#') ||
+                        (shellHash && getName(shellHash) === '')
                     ) {
                         return true;
                     }
@@ -234,13 +225,13 @@ const rule: Rule.RuleModule = {
 
         return {
             'VariableDeclarator': function (node) {
-                if (isInterestingAssignment(node.init) && node.id.type === 'Identifier') {
-                    VARIABLES[node.id.name] = true;
+                if (isInterestingAssignment((node as any).init) && (node as any).id.type === 'Identifier') {
+                    VARIABLES[(node as any).id.name] = true;
                 }
             },
             'AssignmentExpression': function (node) {
-                if (isInterestingAssignment(node.right) && node.left.type === 'Identifier') {
-                    VARIABLES[node.left.name] = true;
+                if (isInterestingAssignment((node as any).right) && (node as any).left.type === 'Identifier') {
+                    VARIABLES[(node as any).left.name] = true;
                 }
             },
             'CallExpression': function (node) {

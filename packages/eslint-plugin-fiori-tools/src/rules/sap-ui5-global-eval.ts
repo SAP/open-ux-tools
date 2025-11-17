@@ -1,7 +1,6 @@
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/* eslint-disable strict */
 
 import type { Rule } from 'eslint';
 
@@ -22,7 +21,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const INTERESTING_METHODS_JQUERY = ['globalEval'];
 
         // --------------------------------------------------------------------------

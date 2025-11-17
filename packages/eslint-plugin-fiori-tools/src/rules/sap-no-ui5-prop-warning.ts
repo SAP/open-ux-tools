@@ -5,8 +5,6 @@
 
 import type { Rule } from 'eslint';
 
-/*eslint-disable strict*/
-
 // ------------------------------------------------------------------------------
 // Rule Definition
 

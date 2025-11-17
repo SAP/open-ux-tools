@@ -5,14 +5,6 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
-
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/*eslint-disable strict*/
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 
@@ -30,9 +22,7 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        // variables should be defined here,  return name.match("(http|https)(:/)?/([^:]+:[^@]+@)?[^:/]+[:/]?");
-        const ALLOWED_DOMAINS_WHITELIST = [
+        const ALLOWED_DOMAINS = [
             // http://www.w3.org/2000/svg
             'http://www.w3.org/',
             // While this is not a true domain, adding the 'http version' here
@@ -56,20 +46,15 @@ const rule: Rule.RuleModule = {
          * @param a
          * @param obj
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj.indexOf(a[i]) >= 0) {
-                    return true;
-                }
-            }
-            return false;
+        function contains(a: string[], obj: string): boolean {
+            return a.some((domain) => obj.indexOf(domain) >= 0);
         }
 
         /**
          *
          * @param name
          */
-        function matchProhibited(name) {
+        function matchProhibited(name: string): RegExpMatchArray | null {
             return name.match('(http|https)://.*');
         }
 
@@ -79,13 +64,13 @@ const rule: Rule.RuleModule = {
 
         return {
             'Literal': function (node) {
-                const val = node.value;
+                const val = (node as any).value;
                 let result;
 
                 if (typeof val === 'string') {
-                    result = matchProhibited(node.value);
+                    result = matchProhibited(val);
 
-                    if (result && !contains(ALLOWED_DOMAINS_WHITELIST, val)) {
+                    if (result && !contains(ALLOWED_DOMAINS, val)) {
                         context.report({ node: node, messageId: 'hardcodedUrl' });
                     }
                 }

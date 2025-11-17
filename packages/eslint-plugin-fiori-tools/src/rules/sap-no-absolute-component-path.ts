@@ -6,10 +6,6 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/* eslint-disable strict */
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -26,8 +22,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-
         const T_MEMBER = 'MemberExpression';
         const T_ARRAY = 'ArrayExpression';
         const T_IDENTIFIER = 'Identifier';
@@ -40,12 +34,12 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function getLiteralOrIdentifiertName(node: any) {
+        function getLiteralOrIdentifiertName(node: Rule.Node): string {
             let result = '';
             if (node.type === T_IDENTIFIER) {
-                result = node.name;
+                result = (node as any).name;
             } else {
-                result = node.value;
+                result = (node as any).value;
             }
             return result;
         }
@@ -54,33 +48,34 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function getIdentifierPath(node: any) {
+        function getIdentifierPath(node: Rule.Node): string {
             let result = '';
-            //        if (node) {
             switch (node.type) {
                 case T_IDENTIFIER:
-                    result = node.name;
+                    result = (node as any).name;
                     break;
                 case T_MEMBER:
-                    result = getIdentifierPath(node.object) + '.' + getLiteralOrIdentifiertName(node.property);
+                    result = `${getIdentifierPath((node as any).object)}.${getLiteralOrIdentifiertName((node as any).property)}`;
                     break;
                 default:
             }
-            //        }
             return result;
         }
 
-        // Search ObjectExpression to find certain property
         /**
+         * Search ObjectExpression to find certain property
          *
          * @param node
          * @param propertyName
          */
-        function getPropertyFromObjectExpression(node: any, propertyName: any) {
+        function getPropertyFromObjectExpression(
+            node: Rule.Node | undefined,
+            propertyName: string
+        ): Rule.Node | undefined {
             // Check if node is of type object expression
             if (node?.type === T_OBJECT) {
                 // Get property list from object expression
-                const propertyList = node.properties;
+                const propertyList = (node as any).properties;
                 // Go through the properties
                 let property;
                 for (const key in propertyList) {
@@ -90,24 +85,23 @@ const rule: Rule.RuleModule = {
                         propertyList.hasOwnProperty(key) &&
                         (property = propertyList[key]) &&
                         property.type === T_PROPERTY &&
-                        getLiteralOrIdentifiertName(property.key) === propertyName
+                        getLiteralOrIdentifiertName((property as any).key) === propertyName
                     ) {
-                        return property.value;
-                        //                    }
+                        return (property as any).value;
                     }
                 }
             }
         }
 
-        // Search options parameter
         /**
+         * Search options parameter
          *
          * @param node
          */
-        function validateFunctionOptions(node: any) {
-            if (node.arguments.length > 1) {
+        function validateFunctionOptions(node: Rule.Node): void {
+            if ((node as any).arguments.length > 1) {
                 // get options parameter (2nd)
-                const options = node.arguments[1];
+                const options = (node as any).arguments[1];
                 // Get metadata data
                 const metadata = getPropertyFromObjectExpression(options, P_METADATA);
                 // Get includes data
@@ -115,7 +109,7 @@ const rule: Rule.RuleModule = {
                 // Check if includes type is array expression
                 if (includes?.type === T_ARRAY) {
                     // Get array elements
-                    const includesElements = includes.elements;
+                    const includesElements = (includes as any).elements;
                     let element;
                     for (const key in includesElements) {
                         // all in one if-statement to reach code coverage
@@ -125,7 +119,6 @@ const rule: Rule.RuleModule = {
                             getLiteralOrIdentifiertName(element).indexOf('/') === 0
                         ) {
                             context.report({ node: node, messageId: 'absolutePath' });
-                            //                        }
                         }
                     }
                 }
@@ -137,7 +130,7 @@ const rule: Rule.RuleModule = {
          * @param string
          * @param suffix
          */
-        function endsWith(string, suffix) {
+        function endsWith(string: string, suffix: string): boolean {
             return string.indexOf(suffix, string.length - suffix.length) !== -1;
         }
 
@@ -145,9 +138,9 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function processCallExpression(node: any) {
-            const path = getIdentifierPath(node.callee);
-            if (endsWith(path, '.' + 'extend')) {
+        function processCallExpression(node: Rule.Node): void {
+            const path = getIdentifierPath((node as any).callee);
+            if (endsWith(path, `.${'extend'}`)) {
                 validateFunctionOptions(node);
             }
         }

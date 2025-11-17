@@ -386,6 +386,11 @@ function isOutputDirKnown() {
 // Public Interface
 //------------------------------------------------------------------------------
 
+/**
+ *
+ * @param results
+ * @param isMultiOn
+ */
 export function generateTemplate(results: any[], isMultiOn: boolean): string {
     const currWorkingDir = process.cwd() || '',
         rules = _(results).map('messages').flatten().groupBy('severity').value(), // rule messages grouped by severity

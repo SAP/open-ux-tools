@@ -1,7 +1,6 @@
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/* eslint-disable strict */
 
 import type { Rule } from 'eslint';
 
@@ -22,7 +21,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const INTERESTING_METHODS = ['SimpleForm', 'Form', 'SmartForm'];
         const INTERESTING_METHODS_CONTENT = ['Table', 'HBox', 'VBox', 'VerticalLayout'];
         const INTERESTING_PROPERTY_NAMES = [

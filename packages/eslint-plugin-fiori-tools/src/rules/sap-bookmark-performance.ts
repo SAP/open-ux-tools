@@ -6,10 +6,6 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/* eslint-disable strict */
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -27,7 +23,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const MIN = 0;
         const MAX = 300;
         const INTERESTING_KEY = 'serviceRefreshInterval';
@@ -41,15 +36,15 @@ const rule: Rule.RuleModule = {
          * @param node
          * @param type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: Rule.Node | undefined, type: string): boolean {
+            return node?.type === type;
         }
 
         /**
          *
          * @param node
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
 
@@ -57,7 +52,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isLiteral(node: any) {
+        function isLiteral(node: Rule.Node | undefined): boolean {
             return isType(node, 'Literal');
         }
 
@@ -65,7 +60,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isProperty(node: any) {
+        function isProperty(node: Rule.Node | undefined): boolean {
             return isType(node, 'Property');
         }
 
@@ -73,7 +68,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isMember(node: any) {
+        function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
 
@@ -81,7 +76,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isObject(node: any) {
+        function isObject(node: Rule.Node | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
 
@@ -90,20 +85,15 @@ const rule: Rule.RuleModule = {
          * @param a
          * @param obj
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+        function contains(a: string[], obj: string): boolean {
+            return a.includes(obj);
         }
 
         /**
          *
          * @param i
          */
-        function isNumber(i) {
+        function isNumber(i: unknown): i is number {
             return Number(i) === i && i % 1 === 0;
         }
 
@@ -111,7 +101,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isInRange(node: any) {
+        function isInRange(node: unknown): boolean {
             return isNumber(node) && node > MIN && node < MAX;
         }
 
@@ -119,10 +109,10 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isInteresting(node: any) {
-            const callee = node.callee;
+        function isInteresting(node: Rule.Node): boolean {
+            const callee = (node as any).callee;
             if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
+                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, (callee.property as any).name)) {
                     return true;
                 }
             }
@@ -136,8 +126,8 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isValid(node: any) {
-            const args = node.arguments;
+        function isValid(node: Rule.Node): boolean {
+            const args = (node as any).arguments;
             if (args && args.length > 0) {
                 // get firtst argument
                 const argument = args[0];

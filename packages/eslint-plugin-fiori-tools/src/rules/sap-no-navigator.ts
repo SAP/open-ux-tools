@@ -6,11 +6,6 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-
-/*eslint-disable strict*/
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -52,11 +47,11 @@ const rule: Rule.RuleModule = {
                 'onresize'
             ];
 
-        const FULL_BLACKLIST = FORBIDDEN_NAVIGATOR_WINDOW.concat(FORBIDDEN_GLOB_EVENT);
-        FULL_BLACKLIST.push('back');
+        const FORBIDDEN_METHODS = FORBIDDEN_NAVIGATOR_WINDOW.concat(FORBIDDEN_GLOB_EVENT);
+        FORBIDDEN_METHODS.push('back');
 
-        const WINDOW_OBJECTS: any[] = [];
-        const NAVIGATOR_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
+        const NAVIGATOR_OBJECTS: string[] = [];
 
         // --------------------------------------------------------------------------
         // Helpers
@@ -67,50 +62,37 @@ const rule: Rule.RuleModule = {
          * @param node
          * @param type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: Rule.Node | undefined, type: string): boolean {
+            return node?.type === type;
         }
         /**
          *
          * @param node
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
          *
          * @param node
          */
-        function isMember(node: any) {
+        function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
          *
          * @param node
          */
-        function isCall(node: any) {
+        function isCall(node: Rule.Node | undefined): boolean {
             return isType(node, 'CallExpression');
-        }
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         /**
          *
          * @param node
          */
-        function getRightestMethodName(node: any) {
-            const callee = node.callee;
+        function getRightestMethodName(node: Rule.Node): string {
+            const callee = (node as any).callee;
             return isMember(callee) ? callee.property.name : callee.name;
         }
 
@@ -118,29 +100,20 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isWindow(node: any) {
+        function isWindow(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window'
-            return isIdentifier(node) && node.name === 'window';
+            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
 
         /**
          *
          * @param node
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isNavigator(node: any) {
-            // true if node id the global variable 'navigator', 'window.navigator' or '<windowReference>.navigator'
-            return (
-                (isIdentifier(node) && node.name === 'navigator') ||
-                (isMember(node) && isWindowObject(node.object) && isNavigator(node.property))
+            return !!(
+                isWindow(node) ||
+                (isIdentifier(node) && node && 'name' in node && WINDOW_OBJECTS.includes(node.name))
             );
         }
 
@@ -148,9 +121,24 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isNavigatorObject(node: any) {
+        function isNavigator(node: Rule.Node | undefined): boolean {
+            // true if node id the global variable 'navigator', 'window.navigator' or '<windowReference>.navigator'
+            return (
+                (isIdentifier(node) && node && 'name' in node && node.name === 'navigator') ||
+                (isMember(node) && isWindowObject((node as any).object) && isNavigator((node as any).property))
+            );
+        }
+
+        /**
+         *
+         * @param node
+         */
+        function isNavigatorObject(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'navigator'/'window.navigator' or a reference to it
-            return isNavigator(node) || (isIdentifier(node) && contains(NAVIGATOR_OBJECTS, node.name));
+            return !!(
+                isNavigator(node) ||
+                (isIdentifier(node) && node && 'name' in node && NAVIGATOR_OBJECTS.includes(node.name))
+            );
         }
 
         /**
@@ -158,8 +146,8 @@ const rule: Rule.RuleModule = {
          * @param left
          * @param right
          */
-        function rememberWindow(left: any, right: any): boolean {
-            if (isWindowObject(right) && isIdentifier(left)) {
+        function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
+            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
             }
@@ -171,8 +159,8 @@ const rule: Rule.RuleModule = {
          * @param left
          * @param right
          */
-        function rememberNavigator(left: any, right: any): boolean {
-            if (isNavigatorObject(right) && isIdentifier(left)) {
+        function rememberNavigator(left: Rule.Node, right: Rule.Node): boolean {
+            if (isNavigatorObject(right) && isIdentifier(left) && 'name' in left) {
                 NAVIGATOR_OBJECTS.push(left.name);
                 return true;
             }
@@ -185,16 +173,22 @@ const rule: Rule.RuleModule = {
 
         return {
             'VariableDeclarator': function (node) {
-                return rememberWindow(node.id, node.init) || rememberNavigator(node.id, node.init);
+                return (
+                    rememberWindow((node as any).id, (node as any).init) ||
+                    rememberNavigator((node as any).id, (node as any).init)
+                );
             },
             'AssignmentExpression': function (node) {
-                return rememberWindow(node.left, node.right) || rememberNavigator(node.left, node.right);
+                return (
+                    rememberWindow((node as any).left, (node as any).right) ||
+                    rememberNavigator((node as any).left, (node as any).right)
+                );
             },
             'MemberExpression': function (node) {
-                if (isNavigatorObject(node.object)) {
+                if (isNavigatorObject((node as any).object)) {
                     if (isCall(node.parent)) {
                         const methodName = getRightestMethodName(node.parent);
-                        if (typeof methodName === 'string' && contains(FULL_BLACKLIST, methodName)) {
+                        if (typeof methodName === 'string' && FORBIDDEN_METHODS.includes(methodName)) {
                             context.report({ node: node, messageId: 'navigator' });
                         }
                     } else {

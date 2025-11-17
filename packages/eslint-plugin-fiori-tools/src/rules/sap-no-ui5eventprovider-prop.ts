@@ -9,7 +9,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -28,8 +28,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-
         // Alphabetical list of the "private property names" from UI5 event provider which this check shall detect
         const PRIVATE_MEMBERS = ['mEventRegistry', 'oEventPool'];
 
