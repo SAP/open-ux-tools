@@ -4,6 +4,16 @@
  */
 
 import type { Rule } from 'eslint';
+import {
+    isIdentifier,
+    isMember,
+    isLiteral,
+    createIsWindowObject,
+    createRememberWindow,
+    createIsDocument,
+    createIsDocumentObject,
+    createRememberDocument
+} from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -29,152 +39,33 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        const WINDOW_OBJECTS: any[] = [];
-        const DOCUMENT_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
+        const DOCUMENT_OBJECTS: string[] = [];
 
-        // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-
-        /**
-         *
-         * @param node
-         * @param value
-         */
-        function isIdentifier(node: any, value: any) {
-            return isType(node, 'Identifier') && (!value || node.name === value);
-        }
-
-        /**
-         *
-         * @param node
-         * @param value
-         */
-        function isLiteral(node: any, value: any) {
-            return isType(node, 'Literal') && (!value || node.value === value);
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a: any[], obj: any): boolean {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindow(node: any): boolean {
-            // true if node is the global variable 'window'
-            return node && isIdentifier(node, 'window');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindowObject(node: any) {
-            // true if node is the global variable 'window' or a reference to it
-            return (
-                isWindow(node) ||
-                (node && isIdentifier(node, null) && 'name' in node && contains(WINDOW_OBJECTS, node.name))
-            );
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isDocument(node: any): boolean {
-            if (node) {
-                if (isIdentifier(node, 'document')) {
-                    // true if node id the global variable 'document'
-                    return true;
-                } else if (isMember(node)) {
-                    // true if node id the global variable 'window.document' or '<windowReference>.document'
-                    return isWindowObject(node.object) && isDocument(node.property);
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isDocumentObject(node: any) {
-            // true if node is the global variable 'document'/'window.document' or a reference to it
-            return (
-                isDocument(node) ||
-                (node && isIdentifier(node, null) && 'name' in node && contains(DOCUMENT_OBJECTS, node.name))
-            );
-        }
+        // Initialize factory functions
+        const isWindowObject = createIsWindowObject(WINDOW_OBJECTS);
+        const rememberWindow = createRememberWindow(WINDOW_OBJECTS, isWindowObject);
+        const isDocument = createIsDocument(isWindowObject);
+        const isDocumentObject = createIsDocumentObject(DOCUMENT_OBJECTS, isDocument);
+        const rememberDocument = createRememberDocument(DOCUMENT_OBJECTS, isDocumentObject);
 
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param left
-         * @param right
-         */
-        function rememberWindow(left: any, right: any): boolean {
-            if (isWindowObject(right) && isIdentifier(left, null)) {
-                WINDOW_OBJECTS.push(left.name);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param left
-         * @param right
-         */
-        function rememberDocument(left: any, right: any): boolean {
-            if (isDocumentObject(right) && isIdentifier(left, null)) {
-                DOCUMENT_OBJECTS.push(left.name);
-                return true;
-            }
-            return false;
-        }
 
         /**
          *
          * @param node
          */
-        function isInteresting(node: any) {
-            if (
-                isMember(node) &&
-                isMember(node.object) &&
-                isDocumentObject(node.object.object) &&
-                (isIdentifier(node.object.property, 'styleSheets') || isLiteral(node.object.property, 'styleSheets'))
-            ) {
-                return true;
+        function isInteresting(node: any): boolean {
+            if (isMember(node) && isMember(node.object) && isDocumentObject(node.object.object)) {
+                const prop = node.object.property;
+                if (isIdentifier(prop) && (prop as any).name === 'styleSheets') {
+                    return true;
+                }
+                if (isLiteral(prop) && (prop as any).value === 'styleSheets') {
+                    return true;
+                }
             }
             return false;
         }

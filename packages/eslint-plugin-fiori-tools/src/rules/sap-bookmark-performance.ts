@@ -4,6 +4,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -29,65 +30,8 @@ const rule: Rule.RuleModule = {
         const INTERESTING_METHODS = ['setServiceRefreshInterval', 'setAppData'];
 
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Rule-specific Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: Rule.Node | undefined): boolean {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isProperty(node: Rule.Node | undefined): boolean {
-            return isType(node, 'Property');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: Rule.Node | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isObject(node: Rule.Node | undefined): boolean {
-            return isType(node, 'ObjectExpression');
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
-        }
 
         /**
          *

@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isMember, isCall, isLiteral, contains } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -83,60 +84,9 @@ const rule: Rule.RuleModule = {
             FORBIDDEN_WINDOW_OBJECT: string[] = [],
             FORBIDDEN_WINDOW_EVENT_OBJECT: string[] = [];
 
-        const MEMBER = 'MemberExpression', //
-            CALL = 'CallExpression', //
-            IDENTIFIER = 'Identifier', //
-            //    UNARY = "UnaryExpression", //
-            LITERAL = 'Literal';
-
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
-            return node?.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
-            return isType(node, IDENTIFIER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: Rule.Node | undefined): boolean {
-            return isType(node, MEMBER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isCall(node: Rule.Node | undefined): boolean {
-            return isType(node, CALL);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: Rule.Node | undefined): boolean {
-            return isType(node, LITERAL);
-        }
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
-        }
 
         /**
          *

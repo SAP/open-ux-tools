@@ -4,6 +4,13 @@
  */
 
 import type { Rule } from 'eslint';
+import {
+    isIdentifier,
+    createIsWindowObject,
+    createIsLocation,
+    createIsLocationObject,
+    createRememberLocation
+} from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -30,91 +37,14 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        const WINDOW_OBJECTS: any[] = [];
-        const LOCATION_OBJECTS: any[] = [];
-        // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
+        const WINDOW_OBJECTS: string[] = [];
+        const LOCATION_OBJECTS: string[] = [];
 
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindow(node: any) {
-            // true if node is the global variable 'window'
-            return isIdentifier(node) && node.name === 'window';
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindowObject(node: any) {
-            // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLocation(node: any) {
-            if (isIdentifier(node)) {
-                // true if node id the global variable 'location'
-                return node.name === 'location';
-            } else if (isMember(node)) {
-                // true if node id the global variable 'window.location' or '<windowReference>.location'
-                return isWindowObject(node.object) && isLocation(node.property);
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLocationObject(node: any) {
-            // true if node is the global variable 'location'/'window.location' or a reference to it
-            return isLocation(node) || (isIdentifier(node) && contains(LOCATION_OBJECTS, node.name));
-        }
+        // Initialize factory functions
+        const isWindowObject = createIsWindowObject(WINDOW_OBJECTS);
+        const isLocation = createIsLocation(isWindowObject);
+        const isLocationObject = createIsLocationObject(LOCATION_OBJECTS, isLocation);
+        const rememberLocation = createRememberLocation(LOCATION_OBJECTS, isLocationObject);
 
         // --------------------------------------------------------------------------
         // Helpers
@@ -124,7 +54,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function checkAssignmentAgainstOverride(node: any) {
+        function checkAssignmentAgainstOverride(node: any): void {
             const identifier = node.left;
             if (
                 isLocation(identifier) || // location = * || window.location = *
@@ -139,7 +69,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function processMemberExpression(node: any) {
+        function processMemberExpression(node: any): void {
             if (isLocationObject(node.object) && node.property.name === 'assign') {
                 context.report({ node: node, messageId: 'locationAssign' });
             }
@@ -151,21 +81,8 @@ const rule: Rule.RuleModule = {
          * @param right
          */
         function rememberWindow(left: any, right: any): boolean {
-            if (isWindow(right) && isIdentifier(left)) {
-                WINDOW_OBJECTS.push(left.name);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param left
-         * @param right
-         */
-        function rememberLocation(left, right) {
-            if (isLocationObject(right) && isIdentifier(left)) {
-                LOCATION_OBJECTS.push(left.name);
+            if (isWindowObject(right) && isIdentifier(left)) {
+                WINDOW_OBJECTS.push((left as any).name);
                 return true;
             }
             return false;

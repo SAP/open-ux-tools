@@ -4,6 +4,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isMember, isLiteral } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -28,38 +29,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: Rule.Node | undefined): boolean {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: Rule.Node | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          *
