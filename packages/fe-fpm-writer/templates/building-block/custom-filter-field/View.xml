@@ -1,0 +1,12 @@
+<% if (!config?.hasAggregation) { %><<%- macrosNamespace %>:filterFields><% } %>
+    <<%- config?.aggregationNamespace %>:FilterField 
+		key="<%- data.filterFieldKey || 'myFilterFieldKey'%>" 
+		label="<%- data.label %>"
+		<% if (data.id) { %> id="<%- data.id %>"<% } %>
+		<% if (data.position.anchor) { %> anchor="<%- data.position.anchor %>"<% } %>
+		<% if (data.position.placement) { %> placement="<%- data.position.placement %>"<% } %>
+		<% if (data.required) { %> required="<%- data.required %>"<% } %>
+		<% if (data.property) { %> property="<%- data.property %>"<% } %>>
+		<core:Fragment fragmentName="<%- data.embededFragment.ns %>.<%- data.embededFragment.name %>" type="XML" />
+	</<%- config?.aggregationNamespace %>:FilterField>
+<% if (!config?.hasAggregation) { %></<%- macrosNamespace %>:filterFields><% } %>
