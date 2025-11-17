@@ -1,22 +1,22 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getOrCreateServiceKeys } from '@sap-ux/adp-tooling';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
-import type { UI5YamlCustomTaskConfiguration, CfCredentials } from '@sap-ux/adp-tooling';
+import type { UI5YamlCustomTaskConfiguration, ServiceInfo, ServiceKeys } from '@sap-ux/adp-tooling';
 
 import { OAuthTokenManager } from './oauth-manager';
 
 const CF_BUILD_TASK = 'app-variant-bundler-build';
 
 /**
- * Creates an OAuthTokenManager from CF credentials.
+ * Creates an OAuthTokenManager from service keys.
  *
- * @param {CfCredentials} credentials - CF credentials containing UAA information.
+ * @param {ServiceKeys} serviceKeys - Service keys containing UAA information.
  * @param {ToolsLogger} logger - Logger instance.
  * @returns {OAuthTokenManager} OAuthTokenManager instance.
- * @throws {Error} If credentials are invalid.
+ * @throws {Error} If service keys are invalid.
  */
-export function createManagerFromCredentials(credentials: CfCredentials, logger: ToolsLogger): OAuthTokenManager {
-    const { uaa } = credentials;
+export function createManagerFromCredentials(serviceKeys: ServiceKeys, logger: ToolsLogger): OAuthTokenManager {
+    const { uaa } = serviceKeys.credentials;
     const tokenEndpoint = uaa?.url ? `${uaa.url}/oauth/token` : '';
 
     if (!uaa?.clientid || !uaa?.clientsecret || !tokenEndpoint) {
