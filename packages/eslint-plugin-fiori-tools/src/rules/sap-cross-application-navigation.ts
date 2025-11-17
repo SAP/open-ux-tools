@@ -168,8 +168,7 @@ const rule: Rule.RuleModule = {
          */
         function isInterestingAssignment(node: Rule.Node | undefined): boolean {
             return (
-                isGetServiceCall(node) || // const x = fgetService('CrossApplicationNavigation');
-                // const x = fgetService && fgetService('CrossApplicationNavigation');
+                isGetServiceCall(node) ||
                 (isLogical(node) &&
                     (isInterestingAssignment((node as any).left) || isInterestingAssignment((node as any).right)))
             );
