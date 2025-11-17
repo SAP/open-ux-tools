@@ -84,7 +84,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
     };
 
     try {
-        const baseUrl = (window as unknown as Window)["data-open-ux-preview-base-url"] ?? '';
+        const baseUrl = (globalThis as unknown as Window)["data-open-ux-preview-base-url"] ?? '';
         const response: Response = await fetch(`${baseUrl}${endpoint}`, config);
 
         if (!response.ok) {
