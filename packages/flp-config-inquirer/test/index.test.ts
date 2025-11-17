@@ -14,7 +14,7 @@ describe('index', () => {
             const prompts = await getPrompts();
 
             expect(prompts).toBeDefined();
-            expect(prompts.length).toBe(9);
+            expect(prompts.length).toBe(10);
         });
 
         it('should return selected prompts from getPrompts prompt options', async () => {
@@ -22,7 +22,8 @@ describe('index', () => {
                 inboundId: { hide: true },
                 icon: { hide: true },
                 existingFlpConfigInfo: { hide: true },
-                additionalParameters: { hide: true }
+                additionalParameters: { hide: true },
+                confirmReplace: { hide: true }
             });
 
             expect(prompts).toBeDefined();
