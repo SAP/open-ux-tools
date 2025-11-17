@@ -79,12 +79,7 @@ const rule: Rule.RuleModule = {
          * @param obj
          */
         function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+            return a.includes(obj);
         }
 
         /**
