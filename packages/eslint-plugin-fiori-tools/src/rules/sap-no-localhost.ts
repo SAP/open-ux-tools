@@ -1,6 +1,5 @@
 /**
  * @file     Check "sap-no-localhost" should detect the usage of "localhost".
- * @ESLint            Version 0.14.0 / March 2015
  */
 
 import type { Rule } from 'eslint';

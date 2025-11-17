@@ -1,7 +1,6 @@
 /**
  * @file Rule to ensure the usage ot the correct method options for
  *               sap.m.MessageToast.show
- * @ESLint Version 0.17.1 / April 2015
  */
 
 import type { Rule } from 'eslint';

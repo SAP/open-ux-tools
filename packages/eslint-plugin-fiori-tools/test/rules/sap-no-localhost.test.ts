@@ -1,7 +1,5 @@
 /**
  * @fileoverview Unit test for "sap-no-localhost".
- * @author Roman Horch (D030497), Christopher Fenner (C5224075) with advice from Armin Gienger (D028623)
- * @ESLint Version 0.14.0 / March 2015
  */
 //------------------------------------------------------------------------------
 // Requirements

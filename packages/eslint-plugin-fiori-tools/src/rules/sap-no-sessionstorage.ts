@@ -1,6 +1,5 @@
 /**
  * @file Detect usage of session storage
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';

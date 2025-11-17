@@ -1,7 +1,5 @@
 /**
  * @fileoverview Unit test for "sap-no-absolute-component-path".
- * @author Christopher Fenner (C5224075) with advice from Armin Gienger (D028623)
- * @ESLint Version 0.14.0 / May 2015
  */
 
 //------------------------------------------------------------------------------

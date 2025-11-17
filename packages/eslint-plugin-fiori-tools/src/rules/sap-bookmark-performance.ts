@@ -1,6 +1,5 @@
 /**
  * @file Rule to ensure the correct usage ot the auto refresh interval options for sap.ushell.ui.footerbar.AddBookmarkButton.
- * @ESLint Version 0.8.0 / April 2016
  */
 
 import type { Rule } from 'eslint';

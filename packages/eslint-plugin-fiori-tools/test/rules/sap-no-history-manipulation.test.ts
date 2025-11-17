@@ -1,7 +1,5 @@
 /**
  * @fileoverview Detect some warning for usages of (window.)document APIs
- * @author Achref Kilani Jrad
- * @ESLint Version 0.14.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

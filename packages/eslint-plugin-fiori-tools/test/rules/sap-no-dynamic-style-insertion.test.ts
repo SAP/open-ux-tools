@@ -1,6 +1,5 @@
 /**
  * @fileoverview Detect usage of document.styleSheets
- * @author Christopher Fenner
  */
 //------------------------------------------------------------------------------
 // Requirements

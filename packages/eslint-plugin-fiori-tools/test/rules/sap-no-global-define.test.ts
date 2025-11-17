@@ -1,6 +1,5 @@
 /**
  * @fileoverview Detect the usage of window.define window.top and window.groupBy
- * @author Christopher Fenner (C5224075) - 02/2016
  */
 //------------------------------------------------------------------------------
 // Requirements

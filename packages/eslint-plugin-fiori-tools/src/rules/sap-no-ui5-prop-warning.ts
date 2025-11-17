@@ -1,6 +1,5 @@
 /**
  * @file Rule to flag use of sap ui5base prop
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';

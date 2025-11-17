@@ -1,6 +1,5 @@
 /**
  * @file Detect the usage of document.queryCommandSupported with 'insertBrOnReturn' argument
- * @ESLint Version 0.26.0
  */
 
 import type { Rule } from 'eslint';

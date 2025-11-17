@@ -1,6 +1,5 @@
 /**
  * @file Detect direct DOM insertion
- * @ESLint Version 0.22.1 / June 2015
  */
 
 import type { Rule } from 'eslint';

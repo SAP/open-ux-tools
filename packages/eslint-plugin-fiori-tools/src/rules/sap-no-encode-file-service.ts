@@ -1,6 +1,5 @@
 /**
  * @file        Check "sap-no-encode-file-service" should detect the usage of "/sap/bc/ui2/encode_file".
- * @ESLint              Version 0.22.1.0 / June 2015
  */
 
 import type { Rule } from 'eslint';

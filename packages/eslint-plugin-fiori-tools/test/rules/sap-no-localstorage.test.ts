@@ -1,7 +1,5 @@
 /**
  * @fileoverview detects usage of localstaorage
- * @author Achref Kilani Jrad
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

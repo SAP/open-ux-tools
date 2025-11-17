@@ -1,6 +1,5 @@
 /**
  * @file Rule to detect absolute path to component
- * @ESLint Version 0.17.1 / April 2015
  */
 
 import type { Rule } from 'eslint';

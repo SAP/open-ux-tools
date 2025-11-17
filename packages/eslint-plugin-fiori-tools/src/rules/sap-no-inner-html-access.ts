@@ -1,6 +1,5 @@
 /**
  * @file Detect the access of the innerHTML property.
- * @ESLint Version 0.8.0 / March 2016
  */
 
 import type { Rule } from 'eslint';

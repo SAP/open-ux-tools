@@ -1,6 +1,5 @@
 /**
  * @file Detect usage of navigator object
- * @ESLint Version 0.24.0
  */
 
 import type { Rule } from 'eslint';

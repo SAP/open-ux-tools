@@ -1,6 +1,5 @@
 /**
  * @file Detect the overriding of the innerHTML.
- * @ESLint Version 0.8.0 / March 2016
  */
 
 import type { Rule } from 'eslint';

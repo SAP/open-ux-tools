@@ -1,6 +1,5 @@
 /**
  * @file detects usage of localstaorage
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';

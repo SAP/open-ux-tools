@@ -1,7 +1,6 @@
 /**
  * @file Check "sap-no-ui5odatamodel-prop" should detect direct usage of
  *               property names of UI5 data model
- * @ESLint Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';

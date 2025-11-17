@@ -1,6 +1,5 @@
 /**
  * @file     Check "sap-usage-basemastercontroller" should detect the usage of "sap.ca.scfld.md.controller.BaseMasterController" & "sap/ca/scfld/md/controller/BaseMasterController"..
- * @ESLint            Version 0.17.1 / June 2015
  */
 
 import type { Rule } from 'eslint';

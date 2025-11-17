@@ -1,6 +1,5 @@
 /**
  * @file Detect the definition of global properties in the window object
- * @ESLint Version 0.24.0
  */
 
 import type { Rule } from 'eslint';

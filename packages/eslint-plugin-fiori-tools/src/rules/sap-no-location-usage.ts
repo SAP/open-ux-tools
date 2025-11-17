@@ -1,6 +1,5 @@
 /**
  * @file Detect some warning for usages of (window.)document APIs
- * @ESLint Version 0.14.0 / February 2016
  */
 
 import type { Rule } from 'eslint';

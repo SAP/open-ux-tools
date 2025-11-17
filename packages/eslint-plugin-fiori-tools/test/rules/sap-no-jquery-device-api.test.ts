@@ -1,7 +1,5 @@
 /**
  * @fileoverview Tests for sap-no-jquery-device-api rule.
- * @author Achref Kilani Jrad - C5215143
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

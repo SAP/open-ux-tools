@@ -1,6 +1,5 @@
 /**
  * @file Rule
- * @ESLint Version 0.24.x / November 2015
  */
 
 import type { Rule } from 'eslint';

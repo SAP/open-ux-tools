@@ -1,6 +1,5 @@
 /**
  * @file Check "sap-ui5-no-private-prop" should detect the usage of private properties and functions of UI5 elements
- * @ESLint Version 0.17.1 / April 2015
  */
 
 import type { Rule } from 'eslint';
