@@ -157,7 +157,7 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
     </script>
 
     <script>
-        window['data-open-ux-preview-base-url'] = '';
+        window['data-open-ux-preview-base-url'] = '/ui5.patched.router.base';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>

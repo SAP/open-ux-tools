@@ -498,7 +498,10 @@ export class FlpSandbox {
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
-            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
+            //for consistency reasons, we also add the baseUrl to the html here, although it is only used in editor mode
+            const config = structuredClone(this.templateConfig);
+            config.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
+            const html = render(this.getSandboxTemplate(ui5Version), config);
             this.sendResponse(res, 'text/html', 200, html);
         }
     }
