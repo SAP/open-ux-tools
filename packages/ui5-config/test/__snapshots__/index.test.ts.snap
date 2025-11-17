@@ -465,7 +465,7 @@ exports[`UI5Config addMockServerMiddleware add with services with value list ref
             metadataPath: ./webapp/localService/new-service/metadata.xml
             mockdataPath: ./webapp/localService/new-service/data
             generateMockData: true
-            resolveValueListReferences: true
+            resolveExternalServiceReferences: true
         annotations: []
 "
 `;
@@ -611,7 +611,7 @@ exports[`UI5Config addServiceToMockserverMiddleware add new service with value l
             metadataPath: ./webapp/localService/new-service/metadata.xml
             mockdataPath: ./webapp/localService/new-service/data
             generateMockData: true
-            resolveValueListReferences: true
+            resolveExternalServiceReferences: true
         annotations: []
 "
 `;
