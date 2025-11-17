@@ -2,7 +2,7 @@ const base = require('../../../eslint.config.js');
 module.exports = [
     ...base,
     {
-        ignores: ['test/fixtures', 'dist', "version.js"],
+        ignores: ['test/fixtures', 'dist', "version.js", 'playwright-report'],
         languageOptions: {
             parserOptions: {
                 parser: '@typescript-eslint/parser',
