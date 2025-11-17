@@ -71,7 +71,7 @@ const rule: Rule.RuleModule = {
          */
         function isValid(node: Rule.Node): boolean {
             const args = (node as any).arguments;
-            if (args && args.length > 0) {
+            if (args?.length > 0) {
                 // get firtst argument
                 const argument = args[0];
                 if (isObject(argument)) {

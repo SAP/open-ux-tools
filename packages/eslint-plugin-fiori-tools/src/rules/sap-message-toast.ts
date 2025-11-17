@@ -60,9 +60,7 @@ const rule: Rule.RuleModule = {
          * @param sub
          */
         function endsWith(s: string, sub: string): boolean {
-            return (
-                typeof s === 'string' && typeof sub === 'string' && s.substring(s.length - sub.length, s.length) === sub
-            );
+            return typeof s === 'string' && typeof sub === 'string' && s.endsWith(sub);
         }
 
         /**
