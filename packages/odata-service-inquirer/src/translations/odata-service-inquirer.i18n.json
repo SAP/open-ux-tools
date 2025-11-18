@@ -218,7 +218,7 @@
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
         "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
         "authenticationFailed": "$t(texts.authenticationFailed): {{error}}.",
-        "authenticationFailedSpecificCatalog": "{{authFailType}}: Could not access OData V{{odataVersion}} service catalog",
+        "authenticationFailedSpecificCatalog": "{{authFailType}}: Unable to access the OData V{{odataVersion}} service catalog",
         "authenticationFailedAllCatalogs": "{{authFailType}}: Unable to access any service catalogs",
         "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
