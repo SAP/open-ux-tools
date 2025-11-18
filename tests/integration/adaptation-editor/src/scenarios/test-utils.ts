@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:
 interface Changes {
     annotations: Record<string, string>;
     coding: Record<string, string | RegExp>;
-    fragments: Record<string, string>;
+    fragments: Record<string, string | RegExp>;
     changes: object[];
 }
 
@@ -2292,7 +2292,7 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
  * @returns sanitized string
  */
 function sanitizeIds(input: string): string {
-    return input
+    return String(input)
         .replace(/\[a-z0-9\]\+/g, '<UNIQUE_ID>')
         .replace(/\[0-9\]\+/g, '<UNIQUE_ID>')
         .replace(/\\\[a-z0-9\\\]\+/g, '<UNIQUE_ID>')
