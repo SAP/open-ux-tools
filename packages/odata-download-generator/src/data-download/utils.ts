@@ -1,6 +1,12 @@
-import { Answers, CheckboxChoiceOptions } from 'inquirer';
-import { Entity, ReferencedEntities } from './prompts';
-import { add, isArray } from 'lodash';
+import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
+import { ApplicationAccess, FileName, Manifest } from '@sap-ux/project-access';
+import { BackendSystem, BackendSystemKey, getService } from '@sap-ux/store';
+import { FioriToolsProxyConfigBackend, UI5Config } from '@sap-ux/ui5-config';
+import { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+import { SelectedEntityAnswer } from './prompts';
+import { AppConfig, Entity, navPropNameExclusions, ReferencedEntities, SemanticKeyFilter } from './types';
 
 /**
  * Parses the OData result and converts it into separate entity data containing rows of data for each entity.
@@ -57,31 +63,169 @@ export function convertODataResultToEntityFileData(
     return entityFileData;
 }
 
-export interface SelectedEntityAnswer extends Answers {
-    fullPath: string;
-    entity: Entity;
+/**
+ * Load the system from store if available otherwise return as a new system choice
+ *
+ * @param systemUrl
+ * @param client
+ * @returns
+ */
+export async function getSystemNameFromStore(systemUrl: string, client?: string): Promise<string | undefined> {
+    const systemStore = await getService<BackendSystem, BackendSystemKey>({
+        //logger, // todo: inti logger from YUI
+        entityName: 'system'
+    });
+    // todo: try...catch?
+    const system = await systemStore.read(new BackendSystemKey({ url: systemUrl, client }));
+    return system?.name ?? 'NewSystemChoice';
 }
 
-export function createRelatedEntityChoices(
-    relatedEntities: Map<Entity, Entity[]>
-): CheckboxChoiceOptions<SelectedEntityAnswer>[] {
-    const choices: CheckboxChoiceOptions[] = [];
-    relatedEntities.forEach((entities, parentEntity) => {
-        entities.forEach((entity) => {
-            // fix issue with prompt values containing `name
-            const entityClone = {
-                entityPath: entity.entityPath,
-                entitySetName: entity.entitySetName
-            };
-
-            choices.push({
-                name: `${parentEntity.entitySetName} (${parentEntity.entityPath}) > ${entity.entitySetName} (${entity.entityPath})`,
-                value: {
-                    fullPath: `${parentEntity.entityPath}/${entity.entityPath}`,
-                    entity: entityClone
-                }
+/**
+ * Fond the key properties fo the specified entity set name in the specified metadata
+ *
+ * @param entitySetName
+ * @param convertedEdmx
+ * @returns
+ */
+function getSemanticKeyProperties(entitySetName: string, convertedEdmx: ConvertedMetadata): SemanticKeyFilter[] {
+    const entity = convertedEdmx.entitySets.find((es) => es.name === entitySetName);
+    const keyNames: SemanticKeyFilter[] = [];
+    if (entity?.entityType.annotations.Common?.SemanticKey) {
+        const semanticKey = entity.entityType.annotations.Common.SemanticKey;
+        semanticKey.forEach((keyProperty) => {
+            keyNames.push({
+                name: keyProperty.value,
+                type: keyProperty.$target?.type ?? 'Emd.String',
+                value: undefined
             });
         });
+        entity;
+    }
+    return keyNames;
+}
+/**
+ * Get all the navigation property entities (entity set name and path) of the specified entity set name
+ * that may be selected for additional download
+ *
+ * @param
+ * @param omitEntities enitiy set name to omit from the nav properties
+ */
+
+function getNavPropertyEntities(entitySet: EntitySet, omitEntities?: string[]): Entity[] | undefined {
+    const entities: Entity[] = [];
+    Object.entries(entitySet.navigationPropertyBinding).forEach(([path, entitySet]) => {
+        if (!navPropNameExclusions.includes(path) && !omitEntities?.includes(entitySet.name)) {
+            entities.push({
+                entitySet: entitySet,
+                entityPath: path,
+                entitySetName: entitySet.name
+            });
+        }
     });
-    return choices;
+    return entities;
+}
+
+/**
+ * Copied from odata-service-inquirer
+ */
+function findEntitySet(entitySets: EntitySet[], entityType: string): EntitySet | undefined {
+    const foundEntitySet = entitySets.find((entitySet) => {
+        return entitySet.entityTypeName === entityType;
+    });
+    return foundEntitySet ? foundEntitySet : undefined;
+}
+/**
+ *
+ * @param listEntity
+ * @param contextPath
+ */
+function getEntityFromContextPath(
+    mainEntitySetName: string,
+    pageEntityPath: string,
+    convertedEdmx: ConvertedMetadata
+): Entity | undefined {
+    const mainEntitySet = convertedEdmx.entitySets.find((es) => es.name === mainEntitySetName);
+    const navProps = mainEntitySet?.entityType.navigationProperties.filter((navProp) => navProp.isCollection) ?? [];
+    const pageObjectEntity = navProps.find((navProp) => {
+        return pageEntityPath === navProp.name;
+    });
+
+    if (!pageObjectEntity) return;
+
+    const entitySet = findEntitySet(convertedEdmx.entitySets, pageObjectEntity?.targetTypeName!)!;
+
+    return {
+        entitySetName: entitySet.name,
+        entityPath: pageEntityPath,
+        entitySet
+    };
+}
+
+export async function getAppConfig(appAccess: ApplicationAccess): Promise<AppConfig | undefined> {
+    let entities: ReferencedEntities | undefined;
+    let backendConfig: FioriToolsProxyConfigBackend | undefined;
+    const mainService = appAccess.app.services['mainService'];
+    // todo: we may need to update the metadata if its outdated
+    if (mainService.local) {
+        const metadataPath = join(mainService.local);
+        const convertedMetadata = convertEdmxToConvertedMetadata(await readFile(metadataPath, 'utf-8'));
+        // Read the manifest to get the routing targets
+        const manifest = JSON.parse(await readFile(appAccess.app.manifest, 'utf-8')) as Manifest;
+        const routeTargets = manifest?.['sap.ui5']?.routing?.targets;
+
+        if (routeTargets) {
+            // todo: map to get all in one iteration
+            const listPageTarget = Object.values(routeTargets).find((target) => {
+                return (target as any).name === 'sap.fe.templates.ListReport';
+            });
+            if (listPageTarget) {
+                const listEntity: string = (listPageTarget as any).options?.settings?.contextPath;
+                const listEntitySetName = listEntity.replace(/^\//, '');
+                const entityKeys = getSemanticKeyProperties(listEntitySetName, convertedMetadata);
+                entities = {
+                    listEntity: {
+                        entitySetName: listEntitySetName,
+                        semanticKeys: entityKeys
+                    }
+                };
+
+                const pageObjectEntities: Entity[] = [];
+                const navPropEntities = new Map<Entity, Entity[]>();
+
+                for (const target of Object.values(routeTargets)) {
+                    if ((target as any).name === 'sap.fe.templates.ObjectPage') {
+                        const contextPath = (target as any).options?.settings?.contextPath;
+                        const entity = getEntityFromContextPath(
+                            entities.listEntity.entitySetName,
+                            contextPath.match(/[^\/]+$/)?.[0],
+                            convertedMetadata
+                        );
+                        if (entity) {
+                            //pageObjectEntities.push(contextPath.replace(/^\//, ''));
+                            pageObjectEntities.push(entity);
+                            const navEntities = getNavPropertyEntities(entity.entitySet as EntitySet, [
+                                entities.listEntity.entitySetName
+                            ]);
+                            if (navEntities) {
+                                navPropEntities.set(entity, navEntities);
+                            }
+                        }
+                    }
+                }
+                entities.pageObjectEntities = pageObjectEntities;
+                entities.navPropEntities = navPropEntities;
+            }
+        }
+        // Read backend middleware config
+        const ui5Config = await UI5Config.newInstance(
+            await readFile(join(appAccess.app.appRoot, FileName.Ui5Yaml), 'utf-8')
+        );
+        backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
+    }
+
+    return {
+        referencedEntities: entities,
+        servicePath: mainService.uri,
+        backendConfig: backendConfig
+    };
 }

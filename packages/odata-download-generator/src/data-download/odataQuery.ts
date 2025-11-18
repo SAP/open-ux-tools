@@ -1,8 +1,8 @@
 import { ODataService } from '@sap-ux/axios-extension';
 import buildQuery from 'odata-query';
-import { Entity, ReferencedEntities } from './prompts';
-import { SelectedEntityAnswer } from './utils';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import { type ReferencedEntities } from './types';
+import { type SelectedEntityAnswer } from './prompts';
 
 /**
  * todo: take a single entity list to download
@@ -65,16 +65,16 @@ export async function fetchData(
     let queryInput = {};
 
     if (entitiesToExpand) {
-        Object.assign(queryInput, { expand: entitiesToExpand })
+        Object.assign(queryInput, { expand: entitiesToExpand });
     }
     if (mainEntityFilters) {
-        Object.assign(queryInput, { 
-            filter: mainEntityFilters 
+        Object.assign(queryInput, {
+            filter: mainEntityFilters
         });
-    } else if (top){
+    } else if (top) {
         Object.assign(queryInput, {
             top
-        })
+        });
     }
     const queryString = buildQuery(queryInput);
     const query = `${mainEntity.entitySetName}${queryString}`;

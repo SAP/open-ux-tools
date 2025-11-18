@@ -1,224 +1,55 @@
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { convertEdmxToConvertedMetadata, YUIQuestion } from '@sap-ux/inquirer-common';
-import { Logger } from '@sap-ux/logger';
-import { getSystemSelectionQuestions, OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import { ApplicationAccess, createApplicationAccess, FileName, Manifest } from '@sap-ux/project-access';
-import { BackendSystem, BackendSystemKey, getService } from '@sap-ux/store';
-import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { ConvertedMetadata, EntitySet, Singleton } from '@sap-ux/vocabularies-types';
-import { readFile } from 'fs/promises';
-import { Answers, CheckboxChoiceOptions, InputQuestion, PromptFunction, Question } from 'inquirer';
-import { join } from 'path';
-import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import { createRelatedEntityChoices, SelectedEntityAnswer } from './utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { Edm } from '../../../odata-annotation-core-types/src';
-
-export type AppConfig = {
-    referencedEntities?: ReferencedEntities;
-    servicePath?: string;
-    /** local backend config */
-    backendConfig?: FioriToolsProxyConfigBackend;
-};
-
-type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
-
-export type ReferencedEntities = {
-    listEntity: {
-        entitySetName: string;
-        semanticKeys: SemanticKeyFilter[];
-    };
-    pageObjectEntities?: Entity[];
-    navPropEntities?: Map<Entity, Entity[]>;
-};
-export type Entity = { entitySetName: string; entityPath: string; entitySet: EntitySet | Singleton };
-
-const navPropNameExclusions = ['DraftAdministrativeData', 'SiblingEntity'];
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { CheckBoxQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { Logger } from '@sap-ux/logger';
+import {
+    getSystemSelectionQuestions,
+    OdataServiceAnswers,
+    promptNames as servicePromptNames
+} from '@sap-ux/odata-service-inquirer';
+import { createApplicationAccess } from '@sap-ux/project-access';
+import { Answers, CheckboxChoiceOptions, InputQuestion, PromptFunction, Question } from 'inquirer';
+import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import type { AppConfig, Entity } from './types';
+import { getAppConfig, getSystemNameFromStore } from './utils';
+import { getData } from './prompt-helpers';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
     confirmDownload: 'confirmDownload'
-}
-
-export async function getAppConfig(appAccess: ApplicationAccess): Promise<AppConfig | undefined> {
-    let entities: ReferencedEntities | undefined;
-    let backendConfig: FioriToolsProxyConfigBackend | undefined;
-    const mainService = appAccess.app.services['mainService'];
-    // todo: we may need to update the metadata if its outdated
-    if (mainService.local) {
-        const metadataPath = join(mainService.local);
-        const convertedMetadata = convertEdmxToConvertedMetadata(await readFile(metadataPath, 'utf-8'));
-        // Read the manifest to get the routing targets
-        const manifest = JSON.parse(await readFile(appAccess.app.manifest, 'utf-8')) as Manifest;
-        const routeTargets = manifest?.['sap.ui5']?.routing?.targets;
-
-        if (routeTargets) {
-            // todo: map to get all in one iteration
-            const listPageTarget = Object.values(routeTargets).find((target) => {
-                return (target as any).name === 'sap.fe.templates.ListReport';
-            });
-            if (listPageTarget) {
-                const listEntity: string = (listPageTarget as any).options?.settings?.contextPath;
-                const listEntitySetName = listEntity.replace(/^\//, '');
-                const entityKeys = getSemanticKeyProperties(listEntitySetName, convertedMetadata);
-                entities = {
-                    listEntity: {
-                        entitySetName: listEntitySetName,
-                        semanticKeys: entityKeys
-                    }
-                };
-
-                const pageObjectEntities: Entity[] = [];
-                const navPropEntities = new Map<Entity, Entity[]>();
-
-                for (const target of Object.values(routeTargets)) {
-                    if ((target as any).name === 'sap.fe.templates.ObjectPage') {
-                        const contextPath = (target as any).options?.settings?.contextPath;
-                        const entity = getEntityFromContextPath(
-                            entities.listEntity.entitySetName,
-                            contextPath.match(/[^\/]+$/)?.[0],
-                            convertedMetadata
-                        );
-                        if (entity) {
-                            //pageObjectEntities.push(contextPath.replace(/^\//, ''));
-                            pageObjectEntities.push(entity);
-                            const navEntities = getNavPropertyEntities(entity.entitySet as EntitySet, [
-                                entities.listEntity.entitySetName
-                            ]);
-                            if (navEntities) {
-                                navPropEntities.set(entity, navEntities);
-                            }
-                        }
-                    }
-                }
-                entities.pageObjectEntities = pageObjectEntities;
-                entities.navPropEntities = navPropEntities;
-            }
-        }
-        // Read backend middleware config
-        const ui5Config = await UI5Config.newInstance(
-            await readFile(join(appAccess.app.appRoot, FileName.Ui5Yaml), 'utf-8')
-        );
-        backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
-    }
-
-    return {
-        referencedEntities: entities,
-        servicePath: mainService.uri,
-        backendConfig: backendConfig
-    };
-}
-
-/**
- * Fond the key properties fo the specified entity set name in the specified metadata
- *
- * @param entitySetName
- * @param convertedEdmx
- * @returns
- */
-function getSemanticKeyProperties(entitySetName: string, convertedEdmx: ConvertedMetadata): SemanticKeyFilter[] {
-    const entity = convertedEdmx.entitySets.find((es) => es.name === entitySetName);
-    const keyNames: SemanticKeyFilter[] = [];
-    if (entity?.entityType.annotations.Common?.SemanticKey) {
-        const semanticKey = entity.entityType.annotations.Common.SemanticKey;
-        semanticKey.forEach((keyProperty) => {
-            keyNames.push({
-                name: keyProperty.value,
-                type: keyProperty.$target?.type ?? 'Emd.String',
-                value: undefined
-            });
-        });
-        entity
-    }
-    return keyNames;
-}
-
-/**
- *
- * @param listEntity
- * @param contextPath
- */
-function getEntityFromContextPath(
-    mainEntitySetName: string,
-    pageEntityPath: string,
-    convertedEdmx: ConvertedMetadata
-): Entity | undefined {
-    const mainEntitySet = convertedEdmx.entitySets.find((es) => es.name === mainEntitySetName);
-    const navProps = mainEntitySet?.entityType.navigationProperties.filter((navProp) => navProp.isCollection) ?? [];
-    const pageObjectEntity = navProps.find((navProp) => {
-        return pageEntityPath === navProp.name;
-    });
-
-    if (!pageObjectEntity) return;
-
-    const entitySet = findEntitySet(convertedEdmx.entitySets, pageObjectEntity?.targetTypeName!)!;
-
-    return {
-        entitySetName: entitySet.name,
-        entityPath: pageEntityPath,
-        entitySet
-    };
-}
-
-/**
- * Get all the navigation property entities (entity set name and path) of the specified entity set name
- * that may be selected for additional download
- *
- * @param
- * @param omitEntities enitiy set name to omit from the nav properties
- */
-
-function getNavPropertyEntities(entitySet: EntitySet, omitEntities?: string[]): Entity[] | undefined {
-    const entities: Entity[] = [];
-    Object.entries(entitySet.navigationPropertyBinding).forEach(([path, entitySet]) => {
-        if (!navPropNameExclusions.includes(path) && !omitEntities?.includes(entitySet.name)) {
-            entities.push({
-                entitySet: entitySet,
-                entityPath: path,
-                entitySetName: entitySet.name
-            });
-        }
-    });
-    return entities;
-}
-
-/**
- * Copied from odata-service-inquirer
- */
-function findEntitySet(entitySets: EntitySet[], entityType: string): EntitySet | undefined {
-    const foundEntitySet = entitySets.find((entitySet) => {
-        return entitySet.entityTypeName === entityType;
-    });
-    return foundEntitySet ? foundEntitySet : undefined;
-}
-
-// todo: consolidate this and AppConfig
-type ApplicationInfo = {
-    appAccess: ApplicationAccess | undefined;
-    referencedEntities: ReferencedEntities | undefined;
-    servicePaths: string[];
-    backendConfig: FioriToolsProxyConfigBackend | undefined;
-    /**
-     * If the system url + client read from the backend config is available from the system store the matching name will be used to pre-select
-     */
-    systemName: { value: string | undefined };
 };
 
-/**
- * Load the system from store if available otherwise return as a new system choice
- *
- * @param systemUrl
- * @param client
- * @returns
- */
-async function getSystemNameFromStore(systemUrl: string, client?: string): Promise<string | undefined> {
-    const systemStore = await getService<BackendSystem, BackendSystemKey>({
-        //logger, // todo: inti logger from YUI
-        entityName: 'system'
+export interface SelectedEntityAnswer extends Answers {
+    fullPath: string;
+    entity: Entity;
+    choiceId: string; // Used for reselection (fix for all cleared when key is entered)
+}
+// Temp workaround for checkbox selection issue:
+export type SelectedEntityAnswerAsJSONString = string & Answers;
+
+function createRelatedEntityChoices(
+    relatedEntities: Map<Entity, Entity[]>
+): CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] {
+    const choices: CheckboxChoiceOptions[] = [];
+    relatedEntities.forEach((entities, parentEntity) => {
+        entities.forEach((entity) => {
+            // fix issue with prompt values containing `name
+            const entityClone = {
+                entityPath: entity.entityPath,
+                entitySetName: entity.entitySetName
+            };
+            const choiceId = `${parentEntity.entitySetName} (${parentEntity.entityPath}) > ${entity.entitySetName} (${entity.entityPath})`;
+            choices.push({
+                name: choiceId,
+                value: JSON.stringify({
+                    // Nasty workaround for checkbox selection issue: https://github.com/SAP/inquirer-gui/issues/787
+                    fullPath: `${parentEntity.entityPath}/${entity.entityPath}`,
+                    entity: entityClone
+                })
+            });
+        });
     });
-    // todo: try...catch?
-    const system = await systemStore.read(new BackendSystemKey({ url: systemUrl, client }));
-    return system?.name ?? 'NewSystemChoice';
+    return choices;
 }
 
 /**
@@ -226,27 +57,28 @@ async function getSystemNameFromStore(systemUrl: string, client?: string): Promi
  *
  * @param mainEntity
  */
-export async function getServiceSelectionPrompts(
-    promptFunc: PromptFunction
-): Promise<{ questions: Question[]; answers: { system: Partial<OdataServiceAnswers>; application: ApplicationInfo } }> {
+export async function getODataDownloaderPrompts(): Promise<{
+    questions: Question[];
+    answers: { application: AppConfig; odataQueryResult: { odata: object | undefined } };
+}> {
     const selectSourceQuestions: Question[] = [];
-    const promptFuncRef = promptFunc;
-    let appAnswer: ApplicationInfo = {
+    let appConfig: AppConfig = {
         appAccess: undefined,
         referencedEntities: undefined,
-        servicePaths: [],
+        servicePath: undefined,
         backendConfig: undefined,
         systemName: { value: undefined }
     };
-    // to do we dont need app confoig and applicationInfo
-    let appConfig: AppConfig | undefined;
+    let servicePaths: string[] = [];
+
     let keyPrompts: InputQuestion[] = [];
+
     const appSelectionQuestion = {
         type: 'input',
         guiType: 'folder-browser',
         name: 'appSelection',
         message: 'Select an application as data download target',
-        default: (answers: Answers) => answers.appSelection || appAnswer.appAccess?.app.appRoot,
+        default: (answers: Answers) => answers.appSelection || appConfig.appAccess?.app.appRoot,
         guiOptions: { mandatory: true, breadcrumb: `Selected App` },
         validate: async (appPath: string, answers: Answers): Promise<string | boolean> => {
             // todo: validate required files presence...deleting the metadata file crashes the gen.
@@ -254,22 +86,23 @@ export async function getServiceSelectionPrompts(
                 return false;
             }
             // Already set, adding prompts will retrigger validation
-            if (appPath === appAnswer.appAccess?.app.appRoot) {
+            if (appPath === appConfig.appAccess?.app.appRoot) {
                 return true;
             }
             // validate application exists at path
-            appAnswer.appAccess = await createApplicationAccess(appPath);
-            // todo: dont need 2 refs (appAnswer and appConfig)
-            appConfig = await getAppConfig(appAnswer.appAccess);
+            appConfig.appAccess = await createApplicationAccess(appPath);
+            // Update the app config with entity data from the manifest and main service metadata
+            Object.assign(appConfig, await getAppConfig(appConfig.appAccess));
+            servicePaths.push(appConfig?.servicePath ?? '');
 
-            appAnswer.referencedEntities = appConfig?.referencedEntities;
+            // appAnswer.referencedEntities = appConfig?.referencedEntities;
             // todo: update odata-service-inquirer to support service path in additiona to service id
-            appAnswer.servicePaths.push(appConfig?.servicePath ?? '');
-            appAnswer.backendConfig = appConfig?.backendConfig;
-            if (appAnswer.backendConfig) {
-                appAnswer.systemName.value =
-                    appAnswer.backendConfig?.destination ??
-                    (await getSystemNameFromStore(appAnswer.backendConfig.url, appAnswer.backendConfig?.client));
+            //appAnswer.servicePaths.push(appConfig?.servicePath ?? '');
+            //appAnswer.backendConfig = appConfig?.backendConfig;
+            if (appConfig.backendConfig && appConfig.systemName) {
+                appConfig.systemName.value =
+                    appConfig.backendConfig?.destination ??
+                    (await getSystemNameFromStore(appConfig.backendConfig.url, appConfig.backendConfig?.client));
             }
             return true;
         }
@@ -281,58 +114,69 @@ export async function getServiceSelectionPrompts(
             },
             systemSelection: {
                 includeCloudFoundryAbapEnvChoice: false,
-                defaultChoice: appAnswer.systemName
+                defaultChoice: appConfig.systemName
             },
             serviceSelection: {
-                serviceFilter: appAnswer.servicePaths
+                serviceFilter: servicePaths
             }
         },
         getHostEnvironment() !== hostEnvironment.cli,
         ODataDownloadGenerator.logger as Logger
     );
     // Additional manually selected nav prop entittes
-    let relatedEntityChoices: CheckboxChoiceOptions<SelectedEntityAnswer>[] = [];
-    const relatedEntitySelectionQuestion = {
+    let relatedEntityChoices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] = [];
+    let previousServicePath: string | undefined;
+    const relatedEntitySelectionQuestion: CheckBoxQuestion = {
         when: () => {
             // todo: reset when service changed
-
-            if (relatedEntityChoices.length === 0) {
-                relatedEntityChoices = [];
-                relatedEntityChoices.push(
-                    ...(appAnswer.referencedEntities?.navPropEntities
-                        ? createRelatedEntityChoices(appAnswer.referencedEntities?.navPropEntities)
-                        : [])
-                );
-
+            if (systemSelectionQuestions.answers.servicePath !== previousServicePath) {
+                previousServicePath = systemSelectionQuestions.answers.servicePath;
+                if (relatedEntityChoices.length === 0) {
+                    relatedEntityChoices = [];
+                    relatedEntityChoices.push(
+                        ...(appConfig.referencedEntities?.navPropEntities
+                            ? createRelatedEntityChoices(appConfig.referencedEntities?.navPropEntities)
+                            : [])
+                    );
+                }
             }
             return relatedEntityChoices.length > 0;
         },
         name: promptNames.relatedEntitySelection,
         type: 'checkbox',
+        guiOptions: {
+            applyDefaultWhenDirty: true
+        },
         message: 'Select additional entities for data download',
         choices: () => relatedEntityChoices,
-        default: () => undefined
+        default: (previousAnswers: Answers) => {
+            const defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
+                (entityAnswer) => entityAnswer
+            );
+            return defaults;
+        }
     };
 
     // Generate the max size of key parts allowed
-    keyPrompts = getKeyPrompts(3, appAnswer);
+    keyPrompts = getKeyPrompts(3, appConfig);
+    let odataQueryResult = {
+        odata: undefined
+    };
 
     selectSourceQuestions.push(
         appSelectionQuestion,
         ...(systemSelectionQuestions.prompts as Question[]),
         ...keyPrompts,
         relatedEntitySelectionQuestion,
-        getConfirmDownloadPrompt(systemSelectionQuestions.answers, appAnswer)
+        getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
     );
-    const selectSystemResult = systemSelectionQuestions.answers;
-
     return {
         questions: selectSourceQuestions,
-        answers: { system: selectSystemResult, application: appAnswer }
+        answers: { application: appConfig, odataQueryResult }
     };
 }
 
-function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQuestion[] {
+function getKeyPrompts(size: number, appInfo: AppConfig): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
     const getEntityKeyInputPrompt = (keypart: number) =>
@@ -342,7 +186,10 @@ function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQuestion[] 
             },
             name: `entityKeyIdx:${keypart}`,
             message: () => `Enter value for: ${appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
-            type: appInfo.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean' ? 'confirm' : 'input',
+            type:
+                appInfo.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean'
+                    ? 'confirm'
+                    : 'input',
             validate: (keyValue: string) => {
                 // todo: validate the input based on the key type
                 if (keyValue && appInfo.referencedEntities?.listEntity.semanticKeys[keypart]) {
@@ -365,7 +212,8 @@ function getKeyPrompts(size: number, appInfo: ApplicationInfo): InputQuestion[] 
 
 function getConfirmDownloadPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
-    appInfo: ApplicationInfo
+    appConfig: AppConfig,
+    odataQueryResult: { odata: undefined | object }
 ): Question {
     return {
         when: () => {
@@ -376,17 +224,27 @@ function getConfirmDownloadPrompt(
         message: 'Confirm files to be generated',
         labelTrue: 'Download and create files (will replace existing contents)',
         labelFalse: 'Cancel and exit',
-        default: true,
-        validate: () => {
+        default: false,
+        guiOptions: {
+            mandatory: true
+        },
+        validate: async (download, answers: Answers) => {
+            if (download) {
+                const result = await getData(odataServiceAnswers, appConfig, answers);
+                if (typeof result === 'string') {
+                    return result;
+                }
+                odataQueryResult.odata = result;
+            }
             return true;
         },
         additionalMessages: (confirmDownload, answers) => {
             // All entities to be created
             const allEntities = [
-                appInfo.referencedEntities?.listEntity.entitySetName,
-                ...(appInfo.referencedEntities?.pageObjectEntities?.map((entity) => entity.entitySetName) ?? []),
-                ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
-                    (selEntityAnswer) => selEntityAnswer.entity.entitySetName
+                appConfig.referencedEntities?.listEntity.entitySetName,
+                ...(appConfig.referencedEntities?.pageObjectEntities?.map((entity) => entity.entitySetName) ?? []),
+                ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
+                    (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue
                 ) ?? [])
             ];
 
@@ -395,27 +253,5 @@ function getConfirmDownloadPrompt(
                 severity: Severity.information
             };
         }
-    } as YUIQuestion;
+    } as ConfirmQuestion;
 }
-
-/* export function getKeyPrompts(entityKey: EntityKey): InputQuestion[] {
-    const questions: InputQuestion[] = [];
-
-    const getEntityKeyInputPrompt = (entityKeyName: string, keyValue: EntityKey[string]) =>
-        ({
-            name: `${entityKeyName}`,
-            message: `Enter value for: ${entityKeyName}`,
-            type: keyValue.type === 'Edm.Boolean' ? 'confirm' : 'input',
-            validate: (keyValue: string) => {
-                return true;
-            }
-        } as InputQuestion);
-    // Generate a prompt for each key we need input for
-    Object.entries(entityKey).forEach(([entityKeyName, entityKeyValue]) => {
-        questions.push(getEntityKeyInputPrompt(entityKeyName, entityKeyValue));
-    });
-    return questions;
-} */
-
-//todo;
-function insertPrompt(prompts: Question[], promptsToInsert: [], afterPromptName: string) {}

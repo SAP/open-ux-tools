@@ -9,14 +9,20 @@ import {
 import type { Logger } from '@sap-ux/logger';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import Generator, { GeneratorOptions } from 'yeoman-generator';
-import { getServiceSelectionPrompts, promptNames, ReferencedEntities } from './prompts';
+import {
+    getODataDownloaderPrompts,
+    promptNames,
+    SelectedEntityAnswerAsJSONString,
+    type SelectedEntityAnswer
+} from './prompts';
 import { PromptFunction } from 'inquirer';
 import { type ODataService } from '@sap-ux/axios-extension';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import { join } from 'path';
 import { fetchData } from './odataQuery';
-import { convertODataResultToEntityFileData, SelectedEntityAnswer } from './utils';
+import { convertODataResultToEntityFileData } from './utils';
 import { t } from '../utils/i18n';
+import { type ReferencedEntities } from './types';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -124,11 +130,28 @@ export class ODataDownloadGenerator extends Generator {
     async prompting(): Promise<void> {
         try {
             const {
-                answers: { system, application },
+                answers: { application, odataQueryResult },
                 questions
-            } = await getServiceSelectionPrompts(this.prompt.bind(this) as PromptFunction);
+            } = await getODataDownloaderPrompts();
             const promptAnswers = await this.prompt(questions);
-            if (system.metadata && application.appAccess && system.connectedSystem) {
+            this.state.entityData = odataQueryResult.odata;
+            this.state.appRootPath = application.appAccess?.getAppRoot();
+            this.state.appEntities = application.referencedEntities;
+            this.state.selectedEntities =
+                (promptAnswers[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
+                    (selEntityAnswer) => JSON.parse(selEntityAnswer) as SelectedEntityAnswer // silly workaround for YUI checkbox issue
+                ) ?? [];
+
+            if (this.state.appRootPath) {
+                const mockConfig = await getMockServerConfig(this.state.appRootPath);
+                ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
+                // todo: Find the matching service, for now use the first one
+                this.state.mockDataRootPath =
+                    mockConfig.services?.[0]?.mockdataPath ??
+                    join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+            }
+
+            /* if (system.metadata && application.appAccess && system.connectedSystem) {
                 if (system.servicePath && application.appAccess && application.referencedEntities) {
                     system.connectedSystem.serviceProvider.log = ODataDownloadGenerator.logger;
                     const odataService = system.connectedSystem?.serviceProvider.service<ODataService>(
@@ -157,7 +180,7 @@ export class ODataDownloadGenerator extends Generator {
                         }
                     }
                 }
-            }
+            } */
         } catch (error) {
             // Fatal prompting error
             ODataDownloadGenerator.logger.error(error);
@@ -166,7 +189,6 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
-
         if (this.state.entityData) {
             try {
                 this.generationTime0 = performance.now();
