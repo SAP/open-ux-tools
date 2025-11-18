@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.1
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+
 ## 0.18.0
 
 ### Minor Changes
