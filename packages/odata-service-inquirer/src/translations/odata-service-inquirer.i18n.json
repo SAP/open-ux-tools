@@ -184,7 +184,7 @@
             "valueHelpsAnnotationsInfoMessage": "Basic value helps will also be created."
         },
         "valueHelpDownload": {
-            "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+            "message": "The service contains references to value help services. Do you want to download the associated metadata during generation (this may increase generation time).",
             "hint": "Download value help metadata for improved user experience with dropdowns and search helps."
         },
         "presentationQualifier": {
