@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { isString, containsString } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
@@ -34,27 +35,10 @@ const rule: Rule.RuleModule = {
         /**
          *
          * @param string
-         */
-        function isString(string) {
-            return typeof string === 'string';
-        }
-
-        /**
-         *
-         * @param string
-         * @param substring
-         */
-        function contains(string, substring) {
-            return string.indexOf(substring) !== -1;
-        }
-
-        /**
-         *
-         * @param string
          * @param substring
          */
         function containsNot(string, substring) {
-            return !contains(string, substring);
+            return !containsString(string, substring);
         }
         // --------------------------------------------------------------------------
         // Public
@@ -64,7 +48,7 @@ const rule: Rule.RuleModule = {
                 // const val = node.value, result;
                 if (
                     isString(node.value) &&
-                    contains(node.value, 'localhost') &&
+                    containsString(node.value, 'localhost') &&
                     containsNot(node.value, '://localhost/offline/')
                 ) {
                     context.report({ node: node, messageId: 'localhost' });

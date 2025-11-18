@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { isType, isIdentifier, isMember, isCall, isLiteral, buildCalleePath } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -40,45 +41,12 @@ const rule: Rule.RuleModule = {
             FORBIDDEN_HISTORY_OBJECT: string[] = [],
             FORBIDDEN_LOCATION_OBJECT: string[] = [];
 
-        const MEMBER = 'MemberExpression',
-            CALL = 'CallExpression',
-            IDENTIFIER = 'Identifier',
-            IF_CONDITION = 'IfStatement',
+        const IF_CONDITION = 'IfStatement',
             CONDITION_EXP = 'ConditionalExpression',
-            UNARY = 'UnaryExpression',
-            LITERAL = 'Literal';
+            UNARY = 'UnaryExpression';
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
-            return node?.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
-            return isType(node, IDENTIFIER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: Rule.Node | undefined): boolean {
-            return isType(node, MEMBER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isCall(node: Rule.Node | undefined): boolean {
-            return isType(node, CALL);
-        }
         /**
          *
          * @param node
@@ -92,13 +60,6 @@ const rule: Rule.RuleModule = {
          */
         function isUnary(node: Rule.Node | undefined): boolean {
             return isType(node, UNARY);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: Rule.Node | undefined): boolean {
-            return isType(node, LITERAL);
         }
 
         /**
@@ -189,22 +150,6 @@ const rule: Rule.RuleModule = {
                 } else if (isIdentifier((node as any).init) && (node as any).init.name === 'history') {
                     FORBIDDEN_HISTORY_OBJECT.push((node as any).id.name);
                 }
-            }
-        }
-
-        /**
-         *
-         * @param memberExpressionNode
-         */
-        function buildCalleePath(memberExpressionNode: Rule.Node): string {
-            const obj = (memberExpressionNode as any).object;
-            if (isIdentifier(obj)) {
-                return obj.name;
-            } else if (isMember(obj)) {
-                const propertyName = obj.property?.name ?? '';
-                return `${buildCalleePath(obj)}.${propertyName}`;
-            } else {
-                return '';
             }
         }
 

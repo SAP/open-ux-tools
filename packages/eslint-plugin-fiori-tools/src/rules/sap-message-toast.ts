@@ -4,6 +4,13 @@
  */
 
 import type { Rule } from 'eslint';
+import {
+    getIdentifierPath,
+    resolveIdentifierPath,
+    createVariableDeclaratorProcessor,
+    isInteger,
+    endsWith
+} from '../utils/ast-helpers';
 
 const INTERESTING_PATH = {
     'sap': {
@@ -34,10 +41,7 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        const X_MEMBER = 'MemberExpression';
         const X_UNARY = 'UnaryExpression';
-        const X_IDENTIFIER = 'Identifier';
-
         const VARIABLES: Record<string, string[]> = {};
 
         const _CALLEE_NAME = 'sap.m.MessageToast.show';
@@ -48,23 +52,6 @@ const rule: Rule.RuleModule = {
 
         /**
          *
-         * @param i
-         */
-        function isInteger(i: number): boolean {
-            return Number(i) === i && i % 1 === 0;
-        }
-
-        /**
-         *
-         * @param s
-         * @param sub
-         */
-        function endsWith(s: string, sub: string): boolean {
-            return typeof s === 'string' && typeof sub === 'string' && s.endsWith(sub);
-        }
-
-        /**
-         *
          * @param value
          */
         function getEMValue(value: string): number {
@@ -72,63 +59,6 @@ const rule: Rule.RuleModule = {
                 return Number(value.replace('em', ''));
             }
             return 0;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getLiteralOrIdentifiertName(node: Rule.Node): string {
-            let result = '';
-            if (node.type === X_IDENTIFIER) {
-                result = (node as any).name;
-            } else {
-                result = (node as any).value;
-            }
-            return result;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getIdentifierPath(node: Rule.Node | undefined): string {
-            let result = '';
-            if (node) {
-                switch (node.type) {
-                    case X_IDENTIFIER:
-                        result = (node as any).name;
-                        break;
-                    case X_MEMBER:
-                        result = `${getIdentifierPath((node as any).object)}.${getLiteralOrIdentifiertName((node as any).property)}`;
-                        break;
-                    default:
-                }
-            }
-            return result;
-        }
-
-        /**
-         * Method resolved IdentifierNames with known variables
-         *
-         * @param path
-         */
-        function resolveIdentifierPath(path: string): string {
-            const parts = path.split('.');
-            let substitution: string | undefined;
-            // check if current identifier is remembered as an interesting variable
-            for (const name in VARIABLES) {
-                if (name === parts[0]) {
-                    // get last stored variable value
-                    substitution = VARIABLES[name].at(-1);
-                }
-            }
-            // if so, replace current identifier with its value
-            if (substitution) {
-                parts[0] = substitution;
-                path = parts.join('.');
-            }
-            return path;
         }
 
         /**
@@ -151,30 +81,8 @@ const rule: Rule.RuleModule = {
             return isInteresting;
         }
 
-        /**
-         *
-         * @param node
-         * @param name
-         */
-        function rememberInterestingVariable(node: Rule.Node, name: string): void {
-            if (typeof VARIABLES[(node as any).id.name] === 'undefined') {
-                VARIABLES[(node as any).id.name] = [];
-            }
-            VARIABLES[(node as any).id.name].push(name);
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function processVariableDeclarator(node: Rule.Node): void {
-            let path = getIdentifierPath((node as any).init);
-            path = resolveIdentifierPath(path);
-            // if declaration is interesting, remember identifier and resolved value
-            if (isInterestingPath(path)) {
-                rememberInterestingVariable(node, path);
-            }
-        }
+        // Create the variable declarator processor using the shared utility
+        const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isInterestingPath);
 
         /**
          *
@@ -235,7 +143,7 @@ const rule: Rule.RuleModule = {
          */
         function processCallExpression(node: Rule.Node): void {
             let path = getIdentifierPath((node as any).callee);
-            path = resolveIdentifierPath(path);
+            path = resolveIdentifierPath(path, VARIABLES);
 
             if (isInterestingPath(path)) {
                 validateFunctionOptions(node);

@@ -3,6 +3,16 @@
  */
 
 import type { Rule } from 'eslint';
+import {
+    isIdentifier,
+    isCall,
+    startsWith,
+    contains,
+    getIdentifierPath,
+    resolveIdentifierPath,
+    createVariableDeclaratorProcessor,
+    hasUnderscore
+} from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -110,120 +120,8 @@ const rule: Rule.RuleModule = {
             'sap.ui.core.ValueState.None'
         ];
 
-        const X_CALL = 'CallExpression';
-        const X_MEMBER = 'MemberExpression';
-        const X_NEW = 'NewExpression';
-        const X_IDENTIFIER = 'Identifier';
-        const X_LITERAL = 'Literal';
         const VARIABLES = {};
 
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node?.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-        /**
-         *
-         * @param node
-         */
-        function isCall(node: any) {
-            return isType(node, 'CallExpression');
-        }
-
-        /**
-         *
-         * @param s
-         * @param sub
-         */
-        function startsWith(s, sub) {
-            return typeof s === 'string' && typeof sub === 'string' && s.substring(0, sub.length) === sub;
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            return a.includes(obj);
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getLiteralOrIdentifiertName(node: any) {
-            let result = '';
-            switch (node.type) {
-                case X_IDENTIFIER:
-                    result = node.name;
-                    break;
-                case X_LITERAL:
-                    result = node.value;
-                    break;
-                default:
-            }
-            return result;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getIdentifierPath(node: any) {
-            let result = '';
-            if (node) {
-                switch (node.type) {
-                    case X_IDENTIFIER:
-                        result = node.name;
-                        break;
-                    case X_MEMBER:
-                        result = getIdentifierPath(node.object) + '.' + getLiteralOrIdentifiertName(node.property);
-                        break;
-                    case X_NEW:
-                        result = getIdentifierPath(node.callee);
-                        break;
-                    case X_CALL:
-                        result = getIdentifierPath(node.callee) + '().';
-                        break;
-                    default:
-                }
-            }
-            return result;
-        }
-
-        // Method resolved IdentifierNames with known variables
-        /**
-         *
-         * @param path
-         */
-        function resolveIdentifierPath(path) {
-            const parts = path.split('.');
-            let substitute = false;
-            // check if current identifier is remembered as an interesting variable
-            for (const name in VARIABLES) {
-                if (name === parts[0]) {
-                    // get last stored variable value
-                    substitute = VARIABLES[name].slice(-1).pop();
-                }
-            }
-            // if so, replace current identifier with its value
-            if (substitute) {
-                parts[0] = substitute;
-                path = parts.join('.');
-            }
-            return path;
-        }
         /**
          *
          * @param path
@@ -245,38 +143,8 @@ const rule: Rule.RuleModule = {
             return false;
         }
 
-        /**
-         *
-         * @param node
-         * @param name
-         */
-        function rememberinterestingVariable(node: any, name: any) {
-            if (typeof VARIABLES[node.id.name] === 'undefined') {
-                VARIABLES[node.id.name] = [];
-            }
-            VARIABLES[node.id.name].push(name);
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function processVariableDeclarator(node: any) {
-            let path = getIdentifierPath(node.init);
-            path = resolveIdentifierPath(path);
-            // if declaration is interesting, remember identifier and resolved value
-            if (isinterestingPath(path)) {
-                rememberinterestingVariable(node, path);
-            }
-        }
-
-        /**
-         *
-         * @param identifier
-         */
-        function hasUnderscore(identifier) {
-            return identifier !== '_' && identifier[0] === '_';
-        }
+        // Create the variable declarator processor using the shared utility
+        const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isinterestingPath);
 
         /**
          *
@@ -309,7 +177,7 @@ const rule: Rule.RuleModule = {
                         case 'AssignmentExpression':
                         case 'CallExpression':
                             let path = getIdentifierPath(node);
-                            path = resolveIdentifierPath(path);
+                            path = resolveIdentifierPath(path, VARIABLES);
                             if (
                                 isinterestingPath(path) &&
                                 isIdentifier(node.property) &&

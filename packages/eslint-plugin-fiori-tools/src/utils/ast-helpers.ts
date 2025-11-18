@@ -422,3 +422,149 @@ export function createRememberLocation(
         return false;
     };
 }
+
+// ------------------------------------------------------------------------------
+// Common Utility Functions for Rule Processing
+// ------------------------------------------------------------------------------
+
+/**
+ * Get the literal or identifier name from a node
+ *
+ * @param node The AST node
+ */
+export function getLiteralOrIdentifierName(node: unknown): string {
+    if (isIdentifier(node)) {
+        return (node as IdentifierNode).name;
+    } else if (isLiteral(node)) {
+        return String((node as LiteralNode).value);
+    }
+    return '';
+}
+
+/**
+ * Get the identifier path from a node, handling various node types
+ *
+ * @param node The AST node
+ */
+export function getIdentifierPath(node: unknown): string {
+    if (!node) {
+        return '';
+    }
+
+    const astNode = node as ASTNode;
+    switch (astNode.type) {
+        case 'Identifier':
+            return (node as IdentifierNode).name;
+        case 'MemberExpression':
+            const memberNode = node as MemberExpressionNode;
+            return `${getIdentifierPath(memberNode.object)}.${getLiteralOrIdentifierName(memberNode.property)}`;
+        case 'NewExpression':
+            return getIdentifierPath((node as any).callee);
+        case 'CallExpression':
+            return `${getIdentifierPath((node as any).callee)}().`;
+        default:
+            return '';
+    }
+}
+
+/**
+ * Resolve identifier path by substituting known variables
+ *
+ * @param path The path to resolve
+ * @param variables The variables lookup object
+ */
+export function resolveIdentifierPath(path: string, variables: Record<string, string[]>): string {
+    const parts = path.split('.');
+    let substitution: string | undefined;
+
+    // Check if current identifier is remembered as an interesting variable
+    for (const name in variables) {
+        if (name === parts[0]) {
+            // Get last stored variable value
+            substitution = variables[name].at(-1);
+        }
+    }
+
+    // If so, replace current identifier with its value
+    if (substitution) {
+        parts[0] = substitution;
+        path = parts.join('.');
+    }
+
+    return path;
+}
+
+/**
+ * Remember interesting variable for later resolution
+ *
+ * @param node The variable declarator node
+ * @param name The name to remember
+ * @param variables The variables lookup object
+ */
+export function rememberInterestingVariable(node: unknown, name: string, variables: Record<string, string[]>): void {
+    const declaratorNode = node as any;
+    if (typeof variables[declaratorNode.id.name] === 'undefined') {
+        variables[declaratorNode.id.name] = [];
+    }
+    variables[declaratorNode.id.name].push(name);
+}
+
+/**
+ * Check if a path is interesting based on a given criteria function
+ *
+ * @param path The path to check
+ * @param interestingPathChecker Function to determine if path is interesting
+ */
+export function checkInterestingPath(path: string, interestingPathChecker: (path: string) => boolean): boolean {
+    return interestingPathChecker(path);
+}
+
+/**
+ * Create a generic variable declarator processor
+ *
+ * @param variables The variables lookup object
+ * @param interestingPathChecker Function to determine if path is interesting
+ */
+export function createVariableDeclaratorProcessor(
+    variables: Record<string, string[]>,
+    interestingPathChecker: (path: string) => boolean
+): (node: unknown) => void {
+    return function processVariableDeclarator(node: unknown): void {
+        const declaratorNode = node as any;
+        let path = getIdentifierPath(declaratorNode.init);
+        path = resolveIdentifierPath(path, variables);
+
+        // If declaration is interesting, remember identifier and resolved value
+        if (checkInterestingPath(path, interestingPathChecker)) {
+            rememberInterestingVariable(node, path, variables);
+        }
+    };
+}
+
+/**
+ * Check if an identifier has an underscore prefix (indicating private)
+ *
+ * @param identifier The identifier to check
+ */
+export function hasUnderscore(identifier: string): boolean {
+    return identifier !== '_' && identifier[0] === '_';
+}
+
+/**
+ * Check if a value is an integer
+ *
+ * @param value The value to check
+ */
+export function isInteger(value: number): boolean {
+    return Number(value) === value && value % 1 === 0;
+}
+
+/**
+ * Check if a string ends with a specific substring
+ *
+ * @param str The string to check
+ * @param suffix The suffix to look for
+ */
+export function endsWith(str: string, suffix: string): boolean {
+    return typeof str === 'string' && typeof suffix === 'string' && str.endsWith(suffix);
+}
