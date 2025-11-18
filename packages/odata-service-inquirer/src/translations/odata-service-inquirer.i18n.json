@@ -219,7 +219,7 @@
         "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
         "authenticationFailed": "$t(texts.authenticationFailed): {{error}}.",
         "authenticationFailedSpecificCatalog": "{{authFailType}}: Could not access OData V{{odataVersion}} service catalog",
-        "authenticationFailedAllCatalogs": "{{authFailType}}: Could not access any service catalogs",
+        "authenticationFailedAllCatalogs": "{{authFailType}}: Unable to access any service catalogs",
         "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
         "urlNotFound": "URL not found.",
