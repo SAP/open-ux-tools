@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { getConfiguredProvider, getSystemUI5Version } from '@sap-ux/adp-tooling';
+import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 
 import type { Credentials } from '../../../../src/types';
 import { initI18n, t } from '../../../../src/utils/i18n';
@@ -22,14 +22,12 @@ jest.mock('@sap-ux/project-input-validator', () => ({
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
-    getConfiguredProvider: jest.fn(),
-    getSystemUI5Version: jest.fn()
+    getConfiguredProvider: jest.fn()
 }));
 
 const mockIsAppStudio = isAppStudio as jest.MockedFunction<typeof isAppStudio>;
 const mockValidateEmptyString = validateEmptyString as jest.MockedFunction<typeof validateEmptyString>;
 const mockGetConfiguredProvider = getConfiguredProvider as jest.MockedFunction<typeof getConfiguredProvider>;
-const mockGetSystemUI5Version = getSystemUI5Version as jest.MockedFunction<typeof getSystemUI5Version>;
 
 describe('Credentials Prompts', () => {
     let mockLogger: ToolsLogger;
@@ -136,8 +134,11 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(false);
             mockAbapTarget.url = 'some-system';
             mockValidateEmptyString.mockReturnValue(true);
-            mockGetConfiguredProvider.mockResolvedValue({} as AbapServiceProvider);
-            mockGetSystemUI5Version.mockResolvedValue('1.136.1');
+            const mockGetSystemInfo = jest.fn();
+            mockGetConfiguredProvider.mockResolvedValue({
+                getSystemInfo: mockGetSystemInfo
+            } as unknown as AbapServiceProvider);
+            mockGetSystemInfo.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
@@ -157,6 +158,7 @@ describe('Credentials Prompts', () => {
                 },
                 mockLogger
             );
+            expect(mockGetSystemInfo).toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -164,8 +166,11 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(true);
             mockAbapTarget.destination = 'SYS_010';
             mockValidateEmptyString.mockReturnValue(true);
-            mockGetConfiguredProvider.mockResolvedValue({} as AbapServiceProvider);
-            mockGetSystemUI5Version.mockResolvedValue('1.136.1');
+            const mockGetSystemInfo = jest.fn();
+            mockGetConfiguredProvider.mockResolvedValue({
+                getSystemInfo: mockGetSystemInfo
+            } as unknown as AbapServiceProvider);
+            mockGetSystemInfo.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];
@@ -185,6 +190,7 @@ describe('Credentials Prompts', () => {
                 },
                 mockLogger
             );
+            expect(mockGetSystemInfo).toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -227,7 +233,11 @@ describe('Credentials Prompts', () => {
                     statusText: 'Unauthorized'
                 }
             };
-            mockGetConfiguredProvider.mockRejectedValue(mockError);
+            const mockGetSystemInfo = jest.fn();
+            mockGetConfiguredProvider.mockResolvedValue({
+                getSystemInfo: mockGetSystemInfo
+            } as unknown as AbapServiceProvider);
+            mockGetSystemInfo.mockRejectedValue(mockError);
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
             const passwordPrompt = prompts[1];

@@ -57,6 +57,7 @@ export class AbapServiceProvider extends ServiceProvider {
             this._systemInfo = await systemInfoService.getSystemInfo();
         } catch (error) {
             this.log.error(`An error occurred retrieving system info: ${error}`);
+            throw error;
         }
         return this._systemInfo;
     }

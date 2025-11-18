@@ -8,9 +8,11 @@ import {
     V4CatalogService,
     Ui5AbapRepositoryService,
     AppIndexService,
-    LayeredRepositoryService
+    LayeredRepositoryService,
+    AbapServiceProvider
 } from '../../src';
 import { UI5VersionService } from '../../src/abap/ui5-version-service';
+import type { SystemInfoService } from '../../src/abap/adt-catalog/services/systeminfo-service';
 
 /**
  * URL are specific to the discovery schema.
@@ -270,6 +272,27 @@ describe('AbapServiceProvider', () => {
             await expect(provider.getODataServiceGenerator(packageName)).rejects.toThrow(
                 'RAP Generator are not support on this system'
             );
+        });
+    });
+
+    describe('getSystemInfo', () => {
+        let getSystemInfoMock: jest.Mock;
+        let systemInfoServiceMock: SystemInfoService;
+        let provider: AbapServiceProvider;
+
+        beforeEach(() => {
+            provider = new AbapServiceProvider();
+            getSystemInfoMock = jest.fn();
+            systemInfoServiceMock = {
+                getSystemInfo: getSystemInfoMock
+            } as unknown as SystemInfoService;
+            jest.spyOn(provider as any, 'createService').mockReturnValue(systemInfoServiceMock);
+        });
+
+        test('should throw if the user is not authorized', async () => {
+            const unauthorizedError = new Error('Unauthorized');
+            getSystemInfoMock.mockRejectedValue(unauthorizedError);
+            await expect(provider.getSystemInfo()).rejects.toThrow(unauthorizedError);
         });
     });
 });

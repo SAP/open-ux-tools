@@ -2,7 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { getConfiguredProvider, getSystemUI5Version } from '@sap-ux/adp-tooling';
+import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n';
@@ -74,7 +74,7 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
                 };
 
                 const abapProvider = await getConfiguredProvider(options, logger);
-                await getSystemUI5Version(abapProvider, logger);
+                await abapProvider.getSystemInfo();
 
                 return true;
             } catch (e) {
