@@ -26,10 +26,19 @@ export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> 
         additionalChangeInfo = getAddXMLAdditionalInfo(change);
     }
 
-    if (additionalChangeInfo && !additionalChangeInfoMap.get(key)) {
-        // in certain scenarios we explicitly set additional info e.g template when creating the change 
-        // and that value should not be overwritten
-        additionalChangeInfoMap.set(key, additionalChangeInfo);
+    if (additionalChangeInfo) {
+        const existingInfo = additionalChangeInfoMap.get(key);
+        if (existingInfo) {
+            // Merge new info with existing info, keeping existing values and only adding new ones
+            const mergedInfo = {
+                ...additionalChangeInfo,
+                ...existingInfo
+            };
+            additionalChangeInfoMap.set(key, mergedInfo);
+        } else {
+            // No existing info, set the new info
+            additionalChangeInfoMap.set(key, additionalChangeInfo);
+        }
     }
 }
 
