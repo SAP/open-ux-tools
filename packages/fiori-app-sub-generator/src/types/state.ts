@@ -1,9 +1,8 @@
 import type { AuthenticationType } from '@sap-ux/store';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
 import type { TableSelectionMode } from '@sap-ux/fiori-elements-writer';
-import type { ValueListReferenceService } from '@sap-ux/odata-service-writer';
 import type {
     CapService,
     DatasourceType,
@@ -80,7 +79,7 @@ export interface Service {
     /**
      * Value list references for the service when the user opts to download value helps.
      */
-    valueListReferences?: ValueListReferenceService[];
+    valueListReferences?: ExternalService[];
     /**
      * Can be set by adaptors if preview settings have been determined
      */

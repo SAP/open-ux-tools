@@ -1,7 +1,8 @@
 import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { OdataVersion, ValueListReferenceService } from '@sap-ux/odata-service-writer';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ExternalService } from '@sap-ux/axios-extension';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -106,7 +107,7 @@ export interface OdataServiceAnswers {
     /**
      * Value list references for the service when the user opts to download value helps.
      */
-    valueListReferences?: ValueListReferenceService[];
+    valueListReferences?: ExternalService[];
 }
 
 export interface ConnectedSystem {

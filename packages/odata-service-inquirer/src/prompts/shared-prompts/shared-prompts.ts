@@ -2,12 +2,12 @@ import type { ConnectionValidator } from '../connectionValidator';
 import { PromptState } from '../../utils';
 import type { ConfirmQuestion } from 'inquirer';
 import { AbapServiceProvider, createForAbap } from '@sap-ux/axios-extension';
+import type { ValueListReference, ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 import LoggerHelper from '../logger-helper';
 import { t } from '../../i18n';
 import type { OdataServiceAnswers } from '../../types';
 import { DatasourceType } from '../../types';
-import type { ValueListReference, ValueListReferenceService } from '@sap-ux/odata-service-writer';
-import { getValueListReferences, OdataVersion } from '@sap-ux/odata-service-writer';
+import { getExternalServiceReferences, OdataVersion } from '@sap-ux/odata-service-writer';
 
 /**
  * Get the value help download prompt that appears when V4 services have value helps associated with them.
@@ -22,7 +22,7 @@ export function getValueHelpDownloadPrompt(
 ): ConfirmQuestion {
     const valueHelpDownloadConfirmName = `${promptNamespace}:valueHelpDownloadConfirm`;
     let lastProcessedServicePath: string | undefined;
-    let currentValueListRefsAnnotations: ValueListReference[] | undefined;
+    let currentValueListRefsAnnotations: ExternalServiceReference[] | undefined;
 
     /**
      * Helper function to detect and cache value list references for the current service.
@@ -47,7 +47,7 @@ export function getValueHelpDownloadPrompt(
 
         // Re-process if service changed or not yet processed
         if (lastProcessedServicePath !== currentServicePath) {
-            const valueListReferences = getValueListReferences(
+            const valueListReferences = getExternalServiceReferences(
                 currentServicePath,
                 PromptState.odataService.metadata,
                 PromptState.odataService.annotations ?? []
@@ -96,15 +96,13 @@ export function getValueHelpDownloadPrompt(
                             lastProcessedServicePath = PromptState.odataService.servicePath;
 
                             const valueListReferences = await abapServiceProvider
-                                .fetchValueListReferenceServices(currentValueListRefsAnnotations)
+                                .fetchExternalServices(currentValueListRefsAnnotations)
                                 .catch(() => {
                                     LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
                                     return undefined;
                                 });
                             // Backend already filters out invalid entries and ensures data is always present
-                            PromptState.odataService.valueListReferences = valueListReferences as
-                                | ValueListReferenceService[]
-                                | undefined;
+                            PromptState.odataService.valueListReferences = valueListReferences;
                         }
                     } catch (err) {
                         LoggerHelper.logger.info(
