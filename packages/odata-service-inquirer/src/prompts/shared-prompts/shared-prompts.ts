@@ -8,6 +8,11 @@ import { t } from '../../i18n';
 import type { OdataServiceAnswers } from '../../types';
 import { DatasourceType } from '../../types';
 import { getExternalServiceReferences, OdataVersion } from '@sap-ux/odata-service-writer';
+import {
+    sendValueHelpDetectedTelemetry,
+    sendValueHelpDownloadDecisionTelemetry,
+    sendValueHelpDownloadPerformanceTelemetry
+} from './value-help-telemetry';
 
 /**
  * Get the value help download prompt that appears when V4 services have value helps associated with them.
@@ -60,6 +65,16 @@ export function getValueHelpDownloadPrompt(
             // Clear any stale value list references when service changes
             PromptState.odataService.valueListReferences = undefined;
 
+            // Send telemetry when value helps are detected
+            if (valueListReferences.length > 0) {
+                try {
+                    sendValueHelpDetectedTelemetry(valueListReferences.length);
+                } catch (error) {
+                    // Don't let telemetry errors affect the prompt logic
+                    console.warn('Telemetry error:', error);
+                }
+            }
+
             return valueListReferences.length > 0;
         }
 
@@ -88,16 +103,30 @@ export function getValueHelpDownloadPrompt(
      * @param abapServiceProvider - The ABAP service provider instance
      */
     const fetchValueListReferences = async (abapServiceProvider: AbapServiceProvider): Promise<void> => {
+        const downloadStartTime = Date.now();
         lastProcessedServicePath = PromptState.odataService.servicePath;
+        const valueHelpCount = currentValueListRefsAnnotations?.length ?? 0;
 
-        const valueListReferences = await abapServiceProvider
-            .fetchExternalServices(currentValueListRefsAnnotations!)
-            .catch(() => {
-                LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
-                return undefined;
-            });
-        // Backend already filters out invalid entries and ensures data is always present
-        PromptState.odataService.valueListReferences = valueListReferences;
+        try {
+            const valueListReferences = await abapServiceProvider
+                .fetchExternalServices(currentValueListRefsAnnotations!)
+                .catch(() => {
+                    LoggerHelper.logger.info(t('prompts.validationMessages.noValueListReferences'));
+                    return undefined;
+                });
+
+            // Backend already filters out invalid entries and ensures data is always present
+            PromptState.odataService.valueListReferences = valueListReferences;
+
+            const downloadTimeMs = Date.now() - downloadStartTime;
+            // Send performance telemetry for successful download
+            sendValueHelpDownloadPerformanceTelemetry(downloadTimeMs, valueHelpCount, true);
+        } catch (error) {
+            const downloadTimeMs = Date.now() - downloadStartTime;
+            // Send performance telemetry for failed download
+            sendValueHelpDownloadPerformanceTelemetry(downloadTimeMs, valueHelpCount, false);
+            throw error;
+        }
     };
 
     /**
@@ -122,6 +151,13 @@ export function getValueHelpDownloadPrompt(
         message: t('prompts.valueHelpDownload.message'),
         default: false,
         validate: async (fetchValueHelps: boolean, answers: OdataServiceAnswers): Promise<boolean> => {
+            const valueHelpCount = currentValueListRefsAnnotations?.length ?? 0;
+
+            // Send telemetry for user's download decision
+            if (valueHelpCount > 0) {
+                sendValueHelpDownloadDecisionTelemetry(fetchValueHelps, valueHelpCount);
+            }
+
             if (
                 fetchValueHelps &&
                 PromptState.odataService.servicePath !== lastProcessedServicePath &&
