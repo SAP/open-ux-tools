@@ -124,7 +124,7 @@ describe('questions', () => {
               },
               {
                 "default": false,
-                "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+                "message": "The service contains references to value help services. Do you want to download the associated metadata during generation (this may increase generation time).",
                 "name": "abapOnPrem:valueHelpDownloadConfirm",
                 "type": "confirm",
                 "validate": [Function],
@@ -213,7 +213,7 @@ describe('questions', () => {
               },
               {
                 "default": false,
-                "message": "This service has value helps associated with it. Do you want to download them? (Note: this may add some time to generation)",
+                "message": "The service contains references to value help services. Do you want to download the associated metadata during generation (this may increase generation time).",
                 "name": "abapOnBtp:valueHelpDownloadConfirm",
                 "type": "confirm",
                 "validate": [Function],
