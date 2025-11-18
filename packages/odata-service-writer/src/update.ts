@@ -12,7 +12,7 @@ import {
     writeRemoteServiceAnnotationXmlFiles
 } from './data/annotations';
 import { updatePackageJson } from './data/package';
-import { writeValueListReferenceMetadata } from './data';
+import { writeExternalServiceMetadata } from './data';
 
 /**
  * Generates mockserver middleware config for ui5-local.yaml file based on ui5-mock.yaml.
@@ -184,8 +184,8 @@ export async function updateServicesData(
     }
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
-    if (service.valueListReferences && webappPath) {
-        writeValueListReferenceMetadata(webappPath, service.valueListReferences, service, fs);
+    if (service.externalServices && webappPath) {
+        writeExternalServiceMetadata(webappPath, service.externalServices, service, fs);
     }
 }
 
@@ -227,8 +227,8 @@ async function updateMetadata(
                 overwrite: true
             }
         };
-        if (config.ui5MockYamlConfig && service.name && service.valueListReferences?.length) {
-            config.ui5MockYamlConfig.resolveValueListReferences = {
+        if (config.ui5MockYamlConfig && service.name && service.externalServices?.length) {
+            config.ui5MockYamlConfig.resolveExternalServiceReferences = {
                 [service.name]: true
             };
         }

@@ -177,8 +177,8 @@ export const getMockServerMiddlewareConfig = (
             mockdataPath: `${serviceRoot}/data`,
             generateMockData: true
         };
-        if (dataSource.resolveValueListReferences === true) {
-            newServiceData.resolveValueListReferences = true;
+        if (dataSource.resolveExternalServiceReferences === true) {
+            newServiceData.resolveExternalServiceReferences = true;
         }
         services.push(newServiceData);
     });

@@ -548,8 +548,8 @@ export class UI5Config {
                     mockdataPath: `${serviceRoot}/data`,
                     generateMockData: true
                 };
-                if (dataSourceConfig.resolveValueListReferences === true) {
-                    newServiceData.resolveValueListReferences = true;
+                if (dataSourceConfig.resolveExternalServiceReferences === true) {
+                    newServiceData.resolveExternalServiceReferences = true;
                 }
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
                     (existingService) => existingService.urlPath === urlPath

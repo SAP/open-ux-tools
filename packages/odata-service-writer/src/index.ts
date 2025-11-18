@@ -171,8 +171,7 @@ export {
     ServiceType,
     EdmxAnnotationsInfo,
     CdsAnnotationsInfo,
-    ValueListReference,
-    ValueListReferenceService,
+    ExternalServiceCollectionOptions,
     NamespaceAlias
 } from './types';
-export { getValueListReferences, getAnnotationNamespaces } from './data';
+export { getExternalServiceReferences, getAnnotationNamespaces } from './data';

@@ -9,13 +9,13 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getBusinessServiceKeys,
+    getBusinessServiceInfo,
     cfServicesPromptNames
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import type { CfConfig, CFApp, ServiceKeys, CfServicesAnswers } from '@sap-ux/adp-tooling';
+import type { CfConfig, CFApp, ServiceInfo, CfServicesAnswers } from '@sap-ux/adp-tooling';
 
 import { initI18n, t } from '../../../src/utils/i18n';
 import { CFServicesPrompter } from '../../../src/app/questions/cf-services';
@@ -50,7 +50,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     downloadAppContent: jest.fn(),
     validateSmartTemplateApplication: jest.fn(),
     validateODataEndpoints: jest.fn(),
-    getBusinessServiceKeys: jest.fn()
+    getBusinessServiceInfo: jest.fn()
 }));
 
 const mockValidateBusinessSolutionName = validateBusinessSolutionName as jest.MockedFunction<
@@ -72,7 +72,7 @@ const mockValidateSmartTemplateApplication = validateSmartTemplateApplication as
     typeof validateSmartTemplateApplication
 >;
 const mockValidateODataEndpoints = validateODataEndpoints as jest.MockedFunction<typeof validateODataEndpoints>;
-const mockGetBusinessServiceKeys = getBusinessServiceKeys as jest.MockedFunction<typeof getBusinessServiceKeys>;
+const mockGetBusinessServiceKeys = getBusinessServiceInfo as jest.MockedFunction<typeof getBusinessServiceInfo>;
 
 const mockCfConfig: CfConfig = {
     org: { GUID: 'org-guid', Name: 'test-org' },
@@ -96,20 +96,22 @@ const mockManifest: Manifest = {
     }
 } as Manifest;
 
-const mockServiceKeys: ServiceKeys = {
-    credentials: [
+const mockServiceKeys: ServiceInfo = {
+    serviceKeys: [
         {
-            url: '/test.service.com',
-            clientid: 'test-client',
-            clientsecret: 'test-secret',
-            uaa: {
-                url: '/test.uaa.com',
+            credentials: {
+                url: '/test.service.com',
                 clientid: 'test-client',
-                clientsecret: 'test-secret'
-            },
-            uri: '/test.service.com',
-            endpoints: {
-                'test-endpoint': '/test.endpoint.com'
+                clientsecret: 'test-secret',
+                uaa: {
+                    url: '/test.uaa.com',
+                    clientid: 'test-client',
+                    clientsecret: 'test-secret'
+                },
+                uri: '/test.service.com',
+                endpoints: {
+                    'test-endpoint': '/test.endpoint.com'
+                }
             }
         }
     ],
@@ -355,14 +357,14 @@ describe('CFServicesPrompter', () => {
             mockValidateSmartTemplateApplication.mockResolvedValue(undefined);
             mockValidateODataEndpoints.mockResolvedValue(undefined);
 
-            prompter['businessServiceKeys'] = mockServiceKeys;
+            prompter['businessServiceInfo'] = mockServiceKeys;
 
             const prompt = prompter['getBaseAppPrompt'](mockCfConfig);
             const result = await prompt.validate!(mockCFApp);
 
             expect(mockDownloadAppContent).toHaveBeenCalledWith(mockCfConfig.space.GUID, mockCFApp, mockLogger);
             expect(mockValidateSmartTemplateApplication).toHaveBeenCalledWith(mockManifest);
-            expect(mockValidateODataEndpoints).toHaveBeenCalledWith([], mockServiceKeys.credentials, mockLogger);
+            expect(mockValidateODataEndpoints).toHaveBeenCalledWith([], mockServiceKeys.serviceKeys, mockLogger);
             expect(result).toBe(true);
             expect(prompter['manifest']).toBe(mockManifest);
             expect(prompter['serviceInstanceGuid']).toBe('test-guid');
@@ -427,7 +429,7 @@ describe('CFServicesPrompter', () => {
             const result = await prompt.validate!('test-service');
 
             expect(mockGetBusinessServiceKeys).toHaveBeenCalledWith('test-service', mockCfConfig, mockLogger);
-            expect(mockGetCfApps).toHaveBeenCalledWith(mockServiceKeys.credentials, mockCfConfig, mockLogger);
+            expect(mockGetCfApps).toHaveBeenCalledWith(mockServiceKeys.serviceKeys, mockCfConfig, mockLogger);
             expect(result).toBe(true);
         });
 

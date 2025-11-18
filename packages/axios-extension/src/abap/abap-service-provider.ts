@@ -7,7 +7,14 @@ import { AppIndexService } from './app-index-service';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
 import { LayeredRepositoryService } from './lrep-service';
-import type { AbapCDSView, AtoSettings, BusinessObject, SystemInfo } from './types';
+import type {
+    AbapCDSView,
+    AtoSettings,
+    BusinessObject,
+    ExternalService,
+    ExternalServiceReference,
+    SystemInfo
+} from './types';
 import { TenantType } from './types';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
@@ -296,20 +303,28 @@ export class AbapServiceProvider extends ServiceProvider {
      * @param references - Service references for which metadata should be fetched.
      * @returns A list of ValueListReferences found in the metadata and annotations.
      */
-    public async fetchValueListReferenceServices(
-        references: { target: string; serviceRootPath: string; value: string }[]
-    ): Promise<{ target: string; data?: string; path: string }[]> {
-        const valueListReferences: { target: string; data?: string; path: string }[] = [];
-        const allPromises = references.map(async ({ serviceRootPath, target, value }) => {
+    public async fetchExternalServices(references: ExternalServiceReference[]): Promise<ExternalService[]> {
+        const valueListReferences: ExternalService[] = [];
+        const allPromises = references.map(async (reference) => {
+            const { serviceRootPath, value } = reference;
             const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
             const externalService = this.service(externalServicePath);
             try {
                 const data = await externalService.metadata();
-                valueListReferences.push({
-                    path: externalServicePath,
-                    target,
-                    data
-                });
+                if (reference.type === 'value-list') {
+                    valueListReferences.push({
+                        type: 'value-list',
+                        path: externalServicePath,
+                        target: reference.target,
+                        data
+                    });
+                } else if (reference.type === 'code-list') {
+                    valueListReferences.push({
+                        type: 'code-list',
+                        path: externalServicePath,
+                        data
+                    });
+                }
             } catch (error) {
                 this.log.warn(
                     `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`

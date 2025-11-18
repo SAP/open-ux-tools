@@ -578,7 +578,13 @@ describe('UI5Config', () => {
             ui5Config.addMockServerMiddleware(
                 basePath,
                 webappPath,
-                [{ serviceName: 'new-service', servicePath: '/path/to/service', resolveValueListReferences: true }],
+                [
+                    {
+                        serviceName: 'new-service',
+                        servicePath: '/path/to/service',
+                        resolveExternalServiceReferences: true
+                    }
+                ],
                 []
             );
             expect(ui5Config.toString()).toMatchSnapshot();
@@ -612,7 +618,7 @@ describe('UI5Config', () => {
             ui5Config.addServiceToMockserverMiddleware(basePath, webappPath, {
                 serviceName: 'new-service',
                 servicePath: '/path/to/service',
-                resolveValueListReferences: true
+                resolveExternalServiceReferences: true
             });
             expect(ui5Config.toString()).toMatchSnapshot();
         });

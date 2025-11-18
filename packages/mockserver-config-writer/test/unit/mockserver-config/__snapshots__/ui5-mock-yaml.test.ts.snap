@@ -84,7 +84,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-            resolveValueListReferences: true
+            resolveExternalServiceReferences: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/

@@ -140,7 +140,7 @@ describe('Test enhanceYaml()', () => {
 
     test('Create new ui5-mock.yaml based on ui5.yaml, updated with services and annotations with value list references', async () => {
         const fs = getFsWithUi5Yaml(mockManifestJson);
-        await enhanceYaml(fs, basePath, webappPath, { resolveValueListReferences: { mainService: true } });
+        await enhanceYaml(fs, basePath, webappPath, { resolveExternalServiceReferences: { mainService: true } });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
         const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
@@ -151,7 +151,7 @@ describe('Test enhanceYaml()', () => {
             metadataPath: './webapp/localService/mainService/metadata.xml',
             mockdataPath: './webapp/localService/mainService/data',
             urlPath: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
-            resolveValueListReferences: true
+            resolveExternalServiceReferences: true
         });
         expect(
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.annotations
