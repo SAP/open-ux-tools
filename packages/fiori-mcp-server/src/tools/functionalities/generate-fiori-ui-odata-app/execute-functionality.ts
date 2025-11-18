@@ -24,7 +24,6 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         }
     };
     generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
-    // const generatorConfig: GeneratorConfigOData = validateWithSchema(generatorConfigOData, params?.parameters);
 
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
@@ -39,7 +38,12 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
     await checkIfGeneratorInstalled();
 
+    const metadataPath = generatorConfig.service.metadataFilePath ?? join(targetDir, 'metadata.xml');
+
     try {
+        const metadata = await FSpromises.readFile(metadataPath, { encoding: 'utf8' });
+        generatorConfig.service.edmx = metadata;
+
         const content = JSON.stringify(generatorConfig, null, 4);
 
         await FSpromises.mkdir(dirname(outputPath), { recursive: true });
@@ -63,16 +67,19 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
             timestamp: new Date().toISOString()
         };
     } finally {
-        //clean up temp config file used for the headless generator
+        //clean up temp config files used for the headless generator
         if (existsSync(outputPath)) {
             await FSpromises.unlink(outputPath);
+        }
+        if (existsSync(metadataPath)) {
+            await FSpromises.unlink(metadataPath);
         }
     }
 
     return {
         functionalityId: details.functionalityId,
         status: 'Success',
-        message: `Generation completed successfully: ${appPath}. You must run \`npm install\` in ${targetDir} before trying to run the application.`,
+        message: `Generation completed successfully. You must run \`npm install\` in ${appPath} first, and then run the application using \`npm run start-mock\`.`,
         parameters: params.parameters,
         appPath,
         changes: [],

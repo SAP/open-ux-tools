@@ -51,7 +51,7 @@ export const serviceOdata = z.object({
             'The host of the OData service. Must be an HTTPS endpoint. If the parameter is not provided, the agent should ask the user for it.'
         ),
     client: z.optional(z.string().describe('The client to be used for the OData service.')),
-    edmx: z.string().describe('The service metadata in the stringified XML format.')
+    metadataFilePath: z.optional(z.string().describe('Path to a local metadata.xml file.'))
 });
 
 export const serviceCap = z.object({

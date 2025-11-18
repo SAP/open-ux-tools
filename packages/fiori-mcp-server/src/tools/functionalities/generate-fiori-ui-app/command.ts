@@ -24,7 +24,6 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         }
     };
     generatorConfig.project.sapux = generatorConfig.floorplan !== 'FF_SIMPLE';
-    // const generatorConfig: GeneratorConfigCAP = validateWithSchema(generatorConfigCAP, params?.parameters);
 
     const projectPath = generatorConfig?.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
