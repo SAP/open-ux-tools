@@ -16,7 +16,7 @@ jest.mock('../../../../src/prompts/logger-helper', () => ({
 
 jest.mock('@sap-ux/odata-service-writer', () => ({
     ...jest.requireActual('@sap-ux/odata-service-writer'),
-    getValueListReferences: jest.fn()
+    getExternalServiceReferences: jest.fn()
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -25,10 +25,10 @@ jest.mock('@sap-ux/axios-extension', () => ({
 }));
 
 // Get the mocked functions
-import { getValueListReferences } from '@sap-ux/odata-service-writer';
+import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import { createForAbap } from '@sap-ux/axios-extension';
 
-const mockGetValueListReferences = jest.mocked(getValueListReferences);
+const mockGetExternalServiceReferences = jest.mocked(getExternalServiceReferences);
 const mockCreateForAbap = jest.mocked(createForAbap);
 
 describe('getValueHelpDownloadPrompt', () => {
@@ -49,7 +49,7 @@ describe('getValueHelpDownloadPrompt', () => {
 
         // Create typed mocks using jest.fn()
         mockAbapServiceProvider = {
-            fetchValueListReferenceServices: jest.fn()
+            fetchExternalServices: jest.fn()
         };
 
         mockConnectionValidator = {
@@ -125,14 +125,18 @@ describe('getValueHelpDownloadPrompt', () => {
                 valueListReferences: undefined
             };
 
-            mockGetValueListReferences.mockReturnValue([]);
+            mockGetExternalServiceReferences.mockReturnValue([]);
 
             const prompt = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
             const whenFn = prompt.when as (answers: OdataServiceAnswers) => boolean;
             const result = whenFn({} as OdataServiceAnswers);
 
             expect(result).toBe(false);
-            expect(mockGetValueListReferences).toHaveBeenCalledWith('/test/service', '<metadata>test</metadata>', []);
+            expect(mockGetExternalServiceReferences).toHaveBeenCalledWith(
+                '/test/service',
+                '<metadata>test</metadata>',
+                []
+            );
         });
 
         it('should return true when value list references are found', () => {
@@ -146,20 +150,25 @@ describe('getValueHelpDownloadPrompt', () => {
 
             const mockValueListRefs = [
                 {
+                    type: 'value-list' as const,
                     target: 'Entity/Property',
                     serviceRootPath: '/valuehelp/service',
                     value: 'ValueListEntity'
                 }
             ];
 
-            mockGetValueListReferences.mockReturnValue(mockValueListRefs);
+            mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const prompt = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
             const whenFn = prompt.when as (answers: OdataServiceAnswers) => boolean;
             const result = whenFn({} as OdataServiceAnswers);
 
             expect(result).toBe(true);
-            expect(mockGetValueListReferences).toHaveBeenCalledWith('/test/service', '<metadata>test</metadata>', []);
+            expect(mockGetExternalServiceReferences).toHaveBeenCalledWith(
+                '/test/service',
+                '<metadata>test</metadata>',
+                []
+            );
         });
 
         it('should use cached result when service path has not changed', () => {
@@ -173,13 +182,14 @@ describe('getValueHelpDownloadPrompt', () => {
 
             const mockValueListRefs = [
                 {
+                    type: 'value-list' as const,
                     target: 'Entity/Property',
                     serviceRootPath: '/valuehelp/service',
                     value: 'ValueListEntity'
                 }
             ];
 
-            mockGetValueListReferences.mockReturnValue(mockValueListRefs);
+            mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const prompt = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
             const whenFn = prompt.when as (answers: OdataServiceAnswers) => boolean;
@@ -187,24 +197,25 @@ describe('getValueHelpDownloadPrompt', () => {
             // First call should process and cache
             const result1 = whenFn({} as OdataServiceAnswers);
             expect(result1).toBe(true);
-            expect(mockGetValueListReferences).toHaveBeenCalledTimes(1);
+            expect(mockGetExternalServiceReferences).toHaveBeenCalledTimes(1);
 
             // Second call should use cache
             const result2 = whenFn({} as OdataServiceAnswers);
             expect(result2).toBe(true);
-            expect(mockGetValueListReferences).toHaveBeenCalledTimes(1); // Not called again
+            expect(mockGetExternalServiceReferences).toHaveBeenCalledTimes(1); // Not called again
         });
 
         it('should re-process when service path changes', () => {
             const mockValueListRefs = [
                 {
+                    type: 'value-list' as const,
                     target: 'Entity/Property',
                     serviceRootPath: '/valuehelp/service',
                     value: 'ValueListEntity'
                 }
             ];
 
-            mockGetValueListReferences.mockReturnValue(mockValueListRefs);
+            mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const prompt = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
             const whenFn = prompt.when as (answers: OdataServiceAnswers) => boolean;
@@ -220,26 +231,27 @@ describe('getValueHelpDownloadPrompt', () => {
 
             const result1 = whenFn({} as OdataServiceAnswers);
             expect(result1).toBe(true);
-            expect(mockGetValueListReferences).toHaveBeenCalledTimes(1);
+            expect(mockGetExternalServiceReferences).toHaveBeenCalledTimes(1);
 
             // Change service path
             PromptState.odataService.servicePath = '/test/service2';
 
             const result2 = whenFn({} as OdataServiceAnswers);
             expect(result2).toBe(true);
-            expect(mockGetValueListReferences).toHaveBeenCalledTimes(2); // Called again for new service
+            expect(mockGetExternalServiceReferences).toHaveBeenCalledTimes(2); // Called again for new service
         });
 
         it('should clear state when switching from V4 to non-V4 service', () => {
             const mockValueListRefs = [
                 {
+                    type: 'value-list' as const,
                     target: 'Entity/Property',
                     serviceRootPath: '/valuehelp/service',
                     value: 'ValueListEntity'
                 }
             ];
 
-            mockGetValueListReferences.mockReturnValue(mockValueListRefs);
+            mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const prompt = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
             const whenFn = prompt.when as (answers: OdataServiceAnswers) => boolean;
@@ -285,13 +297,14 @@ describe('getValueHelpDownloadPrompt', () => {
 
             const mockValueListRefs = [
                 {
+                    type: 'value-list' as const,
                     target: 'Entity/Property',
                     serviceRootPath: '/valuehelp/service',
                     value: 'ValueListEntity'
                 }
             ];
 
-            mockGetValueListReferences.mockReturnValue(mockValueListRefs);
+            mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             // Set up the when condition to cache value list references
             const whenFn = prompt.when as (answers: OdataServiceAnswers) => boolean;
@@ -346,8 +359,8 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(mockCreateForAbap).not.toHaveBeenCalled();
         });
 
-        it('should handle fetchValueListReferenceServices failure gracefully', async () => {
-            mockAbapServiceProvider.fetchValueListReferenceServices.mockRejectedValue(new Error('Network error'));
+        it('should handle fetchExternalServices failure gracefully', async () => {
+            mockAbapServiceProvider.fetchExternalServices.mockRejectedValue(new Error('Network error'));
 
             const validateFn = prompt.validate as (input: boolean, answers: OdataServiceAnswers) => Promise<boolean>;
             const result = await validateFn(true, mockAnswers);
@@ -372,7 +385,7 @@ describe('getValueHelpDownloadPrompt', () => {
             // Create new mock ABAP service provider for this test
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const newMockAbapServiceProvider = {
-                fetchValueListReferenceServices: jest.fn().mockResolvedValue([])
+                fetchExternalServices: jest.fn().mockResolvedValue([])
             } as any;
 
             // Mock createForAbap to return our new mock
@@ -392,7 +405,7 @@ describe('getValueHelpDownloadPrompt', () => {
             await validateFn(true, mockAnswers);
 
             expect(mockCreateForAbap).toHaveBeenCalledWith({ some: 'config' });
-            expect(newMockAbapServiceProvider.fetchValueListReferenceServices).toHaveBeenCalled();
+            expect(newMockAbapServiceProvider.fetchExternalServices).toHaveBeenCalled();
         });
 
         it('should use existing ABAP service provider from connection validator', async () => {
@@ -425,7 +438,7 @@ describe('getValueHelpDownloadPrompt', () => {
             const validateFn = newPrompt.validate as (input: boolean, answers: OdataServiceAnswers) => Promise<boolean>;
             await validateFn(true, mockAnswers);
 
-            expect(mockAbapServiceProvider.fetchValueListReferenceServices).not.toHaveBeenCalled();
+            expect(mockAbapServiceProvider.fetchExternalServices).not.toHaveBeenCalled();
         });
 
         it('should clear state when fetchValueHelps is false', async () => {
@@ -443,7 +456,7 @@ describe('getValueHelpDownloadPrompt', () => {
 
         it('should not process when service has no value list references', async () => {
             // Set up service with no value list references
-            mockGetValueListReferences.mockReturnValue([]);
+            mockGetExternalServiceReferences.mockReturnValue([]);
 
             // Re-create prompt to reset cache
             const promptNoRefs = getValueHelpDownloadPrompt(mockConnectionValidator, 'test');
@@ -457,7 +470,7 @@ describe('getValueHelpDownloadPrompt', () => {
             const result = await validateFn(true, mockAnswers);
 
             expect(result).toBe(true);
-            expect(mockAbapServiceProvider.fetchValueListReferenceServices).not.toHaveBeenCalled();
+            expect(mockAbapServiceProvider.fetchExternalServices).not.toHaveBeenCalled();
         });
 
         it('should handle non-ABAP system errors gracefully', async () => {
