@@ -1,4 +1,3 @@
-import init from '../../../../preview-middleware-client/dist/cpe/init';
 import { initI18nOdataServiceInquirer } from '../../../src/i18n';
 import LoggerHelper from '../../../src/prompts/logger-helper';
 import { getAllBackendSystems } from '../../../src/utils/store';
