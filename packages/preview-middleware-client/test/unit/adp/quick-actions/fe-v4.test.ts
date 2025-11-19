@@ -199,7 +199,6 @@ describe('FE V4 quick actions', () => {
                     return { type, value, settings };
                 });
 
-                // const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
                     'sap.ui5': {
                         routing: {
@@ -299,6 +298,8 @@ describe('FE V4 quick actions', () => {
                     expect.objectContaining({ actionName: 'add-page-action' })
                 );
             });
+
+            
         });
 
         describe('clear filter bar button', () => {
