@@ -54,6 +54,7 @@ import * as utils from 'open/ux/preview/client/utils/fe-v4';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import * as appUtils from '../../../../src/utils/application';
+import * as apiHandler from 'open/ux/preview/client/adp/api-handler';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -96,12 +97,33 @@ describe('FE V4 quick actions', () => {
         });
 
         describe('Add Page Action', () => {
+            let appComponent: AppComponentMock;
+            let rtaMock: RuntimeAuthoring;
+            mockTelemetryEventIdentifier();
+
+            beforeAll(() => {
+                appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(() => {
+                    return {
+                        projectId: 'dummyProjectId'
+                    } as FlexSettings;
+                });
+            });
             afterEach(() => {
                 jest.restoreAllMocks();
             });
 
             async function setupContext() {
                 const pageView = new XMLView();
+                pageView.getViewData.mockImplementation(() => ({
+                    stableId: 'appId::ProductsList'
+                }));
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
                         getId: () => 'MyView',
@@ -177,7 +199,7 @@ describe('FE V4 quick actions', () => {
                     return { type, value, settings };
                 });
 
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                // const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
                     'sap.ui5': {
                         routing: {
@@ -210,11 +232,18 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
+                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                    controllerPathFromRoot: 'adp.v4/test.js',
+                    controllerExists: true,
+                    isRunningInBAS: false,
+                    controllerPath: 'webapp/adp/v4/test.js',
+                    isTsSupported: false
+                });
             }
-            test('not available on UI5 version prior 1.130', async () => {
+            test('not available on UI5 version prior 1.120', async () => {
                 VersionInfo.load.mockResolvedValue({
                     name: 'SAPUI5 Distribution',
-                    libraries: [{ name: 'sap.ui.core', version: '1.129.0' }]
+                    libraries: [{ name: 'sap.ui.core', version: '1.119.0' }]
                 });
                 await setupContext();
                 expect(sendActionMock).toHaveBeenCalledWith(
@@ -227,10 +256,10 @@ describe('FE V4 quick actions', () => {
                 );
             });
 
-            test('available since UI5 version 1.130', async () => {
+            test('available since UI5 version 1.120', async () => {
                 VersionInfo.load.mockResolvedValue({
                     name: 'SAPUI5 Distribution',
-                    libraries: [{ name: 'sap.ui.core', version: '1.130.1' }]
+                    libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
                 });
                 await setupContext();
                 expect(sendActionMock).toHaveBeenCalledWith(
@@ -247,6 +276,27 @@ describe('FE V4 quick actions', () => {
                             ]
                         }
                     ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-page-action', kind: 'simple' })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddAction',
+                    undefined,
+                    expect.objectContaining({
+                        appDescriptor: expect.objectContaining({
+                            appType: 'fe-v4',
+                            pageId: 'ProductsList',
+                            projectId: 'dummyProjectId'
+                        }),
+                        controllerReference: '.extension.adp.v4.test.<REPLACE_WITH_YOUR_HANDLER_NAME>',
+                        propertyPath: 'content/header/actions/',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
+                    }),
+                    expect.objectContaining({ actionName: 'add-page-action' })
                 );
             });
         });
@@ -2542,8 +2592,20 @@ describe('FE V4 quick actions', () => {
                             enabled: true,
                             id: 'objectPage0-add-controller-to-page',
                             kind: 'simple',
-                            title: 'Add Controller to Page'
+                            title: 'Add Controller to Page',
+                            tooltip: undefined
                         },
+                        ...(testCase.supportedVersion
+                            ? [
+                                  {
+                                      enabled: true,
+                                      id: 'objectPage0-add-page-action',
+                                      kind: 'simple',
+                                      title: 'Add Custom Page Action',
+                                      tooltip: undefined
+                                  }
+                              ]
+                            : []),
                         {
                             enabled: true,
                             id: 'objectPage0-op-add-header-field',

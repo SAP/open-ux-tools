@@ -20,7 +20,11 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 export function getV4AppComponent(control: ManagedObject): AppComponent | undefined {
     const ownerComponent = Component.getOwnerComponentFor(control);
     if (ownerComponent?.isA<TemplateComponent>('sap.fe.core.TemplateComponent')) {
-        return ownerComponent.getAppComponent();
+        if (ownerComponent.getAppComponent) {
+            return ownerComponent.getAppComponent();
+        } else if ((ownerComponent as unknown as { oAppComponent: AppComponent })?.oAppComponent) {
+            return (ownerComponent as unknown as { oAppComponent: AppComponent }).oAppComponent;
+        }
     }
     return undefined;
 }
@@ -117,7 +121,6 @@ export async function createManifestPropertyChange(
         } else {
             adjustedChanges[key] = value;
         }
-        
     }
     const [manifestPropertyChange] = overlayData.manifestPropertyChange(
         adjustedChanges,
