@@ -8,7 +8,7 @@ Your credentials are securely stored using your operating system's native creden
 > The password for an ABAP On Premise system connection is saved in the operating system's secured storage and follows the respective platform’s security policies:
 >
 > **Windows**  
-> Credentials are securely stored in the **Windows Credential Manager** and are accessible to authorized processes while you are signed in.  
+> Credentials are securely stored in the **Windows Credential Manager** and are accessible to authorized processes when you are signed in.  
 > For more information, see [Credentials process in Windows authentication](https://learn.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication)
 >
 > **macOS**  
