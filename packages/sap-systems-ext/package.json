@@ -182,6 +182,7 @@
             "view/item/context": [
                 {
                     "command": "sap.ux.tools.sapSystems.delete",
+                    "when": "view == sap.ux.tools.sapSystems",
                     "group": "inline"
                 },
                 {
