@@ -89,6 +89,10 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
      */
     telemetryData?: Record<string, unknown>;
     /**
+     * Azure Application Insights resource ID for telemetry
+     */
+    resourceId?: string;
+    /**
      * Defined the steps configuration to be used in the Fiori generator. Skip steps by omitting them from the array.
      * Note that these should be aligned with `yeomanUiStepConfig`.
      */

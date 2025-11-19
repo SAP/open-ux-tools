@@ -40,7 +40,10 @@ export class FioriAppGeneratorHeadless extends FioriAppGenerator {
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalFeaturesSettingEnabled(),
-            watchTelemetrySettingStore: false
+            watchTelemetrySettingStore: false,
+            resourceId:
+                (this.options.appConfig.telemetryData?.resourceId as string) ||
+                process.env.SAP_UX_FIORI_TOOLS_TELEMETRY_RESOURCE_ID
         });
         TelemetryHelper.createTelemetryData({
             AppGenLaunchSource: this.options.appConfig.telemetryData?.generationSourceName ?? 'Headless',

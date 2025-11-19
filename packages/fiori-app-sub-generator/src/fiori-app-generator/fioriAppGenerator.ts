@@ -131,7 +131,8 @@ export class FioriAppGenerator extends Generator {
         await initTelemetrySettings({
             consumerModule: { name: APP_GENERATOR_MODULE, version: this.rootGeneratorVersion() },
             internalFeature: isInternalFeaturesSettingEnabled(),
-            watchTelemetrySettingStore: false
+            watchTelemetrySettingStore: false,
+            resourceId: this.options.resourceId || process.env.SAP_UX_FIORI_TOOLS_TELEMETRY_RESOURCE_ID
         });
 
         TelemetryHelper.createTelemetryData({
