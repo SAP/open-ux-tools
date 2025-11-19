@@ -17,16 +17,19 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "8.57.0"
+        "@eslint/json": "^0.13.2",
+        "@humanwhocodes/momoa": "^3.3.9",
+        "eslint": "9.38.0"
     },
     "dependencies": {
-        "eslint-plugin-fiori-custom": "^2.6.7",
-        "yaml": "2.2.2"
+        "@eslint/core": "0.16.0",
+        "@humanwhocodes/momoa": "^3.3.9",
+        "@sap-ux/project-access": "1.32.7"
     },
     "peerDependencies": {
-        "eslint": ">=8",
         "@typescript-eslint/eslint-plugin": ">=7.1.1",
-        "@typescript-eslint/parser": ">=5.62.0"
+        "@typescript-eslint/parser": ">=5.62.0",
+        "eslint": ">=9"
     },
     "engines": {
         "node": ">=20.x"
