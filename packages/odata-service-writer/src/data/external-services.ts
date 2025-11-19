@@ -99,7 +99,7 @@ function getOptions(options?: Partial<ExternalServiceCollectionOptions>): Extern
 export function getExternalServiceReferences(
     serviceRootPath: string,
     metadata: ConvertedMetadata | RawSchema | string | undefined,
-    annotations: { Definitions: string }[],
+    annotations: { Definitions: string }[] = [],
     options?: Partial<ExternalServiceCollectionOptions>
 ): ExternalServiceReference[] {
     const finalOptions = getOptions(options);
