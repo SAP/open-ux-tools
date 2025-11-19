@@ -33,7 +33,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     async initialize(): Promise<void> {
         this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
         const version = await getUi5Version();
-        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120 })) {
+        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 96 })) {
             return;
         }
         await super.initialize();

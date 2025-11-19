@@ -8,6 +8,7 @@
 - [4. Change table actions](#4-change-table-actions)
 - [5. Add SubObject Page Quick Action](#5-add-subobject-page-quick-action)
 - [6. Add Custom Table Action to Object page](#6-add-custom-table-action-to-object-page)
+- [7: Add Custom Page Action to OP page](#7-add-custom-page-action-to-op-page)
 
 <a id="1-add-custom-table-column"></a>
 ## 1. Add Custom Table Column.
@@ -236,6 +237,48 @@
 
 
 10. Check control with label `New Action` is visible in the `Running Application Preview`
+
+---
+
+<a id="7-add-custom-page-action-to-op-page"></a>
+## 7: Add Custom Page Action to OP page
+
+### Steps
+
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Navigation` button in the toolBar
+3. Click `Go` button in the Running Application Preview
+4. Click on row `1` of `Root Entities` table 
+5. Click `UI Adaptation` button in the toolBar
+6. Click `Add Custom Page Action` button in the Quick Actions Panel
+7. Fill `Action Id` field with `testActionId` in the dialog `Add Custom Page Action`
+8. Fill `Button Text` field with `Test Page Action` in the dialog `Add Custom Page Action`
+9. Click `Save and Reload` button in the toolBar
+10. Verify changes:
+
+**Change(s)**
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_fe_changePageConfiguration",
+  "content": {
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "content/header/actions/testActionId",
+      "propertyValue": {
+        "enabled": true,
+        "press": "",
+        "text": "Test Page Action",
+        "visible": true
+      }
+    }
+  }
+}
+```
+
+
+11. Check control with label `Test Page Action` is visible in the `Running Application Preview`
 
 ---
 

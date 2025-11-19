@@ -316,4 +316,56 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await lr.checkControlVisible('New Action');
         }
     );
+
+    test(
+        '7: Add Custom Page Action to OP page',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.96.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const dialog = new AdpDialog(previewFrame, ui5Version);
+            const editor = new AdaptationEditorShell(page, ui5Version);
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.clickOnButton();
+            await lr.clickOnTableNthRow(0);
+
+            await editor.toolbar.uiAdaptationModeButton.click();
+            // wait until the quick actions label is rendered in the preview
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
+            await editor.quickActions.addCustomPageAction.click();
+            await dialog.fillField('Action Id', 'testActionId');
+            await dialog.fillField('Button Text', 'Test Page Action');
+            await dialog.createButton.click();
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath: 'content/header/actions/testActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    press: '',
+                                    text: 'Test Page Action',
+                                    visible: true
+                                }
+                            }
+                        }
+                    }
+                ]
+            });
+            await lr.checkControlVisible('Test Page Action');
+        }
+    );
 });

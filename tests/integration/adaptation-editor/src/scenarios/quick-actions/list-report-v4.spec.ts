@@ -242,7 +242,7 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.130.0'
+                description: '<1.96.0'
             }
         },
         async ({ page, previewFrame, ui5Version, projectCopy }) => {
@@ -250,7 +250,8 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
             const dialog = new AdpDialog(previewFrame, ui5Version);
             const editor = new AdaptationEditorShell(page, ui5Version);
             await editor.quickActions.addCustomPageAction.click();
-            await dialog.fillField('Fragment Name', 'test-page-action');
+            await dialog.fillField('Action Id', 'testActionId');
+            await dialog.fillField('Button Text', 'Test Page Action');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -260,31 +261,23 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                 changes: [
                     {
                         fileType: 'change',
-                        changeType: 'addXML',
+                        changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
-                            targetAggregation: 'actions',
-                            fragmentPath: 'fragments/test-page-action.fragment.xml',
-                            index: 1
-                        },
-                        selector: {
-                            id: 'fiori.elements.v4.0::RootEntityList--fe::DynamicPageTitle'
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath: 'content/header/actions/testActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    press: '',
+                                    text: 'Test Page Action',
+                                    visible: true
+                                }
+                            }
                         }
                     }
-                ],
-                fragments: {
-                    'test-page-action.fragment.xml': new RegExp(
-                        `<!-- Use stable and unique IDs!-->\\s*` +
-                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
-                            `<!-- viewName: sap.fe.templates.ListReport.ListReport -->\\s*` +
-                            `<!-- controlType: sap.f.DynamicPageTitle -->\\s*` +
-                            `<!-- targetAggregation: actions -->\\s*` +
-                            `<!-- ?add your xml here ?-->\\s*` +
-                            `<Button text="New Button"  id="btn-[a-z0-9]+"></Button>\\s*` +
-                            `</core:FragmentDefinition>`
-                    )
-                }
+                ]
             });
-            await lr.checkControlVisible('New Button');
+            await lr.checkControlVisible('Test Page Action');
         }
     );
     test(
