@@ -111,3 +111,8 @@ To **import** an ABAP On Premise system connection, perform the following steps:
 4. Provide your system credentials and click Test Connection. 
 
 5. Click Save to import the system connection.
+
+> #### ℹ️ **Note**
+>If you already have a saved local SAP system connection with the same name, you are asked to confirm before overwriting it. 
+>
+>You can only import and export saved SAP system connections between development environments that are using VS Code. You cannot import or export >system connections between VS Code and SAP Business Application Studio. 
