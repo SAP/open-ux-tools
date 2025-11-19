@@ -1,10 +1,20 @@
+/**
+ * Value Help Telemetry Functions
+ *
+ * This module provides telemetry functions for value help functionality using the
+ * shared telemetry event definitions from @sap-ux/telemetry.
+ */
+
+// Import shared telemetry event definitions and types
+import {
+    VALUE_HELP_TELEMETRY_EVENTS,
+    ValueHelpDetectedProperties,
+    ValueHelpDownloadDecisionProperties,
+    ValueHelpDownloadPerformanceProperties
+} from '@sap-ux/telemetry';
+
 import { sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-
-// Telemetry event names for value help functionality
-const TELEMETRY_VALUE_HELP_DETECTED = 'VALUE_HELP_DETECTED';
-const TELEMETRY_VALUE_HELP_DOWNLOAD_DECISION = 'VALUE_HELP_DOWNLOAD_DECISION';
-const TELEMETRY_VALUE_HELP_DOWNLOAD_PERFORMANCE = 'VALUE_HELP_DOWNLOAD_PERFORMANCE';
 
 /**
  * Send telemetry event when value helps are detected in V4 service.
@@ -12,12 +22,17 @@ const TELEMETRY_VALUE_HELP_DOWNLOAD_PERFORMANCE = 'VALUE_HELP_DOWNLOAD_PERFORMAN
  * @param valueHelpCount - Number of value helps detected
  */
 export function sendValueHelpDetectedTelemetry(valueHelpCount: number): void {
-    const telemetryData =
-        TelemetryHelper.createTelemetryData({
-            valueHelpCount,
-            odataVersion: 'v4'
-        }) ?? {};
-    sendTelemetryEvent(TELEMETRY_VALUE_HELP_DETECTED, telemetryData);
+    try {
+        const telemetryData =
+            TelemetryHelper.createTelemetryData({
+                valueListCount: valueHelpCount,
+                odataVersion: 'v4'
+            }) ?? {};
+        sendTelemetryEvent(VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DETECTED, telemetryData);
+    } catch (error) {
+        // Silently fail - telemetry should never crash the application
+        console.debug('Failed to send value help detected telemetry:', error);
+    }
 }
 
 /**
@@ -27,13 +42,17 @@ export function sendValueHelpDetectedTelemetry(valueHelpCount: number): void {
  * @param valueHelpCount - Number of value helps available
  */
 export function sendValueHelpDownloadDecisionTelemetry(downloadDecision: boolean, valueHelpCount: number): void {
-    const telemetryData =
-        TelemetryHelper.createTelemetryData({
-            downloadDecision,
-            valueHelpCount,
-            odataVersion: 'v4'
-        }) ?? {};
-    sendTelemetryEvent(TELEMETRY_VALUE_HELP_DOWNLOAD_DECISION, telemetryData);
+    try {
+        const telemetryData =
+            TelemetryHelper.createTelemetryData({
+                downloadDecision: downloadDecision ? 'yes' : 'no',
+                availableValueLists: valueHelpCount
+            }) ?? {};
+        sendTelemetryEvent(VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DOWNLOAD_DECISION, telemetryData);
+    } catch (error) {
+        // Silently fail - telemetry should never crash the application
+        console.debug('Failed to send value help download decision telemetry:', error);
+    }
 }
 
 /**
@@ -48,12 +67,17 @@ export function sendValueHelpDownloadPerformanceTelemetry(
     valueHelpCount: number,
     success: boolean
 ): void {
-    const telemetryData =
-        TelemetryHelper.createTelemetryData({
-            downloadTimeMs,
-            valueHelpCount,
-            success,
-            odataVersion: 'v4'
-        }) ?? {};
-    sendTelemetryEvent(TELEMETRY_VALUE_HELP_DOWNLOAD_PERFORMANCE, telemetryData);
+    try {
+        const telemetryData =
+            TelemetryHelper.createTelemetryData({
+                downloadDurationMs: downloadTimeMs,
+                successCount: success ? valueHelpCount : 0,
+                failureCount: success ? 0 : valueHelpCount,
+                downloadStatus: success ? 'completed' : 'error'
+            }) ?? {};
+        sendTelemetryEvent(VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DOWNLOAD_PERFORMANCE, telemetryData);
+    } catch (error) {
+        // Silently fail - telemetry should never crash the application
+        console.debug('Failed to send value help download performance telemetry:', error);
+    }
 }

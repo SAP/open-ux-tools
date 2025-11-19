@@ -19,6 +19,18 @@ export {
     ToolsId
 } from './tooling-telemetry';
 
+/* Value Help Telemetry Events */
+export {
+    VALUE_HELP_TELEMETRY_EVENTS,
+    ValueHelpDetectedProperties,
+    ValueHelpDownloadDecisionProperties,
+    ValueHelpDownloadPerformanceProperties,
+    ValueHelpDetectedSender,
+    ValueHelpDownloadDecisionSender,
+    ValueHelpDownloadPerformanceSender,
+    createValueHelpPerformanceTracker
+} from './events/value-help-telemetry';
+
 /* Decorator and measurements utils */
 export { InterceptorTypes } from './base/interceptor/config';
 export { PerformanceMeasurementAPI } from './base/performance/api';

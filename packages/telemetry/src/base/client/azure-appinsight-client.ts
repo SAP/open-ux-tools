@@ -22,32 +22,16 @@ class ApplicationInsightClient extends Client {
         super();
         this.clients = new Map<SampleRate, appInsights.TelemetryClient>();
 
-        // Graceful handling of missing or invalid application key
-        if (!applicationKey || typeof applicationKey !== 'string' || applicationKey.trim().length === 0) {
-            console.warn(
-                'Azure Application Insights: Invalid or missing instrumentation key. Telemetry will be disabled.'
-            );
-            this.applicationKey = '';
-        } else {
-            this.applicationKey = applicationKey;
-        }
+        this.applicationKey = applicationKey;
+        this.extensionVersion = extensionVersion;
+        this.extensionName = extensionName;
+        const clientOnePercent = this.createTelemetryClient(SampleRate.OnePercent);
+        const clientTenPercent = this.createTelemetryClient(SampleRate.TenPercent);
+        const clientNoSampling = this.createTelemetryClient(SampleRate.NoSampling);
 
-        this.extensionVersion = extensionVersion || 'unknown';
-        this.extensionName = extensionName || 'unknown';
-
-        try {
-            const clientOnePercent = this.createTelemetryClient(SampleRate.OnePercent);
-            const clientTenPercent = this.createTelemetryClient(SampleRate.TenPercent);
-            const clientNoSampling = this.createTelemetryClient(SampleRate.NoSampling);
-
-            this.clients.set(SampleRate.OnePercent, clientOnePercent);
-            this.clients.set(SampleRate.TenPercent, clientTenPercent);
-            this.clients.set(SampleRate.NoSampling, clientNoSampling);
-        } catch (error) {
-            console.warn('Azure Application Insights: Failed to initialize telemetry clients:', error);
-            // Initialize with empty clients map to prevent further errors
-            this.clients = new Map<SampleRate, appInsights.TelemetryClient>();
-        }
+        this.clients.set(SampleRate.OnePercent, clientOnePercent);
+        this.clients.set(SampleRate.TenPercent, clientTenPercent);
+        this.clients.set(SampleRate.NoSampling, clientNoSampling);
     }
 
     /**
@@ -71,13 +55,8 @@ class ApplicationInsightClient extends Client {
         ignoreSettings: boolean = false
     ): Promise<void> {
         if (!ignoreSettings || TelemetrySettings.telemetryEnabled) {
-            try {
-                const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
-                return this.trackEventBlocking(client, event);
-            } catch (error) {
-                console.warn('Azure Application Insights: Error in reportBlocking method:', error);
-                return Promise.resolve();
-            }
+            const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
+            return this.trackEventBlocking(client, event);
         }
         return Promise.resolve();
     }
@@ -105,12 +84,8 @@ class ApplicationInsightClient extends Client {
         if ((ignoreSettings !== undefined && !ignoreSettings) || !TelemetrySettings.telemetryEnabled) {
             return;
         }
-        try {
-            const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
-            this.trackEvent(client, event);
-        } catch (error) {
-            console.warn('Azure Application Insights: Error in report method:', error);
-        }
+        const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
+        this.trackEvent(client, event);
     }
 
     /**
@@ -127,37 +102,15 @@ class ApplicationInsightClient extends Client {
         properties: TelemetryProperties,
         measurements: TelemetryMeasurements,
         sampleRate = SampleRate.NoSampling
-    ): { client: appInsights.TelemetryClient | null; event: appInsights.Contracts.EventTelemetry } {
-        let client: appInsights.TelemetryClient | null = null;
+    ): { client: appInsights.TelemetryClient; event: appInsights.Contracts.EventTelemetry } {
+        const client = this.clients.get(sampleRate) as appInsights.TelemetryClient;
 
-        try {
-            client = this.clients.get(sampleRate) || null;
-            if (!client && this.clients.size > 0) {
-                // Fallback to any available client if requested sample rate client is not available
-                client = this.clients.values().next().value || null;
-            }
-        } catch (error) {
-            console.warn('Azure Application Insights: Error retrieving telemetry client:', error);
-            client = null;
-        }
-
-        let event: appInsights.Contracts.EventTelemetry;
-        try {
-            const eventHeader: EventHeader = new EventHeader(this.extensionName, eventName);
-            event = {
-                name: eventHeader.toString(),
-                properties: (properties || {}) as Record<string, string>,
-                measurements: measurements || {}
-            };
-        } catch (error) {
-            console.warn('Azure Application Insights: Error creating telemetry event:', error);
-            // Create minimal fallback event
-            event = {
-                name: `${this.extensionName || 'unknown'}.${eventName || 'unknown'}`,
-                properties: {},
-                measurements: {}
-            };
-        }
+        const eventHeader: EventHeader = new EventHeader(this.extensionName, eventName);
+        const event: appInsights.Contracts.EventTelemetry = {
+            name: eventHeader.toString(),
+            properties: properties as Record<string, string>,
+            measurements: measurements
+        };
 
         return {
             client,
@@ -174,32 +127,21 @@ class ApplicationInsightClient extends Client {
      * @returns Promise<void>
      */
     private async trackEventBlocking(
-        client: appInsights.TelemetryClient | null,
+        client: appInsights.TelemetryClient,
         event: appInsights.Contracts.EventTelemetry
     ): Promise<void> {
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
             return Promise.resolve();
         }
 
-        if (!client) {
-            console.warn('Azure Application Insights: No telemetry client available, skipping event tracking');
-            return Promise.resolve();
-        }
-
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             try {
                 client.trackEvent(event);
                 client.flush({
-                    callback: (response: string | Error) => {
-                        if (response instanceof Error) {
-                            console.warn('Azure Application Insights: Error flushing telemetry:', response);
-                        }
-                        resolve();
-                    }
+                    callback: () => resolve()
                 });
             } catch (error) {
-                console.warn('Azure Application Insights: Error tracking event:', error);
-                resolve(); // Always resolve to prevent blocking execution
+                reject(error);
             }
         });
     }
@@ -211,26 +153,12 @@ class ApplicationInsightClient extends Client {
      * @param event Telemetry event
      * @returns Send telemetry succeeded or not
      */
-    private trackEvent(
-        client: appInsights.TelemetryClient | null,
-        event: appInsights.Contracts.EventTelemetry
-    ): boolean {
-        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
-            return false;
-        }
-
-        if (!client) {
-            console.warn('Azure Application Insights: No telemetry client available, skipping event tracking');
-            return false;
-        }
-
-        try {
+    private trackEvent(client: appInsights.TelemetryClient, event: appInsights.Contracts.EventTelemetry): boolean {
+        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
             client.trackEvent(event);
             return true;
-        } catch (error) {
-            console.warn('Azure Application Insights: Error tracking event:', error);
-            return false;
         }
+        return false;
     }
 
     /**
@@ -255,37 +183,10 @@ class ApplicationInsightClient extends Client {
                 break;
         }
 
-        try {
-            if (!this.applicationKey || this.applicationKey.trim().length === 0) {
-                throw new Error('Invalid or missing application key');
-            }
-
-            const client: appInsights.TelemetryClient = new appInsights.TelemetryClient(this.applicationKey);
-
-            try {
-                client.config.samplingPercentage = sampleRateNumer;
-                configAzureTelemetryClient(client);
-            } catch (configError) {
-                console.warn('Azure Application Insights: Error configuring telemetry client:', configError);
-                // Continue with basic client even if configuration fails
-            }
-
-            return client;
-        } catch (error) {
-            console.warn('Azure Application Insights: Failed to create telemetry client:', error);
-            // Create a no-op client to prevent further errors
-            const noOpClient = {
-                trackEvent: () => {},
-                flush: (options?: { callback?: (response: string) => void }) => {
-                    if (options?.callback) {
-                        options.callback('no-op client');
-                    }
-                },
-                config: { samplingPercentage: sampleRateNumer }
-            } as unknown as appInsights.TelemetryClient;
-
-            return noOpClient;
-        }
+        const client: appInsights.TelemetryClient = new appInsights.TelemetryClient(this.applicationKey);
+        client.config.samplingPercentage = sampleRateNumer;
+        configAzureTelemetryClient(client);
+        return client;
     }
 }
 
