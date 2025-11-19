@@ -38,18 +38,6 @@ const rule: Rule.RuleModule = {
             'https://localhost/offline/'
         ];
 
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.some((domain) => obj.indexOf(domain) >= 0);
-        }
-
         /**
          *
          * @param name
@@ -63,14 +51,15 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'Literal': function (node) {
-                const val = (node as any).value;
+            'Literal': function (node: Rule.Node) {
+                const literalNode = node as { value: string | number | boolean | null | RegExp };
+                const val = literalNode.value;
                 let result;
 
                 if (typeof val === 'string') {
                     result = matchProhibited(val);
 
-                    if (result && !contains(ALLOWED_DOMAINS, val)) {
+                    if (result && !ALLOWED_DOMAINS.some((domain) => val.indexOf(domain) >= 0)) {
                         context.report({ node: node, messageId: 'hardcodedUrl' });
                     }
                 }

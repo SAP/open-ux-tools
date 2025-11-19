@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isMember, isWindow, contains } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -28,68 +29,34 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        const WINDOW_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node?.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          *
-         * @param a
-         * @param obj
+         * @param node
          */
-        function contains(a, obj) {
-            return a.includes(obj);
+        function isTimeout(node: Rule.Node): boolean {
+            return isIdentifier(node) && (node as { name: string }).name === 'setTimeout';
         }
 
         /**
          *
          * @param node
          */
-        function isWindow(node: any) {
-            return isIdentifier(node) && node.name === 'window';
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isTimeout(node: any) {
-            return isIdentifier(node) && node.name === 'setTimeout';
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isInteresting(node: any) {
-            let obj = node.callee;
+        function isInteresting(node: Rule.Node): boolean {
+            let obj = (node as unknown as { callee: Rule.Node }).callee;
             if (isMember(obj)) {
-                if (isWindow(obj.object) || (isIdentifier(obj.object) && contains(WINDOW_OBJECTS, obj.object.name))) {
+                const memberObj = obj as unknown as { object: Rule.Node; property: Rule.Node };
+                if (
+                    isWindow(memberObj.object) ||
+                    (isIdentifier(memberObj.object) &&
+                        contains(WINDOW_OBJECTS, (memberObj.object as unknown as { name: string }).name))
+                ) {
                     // is member expression on window, check property
-                    obj = obj.property;
+                    obj = memberObj.property;
                 } else {
                     // no call on window
                     return false;
@@ -103,9 +70,15 @@ const rule: Rule.RuleModule = {
          *
          * @param node
          */
-        function isValid(node: any) {
-            const args = node.arguments;
-            return args && (args.length === 1 || (args.length > 1 && (args[1].value === 0 || args[1].value === '0')));
+        function isValid(node: Rule.Node): boolean {
+            const args = (node as unknown as { arguments: Rule.Node[] }).arguments;
+            return (
+                args &&
+                (args.length === 1 ||
+                    (args.length > 1 &&
+                        ((args[1] as unknown as { value: string | number }).value === 0 ||
+                            (args[1] as unknown as { value: string | number }).value === '0')))
+            );
         }
 
         /**
@@ -113,9 +86,9 @@ const rule: Rule.RuleModule = {
          * @param left
          * @param right
          */
-        function rememberWindow(left, right) {
+        function rememberWindow(left: Rule.Node, right: Rule.Node): void {
             if (right && isWindow(right) && left && isIdentifier(left)) {
-                WINDOW_OBJECTS.push(left.name);
+                WINDOW_OBJECTS.push((left as { name: string }).name);
             }
         }
 
@@ -123,13 +96,17 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
-                rememberWindow(node.id, node.init);
+            'VariableDeclarator': function (node: Rule.Node) {
+                const declaratorNode = node as unknown as { id: Rule.Node; init?: Rule.Node };
+                if (declaratorNode.init) {
+                    rememberWindow(declaratorNode.id, declaratorNode.init);
+                }
             },
-            'AssignmentExpression': function (node) {
-                rememberWindow(node.left, node.right);
+            'AssignmentExpression': function (node: Rule.Node) {
+                const assignmentNode = node as unknown as { left: Rule.Node; right: Rule.Node };
+                rememberWindow(assignmentNode.left, assignmentNode.right);
             },
-            'CallExpression': function (node) {
+            'CallExpression': function (node: Rule.Node) {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'timeoutUsage' });
                 }

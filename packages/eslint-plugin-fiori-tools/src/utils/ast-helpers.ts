@@ -5,7 +5,7 @@
 import type { Rule } from 'eslint';
 
 // Type aliases for better readability
-type ASTNode = Rule.Node;
+export type ASTNode = Rule.Node;
 
 // ESLint AST node type interfaces - using intersections instead of extensions
 interface BaseNode {
@@ -18,12 +18,12 @@ interface BaseNode {
     };
 }
 
-type IdentifierNode = BaseNode & {
+export type IdentifierNode = BaseNode & {
     type: 'Identifier';
     name: string;
 };
 
-type MemberExpressionNode = BaseNode & {
+export type MemberExpressionNode = BaseNode & {
     type: 'MemberExpression';
     object: unknown;
     property: unknown;
@@ -31,7 +31,7 @@ type MemberExpressionNode = BaseNode & {
     optional?: boolean;
 };
 
-type LiteralNode = BaseNode & {
+export type LiteralNode = BaseNode & {
     type: 'Literal';
     value: string | number | boolean | null | RegExp;
     raw: string;
@@ -502,7 +502,7 @@ export function resolveIdentifierPath(path: string, variables: Record<string, st
  * @param variables The variables lookup object
  */
 export function rememberInterestingVariable(node: unknown, name: string, variables: Record<string, string[]>): void {
-    const declaratorNode = node as any;
+    const declaratorNode = node as unknown as { id: { name: string } };
     if (typeof variables[declaratorNode.id.name] === 'undefined') {
         variables[declaratorNode.id.name] = [];
     }
@@ -530,7 +530,7 @@ export function createVariableDeclaratorProcessor(
     interestingPathChecker: (path: string) => boolean
 ): (node: unknown) => void {
     return function processVariableDeclarator(node: unknown): void {
-        const declaratorNode = node as any;
+        const declaratorNode = node as unknown as { init?: unknown };
         let path = getIdentifierPath(declaratorNode.init);
         path = resolveIdentifierPath(path, variables);
 

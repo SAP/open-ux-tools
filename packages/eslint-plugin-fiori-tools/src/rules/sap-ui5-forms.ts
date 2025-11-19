@@ -43,42 +43,42 @@ const rule: Rule.RuleModule = {
          * @param node
          * @param type
          */
-        function isType(node: any, type: any) {
+        function isType(node: Rule.Node | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
          *
          * @param node
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
          *
          * @param node
          */
-        function isMember(node: any) {
+        function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
          *
          * @param node
          */
-        function isNewExpression(node: any) {
+        function isNewExpression(node: Rule.Node | undefined): boolean {
             return isType(node, 'NewExpression');
         }
         /**
          *
          * @param node
          */
-        function isArrayExpression(node: any) {
+        function isArrayExpression(node: Rule.Node | undefined): boolean {
             return isType(node, 'ArrayExpression');
         }
         /**
          *
          * @param node
          */
-        function isObjectExpression(node: any) {
+        function isObjectExpression(node: Rule.Node | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
         /**
@@ -86,7 +86,7 @@ const rule: Rule.RuleModule = {
          * @param a
          * @param obj
          */
-        function contains(a, obj) {
+        function contains(a: string[], obj: string): boolean {
             return a.includes(obj);
         }
         /**
