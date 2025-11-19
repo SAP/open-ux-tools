@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "displayName": "SAP Systems Extension",
     "description": "SAP Systems Visual Studio Code Extension",
     "main": "./dist/extension.js",
@@ -143,7 +143,7 @@
             },
             {
                 "command": "sap.ux.tools.sapSystems.launchAppGen",
-                "title": "Launch Application Generator",
+                "title": "Create SAP Fiori Application",
                 "category": "SAP"
             }
         ],

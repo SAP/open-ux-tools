@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.0.11
+
+### Patch Changes
+
+-   7ac21d6: fix for sap systems extension
+
 ## 0.0.10
 
 ### Patch Changes

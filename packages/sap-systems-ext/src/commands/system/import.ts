@@ -21,8 +21,11 @@ import { SystemPanel } from '../../panel';
  */
 export const importSystemCommandHandler = (commandContext: SystemCommandContext) => async (): Promise<void> => {
     try {
-        const systemConfig = await getImportSystemConfig();
-        const backendSystemKey = new BackendSystemKey({ url: systemConfig.url, client: systemConfig.client });
+        const importSystemConfig = await getImportSystemConfig();
+        const backendSystemKey = new BackendSystemKey({
+            url: importSystemConfig.url,
+            client: importSystemConfig.client
+        });
         const systemService = await getBackendSystemService();
         const existingSystem = await systemService.read(backendSystemKey);
 
@@ -39,7 +42,7 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
 
         if (!existingSystem || overwrite) {
             const panel = commandContext.panelManager.getOrCreateNewPanel(backendSystemKey.getId(), () =>
-                createNewPanel(commandContext, backendSystemKey.getId(), systemConfig, existingSystem?.name)
+                createNewPanel(commandContext, backendSystemKey.getId(), importSystemConfig, existingSystem)
             );
             await panel.reveal();
             logImportTelemetry(SystemActionStatus.IMPORT_SUCCESS);
@@ -58,26 +61,28 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
  * @param context - the system command context
  * @param panelKey - unique key for the panel
  * @param systemConfig - the import system configuration
- * @param existingSystemName - the name of an existing system (if any)
+ * @param existingSystem - the existing backend system
  * @returns - system panel instance
  */
 function createNewPanel(
     context: SystemCommandContext,
     panelKey: string,
     systemConfig: SystemConfig,
-    existingSystemName?: BackendSystem['name']
+    existingSystem?: BackendSystem
 ): SystemPanel {
-    const name = systemConfig?.name ?? existingSystemName ?? 'New System';
+    const name = systemConfig?.name ?? existingSystem?.name ?? 'New System';
     const backendSystem = new BackendSystem({
         name,
         url: systemConfig.url,
         client: systemConfig.client,
-        systemType: 'OnPrem' satisfies SystemType
+        systemType: 'OnPrem' satisfies SystemType,
+        username: existingSystem?.username,
+        password: existingSystem?.password
     });
 
     return new SystemPanel({
         extensionPath: context.extContext.extensionPath,
-        systemPanelViewType: SystemPanelViewType.Import,
+        systemPanelViewType: existingSystem ? SystemPanelViewType.View : SystemPanelViewType.Import,
         disposeCallback: (): void => {
             context.panelManager.deleteAndDispose(panelKey);
         },

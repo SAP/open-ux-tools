@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.8.5
+
+### Patch Changes
+
+-   1357412: add error handling for store read and writes
+-   Updated dependencies [1357412]
+    -   @sap-ux/odata-service-inquirer@2.11.6
+
 ## 0.8.4
 
 ### Patch Changes
