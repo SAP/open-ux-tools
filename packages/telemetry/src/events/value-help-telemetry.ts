@@ -36,8 +36,6 @@ export interface ValueHelpDetectedProperties {
     valueListCount: number;
     /** Entity container name where references were found */
     entityContainer?: string;
-    /** Service metadata version (v2/v4) */
-    odataVersion?: string;
     /** Source of the metadata (url, file, etc.) */
     metadataSource?: string;
 }
