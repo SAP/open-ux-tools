@@ -1,4 +1,4 @@
-# Connection Manager for SAP Systems Extension Webapp 
+# Connection Manager for SAP Systems Webapp 
 
 
 This web application is part of the **Connection Manager for SAP Systems** extension. It provides the frontend interface that enables users to view, configure, and manage SAP system connections directly within the IDE.
