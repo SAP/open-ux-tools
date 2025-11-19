@@ -32,6 +32,8 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/edmx-parser": "0.9.1",
+        "@sap-ux/annotation-converter": "0.10.3",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
@@ -44,6 +46,8 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/vocabularies-types": "0.13.0",
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/mem-fs": "1.1.2",
