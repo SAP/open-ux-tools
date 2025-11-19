@@ -24,67 +24,85 @@ const rule: Rule.RuleModule = {
         const VARIABLES: Record<string, boolean> = {};
 
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: Rule.Node | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
+         * Check if a node is an ObjectExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an ObjectExpression
          */
         function isObject(node: Rule.Node | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
+         * Check if a node is a CallExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a CallExpression
          */
         function isCall(node: Rule.Node | undefined): boolean {
             return isType(node, 'CallExpression');
         }
         /**
+         * Check if a node is a LogicalExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a LogicalExpression
          */
         function isLogical(node: Rule.Node | undefined): boolean {
             return isType(node, 'LogicalExpression');
         }
         /**
+         * Check if a node is a Literal.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a Literal
          */
         function isLiteral(node: Rule.Node | undefined): boolean {
             return isType(node, 'Literal');
         }
         /**
+         * Check if a node is a Property.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a Property
          */
         function isProperty(node: Rule.Node | undefined): boolean {
             return isType(node, 'Property');
         }
 
         /**
+         * Check if a string ends with a specific suffix.
          *
-         * @param string
-         * @param suffix
+         * @param string The string to check
+         * @param suffix The suffix to look for
+         * @returns True if the string ends with the suffix
          */
         function endsWith(string: string, suffix: string): boolean {
             return (
@@ -95,8 +113,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Get the identifier path from a node.
          *
-         * @param node
+         * @param node The AST node to extract path from
+         * @returns The identifier path extracted from the node
          */
         function getIdentifierPath(node: Rule.Node): string {
             if (isIdentifier(node)) {
@@ -111,8 +131,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Get the name from an identifier or literal node.
          *
-         * @param node
+         * @param node The AST node to extract name from
+         * @returns The name extracted from the node, or null if not found
          */
         function getName(node: Rule.Node): string | null {
             if (isIdentifier(node)) {
@@ -124,9 +146,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Get a property from an object node by key.
          *
-         * @param node
-         * @param key
+         * @param node The object node to search in
+         * @param key The property key to search for
+         * @returns The property node if found, null otherwise
          */
         function getProperty(node: Rule.Node, key: string): Rule.Node | null {
             // check if node is an object, only objects have properties
@@ -146,6 +170,7 @@ const rule: Rule.RuleModule = {
          * Method checks the given node, if it's a method call with 'CrossApplicationNavigation' as the only argument.
          *
          * @param node - a CallExpression node
+         * @returns True if the node is a getService call with CrossApplicationNavigation
          */
         function isGetServiceCall(node: Rule.Node | undefined): boolean {
             if (isCall(node)) {
@@ -163,7 +188,8 @@ const rule: Rule.RuleModule = {
         /**
          * Method checks if the assignment node contains any interesting nodes. Can handle nested conditions.
          *
-         * @param node
+         * @param node The assignment node to check
+         * @returns True if the assignment contains interesting nodes
          */
         function isInterestingAssignment(node: Rule.Node | undefined): boolean {
             return (
@@ -174,8 +200,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a call expression is interesting for cross-application navigation.
          *
-         * @param node
+         * @param node The call expression node to check
+         * @returns True if the call expression is interesting for cross-application navigation
          */
         function isInterestingCall(node: Rule.Node): boolean {
             const path = getIdentifierPath((node as any).callee);
@@ -192,8 +220,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a navigation call has valid target configuration.
          *
-         * @param node
+         * @param node The call expression node to validate
+         * @returns True if the navigation has valid target configuration
          */
         function isValid(node: Rule.Node): boolean {
             if ((node as any).arguments?.length > 0) {

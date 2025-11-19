@@ -51,8 +51,10 @@ const rule: Rule.RuleModule = {
         const POSITION_DEFAULT = 'center bottom';
 
         /**
+         * Extract numeric value from EM unit string.
          *
-         * @param value
+         * @param value The string value to parse (e.g., "2em")
+         * @returns The numeric value extracted from the EM unit string
          */
         function getEMValue(value: string): number {
             if (endsWith(value, 'em')) {
@@ -62,8 +64,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a path matches interesting MessageToast API calls.
          *
-         * @param path
+         * @param path The API path to check
+         * @returns True if the path matches interesting MessageToast API calls
          */
         function isInterestingPath(path: string): boolean {
             const parts = path.split('.');
@@ -85,8 +89,9 @@ const rule: Rule.RuleModule = {
         const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isInterestingPath);
 
         /**
+         * Validate MessageToast function call options for compliance violations.
          *
-         * @param node
+         * @param node The function call node to validate
          */
         function validateFunctionOptions(node: Rule.Node): void {
             if ((node as any).arguments.length === 2) {
@@ -138,8 +143,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process call expressions to detect MessageToast violations.
          *
-         * @param node
+         * @param node The call expression node to process
          */
         function processCallExpression(node: Rule.Node): void {
             let path = getIdentifierPath((node as any).callee);

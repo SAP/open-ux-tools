@@ -48,48 +48,60 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node represents a condition statement.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node represents a condition statement
          */
         function isCondition(node: Rule.Node | undefined): boolean {
             return isType(node, IF_CONDITION) || isType(node, CONDITION_EXP);
         }
         /**
+         * Check if a node represents a unary expression.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node represents a unary expression
          */
         function isUnary(node: Rule.Node | undefined): boolean {
             return isType(node, UNARY);
         }
 
         /**
+         * Check if a method name represents DOM access.
          *
-         * @param methodName
+         * @param methodName The method name to check
+         * @returns True if the method name represents DOM access
          */
         function isDomAccess(methodName: string): boolean {
             return FORBIDDEN_DOM_ACCESS.includes(methodName);
         }
 
         /**
+         * Check if a method name represents forbidden window usage.
          *
-         * @param methodName
+         * @param methodName The method name to check
+         * @returns True if the method name represents forbidden window usage
          */
         function isWindowUsage(methodName: string): boolean {
             return FORBIDDEN_WINDOW_USAGES.includes(methodName);
         }
 
         /**
+         * Check if a node represents the window object.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node represents the window object
          */
         function isWindow(node: Rule.Node | undefined): boolean {
             return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
 
         /**
+         * Check if a node represents history object access.
          *
-         * @param node
-         * @param justHistory
+         * @param node The node to check
+         * @param justHistory Whether to check only for history object
+         * @returns True if the node represents history object access
          */
         function isHistory(node: Rule.Node | undefined, justHistory: boolean): boolean {
             if (node && isIdentifier(node) && 'name' in node) {
@@ -105,8 +117,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Get the rightmost method name from a call expression.
          *
-         * @param node
+         * @param node The call expression node
+         * @returns The rightmost method name
          */
         function getRightestMethodName(node: Rule.Node): string {
             if (isMember((node as any).callee)) {
@@ -117,8 +131,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process variable declarator nodes to track browser API references.
          *
-         * @param node
+         * @param node The variable declarator node to process
          */
         function processVariableDeclarator(node: Rule.Node): void {
             if ((node as any).init) {
@@ -154,8 +169,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a callee path represents a forbidden obvious API.
          *
-         * @param calleePath
+         * @param calleePath The path to check for forbidden APIs
+         * @returns The last element of the path
          */
         function isForbiddenObviousApi(calleePath: string): string {
             const elementArray = calleePath.split('.');
@@ -164,9 +181,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node is within a conditional statement up to a maximum depth.
          *
-         * @param node
-         * @param maxDepth
+         * @param node The node to check
+         * @param maxDepth Maximum depth to search for conditions
+         * @returns True if the node is within a conditional statement
          */
         function isInCondition(node: Rule.Node, maxDepth: number): boolean {
             // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
@@ -179,8 +198,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the value -1.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node represents the value -1
          */
         function isMinusOne(node: Rule.Node): boolean {
             return (
@@ -192,8 +213,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process history API usage and report violations.
          *
-         * @param node
+         * @param node The call expression node to process
          */
         function processHistory(node: Rule.Node): void {
             const callee = (node as any).callee;

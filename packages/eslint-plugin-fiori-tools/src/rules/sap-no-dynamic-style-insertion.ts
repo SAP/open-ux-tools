@@ -53,8 +53,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node represents an interesting dynamic style insertion.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents dynamic style insertion, false otherwise
          */
         function isInteresting(node: any): boolean {
             if (isMember(node) && isMember(node.object) && isDocumentObject(node.object.object)) {

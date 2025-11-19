@@ -33,9 +33,11 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a string does not contain a substring.
          *
-         * @param string
-         * @param substring
+         * @param string The string to search in
+         * @param substring The substring to check for absence
+         * @returns True if the string does not contain the substring
          */
         function containsNot(string, substring) {
             return !containsString(string, substring);

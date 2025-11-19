@@ -41,31 +41,38 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: Rule.Node | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
 
         /**
+         * Process DOM insertion calls and report violations.
          *
-         * @param node
+         * @param node The call expression node to process
          */
         function processDomInsertion(node: Rule.Node): void {
             const callee = (node as any).callee;

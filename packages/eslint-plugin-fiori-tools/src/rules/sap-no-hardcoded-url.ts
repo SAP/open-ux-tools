@@ -39,8 +39,10 @@ const rule: Rule.RuleModule = {
         ];
 
         /**
+         * Check if a string contains prohibited hardcoded URLs.
          *
-         * @param name
+         * @param name The string to check for URLs
+         * @returns RegExp match array if URLs found, null otherwise
          */
         function matchProhibited(name: string): RegExpMatchArray | null {
             return name.match('(http|https)://.*');

@@ -33,24 +33,30 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a value is a number.
          *
-         * @param i
+         * @param i The value to check
+         * @returns True if the value is a number
          */
         function isNumber(i: unknown): i is number {
             return Number(i) === i && i % 1 === 0;
         }
 
         /**
+         * Check if a node value is in the performance range.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node value is in the performance range
          */
         function isInRange(node: unknown): boolean {
             return isNumber(node) && node > MIN && node < MAX;
         }
 
         /**
+         * Check if a node represents an interesting method call.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node represents an interesting method call
          */
         function isInteresting(node: Rule.Node): boolean {
             const callee = (node as any).callee;
@@ -66,8 +72,10 @@ const rule: Rule.RuleModule = {
          * @returns true if the parameters of the given functionCall are not critical.
          * */
         /**
+         * Check if the function call parameters are valid.
          *
-         * @param node
+         * @param node The function call node to validate
+         * @returns True if the function call parameters are valid
          */
         function isValid(node: Rule.Node): boolean {
             const args = (node as any).arguments;

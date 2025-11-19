@@ -41,8 +41,10 @@ const rule: Rule.RuleModule = {
          *      color: #ABABAB
          */
         /**
+         * Check if a name matches prohibited hardcoded color patterns.
          *
-         * @param name
+         * @param name The name string to check for color patterns
+         * @returns RegExp match array if color patterns found, null otherwise
          */
         function matchProhibited(name) {
             return name.match('#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})[^\\w]');

@@ -32,25 +32,31 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: any, type: any) {
             return node?.type === type;
         }
 
         /**
+         * Check if a node is a Literal.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a Literal
          */
         function isLiteral(node: any) {
             return isType(node, 'Literal');
         }
 
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: any) {
             return isType(node, 'Identifier');
@@ -61,8 +67,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a property access is valid (not innerHTML).
          *
-         * @param property
+         * @param property The property node to validate
+         * @returns True if the property access is valid
          */
         function isValid(property) {
             // anything is valid, except 'innerHTML'

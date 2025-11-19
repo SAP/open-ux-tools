@@ -30,8 +30,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node represents the global window variable.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window variable
          */
         function isWindow(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window'
@@ -39,8 +41,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents a window object or reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents a window object or reference to it
          */
         function isWindowObject(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
@@ -54,9 +58,11 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Remember window object references for later analysis.
          *
-         * @param left
-         * @param right
+         * @param left The left side of the assignment
+         * @param right The right side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
             if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
@@ -67,16 +73,20 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents an interesting window property access.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting window property access
          */
         function isInteresting(node: Rule.Node): boolean {
             return isMember(node) && isWindowObject((node as any).object);
         }
 
         /**
+         * Check if a window property access is valid (not forbidden).
          *
-         * @param node
+         * @param node The AST node to validate
+         * @returns True if the window property access is valid
          */
         function isValid(node: Rule.Node): boolean {
             let method = '';

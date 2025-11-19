@@ -57,24 +57,30 @@ const rule: Rule.RuleModule = {
         // Helper Functions
         // --------------------------------------------------------------------------
         /**
+         * Check if a node represents a condition statement.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents a condition statement
          */
         function isCondition(node: any): boolean {
             return isType(node, 'IfStatement') || isType(node, 'ConditionalExpression');
         }
         /**
+         * Check if a node represents a unary expression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents a unary expression
          */
         function isUnary(node: any): boolean {
             return isType(node, 'UnaryExpression');
         }
 
         /**
+         * Check if a node is within a conditional statement up to a maximum depth.
          *
-         * @param node
-         * @param maxDepth
+         * @param node The AST node to check
+         * @param maxDepth Maximum depth to search for conditions
+         * @returns True if the node is within a conditional statement
          */
         function isInCondition(node: any, maxDepth: number): boolean {
             // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
@@ -87,16 +93,20 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the value -1.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the value -1
          */
         function isMinusOne(node: any): boolean {
             return isUnary(node) && node.operator === '-' && isLiteral(node.argument) && node.argument.value === 1;
         }
 
         /**
+         * Check if a call expression is interesting for history manipulation detection.
          *
-         * @param node
+         * @param node The call expression node to check
+         * @returns True if the call expression is interesting for history manipulation detection
          */
         function isInteresting(node: any): boolean {
             // check if callee is ref to history.back / .go / .forward
@@ -112,8 +122,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a history manipulation call is valid.
          *
-         * @param node
+         * @param node The call expression node to validate
+         * @returns True if the history manipulation call is valid
          */
         function isValid(node: any): boolean {
             switch (node.callee.property.name) {

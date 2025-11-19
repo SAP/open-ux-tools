@@ -45,8 +45,10 @@ const rule: Rule.RuleModule = {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
 
         /**
+         * Remove duplicate elements from an array.
          *
-         * @param array
+         * @param array The array to remove duplicates from
+         * @returns Array with duplicates removed
          */
         function uniquifyArray(array) {
             const a = array.concat();
@@ -113,17 +115,21 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a, obj) {
             return a.includes(obj);
         }
 
         /**
+         * Check if a property represents a not allowed method.
          *
-         * @param property
+         * @param property The property name to check
+         * @returns True if the property represents a not allowed method
          */
         function checkIfNotAllowedMethod(property) {
             if (
@@ -136,8 +142,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Calculate the object name from a member expression object.
          *
-         * @param memberExpressionObject
+         * @param memberExpressionObject The member expression object to analyze
+         * @returns The calculated object name
          */
         function calculateObjectName(memberExpressionObject) {
             let objectName = '';
@@ -150,8 +158,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if ancestors array contains a NewExpression and return its position.
          *
-         * @param ancestors
+         * @param ancestors The array of ancestor nodes to check
+         * @returns The position of the NewExpression or -1 if not found
          */
         function checkIfAncestorsContainsNewExpression(ancestors) {
             const ancestorsLength = ancestors.length;
@@ -164,8 +174,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a namespace should be reported for violations.
          *
-         * @param namespace
+         * @param namespace The namespace string to check
+         * @returns True if the namespace should be reported for violations
          */
         function checkIfReportedNamespace(namespace) {
             for (let i = 0; i < configuration.ns.length; i++) {
@@ -177,8 +189,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process member expressions for rendering override violations.
          *
-         * @param node
+         * @param node The member expression node to process
          */
         function processMemberExpression(node: any) {
             if (node.object.type === 'Identifier') {
@@ -212,8 +225,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check assignment expressions against rendering override violations.
          *
-         * @param node
+         * @param node The assignment expression node to check
          */
         function checkAssignmentAgainstOverride(node: any) {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {

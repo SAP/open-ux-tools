@@ -30,8 +30,10 @@ const rule: Rule.RuleModule = {
         const P_INCLUDES = 'includes';
 
         /**
+         * Get the name from a literal or identifier node.
          *
-         * @param node
+         * @param node The AST node to extract name from
+         * @returns The name extracted from the literal or identifier node
          */
         function getLiteralOrIdentifiertName(node: Rule.Node): string {
             let result = '';
@@ -44,8 +46,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Get the identifier path from a node.
          *
-         * @param node
+         * @param node The AST node to extract path from
+         * @returns The identifier path extracted from the node
          */
         function getIdentifierPath(node: Rule.Node): string {
             let result = '';
@@ -62,10 +66,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
-         * Search ObjectExpression to find certain property
+         * Search ObjectExpression to find certain property.
          *
-         * @param node
-         * @param propertyName
+         * @param node The object expression node to search
+         * @param propertyName The name of the property to find
+         * @returns The property node if found, undefined otherwise
          */
         function getPropertyFromObjectExpression(
             node: Rule.Node | undefined,
@@ -93,9 +98,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
-         * Search options parameter
+         * Search options parameter.
          *
-         * @param node
+         * @param node The function call node to validate
          */
         function validateFunctionOptions(node: Rule.Node): void {
             if ((node as any).arguments.length > 1) {
@@ -125,17 +130,20 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a string ends with a specific suffix.
          *
-         * @param string
-         * @param suffix
+         * @param string The string to check
+         * @param suffix The suffix to look for
+         * @returns True if the string ends with the suffix
          */
         function endsWith(string: string, suffix: string): boolean {
             return string.indexOf(suffix, string.length - suffix.length) !== -1;
         }
 
         /**
+         * Process a call expression node to check for violations.
          *
-         * @param node
+         * @param node The call expression node to process
          */
         function processCallExpression(node: Rule.Node): void {
             const path = getIdentifierPath((node as any).callee);

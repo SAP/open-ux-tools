@@ -34,42 +34,52 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: any, type: any) {
             return node?.type === type;
         }
 
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: any) {
             return isType(node, 'Identifier');
         }
 
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: any) {
             return isType(node, 'MemberExpression');
         }
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a, obj) {
             return a.includes(obj);
         }
 
         /**
+         * Check if a node represents the global window variable.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window variable
          */
         function isWindow(node: any) {
             // true if node is the global variable 'window'
@@ -77,8 +87,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents a window object or reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents a window object or reference to it
          */
         function isWindowObject(node: any) {
             // true if node is the global variable 'window' or a reference to it
@@ -89,9 +101,11 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Remember window object references for later analysis.
          *
-         * @param left
-         * @param right
+         * @param left The left side of the assignment
+         * @param right The right side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left, right) {
             if (isWindowObject(right) && isIdentifier(left)) {

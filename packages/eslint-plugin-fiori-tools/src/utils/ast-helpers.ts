@@ -42,73 +42,81 @@ export type LiteralNode = BaseNode & {
 // ------------------------------------------------------------------------------
 
 /**
- * Check if a node is of a specific type
+ * Check if a node is of a specific type.
  *
  * @param node The AST node
- * @param type
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
  */
 export function isType(node: unknown, type: string): boolean {
     return (node as BaseNode)?.type === type;
 }
 
 /**
- * Check if a node is an Identifier
+ * Check if a node is an Identifier.
  *
  * @param node The AST node
+ * @returns True if the node is an Identifier
  */
 export function isIdentifier(node: unknown): boolean {
     return isType(node, 'Identifier');
 }
 
 /**
- * Check if a node is a MemberExpression
+ * Check if a node is a MemberExpression.
  *
  * @param node The AST node
+ * @returns True if the node is a MemberExpression
  */
 export function isMember(node: unknown): boolean {
     return isType(node, 'MemberExpression');
 }
 
 /**
- * Check if a node is a CallExpression
+ * Check if a node is a CallExpression.
  *
  * @param node The AST node
+ * @returns True if the node is a CallExpression
  */
 export function isCall(node: unknown): boolean {
     return isType(node, 'CallExpression');
 }
 
 /**
- * Check if a node is a Literal
+ * Check if a node is a Literal.
  *
  * @param node The AST node
+ * @returns True if the node is a Literal
  */
 export function isLiteral(node: unknown): boolean {
     return isType(node, 'Literal');
 }
 
 /**
- * Check if a node is a Property
+ * Check if a node is a Property.
  *
  * @param node The AST node
+ * @returns True if the node is a Property
  */
 export function isProperty(node: unknown): boolean {
     return isType(node, 'Property');
 }
 
 /**
- * Check if a node is an ObjectExpression
+ * Check if a node is an ObjectExpression.
  *
  * @param node The AST node
+ * @returns True if the node is an ObjectExpression
  */
 export function isObject(node: unknown): boolean {
     return isType(node, 'ObjectExpression');
 }
 
 /**
- * Check if a node is an ArrayExpression
+ * Check if a node is an ArrayExpression.
  *
  * @param node The AST node
+ * @returns True if the node is an ArrayExpression
  */
 export function isArray(node: unknown): boolean {
     return isType(node, 'ArrayExpression');
@@ -119,10 +127,11 @@ export function isArray(node: unknown): boolean {
 // ------------------------------------------------------------------------------
 
 /**
- * Check if an array contains an item
+ * Check if an array contains an item.
  *
- * @param array
- * @param item
+ * @param array The array to search in
+ * @param item The item to search for
+ * @returns True if the array contains the item
  */
 export function contains(array: string[], item: string): boolean {
     return array.includes(item);
@@ -133,29 +142,32 @@ export function contains(array: string[], item: string): boolean {
 // ------------------------------------------------------------------------------
 
 /**
- * Check if a value is a string
+ * Check if a value is a string.
  *
- * @param value
+ * @param value The value to check
+ * @returns True if the value is a string
  */
 export function isString(value: unknown): value is string {
     return typeof value === 'string';
 }
 
 /**
- * Check if a string starts with a substring
+ * Check if a string starts with a substring.
  *
- * @param base
- * @param sub
+ * @param base The base string to check
+ * @param sub The substring to look for at the start
+ * @returns True if the base string starts with the substring
  */
 export function startsWith(base: string, sub: string): boolean {
     return base.indexOf(sub) === 0;
 }
 
 /**
- * Check if a string contains a substring
+ * Check if a string contains a substring.
  *
- * @param str
- * @param substring
+ * @param str The string to search in
+ * @param substring The substring to search for
+ * @returns True if the string contains the substring
  */
 export function containsString(str: string, substring: string): boolean {
     return str.indexOf(substring) >= 0;
@@ -166,18 +178,20 @@ export function containsString(str: string, substring: string): boolean {
 // ------------------------------------------------------------------------------
 
 /**
- * Check if a node represents the global 'window' variable
+ * Check if a node represents the global 'window' variable.
  *
  * @param node The AST node
+ * @returns True if the node represents the global window variable
  */
 export function isWindow(node: unknown): boolean {
     return !!node && isIdentifier(node) && (node as IdentifierNode).name === 'window';
 }
 
 /**
- * Create a function to check if a node is the window object or a reference to it
+ * Create a function to check if a node is the window object or a reference to it.
  *
- * @param windowObjects
+ * @param windowObjects Array of window object names to check against
+ * @returns Function that checks if a node is a window object or reference
  */
 export function createIsWindowObject(windowObjects: string[]): (node: unknown) => boolean {
     return function isWindowObject(node: unknown): boolean {
@@ -188,10 +202,11 @@ export function createIsWindowObject(windowObjects: string[]): (node: unknown) =
 }
 
 /**
- * Create a function to remember window references
+ * Create a function to remember window references.
  *
- * @param windowObjects
- * @param isWindowObject
+ * @param windowObjects Array to store window object names
+ * @param isWindowObject Function to check if a node is a window object
+ * @returns Function that remembers window object references
  */
 export function createRememberWindow(
     windowObjects: string[],
@@ -211,9 +226,10 @@ export function createRememberWindow(
 // ------------------------------------------------------------------------------
 
 /**
- * Create a function to check if a node represents the global 'document' variable
+ * Create a function to check if a node represents the global 'document' variable.
  *
- * @param isWindowObject
+ * @param isWindowObject Function to check if a node is a window object
+ * @returns Function that checks if a node represents the document object
  */
 export function createIsDocument(isWindowObject: (node: unknown) => boolean): (node: unknown) => boolean {
     return function isDocument(node: unknown): boolean {
@@ -230,10 +246,11 @@ export function createIsDocument(isWindowObject: (node: unknown) => boolean): (n
 }
 
 /**
- * Create a function to check if a node is the document object or a reference to it
+ * Create a function to check if a node is the document object or a reference to it.
  *
- * @param documentObjects
- * @param isDocument
+ * @param documentObjects Array to store document object names
+ * @param isDocument Function to check if a node is a document object
+ * @returns Function that checks if a node is a document object or reference
  */
 export function createIsDocumentObject(
     documentObjects: string[],
@@ -248,10 +265,11 @@ export function createIsDocumentObject(
 }
 
 /**
- * Create a function to remember document references
+ * Create a function to remember document references.
  *
- * @param documentObjects
- * @param isDocumentObject
+ * @param documentObjects Array to store document object names
+ * @param isDocumentObject Function to check if a node is a document object
+ * @returns Function that remembers document object references
  */
 export function createRememberDocument(
     documentObjects: string[],
@@ -271,9 +289,10 @@ export function createRememberDocument(
 // ------------------------------------------------------------------------------
 
 /**
- * Build a path string from a callee node
+ * Build a path string from a callee node.
  *
  * @param node The AST node
+ * @returns String representation of the callee path
  */
 export function buildCalleePath(node: unknown): string {
     const memberNode = node as MemberExpressionNode;
@@ -288,9 +307,10 @@ export function buildCalleePath(node: unknown): string {
 }
 
 /**
- * Convert a MemberExpression to a string representation
+ * Convert a MemberExpression to a string representation.
  *
  * @param node The AST node
+ * @returns String representation of the member expression
  */
 export function getMemberAsString(node: unknown): string {
     if (isMember(node)) {
@@ -309,9 +329,10 @@ export function getMemberAsString(node: unknown): string {
 // ------------------------------------------------------------------------------
 
 /**
- * Create a function to check if a node represents the 'history' object
+ * Create a function to check if a node represents the 'history' object.
  *
- * @param isWindowObject
+ * @param isWindowObject Function to check if a node is a window object
+ * @returns Function that checks if a node represents the history object
  */
 export function createIsHistory(isWindowObject: (node: unknown) => boolean): (node: unknown) => boolean {
     return function isHistory(node: unknown): boolean {
@@ -328,10 +349,11 @@ export function createIsHistory(isWindowObject: (node: unknown) => boolean): (no
 }
 
 /**
- * Create a function to check if a node is the history object or a reference to it
+ * Create a function to check if a node is the history object or a reference to it.
  *
- * @param historyObjects
- * @param isHistory
+ * @param historyObjects Array to store history object names
+ * @param isHistory Function to check if a node is a history object
+ * @returns Function that checks if a node is a history object or reference
  */
 export function createIsHistoryObject(
     historyObjects: string[],
@@ -345,10 +367,11 @@ export function createIsHistoryObject(
 }
 
 /**
- * Create a function to remember history references
+ * Create a function to remember history references.
  *
- * @param historyObjects
- * @param isHistoryObject
+ * @param historyObjects Array to store history object names
+ * @param isHistoryObject Function to check if a node is a history object
+ * @returns Function that remembers history object references
  */
 export function createRememberHistory(
     historyObjects: string[],
@@ -368,9 +391,10 @@ export function createRememberHistory(
 // ------------------------------------------------------------------------------
 
 /**
- * Create a function to check if a node represents the 'location' object
+ * Create a function to check if a node represents the 'location' object.
  *
- * @param isWindowObject
+ * @param isWindowObject Function to check if a node is a window object
+ * @returns Function that checks if a node represents the location object
  */
 export function createIsLocation(isWindowObject: (node: unknown) => boolean): (node: unknown) => boolean {
     return function isLocation(node: unknown): boolean {
@@ -387,10 +411,11 @@ export function createIsLocation(isWindowObject: (node: unknown) => boolean): (n
 }
 
 /**
- * Create a function to check if a node is the location object or a reference to it
+ * Create a function to check if a node is the location object or a reference to it.
  *
- * @param locationObjects
- * @param isLocation
+ * @param locationObjects Array to store location object names
+ * @param isLocation Function to check if a node is a location object
+ * @returns Function that checks if a node is a location object or reference
  */
 export function createIsLocationObject(
     locationObjects: string[],
@@ -405,10 +430,11 @@ export function createIsLocationObject(
 }
 
 /**
- * Create a function to remember location references
+ * Create a function to remember location references.
  *
- * @param locationObjects
- * @param isLocationObject
+ * @param locationObjects Array to store location object names
+ * @param isLocationObject Function to check if a node is a location object
+ * @returns Function that remembers location object references
  */
 export function createRememberLocation(
     locationObjects: string[],
@@ -428,9 +454,10 @@ export function createRememberLocation(
 // ------------------------------------------------------------------------------
 
 /**
- * Get the literal or identifier name from a node
+ * Get the literal or identifier name from a node.
  *
  * @param node The AST node
+ * @returns The name or value as a string
  */
 export function getLiteralOrIdentifierName(node: unknown): string {
     if (isIdentifier(node)) {
@@ -442,9 +469,10 @@ export function getLiteralOrIdentifierName(node: unknown): string {
 }
 
 /**
- * Get the identifier path from a node, handling various node types
+ * Get the identifier path from a node, handling various node types.
  *
  * @param node The AST node
+ * @returns The identifier path as a string
  */
 export function getIdentifierPath(node: unknown): string {
     if (!node) {
@@ -468,10 +496,11 @@ export function getIdentifierPath(node: unknown): string {
 }
 
 /**
- * Resolve identifier path by substituting known variables
+ * Resolve identifier path by substituting known variables.
  *
  * @param path The path to resolve
  * @param variables The variables lookup object
+ * @returns The resolved path with substitutions applied
  */
 export function resolveIdentifierPath(path: string, variables: Record<string, string[]>): string {
     const parts = path.split('.');
@@ -495,7 +524,7 @@ export function resolveIdentifierPath(path: string, variables: Record<string, st
 }
 
 /**
- * Remember interesting variable for later resolution
+ * Remember interesting variable for later resolution.
  *
  * @param node The variable declarator node
  * @param name The name to remember
@@ -510,20 +539,22 @@ export function rememberInterestingVariable(node: unknown, name: string, variabl
 }
 
 /**
- * Check if a path is interesting based on a given criteria function
+ * Check if a path is interesting based on a given criteria function.
  *
  * @param path The path to check
  * @param interestingPathChecker Function to determine if path is interesting
+ * @returns True if the path is considered interesting
  */
 export function checkInterestingPath(path: string, interestingPathChecker: (path: string) => boolean): boolean {
     return interestingPathChecker(path);
 }
 
 /**
- * Create a generic variable declarator processor
+ * Create a generic variable declarator processor.
  *
  * @param variables The variables lookup object
  * @param interestingPathChecker Function to determine if path is interesting
+ * @returns Function that processes variable declarator nodes
  */
 export function createVariableDeclaratorProcessor(
     variables: Record<string, string[]>,
@@ -542,28 +573,31 @@ export function createVariableDeclaratorProcessor(
 }
 
 /**
- * Check if an identifier has an underscore prefix (indicating private)
+ * Check if an identifier has an underscore prefix (indicating private).
  *
  * @param identifier The identifier to check
+ * @returns True if the identifier has an underscore prefix
  */
 export function hasUnderscore(identifier: string): boolean {
     return identifier !== '_' && identifier[0] === '_';
 }
 
 /**
- * Check if a value is an integer
+ * Check if a value is an integer.
  *
  * @param value The value to check
+ * @returns True if the value is an integer
  */
 export function isInteger(value: number): boolean {
     return Number(value) === value && value % 1 === 0;
 }
 
 /**
- * Check if a string ends with a specific substring
+ * Check if a string ends with a specific substring.
  *
  * @param str The string to check
  * @param suffix The suffix to look for
+ * @returns True if the string ends with the suffix
  */
 export function endsWith(str: string, suffix: string): boolean {
     return typeof str === 'string' && typeof suffix === 'string' && str.endsWith(suffix);

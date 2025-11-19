@@ -53,8 +53,10 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
         /**
+         * Remove duplicate elements from an array.
          *
-         * @param array
+         * @param array The array to remove duplicates from
+         * @returns Array with duplicates removed
          */
         function uniquifyArray(array) {
             const a = array.concat();
@@ -123,8 +125,10 @@ const rule: Rule.RuleModule = {
         const VARIABLES = {};
 
         /**
+         * Check if a path is interesting for private property analysis.
          *
-         * @param path
+         * @param path The path string to analyze
+         * @returns True if the path is interesting for private property analysis
          */
         function isinterestingPath(path) {
             let i;
@@ -147,8 +151,10 @@ const rule: Rule.RuleModule = {
         const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isinterestingPath);
 
         /**
+         * Check if an identifier is a special case for member expressions.
          *
-         * @param identifier
+         * @param identifier The identifier string to check
+         * @returns True if the identifier is a special case for member expressions
          */
         function isSpecialCaseIdentifierForMemberExpression(identifier) {
             return identifier === '__proto__';

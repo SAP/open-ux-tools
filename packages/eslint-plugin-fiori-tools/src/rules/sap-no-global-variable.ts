@@ -31,9 +31,11 @@ const rule: Rule.RuleModule = {
         //--------------------------------------------------------------------------
 
         /**
+         * Check if an array contains a specific item.
          *
-         * @param array
-         * @param item
+         * @param array The array to search in
+         * @param item The item to search for
+         * @returns True if the array contains the item, false otherwise
          */
         function contains(array: string[], item: string): boolean {
             return array.includes(item);

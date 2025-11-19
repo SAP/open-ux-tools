@@ -35,31 +35,39 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: any, type: any) {
             return node?.type === type;
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: any) {
             return isType(node, IDENTIFIER);
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: any) {
             return isType(node, MEMBER);
         }
 
         /**
+         * Build the callee path from a member expression node.
          *
-         * @param node
+         * @param node The member expression node to process
+         * @returns String representation of the callee path
          */
         function buildCalleePath(node: any) {
             if (isMember(node.object)) {
@@ -71,17 +79,20 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a, obj) {
             return a.includes(obj);
         }
 
         /**
+         * Check assignment expressions against storage prototype override violations.
          *
-         * @param node
+         * @param node The assignment expression node to check
          */
         function checkAssignmentAgainstOverride(node: any) {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {
@@ -99,8 +110,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process variable declarator nodes for storage prototype references.
          *
-         * @param node
+         * @param node The variable declarator node to process
          */
         function processVariableDeclarator(node: any) {
             if (node.init) {

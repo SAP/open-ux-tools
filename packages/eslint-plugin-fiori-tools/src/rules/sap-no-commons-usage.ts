@@ -29,9 +29,11 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a string starts with a substring.
          *
-         * @param base
-         * @param sub
+         * @param base The base string to check
+         * @param sub The substring to look for at the start
+         * @returns True if the base string starts with the substring
          */
         function startsWith(base, sub) {
             if (base.indexOf) {
@@ -40,49 +42,61 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: any, type: any) {
             return node?.type === type;
         }
 
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: any) {
             return isType(node, 'Identifier');
         }
 
         /**
+         * Check if a node is a Literal.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a Literal
          */
         function isLiteral(node: any) {
             return isType(node, 'Literal');
         }
 
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: any) {
             return isType(node, 'MemberExpression');
         }
 
         /**
+         * Check if a node is an ArrayExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an ArrayExpression
          */
         function isArray(node: any) {
             return isType(node, 'ArrayExpression');
         }
 
         /**
+         * Convert a member expression to a string representation.
          *
-         * @param node
+         * @param node The AST node to convert
+         * @returns String representation of the member expression
          */
         function getMemberAsString(node: any) {
             if (isMember(node)) {
@@ -96,8 +110,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents an interesting function call to analyze.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting function call
          */
         function isInteresting(node: any) {
             const callee = node.callee;
@@ -110,8 +126,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a function call has valid (non-commons) imports.
          *
-         * @param node
+         * @param node The function call node to validate
+         * @returns True if the function call has valid imports, false if it contains commons usage
          */
         function isValid(node: any) {
             if (node.arguments && isArray(node.arguments[0])) {

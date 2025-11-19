@@ -63,16 +63,20 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node represents an interesting element creation call.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting element creation call
          */
         function isInteresting(node: any) {
             return node && isCall(node.parent) && isDocumentObject(node.object);
         }
 
         /**
+         * Check if an element creation call is valid (not forbidden).
          *
-         * @param node
+         * @param node The AST node to validate
+         * @returns True if the element creation call is valid
          */
         function isValid(node: any) {
             let methodName: any = false;

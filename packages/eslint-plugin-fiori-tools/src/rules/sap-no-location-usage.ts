@@ -50,8 +50,9 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check assignment expressions against location override violations.
          *
-         * @param node
+         * @param node The assignment expression node to check
          */
         function checkAssignmentAgainstOverride(node: any): void {
             const identifier = node.left;
@@ -65,8 +66,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process member expressions for location.assign violations.
          *
-         * @param node
+         * @param node The member expression node to process
          */
         function processMemberExpression(node: any): void {
             if (isLocationObject(node.object) && node.property.name === 'assign') {
@@ -75,9 +77,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember window object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: any, right: any): boolean {
             if (isWindowObject(right) && isIdentifier(left)) {

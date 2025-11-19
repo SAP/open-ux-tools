@@ -89,8 +89,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Get the rightmost method name from a node.
          *
-         * @param node
+         * @param node The node to extract method name from
+         * @returns The rightmost method name
          */
         function getRightestMethodName(node: Rule.Node): string {
             const callee = (node as any).callee;
@@ -98,8 +100,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Build a path string from a callee node.
          *
-         * @param node
+         * @param node The callee node to build path from
+         * @returns The path string representation
          */
         function buildCalleePath(node: Rule.Node): string {
             if (isMember((node as any).object)) {
@@ -112,8 +116,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if the callee path represents a forbidden obvious API.
          *
-         * @param calleePath
+         * @param calleePath The path to check
+         * @returns The last element of the path
          */
         function isForbiddenObviousApi(calleePath: string): string {
             const elementArray = calleePath.split('.');
@@ -121,9 +127,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process document-related API usage and report violations.
          *
-         * @param node
-         * @param methodName
+         * @param node The AST node to process
+         * @param methodName The method name being called
          */
         function processDocumentMessage(node: Rule.Node, methodName: string): void {
             const parent = node.parent;
@@ -152,8 +159,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process variable declarator nodes for API usage.
          *
-         * @param node
+         * @param node The variable declarator node to process
          */
         function processVariableDeclarator(node: Rule.Node): void {
             const init = (node as any).init;
@@ -187,9 +195,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process window-related API usage and report violations.
          *
-         * @param node
-         * @param methodName
+         * @param node The AST node to process
+         * @param methodName The method name being called
          */
         function processWindowMessage(node: Rule.Node, methodName: string): void {
             if (contains(FORBIDDEN_NAVIGATOR_WINDOW, methodName)) {

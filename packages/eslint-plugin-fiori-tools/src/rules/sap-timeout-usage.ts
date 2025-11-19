@@ -35,16 +35,20 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node represents setTimeout.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents setTimeout
          */
         function isTimeout(node: Rule.Node): boolean {
             return isIdentifier(node) && (node as { name: string }).name === 'setTimeout';
         }
 
         /**
+         * Check if a node represents an interesting setTimeout call to analyze.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting setTimeout call
          */
         function isInteresting(node: Rule.Node): boolean {
             let obj = (node as unknown as { callee: Rule.Node }).callee;
@@ -67,8 +71,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a setTimeout call has valid timeout arguments.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the setTimeout call has valid timeout arguments
          */
         function isValid(node: Rule.Node): boolean {
             const args = (node as unknown as { arguments: Rule.Node[] }).arguments;
@@ -82,9 +88,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember window object references for later analysis.
          *
-         * @param left
-         * @param right
+         * @param left The left side of the assignment
+         * @param right The right side of the assignment
          */
         function rememberWindow(left: Rule.Node, right: Rule.Node): void {
             if (right && isWindow(right) && left && isIdentifier(left)) {

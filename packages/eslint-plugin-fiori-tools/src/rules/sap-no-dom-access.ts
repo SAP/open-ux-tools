@@ -58,16 +58,20 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node represents an interesting DOM access.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting DOM access
          */
         function isInteresting(node: any) {
             return node && isDocumentObject(node.object);
         }
 
         /**
+         * Check if a DOM access is valid (not forbidden).
          *
-         * @param node
+         * @param node The AST node to validate
+         * @returns True if the DOM access is valid
          */
         function isValid(node: any) {
             return !(isIdentifier(node.property) && contains(FORBIDDEN_DOCUMENT_METHODS, node.property.name));

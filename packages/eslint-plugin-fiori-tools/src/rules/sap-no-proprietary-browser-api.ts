@@ -38,42 +38,52 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: any, type: any) {
             return node?.type === type;
         }
 
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: any) {
             return isType(node, 'Identifier');
         }
 
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: any) {
             return isType(node, 'MemberExpression');
         }
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a, obj) {
             return a.includes(obj);
         }
 
         /**
+         * Check if a node represents the global window object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window object
          */
         function isWindow(node: any) {
             // true if node is the global variable 'window'
@@ -81,8 +91,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the window object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the window object or a reference to it
          */
         function isWindowObject(node: any) {
             // true if node is the global variable 'window' or a reference to it
@@ -90,8 +102,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the screen object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the screen object
          */
         function isScreen(node: any) {
             //        console.log("isScreen");
@@ -108,8 +122,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the screen object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the screen object or a reference to it
          */
         function isScreenObject(node: any) {
             // true if node is the global variable 'screen'/'window.screen' or a reference to it
@@ -117,8 +133,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the document object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the document object
          */
         function isDocument(node: any) {
             if (node) {
@@ -134,8 +152,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the document object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the document object or a reference to it
          */
         function isDocumentObject(node: any) {
             // true if node is the global variable 'document'/'window.document' or a reference to it
@@ -143,8 +163,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the document body.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the document body
          */
         function isBody(node: any) {
             if (node && isMember(node)) {
@@ -154,8 +176,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the body object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the body object or a reference to it
          */
         function isBodyObject(node: any) {
             return isBody(node) || (node && isIdentifier(node) && contains(BODY_OBJECTS, node.name));
@@ -165,9 +189,11 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Remember window object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left, right) {
             if (isWindowObject(right) && isIdentifier(left)) {
@@ -178,9 +204,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember screen object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if screen object was remembered, false otherwise
          */
         function rememberScreen(left, right) {
             if (isScreenObject(right) && isIdentifier(left)) {
@@ -191,9 +219,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember document object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if document object was remembered, false otherwise
          */
         function rememberDocument(left, right) {
             if (isDocumentObject(right) && isIdentifier(left)) {
@@ -204,10 +234,12 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember body object assignments for tracking references.
          *
-         * @param left
-         * @param right
-         * @param parent
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @param parent The parent node for reporting violations
+         * @returns True if body object was remembered, false otherwise
          */
         function rememberBody(left, right, parent) {
             if (isBodyObject(right) && isIdentifier(left)) {

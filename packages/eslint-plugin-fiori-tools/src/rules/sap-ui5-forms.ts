@@ -39,59 +39,75 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: Rule.Node | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
+         * Check if a node is a NewExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a NewExpression
          */
         function isNewExpression(node: Rule.Node | undefined): boolean {
             return isType(node, 'NewExpression');
         }
         /**
+         * Check if a node is an ArrayExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an ArrayExpression
          */
         function isArrayExpression(node: Rule.Node | undefined): boolean {
             return isType(node, 'ArrayExpression');
         }
         /**
+         * Check if a node is an ObjectExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an ObjectExpression
          */
         function isObjectExpression(node: Rule.Node | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a: string[], obj: string): boolean {
             return a.includes(obj);
         }
         /**
+         * Check if a node represents an interesting UI5 form construct.
          *
-         * @param node
+         * @param node The AST node to analyze
+         * @returns True if the node represents an interesting UI5 form construct
          */
         function isInteresting(node: any) {
             const callee = node.callee;

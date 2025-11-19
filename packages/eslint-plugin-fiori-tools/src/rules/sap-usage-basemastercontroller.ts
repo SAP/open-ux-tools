@@ -35,17 +35,21 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a value is a string.
          *
-         * @param string
+         * @param string The value to check
+         * @returns True if the value is a string
          */
         function isString(string) {
             return typeof string === 'string';
         }
 
         /**
+         * Check if a string contains a substring.
          *
-         * @param string
-         * @param substring
+         * @param string The string to search in
+         * @param substring The substring to search for
+         * @returns True if the string contains the substring
          */
         function contains(string, substring) {
             return string.indexOf(substring) !== -1;

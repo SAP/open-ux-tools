@@ -34,40 +34,50 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
         function isType(node: any, type: any) {
             return node?.type === type;
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
         function isIdentifier(node: any) {
             return isType(node, 'Identifier');
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
         function isMember(node: any) {
             return isType(node, 'MemberExpression');
         }
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a, obj) {
             return a.includes(obj);
         }
 
         /**
+         * Check if a node represents the global window object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window object
          */
         function isWindow(node: any) {
             // true if node is the global variable 'window'
@@ -75,8 +85,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the window object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the window object or a reference to it
          */
         function isWindowObject(node: any) {
             // true if node is the global variable 'window' or a reference to it
@@ -84,8 +96,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the location object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the location object
          */
         function isLocation(node: any) {
             if (node) {
@@ -101,8 +115,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the location object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the location object or a reference to it
          */
         function isLocationObject(node: any) {
             // true if node is the global variable 'location'/'window.location' or a reference to it
@@ -110,8 +126,10 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a call expression is interesting for location reload detection.
          *
-         * @param node
+         * @param node The call expression node to check
+         * @returns True if the call expression is interesting for location reload detection
          */
         function isInteresting(node: any) {
             const obj = node.callee;
@@ -128,7 +146,9 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a location reload call is valid.
          *
+         * @returns Always returns false as location.reload() is not permitted
          */
         function isValid() {
             //        const args = node.arguments;
@@ -139,9 +159,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember window object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: any, right: any): boolean {
             if (isWindow(right) && isIdentifier(left)) {
@@ -152,9 +174,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember location object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if location object was remembered, false otherwise
          */
         function rememberLocation(left: any, right: any): boolean {
             if (isLocationObject(right) && isIdentifier(left)) {
