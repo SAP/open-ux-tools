@@ -52,7 +52,8 @@ describe('listFunctionalities', () => {
             'generate-fiori-ui-app',
             'delete-page',
             'create-controller-extension',
-            'generate-fiori-ui-odata-app'
+            'generate-fiori-ui-odata-app',
+            'fetch-service-metadata'
         ]);
     });
 
@@ -78,7 +79,8 @@ describe('listFunctionalities', () => {
             'generate-fiori-ui-app',
             'delete-page',
             'create-controller-extension',
-            'generate-fiori-ui-odata-app'
+            'generate-fiori-ui-odata-app',
+            'fetch-service-metadata'
         ]);
     });
 

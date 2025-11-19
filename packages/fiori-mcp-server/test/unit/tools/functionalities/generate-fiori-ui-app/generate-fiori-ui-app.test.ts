@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import type { ExecuteFunctionalityInput } from '../../../../../src/types';
-import type { GeneratorConfigCAP } from '../../../../../src/tools/schemas';
+import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas';
 import packageJson from '../../../../../package.json';
 
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
@@ -42,10 +42,9 @@ describe('getFunctionalityDetails', () => {
         expect(details).toMatchSnapshot();
     });
 });
-const paramTest: GeneratorConfigCAP = {
+const paramTest: GeneratorConfigCAPWithAPI = {
     floorplan: 'FE_LROP',
     version: '0.2',
-    projectType: 'LIST_REPORT_OBJECT_PAGE',
     project: {
         name: 'app1',
         targetFolder: join(testOutputDir, 'app1'),
@@ -114,7 +113,6 @@ describe('executeFunctionality', () => {
                 )} before trying to run the application.`,
                 parameters: {
                     floorplan: 'FE_LROP',
-                    projectType: 'LIST_REPORT_OBJECT_PAGE',
                     project: {
                         description: 'Description for App 1',
                         name: 'app1',
@@ -158,7 +156,6 @@ describe('executeFunctionality', () => {
                 }
             },
             'floorplan': 'FE_LROP',
-            'projectType': 'LIST_REPORT_OBJECT_PAGE',
             'project': {
                 'description': 'Description for App 1',
                 'name': 'app1',
@@ -171,7 +168,7 @@ describe('executeFunctionality', () => {
                 'capService': {
                     'capType': 'Node.js',
                     'projectPath': 'zzzapp1',
-                    'serviceCdsPath': 'srv/cat-service.cds',
+                    'serviceCdsPath': '/srv/cat-service.cds',
                     'serviceName': 'app1'
                 }
             },
@@ -271,30 +268,10 @@ describe('executeFunctionality', () => {
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 },
                 {
-                    \\"code\\": \\"invalid_value\\",
-                    \\"values\\": [
-                        \\"LIST_REPORT_OBJECT_PAGE\\",
-                        \\"FORM_ENTRY_OBJECT_PAGE\\",
-                        \\"FLEXIBLE_PROGRAMMING_MODEL\\"
-                    ],
-                    \\"path\\": [
-                        \\"projectType\\"
-                    ],
-                    \\"message\\": \\"Invalid option: expected one of \\\\\\"LIST_REPORT_OBJECT_PAGE\\\\\\"|\\\\\\"FORM_ENTRY_OBJECT_PAGE\\\\\\"|\\\\\\"FLEXIBLE_PROGRAMMING_MODEL\\\\\\"\\"
-                },
-                {
                     \\"expected\\": \\"object\\",
                     \\"code\\": \\"invalid_type\\",
                     \\"path\\": [
                         \\"service\\"
-                    ],
-                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
-                },
-                {
-                    \\"expected\\": \\"object\\",
-                    \\"code\\": \\"invalid_type\\",
-                    \\"path\\": [
-                        \\"telemetryData\\"
                     ],
                     \\"message\\": \\"Invalid input: expected object, received undefined\\"
                 }

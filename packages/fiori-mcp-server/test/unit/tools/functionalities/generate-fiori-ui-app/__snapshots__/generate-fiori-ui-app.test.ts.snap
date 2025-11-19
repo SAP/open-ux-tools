@@ -73,10 +73,6 @@ Object {
             "pattern": "^[a-z0-9-]+$",
             "type": "string",
           },
-          "sapux": Object {
-            "default": true,
-            "type": "boolean",
-          },
           "targetFolder": Object {
             "description": "Absolute path to the project folder (projectPath).",
             "type": "string",
@@ -94,18 +90,8 @@ Object {
           "description",
           "targetFolder",
           "ui5Version",
-          "sapux",
         ],
         "type": "object",
-      },
-      "projectType": Object {
-        "description": "SAP Fiori Elements project type. Corresponds to the SAP Fiori Elements floor plan.",
-        "enum": Array [
-          "LIST_REPORT_OBJECT_PAGE",
-          "FORM_ENTRY_OBJECT_PAGE",
-          "FLEXIBLE_PROGRAMMING_MODEL",
-        ],
-        "type": "string",
       },
       "service": Object {
         "additionalProperties": false,
@@ -150,38 +136,12 @@ Object {
         ],
         "type": "object",
       },
-      "telemetryData": Object {
-        "additionalProperties": false,
-        "properties": Object {
-          "generationSourceName": Object {
-            "default": "@sap-ux/fiori-mcp-server",
-            "type": "string",
-          },
-          "generationSourceVersion": Object {
-            "default": "0.4.0",
-            "type": "string",
-          },
-        },
-        "required": Array [
-          "generationSourceName",
-          "generationSourceVersion",
-        ],
-        "type": "object",
-      },
-      "version": Object {
-        "default": "0.2",
-        "description": "Config schema version.",
-        "type": "string",
-      },
     },
     "required": Array [
       "entityConfig",
       "floorplan",
       "project",
-      "projectType",
       "service",
-      "telemetryData",
-      "version",
     ],
     "type": "object",
   },

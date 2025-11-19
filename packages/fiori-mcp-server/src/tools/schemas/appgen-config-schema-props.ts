@@ -38,7 +38,6 @@ export const serviceOdata = z.object({
             examples: [
                 'odata/v4/<servicename>/',
                 'odata/v4/MyRiskService/',
-                'odata/v2/MyOdataV2Service/',
                 'odata/v4/MyOdataV4Service/',
                 "odata/v4/<relative '@path' annotation from service cds file>/",
                 "<absolute '@path' annotation from service cds file>/",

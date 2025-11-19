@@ -31,7 +31,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     }
 
     const appName = (generatorConfig?.project.name as string) ?? 'default';
-    const appPath = join(projectPath, 'app', appName);
+    const appPath = join(projectPath, appName);
     const targetDir = projectPath;
     const configPath = `${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);

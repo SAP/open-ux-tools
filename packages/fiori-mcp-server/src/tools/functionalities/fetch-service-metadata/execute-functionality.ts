@@ -12,14 +12,14 @@ import details from './details';
  * @returns A promise that resolves to the execution output.
  */
 export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const sapSystemName = ('' + params.parameters?.sapSystemName).trim(); // can be empty
-    const servicePath = ('' + params.parameters?.servicePath).trim();
+    const sapSystemQuery = String(params.parameters?.sapSystemQuery ?? '').trim(); // can be empty
+    const servicePath = String(params.parameters?.servicePath ?? '').trim();
 
     if (!servicePath) {
         throw new Error('Missing required parameter: servicePath');
     }
 
-    const sapSystem = await findSapSystem(sapSystemName);
+    const sapSystem = await findSapSystem(sapSystemQuery);
     const metadata = await getServiceMetadata(sapSystem, servicePath);
     const metadataFilePath = path.join(params.appPath, 'metadata.xml');
     fs.writeFileSync(metadataFilePath, metadata, 'utf-8');
