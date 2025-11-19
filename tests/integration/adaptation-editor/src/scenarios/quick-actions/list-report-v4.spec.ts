@@ -263,6 +263,7 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                         fileType: 'change',
                         changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
+                            page: 'RootEntityList',
                             entityPropertyChange: {
                                 operation: 'UPSERT',
                                 propertyPath: 'content/header/actions/testActionId',

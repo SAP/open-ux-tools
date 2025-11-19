@@ -37,41 +37,36 @@ export interface AddActionOptions {
 }
 
 /**
- * Validates Action ID input
+ * Validates Action ID input.
+ *
  * @param input control of action ID to validate
  * @param validateForDuplicateId custom validation function
+ * @return validation result
  */
-function validateActionId(input: Input, validateForDuplicateId: (actionId: string) => boolean): void {
-    // { isValid: boolean; errorMessage?: string }
+function validateActionId(
+    input: Input,
+    validateForDuplicateId?: (actionId: string) => boolean
+): { isValid: boolean; errorMessage: string } {
     const actionId = input.getValue();
     // Check if empty
     if (!actionId || actionId.trim().length === 0) {
-        //return { isValid: false, errorMessage: 'Action ID is required' };
-        input.setValueState(ValueState.Error).setValueStateText('Action ID is required');
-        return;
+        return { isValid: false, errorMessage: 'Action ID is required' };
     }
 
-    if (!validateForDuplicateId(actionId)) {
-        //return { isValid: false, errorMessage: 'Action ID is required' };
-        input.setValueState(ValueState.Error).setValueStateText(`Action with ID '${actionId}' is already defined`);
-        return;
+    if (!validateForDuplicateId?.(actionId)) {
+        return { isValid: false, errorMessage: `Action with ID '${actionId}' is already defined` };
     }
 
     // Check for spaces
     if (actionId.includes(' ')) {
-        //return { isValid: false, errorMessage: 'Action ID cannot contain spaces' };
-        input.setValueState(ValueState.Error).setValueStateText('Action ID cannot contain spaces');
-        return;
+        return { isValid: false, errorMessage: 'Action ID cannot contain spaces' };
     }
 
     // Check if starts with number
     if (/^\d/.test(actionId)) {
-        input.setValueState(ValueState.Error).setValueStateText('Action ID cannot start with a number');
-        return;
-        //return { isValid: false, errorMessage: 'Action ID cannot start with a number' };
+        return { isValid: false, errorMessage: 'Action ID cannot start with a number' };
     }
-    input.setValueState(ValueState.Success).setValueStateText('');
-    //return { isValid: true };
+    return { isValid: true, errorMessage: '' };
 }
 
 export default class AddActionFragment extends BaseDialog<AddActionFragmentsModel> {
@@ -122,17 +117,7 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
 
         const actionId = this.model.getProperty('/actionId');
         const buttonText = this.model.getProperty('/buttonText');
-        //const actionName = convertCamelCaseToPascalCase(nameToBeDisplayedOnUI, true);
         await this.createAppDescriptorChangeForV4(`${this.options.propertyPath}${actionId}`, buttonText);
-        // await sendInfoCenterMessage({
-        //     title: { key: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION' },
-        //     description: {
-        //         key: 'ADP_ADD_TWO_FRAGMENTS_WITH_TEMPLATE_NOTIFICATION',
-        //         params: [columnFragmentName, cellFragmentName]
-        //     },
-        //     type: MessageBarType.info
-        // });
-        this.updateFormState();
         this.handleDialogClose();
     }
 
@@ -163,19 +148,10 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
     /**
      * Checks input values for duplicates and updates confirmation button state based on input validation states
      */
-    private updateFormState() {
+    private updateFormState(): void {
         const form = this.dialog.getContent()[0] as unknown as SimpleForm<Control[]>;
         const formContent = form.getContent();
         const inputs = formContent.filter((item) => item.isA('sap.m.Input')) as Input[];
-
-        // const value1 = inputs[0].getValue();
-        const value2 = inputs[1].getValue();
-        validateActionId(inputs[0], this.options.validateActionId ?? (() => true));
-        if (value2.length > 0) {
-            inputs[1].setValueState(ValueState.Success).setValueStateText('');
-        } else {
-            inputs[1].setValueState(ValueState.Error).setValueStateText('Button Text is required');
-        }
 
         const beginBtn = this.dialog.getBeginButton();
         // Exclude the last input (display-only) from validation
@@ -197,6 +173,12 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
             modelValue = null;
         }
         this.model.setProperty('/actionId', modelValue);
+        const result = validateActionId(input, this.options.validateActionId);
+        if (!result.isValid) {
+            input.setValueState(ValueState.Error).setValueStateText(result.errorMessage);
+        } else {
+            input.setValueState(ValueState.Success).setValueStateText('');
+        }
         this.updateFormState();
     }
 
@@ -208,12 +190,15 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
             modelValue = null;
         }
         this.model.setProperty('/buttonText', modelValue);
+        if (modelValue && modelValue.length > 0) {
+            input.setValueState(ValueState.Success).setValueStateText('');
+        } else {
+           input.setValueState(ValueState.Error).setValueStateText('Button Text is required');
+        }
         this.updateFormState();
     }
 
     private async createAppDescriptorChangeForV4(propertyPath: string, actionLabel: string) {
-        // const template = `${this.options.appDescriptor?.projectId}.changes.${templatePath}`;
-        // let sectionId = this.options.appDescriptor?.anchor;
         const flexSettings = this.rta.getFlexSettings();
         const modifiedValue = {
             reference: this.options.appDescriptor?.projectId,
@@ -225,15 +210,10 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
                     propertyPath: `${propertyPath}`, // e.g. 'content/body/sections/test'
                     operation: 'UPSERT',
                     propertyValue: {
-                        // template,
                         press: this.options.controllerReference,
                         visible: true,
                         enabled: true,
                         text: actionLabel
-                        //     position: {
-                        //         placement: 'After',
-                        //    //     anchor: `${sectionId}`
-                        //     }
                     }
                 }
             }
