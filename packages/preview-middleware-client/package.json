@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.17.4",
+    "version": "0.18.1",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",
@@ -38,7 +38,8 @@
         "@ui5/cli": "4.0.33",
         "npm-run-all2": "6.2.0",
         "ui5-tooling-transpile": "3.9.2",
-        "vscode-languageserver-textdocument": "1.0.11"
+        "vscode-languageserver-textdocument": "1.0.11",
+        "@ui5/manifest": "1.76.0"
     },
     "browserslist": "defaults"
 }

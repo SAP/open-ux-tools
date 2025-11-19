@@ -2,7 +2,7 @@ import { expect } from '@sap-ux-private/playwright';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V4 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
@@ -83,14 +83,19 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                     }
                 ],
                 fragments: {
-                    'table-column.fragment.xml': `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
-    <table:Column
-        id="column-[a-z0-9]+"
-        width="10%"
-        header="New Column">
-        <Text id="text-[a-z0-9]+" text="Sample data"/>
-    </table:Column>
-</core:FragmentDefinition>`
+                    'table-column.fragment.xml': new RegExp(
+                        `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">\\s*` +
+                            `<!-- viewName: sap.fe.templates.ListReport.ListReport -->\\s*` +
+                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
+                            `<!-- targetAggregation: columns -->\\s*` +
+                            `<table:Column\\s*` +
+                            `id="column-[a-z0-9]+"\\s*` +
+                            `width="10%"\\s*` +
+                            `header="New Column">\\s*` +
+                            `<Text id="text-[a-z0-9]+" text="Sample data"/>\\s*` +
+                            `</table:Column>\\s*` +
+                            `</core:FragmentDefinition>`
+                    )
                 }
             });
 
@@ -267,11 +272,16 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                     }
                 ],
                 fragments: {
-                    'test-page-action.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
-</core:FragmentDefinition>`
+                    'test-page-action.fragment.xml': new RegExp(
+                        `<!-- Use stable and unique IDs!-->\\s*` +
+                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.fe.templates.ListReport.ListReport -->\\s*` +
+                            `<!-- controlType: sap.f.DynamicPageTitle -->\\s*` +
+                            `<!-- targetAggregation: actions -->\\s*` +
+                            `<!-- ?add your xml here ?-->\\s*` +
+                            `<Button text="New Button"  id="btn-[a-z0-9]+"></Button>\\s*` +
+                            `</core:FragmentDefinition>`
+                    )
                 }
             });
             await lr.checkControlVisible('New Button');
@@ -312,11 +322,16 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                     }
                 ],
                 fragments: {
-                    'test-table-action.fragment.xml': `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
-   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >
-        <Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />
-    </actiontoolbar:ActionToolbarAction>
-</core:FragmentDefinition>`
+                    'test-table-action.fragment.xml': new RegExp(
+                        `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.fe.templates.ListReport.ListReport -->\\s*` +
+                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
+                            `<!-- targetAggregation: actions -->\\s*` +
+                            `<actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >\\s*` +
+                            `<Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />\\s*` +
+                            `</actiontoolbar:ActionToolbarAction>\\s*` +
+                            `</core:FragmentDefinition>`
+                    )
                 }
             });
             await lr.checkControlVisible('New Action');

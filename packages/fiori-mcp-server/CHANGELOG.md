@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.1
+
+### Patch Changes
+
+-   9544c24: fix: page creation fails in v2
+
 ## 0.4.0
 
 ### Minor Changes

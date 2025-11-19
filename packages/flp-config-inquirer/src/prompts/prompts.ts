@@ -11,7 +11,8 @@ import {
     getParameterStringPrompt,
     getIconPrompt,
     getExistingFlpConfigInfoPrompt,
-    getTileSettingsPrompts
+    getTileSettingsPrompts,
+    getConfirmReplacePrompt
 } from './questions';
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from '../types';
@@ -55,7 +56,8 @@ export function getQuestions(
             promptOptions?.[promptNames.subTitle]
         ),
         [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
-        [promptNames.additionalParameters]: getParameterStringPrompt()
+        [promptNames.additionalParameters]: getParameterStringPrompt(),
+        [promptNames.confirmReplace]: getConfirmReplacePrompt()
     };
 
     const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)
