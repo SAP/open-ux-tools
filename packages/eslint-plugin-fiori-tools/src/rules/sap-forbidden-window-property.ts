@@ -105,13 +105,13 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow((node as any).id, (node as any).init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return rememberWindow((node as any).left, (node as any).right);
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'forbiddenWindowProperty' });
                 }

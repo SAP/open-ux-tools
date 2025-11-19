@@ -253,10 +253,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 processMemberExpression(node);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): void {
                 checkAssignmentAgainstOverride(node);
             }
         };

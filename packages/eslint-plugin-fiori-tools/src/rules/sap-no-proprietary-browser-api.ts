@@ -255,7 +255,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return (
                     rememberWindow(node.id, node.init) ||
                     rememberScreen(node.id, node.init) ||
@@ -263,7 +263,7 @@ const rule: Rule.RuleModule = {
                     rememberBody(node.id, node.init, node)
                 );
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return (
                     rememberWindow(node.left, node.right) ||
                     rememberScreen(node.left, node.right) ||
@@ -271,7 +271,7 @@ const rule: Rule.RuleModule = {
                     rememberBody(node.left, node.right, node)
                 );
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (isBodyObject(node.object)) {
                     // report if there is any call of a document.body child (e.g. document.body.appendChild())
                     context.report({ node: node, messageId: 'proprietaryBrowserApi' });

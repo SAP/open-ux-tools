@@ -147,12 +147,12 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'NewExpression': function (node) {
+            'NewExpression': function (node): void {
                 if (isMember(node.callee) && startsWith(getMemberAsString(node.callee), 'sap.ui.commons')) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }
             },
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }

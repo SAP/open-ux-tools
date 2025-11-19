@@ -128,10 +128,10 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): void {
                 processVariableDeclarator(node);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): void {
                 checkAssignmentAgainstOverride(node);
             }
         };

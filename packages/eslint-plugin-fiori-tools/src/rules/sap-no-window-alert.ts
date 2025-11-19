@@ -28,7 +28,7 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (node.callee.type === 'MemberExpression' && node.callee.property.type === 'Identifier') {
                     if (
                         node.callee.object &&

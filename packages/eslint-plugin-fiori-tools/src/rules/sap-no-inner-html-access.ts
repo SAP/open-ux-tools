@@ -86,7 +86,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (!isValid(node.property)) {
                     context.report({ node: node, messageId: 'innerHtmlAccess' });
                 }

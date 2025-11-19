@@ -252,13 +252,13 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): void {
                 processVariableDeclarator(node);
             },
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 processHistory(node);
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (isCall(node.parent) && !(node as any).computed) {
                     const methodName = getRightestMethodName(node.parent),
                         memberExpressionNode = node;

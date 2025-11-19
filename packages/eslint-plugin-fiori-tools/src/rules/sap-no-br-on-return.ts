@@ -82,13 +82,13 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init) || rememberDocument(node.id, node.init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return rememberWindow(node.left, node.right) || rememberDocument(node.left, node.right);
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'insertBrOnReturn' });
                 }

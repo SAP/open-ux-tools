@@ -106,7 +106,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): void {
                 if (isInteresting(node.left) && 'property' in node.left && !isValid(node.left.property)) {
                     context.report({ node: node, messageId: 'innerHtmlWrite' });
                 }

@@ -90,7 +90,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 processDomInsertion(node);
             }
         };

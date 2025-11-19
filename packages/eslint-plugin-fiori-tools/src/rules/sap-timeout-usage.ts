@@ -103,17 +103,17 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node: Rule.Node) {
+            'VariableDeclarator': function (node: Rule.Node): void {
                 const declaratorNode = node as unknown as { id: Rule.Node; init?: Rule.Node };
                 if (declaratorNode.init) {
                     rememberWindow(declaratorNode.id, declaratorNode.init);
                 }
             },
-            'AssignmentExpression': function (node: Rule.Node) {
+            'AssignmentExpression': function (node: Rule.Node): void {
                 const assignmentNode = node as unknown as { left: Rule.Node; right: Rule.Node };
                 rememberWindow(assignmentNode.left, assignmentNode.right);
             },
-            'CallExpression': function (node: Rule.Node) {
+            'CallExpression': function (node: Rule.Node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'timeoutUsage' });
                 }

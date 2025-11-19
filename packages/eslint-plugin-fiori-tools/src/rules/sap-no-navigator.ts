@@ -193,19 +193,19 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return (
                     rememberWindow((node as any).id, (node as any).init) ||
                     rememberNavigator((node as any).id, (node as any).init)
                 );
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return (
                     rememberWindow((node as any).left, (node as any).right) ||
                     rememberNavigator((node as any).left, (node as any).right)
                 );
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (isNavigatorObject((node as any).object)) {
                     if (isCall(node.parent)) {
                         const methodName = getRightestMethodName(node.parent);

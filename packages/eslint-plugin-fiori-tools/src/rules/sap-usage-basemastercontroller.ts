@@ -59,7 +59,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 const property = node.property;
 
                 if (property.type === 'Identifier' && property.name === 'BaseMasterController') {
@@ -69,7 +69,7 @@ const rule: Rule.RuleModule = {
                     }
                 }
             },
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 // const val = node.value, result;
                 if (isString(node.value) && contains(node.value, 'sap/ca/scfld/md/controller/BaseMasterController')) {
                     context.report({ node: node, messageId: 'basemastercontroller' });

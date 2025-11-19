@@ -170,7 +170,7 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'NewExpression': function (node) {
+            'NewExpression': function (node): void {
                 if (isInteresting(node)) {
                     context.report({ node: node, messageId: 'ui5Forms' });
                 }

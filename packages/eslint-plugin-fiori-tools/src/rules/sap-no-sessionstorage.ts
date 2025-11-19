@@ -123,10 +123,10 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): void {
                 processVariableDeclarator(node);
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 const memberExpressionNode = node;
                 const calleePath = buildCalleePath(memberExpressionNode);
                 const speciousObject = isForbiddenObviousApi(calleePath);

@@ -145,15 +145,15 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'historyManipulation' });
                 }
             },
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init) || rememberHistory(node.id, node.init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return rememberWindow(node.left, node.right) || rememberHistory(node.left, node.right);
             }
         };

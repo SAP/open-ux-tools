@@ -55,7 +55,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 const val = node.value;
                 let result;
 

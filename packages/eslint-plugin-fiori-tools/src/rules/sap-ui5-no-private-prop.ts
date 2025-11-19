@@ -163,7 +163,7 @@ const rule: Rule.RuleModule = {
         return {
             'VariableDeclarator': processVariableDeclarator,
             // "AssignmentExpression": function(node) {},
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (!node.property || !('name' in node.property)) {
                     return;
                 }

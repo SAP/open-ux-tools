@@ -46,7 +46,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 // const val = node.value, result;
                 if (
                     isString(node.value) &&

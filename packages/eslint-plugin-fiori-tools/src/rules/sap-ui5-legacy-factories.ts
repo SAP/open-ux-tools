@@ -127,7 +127,7 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (isInteresting(node)) {
                     context.report({ node: node, messageId: 'legacyFactories' });
                 }

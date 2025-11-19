@@ -201,7 +201,7 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if event object was remembered, false otherwise
          */
-        function rememberEvent(left, right) {
+        function rememberEvent(left, right): boolean {
             if (isEventObject(right) && isIdentifier(left)) {
                 EVENT_OBJECTS.push(left.name);
                 return true;
@@ -213,10 +213,10 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init) || rememberEvent(node.id, node.init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return rememberWindow(node.left, node.right) || rememberEvent(node.left, node.right);
             },
             'MemberExpression': processMemberExpression

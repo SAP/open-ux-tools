@@ -103,7 +103,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (!node.property || !('name' in node.property)) {
                     return;
                 }

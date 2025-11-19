@@ -119,10 +119,10 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 // check if anything is assigned to a window property
                 if (isMember(node.left) && 'object' in node.left && isWindowObject(node.left.object)) {
                     context.report({ node: node, messageId: 'globalDefine' });

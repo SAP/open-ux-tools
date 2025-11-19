@@ -132,43 +132,60 @@ Object.keys(rulesMap).forEach((ruleName: string) => {
 export const configs = {
     // Recommended config for JavaScript projects (prod + test)
     get recommended(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
-        const testConfig = require('../config/eslintrc-test.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
         return [...commonConfig, ...prodConfig, ...testConfig];
     },
     // Recommended config for TypeScript projects (prod + test)
     get 'recommended-typescript'(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
-        const testConfig = require('../config/eslintrc-test.js');
-        const typescriptConfig = require('../config/eslintrc-typescript.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig];
     },
     // Production code only
     get 'prod-code'(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
         return [...commonConfig, ...prodConfig];
     },
     // Production code with TypeScript
     get 'prod-code-typescript'(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
-        const typescriptConfig = require('../config/eslintrc-typescript.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...typescriptConfig, ...prodConfig];
     },
     // Test code only
     get 'test-code'(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const testConfig = require('../config/eslintrc-test.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
         return [...commonConfig, ...testConfig];
     },
     // Test code with TypeScript
     get 'test-code-typescript'(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const testConfig = require('../config/eslintrc-test.js');
-        const typescriptConfig = require('../config/eslintrc-typescript.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...typescriptConfig, ...testConfig];
     }
 };
@@ -177,28 +194,41 @@ export const configs = {
 // @deprecated Use `configs` instead
 export const config = {
     get defaultTS(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
-        const testConfig = require('../config/eslintrc-test.js');
-        const typescriptConfig = require('../config/eslintrc-typescript.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...prodConfig, ...testConfig, ...typescriptConfig];
     },
     get defaultJS(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
-        const testConfig = require('../config/eslintrc-test.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
         return [...commonConfig, ...prodConfig, ...testConfig];
     },
     get testCode(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const testConfig = require('../config/eslintrc-test.js');
-        const typescriptConfig = require('../config/eslintrc-typescript.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...typescriptConfig, ...testConfig];
     },
     get prodCode(): Linter.Config[] {
-        const commonConfig = require('../config/eslintrc-common.js');
-        const prodConfig = require('../config/eslintrc-prod.js');
-        const typescriptConfig = require('../config/eslintrc-typescript.js');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...typescriptConfig, ...prodConfig];
     }
 };

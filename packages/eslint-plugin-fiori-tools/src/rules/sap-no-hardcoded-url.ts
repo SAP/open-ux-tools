@@ -53,7 +53,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'Literal': function (node: Rule.Node) {
+            'Literal': function (node: Rule.Node): void {
                 const literalNode = node as { value: string | number | boolean | null | RegExp };
                 const val = literalNode.value;
                 let result;

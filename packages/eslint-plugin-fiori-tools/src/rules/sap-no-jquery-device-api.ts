@@ -32,7 +32,7 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (
                     node.object &&
                     'name' in node.object &&

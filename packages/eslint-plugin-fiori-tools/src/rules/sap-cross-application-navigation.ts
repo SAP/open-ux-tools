@@ -251,17 +251,17 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): void {
                 if (isInterestingAssignment((node as any).init) && (node as any).id.type === 'Identifier') {
                     VARIABLES[(node as any).id.name] = true;
                 }
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): void {
                 if (isInterestingAssignment((node as any).right) && (node as any).left.type === 'Identifier') {
                     VARIABLES[(node as any).left.name] = true;
                 }
             },
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (isInterestingCall(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'staticNavigationTargets' });
                 }

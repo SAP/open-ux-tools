@@ -95,7 +95,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init) || rememberLocation(node.id, node.init);
             },
             'AssignmentExpression': checkAssignmentAgainstOverride,

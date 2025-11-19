@@ -88,7 +88,7 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'CallExpression': function (node: Rule.Node) {
+            'CallExpression': function (node: Rule.Node): void {
                 if (isInteresting(node)) {
                     context.report({ node: node, messageId: 'globalEval' });
                 }

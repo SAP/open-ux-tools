@@ -53,7 +53,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 const value = node.value;
                 if (isString(value) && startsWith(value, '/sap/bc/ui2/encode_file')) {
                     context.report({ node: node, messageId: 'encodeFileService' });
