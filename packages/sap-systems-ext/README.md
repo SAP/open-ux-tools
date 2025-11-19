@@ -12,8 +12,8 @@ Your credentials are securely stored using your operating system's native creden
 > For more information, see [Credentials process in Windows authentication](https://learn.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication)
 >
 > **macOS**  
-> Credentials are securely stored in the **macOS Keychain** and are accessible to authorized processes after you authenticate with your account password when prompted.  
-> This prompt may be bypassed if you select **Always Allow**.  
+> Credentials are securely stored in the **macOS Keychain** and are accessible to authorized processes you have authenticated with your account password when prompted.  
+> This prompt can be bypassed if you click **Always Allow**.  
 > For more information, see [Allow apps to access your keychain](https://support.apple.com/en-by/guide/mac-help/kychn002/mac)
 
 
@@ -21,19 +21,19 @@ Your credentials are securely stored using your operating system's native creden
 
 ## Create New SAP System Connection
 
-To create a new SAP system entry, follow these steps:
+To create a new SAP system entry, perform the following steps:
 
-#### 1a. Using the SAP Systems Panel
+#### 1a. Use the SAP Systems Panel
 - Click the ➕ **Add SAP System** icon to get started.
 
 **or**
 
-#### 1b. Using the Command Palette
+#### 1b. Use the Command Palette
 - Press **CMD/CTRL + Shift + P** and search for the relevant command.
 
 #### 2. Enter System Details
-Provide the required information for either:
-- **ABAP On-Premise**, or  
+Provide the required information for one of the following:
+- **ABAP On Premise**, or  
 - **ABAP Environment** on **SAP Business Technology Platform (SAP BTP)**.
 
 #### 3. Save and Access
@@ -43,7 +43,7 @@ After saving, the system will appear in the **SAP Systems** panel for quick acce
 
 ## View SAP System Details
 
-To view the stored system details, click a specific system entry in the SAP Systems panel or right-click and select **Show SAP System Details**. 
+To view the stored system details, click a specific system entry in the **Connection Manager for SAP Systems** view or right-click and select **Show SAP System Details**. 
 
 ---
 
@@ -96,21 +96,21 @@ To edit the connection details for an existing SAP system, perform the following
 
 To **export** an existing system connection for an ABAP On Premise system, perform the following steps: 
 
-1. Right-click a saved system name and click Show SAP System Details. 
+1. Right-click a saved system name and click **Show SAP System Details**. 
 
-2. Click Export System. A copy of the saved system connection is downloaded in JSON format. No sensitive credential information is included in the exported JSON file. 
+2. Click **Export System**. A copy of the saved system connection is downloaded in JSON format. No sensitive credential information is included in the exported JSON file. 
 
 To **import** an ABAP On Premise system connection, perform the following steps: 
 
-1. On the activity toolbar, click the Connection Manager for SAP Systems icon. 
+1. On the activity toolbar, click the **Connection Manager for SAP Systems** icon. 
 
-2. Next to the SAP Systems title bar, click on the Import SAP System icon. 
+2. Next to the **Connection Manager for SAP Systems** title bar, click on the Import SAP System icon. 
 
 3. Select the JSON file that you would like to import. 
 
-4. Provide your system credentials and click Test Connection. 
+4. Provide your system credentials and click **Test Connection**. 
 
-5. Click Save to import the system connection.
+5. Click **Save** to import the system connection.
 
 > #### ℹ️ **Note**
 >If you already have a saved local SAP system connection with the same name, you are asked to confirm before overwriting it. 
