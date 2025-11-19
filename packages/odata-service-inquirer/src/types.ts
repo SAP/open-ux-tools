@@ -358,12 +358,7 @@ export type ServiceSelectionPromptOptions = {
      * A list of service ids ({@link ODataServiceInfo.id}), used to filter the catalog results
      */
     serviceFilter?: string[];
-    /**
-     * This allows the value help download prompt to be excluded where consuming generators do not require value help functionality.
-     * If the value help download prompt is hidden then the valueListReferences answer property will not be returned.
-     */
-    hideValueHelpDownload?: boolean;
-} & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
+} & Pick<CommonPromptOptions, 'additionalMessages' | 'hideValueHelpDownload'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
     /**

@@ -6,12 +6,7 @@
  */
 
 // Import shared telemetry event definitions and types
-import {
-    VALUE_HELP_TELEMETRY_EVENTS,
-    ValueHelpDetectedProperties,
-    ValueHelpDownloadDecisionProperties,
-    ValueHelpDownloadPerformanceProperties
-} from '@sap-ux/telemetry';
+import { VALUE_HELP_TELEMETRY_EVENTS } from '@sap-ux/telemetry';
 
 import { sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
@@ -31,7 +26,6 @@ export function sendValueHelpDetectedTelemetry(valueHelpCount: number): void {
         sendTelemetryEvent(VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DETECTED, telemetryData);
     } catch (error) {
         // Silently fail - telemetry should never crash the application
-        console.debug('Failed to send value help detected telemetry:', error);
     }
 }
 
@@ -51,7 +45,6 @@ export function sendValueHelpDownloadDecisionTelemetry(downloadDecision: boolean
         sendTelemetryEvent(VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DOWNLOAD_DECISION, telemetryData);
     } catch (error) {
         // Silently fail - telemetry should never crash the application
-        console.debug('Failed to send value help download decision telemetry:', error);
     }
 }
 
@@ -78,6 +71,5 @@ export function sendValueHelpDownloadPerformanceTelemetry(
         sendTelemetryEvent(VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DOWNLOAD_PERFORMANCE, telemetryData);
     } catch (error) {
         // Silently fail - telemetry should never crash the application
-        console.debug('Failed to send value help download performance telemetry:', error);
     }
 }
