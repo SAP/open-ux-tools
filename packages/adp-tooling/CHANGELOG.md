@@ -1,5 +1,23 @@
 # @sap-ux/adp-tooling
 
+## 0.18.4
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+
+## 0.18.3
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
+## 0.18.2
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+
 ## 0.18.1
 
 ### Patch Changes

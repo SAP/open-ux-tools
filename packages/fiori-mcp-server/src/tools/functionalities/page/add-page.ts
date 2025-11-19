@@ -10,6 +10,8 @@ import { convertToSchema, resolveApplication, validateWithSchema } from '../../.
 import { ADD_PAGE } from '../../../constant';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
 import { buildPageCreationSchema } from './schema';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { getFioriElementsVersion } from './utils';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: ADD_PAGE,
@@ -40,11 +42,16 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appData = await ftfsFileIo.readApp();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
-
     const navigationOptions = await application.getCreationNavigationOptions();
     return {
         ...ADD_PAGE_FUNCTIONALITY,
-        parameters: convertToSchema(buildPageCreationSchema(navigationOptions.navigations, navigationOptions.entities))
+        parameters: convertToSchema(
+            buildPageCreationSchema(
+                navigationOptions.navigations,
+                navigationOptions.entities,
+                getFioriElementsVersion(appData)
+            )
+        )
     };
 }
 
@@ -75,15 +82,23 @@ async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
     // Parse page creation parameters
     const navigationOptions = await application.getCreationNavigationOptions();
-    const schema = buildPageCreationSchema(navigationOptions.navigations, navigationOptions.entities);
+    const schema = buildPageCreationSchema(
+        navigationOptions.navigations,
+        navigationOptions.entities,
+        getFioriElementsVersion(appData)
+    );
     const addPageParameters = validateWithSchema(schema, parameters);
-    const pageType = addPageParameters.pageType;
+    const pageType = addPageParameters.pageType ?? PageTypeV4.ObjectPage;
     const parentPage = 'parentPage' in addPageParameters ? addPageParameters.parentPage : undefined;
     const entitySet = 'entitySet' in addPageParameters ? addPageParameters.entitySet?.toString() : undefined;
     const pageNavigation =
         'pageNavigation' in addPageParameters ? addPageParameters.pageNavigation.toString() : undefined;
     const viewName =
-        'pageViewName' in addPageParameters && addPageParameters.pageViewName ? addPageParameters.pageViewName : '';
+        'pageViewName' in addPageParameters &&
+        addPageParameters.pageViewName &&
+        typeof addPageParameters.pageViewName === 'string'
+            ? addPageParameters.pageViewName
+            : '';
     return application.createPage({
         pageType: pageType,
         parent: parentPage,

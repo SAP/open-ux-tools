@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.6
+
+### Patch Changes
+
+-   1357412: add error handling for store read and writes
+
+## 2.11.5
+
+### Patch Changes
+
+-   caff0ca: fix for saving systems
+
 ## 2.11.4
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -40,6 +40,7 @@
 
         "view:integration": "promptfoo view -y",
         "test:integration:once": "promptfoo eval --config test/integration/scenarios/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
+        "test:integration:dev": "promptfoo eval --config test/integration/scenarios/test-dev.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
         "test:integration:multiple": "npm run test:promptfoo -- --repeat 5"
     },
     "files": [
