@@ -51,7 +51,8 @@ describe('serevice-metadata', () => {
         (SystemService as jest.Mock).mockImplementation(() => ({
             getAll: mockGetAll
         }));
-    });    describe('findSapSystem', () => {
+    });
+    describe('findSapSystem', () => {
         test('should find system by exact name match', async () => {
             const result = await findSapSystem('TestSystem1');
             expect(result).toEqual(mockSystems[0]);
@@ -259,7 +260,5 @@ describe('serevice-metadata', () => {
             const result = await findSapSystem('https://test1.example.com?sap-client=100&param=value');
             expect(result).toEqual(mockSystems[0]);
         });
-
-
     });
 });
