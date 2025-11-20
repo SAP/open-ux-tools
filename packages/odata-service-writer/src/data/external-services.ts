@@ -18,23 +18,25 @@ import { parse } from '@sap-ux/edmx-parser';
 import { DirName } from '@sap-ux/project-access';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 
-import type { OdataService, ExternalServiceCollectionOptions } from '../types';
+import type { ExternalServiceCollectionOptions } from '../types';
 
 /**
  * Writes service metadata for external service references to the local service folder.
  *
+ * @param fs - Memfs editor instance
  * @param webappPath - Webapp path of the UI5 application
  * @param externalServices - External service metadata to be written
- * @param service - OData service instance
- * @param fs - Memfs editor instance
+ * @param serviceName - Name of the service, defaults to 'mainService'
+ * @param servicePath - Service path of the service
  */
 export function writeExternalServiceMetadata(
+    fs: Editor,
     webappPath: string,
     externalServices: ExternalService[],
-    service: OdataService,
-    fs: Editor
+    serviceName = 'mainService',
+    servicePath?: string
 ): void {
-    if (!externalServices.length || !service.path) {
+    if (!externalServices.length || !servicePath) {
         return;
     }
     for (const reference of externalServices) {
@@ -43,14 +45,14 @@ export function writeExternalServiceMetadata(
         let prefix = '/';
         while (segments.length) {
             const next = joinPosix(prefix, segments.shift()!);
-            if (!service.path.startsWith(next)) {
+            if (!servicePath.startsWith(next)) {
                 break;
             }
             prefix = next;
         }
         const relativeServicePath = valueListServicePath.replace(prefix, '');
 
-        const filePathSegments = [webappPath, DirName.LocalService, service.name ?? 'mainService', relativeServicePath];
+        const filePathSegments = [webappPath, DirName.LocalService, serviceName, relativeServicePath];
         if (reference.type === 'value-list') {
             filePathSegments.push(reference.target);
         }
