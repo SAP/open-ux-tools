@@ -1,5 +1,20 @@
 # @sap-ux/generator-adp
 
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [5475b5b]
+    -   @sap-ux/adp-tooling@0.18.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+-   Updated dependencies [744fa93]
+    -   @sap-ux/adp-tooling@0.18.3
+
 ## 0.7.2
 
 ### Patch Changes

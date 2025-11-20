@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.1.0
+
+### Minor Changes
+
+-   bdf6eb7: Update extension name and readme
+
+## 0.0.11
+
+### Patch Changes
+
+-   7ac21d6: fix for sap systems extension
+
 ## 0.0.10
 
 ### Patch Changes
