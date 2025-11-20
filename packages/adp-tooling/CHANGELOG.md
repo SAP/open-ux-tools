@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.4
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+
 ## 0.18.3
 
 ### Patch Changes
