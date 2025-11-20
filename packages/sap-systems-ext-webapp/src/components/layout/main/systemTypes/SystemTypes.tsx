@@ -25,6 +25,8 @@ export function SystemTypes({ setType, setAuthenticationType }: Readonly<SystemT
         setType(type);
         if (type === 'AbapCloud') {
             setAuthenticationType('reentranceTicket');
+        } else if (type === 'OnPrem') {
+            setAuthenticationType('basic');
         }
     };
 

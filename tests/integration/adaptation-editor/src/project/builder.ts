@@ -41,59 +41,78 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
  */
 export function createV2Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
     const { id, mainServiceUri, entitySet, userParams } = getProjectParametersWithDefaults(userParameters);
-    const { qualifier = '', navigationProperty, variantManagement = true, analyticalTable } = userParams ?? {};
+    const {
+        qualifier = '',
+        navigationProperty,
+        variantManagement = true,
+        analyticalTable,
+        isManifestArray
+    } = userParams ?? {};
     const result = structuredClone(template) as Manifest;
     result['sap.app'].id = id + '.' + workerId;
     result['sap.app'].dataSources!.mainService.uri = mainServiceUri;
     result['sap.app'].sourceTemplate!.id = 'preview-middleware-tests';
     result['sap.app'].sourceTemplate!.version = '1.0.0';
     result['sap.app'].sourceTemplate!.toolsId = id;
-
-    result['sap.ui.generic.app']!.pages = {
-        [`ListReport|${entitySet}`]: {
-            'entitySet': entitySet,
-            'component': {
-                'name': 'sap.suite.ui.generic.template.ListReport',
-                'list': true,
-                'settings': {
-                    'condensedTableLayout': true,
-                    'smartVariantManagement': true,
-                    'enableTableFilterInPageVariant': true,
-                    'filterSettings': {
-                        'dateSettings': {
-                            'useDateRange': true
-                        }
-                    },
-                    'tableSettings': {
-                        'type': 'ResponsiveTable'
+    const listReport = {
+        'entitySet': entitySet,
+        'component': {
+            'name': 'sap.suite.ui.generic.template.ListReport',
+            'list': true,
+            'settings': {
+                'condensedTableLayout': true,
+                'smartVariantManagement': true,
+                'enableTableFilterInPageVariant': true,
+                'filterSettings': {
+                    'dateSettings': {
+                        'useDateRange': true
                     }
-                }
-            },
-            'pages': {
-                [`ObjectPage|${entitySet}`]: {
-                    'entitySet': entitySet,
-                    'defaultLayoutTypeIfExternalNavigation': 'MidColumnFullScreen',
-                    'component': {
-                        'name': 'sap.suite.ui.generic.template.ObjectPage',
-                        ...(navigationProperty && {
-                            'settings': {
-                                'sections': {
-                                    [`${navigationProperty}::com.sap.vocabularies.UI.v1.LineItem${
-                                        qualifier ? `::${qualifier}` : ''
-                                    }`]: {
-                                        'tableSettings': {
-                                            variantManagement,
-                                            ...(analyticalTable && { 'type': 'AnalyticalTable' })
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    }
+                },
+                'tableSettings': {
+                    'type': 'ResponsiveTable'
                 }
             }
         }
     };
+
+    const op = {
+        'entitySet': entitySet,
+        'defaultLayoutTypeIfExternalNavigation': 'MidColumnFullScreen',
+        'component': {
+            'name': 'sap.suite.ui.generic.template.ObjectPage',
+            ...(navigationProperty && {
+                'settings': {
+                    'sections': {
+                        [`${navigationProperty}::com.sap.vocabularies.UI.v1.LineItem${
+                            qualifier ? `::${qualifier}` : ''
+                        }`]: {
+                            'tableSettings': {
+                                variantManagement,
+                                ...(analyticalTable && { 'type': 'AnalyticalTable' })
+                            }
+                        }
+                    }
+                }
+            })
+        }
+    };
+    if (isManifestArray) {
+        result['sap.ui.generic.app']!.pages = [
+            {
+                ...listReport,
+                'pages': [op]
+            }
+        ];
+    } else {
+        result['sap.ui.generic.app']!.pages = {
+            [`ListReport|${entitySet}`]: {
+                ...listReport,
+                'pages': {
+                    [`ObjectPage|${entitySet}`]: op
+                }
+            }
+        };
+    }
 
     return result;
 }
@@ -253,7 +272,7 @@ export function createPackageJson(id: string): string {
     "private": true,
     "devDependencies": {
         "@sap-ux/ui5-middleware-fe-mockserver": "2.1.112",
-        "@ui5/cli": "3"
+        "@ui5/cli": "4"
     }
 }
 `;

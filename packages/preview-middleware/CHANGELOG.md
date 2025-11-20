@@ -1,5 +1,27 @@
 # @sap-ux/preview-middleware
 
+## 0.23.55
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+-   Updated dependencies [5475b5b]
+    -   @sap-ux/adp-tooling@0.18.4
+
+## 0.23.54
+
+### Patch Changes
+
+-   Updated dependencies [744fa93]
+    -   @sap-ux/adp-tooling@0.18.3
+
+## 0.23.53
+
+### Patch Changes
+
+-   Updated dependencies [92ec778]
+    -   @sap-ux/adp-tooling@0.18.2
+
 ## 0.23.52
 
 ### Patch Changes
