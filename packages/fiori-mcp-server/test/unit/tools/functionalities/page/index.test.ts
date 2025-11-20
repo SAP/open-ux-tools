@@ -66,6 +66,14 @@ beforeEach(() => {
 
 afterEach(() => jest.clearAllMocks());
 
+const getMockAppJsonV2 = (fileName = 'two-pages-spec-app.json') => {
+    const fileContent = readFileSync(join(__dirname, 'test-data', fileName), 'utf8');
+    // Mock as v2 application
+    const appJson = JSON.parse(fileContent);
+    appJson.target.fioriElements = appJson.target.odata = 'v2';
+    return appJson;
+};
+
 describe('add-page', () => {
     describe('getFunctionalityDetails', () => {
         test('case 1: Invalid project root or app path', async () => {
@@ -105,6 +113,20 @@ describe('add-page', () => {
                 {
                     dataSourceUri: 'app.json',
                     fileContent
+                }
+            ]);
+            const result = await addPageHandlers.getFunctionalityDetails({
+                appPath,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
+            });
+            expect(result).toMatchSnapshot();
+        });
+        test('case 4: v2', async () => {
+            const appJson = getMockAppJsonV2('two-pages-spec-app.json');
+            importProjectMock.mockResolvedValue([
+                {
+                    dataSourceUri: 'app.json',
+                    fileContent: JSON.stringify(appJson)
                 }
             ]);
             const result = await addPageHandlers.getFunctionalityDetails({
@@ -389,6 +411,133 @@ describe('add-page', () => {
                     }
                 ]"
             `);
+        });
+
+        describe('v2', () => {
+            beforeEach(() => {
+                const manifestDestPath = join(copyProjectRoot, 'app', 'managetravels', 'webapp', 'manifest.json');
+                const manifestData = JSON.parse(readFileSync(manifestDestPath, 'utf8'));
+                manifestData['sap.app'].dataSources.mainService.settings.odataVersion = '2.0';
+                writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
+            });
+            test('Add page', async () => {
+                const appJson = getMockAppJsonV2();
+                importProjectMock.mockResolvedValue([
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent: JSON.stringify(appJson)
+                    }
+                ]);
+                const result = await addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'ObjectPage'
+                    }
+                });
+                expect(result.appPath).toBe(appPath);
+                expect(result.message).toEqual(
+                    `Page with id 'ObjectPage_Expenses' of type 'ObjectPage' was created successfully in application '${join(
+                        'app',
+                        'managetravels'
+                    )}'`
+                );
+                expect(result.status).toBe('success');
+                expect(result.changes).toHaveLength(1);
+                expect(result.changes[0]).toContain('manifest.json');
+                expect(exportConfigMock).toHaveBeenCalledTimes(1);
+                const updatedAppConfig = exportConfigMock.mock.calls[0];
+                const pages = updatedAppConfig[0].v2.Application.application.pages;
+                expect(pages['ObjectPage_Expenses']).toEqual({
+                    entitySet: 'Expenses',
+                    navigation: {},
+                    navigationProperty: 'Expenses',
+                    pageType: 'ObjectPage'
+                });
+                expect(pages['TravelsObjectPage']).toEqual({
+                    contextPath: '/Travels',
+                    entitySet: 'Travels',
+                    entityType: 'manageTravelsSrv.Travels',
+                    navigation: {
+                        'ObjectPage_Expenses': 'Travels.Expenses'
+                    },
+                    pageType: 'ObjectPage',
+                    routePattern: 'Travels({key}):?query:',
+                    template: 'sap.fe.templates.ObjectPage'
+                });
+            });
+
+            test('Add page when navigation is not set in parent', async () => {
+                const appJson = getMockAppJsonV2();
+                delete appJson.pages['TravelsObjectPage'].navigation;
+                importProjectMock.mockResolvedValue([
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent: JSON.stringify(appJson)
+                    }
+                ]);
+                await addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        parentPage: 'TravelsObjectPage',
+                        pageNavigation: 'Expenses',
+                        pageType: 'ObjectPage'
+                    }
+                });
+                expect(exportConfigMock).toHaveBeenCalledTimes(1);
+                const updatedAppConfig = exportConfigMock.mock.calls[0];
+                const pages = updatedAppConfig[0].v2.Application.application.pages;
+                expect(pages['ObjectPage_Expenses']).toEqual({
+                    entitySet: 'Expenses',
+                    navigation: {},
+                    navigationProperty: 'Expenses',
+                    pageType: 'ObjectPage'
+                });
+                expect(pages['TravelsObjectPage']).toEqual({
+                    contextPath: '/Travels',
+                    entitySet: 'Travels',
+                    entityType: 'manageTravelsSrv.Travels',
+                    navigation: {
+                        'ObjectPage_Expenses': 'Travels.Expenses'
+                    },
+                    pageType: 'ObjectPage',
+                    routePattern: 'Travels({key}):?query:',
+                    template: 'sap.fe.templates.ObjectPage'
+                });
+            });
+
+            test('Add page when no any page', async () => {
+                const appJson = getMockAppJsonV2();
+                delete appJson.pages;
+                importProjectMock.mockResolvedValue([
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent: JSON.stringify(appJson)
+                    }
+                ]);
+                await addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
+                    parameters: {
+                        entitySet: 'Travels',
+                        pageType: 'ObjectPage'
+                    }
+                });
+                expect(exportConfigMock).toHaveBeenCalledTimes(1);
+                const updatedAppConfig = exportConfigMock.mock.calls[0];
+                const pages = updatedAppConfig[0].v2.Application.application.pages;
+                expect(pages).toEqual({
+                    'ObjectPage_Travels': {
+                        entitySet: 'Travels',
+                        navigation: {},
+                        navigationProperty: 'Travels',
+                        pageType: 'ObjectPage'
+                    }
+                });
+            });
         });
     });
 });
