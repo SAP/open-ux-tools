@@ -1636,13 +1636,14 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.113.0\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
+    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -2258,13 +2259,14 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
+    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -2880,13 +2882,14 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.121.0\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
+    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
