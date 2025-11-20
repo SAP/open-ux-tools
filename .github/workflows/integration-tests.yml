@@ -84,16 +84,36 @@ jobs:
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-            - name: Wait for blob report completion
+            - name: Wait for blob report completion and verify
               run: |
-                  sleep 2
-                  if [ -d "tests/integration/adaptation-editor/blob-report" ]; then
-                    echo "Blob report directory exists"
-                    ls -la tests/integration/adaptation-editor/blob-report/
-                  else
+                  cd tests/integration/adaptation-editor
+                  echo "Waiting for blob report to complete..."
+                  sleep 5
+                  
+                  # Check if blob report directory exists
+                  if [ ! -d "blob-report" ]; then
                     echo "ERROR: Blob report directory not found"
                     exit 1
                   fi
+                  
+                  # Wait for file stability (no size changes for 3 seconds)
+                  for i in {1..10}; do
+                    if [ -f "blob-report/report.zip" ]; then
+                      size1=$(stat -f%z "blob-report/report.zip" 2>/dev/null || stat -c%s "blob-report/report.zip" 2>/dev/null || echo 0)
+                      sleep 3
+                      size2=$(stat -f%z "blob-report/report.zip" 2>/dev/null || stat -c%s "blob-report/report.zip" 2>/dev/null || echo 0)
+                      if [ "$size1" = "$size2" ] && [ "$size1" -gt 0 ]; then
+                        echo "Blob report stable at size: $size1 bytes"
+                        break
+                      fi
+                      echo "Blob report still changing size: $size1 -> $size2"
+                    else
+                      echo "Waiting for report.zip to appear..."
+                      sleep 2
+                    fi
+                  done
+                  
+                  ls -la blob-report/
             - name: Upload blob report
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
@@ -159,17 +179,37 @@ jobs:
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-            - name: Wait for blob report completion
+            - name: Wait for blob report completion and verify
               run: |
-                  sleep 2
-                  if [ -d "tests/integration/adaptation-editor/blob-report" ]; then
-                    echo "Blob report directory exists"
-                    ls -la tests/integration/adaptation-editor/blob-report/
-                  else
-                    echo "ERROR: Blob report directory not found"
+                  cd tests/integration/adaptation-editor
+                  echo "Waiting for blob report to complete..."
+                  Start-Sleep -Seconds 5
+                  
+                  # Check if blob report directory exists
+                  if (!(Test-Path "blob-report")) {
+                    Write-Error "ERROR: Blob report directory not found"
                     exit 1
-                  fi
-              shell: bash
+                  }
+                  
+                  # Wait for file stability
+                  for ($i = 1; $i -le 10; $i++) {
+                    if (Test-Path "blob-report/report.zip") {
+                      $size1 = (Get-Item "blob-report/report.zip").Length
+                      Start-Sleep -Seconds 3
+                      $size2 = (Get-Item "blob-report/report.zip").Length
+                      if ($size1 -eq $size2 -and $size1 -gt 0) {
+                        Write-Output "Blob report stable at size: $size1 bytes"
+                        break
+                      }
+                      Write-Output "Blob report still changing size: $size1 -> $size2"
+                    } else {
+                      Write-Output "Waiting for report.zip to appear..."
+                      Start-Sleep -Seconds 2
+                    }
+                  }
+                  
+                  Get-ChildItem blob-report
+              shell: powershell
             - name: Upload blob report
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
@@ -183,39 +223,60 @@ jobs:
         needs: [ubuntu-tests, windows-tests]
         runs-on: ubuntu-latest
         steps:
-            - name: Setup Node.js
+            - name: Checkout code repository
+              uses: actions/checkout@v4
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  run_install: true
+            - name: Cache pnpm modules
+              uses: actions/cache@v4
+              env:
+                  cache-name: cache-pnpm-modules
+              with:
+                  path: ~/.pnpm-store
+                  key: merge-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: merge-build-${{ env.cache-name }}-20.x-
+            - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
                   node-version: 20.x
-            - name: Install Playwright
-              run: npm install -g playwright@latest
+            - name: Install dependencies
+              run: pnpm install
             - name: Download blob reports
               uses: actions/download-artifact@v4
               with:
                   path: all-blob-reports
                   pattern: blob-report-*
                   merge-multiple: true
-            - name: List downloaded files for debugging
+            - name: Verify and list downloaded files
               run: |
                   echo "Downloaded files:"
                   find all-blob-reports -type f -ls
-                  echo "File sizes:"
-                  find all-blob-reports -name "*.zip" -exec ls -lh {} \;
-            - name: Verify blob reports
-              run: |
-                  echo "Checking blob report integrity..."
+                  
+                  echo -e "\nFile integrity check:"
                   for file in all-blob-reports/*.zip; do
                     if [ -f "$file" ]; then
-                      echo "Checking $file..."
-                      unzip -t "$file" || echo "Warning: $file may be corrupted"
+                      echo "Checking $file ($(stat -c%s "$file") bytes)..."
+                      if unzip -t "$file" >/dev/null 2>&1; then
+                        echo "✅ $file is valid"
+                      else
+                        echo "❌ $file is corrupted - removing"
+                        rm -f "$file"
+                      fi
                     fi
                   done
+                  
+                  echo -e "\nRemaining valid files:"
+                  find all-blob-reports -name "*.zip" -exec ls -lh {} \;
             - name: Merge into HTML Report
               run: |
-                  playwright merge-reports --reporter html ./all-blob-reports
+                  cd tests/integration/adaptation-editor
+                  echo "Merging reports from ../../../all-blob-reports"
+                  npx playwright merge-reports --reporter html ../../../all-blob-reports
             - name: Upload unified HTML report
               uses: actions/upload-artifact@v4
               with:
                   name: playwright-report-unified-${{ github.run_attempt }}
-                  path: playwright-report
+                  path: tests/integration/adaptation-editor/playwright-report
                   retention-days: 15
