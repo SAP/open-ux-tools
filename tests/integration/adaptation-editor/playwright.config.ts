@@ -10,6 +10,23 @@ import type { PlaywrightTestConfig, Project, ReporterDescription } from '@sap-ux
 import 'dotenv/config';
 
 import type { TestOptions } from './src/fixture';
+import { platform } from 'node:os';
+
+/**
+ * Get the operating system name.
+ *
+ * @returns The name of the operating system
+ */
+function getOsName(): string {
+    const osPlatform = platform();
+    if (osPlatform === 'darwin') {
+        return 'macOS';
+    }
+    if (osPlatform === 'win32') {
+        return 'Windows';
+    }
+    return 'Ubuntu';
+}
 
 let versions;
 try {
@@ -66,7 +83,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
     },
     /* Configure projects for major browsers */
     projects: versions.map((version: string) => ({
-        name: `${version}`,
+        name: `${getOsName()}-${version}`,
         use: {
             ...devices['Desktop Chrome'],
             channel: 'chrome',
