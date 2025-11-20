@@ -8,6 +8,7 @@ import { t } from '../../i18n';
 import type { OdataServiceAnswers } from '../../types';
 import { DatasourceType } from '../../types';
 import { getExternalServiceReferences, OdataVersion } from '@sap-ux/odata-service-writer';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 import {
     sendValueHelpDetectedTelemetry,
     sendValueHelpDownloadDecisionTelemetry,
@@ -19,13 +20,13 @@ import {
  *
  * @param connectionValidator - The connection validator instance used to access service providers and configuration
  * @param promptNamespace - The namespace for the prompt to avoid conflicts with other prompt instances
- * @param hideValueHelpDownload - Optional flag to hide the value help download prompt
+ * @param promptOptions - Optional prompt options including hide functionality
  * @returns The confirm question for value help download
  */
 export function getValueHelpDownloadPrompt(
     connectionValidator: ConnectionValidator,
     promptNamespace: string,
-    hideValueHelpDownload?: boolean
+    promptOptions?: CommonPromptOptions
 ): ConfirmQuestion {
     const valueHelpDownloadConfirmName = `${promptNamespace}:valueHelpDownloadConfirm`;
     let lastProcessedServicePath: string | undefined;
@@ -141,7 +142,7 @@ export function getValueHelpDownloadPrompt(
     const question = {
         when: (_answers: OdataServiceAnswers) => {
             // Don't show the prompt if it's explicitly hidden
-            if (hideValueHelpDownload) {
+            if (promptOptions?.hide) {
                 return false;
             }
             return detectValueListReferences();

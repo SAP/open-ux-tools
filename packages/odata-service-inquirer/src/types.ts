@@ -358,7 +358,7 @@ export type ServiceSelectionPromptOptions = {
      * A list of service ids ({@link ODataServiceInfo.id}), used to filter the catalog results
      */
     serviceFilter?: string[];
-} & Pick<CommonPromptOptions, 'additionalMessages' | 'hideValueHelpDownload'>; // Service selection prompts allow extension with additional messages;
+} & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
     /**

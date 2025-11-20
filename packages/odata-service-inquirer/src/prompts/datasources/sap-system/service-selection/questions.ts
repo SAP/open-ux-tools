@@ -183,7 +183,7 @@ export function getSystemServiceQuestion(
     const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
 
     // Add value help download prompt for V4 services (unless explicitly hidden)
-    questions.push(getValueHelpDownloadPrompt(connectValidator, promptNamespace, promptOptions?.hideValueHelpDownload));
+    questions.push(getValueHelpDownloadPrompt(connectValidator, promptNamespace));
 
     // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
     if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.useAutoComplete) {

@@ -137,11 +137,6 @@ export type CommonPromptOptions<T extends Answers = Answers> = {
     hide?: boolean;
     validate?: Validator<T>;
     additionalMessages?: PromptSeverityMessage;
-    /**
-     * This allows the value help download prompt to be excluded where consuming generators do not require value help functionality.
-     * If the value help download prompt is hidden then the valueListReferences answer property will not be returned.
-     */
-    hideValueHelpDownload?: boolean;
 };
 
 // Default value type for input prompt options
