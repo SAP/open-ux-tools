@@ -11,6 +11,7 @@ jobs:
         outputs:
             ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
             latest_ui5_version: ${{ steps.output-ui5-versions.outputs.latest_ui5_version }}
+            second_lowest_ui5_version: ${{ steps.output-ui5-versions.outputs.second_lowest_ui5_version }}
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v4
@@ -26,8 +27,10 @@ jobs:
                   cat tests/integration/adaptation-editor/versions.json
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
                   echo "latest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[0]')" >> $GITHUB_OUTPUT
+                  echo "second_lowest_ui5_version=$(cat tests/integration/adaptation-editor/versions.json | jq -r '.[-2]')" >> $GITHUB_OUTPUT
 
     ubuntu-tests:
+        name: ubuntu-tests (${{ matrix.ui5-version }})
         strategy:
             fail-fast: false
             matrix:
@@ -81,6 +84,16 @@ jobs:
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Wait for blob report completion
+              run: |
+                  sleep 2
+                  if [ -d "tests/integration/adaptation-editor/blob-report" ]; then
+                    echo "Blob report directory exists"
+                    ls -la tests/integration/adaptation-editor/blob-report/
+                  else
+                    echo "ERROR: Blob report directory not found"
+                    exit 1
+                  fi
             - name: Upload blob report
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
@@ -90,6 +103,13 @@ jobs:
                   retention-days: 1
 
     windows-tests:
+        name: windows-tests (${{ matrix.ui5-version }})
+        strategy:
+            fail-fast: false
+            matrix:
+                ui5-version: 
+                  - ${{ needs.ui5-versions.outputs.latest_ui5_version }}
+                  - ${{ needs.ui5-versions.outputs.second_lowest_ui5_version }}
         runs-on: windows-2025
         needs: ui5-versions
         timeout-minutes: 30
@@ -136,14 +156,25 @@ jobs:
                   key: ui5-versions-
                   restore-keys: ui5-versions-
             - name: Run playwright tests
-              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ needs.ui5-versions.outputs.latest_ui5_version }} --reporter=blob
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Wait for blob report completion
+              run: |
+                  sleep 2
+                  if [ -d "tests/integration/adaptation-editor/blob-report" ]; then
+                    echo "Blob report directory exists"
+                    ls -la tests/integration/adaptation-editor/blob-report/
+                  else
+                    echo "ERROR: Blob report directory not found"
+                    exit 1
+                  fi
+              shell: bash
             - name: Upload blob report
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
-                  name: blob-report-windows-${{ needs.ui5-versions.outputs.latest_ui5_version }}
+                  name: blob-report-windows-${{ matrix.ui5-version }}
                   path: tests/integration/adaptation-editor/blob-report
                   retention-days: 1
 
@@ -152,14 +183,36 @@ jobs:
         needs: [ubuntu-tests, windows-tests]
         runs-on: ubuntu-latest
         steps:
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20.x
+            - name: Install Playwright
+              run: npm install -g playwright@latest
             - name: Download blob reports
               uses: actions/download-artifact@v4
               with:
                   path: all-blob-reports
                   pattern: blob-report-*
                   merge-multiple: true
+            - name: List downloaded files for debugging
+              run: |
+                  echo "Downloaded files:"
+                  find all-blob-reports -type f -ls
+                  echo "File sizes:"
+                  find all-blob-reports -name "*.zip" -exec ls -lh {} \;
+            - name: Verify blob reports
+              run: |
+                  echo "Checking blob report integrity..."
+                  for file in all-blob-reports/*.zip; do
+                    if [ -f "$file" ]; then
+                      echo "Checking $file..."
+                      unzip -t "$file" || echo "Warning: $file may be corrupted"
+                    fi
+                  done
             - name: Merge into HTML Report
-              run: npx playwright merge-reports --reporter html ./all-blob-reports
+              run: |
+                  playwright merge-reports --reporter html ./all-blob-reports
             - name: Upload unified HTML report
               uses: actions/upload-artifact@v4
               with:
