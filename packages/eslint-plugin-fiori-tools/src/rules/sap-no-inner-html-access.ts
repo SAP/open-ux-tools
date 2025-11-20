@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, type IdentifierNode, type LiteralNode, isIdentifier, isLiteral } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -29,40 +30,6 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         * Check if a node is a Literal.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a Literal
-         */
-        function isLiteral(node: any): boolean {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
 
@@ -72,12 +39,12 @@ const rule: Rule.RuleModule = {
          * @param property The property node to validate
          * @returns True if the property access is valid
          */
-        function isValid(property: any): boolean {
+        function isValid(property: ASTNode): boolean {
             // anything is valid, except 'innerHTML'
             if (isIdentifier(property)) {
-                return property.name !== 'innerHTML';
+                return (property as IdentifierNode).name !== 'innerHTML';
             } else if (isLiteral(property)) {
-                return property.value !== 'innerHTML';
+                return (property as LiteralNode).value !== 'innerHTML';
             }
             return true;
         }
@@ -86,8 +53,8 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'MemberExpression': function (node): void {
-                if (!isValid(node.property)) {
+            'MemberExpression'(node: ASTNode): void {
+                if (!isValid((node as any).property)) {
                     context.report({ node: node, messageId: 'innerHtmlAccess' });
                 }
             }

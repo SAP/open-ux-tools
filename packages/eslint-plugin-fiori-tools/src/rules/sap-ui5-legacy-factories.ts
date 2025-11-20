@@ -3,6 +3,7 @@
 // ------------------------------------------------------------------------------
 
 import type { Rule } from 'eslint';
+import type { ASTNode } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -21,7 +22,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: Rule.RuleContext): Rule.NodeListener {
         const INTERESTING_METHODS = [
             'jsview',
             'component',
@@ -86,8 +87,8 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to check
          * @returns True if the call expression represents an interesting legacy factory usage
          */
-        function isInteresting(node: any): boolean {
-            const callee = node.callee;
+        function isInteresting(node: ASTNode): boolean {
+            const callee = (node as any).callee;
             if (isMember(callee)) {
                 if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
                     if (isMember(callee.object) && callee.object.property.name == 'ui') {

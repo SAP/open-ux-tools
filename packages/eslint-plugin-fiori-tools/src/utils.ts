@@ -20,13 +20,13 @@ export const getResourcePaths = (): { sourceCodePath: string; testCodePath?: str
             sourceCodePath = 'src';
             testCodePath = 'test';
             if (ui5Yaml.resources?.configuration?.paths?.src) {
-                sourceCodePath = ui5Yaml.resources.configuration.paths.src;
+                sourceCodePath = ui5Yaml.resources.configuration.paths.src as string;
             }
             if (ui5Yaml.resources?.configuration?.paths?.test) {
-                testCodePath = ui5Yaml.resources.configuration.paths.test;
+                testCodePath = ui5Yaml.resources.configuration.paths.test as string;
             }
         } else if (ui5Yaml.resources?.configuration?.paths?.webapp) {
-            sourceCodePath = ui5Yaml.resources.configuration.paths.webapp;
+            sourceCodePath = ui5Yaml.resources.configuration.paths.webapp as string;
         }
     }
     return { sourceCodePath, testCodePath };

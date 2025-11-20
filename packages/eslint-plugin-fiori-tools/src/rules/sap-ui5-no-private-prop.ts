@@ -4,6 +4,7 @@
 
 import type { Rule } from 'eslint';
 import {
+    type ASTNode,
     isIdentifier,
     isCall,
     startsWith,
@@ -58,7 +59,7 @@ const rule: Rule.RuleModule = {
          * @param array The array to remove duplicates from
          * @returns Array with duplicates removed
          */
-        function uniquifyArray(array): any[] {
+        function uniquifyArray<T>(array: T[]): T[] {
             const a = array.concat();
             for (let i = 0; i < a.length; ++i) {
                 for (let j = i + 1; j < a.length; ++j) {
@@ -69,7 +70,7 @@ const rule: Rule.RuleModule = {
             }
             return a;
         }
-        const customNS = context.options[0]?.ns ? context.options[0].ns : [];
+        const customNS = (context.options[0]?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [
@@ -130,7 +131,7 @@ const rule: Rule.RuleModule = {
          * @param path The path string to analyze
          * @returns True if the path is interesting for private property analysis
          */
-        function isinterestingPath(path): boolean {
+        function isinterestingPath(path: string): boolean {
             let i;
             const options = configuration.ns;
             if (contains(IGNORE, path)) {
@@ -156,18 +157,17 @@ const rule: Rule.RuleModule = {
          * @param identifier The identifier string to check
          * @returns True if the identifier is a special case for member expressions
          */
-        function isSpecialCaseIdentifierForMemberExpression(identifier): boolean {
+        function isSpecialCaseIdentifierForMemberExpression(identifier: string): boolean {
             return identifier === '__proto__';
         }
 
         return {
             'VariableDeclarator': processVariableDeclarator,
-            // "AssignmentExpression": function(node) {},
-            'MemberExpression': function (node): void {
-                if (!node.property || !('name' in node.property)) {
+            'MemberExpression'(node: ASTNode): void {
+                if (!(node as any).property || !('name' in (node as any).property)) {
                     return;
                 }
-                const identifier = node.property.name;
+                const identifier = (node as any).property.name;
 
                 if (
                     typeof identifier !== 'undefined' &&
@@ -186,9 +186,9 @@ const rule: Rule.RuleModule = {
                             path = resolveIdentifierPath(path, VARIABLES);
                             if (
                                 isinterestingPath(path) &&
-                                isIdentifier(node.property) &&
-                                'name' in node.property &&
-                                (!isCall(node.parent) || hasUnderscore(node.property.name))
+                                isIdentifier((node as any).property) &&
+                                'name' in (node as any).property &&
+                                (!isCall((node as any).parent) || hasUnderscore((node as any).property.name))
                             ) {
                                 context.report({ node: node, messageId: 'privateProperty' });
                             }

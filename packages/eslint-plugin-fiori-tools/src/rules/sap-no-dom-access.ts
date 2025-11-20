@@ -4,6 +4,7 @@
 
 import type { Rule } from 'eslint';
 import {
+    type ASTNode,
     isIdentifier,
     contains,
     createIsWindowObject,
@@ -63,8 +64,8 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting DOM access
          */
-        function isInteresting(node: any): boolean {
-            return node && isDocumentObject(node.object);
+        function isInteresting(node: ASTNode): boolean {
+            return node && isDocumentObject((node as any).object);
         }
 
         /**
@@ -73,21 +74,30 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to validate
          * @returns True if the DOM access is valid
          */
-        function isValid(node: any): boolean {
-            return !(isIdentifier(node.property) && contains(FORBIDDEN_DOCUMENT_METHODS, node.property.name));
+        function isValid(node: ASTNode): boolean {
+            return !(
+                isIdentifier((node as any).property) &&
+                contains(FORBIDDEN_DOCUMENT_METHODS, (node as any).property.name)
+            );
         }
 
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node): boolean {
-                return rememberWindow(node.id, node.init) || rememberDocument(node.id, node.init);
+            'VariableDeclarator'(node: ASTNode): boolean {
+                return (
+                    rememberWindow((node as any).id, (node as any).init) ||
+                    rememberDocument((node as any).id, (node as any).init)
+                );
             },
-            'AssignmentExpression': function (node): boolean {
-                return rememberWindow(node.left, node.right) || rememberDocument(node.left, node.right);
+            'AssignmentExpression'(node: ASTNode): boolean {
+                return (
+                    rememberWindow((node as any).left, (node as any).right) ||
+                    rememberDocument((node as any).left, (node as any).right)
+                );
             },
-            'MemberExpression': function (node): void {
+            'MemberExpression'(node: ASTNode): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'domAccess' });
                 }

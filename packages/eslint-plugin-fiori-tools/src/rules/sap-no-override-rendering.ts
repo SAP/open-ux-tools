@@ -50,7 +50,7 @@ const rule: Rule.RuleModule = {
          * @param array The array to remove duplicates from
          * @returns Array with duplicates removed
          */
-        function uniquifyArray(array: any[]): any[] {
+        function uniquifyArray<T>(array: T[]): T[] {
             const a = array.concat();
             for (let i = 0; i < a.length; ++i) {
                 for (let j = i + 1; j < a.length; ++j) {
@@ -107,7 +107,7 @@ const rule: Rule.RuleModule = {
                 ].concat(customNS)
             )
         };
-        const ui5ObjectsToCheck: any[] = [];
+        const ui5ObjectsToCheck: string[] = [];
         const CHECKED_METHODS = ['onBeforeRendering', 'onAfterRendering'];
 
         // --------------------------------------------------------------------------
@@ -121,7 +121,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a: any[], obj: any): boolean {
+        function contains(a: string[], obj: string): boolean {
             return a.includes(obj);
         }
 

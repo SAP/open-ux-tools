@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -28,7 +29,7 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        const WINDOW_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
 
         // --------------------------------------------------------------------------
         // Basic Helpers
@@ -40,7 +41,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any): boolean {
+        function isType(node: any, type: string): boolean {
             return node?.type === type;
         }
 
@@ -71,7 +72,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a: any[], obj: any): boolean {
+        function contains(a: string[], obj: string): boolean {
             return a.includes(obj);
         }
 
@@ -83,7 +84,7 @@ const rule: Rule.RuleModule = {
          */
         function isWindow(node: any): boolean {
             // true if node is the global variable 'window'
-            return isIdentifier(node) && node.name === 'window';
+            return isIdentifier(node) && (node as any).name === 'window';
         }
 
         /**
@@ -94,7 +95,7 @@ const rule: Rule.RuleModule = {
          */
         function isWindowObject(node: any): boolean {
             // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
+            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, (node as any).name));
         }
 
         // --------------------------------------------------------------------------
@@ -109,7 +110,7 @@ const rule: Rule.RuleModule = {
          */
         function rememberWindow(left: any, right: any): boolean {
             if (isWindowObject(right) && isIdentifier(left)) {
-                WINDOW_OBJECTS.push(left.name);
+                WINDOW_OBJECTS.push((left as any).name);
                 return true;
             }
             return false;
@@ -119,15 +120,19 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node): boolean {
-                return rememberWindow(node.id, node.init);
+            'VariableDeclarator'(node: ASTNode): boolean {
+                return rememberWindow((node as any).id, (node as any).init);
             },
-            'AssignmentExpression': function (node): boolean {
+            'AssignmentExpression'(node: ASTNode): boolean {
                 // check if anything is assigned to a window property
-                if (isMember(node.left) && 'object' in node.left && isWindowObject(node.left.object)) {
+                if (
+                    isMember((node as any).left) &&
+                    'object' in (node as any).left &&
+                    isWindowObject((node as any).left.object)
+                ) {
                     context.report({ node: node, messageId: 'globalDefine' });
                 }
-                return rememberWindow(node.left, node.right);
+                return rememberWindow((node as any).left, (node as any).right);
             }
         };
     }

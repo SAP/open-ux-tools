@@ -95,6 +95,7 @@ const rule: Rule.RuleModule = {
                     }
                 }
             }
+            return undefined;
         }
 
         /**

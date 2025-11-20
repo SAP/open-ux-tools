@@ -4,6 +4,7 @@
 
 import type { Rule } from 'eslint';
 import {
+    type ASTNode,
     isIdentifier,
     isCall,
     isLiteral,
@@ -68,8 +69,8 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting element creation call
          */
-        function isInteresting(node: any): boolean {
-            return node && isCall(node.parent) && isDocumentObject(node.object);
+        function isInteresting(node: ASTNode): boolean {
+            return node && isCall((node as any).parent) && isDocumentObject((node as any).object);
         }
 
         /**
@@ -78,23 +79,23 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to validate
          * @returns True if the element creation call is valid
          */
-        function isValid(node: any): boolean {
-            let methodName: any = false;
+        function isValid(node: ASTNode): boolean {
+            let methodName: string | false = false;
 
-            if (isIdentifier(node.property)) {
-                methodName = node.property.name;
-            } else if (isLiteral(node.property)) {
-                methodName = node.property.value;
+            if (isIdentifier((node as any).property)) {
+                methodName = (node as any).property.name;
+            } else if (isLiteral((node as any).property)) {
+                methodName = (node as any).property.value;
             }
             return (
                 methodName &&
                 (!contains(FORBIDDEN_DOM_INSERTION, methodName) ||
                     (methodName === 'createElement' &&
-                        isCall(node.parent) &&
-                        node.parent.arguments &&
-                        node.parent.arguments.length > 0 &&
-                        isLiteral(node.parent.arguments[0]) &&
-                        node.parent.arguments[0].value === 'a'))
+                        isCall((node as any).parent) &&
+                        (node as any).parent.arguments &&
+                        (node as any).parent.arguments.length > 0 &&
+                        isLiteral((node as any).parent.arguments[0]) &&
+                        (node as any).parent.arguments[0].value === 'a'))
             );
         }
 
@@ -102,13 +103,19 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node): boolean {
-                return rememberWindow(node.id, node.init) || rememberDocument(node.id, node.init);
+            'VariableDeclarator'(node: ASTNode): boolean {
+                return (
+                    rememberWindow((node as any).id, (node as any).init) ||
+                    rememberDocument((node as any).id, (node as any).init)
+                );
             },
-            'AssignmentExpression': function (node): boolean {
-                return rememberWindow(node.left, node.right) || rememberDocument(node.left, node.right);
+            'AssignmentExpression'(node: ASTNode): boolean {
+                return (
+                    rememberWindow((node as any).left, (node as any).right) ||
+                    rememberDocument((node as any).left, (node as any).right)
+                );
             },
-            'MemberExpression': function (node): void {
+            'MemberExpression'(node: ASTNode): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'elementCreation' });
                 }

@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -25,99 +26,14 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if a string starts with a substring.
-         *
-         * @param base The base string to check
-         * @param sub The substring to look for at the start
-         * @returns True if the base string starts with the substring
-         */
-        function startsWith(base: string, sub: string): boolean {
-            if (base.indexOf) {
-                return base.indexOf(sub) === 0;
-            }
-            return false;
-        }
-
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a Literal.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a Literal
-         */
-        function isLiteral(node: any): boolean {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if a node is an ArrayExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an ArrayExpression
-         */
-        function isArray(node: any): boolean {
-            return isType(node, 'ArrayExpression');
-        }
-
-        /**
-         * Convert a member expression to a string representation.
-         *
-         * @param node The AST node to convert
-         * @returns String representation of the member expression
-         */
-        function getMemberAsString(node: any): string {
-            if (isMember(node)) {
-                return getMemberAsString(node.object) + '.' + getMemberAsString(node.property);
-            } else if (isLiteral(node)) {
-                return node.value;
-            } else if (isIdentifier(node)) {
-                return node.name;
-            }
-            return '';
-        }
-
         /**
          * Check if a node represents an interesting function call to analyze.
          *
          * @param node The AST node to check
          * @returns True if the node represents an interesting function call
          */
-        function isInteresting(node: any): boolean {
-            const callee = node.callee;
+        function isInteresting(node: ASTNode): boolean {
+            const callee = (node as any).callee;
             if (isMember(callee)) {
                 if (getMemberAsString(callee) === 'sap.ui.define') {
                     return true;
@@ -132,13 +48,14 @@ const rule: Rule.RuleModule = {
          * @param node The function call node to validate
          * @returns True if the function call has valid imports, false if it contains commons usage
          */
-        function isValid(node: any): boolean {
-            if (node.arguments && isArray(node.arguments[0])) {
-                const importList = node.arguments[0].elements;
+        function isValid(node: ASTNode): boolean {
+            const nodeWithArgs = node as any;
+            if (nodeWithArgs.arguments && isArray(nodeWithArgs.arguments[0])) {
+                const importList = (nodeWithArgs.arguments[0] as any).elements;
                 for (const key in importList) {
                     if (importList.hasOwnProperty(key)) {
                         const lib = importList[key];
-                        if (isLiteral(lib) && startsWith(lib.value, 'sap/ui/commons')) {
+                        if (isLiteral(lib) && startsWith((lib as any).value, 'sap/ui/commons')) {
                             return false;
                         }
                     }
@@ -148,12 +65,15 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'NewExpression': function (node): void {
-                if (isMember(node.callee) && startsWith(getMemberAsString(node.callee), 'sap.ui.commons')) {
+            'NewExpression'(node: ASTNode): void {
+                if (
+                    isMember((node as any).callee) &&
+                    startsWith(getMemberAsString((node as any).callee), 'sap.ui.commons')
+                ) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }
             },
-            'CallExpression': function (node): void {
+            'CallExpression'(node: ASTNode): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }
