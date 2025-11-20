@@ -81,7 +81,7 @@ jobs:
                   key: ui5-versions-
                   restore-keys: ui5-versions-
             - name: Run playwright tests
-              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=Ubuntu-${{ matrix.ui5-version }} --reporter=blob
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Wait for blob report completion and verify
@@ -176,7 +176,7 @@ jobs:
                   key: ui5-versions-
                   restore-keys: ui5-versions-
             - name: Run playwright tests
-              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=Windows-${{ matrix.ui5-version }} --reporter=blob
               env:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Wait for blob report completion and verify

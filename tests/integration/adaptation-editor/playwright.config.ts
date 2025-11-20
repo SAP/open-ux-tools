@@ -83,7 +83,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
     },
     /* Configure projects for major browsers */
     projects: versions.map((version: string) => ({
-        name: `${getOsName()}-${version}`,
+        name: process.env.CI ? `${getOsName()}-${version}` : version,
         use: {
             ...devices['Desktop Chrome'],
             channel: 'chrome',
