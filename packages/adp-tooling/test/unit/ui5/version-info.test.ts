@@ -12,7 +12,12 @@ import {
 } from '../../../src/ui5/version-info';
 import type { UI5Version } from '../../../src';
 import { fetchInternalVersions } from '../../../src/ui5/fetch';
-import { LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../../../src/base/constants';
+import {
+    CURRENT_SYSTEM_VERSION,
+    LATEST_VERSION,
+    SNAPSHOT_UNTESTED_VERSION,
+    SNAPSHOT_VERSION
+} from '../../../src/base/constants';
 
 jest.mock('../../../src/ui5/fetch', () => ({
     fetchInternalVersions: jest.fn()
@@ -238,6 +243,22 @@ describe('Version Info', () => {
             // When a snapshot label is present for a customer base, it returns
             // an array containing only the latest public version.
             expect(result).toEqual(['1.120.0 ' + LATEST_VERSION]);
+        });
+
+        it('should return system version and latest version when there are no higher versions and system version differs from latest', async () => {
+            const olderPublicVersions = {
+                latest: { version: '1.118.0' },
+                '1.118.0': { version: '1.118.0' },
+                '1.117.0': { version: '1.117.0' }
+            } as unknown as UI5Version;
+
+            formatUi5VersionMock.mockReturnValue('1.119.5');
+            addSnapshotMock.mockReturnValue('');
+            buildSystemVersionLabelMock.mockReturnValue('1.119.5 (system version)');
+
+            const result = await getRelevantVersions('1.119.5', true, olderPublicVersions);
+
+            expect(result).toEqual(['1.119.5 ' + CURRENT_SYSTEM_VERSION, '1.118.0 ' + LATEST_VERSION]);
         });
 
         it('should handle an undefined systemVersion for external users', async () => {
