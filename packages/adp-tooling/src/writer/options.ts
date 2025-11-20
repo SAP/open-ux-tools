@@ -384,20 +384,14 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
     };
 
     const oauthPaths = config.cf?.oauthPaths;
-    if (oauthPaths && oauthPaths.length > 0) {
-        const backendConfig: FioriToolsProxyConfigBackend[] = [];
-        if (config.cf.backendUrl) {
-            backendConfig.push({
-                path: '/odata',
-                url: config.cf.backendUrl
-            });
-        }
-
+    const backendUrl = config.cf?.backendUrl;
+    if (oauthPaths && oauthPaths.length > 0 && backendUrl) {
         ui5Config.addCustomMiddleware([
             {
                 name: 'cf-oauth-middleware',
                 afterMiddleware: 'compression',
                 configuration: {
+                    url: backendUrl,
                     paths: oauthPaths
                 }
             }
@@ -405,7 +399,7 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
         ui5Config.addFioriToolsProxyMiddleware(
             {
                 ui5: ui5ConfigOptions,
-                backend: backendConfig
+                backend: []
             },
             'cf-oauth-middleware'
         );

@@ -3,10 +3,15 @@
  */
 export interface CfOAuthMiddlewareConfig {
     /**
-     * Path prefixes to match requests (e.g., ['/odata/v4', '/odata/v2']).
-     * Only requests starting with these paths will get Bearer tokens.
+     * Destination URL to proxy requests to.
      */
-    paths?: string[];
+    url: string;
+    /**
+     * Array of OData source paths to proxy to this destination.
+     * Each path represents an OData service that should be proxied to the destination URL.
+     * Requests matching these paths will have the path prefix removed before forwarding.
+     */
+    paths: string[];
     /**
      * Manual OAuth credentials (optional).
      * If not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.

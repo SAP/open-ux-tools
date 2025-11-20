@@ -50,24 +50,24 @@ export function createManagerFromOAuthCredentials(
  *
  * @param {string} projectPath - Path to the project root.
  * @param {ToolsLogger} logger - Logger instance.
- * @returns {Promise<OAuthTokenManager | null>} Manager instance or null if not CF ADP project.
+ * @returns {Promise<OAuthTokenManager>} Manager instance.
  */
 export async function createManagerFromCfAdpProject(
     projectPath: string,
     logger: ToolsLogger
-): Promise<OAuthTokenManager | null> {
+): Promise<OAuthTokenManager> {
     try {
         const ui5Yaml = await readUi5Yaml(projectPath, FileName.Ui5Yaml);
         const cfBuildTask = ui5Yaml.findCustomTask<UI5YamlCustomTaskConfiguration>(CF_BUILD_TASK)?.configuration;
 
         if (!cfBuildTask) {
-            return null;
+            throw new Error('No CF ADP project found');
         }
 
         const name = cfBuildTask.serviceInstanceName;
         const guid = cfBuildTask.serviceInstanceGuid;
         if (!name || !guid) {
-            return null;
+            throw new Error('No service instance name or guid found in CF ADP project');
         }
 
         const credentials = await getOrCreateServiceKeys(
@@ -80,12 +80,12 @@ export async function createManagerFromCfAdpProject(
 
         if (!credentials || credentials.length === 0) {
             logger.warn('No service keys found for CF ADP project');
-            return null;
+            throw new Error('No service keys found for CF ADP project');
         }
 
         return createManagerFromCredentials(credentials[0], logger);
-    } catch (error: any) {
-        logger.debug(`Error detecting CF ADP project: ${error.message}`);
-        return null;
+    } catch (e) {
+        logger.debug(`Error detecting CF ADP project: ${e.message}`);
+        throw new Error(`Error detecting CF ADP project: ${e.message}`);
     }
 }

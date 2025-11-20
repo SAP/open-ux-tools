@@ -1,14 +1,18 @@
 import type { RequestHandler, Request, Response, NextFunction } from 'express';
+import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
 import type { MiddlewareParameters } from './types';
+import { createProxyOptions } from './proxy-config';
 import type { CfOAuthMiddlewareConfig } from './types';
 import type { OAuthTokenManager } from './oauth-manager';
-import { createManagerFromOAuthCredentials, createManagerFromCfAdpProject } from './token-manager-factory';
+import { createManagerFromOAuthCredentials, createManagerFromCfAdpProject } from './token-factory';
 
 /**
- * UI5 middleware for adding OAuth2 Bearer tokens to requests for CF ADP projects.
+ * UI5 middleware for proxying requests to Cloud Foundry destinations with OAuth2 authentication.
+ * Supports one destination URL with multiple OData source paths.
  *
  * @param {MiddlewareParameters<CfOAuthMiddlewareConfig>} params - Input parameters for UI5 middleware.
  * @param {CfOAuthMiddlewareConfig} params.options - Configuration options.
@@ -22,17 +26,25 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
 
     const config = options.configuration || {};
 
-    let paths: string[] = [];
-    if (config.paths && Array.isArray(config.paths) && config.paths.length > 0) {
-        paths = config.paths;
+    if (!config.url) {
+        logger.warn('CF OAuth middleware requires url configuration. Middleware will be inactive.');
+        return async (_req: Request, _res: Response, next: NextFunction) => {
+            next();
+        };
     }
 
-    let tokenManager: OAuthTokenManager | null = null;
+    if (!config.paths || !Array.isArray(config.paths) || config.paths.length === 0) {
+        logger.warn('CF OAuth middleware has no paths configured. Middleware will be inactive.');
+        return async (_req: Request, _res: Response, next: NextFunction) => {
+            next();
+        };
+    }
+
+    let tokenManager: OAuthTokenManager;
 
     if (config.credentials) {
         logger.info('Initializing CF OAuth middleware with provided credentials');
         const { clientId, clientSecret, url } = config.credentials;
-
         tokenManager = createManagerFromOAuthCredentials(clientId, clientSecret, url, logger);
     } else {
         logger.info('Attempting to auto-detect CF ADP project for OAuth credentials');
@@ -47,32 +59,30 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
         }
     }
 
-    logger.debug(`CF OAuth middleware options: ${JSON.stringify({ paths, hasTokenManager: !!tokenManager })}`);
-    if (paths.length === 0) {
-        logger.warn('CF OAuth middleware has no paths configured. Middleware will be inactive.');
-    }
+    const router = express.Router();
+    const destinationUrl = config.url;
 
-    return async (req: Request, res: Response, next: NextFunction) => {
-        if (!tokenManager || paths.length === 0) {
-            next();
-            return;
+    for (const path of config.paths) {
+        if (!path) {
+            logger.warn('Skipping empty path in configuration');
+            continue;
         }
 
-        const shouldAddToken = paths.some((path) => req.url.startsWith(path));
-        if (!shouldAddToken) {
-            next();
-            return;
-        }
+        const proxyOptions = createProxyOptions(destinationUrl, logger);
 
         try {
-            const token = await tokenManager.getAccessToken();
-            req.headers.authorization = `Bearer ${token}`;
-            logger.debug(`Added Bearer token to request: ${req.url}`);
+            const proxyFn = createProxyMiddleware(proxyOptions);
+            const tokenMiddleware = tokenManager.createTokenMiddleware(config.debug);
+            router.use(path, tokenMiddleware, proxyFn);
+            logger.info(`Registered proxy for path: ${path} -> ${destinationUrl}`);
         } catch (error: any) {
-            logger.error(`Failed to add token to request ${req.url}: ${error.message}`);
-            return res.status(500).json({ error: 'Authentication failed' });
+            const message = `Failed to register proxy for ${path}. Check configuration in yaml file. \n\t${error.message}`;
+            logger.error(message);
+            throw new Error(message);
         }
+    }
 
-        next();
-    };
+    logger.info(`CF OAuth middleware initialized: url=${destinationUrl}, paths=${config.paths.join(', ')}`);
+
+    return router as unknown as RequestHandler;
 };

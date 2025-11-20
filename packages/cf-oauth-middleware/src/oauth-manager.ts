@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { Request, Response, NextFunction } from 'express';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -34,7 +35,7 @@ export class OAuthTokenManager {
      *
      * @returns {Promise<string>} The access token.
      */
-    async getAccessToken(): Promise<string> {
+    private async getAccessToken(): Promise<string> {
         if (this.token && Date.now() < this.tokenExpiry) {
             return this.token;
         }
@@ -64,5 +65,29 @@ export class OAuthTokenManager {
             this.logger.error(`Error fetching OAuth2 token: ${errorMessage}`);
             throw new Error('Failed to fetch OAuth2 token');
         }
+    }
+
+    /**
+     * Creates an Express middleware function that adds OAuth Bearer token to requests.
+     *
+     * @param {boolean} debug - Enable debug logging.
+     * @returns {RequestHandler} Express middleware function.
+     */
+    createTokenMiddleware(debug: boolean = false): (req: Request, res: Response, next: NextFunction) => Promise<void> {
+        return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
+            if (debug) {
+                this.logger.debug(`Token middleware: req.url=${req.url}, req.originalUrl=${req.originalUrl}`);
+            }
+            try {
+                const token = await this.getAccessToken();
+                req.headers.authorization = `Bearer ${token}`;
+                if (debug) {
+                    this.logger.debug(`Added Bearer token to request: ${req.url}`);
+                }
+            } catch (error: any) {
+                this.logger.error(`Failed to get access token: ${error.message}`);
+            }
+            next();
+        };
     }
 }

@@ -3,5 +3,5 @@ export {
     createManagerFromCredentials,
     createManagerFromOAuthCredentials,
     createManagerFromCfAdpProject
-} from './token-manager-factory';
+} from './token-factory';
 export type { CfOAuthMiddlewareConfig } from './types';

@@ -1273,10 +1273,16 @@ importers:
       axios:
         specifier: 1.12.2
         version: 1.12.2(debug@4.4.3)
+      http-proxy-middleware:
+        specifier: 3.0.5
+        version: 3.0.5
     devDependencies:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
+      '@types/http-proxy':
+        specifier: ^1.17.5
+        version: 1.17.16
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
@@ -2323,7 +2329,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.4
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -11340,6 +11346,10 @@ packages:
       - typescript
     dev: true
 
+  /@sap-ux/fiori-docs-embeddings@0.4.4:
+    resolution: {integrity: sha512-Mv5l40r8vjTIHCccNUel6AOSR1BRUN7Mk1uIm0vx48V/OCbeu4aL1L1+SgBHyN50oR/4yXfZ87M2B1tIJAqvHg==}
+    dev: false
+
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}
     engines: {node: '>=20.x'}
@@ -13196,7 +13206,6 @@ packages:
     resolution: {integrity: sha512-sdWoUajOB1cd0A8cRRQ1cfyWNbmFKLAqBB89Y8x5iYyG/mkJHc0YUH8pdWBy2omi9qtCpiIgGjuwO0dQST2l5w==}
     dependencies:
       '@types/node': 20.0.0
-    dev: false
 
   /@types/http-proxy@1.17.8:
     resolution: {integrity: sha512-5kPLG5BKpWYkw/LVOGWpiq3nEVqxiN32rTgI53Sk12/xHFQ2rG3ehI9IO+O3W2QoKeyB92dJkoka8SUm6BX1pA==}
@@ -20845,7 +20854,7 @@ packages:
       '@types/express':
         optional: true
     dependencies:
-      '@types/http-proxy': 1.17.8
+      '@types/http-proxy': 1.17.16
       http-proxy: 1.18.1
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
