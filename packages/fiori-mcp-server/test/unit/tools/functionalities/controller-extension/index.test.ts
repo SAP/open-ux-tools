@@ -4,9 +4,9 @@ import {
     createControllerExtensionHandlers
 } from '../../../../../src/tools/functionalities/controller-extension';
 import { mockSpecificationImport } from '../../../utils';
-import * as toolUtils from '../../../../../src/utils';
 import * as projectUtils from '../../../../../src/page-editor-api/project';
 import { join } from 'node:path';
+import { getDefaultExtensionFolder } from '../../../../../src/utils';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -14,20 +14,29 @@ jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 
+// Mock the utils module to avoid property redefinition errors
+jest.mock('../../../../../src/utils', () => ({
+    ...jest.requireActual('../../../../../src/utils'),
+    getDefaultExtensionFolder: jest.fn()
+}));
+
 describe('create-controller-extension', () => {
     const appPath = join('root', 'app1');
-    let importProjectMock = jest.fn();
-    let generateCustomExtensionMock = jest.fn();
-    const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
-    const getDefaultExtensionFolderSpy: jest.SpyInstance = jest.spyOn(toolUtils, 'getDefaultExtensionFolder');
-    const getUI5VersionSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getUI5Version');
-    const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
-    const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
-        openUxProjectAccessDependency,
-        'createApplicationAccess'
-    );
+    let importProjectMock: jest.Mock;
+    let generateCustomExtensionMock: jest.Mock;
+    let findProjectRootSpy: jest.SpyInstance;
+    let getUI5VersionSpy: jest.SpyInstance;
+    let getManifestSpy: jest.SpyInstance;
+    let createApplicationAccessSpy: jest.SpyInstance;
     const memFsdumpMock = jest.fn();
+
     beforeEach(async () => {
+        // Create spies in beforeEach to avoid redefinition errors
+        findProjectRootSpy = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
+        getUI5VersionSpy = jest.spyOn(projectUtils, 'getUI5Version');
+        getManifestSpy = jest.spyOn(projectUtils, 'getManifest');
+        createApplicationAccessSpy = jest.spyOn(openUxProjectAccessDependency, 'createApplicationAccess');
+
         importProjectMock = jest.fn().mockResolvedValue([]);
         memFsdumpMock.mockReturnValue({
             'manifest.json': {}
@@ -36,7 +45,7 @@ describe('create-controller-extension', () => {
             commit: jest.fn(),
             dump: memFsdumpMock
         });
-        getDefaultExtensionFolderSpy.mockReturnValue('controllerFolder');
+        (getDefaultExtensionFolder as jest.Mock).mockReturnValue('controllerFolder');
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
         getUI5VersionSpy.mockResolvedValue('1.108.1');
         getManifestSpy.mockResolvedValue({});
@@ -58,6 +67,10 @@ describe('create-controller-extension', () => {
                 })
             };
         });
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     describe('getFunctionalityDetails', () => {
