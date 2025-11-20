@@ -274,25 +274,4 @@ describe('AbapServiceProvider', () => {
             );
         });
     });
-
-    describe('getSystemInfo', () => {
-        let getSystemInfoMock: jest.Mock;
-        let systemInfoServiceMock: SystemInfoService;
-        let provider: AbapServiceProvider;
-
-        beforeEach(() => {
-            provider = new AbapServiceProvider();
-            getSystemInfoMock = jest.fn();
-            systemInfoServiceMock = {
-                getSystemInfo: getSystemInfoMock
-            } as unknown as SystemInfoService;
-            jest.spyOn(provider as any, 'createService').mockReturnValue(systemInfoServiceMock);
-        });
-
-        test('should throw if the user is not authorized', async () => {
-            const unauthorizedError = new Error('Unauthorized');
-            getSystemInfoMock.mockRejectedValue(unauthorizedError);
-            await expect(provider.getSystemInfo()).rejects.toThrow(unauthorizedError);
-        });
-    });
 });

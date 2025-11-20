@@ -110,10 +110,15 @@ describe('Credentials Prompts', () => {
 
     describe('Password Prompt', () => {
         let passwordPrompt: any;
+        let mockGetSystemInfo: jest.Mock;
 
         beforeEach(() => {
             const result = getCredentialsPrompts(mockAbapTarget, mockLogger);
             passwordPrompt = result[1];
+            mockGetSystemInfo = jest.fn();
+            mockGetConfiguredProvider.mockResolvedValue({
+                getLayeredRepository: () => ({ getSystemInfo: mockGetSystemInfo })
+            } as unknown as AbapServiceProvider);
         });
 
         it('should have correct password prompt structure', () => {
@@ -134,10 +139,6 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(false);
             mockAbapTarget.url = 'some-system';
             mockValidateEmptyString.mockReturnValue(true);
-            const mockGetSystemInfo = jest.fn();
-            mockGetConfiguredProvider.mockResolvedValue({
-                getSystemInfo: mockGetSystemInfo
-            } as unknown as AbapServiceProvider);
             mockGetSystemInfo.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
@@ -166,10 +167,6 @@ describe('Credentials Prompts', () => {
             mockIsAppStudio.mockReturnValue(true);
             mockAbapTarget.destination = 'SYS_010';
             mockValidateEmptyString.mockReturnValue(true);
-            const mockGetSystemInfo = jest.fn();
-            mockGetConfiguredProvider.mockResolvedValue({
-                getSystemInfo: mockGetSystemInfo
-            } as unknown as AbapServiceProvider);
             mockGetSystemInfo.mockResolvedValue({});
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
@@ -233,10 +230,6 @@ describe('Credentials Prompts', () => {
                     statusText: 'Unauthorized'
                 }
             };
-            const mockGetSystemInfo = jest.fn();
-            mockGetConfiguredProvider.mockResolvedValue({
-                getSystemInfo: mockGetSystemInfo
-            } as unknown as AbapServiceProvider);
             mockGetSystemInfo.mockRejectedValue(mockError);
 
             const prompts = getCredentialsPrompts(mockAbapTarget, mockLogger);
