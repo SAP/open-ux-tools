@@ -50,7 +50,7 @@ const rule: Rule.RuleModule = {
          * @param array The array to remove duplicates from
          * @returns Array with duplicates removed
          */
-        function uniquifyArray(array) {
+        function uniquifyArray(array: any[]): any[] {
             const a = array.concat();
             for (let i = 0; i < a.length; ++i) {
                 for (let j = i + 1; j < a.length; ++j) {
@@ -121,7 +121,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a, obj) {
+        function contains(a: any[], obj: any): boolean {
             return a.includes(obj);
         }
 
@@ -131,7 +131,7 @@ const rule: Rule.RuleModule = {
          * @param property The property name to check
          * @returns True if the property represents a not allowed method
          */
-        function checkIfNotAllowedMethod(property) {
+        function checkIfNotAllowedMethod(property: string): boolean {
             if (
                 typeof property !== 'undefined' &&
                 (contains(CHECKED_METHODS, property) || property.indexOf('get') === 0 || property.indexOf('set') === 0)
@@ -147,7 +147,7 @@ const rule: Rule.RuleModule = {
          * @param memberExpressionObject The member expression object to analyze
          * @returns The calculated object name
          */
-        function calculateObjectName(memberExpressionObject) {
+        function calculateObjectName(memberExpressionObject: any): string {
             let objectName = '';
             if (memberExpressionObject.type === 'MemberExpression') {
                 objectName = memberExpressionObject.property.name;
@@ -163,7 +163,7 @@ const rule: Rule.RuleModule = {
          * @param ancestors The array of ancestor nodes to check
          * @returns The position of the NewExpression or -1 if not found
          */
-        function checkIfAncestorsContainsNewExpression(ancestors) {
+        function checkIfAncestorsContainsNewExpression(ancestors): number {
             const ancestorsLength = ancestors.length;
             for (let i = 0; i < ancestorsLength; i++) {
                 if (ancestors[i].type === 'NewExpression') {
@@ -179,7 +179,7 @@ const rule: Rule.RuleModule = {
          * @param namespace The namespace string to check
          * @returns True if the namespace should be reported for violations
          */
-        function checkIfReportedNamespace(namespace) {
+        function checkIfReportedNamespace(namespace): boolean {
             for (let i = 0; i < configuration.ns.length; i++) {
                 if (namespace.indexOf(configuration.ns[i] + '.') === 0) {
                     return true;
@@ -193,7 +193,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The member expression node to process
          */
-        function processMemberExpression(node: any) {
+        function processMemberExpression(node: any): void {
             if (node.object.type === 'Identifier') {
                 let namespace = node.object.name + '.' + node.property.name;
                 const ancestors = sourceCode.getAncestors(node);
@@ -229,7 +229,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The assignment expression node to check
          */
-        function checkAssignmentAgainstOverride(node: any) {
+        function checkAssignmentAgainstOverride(node: any): void {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {
                 const memberExpression = node.left,
                     objectProperty = memberExpression.property.name;

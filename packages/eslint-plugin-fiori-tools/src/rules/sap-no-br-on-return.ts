@@ -59,7 +59,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting queryCommandSupported call
          */
-        function isInteresting(node: any) {
+        function isInteresting(node: any): boolean {
             return (
                 isCall(node.parent) &&
                 isDocumentObject(node.object) &&
@@ -74,7 +74,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to validate
          * @returns True if the queryCommandSupported call is valid
          */
-        function isValid(node: any) {
+        function isValid(node: any): boolean {
             return node.parent.arguments.length === 0 || node.parent.arguments[0].value !== 'insertBrOnReturn';
         }
 

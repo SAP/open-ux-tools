@@ -78,7 +78,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a, obj) {
+        function contains(a, obj): boolean {
             return a.includes(obj);
         }
 

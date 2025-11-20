@@ -44,7 +44,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
+        function isType(node: any, type: any): boolean {
             return node?.type === type;
         }
 
@@ -54,7 +54,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, 'Identifier');
         }
 
@@ -64,7 +64,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
         }
 
@@ -75,7 +75,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a, obj) {
+        function contains(a: any[], obj: any): boolean {
             return a.includes(obj);
         }
 
@@ -85,7 +85,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the global window object
          */
-        function isWindow(node: any) {
+        function isWindow(node: any): boolean {
             // true if node is the global variable 'window'
             return node && isIdentifier(node) && node.name === 'window';
         }
@@ -96,7 +96,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the window object or a reference to it
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: any): boolean {
             // true if node is the global variable 'window' or a reference to it
             return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
         }
@@ -107,7 +107,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the screen object
          */
-        function isScreen(node: any) {
+        function isScreen(node: any): boolean {
             //        console.log("isScreen");
             if (node) {
                 if (isIdentifier(node)) {
@@ -127,7 +127,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the screen object or a reference to it
          */
-        function isScreenObject(node: any) {
+        function isScreenObject(node: any): boolean {
             // true if node is the global variable 'screen'/'window.screen' or a reference to it
             return isScreen(node) || (node && isIdentifier(node) && contains(SCREEN_OBJECTS, node.name));
         }
@@ -138,7 +138,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the document object
          */
-        function isDocument(node: any) {
+        function isDocument(node: any): boolean {
             if (node) {
                 if (isIdentifier(node)) {
                     // true if node id the global variable 'document'
@@ -157,7 +157,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the document object or a reference to it
          */
-        function isDocumentObject(node: any) {
+        function isDocumentObject(node: any): boolean {
             // true if node is the global variable 'document'/'window.document' or a reference to it
             return isDocument(node) || (node && isIdentifier(node) && contains(DOCUMENT_OBJECTS, node.name));
         }
@@ -168,7 +168,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the document body
          */
-        function isBody(node: any) {
+        function isBody(node: any): boolean {
             if (node && isMember(node)) {
                 return isDocumentObject(node.object) && isIdentifier(node.property) && node.property.name === 'body';
             }
@@ -181,7 +181,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the body object or a reference to it
          */
-        function isBodyObject(node: any) {
+        function isBodyObject(node: any): boolean {
             return isBody(node) || (node && isIdentifier(node) && contains(BODY_OBJECTS, node.name));
         }
 
@@ -195,7 +195,7 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if window object was remembered, false otherwise
          */
-        function rememberWindow(left, right) {
+        function rememberWindow(left: any, right: any): boolean {
             if (isWindowObject(right) && isIdentifier(left)) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
@@ -210,7 +210,7 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if screen object was remembered, false otherwise
          */
-        function rememberScreen(left, right) {
+        function rememberScreen(left: any, right: any): boolean {
             if (isScreenObject(right) && isIdentifier(left)) {
                 SCREEN_OBJECTS.push(left.name);
                 return true;
@@ -225,7 +225,7 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if document object was remembered, false otherwise
          */
-        function rememberDocument(left, right) {
+        function rememberDocument(left: any, right: any): boolean {
             if (isDocumentObject(right) && isIdentifier(left)) {
                 DOCUMENT_OBJECTS.push(left.name);
                 return true;
@@ -241,7 +241,7 @@ const rule: Rule.RuleModule = {
          * @param parent The parent node for reporting violations
          * @returns True if body object was remembered, false otherwise
          */
-        function rememberBody(left, right, parent) {
+        function rememberBody(left: any, right: any, parent: any): boolean {
             if (isBodyObject(right) && isIdentifier(left)) {
                 BODY_OBJECTS.push(left.name);
                 // raise an issue if the the body property is assigned to a variable

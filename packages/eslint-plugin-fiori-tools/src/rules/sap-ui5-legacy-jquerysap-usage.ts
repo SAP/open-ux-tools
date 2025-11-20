@@ -33,7 +33,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
+        function isType(node: any, type: any): boolean {
             return node?.type === type;
         }
 
@@ -43,7 +43,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, 'Identifier');
         }
 
@@ -53,7 +53,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
         }
 
@@ -64,7 +64,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a, obj) {
+        function contains(a, obj): boolean {
             return a.includes(obj);
         }
 
@@ -74,7 +74,7 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to check
          * @returns True if the call expression represents an interesting jQuery.sap usage
          */
-        function isInteresting(node: any) {
+        function isInteresting(node: any): boolean {
             const callee = node.callee;
             if (isMember(callee)) {
                 if (isIdentifier(callee.property) && contains(INTERESTING_METHODS_JQUERY, callee.property.name)) {

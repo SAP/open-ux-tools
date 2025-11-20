@@ -40,7 +40,7 @@ const rule: Rule.RuleModule = {
          * @param string The value to check
          * @returns True if the value is a string
          */
-        function isString(string) {
+        function isString(string): boolean {
             return typeof string === 'string';
         }
 
@@ -51,7 +51,7 @@ const rule: Rule.RuleModule = {
          * @param substring The substring to search for
          * @returns True if the string contains the substring
          */
-        function contains(string, substring) {
+        function contains(string, substring): boolean {
             return string.indexOf(substring) !== -1;
         }
 

@@ -39,7 +39,7 @@ const rule: Rule.RuleModule = {
          * @param substring The substring to check for absence
          * @returns True if the string does not contain the substring
          */
-        function containsNot(string, substring) {
+        function containsNot(string: string, substring: string): boolean {
             return !containsString(string, substring);
         }
         // --------------------------------------------------------------------------

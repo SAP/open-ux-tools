@@ -34,7 +34,7 @@ const rule: Rule.RuleModule = {
          * @param string The value to check
          * @returns True if the value is a string
          */
-        function isString(string) {
+        function isString(string): boolean {
             return typeof string === 'string';
         }
 
@@ -45,7 +45,7 @@ const rule: Rule.RuleModule = {
          * @param sub The substring to look for at the start
          * @returns True if the base string starts with the substring
          */
-        function startsWith(base, sub) {
+        function startsWith(base, sub): boolean {
             return base.indexOf(sub) === 0;
         }
 

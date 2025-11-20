@@ -58,7 +58,7 @@ const rule: Rule.RuleModule = {
          * @param array The array to remove duplicates from
          * @returns Array with duplicates removed
          */
-        function uniquifyArray(array) {
+        function uniquifyArray(array): any[] {
             const a = array.concat();
             for (let i = 0; i < a.length; ++i) {
                 for (let j = i + 1; j < a.length; ++j) {
@@ -130,7 +130,7 @@ const rule: Rule.RuleModule = {
          * @param path The path string to analyze
          * @returns True if the path is interesting for private property analysis
          */
-        function isinterestingPath(path) {
+        function isinterestingPath(path): boolean {
             let i;
             const options = configuration.ns;
             if (contains(IGNORE, path)) {
@@ -156,7 +156,7 @@ const rule: Rule.RuleModule = {
          * @param identifier The identifier string to check
          * @returns True if the identifier is a special case for member expressions
          */
-        function isSpecialCaseIdentifierForMemberExpression(identifier) {
+        function isSpecialCaseIdentifierForMemberExpression(identifier): boolean {
             return identifier === '__proto__';
         }
 

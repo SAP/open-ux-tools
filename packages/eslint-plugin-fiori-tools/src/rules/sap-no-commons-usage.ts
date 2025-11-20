@@ -35,10 +35,11 @@ const rule: Rule.RuleModule = {
          * @param sub The substring to look for at the start
          * @returns True if the base string starts with the substring
          */
-        function startsWith(base, sub) {
+        function startsWith(base: string, sub: string): boolean {
             if (base.indexOf) {
                 return base.indexOf(sub) === 0;
             }
+            return false;
         }
 
         /**
@@ -48,7 +49,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
+        function isType(node: any, type: any): boolean {
             return node?.type === type;
         }
 
@@ -58,7 +59,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, 'Identifier');
         }
 
@@ -68,7 +69,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a Literal
          */
-        function isLiteral(node: any) {
+        function isLiteral(node: any): boolean {
             return isType(node, 'Literal');
         }
 
@@ -78,7 +79,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
         }
 
@@ -88,7 +89,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an ArrayExpression
          */
-        function isArray(node: any) {
+        function isArray(node: any): boolean {
             return isType(node, 'ArrayExpression');
         }
 
@@ -98,7 +99,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to convert
          * @returns String representation of the member expression
          */
-        function getMemberAsString(node: any) {
+        function getMemberAsString(node: any): string {
             if (isMember(node)) {
                 return getMemberAsString(node.object) + '.' + getMemberAsString(node.property);
             } else if (isLiteral(node)) {
@@ -115,7 +116,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting function call
          */
-        function isInteresting(node: any) {
+        function isInteresting(node: any): boolean {
             const callee = node.callee;
             if (isMember(callee)) {
                 if (getMemberAsString(callee) === 'sap.ui.define') {
@@ -131,7 +132,7 @@ const rule: Rule.RuleModule = {
          * @param node The function call node to validate
          * @returns True if the function call has valid imports, false if it contains commons usage
          */
-        function isValid(node: any) {
+        function isValid(node: any): boolean {
             if (node.arguments && isArray(node.arguments[0])) {
                 const importList = node.arguments[0].elements;
                 for (const key in importList) {

@@ -46,7 +46,7 @@ const rule: Rule.RuleModule = {
          * @param name The name string to check for color patterns
          * @returns RegExp match array if color patterns found, null otherwise
          */
-        function matchProhibited(name) {
+        function matchProhibited(name: string): RegExpMatchArray | null {
             return name.match('#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})[^\\w]');
         }
 
@@ -60,7 +60,7 @@ const rule: Rule.RuleModule = {
                 let result;
 
                 if (typeof val === 'string') {
-                    result = matchProhibited(node.value);
+                    result = matchProhibited(val);
 
                     if (result) {
                         context.report({

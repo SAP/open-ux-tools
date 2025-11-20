@@ -40,7 +40,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
+        function isType(node: any, type: any): boolean {
             return node?.type === type;
         }
         /**
@@ -49,7 +49,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, 'Identifier');
         }
         /**
@@ -58,7 +58,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
         }
 
@@ -69,7 +69,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a, obj) {
+        function contains(a, obj): boolean {
             return a.includes(obj);
         }
 
@@ -79,7 +79,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the global window object
          */
-        function isWindow(node: any) {
+        function isWindow(node: any): boolean {
             // true if node is the global variable 'window'
             return node && isIdentifier(node) && node.name === 'window';
         }
@@ -90,7 +90,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the window object or a reference to it
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: any): boolean {
             // true if node is the global variable 'window' or a reference to it
             return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
         }
@@ -101,7 +101,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the location object
          */
-        function isLocation(node: any) {
+        function isLocation(node: any): boolean {
             if (node) {
                 if (isIdentifier(node)) {
                     // true if node id the global variable 'location'
@@ -120,7 +120,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the location object or a reference to it
          */
-        function isLocationObject(node: any) {
+        function isLocationObject(node: any): boolean {
             // true if node is the global variable 'location'/'window.location' or a reference to it
             return isLocation(node) || (node && isIdentifier(node) && contains(LOCATION_OBJECTS, node.name));
         }
@@ -131,7 +131,7 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to check
          * @returns True if the call expression is interesting for location reload detection
          */
-        function isInteresting(node: any) {
+        function isInteresting(node: any): boolean {
             const obj = node.callee;
             if (isMember(obj)) {
                 if (isLocationObject(obj.object)) {
@@ -150,7 +150,7 @@ const rule: Rule.RuleModule = {
          *
          * @returns Always returns false as location.reload() is not permitted
          */
-        function isValid() {
+        function isValid(): boolean {
             //        const args = node.arguments;
             //        return args
             //                && (args.length === 1 || args.length > 1

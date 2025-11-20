@@ -42,7 +42,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
+        function isType(node: any, type: any): boolean {
             return node?.type === type;
         }
         /**
@@ -51,7 +51,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, IDENTIFIER);
         }
         /**
@@ -60,7 +60,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, MEMBER);
         }
 
@@ -70,7 +70,7 @@ const rule: Rule.RuleModule = {
          * @param node The member expression node to process
          * @returns String representation of the callee path
          */
-        function buildCalleePath(node: any) {
+        function buildCalleePath(node: any): string {
             if (isMember(node.object)) {
                 return buildCalleePath(node.object) + '.' + node.object.property.name;
             } else if (isIdentifier(node.object)) {
@@ -86,7 +86,7 @@ const rule: Rule.RuleModule = {
          * @param obj The object to search for
          * @returns True if the array contains the object
          */
-        function contains(a, obj) {
+        function contains(a, obj): boolean {
             return a.includes(obj);
         }
 
@@ -96,7 +96,7 @@ const rule: Rule.RuleModule = {
          * @param calleePath The path string to analyze
          * @returns The last element of the path
          */
-        function isForbiddenObviousApi(calleePath) {
+        function isForbiddenObviousApi(calleePath): string {
             const elementArray = calleePath.split('.');
             const lastElement = elementArray[elementArray.length - 1];
 
@@ -108,7 +108,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The variable declarator node to process
          */
-        function processVariableDeclarator(node: any) {
+        function processVariableDeclarator(node: any): void {
             if (node.init) {
                 if (node.init.type === 'MemberExpression') {
                     const firstElement = node.init.object.name,

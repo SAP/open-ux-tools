@@ -109,7 +109,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to analyze
          * @returns True if the node represents an interesting UI5 form construct
          */
-        function isInteresting(node: any) {
+        function isInteresting(node: any): boolean {
             const callee = node.callee;
             if (isMember(callee) && contains(INTERESTING_METHODS, callee.property.name)) {
                 const argumentsNewExpression = node.arguments;
