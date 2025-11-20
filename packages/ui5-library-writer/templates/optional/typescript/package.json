@@ -7,7 +7,6 @@
       "typescript-eslint": "^8.27.0",
       "@ui5/cli": "^4.0.33",
       "@ui5/ts-interface-generator": "^0.8.1",
-      "eslint": "^8.57.0",
       "karma": "^6.3.17",
       "karma-chrome-launcher": "^3.1.1",
       "karma-cli": "^2.0.0",
@@ -16,7 +15,7 @@
       "typescript": "^5.1.6",
       "@sap/ux-ui5-tooling": "1",
       "ui5-tooling-transpile": "^3.3.7",
-      "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0"
+      "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0"
     },
     "scripts": {
         "build": "run-p -l build-app build-interface",

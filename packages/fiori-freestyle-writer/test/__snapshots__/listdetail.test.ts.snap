@@ -8251,12 +8251,12 @@ module.exports = defineConfig([
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"eslint\\": \\"8.57.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"~1.76.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.5.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
-    \\"@babel/eslint-parser\\": \\"7.14.7\\",
+    \\"@babel/eslint-parser\\": \\"^7.27.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
