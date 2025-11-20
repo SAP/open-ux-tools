@@ -35,9 +35,7 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
-
         "start": "npx -y supergateway --port 9881 --sessionTimeout 300000 --stdio \"node ./dist/index.js\"",
-
         "view:integration": "promptfoo view -y",
         "test:integration:once": "promptfoo eval --config test/integration/scenarios/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
         "test:integration:dev": "promptfoo eval --config test/integration/scenarios/test-dev.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
