@@ -93,13 +93,15 @@ function getOptions(options?: Partial<ExternalServiceCollectionOptions>): Extern
  * @param serviceRootPath - The service path to which the value list references belong
  * @param metadata - The metadata of the service
  * @param annotations - The annotation files
- * @param options - Options for collecting external service references
+ * @param options - Options for collecting external service references.
+ * If not provided, all reference types are collected.
+ * To disable the collection of a specific type, set its value to `false`.
  * @returns External service references found in the files.
  */
 export function getExternalServiceReferences(
     serviceRootPath: string,
     metadata: ConvertedMetadata | RawSchema | string | undefined,
-    annotations: { Definitions: string }[],
+    annotations: { Definitions: string }[] = [],
     options?: Partial<ExternalServiceCollectionOptions>
 ): ExternalServiceReference[] {
     const finalOptions = getOptions(options);
