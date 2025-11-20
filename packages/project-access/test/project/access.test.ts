@@ -3,9 +3,11 @@ import type { Manifest, Package } from '../../src';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import * as specMock from '../../src/project/specification';
+import * as capMock from '../../src/project/cap';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'node:fs';
+import { readFile, readJSON } from '../../src/file';
 
 describe('Test function createApplicationAccess()', () => {
     const memFs = create(createStorage());
@@ -372,6 +374,117 @@ describe('Test function createApplicationAccess()', () => {
         } catch (error) {
             expect(error.message).toContain('non-existing-app');
         }
+    });
+
+    test('Read manifest.json of standalone app without mem-fs', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        const manifest = await appAccess.readManifest();
+        // Result check
+        expect(manifest).toEqual(await readJSON(join(appRoot, 'webapp/manifest.json')));
+    });
+
+    test('Read manifest.json of standalone app with mem-fs', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const manifestPath = join(appRoot, 'webapp/manifest.json');
+        const newManifest = await readJSON<{ dummy: boolean }>(join(appRoot, 'webapp/manifest.json'), memFs);
+        newManifest.dummy = true;
+        memFs.writeJSON(manifestPath, newManifest, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        const manifest = await appAccess.readManifest(memFs);
+        // Result check
+        expect('dummy' in manifest ? manifest.dummy : undefined).toEqual(true);
+    });
+
+    test('Read flex changes of standalone app without mem-fs - without flex changes', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        const changes = await appAccess.readFlexChanges();
+        // Result check
+        expect(Object.keys(changes)).toEqual([]);
+    });
+
+    test('Read flex changes of standalone app without mem-fs - with flex changes', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        // Mock changes folder
+        appAccess.app.changes = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
+        const changes = await appAccess.readFlexChanges();
+        // Result check
+        expect(Object.keys(changes)).toEqual([
+            'id_1761320220775_1_propertyChange.change',
+            'id_1761320220775_2_propertyChange.change'
+        ]);
+    });
+
+    test('Read flex changes of standalone app with mem-fs - with flex changes', async () => {
+        const changeFileName = 'id_1761320220775_1_propertyChange.change';
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const changesPath = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
+        const changeFilePath = join(changesPath, changeFileName);
+        memFs.write(changeFilePath, '{"dummy": true}');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        appAccess.app.changes = changesPath;
+        const changes = await appAccess.readFlexChanges(memFs);
+        // Result check
+        expect(changes[changeFileName]).toEqual('{"dummy": true}');
+    });
+
+    describe('readAnnotationFiles', () => {
+        test('Read annotation files of standalone EDMX app without mem-fs', async () => {
+            const appRoot = join(sampleRoot, 'fiori_elements');
+            // Test execution
+            const appAccess = await createApplicationAccess(appRoot);
+            const annotationFiles = await appAccess.readAnnotationFiles();
+            // Result check
+            expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual([
+                join(appRoot, 'webapp/localService/metadata.xml'),
+                join(appRoot, 'webapp/annotations/annotation.xml')
+            ]);
+            expect(annotationFiles[0].fileContent.includes('Alias="Measures"')).toBeTruthy();
+            expect(annotationFiles[1].fileContent.includes('/catalog-admin-noauth/$metadata')).toBeTruthy();
+        });
+
+        test('Read annotation files of standalone EDMX app with mem-fs', async () => {
+            const appRoot = join(sampleRoot, 'fiori_elements');
+            const expectedFiles = [
+                join(appRoot, 'webapp/localService/metadata.xml'),
+                join(appRoot, 'webapp/annotations/annotation.xml')
+            ];
+            memFs.write(expectedFiles[0], 'Test metadata.xml');
+            memFs.write(expectedFiles[1], 'Test annotation.xml');
+            // Test execution
+            const appAccess = await createApplicationAccess(appRoot);
+            const annotationFiles = await appAccess.readAnnotationFiles(memFs);
+            // Result check
+            expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual(expectedFiles);
+            expect(annotationFiles[0].fileContent).toEqual('Test metadata.xml');
+            expect(annotationFiles[1].fileContent).toEqual('Test annotation.xml');
+        });
+
+        test('Read annotation files of CAP app', async () => {
+            // Mock setup
+            const mockedMetadata = await readFile(
+                join(sampleRoot, 'fiori_elements', 'webapp/localService/metadata.xml')
+            );
+            jest.spyOn(capMock, 'readCapServiceMetadataEdmx').mockResolvedValue(mockedMetadata);
+
+            const projectRoot = join(sampleRoot, 'cap-project');
+            const appRoot = join(projectRoot, 'apps/two');
+            // Test execution
+            const appAccess = await createApplicationAccess(appRoot);
+            const annotationFiles = await appAccess.readAnnotationFiles();
+            // Result check
+            expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual([
+                '/sap/opu/odata4/dmo/ODATA_SERVICE/'
+            ]);
+            expect(annotationFiles[0].fileContent.includes('Alias="Measures"')).toBeTruthy();
+        });
     });
 });
 
