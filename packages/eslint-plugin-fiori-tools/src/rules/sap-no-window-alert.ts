@@ -1,6 +1,5 @@
 /**
  * @file Rule to flag use of alert
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -8,7 +7,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -28,9 +27,8 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (node.callee.type === 'MemberExpression' && node.callee.property.type === 'Identifier') {
                     if (
                         node.callee.object &&

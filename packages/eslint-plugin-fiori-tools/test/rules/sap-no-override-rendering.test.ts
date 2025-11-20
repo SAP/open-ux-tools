@@ -1,7 +1,5 @@
 /**
  * @fileoverview Rule to flag override of getters, setters, onBeforeRendering and onAfterRendering for SAPUI5 object from a list of namespaces
- * @author Achref Kilani Jrad
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

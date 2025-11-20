@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for no-hardcoded-url rule.
- * @author Achref Kilani Jrad - C5215143
  */
 
 //------------------------------------------------------------------------------

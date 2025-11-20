@@ -1,6 +1,5 @@
 /**
  * @fileoverview Detect some forbidden usages of (window.)document APIs
- * @author Achref Kilani Jrad
  */
 //------------------------------------------------------------------------------
 // Requirements

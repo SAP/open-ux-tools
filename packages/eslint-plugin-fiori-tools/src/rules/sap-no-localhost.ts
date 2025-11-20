@@ -1,9 +1,9 @@
 /**
  * @file     Check "sap-no-localhost" should detect the usage of "localhost".
- * @ESLint            Version 0.14.0 / March 2015
  */
 
 import type { Rule } from 'eslint';
+import { isString, containsString } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
@@ -33,39 +33,24 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a string does not contain a substring.
          *
-         * @param string
+         * @param string The string to search in
+         * @param substring The substring to check for absence
+         * @returns True if the string does not contain the substring
          */
-        function isString(string) {
-            return typeof string === 'string';
-        }
-
-        /**
-         *
-         * @param string
-         * @param substring
-         */
-        function contains(string, substring) {
-            return string.indexOf(substring) !== -1;
-        }
-
-        /**
-         *
-         * @param string
-         * @param substring
-         */
-        function containsNot(string, substring) {
-            return !contains(string, substring);
+        function containsNot(string: string, substring: string): boolean {
+            return !containsString(string, substring);
         }
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 // const val = node.value, result;
                 if (
                     isString(node.value) &&
-                    contains(node.value, 'localhost') &&
+                    containsString(node.value, 'localhost') &&
                     containsNot(node.value, '://localhost/offline/')
                 ) {
                     context.report({ node: node, messageId: 'localhost' });

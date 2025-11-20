@@ -1,9 +1,9 @@
 /**
  * @file Detect the access of the innerHTML property.
- * @ESLint Version 0.8.0 / March 2016
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, type IdentifierNode, type LiteralNode, isIdentifier, isLiteral } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -11,7 +11,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -29,49 +29,22 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a property access is valid (not innerHTML).
          *
-         * @param property
+         * @param property The property node to validate
+         * @returns True if the property access is valid
          */
-        function isValid(property) {
+        function isValid(property: ASTNode): boolean {
             // anything is valid, except 'innerHTML'
             if (isIdentifier(property)) {
-                return property.name !== 'innerHTML';
+                return (property as IdentifierNode).name !== 'innerHTML';
             } else if (isLiteral(property)) {
-                return property.value !== 'innerHTML';
+                return (property as LiteralNode).value !== 'innerHTML';
             }
             return true;
         }
@@ -80,8 +53,8 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'MemberExpression': function (node) {
-                if (!isValid(node.property)) {
+            'MemberExpression'(node: ASTNode): void {
+                if (!isValid((node as any).property)) {
                     context.report({ node: node, messageId: 'innerHtmlAccess' });
                 }
             }

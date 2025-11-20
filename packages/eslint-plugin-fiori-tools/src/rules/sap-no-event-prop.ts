@@ -1,6 +1,5 @@
 /**
  * @file Rule to flag use of a private member from UI5 Event
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -13,7 +12,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -38,17 +37,14 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+        function contains(a, obj): boolean {
+            return a.includes(obj);
         }
 
         // --------------------------------------------------------------------------
@@ -56,7 +52,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (!node.property || !('name' in node.property)) {
                     return;
                 }

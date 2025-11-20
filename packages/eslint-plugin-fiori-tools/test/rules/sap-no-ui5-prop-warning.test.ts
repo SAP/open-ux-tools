@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for sap-no-ui5-prop-warning rule.
- * @author Armin Gienger
  * ESLint			Version 0.14.0 / February 2015
  */
 //------------------------------------------------------------------------------

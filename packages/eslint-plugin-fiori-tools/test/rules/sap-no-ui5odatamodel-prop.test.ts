@@ -1,7 +1,5 @@
 /**
  * @fileoverview 	Unit test for "sap-no-ui5odatamodel-prop" (detection of direct usage of property names of UI5 data model)
- * @author 			Roman Horch (D030497) with advice from Armin Gienger (D028623)
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

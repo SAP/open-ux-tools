@@ -1,7 +1,5 @@
 /**
  * @fileoverview Rule to flag use of a private member from UI5 Event
- * @author Achref Kilani Jrad
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

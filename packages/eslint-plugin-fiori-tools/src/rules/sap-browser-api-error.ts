@@ -3,12 +3,8 @@
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isMember, isCall, isLiteral, contains } from '../utils/ast-helpers';
 
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-
-/*eslint-disable strict*/
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -72,131 +68,81 @@ const rule: Rule.RuleModule = {
                 'onsubmit'
             ];
 
-        const FULL_BLACKLIST = FORBIDDEN_DOM_INSERTION.concat(
+        const FORBIDDEN_METHODS = FORBIDDEN_DOM_INSERTION.concat(
             FORBIDDEN_DOM_MANIPULATION,
             FORBIDDEN_DYNAMIC_STYLE_INSERTION,
             FORBIDDEN_LOCATION_RELOAD,
             FORBIDDEN_NAVIGATOR_WINDOW,
             FORBIDDEN_DEF_GLOB,
             FORBIDDEN_GLOB_EVENT,
-            FORBIDDEN_DOCUMENT_USAGE
+            FORBIDDEN_DOCUMENT_USAGE,
+            'back'
         );
-        FULL_BLACKLIST.push('back');
 
         const FORBIDDEN_DOCUMENT_OBJECT: string[] = [],
             FORBIDDEN_LOCATION_OBJECT: string[] = [],
             FORBIDDEN_WINDOW_OBJECT: string[] = [],
             FORBIDDEN_WINDOW_EVENT_OBJECT: string[] = [];
 
-        const MEMBER = 'MemberExpression', //
-            CALL = 'CallExpression', //
-            IDENTIFIER = 'Identifier', //
-            //    UNARY = "UnaryExpression", //
-            LITERAL = 'Literal';
-
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
 
         /**
+         * Get the rightmost method name from a node.
          *
-         * @param node
-         * @param type
+         * @param node The node to extract method name from
+         * @returns The rightmost method name
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, IDENTIFIER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, MEMBER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isCall(node: any) {
-            return isType(node, CALL);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, LITERAL);
-        }
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getRightestMethodName(node: any) {
-            const callee = node.callee;
+        function getRightestMethodName(node: Rule.Node): string {
+            const callee = (node as any).callee;
             return isMember(callee) ? callee.property.name : callee.name;
         }
 
         /**
+         * Build a path string from a callee node.
          *
-         * @param node
+         * @param node The callee node to build path from
+         * @returns The path string representation
          */
-        function buildCalleePath(node: any) {
-            if (isMember(node.object)) {
-                const propertyName =
-                    node.object.property && 'name' in node.object.property ? node.object.property.name : '';
-                return buildCalleePath(node.object) + '.' + propertyName;
-            } else if (isIdentifier(node.object)) {
-                return node.object.name;
+        function buildCalleePath(node: Rule.Node): string {
+            if (isMember((node as any).object)) {
+                const propertyName = (node as any).object.property?.name ?? '';
+                return `${buildCalleePath((node as any).object)}.${propertyName}`;
+            } else if (isIdentifier((node as any).object)) {
+                return (node as any).object.name;
             }
             return '';
         }
 
         /**
+         * Check if the callee path represents a forbidden obvious API.
          *
-         * @param calleePath
+         * @param calleePath The path to check
+         * @returns The last element of the path
          */
-        function isForbiddenObviousApi(calleePath) {
+        function isForbiddenObviousApi(calleePath: string): string {
             const elementArray = calleePath.split('.');
-            return elementArray[elementArray.length - 1];
+            return elementArray.at(-1) ?? '';
         }
 
         /**
+         * Process document-related API usage and report violations.
          *
-         * @param node
-         * @param methodName
+         * @param node The AST node to process
+         * @param methodName The method name being called
          */
-        function processDocumentMessage(node: any, methodName: any) {
+        function processDocumentMessage(node: Rule.Node, methodName: string): void {
             const parent = node.parent;
             if (contains(FORBIDDEN_DOM_INSERTION, methodName)) {
                 if (
                     !(
                         methodName === 'createElement' &&
                         isCall(parent) &&
-                        parent.arguments &&
-                        parent.arguments.length > 0 &&
-                        isLiteral(parent.arguments[0]) &&
-                        parent.arguments[0].value === 'a'
+                        (parent as any).arguments &&
+                        (parent as any).arguments.length > 0 &&
+                        isLiteral((parent as any).arguments[0]) &&
+                        (parent as any).arguments[0].value === 'a'
                     )
                 ) {
                     context.report({ node: node, messageId: 'domInsertion' });
@@ -205,53 +151,56 @@ const rule: Rule.RuleModule = {
                 context.report({ node: node, messageId: 'domManipulation' });
             } else if (
                 contains(FORBIDDEN_DOCUMENT_USAGE, methodName) &&
-                parent.arguments.length !== 0 &&
-                parent.arguments[0].value === 'insertBrOnReturn'
+                (parent as any).arguments.length !== 0 &&
+                (parent as any).arguments[0].value === 'insertBrOnReturn'
             ) {
                 context.report({ node: node, messageId: 'forbiddenDocumentUsage' });
             }
         }
 
         /**
+         * Process variable declarator nodes for API usage.
          *
-         * @param node
+         * @param node The variable declarator node to process
          */
-        function processVariableDeclarator(node: any) {
-            const init = node.init;
+        function processVariableDeclarator(node: Rule.Node): void {
+            const init = (node as any).init;
             if (init) {
                 if (isMember(init)) {
-                    const firstElement = init.object.name,
-                        secondElement = init.property.name;
-                    if (firstElement + '.' + secondElement === 'window.document') {
-                        FORBIDDEN_DOCUMENT_OBJECT.push(node.id.name);
-                    } else if (firstElement + '.' + secondElement === 'window.location') {
-                        FORBIDDEN_LOCATION_OBJECT.push(node.id.name);
-                    } else if (firstElement + '.' + secondElement === 'window.navigator') {
+                    const firstElement = init.object.name;
+                    const secondElement = init.property.name;
+                    const fullPath = `${firstElement}.${secondElement}`;
+                    if (fullPath === 'window.document') {
+                        FORBIDDEN_DOCUMENT_OBJECT.push((node as any).id.name);
+                    } else if (fullPath === 'window.location') {
+                        FORBIDDEN_LOCATION_OBJECT.push((node as any).id.name);
+                    } else if (fullPath === 'window.navigator') {
                         context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                    } else if (firstElement + '.' + secondElement === 'window.event') {
-                        FORBIDDEN_WINDOW_EVENT_OBJECT.push(node.id.name);
+                    } else if (fullPath === 'window.event') {
+                        FORBIDDEN_WINDOW_EVENT_OBJECT.push((node as any).id.name);
                     }
                 } else if (isIdentifier(init)) {
                     if (init.name === 'document') {
-                        FORBIDDEN_DOCUMENT_OBJECT.push(node.id.name);
+                        FORBIDDEN_DOCUMENT_OBJECT.push((node as any).id.name);
                     } else if (init.name === 'location') {
-                        FORBIDDEN_LOCATION_OBJECT.push(node.id.name);
+                        FORBIDDEN_LOCATION_OBJECT.push((node as any).id.name);
                     } else if (init.name === 'navigator') {
                         context.report({ node: node, messageId: 'proprietaryBrowserApi' });
                     } else if (init.name === 'window') {
                         context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                        FORBIDDEN_WINDOW_OBJECT.push(node.id.name);
+                        FORBIDDEN_WINDOW_OBJECT.push((node as any).id.name);
                     }
                 }
             }
         }
 
         /**
+         * Process window-related API usage and report violations.
          *
-         * @param node
-         * @param methodName
+         * @param node The AST node to process
+         * @param methodName The method name being called
          */
-        function processWindowMessage(node: any, methodName: any) {
+        function processWindowMessage(node: Rule.Node, methodName: string): void {
             if (contains(FORBIDDEN_NAVIGATOR_WINDOW, methodName)) {
                 context.report({ node: node, messageId: 'proprietaryBrowserApi' });
             } else if (contains(FORBIDDEN_DEF_GLOB, methodName)) {
@@ -264,14 +213,14 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): void {
                 processVariableDeclarator(node);
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 const parent = node.parent;
                 if (isCall(parent)) {
                     const methodName = getRightestMethodName(parent);
-                    if (typeof methodName === 'string' && contains(FULL_BLACKLIST, methodName)) {
+                    if (typeof methodName === 'string' && contains(FORBIDDEN_METHODS, methodName)) {
                         const calleePath = buildCalleePath(node);
                         const speciousObject = isForbiddenObviousApi(calleePath);
                         if (speciousObject === 'document') {
@@ -296,17 +245,18 @@ const rule: Rule.RuleModule = {
                             context.report({ node: node, messageId: 'proprietaryBrowserApi' });
                         }
                     }
-                } else if (node.computed) {
-                    const calleePathCmpt = buildCalleePath(node.object);
+                } else if ((node as any).computed) {
+                    const calleePathCmpt = buildCalleePath((node as any).object);
                     const speciousObjectCmpt = isForbiddenObviousApi(calleePathCmpt),
                         methodNameCmpt =
-                            node.object &&
-                            'property' in node.object &&
-                            node.object.property &&
-                            'name' in node.object.property
-                                ? node.object.property.name
-                                : -1;
+                            (node as any).object &&
+                            'property' in (node as any).object &&
+                            (node as any).object.property &&
+                            'name' in (node as any).object.property
+                                ? (node as any).object.property.name
+                                : '';
                     if (
+                        typeof methodNameCmpt === 'string' &&
                         contains(FORBIDDEN_DYNAMIC_STYLE_INSERTION, methodNameCmpt) &&
                         speciousObjectCmpt === 'document'
                     ) {
@@ -315,6 +265,7 @@ const rule: Rule.RuleModule = {
                          */
                         context.report({ node: node, messageId: 'dynamicStyleInsertion' });
                     } else if (
+                        typeof methodNameCmpt === 'string' &&
                         contains(FORBIDDEN_DYNAMIC_STYLE_INSERTION, methodNameCmpt) &&
                         speciousObjectCmpt !== 'document' &&
                         contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectCmpt)
@@ -333,18 +284,18 @@ const rule: Rule.RuleModule = {
                         calleePathNonCmpt === 'navigator' ||
                         calleePathNonCmpt === 'window.navigator' ||
                         (calleePathNonCmpt === 'window' &&
-                            node.property &&
-                            'name' in node.property &&
-                            node.property.name === 'navigator')
+                            (node as any).property &&
+                            'name' in (node as any).property &&
+                            (node as any).property.name === 'navigator')
                     ) {
                         // Only report if not inside CallExpression AND
                         // if it's window.navigator exactly (not a property access on it), don't report if parent is VariableDeclarator
                         const isWindowNavigatorAssignment =
                             (calleePathNonCmpt === 'window.navigator' ||
                                 (calleePathNonCmpt === 'window' &&
-                                    node.property &&
-                                    'name' in node.property &&
-                                    node.property.name === 'navigator')) &&
+                                    (node as any).property &&
+                                    'name' in (node as any).property &&
+                                    (node as any).property.name === 'navigator')) &&
                             node.parent.type === 'VariableDeclarator';
 
                         if (node.parent.parent.type !== 'CallExpression' && !isWindowNavigatorAssignment) {
@@ -356,31 +307,32 @@ const rule: Rule.RuleModule = {
                     }
                     if (
                         calleePathNonCmpt === 'window' &&
-                        node.property &&
-                        'name' in node.property &&
-                        !contains(FORBIDDEN_GLOB_EVENT, node.property.name)
+                        (node as any).property &&
+                        'name' in (node as any).property &&
+                        !contains(FORBIDDEN_GLOB_EVENT, (node as any).property.name)
                     ) {
                         /*
                          * window.onresize = 16; for exp
                          */
-                        processWindowMessage(node, node.property.name);
+                        processWindowMessage(node, (node as any).property.name);
                     } else if (
                         calleePathNonCmpt === 'window' &&
-                        node.property &&
-                        'name' in node.property &&
-                        contains(FORBIDDEN_GLOB_EVENT, node.property.name) &&
+                        (node as any).property &&
+                        'name' in (node as any).property &&
+                        contains(FORBIDDEN_GLOB_EVENT, (node as any).property.name) &&
                         node.parent.type === 'AssignmentExpression' &&
-                        node.parent.left === node
+                        (node.parent as any).left === node
                     ) {
                         context.report({ node: node, messageId: 'forbiddenGlobEvent' });
                     }
 
                     if (
-                        node.property &&
-                        'name' in node.property &&
-                        (node.property.name === 'returnValue' || node.property.name === 'cancelBubble') &&
+                        (node as any).property &&
+                        'name' in (node as any).property &&
+                        ((node as any).property.name === 'returnValue' ||
+                            (node as any).property.name === 'cancelBubble') &&
                         node.parent.type === 'AssignmentExpression' &&
-                        node.parent.left === node
+                        (node.parent as any).left === node
                     ) {
                         if (calleePathNonCmpt === 'window.event') {
                             context.report({ node: node, messageId: 'forbiddenGlobEvent' });

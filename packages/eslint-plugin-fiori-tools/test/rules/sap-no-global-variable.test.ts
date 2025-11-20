@@ -1,6 +1,5 @@
 /**
  * @fileoverview flag global variable declaration
- * @author Achref Kilani Jrad
  */
 //------------------------------------------------------------------------------
 // Requirements

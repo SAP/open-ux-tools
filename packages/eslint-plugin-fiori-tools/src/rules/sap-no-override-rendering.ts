@@ -2,7 +2,6 @@
  * @file Rule to flag override of getters, setters, onBeforeRendering
  *               and onAfterRendering for SAPUI5 object from a list of
  *               namespaces
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -46,10 +45,12 @@ const rule: Rule.RuleModule = {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
 
         /**
+         * Remove duplicate elements from an array.
          *
-         * @param array
+         * @param array The array to remove duplicates from
+         * @returns Array with duplicates removed
          */
-        function uniquifyArray(array) {
+        function uniquifyArray<T>(array: T[]): T[] {
             const a = array.concat();
             for (let i = 0; i < a.length; ++i) {
                 for (let j = i + 1; j < a.length; ++j) {
@@ -106,7 +107,7 @@ const rule: Rule.RuleModule = {
                 ].concat(customNS)
             )
         };
-        const ui5ObjectsToCheck: any[] = [];
+        const ui5ObjectsToCheck: string[] = [];
         const CHECKED_METHODS = ['onBeforeRendering', 'onAfterRendering'];
 
         // --------------------------------------------------------------------------
@@ -114,24 +115,23 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+        function contains(a: string[], obj: string): boolean {
+            return a.includes(obj);
         }
 
         /**
+         * Check if a property represents a not allowed method.
          *
-         * @param property
+         * @param property The property name to check
+         * @returns True if the property represents a not allowed method
          */
-        function checkIfNotAllowedMethod(property) {
+        function checkIfNotAllowedMethod(property: string): boolean {
             if (
                 typeof property !== 'undefined' &&
                 (contains(CHECKED_METHODS, property) || property.indexOf('get') === 0 || property.indexOf('set') === 0)
@@ -142,10 +142,12 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Calculate the object name from a member expression object.
          *
-         * @param memberExpressionObject
+         * @param memberExpressionObject The member expression object to analyze
+         * @returns The calculated object name
          */
-        function calculateObjectName(memberExpressionObject) {
+        function calculateObjectName(memberExpressionObject: any): string {
             let objectName = '';
             if (memberExpressionObject.type === 'MemberExpression') {
                 objectName = memberExpressionObject.property.name;
@@ -156,10 +158,12 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if ancestors array contains a NewExpression and return its position.
          *
-         * @param ancestors
+         * @param ancestors The array of ancestor nodes to check
+         * @returns The position of the NewExpression or -1 if not found
          */
-        function checkIfAncestorsContainsNewExpression(ancestors) {
+        function checkIfAncestorsContainsNewExpression(ancestors): number {
             const ancestorsLength = ancestors.length;
             for (let i = 0; i < ancestorsLength; i++) {
                 if (ancestors[i].type === 'NewExpression') {
@@ -170,10 +174,12 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a namespace should be reported for violations.
          *
-         * @param namespace
+         * @param namespace The namespace string to check
+         * @returns True if the namespace should be reported for violations
          */
-        function checkIfReportedNamespace(namespace) {
+        function checkIfReportedNamespace(namespace): boolean {
             for (let i = 0; i < configuration.ns.length; i++) {
                 if (namespace.indexOf(configuration.ns[i] + '.') === 0) {
                     return true;
@@ -183,10 +189,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process member expressions for rendering override violations.
          *
-         * @param node
+         * @param node The member expression node to process
          */
-        function processMemberExpression(node: any) {
+        function processMemberExpression(node: any): void {
             if (node.object.type === 'Identifier') {
                 let namespace = node.object.name + '.' + node.property.name;
                 const ancestors = sourceCode.getAncestors(node);
@@ -218,10 +225,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check assignment expressions against rendering override violations.
          *
-         * @param node
+         * @param node The assignment expression node to check
          */
-        function checkAssignmentAgainstOverride(node: any) {
+        function checkAssignmentAgainstOverride(node: any): void {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {
                 const memberExpression = node.left,
                     objectProperty = memberExpression.property.name;
@@ -245,10 +253,10 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 processMemberExpression(node);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): void {
                 checkAssignmentAgainstOverride(node);
             }
         };

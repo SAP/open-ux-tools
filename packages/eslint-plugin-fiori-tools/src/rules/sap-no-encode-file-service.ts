@@ -1,6 +1,5 @@
 /**
  * @file        Check "sap-no-encode-file-service" should detect the usage of "/sap/bc/ui2/encode_file".
- * @ESLint              Version 0.22.1.0 / June 2015
  */
 
 import type { Rule } from 'eslint';
@@ -30,19 +29,23 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a value is a string.
          *
-         * @param string
+         * @param string The value to check
+         * @returns True if the value is a string
          */
-        function isString(string) {
+        function isString(string): boolean {
             return typeof string === 'string';
         }
 
         /**
+         * Check if a string starts with a substring.
          *
-         * @param base
-         * @param sub
+         * @param base The base string to check
+         * @param sub The substring to look for at the start
+         * @returns True if the base string starts with the substring
          */
-        function startsWith(base, sub) {
+        function startsWith(base, sub): boolean {
             return base.indexOf(sub) === 0;
         }
 
@@ -50,7 +53,7 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 const value = node.value;
                 if (isString(value) && startsWith(value, '/sap/bc/ui2/encode_file')) {
                     context.report({ node: node, messageId: 'encodeFileService' });

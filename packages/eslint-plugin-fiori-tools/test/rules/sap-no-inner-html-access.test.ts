@@ -1,7 +1,5 @@
 /**
  * @fileoverview Rule to detect overriding of an elements inner html.
- * @author Christopher Fenner / D065687
- * @ESLint Version 0.8.0 / March 2016
  */
 
 //------------------------------------------------------------------------------

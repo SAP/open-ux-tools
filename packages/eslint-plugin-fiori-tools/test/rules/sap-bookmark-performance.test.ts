@@ -1,7 +1,5 @@
 /**
  * @fileoverview Rule to ensure the correct usage ot the auto refresh interval options for sap.ushell.ui.footerbar.AddBookmarkButton.
- * @author Christopher Fenner - D065687
- * @ESLint Version 0.8.0 / April 2016
  */
 
 //------------------------------------------------------------------------------

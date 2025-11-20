@@ -1,6 +1,5 @@
 /**
  * @fileoverview Autowait has to be true in Opa5.extendConfig
- * @author Syed Arij Hussain
  */
 //------------------------------------------------------------------------------
 // Requirements

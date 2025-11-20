@@ -1,7 +1,5 @@
 /**
  * @fileoverview Detect direct DOM insertion
- * @author Christopher Fenner, C5224075
- * @ESLint Version 0.22.1 / June 2015
  */
 //------------------------------------------------------------------------------
 // Requirements

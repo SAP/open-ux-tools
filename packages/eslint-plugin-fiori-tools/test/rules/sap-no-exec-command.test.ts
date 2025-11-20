@@ -1,6 +1,5 @@
 /**
  * @fileoverview Detect usage of execCommand
- * @author Christopher Fenner
  */
 //------------------------------------------------------------------------------
 // Requirements

@@ -1,14 +1,10 @@
 /**
  * @file Rule to ensure the correct usage ot the auto refresh interval options for sap.ushell.ui.footerbar.AddBookmarkButton.
- * @ESLint Version 0.8.0 / April 2016
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/ast-helpers';
 
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/* eslint-disable strict */
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -27,102 +23,45 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const MIN = 0;
         const MAX = 300;
         const INTERESTING_KEY = 'serviceRefreshInterval';
         const INTERESTING_METHODS = ['setServiceRefreshInterval', 'setAppData'];
 
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Rule-specific Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
 
         /**
+         * Check if a value is a number.
          *
-         * @param node
+         * @param i The value to check
+         * @returns True if the value is a number
          */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isProperty(node: any) {
-            return isType(node, 'Property');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isObject(node: any) {
-            return isType(node, 'ObjectExpression');
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param i
-         */
-        function isNumber(i) {
+        function isNumber(i: unknown): i is number {
             return Number(i) === i && i % 1 === 0;
         }
 
         /**
+         * Check if a node value is in the performance range.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node value is in the performance range
          */
-        function isInRange(node: any) {
+        function isInRange(node: unknown): boolean {
             return isNumber(node) && node > MIN && node < MAX;
         }
 
         /**
+         * Check if a node represents an interesting method call.
          *
-         * @param node
+         * @param node The node to check
+         * @returns True if the node represents an interesting method call
          */
-        function isInteresting(node: any) {
-            const callee = node.callee;
+        function isInteresting(node: Rule.Node): boolean {
+            const callee = (node as any).callee;
             if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
+                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, (callee.property as any).name)) {
                     return true;
                 }
             }
@@ -133,12 +72,14 @@ const rule: Rule.RuleModule = {
          * @returns true if the parameters of the given functionCall are not critical.
          * */
         /**
+         * Check if the function call parameters are valid.
          *
-         * @param node
+         * @param node The function call node to validate
+         * @returns True if the function call parameters are valid
          */
-        function isValid(node: any) {
-            const args = node.arguments;
-            if (args && args.length > 0) {
+        function isValid(node: Rule.Node): boolean {
+            const args = (node as any).arguments;
+            if (args?.length > 0) {
                 // get firtst argument
                 const argument = args[0];
                 if (isObject(argument)) {
@@ -167,7 +108,7 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'performanceLimitation' });
                 }

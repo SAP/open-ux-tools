@@ -1,9 +1,19 @@
 /**
  * @file Detect some warning for usages of (window.)document APIs
- * @ESLint          Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
+import {
+    isType,
+    isIdentifier,
+    isMember,
+    isLiteral,
+    createIsWindowObject,
+    createRememberWindow,
+    createIsHistory,
+    createIsHistoryObject,
+    createRememberHistory
+} from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -11,7 +21,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -30,124 +40,49 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        const WINDOW_OBJECTS: any[] = [];
-        const HISTORY_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
+        const HISTORY_OBJECTS: string[] = [];
         //    const INTERESTING_HISTORY_METHODS = [
         //            "forward", "back", "go"
         //    ];
 
+        // Initialize factory functions
+        const isWindowObject = createIsWindowObject(WINDOW_OBJECTS);
+        const rememberWindow = createRememberWindow(WINDOW_OBJECTS, isWindowObject);
+        const isHistory = createIsHistory(isWindowObject);
+        const isHistoryObject = createIsHistoryObject(HISTORY_OBJECTS, isHistory);
+        const rememberHistory = createRememberHistory(HISTORY_OBJECTS, isHistoryObject);
+
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Helper Functions
         // --------------------------------------------------------------------------
         /**
+         * Check if a node represents a condition statement.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @returns True if the node represents a condition statement
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-        /**
-         *
-         * @param node
-         */
-        function isCondition(node: any) {
+        function isCondition(node: any): boolean {
             return isType(node, 'IfStatement') || isType(node, 'ConditionalExpression');
         }
         /**
+         * Check if a node represents a unary expression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents a unary expression
          */
-        function isUnary(node: any) {
+        function isUnary(node: any): boolean {
             return isType(node, 'UnaryExpression');
         }
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, 'Literal');
-        }
 
         /**
+         * Check if a node is within a conditional statement up to a maximum depth.
          *
-         * @param a
-         * @param obj
+         * @param node The AST node to check
+         * @param maxDepth Maximum depth to search for conditions
+         * @returns True if the node is within a conditional statement
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindow(node: any) {
-            // true if node is the global variable 'window'
-            return node && isIdentifier(node) && node.name === 'window';
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindowObject(node: any) {
-            // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isHistory(node: any) {
-            if (node) {
-                if (isIdentifier(node)) {
-                    // true if node id the global variable 'history'
-                    return node.name === 'history';
-                } else if (isMember(node)) {
-                    // true if node id the global variable 'window.history' or '<windowReference>.history'
-                    return isWindowObject(node.object) && isHistory(node.property);
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isHistoryObject(node: any) {
-            // true if node is the global variable 'document'/'window.history' or a reference to it
-            return isHistory(node) || (node && isIdentifier(node) && contains(HISTORY_OBJECTS, node.name));
-        }
-
-        /**
-         *
-         * @param node
-         * @param maxDepth
-         */
-        function isInCondition(node: any, maxDepth: any) {
+        function isInCondition(node: any, maxDepth: number): boolean {
             // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
             // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
             if (maxDepth > 0) {
@@ -158,47 +93,22 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the value -1.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the value -1
          */
-        function isMinusOne(node: any) {
+        function isMinusOne(node: any): boolean {
             return isUnary(node) && node.operator === '-' && isLiteral(node.argument) && node.argument.value === 1;
         }
 
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
         /**
+         * Check if a call expression is interesting for history manipulation detection.
          *
-         * @param left
-         * @param right
+         * @param node The call expression node to check
+         * @returns True if the call expression is interesting for history manipulation detection
          */
-        function rememberWindow(left, right) {
-            if (isWindowObject(right) && isIdentifier(left)) {
-                WINDOW_OBJECTS.push(left.name);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param left
-         * @param right
-         */
-        function rememberHistory(left, right) {
-            if (isHistoryObject(right) && isIdentifier(left)) {
-                HISTORY_OBJECTS.push(left.name);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isInteresting(node: any) {
+        function isInteresting(node: any): boolean {
             // check if callee is ref to history.back / .go / .forward
             if (
                 node &&
@@ -212,10 +122,12 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a history manipulation call is valid.
          *
-         * @param node
+         * @param node The call expression node to validate
+         * @returns True if the history manipulation call is valid
          */
-        function isValid(node: any) {
+        function isValid(node: any): boolean {
             switch (node.callee.property.name) {
                 case 'forward':
                     return false;
@@ -233,15 +145,15 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'CallExpression': function (node) {
+            'CallExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'historyManipulation' });
                 }
             },
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init) || rememberHistory(node.id, node.init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return rememberWindow(node.left, node.right) || rememberHistory(node.left, node.right);
             }
         };

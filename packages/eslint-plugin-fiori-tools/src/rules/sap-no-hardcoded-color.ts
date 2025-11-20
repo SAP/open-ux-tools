@@ -1,6 +1,5 @@
 /**
  * @file Rule to flag use of a hardcoded color
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -12,7 +11,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -30,7 +29,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         // variables should be defined here
 
         // --------------------------------------------------------------------------
@@ -43,10 +41,12 @@ const rule: Rule.RuleModule = {
          *      color: #ABABAB
          */
         /**
+         * Check if a name matches prohibited hardcoded color patterns.
          *
-         * @param name
+         * @param name The name string to check for color patterns
+         * @returns RegExp match array if color patterns found, null otherwise
          */
-        function matchProhibited(name) {
+        function matchProhibited(name: string): RegExpMatchArray | null {
             return name.match('#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})[^\\w]');
         }
 
@@ -55,12 +55,12 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'Literal': function (node) {
+            'Literal': function (node): void {
                 const val = node.value;
                 let result;
 
                 if (typeof val === 'string') {
-                    result = matchProhibited(node.value);
+                    result = matchProhibited(val);
 
                     if (result) {
                         context.report({

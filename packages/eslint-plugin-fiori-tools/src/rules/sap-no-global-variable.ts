@@ -3,6 +3,7 @@
  */
 
 import type { Rule, Scope } from 'eslint';
+import { type ASTNode } from '../utils/ast-helpers';
 
 //------------------------------------------------------------------------------
 // Rule Definition
@@ -31,9 +32,11 @@ const rule: Rule.RuleModule = {
         //--------------------------------------------------------------------------
 
         /**
+         * Check if an array contains a specific item.
          *
-         * @param array
-         * @param item
+         * @param array The array to search in
+         * @param item The item to search for
+         * @returns True if the array contains the item, false otherwise
          */
         function contains(array: string[], item: string): boolean {
             return array.includes(item);
@@ -44,7 +47,7 @@ const rule: Rule.RuleModule = {
         //--------------------------------------------------------------------------
 
         return {
-            VariableDeclaration(node: any) {
+            VariableDeclaration(node: ASTNode) {
                 const sourceCode = context.sourceCode ?? context.getSourceCode();
                 const scope: Scope.Scope = sourceCode.getScope
                     ? sourceCode.getScope(node)
@@ -52,7 +55,7 @@ const rule: Rule.RuleModule = {
 
                 // Check if this is a global/module scope variable declaration
                 if (scope.type === 'global' || scope.type === 'module') {
-                    node.declarations.forEach((declaration: any) => {
+                    (node as any).declarations.forEach((declaration: any) => {
                         if (declaration.id?.type === 'Identifier') {
                             const name = declaration.id.name;
                             if (!contains(ALLOWED_VARIABLES, name)) {

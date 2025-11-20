@@ -1,7 +1,5 @@
 /**
  * @fileoverview Detects the usage of sap.ui.commons objects.
- * @author Christopher Fenner - D065687
- * @ESLint Version 0.8.0 / April 2016
  */
 //------------------------------------------------------------------------------
 // Requirements

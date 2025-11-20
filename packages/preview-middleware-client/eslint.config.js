@@ -12,7 +12,8 @@ module.exports = defineConfig([
             'test/fixtures/**',
             'dist/**',
             'node_modules/**',
-            'eslint.config.js'
+            'eslint.config.js',
+            'coverage/**'
         ]
     },
     ...fioriTools.config.defaultTS,

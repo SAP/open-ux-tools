@@ -1,14 +1,9 @@
 /**
  * @file Rule to detect absolute path to component
- * @ESLint Version 0.17.1 / April 2015
  */
 
 import type { Rule } from 'eslint';
 
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-/* eslint-disable strict */
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -26,8 +21,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-
         const T_MEMBER = 'MemberExpression';
         const T_ARRAY = 'ArrayExpression';
         const T_IDENTIFIER = 'Identifier';
@@ -37,50 +30,56 @@ const rule: Rule.RuleModule = {
         const P_INCLUDES = 'includes';
 
         /**
+         * Get the name from a literal or identifier node.
          *
-         * @param node
+         * @param node The AST node to extract name from
+         * @returns The name extracted from the literal or identifier node
          */
-        function getLiteralOrIdentifiertName(node: any) {
+        function getLiteralOrIdentifiertName(node: Rule.Node): string {
             let result = '';
             if (node.type === T_IDENTIFIER) {
-                result = node.name;
+                result = (node as any).name;
             } else {
-                result = node.value;
+                result = (node as any).value;
             }
             return result;
         }
 
         /**
+         * Get the identifier path from a node.
          *
-         * @param node
+         * @param node The AST node to extract path from
+         * @returns The identifier path extracted from the node
          */
-        function getIdentifierPath(node: any) {
+        function getIdentifierPath(node: Rule.Node): string {
             let result = '';
-            //        if (node) {
             switch (node.type) {
                 case T_IDENTIFIER:
-                    result = node.name;
+                    result = (node as any).name;
                     break;
                 case T_MEMBER:
-                    result = getIdentifierPath(node.object) + '.' + getLiteralOrIdentifiertName(node.property);
+                    result = `${getIdentifierPath((node as any).object)}.${getLiteralOrIdentifiertName((node as any).property)}`;
                     break;
                 default:
             }
-            //        }
             return result;
         }
 
-        // Search ObjectExpression to find certain property
         /**
+         * Search ObjectExpression to find certain property.
          *
-         * @param node
-         * @param propertyName
+         * @param node The object expression node to search
+         * @param propertyName The name of the property to find
+         * @returns The property node if found, undefined otherwise
          */
-        function getPropertyFromObjectExpression(node: any, propertyName: any) {
+        function getPropertyFromObjectExpression(
+            node: Rule.Node | undefined,
+            propertyName: string
+        ): Rule.Node | undefined {
             // Check if node is of type object expression
             if (node?.type === T_OBJECT) {
                 // Get property list from object expression
-                const propertyList = node.properties;
+                const propertyList = (node as any).properties;
                 // Go through the properties
                 let property;
                 for (const key in propertyList) {
@@ -90,24 +89,24 @@ const rule: Rule.RuleModule = {
                         propertyList.hasOwnProperty(key) &&
                         (property = propertyList[key]) &&
                         property.type === T_PROPERTY &&
-                        getLiteralOrIdentifiertName(property.key) === propertyName
+                        getLiteralOrIdentifiertName((property as any).key) === propertyName
                     ) {
-                        return property.value;
-                        //                    }
+                        return (property as any).value;
                     }
                 }
             }
+            return undefined;
         }
 
-        // Search options parameter
         /**
+         * Search options parameter.
          *
-         * @param node
+         * @param node The function call node to validate
          */
-        function validateFunctionOptions(node: any) {
-            if (node.arguments.length > 1) {
+        function validateFunctionOptions(node: Rule.Node): void {
+            if ((node as any).arguments.length > 1) {
                 // get options parameter (2nd)
-                const options = node.arguments[1];
+                const options = (node as any).arguments[1];
                 // Get metadata data
                 const metadata = getPropertyFromObjectExpression(options, P_METADATA);
                 // Get includes data
@@ -115,7 +114,7 @@ const rule: Rule.RuleModule = {
                 // Check if includes type is array expression
                 if (includes?.type === T_ARRAY) {
                     // Get array elements
-                    const includesElements = includes.elements;
+                    const includesElements = (includes as any).elements;
                     let element;
                     for (const key in includesElements) {
                         // all in one if-statement to reach code coverage
@@ -125,7 +124,6 @@ const rule: Rule.RuleModule = {
                             getLiteralOrIdentifiertName(element).indexOf('/') === 0
                         ) {
                             context.report({ node: node, messageId: 'absolutePath' });
-                            //                        }
                         }
                     }
                 }
@@ -133,21 +131,24 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a string ends with a specific suffix.
          *
-         * @param string
-         * @param suffix
+         * @param string The string to check
+         * @param suffix The suffix to look for
+         * @returns True if the string ends with the suffix
          */
-        function endsWith(string, suffix) {
+        function endsWith(string: string, suffix: string): boolean {
             return string.indexOf(suffix, string.length - suffix.length) !== -1;
         }
 
         /**
+         * Process a call expression node to check for violations.
          *
-         * @param node
+         * @param node The call expression node to process
          */
-        function processCallExpression(node: any) {
-            const path = getIdentifierPath(node.callee);
-            if (endsWith(path, '.' + 'extend')) {
+        function processCallExpression(node: Rule.Node): void {
+            const path = getIdentifierPath((node as any).callee);
+            if (endsWith(path, `.${'extend'}`)) {
                 validateFunctionOptions(node);
             }
         }

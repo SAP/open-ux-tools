@@ -1,14 +1,14 @@
 /**
  * @file Detects the usage of sap.ui.commons objects.
- * @ESLint Version 0.8.0 / April 2016
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/* eslint-disable strict */
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -26,83 +26,14 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
         /**
+         * Check if a node represents an interesting function call to analyze.
          *
-         * @param base
-         * @param sub
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting function call
          */
-        function startsWith(base, sub) {
-            if (base.indexOf) {
-                return base.indexOf(sub) === 0;
-            }
-        }
-
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isArray(node: any) {
-            return isType(node, 'ArrayExpression');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getMemberAsString(node: any) {
-            if (isMember(node)) {
-                return getMemberAsString(node.object) + '.' + getMemberAsString(node.property);
-            } else if (isLiteral(node)) {
-                return node.value;
-            } else if (isIdentifier(node)) {
-                return node.name;
-            }
-            return '';
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isInteresting(node: any) {
-            const callee = node.callee;
+        function isInteresting(node: ASTNode): boolean {
+            const callee = (node as any).callee;
             if (isMember(callee)) {
                 if (getMemberAsString(callee) === 'sap.ui.define') {
                     return true;
@@ -112,16 +43,19 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a function call has valid (non-commons) imports.
          *
-         * @param node
+         * @param node The function call node to validate
+         * @returns True if the function call has valid imports, false if it contains commons usage
          */
-        function isValid(node: any) {
-            if (node.arguments && isArray(node.arguments[0])) {
-                const importList = node.arguments[0].elements;
+        function isValid(node: ASTNode): boolean {
+            const nodeWithArgs = node as any;
+            if (nodeWithArgs.arguments && isArray(nodeWithArgs.arguments[0])) {
+                const importList = (nodeWithArgs.arguments[0] as any).elements;
                 for (const key in importList) {
                     if (importList.hasOwnProperty(key)) {
                         const lib = importList[key];
-                        if (isLiteral(lib) && startsWith(lib.value, 'sap/ui/commons')) {
+                        if (isLiteral(lib) && startsWith((lib as any).value, 'sap/ui/commons')) {
                             return false;
                         }
                     }
@@ -131,12 +65,15 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'NewExpression': function (node) {
-                if (isMember(node.callee) && startsWith(getMemberAsString(node.callee), 'sap.ui.commons')) {
+            'NewExpression'(node: ASTNode): void {
+                if (
+                    isMember((node as any).callee) &&
+                    startsWith(getMemberAsString((node as any).callee), 'sap.ui.commons')
+                ) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }
             },
-            'CallExpression': function (node) {
+            'CallExpression'(node: ASTNode): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'commonsUsage' });
                 }

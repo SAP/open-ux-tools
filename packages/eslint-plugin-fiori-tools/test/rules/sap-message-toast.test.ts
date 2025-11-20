@@ -1,7 +1,5 @@
 /**
  * @fileoverview
- * @author Christopher Fenner - C5224075
- * @ESLint Version 0.17.1 / April 2015
  */
 
 //------------------------------------------------------------------------------

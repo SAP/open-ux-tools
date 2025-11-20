@@ -1,17 +1,10 @@
 /**
  * @file Detect the definition of global properties in the window object
- * @ESLint Version 0.24.0
  */
 
 import type { Rule } from 'eslint';
+import { isIdentifier, isMember, isLiteral } from '../utils/ast-helpers';
 
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
-/*eslint-disable strict*/
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -29,88 +22,50 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        const WINDOW_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
         const FORBIDDEN_PROPERTIES = ['top', 'addEventListener'];
 
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
 
         /**
+         * Check if a node represents the global window variable.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window variable
          */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isWindow(node: any) {
+        function isWindow(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window'
-            return isIdentifier(node) && node.name === 'window';
+            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
 
         /**
+         * Check if a node represents a window object or reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents a window object or reference to it
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
+            return !!(
+                isWindow(node) ||
+                (node && isIdentifier(node) && 'name' in node && WINDOW_OBJECTS.includes(node.name))
+            );
         }
 
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Remember window object references for later analysis.
          *
-         * @param left
-         * @param right
+         * @param left The left side of the assignment
+         * @param right The right side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
-        function rememberWindow(left, right) {
-            if (isWindowObject(right) && isIdentifier(left)) {
+        function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
+            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
             }
@@ -118,41 +73,45 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents an interesting window property access.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents an interesting window property access
          */
-        function isInteresting(node: any) {
-            return isMember(node) && isWindowObject(node.object);
+        function isInteresting(node: Rule.Node): boolean {
+            return isMember(node) && isWindowObject((node as any).object);
         }
 
         /**
+         * Check if a window property access is valid (not forbidden).
          *
-         * @param node
+         * @param node The AST node to validate
+         * @returns True if the window property access is valid
          */
-        function isValid(node: any) {
+        function isValid(node: Rule.Node): boolean {
             let method = '';
 
-            if (isIdentifier(node.property)) {
-                method = node.property.name;
+            if (isIdentifier((node as any).property) && 'name' in (node as any).property) {
+                method = (node as any).property.name;
             }
 
-            if (isLiteral(node.property)) {
-                method = node.property.value;
+            if (isLiteral((node as any).property) && 'value' in (node as any).property) {
+                method = (node as any).property.value;
             }
-            return !contains(FORBIDDEN_PROPERTIES, method);
+            return !FORBIDDEN_PROPERTIES.includes(method);
         }
 
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
-                return rememberWindow(node.id, node.init);
+            'VariableDeclarator': function (node): boolean {
+                return rememberWindow((node as any).id, (node as any).init);
             },
-            'AssignmentExpression': function (node) {
-                return rememberWindow(node.left, node.right);
+            'AssignmentExpression': function (node): boolean {
+                return rememberWindow((node as any).left, (node as any).right);
             },
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'forbiddenWindowProperty' });
                 }

@@ -1,7 +1,5 @@
 /**
  * @fileoverview Tests for sap- rule.
- * @author Christopher Fenner - C5224075
- * @ESLint Version 0.17.0 / February 2015
  */
 
 //------------------------------------------------------------------------------

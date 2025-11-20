@@ -1,6 +1,5 @@
 /**
  * @file detects override of storage prototype
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -8,7 +7,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -27,7 +26,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const FORBIDDEN_STR_OBJECT: any[] = [];
         const MEMBER = 'MemberExpression',
             IDENTIFIER = 'Identifier';
@@ -37,33 +35,41 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: any, type: any): boolean {
+            return node?.type === type;
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, IDENTIFIER);
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, MEMBER);
         }
 
         /**
+         * Build the callee path from a member expression node.
          *
-         * @param node
+         * @param node The member expression node to process
+         * @returns String representation of the callee path
          */
-        function buildCalleePath(node: any) {
+        function buildCalleePath(node: any): string {
             if (isMember(node.object)) {
                 return buildCalleePath(node.object) + '.' + node.object.property.name;
             } else if (isIdentifier(node.object)) {
@@ -73,24 +79,22 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+        function contains(a, obj): boolean {
+            return a.includes(obj);
         }
 
         /**
+         * Check assignment expressions against storage prototype override violations.
          *
-         * @param node
+         * @param node The assignment expression node to check
          */
-        function checkAssignmentAgainstOverride(node: any) {
+        function checkAssignmentAgainstOverride(node: any): void {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {
                 const memberExpression = node.left;
 
@@ -106,10 +110,11 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process variable declarator nodes for storage prototype references.
          *
-         * @param node
+         * @param node The variable declarator node to process
          */
-        function processVariableDeclarator(node: any) {
+        function processVariableDeclarator(node: any): void {
             if (node.init) {
                 if (node.init.type === 'MemberExpression') {
                     const firstElement = node.init.object.name,
@@ -123,10 +128,10 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): void {
                 processVariableDeclarator(node);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): void {
                 checkAssignmentAgainstOverride(node);
             }
         };

@@ -1,15 +1,9 @@
 /**
  * @file Detect usage of navigator object
- * @ESLint Version 0.24.0
  */
 
 import type { Rule } from 'eslint';
 
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-
-/*eslint-disable strict*/
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -52,114 +46,127 @@ const rule: Rule.RuleModule = {
                 'onresize'
             ];
 
-        const FULL_BLACKLIST = FORBIDDEN_NAVIGATOR_WINDOW.concat(FORBIDDEN_GLOB_EVENT);
-        FULL_BLACKLIST.push('back');
+        const FORBIDDEN_METHODS = FORBIDDEN_NAVIGATOR_WINDOW.concat(FORBIDDEN_GLOB_EVENT);
+        FORBIDDEN_METHODS.push('back');
 
-        const WINDOW_OBJECTS: any[] = [];
-        const NAVIGATOR_OBJECTS: any[] = [];
+        const WINDOW_OBJECTS: string[] = [];
+        const NAVIGATOR_OBJECTS: string[] = [];
 
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: Rule.Node | undefined, type: string): boolean {
+            return node?.type === type;
         }
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: Rule.Node | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: Rule.Node | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
+         * Check if a node is a CallExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a CallExpression
          */
-        function isCall(node: any) {
+        function isCall(node: Rule.Node | undefined): boolean {
             return isType(node, 'CallExpression');
-        }
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         /**
+         * Get the rightmost method name from a call expression node.
          *
-         * @param node
+         * @param node The call expression node to analyze
+         * @returns The rightmost method name
          */
-        function getRightestMethodName(node: any) {
-            const callee = node.callee;
+        function getRightestMethodName(node: Rule.Node): string {
+            const callee = (node as any).callee;
             return isMember(callee) ? callee.property.name : callee.name;
         }
 
         /**
+         * Check if a node represents the global window object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window object
          */
-        function isWindow(node: any) {
+        function isWindow(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window'
-            return isIdentifier(node) && node.name === 'window';
+            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
 
         /**
+         * Check if a node represents the window object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the window object or a reference to it
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: Rule.Node | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isNavigator(node: any) {
-            // true if node id the global variable 'navigator', 'window.navigator' or '<windowReference>.navigator'
-            return (
-                (isIdentifier(node) && node.name === 'navigator') ||
-                (isMember(node) && isWindowObject(node.object) && isNavigator(node.property))
+            return !!(
+                isWindow(node) ||
+                (isIdentifier(node) && node && 'name' in node && WINDOW_OBJECTS.includes(node.name))
             );
         }
 
         /**
+         * Check if a node represents the navigator object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the navigator object
          */
-        function isNavigatorObject(node: any) {
-            // true if node is the global variable 'navigator'/'window.navigator' or a reference to it
-            return isNavigator(node) || (isIdentifier(node) && contains(NAVIGATOR_OBJECTS, node.name));
+        function isNavigator(node: Rule.Node | undefined): boolean {
+            // true if node id the global variable 'navigator', 'window.navigator' or '<windowReference>.navigator'
+            return (
+                (isIdentifier(node) && node && 'name' in node && node.name === 'navigator') ||
+                (isMember(node) && isWindowObject((node as any).object) && isNavigator((node as any).property))
+            );
         }
 
         /**
+         * Check if a node represents the navigator object or a reference to it.
          *
-         * @param left
-         * @param right
+         * @param node The AST node to check
+         * @returns True if the node represents the navigator object or a reference to it
          */
-        function rememberWindow(left: any, right: any): boolean {
-            if (isWindowObject(right) && isIdentifier(left)) {
+        function isNavigatorObject(node: Rule.Node | undefined): boolean {
+            // true if node is the global variable 'navigator'/'window.navigator' or a reference to it
+            return !!(
+                isNavigator(node) ||
+                (isIdentifier(node) && node && 'name' in node && NAVIGATOR_OBJECTS.includes(node.name))
+            );
+        }
+
+        /**
+         * Remember window object assignments for tracking references.
+         *
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if the assignment was remembered
+         */
+        function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
+            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
             }
@@ -167,12 +174,14 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember navigator object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if the assignment was remembered
          */
-        function rememberNavigator(left: any, right: any): boolean {
-            if (isNavigatorObject(right) && isIdentifier(left)) {
+        function rememberNavigator(left: Rule.Node, right: Rule.Node): boolean {
+            if (isNavigatorObject(right) && isIdentifier(left) && 'name' in left) {
                 NAVIGATOR_OBJECTS.push(left.name);
                 return true;
             }
@@ -184,17 +193,23 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'VariableDeclarator': function (node) {
-                return rememberWindow(node.id, node.init) || rememberNavigator(node.id, node.init);
+            'VariableDeclarator': function (node): boolean {
+                return (
+                    rememberWindow((node as any).id, (node as any).init) ||
+                    rememberNavigator((node as any).id, (node as any).init)
+                );
             },
-            'AssignmentExpression': function (node) {
-                return rememberWindow(node.left, node.right) || rememberNavigator(node.left, node.right);
+            'AssignmentExpression': function (node): boolean {
+                return (
+                    rememberWindow((node as any).left, (node as any).right) ||
+                    rememberNavigator((node as any).left, (node as any).right)
+                );
             },
-            'MemberExpression': function (node) {
-                if (isNavigatorObject(node.object)) {
+            'MemberExpression': function (node): void {
+                if (isNavigatorObject((node as any).object)) {
                     if (isCall(node.parent)) {
                         const methodName = getRightestMethodName(node.parent);
-                        if (typeof methodName === 'string' && contains(FULL_BLACKLIST, methodName)) {
+                        if (typeof methodName === 'string' && FORBIDDEN_METHODS.includes(methodName)) {
                             context.report({ node: node, messageId: 'navigator' });
                         }
                     } else {

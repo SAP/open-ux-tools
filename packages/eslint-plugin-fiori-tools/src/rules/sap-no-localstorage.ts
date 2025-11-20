@@ -1,9 +1,9 @@
 /**
  * @file detects usage of localstaorage
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, type IdentifierNode, type MemberExpressionNode, buildCalleePath } from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
@@ -11,7 +11,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -29,71 +29,30 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        const FORBIDDEN_STORAGE_OBJECT: any[] = [];
-
-        const MEMBER = 'MemberExpression',
-            IDENTIFIER = 'Identifier';
+        const FORBIDDEN_STORAGE_OBJECT: string[] = [];
 
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param node
-         * @param type
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, IDENTIFIER);
-        }
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, MEMBER);
+        function contains(a: string[], obj: string): boolean {
+            return a.includes(obj);
         }
 
         /**
+         * Check if the callee path represents a forbidden API.
          *
-         * @param node
+         * @param calleePath The path string to analyze
+         * @returns The last element of the path
          */
-        function buildCalleePath(node: any) {
-            if (isMember(node.object)) {
-                return buildCalleePath(node.object) + '.' + node.object.property.name;
-            } else if (isIdentifier(node.object)) {
-                return node.object.name;
-            }
-            return '';
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param calleePath
-         */
-        function isForbiddenObviousApi(calleePath) {
+        function isForbiddenObviousApi(calleePath: string): string {
             const elementArray = calleePath.split('.');
             const lastElement = elementArray[elementArray.length - 1];
 
@@ -101,29 +60,37 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process variable declarator nodes for localStorage references.
          *
-         * @param node
+         * @param node The variable declarator node to process
          */
-        function processVariableDeclarator(node: any) {
-            if (node.init) {
-                if (node.init.type === 'MemberExpression') {
-                    const firstElement = node.init.object.name,
-                        secondElement = node.init.property.name;
+        function processVariableDeclarator(node: ASTNode): void {
+            const declaratorNode = node as { init?: ASTNode; id: IdentifierNode };
+            if (declaratorNode.init) {
+                if (declaratorNode.init.type === 'MemberExpression') {
+                    const memberInit = declaratorNode.init as MemberExpressionNode;
+                    const objectNode = memberInit.object as IdentifierNode;
+                    const propertyNode = memberInit.property as IdentifierNode;
+                    const firstElement = objectNode.name;
+                    const secondElement = propertyNode.name;
                     if (firstElement + '.' + secondElement === 'window.localStorage') {
-                        FORBIDDEN_STORAGE_OBJECT.push(node.id.name);
+                        FORBIDDEN_STORAGE_OBJECT.push(declaratorNode.id.name);
                     }
-                } else if (node.init.type === 'Identifier' && node.init.name === 'localStorage') {
-                    FORBIDDEN_STORAGE_OBJECT.push(node.id.name);
+                } else if (
+                    declaratorNode.init.type === 'Identifier' &&
+                    (declaratorNode.init as IdentifierNode).name === 'localStorage'
+                ) {
+                    FORBIDDEN_STORAGE_OBJECT.push(declaratorNode.id.name);
                 }
             }
         }
 
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator'(node: ASTNode): void {
                 processVariableDeclarator(node);
             },
-            'MemberExpression': function (node) {
-                const memberExpressionNode = node;
+            'MemberExpression'(node: ASTNode): void {
+                const memberExpressionNode = node as MemberExpressionNode;
                 const calleePath = buildCalleePath(memberExpressionNode);
                 const speciousObject = isForbiddenObviousApi(calleePath);
 

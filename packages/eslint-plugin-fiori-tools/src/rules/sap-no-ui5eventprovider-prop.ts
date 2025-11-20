@@ -1,6 +1,5 @@
 /**
  * @file 	Check "sap-no-ui5eventprovider-prop" should detect direct usage of private property names of sap.ui.base.EventProvider
- * @ESLint			Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -9,7 +8,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Disablement
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -28,8 +27,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-
         // Alphabetical list of the "private property names" from UI5 event provider which this check shall detect
         const PRIVATE_MEMBERS = ['mEventRegistry', 'oEventPool'];
 
@@ -37,17 +34,14 @@ const rule: Rule.RuleModule = {
         // Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
         function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+            return a.includes(obj);
         }
 
         // --------------------------------------------------------------------------
@@ -55,7 +49,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'MemberExpression': function (node) {
+            'MemberExpression': function (node): void {
                 if (!node.property || !('name' in node.property)) {
                     return;
                 }

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Detect the usage of document.queryCommandSupported with 'insertBrOnReturn' argument
- * @author Christopher Fenner (C5224075) - 02/2016
  */
 //------------------------------------------------------------------------------
 // Requirements

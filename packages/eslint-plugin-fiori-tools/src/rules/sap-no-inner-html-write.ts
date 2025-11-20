@@ -1,9 +1,16 @@
 /**
  * @file Detect the overriding of the innerHTML.
- * @ESLint Version 0.8.0 / March 2016
  */
 
 import type { Rule } from 'eslint';
+import {
+    type ASTNode,
+    type IdentifierNode,
+    type LiteralNode,
+    isIdentifier,
+    isLiteral,
+    isMember
+} from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -11,7 +18,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -29,65 +36,32 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
-        // --------------------------------------------------------------------------
-        // Basic Helpers
-        // --------------------------------------------------------------------------
-        /**
-         *
-         * @param node
-         * @param type
-         */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isLiteral(node: any) {
-            return isType(node, 'Literal');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function isMember(node: any) {
-            return isType(node, 'MemberExpression');
-        }
-
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a left-hand side expression is interesting for analysis.
          *
-         * @param left
+         * @param left The left-hand side expression to check
+         * @returns True if the expression is interesting for analysis
          */
-        function isInteresting(left) {
+        function isInteresting(left: ASTNode): boolean {
             return isMember(left);
         }
 
         /**
+         * Check if a property access is valid (not innerHTML).
          *
-         * @param property
+         * @param property The property node to validate
+         * @returns True if the property access is valid
          */
-        function isValid(property) {
+        function isValid(property: ASTNode): boolean {
             // anything is valid, except 'innerHTML'
             if (isIdentifier(property)) {
-                return property.name !== 'innerHTML';
+                return (property as IdentifierNode).name !== 'innerHTML';
             } else if (isLiteral(property)) {
-                return property.value !== 'innerHTML';
+                return (property as LiteralNode).value !== 'innerHTML';
             }
             return true;
         }
@@ -96,8 +70,12 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'AssignmentExpression': function (node) {
-                if (isInteresting(node.left) && 'property' in node.left && !isValid(node.left.property)) {
+            'AssignmentExpression'(node: ASTNode): void {
+                if (
+                    isInteresting((node as any).left) &&
+                    'property' in (node as any).left &&
+                    !isValid((node as any).left.property)
+                ) {
                     context.report({ node: node, messageId: 'innerHtmlWrite' });
                 }
             }

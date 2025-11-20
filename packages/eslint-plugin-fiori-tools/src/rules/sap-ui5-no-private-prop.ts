@@ -1,9 +1,19 @@
 /**
  * @file Check "sap-ui5-no-private-prop" should detect the usage of private properties and functions of UI5 elements
- * @ESLint Version 0.17.1 / April 2015
  */
 
 import type { Rule } from 'eslint';
+import {
+    type ASTNode,
+    isIdentifier,
+    isCall,
+    startsWith,
+    contains,
+    getIdentifierPath,
+    resolveIdentifierPath,
+    createVariableDeclaratorProcessor,
+    hasUnderscore
+} from '../utils/ast-helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -44,10 +54,12 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
         /**
+         * Remove duplicate elements from an array.
          *
-         * @param array
+         * @param array The array to remove duplicates from
+         * @returns Array with duplicates removed
          */
-        function uniquifyArray(array) {
+        function uniquifyArray<T>(array: T[]): T[] {
             const a = array.concat();
             for (let i = 0; i < a.length; ++i) {
                 for (let j = i + 1; j < a.length; ++j) {
@@ -58,7 +70,7 @@ const rule: Rule.RuleModule = {
             }
             return a;
         }
-        const customNS = context.options[0]?.ns ? context.options[0].ns : [];
+        const customNS = (context.options[0]?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [
@@ -111,130 +123,15 @@ const rule: Rule.RuleModule = {
             'sap.ui.core.ValueState.None'
         ];
 
-        const X_CALL = 'CallExpression';
-        const X_MEMBER = 'MemberExpression';
-        const X_NEW = 'NewExpression';
-        const X_IDENTIFIER = 'Identifier';
-        const X_LITERAL = 'Literal';
         const VARIABLES = {};
 
         /**
+         * Check if a path is interesting for private property analysis.
          *
-         * @param node
-         * @param type
+         * @param path The path string to analyze
+         * @returns True if the path is interesting for private property analysis
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
-        }
-        /**
-         *
-         * @param node
-         */
-        function isIdentifier(node: any) {
-            return isType(node, 'Identifier');
-        }
-        /**
-         *
-         * @param node
-         */
-        function isCall(node: any) {
-            return isType(node, 'CallExpression');
-        }
-
-        /**
-         *
-         * @param s
-         * @param sub
-         */
-        function startsWith(s, sub) {
-            return typeof s === 'string' && typeof sub === 'string' && s.substring(0, sub.length) === sub;
-        }
-
-        /**
-         *
-         * @param a
-         * @param obj
-         */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getLiteralOrIdentifiertName(node: any) {
-            let result = '';
-            switch (node.type) {
-                case X_IDENTIFIER:
-                    result = node.name;
-                    break;
-                case X_LITERAL:
-                    result = node.value;
-                    break;
-                default:
-            }
-            return result;
-        }
-
-        /**
-         *
-         * @param node
-         */
-        function getIdentifierPath(node: any) {
-            let result = '';
-            if (node) {
-                switch (node.type) {
-                    case X_IDENTIFIER:
-                        result = node.name;
-                        break;
-                    case X_MEMBER:
-                        result = getIdentifierPath(node.object) + '.' + getLiteralOrIdentifiertName(node.property);
-                        break;
-                    case X_NEW:
-                        result = getIdentifierPath(node.callee);
-                        break;
-                    case X_CALL:
-                        result = getIdentifierPath(node.callee) + '().';
-                        break;
-                    default:
-                }
-            }
-            return result;
-        }
-
-        // Method resolved IdentifierNames with known variables
-        /**
-         *
-         * @param path
-         */
-        function resolveIdentifierPath(path) {
-            const parts = path.split('.');
-            let substitute = false;
-            // check if current identifier is remembered as an interesting variable
-            for (const name in VARIABLES) {
-                if (name === parts[0]) {
-                    // get last stored variable value
-                    substitute = VARIABLES[name].slice(-1).pop();
-                }
-            }
-            // if so, replace current identifier with its value
-            if (substitute) {
-                parts[0] = substitute;
-                path = parts.join('.');
-            }
-            return path;
-        }
-        /**
-         *
-         * @param path
-         */
-        function isinterestingPath(path) {
+        function isinterestingPath(path: string): boolean {
             let i;
             const options = configuration.ns;
             if (contains(IGNORE, path)) {
@@ -251,55 +148,26 @@ const rule: Rule.RuleModule = {
             return false;
         }
 
-        /**
-         *
-         * @param node
-         * @param name
-         */
-        function rememberinterestingVariable(node: any, name: any) {
-            if (typeof VARIABLES[node.id.name] === 'undefined') {
-                VARIABLES[node.id.name] = [];
-            }
-            VARIABLES[node.id.name].push(name);
-        }
+        // Create the variable declarator processor using the shared utility
+        const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isinterestingPath);
 
         /**
+         * Check if an identifier is a special case for member expressions.
          *
-         * @param node
+         * @param identifier The identifier string to check
+         * @returns True if the identifier is a special case for member expressions
          */
-        function processVariableDeclarator(node: any) {
-            let path = getIdentifierPath(node.init);
-            path = resolveIdentifierPath(path);
-            // if declaration is interesting, remember identifier and resolved value
-            if (isinterestingPath(path)) {
-                rememberinterestingVariable(node, path);
-            }
-        }
-
-        /**
-         *
-         * @param identifier
-         */
-        function hasUnderscore(identifier) {
-            return identifier !== '_' && identifier[0] === '_';
-        }
-
-        /**
-         *
-         * @param identifier
-         */
-        function isSpecialCaseIdentifierForMemberExpression(identifier) {
+        function isSpecialCaseIdentifierForMemberExpression(identifier: string): boolean {
             return identifier === '__proto__';
         }
 
         return {
             'VariableDeclarator': processVariableDeclarator,
-            // "AssignmentExpression": function(node) {},
-            'MemberExpression': function (node) {
-                if (!node.property || !('name' in node.property)) {
+            'MemberExpression'(node: ASTNode): void {
+                if (!(node as any).property || !('name' in (node as any).property)) {
                     return;
                 }
-                const identifier = node.property.name;
+                const identifier = (node as any).property.name;
 
                 if (
                     typeof identifier !== 'undefined' &&
@@ -315,12 +183,12 @@ const rule: Rule.RuleModule = {
                         case 'AssignmentExpression':
                         case 'CallExpression':
                             let path = getIdentifierPath(node);
-                            path = resolveIdentifierPath(path);
+                            path = resolveIdentifierPath(path, VARIABLES);
                             if (
                                 isinterestingPath(path) &&
-                                isIdentifier(node.property) &&
-                                'name' in node.property &&
-                                (!isCall(node.parent) || hasUnderscore(node.property.name))
+                                isIdentifier((node as any).property) &&
+                                'name' in (node as any).property &&
+                                (!isCall((node as any).parent) || hasUnderscore((node as any).property.name))
                             ) {
                                 context.report({ node: node, messageId: 'privateProperty' });
                             }

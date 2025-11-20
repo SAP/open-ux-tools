@@ -1,7 +1,5 @@
 /**
  * @fileoverview Unit test for "sap-usage-basemastercontroller".
- * @author Roman Horch (D030497), Christopher Fenner (C5224075) with advice from Armin Gienger (D028623)
- * @ESLint Version 0.17.1 / June 2015
  */
 // ------------------------------------------------------------------------------
 // Requirements (load "Main ESLint object" and "testing utility for ESLint")

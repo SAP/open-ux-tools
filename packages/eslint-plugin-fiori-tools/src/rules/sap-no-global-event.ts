@@ -1,6 +1,5 @@
 /**
  * @file Detect some warning for usages of (window.)document APIs
- * @ESLint          Version 0.14.0 / February 2015
  */
 
 import type { Rule } from 'eslint';
@@ -11,7 +10,7 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
 // ------------------------------------------------------------------------------
-/*eslint-disable strict*/
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -29,7 +28,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        'use strict';
         const WINDOW_OBJECTS: any[] = [];
         const EVENT_OBJECTS: any[] = [];
         const FORBIDDEN_GLOBAL_EVENT = [
@@ -60,67 +58,76 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
+         * Check if a node is of a specific type.
          *
-         * @param node
-         * @param type
+         * @param node The AST node to check
+         * @param type The type to check for
+         * @returns True if the node is of the specified type
          */
-        function isType(node: any, type: any) {
-            return node && node.type === type;
+        function isType(node: any, type: any): boolean {
+            return node?.type === type;
         }
 
         /**
+         * Check if a node is an Identifier.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: any) {
+        function isIdentifier(node: any): boolean {
             return isType(node, 'Identifier');
         }
 
         /**
+         * Check if a node is a MemberExpression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is a MemberExpression
          */
-        function isMember(node: any) {
+        function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
         }
 
         /**
+         * Check if an array contains a specific object.
          *
-         * @param a
-         * @param obj
+         * @param a The array to search in
+         * @param obj The object to search for
+         * @returns True if the array contains the object
          */
-        function contains(a, obj) {
-            for (let i = 0; i < a.length; i++) {
-                if (obj === a[i]) {
-                    return true;
-                }
-            }
-            return false;
+        function contains(a: any[], obj: any): boolean {
+            return a.includes(obj);
         }
 
         /**
+         * Check if a node represents the global window object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the global window object
          */
-        function isWindow(node: any) {
+        function isWindow(node: any): boolean {
             // true if node is the global variable 'window'
             return isIdentifier(node) && node.name === 'window';
         }
 
         /**
+         * Check if a node represents the window object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the window object or a reference to it
          */
-        function isWindowObject(node: any) {
+        function isWindowObject(node: any): boolean {
             // true if node is the global variable 'window' or a reference to it
             return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
         }
 
         /**
+         * Check if a node represents the window.event object.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the window.event object
          */
-        function isEvent(node: any) {
+        function isEvent(node: any): boolean {
             return (
                 node &&
                 isMember(node) &&
@@ -131,10 +138,12 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if a node represents the event object or a reference to it.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node represents the event object or a reference to it
          */
-        function isEventObject(node: any) {
+        function isEventObject(node: any): boolean {
             return isEvent(node) || (node && isIdentifier(node) && contains(EVENT_OBJECTS, node.name));
         }
 
@@ -143,18 +152,21 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
+         * Check if a node is the target of an assignment expression.
          *
-         * @param node
+         * @param node The AST node to check
+         * @returns True if the node is the target of an assignment expression
          */
-        function isAssignTarget(node: any) {
+        function isAssignTarget(node: any): boolean {
             return node?.parent.type === 'AssignmentExpression' && node.parent.left === node;
         }
 
         /**
+         * Check if a node represents a prohibited event usage.
          *
-         * @param node
+         * @param node The AST node to check
          */
-        function processMemberExpression(node: any) {
+        function processMemberExpression(node: any): void {
             if (isAssignTarget(node) && isIdentifier(node.property)) {
                 if (isWindowObject(node.object) && contains(FORBIDDEN_GLOBAL_EVENT, node.property.name)) {
                     context.report({ node: node, messageId: 'globalEvent' });
@@ -168,11 +180,13 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember window object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if window object was remembered, false otherwise
          */
-        function rememberWindow(left, right) {
+        function rememberWindow(left: any, right: any): boolean {
             if (isWindowObject(right) && isIdentifier(left)) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
@@ -181,11 +195,13 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Remember event object assignments for tracking references.
          *
-         * @param left
-         * @param right
+         * @param left The left-hand side of the assignment
+         * @param right The right-hand side of the assignment
+         * @returns True if event object was remembered, false otherwise
          */
-        function rememberEvent(left, right) {
+        function rememberEvent(left: any, right: any): boolean {
             if (isEventObject(right) && isIdentifier(left)) {
                 EVENT_OBJECTS.push(left.name);
                 return true;
@@ -197,10 +213,10 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node) {
+            'VariableDeclarator': function (node): boolean {
                 return rememberWindow(node.id, node.init) || rememberEvent(node.id, node.init);
             },
-            'AssignmentExpression': function (node) {
+            'AssignmentExpression': function (node): boolean {
                 return rememberWindow(node.left, node.right) || rememberEvent(node.left, node.right);
             },
             'MemberExpression': processMemberExpression
