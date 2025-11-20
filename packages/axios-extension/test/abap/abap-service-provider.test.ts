@@ -8,11 +8,9 @@ import {
     V4CatalogService,
     Ui5AbapRepositoryService,
     AppIndexService,
-    LayeredRepositoryService,
-    AbapServiceProvider
+    LayeredRepositoryService
 } from '../../src';
 import { UI5VersionService } from '../../src/abap/ui5-version-service';
-import type { SystemInfoService } from '../../src/abap/adt-catalog/services/systeminfo-service';
 
 /**
  * URL are specific to the discovery schema.
