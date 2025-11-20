@@ -249,6 +249,17 @@ jobs:
                   path: all-blob-reports
                   pattern: blob-report-*
                   merge-multiple: true
+            - name: Create merge config
+              run: |
+                  cd tests/integration/adaptation-editor
+                  cat > merge.config.js << 'EOF'
+                  module.exports = {
+                    testDir: './src',
+                    reporter: 'html'
+                  };
+                  EOF
+                  echo "Created merge config:"
+                  cat merge.config.js
             - name: Verify and list downloaded files
               run: |
                   echo "Downloaded files:"
@@ -272,8 +283,8 @@ jobs:
             - name: Merge into HTML Report
               run: |
                   cd tests/integration/adaptation-editor
-                  echo "Merging reports from ../../../all-blob-reports"
-                  npx playwright merge-reports --reporter html ../../../all-blob-reports
+                  echo "Merging reports from ../../../all-blob-reports with config file"
+                  npx playwright merge-reports --config merge.config.js --reporter html ../../../all-blob-reports
             - name: Upload unified HTML report
               uses: actions/upload-artifact@v4
               with:
