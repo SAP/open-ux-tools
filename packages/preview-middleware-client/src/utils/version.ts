@@ -59,8 +59,8 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
     let version = versionInfo?.libraries?.find((lib) => lib.name === library)?.version;
     const isCdn = versionInfo?.name === 'SAPUI5 Distribution';
     if (!version) {
-        Log.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
-        version = '1.130.0';
+        Log.error('Could not get UI5 version of application. Using version: 1.130.9 as fallback.');
+        version = '1.130.9';
         await sendInfoCenterMessage({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: [version] },

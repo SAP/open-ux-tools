@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.23.57
+
+### Patch Changes
+
+-   Updated dependencies [6872b31]
+    -   @sap-ux/adp-tooling@0.18.5
+
+## 0.23.56
+
+### Patch Changes
+
+-   d37ad9b: fix: adjust fallback UI5 version
+
 ## 0.23.55
 
 ### Patch Changes

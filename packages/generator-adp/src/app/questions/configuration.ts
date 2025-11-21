@@ -702,7 +702,7 @@ export class ConfigPrompter {
 
         this.systemVersion = checkSystemVersionPattern(version);
         this.publicVersions = await fetchPublicVersions(this.logger);
-        this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
+        this.ui5Versions = await getRelevantVersions(version, this.isCustomerBase, this.publicVersions);
     }
 
     /**

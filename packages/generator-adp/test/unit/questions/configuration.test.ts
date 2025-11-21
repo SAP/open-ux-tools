@@ -177,7 +177,7 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.ui5).toEqual({
                 publicVersions: expect.any(Object),
                 systemVersion: '1.135.0',
-                ui5Versions: ['1.134.1 (latest)']
+                ui5Versions: ['1.135.0 (system version)', '1.134.1 (latest)']
             });
         });
 
