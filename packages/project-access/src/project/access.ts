@@ -212,7 +212,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @returns A promise resolving to the parsed `manifest.json` content.
      */
     async readManifest(memFs?: Editor): Promise<Manifest> {
-        return readJSON<Manifest>(this.app.manifest, memFs);
+        return readJSON<Manifest>(this.app.manifest, memFs ?? this.options?.fs);
     }
 
     /**
@@ -224,7 +224,7 @@ class ApplicationAccessImp implements ApplicationAccess {
     async readFlexChanges(memFs?: Editor): Promise<{
         [key: string]: string;
     }> {
-        return readFlexChanges(this.app.changes, memFs);
+        return readFlexChanges(this.app.changes, memFs ?? this.options?.fs);
     }
 
     /**
@@ -251,7 +251,7 @@ class ApplicationAccessImp implements ApplicationAccess {
             }
         } else {
             if (mainService.local) {
-                const serviceFile = await readFile(mainService.local, memFs);
+                const serviceFile = await readFile(mainService.local, memFs ?? this.options?.fs);
                 annotationData.push({
                     dataSourceUri: mainService.local,
                     fileContent: serviceFile.toString()
@@ -260,7 +260,7 @@ class ApplicationAccessImp implements ApplicationAccess {
             const { annotations = [] } = mainService;
             for (const annotation of annotations) {
                 if (annotation.local) {
-                    const annotationFile = await readFile(annotation.local, memFs);
+                    const annotationFile = await readFile(annotation.local, memFs ?? this.options?.fs);
                     annotationData.push({
                         dataSourceUri: annotation.local,
                         fileContent: annotationFile.toString()

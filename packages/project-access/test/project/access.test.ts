@@ -398,6 +398,19 @@ describe('Test function createApplicationAccess()', () => {
         expect('dummy' in manifest ? manifest.dummy : undefined).toEqual(true);
     });
 
+    test('Read manifest.json of standalone app with mem-fs(mem-fs is passed on creation)', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const manifestPath = join(appRoot, 'webapp/manifest.json');
+        const newManifest = await readJSON<{ dummy: string }>(join(appRoot, 'webapp/manifest.json'), memFs);
+        newManifest.dummy = 'Test';
+        memFs.writeJSON(manifestPath, newManifest, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const manifest = await appAccess.readManifest();
+        // Result check
+        expect('dummy' in manifest ? manifest.dummy : undefined).toEqual('Test');
+    });
+
     test('Read flex changes of standalone app without mem-fs - without flex changes', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
         // Test execution
@@ -421,7 +434,7 @@ describe('Test function createApplicationAccess()', () => {
         ]);
     });
 
-    test('Read flex changes of standalone app with mem-fs - with flex changes', async () => {
+    test('Read flex changes with mem-fs', async () => {
         const changeFileName = 'id_1761320220775_1_propertyChange.change';
         const appRoot = join(sampleRoot, 'fiori_elements');
         const changesPath = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
@@ -433,6 +446,20 @@ describe('Test function createApplicationAccess()', () => {
         const changes = await appAccess.readFlexChanges(memFs);
         // Result check
         expect(changes[changeFileName]).toEqual('{"dummy": true}');
+    });
+
+    test('Read flex changes with mem-fs(mem-fs is passed on creation)', async () => {
+        const changeFileName = 'id_1761320220775_1_propertyChange.change';
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const changesPath = join(__dirname, '../test-data/project/flex-changes/webapp/changes');
+        const changeFilePath = join(changesPath, changeFileName);
+        memFs.write(changeFilePath, '{"dummy": "test"}');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        appAccess.app.changes = changesPath;
+        const changes = await appAccess.readFlexChanges();
+        // Result check
+        expect(changes[changeFileName]).toEqual('{"dummy": "test"}');
     });
 
     describe('readAnnotationFiles', () => {
@@ -465,6 +492,27 @@ describe('Test function createApplicationAccess()', () => {
             expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual(expectedFiles);
             expect(annotationFiles[0].fileContent).toEqual('Test metadata.xml');
             expect(annotationFiles[1].fileContent).toEqual('Test annotation.xml');
+        });
+
+        test('Read annotation files of standalone EDMX app with mem-fs(mem-fs is passed on creation)', async () => {
+            const appRoot = join(sampleRoot, 'fiori_elements');
+            const expectedFiles = [
+                join(appRoot, 'webapp/localService/metadata.xml'),
+                join(appRoot, 'webapp/annotations/annotation.xml')
+            ];
+            memFs.write(expectedFiles[0], 'Test2 metadata.xml');
+            memFs.write(expectedFiles[1], 'Test2 annotation.xml');
+            // Make sure manifest.json has original content in mem-fs
+            const manifestPath = join(appRoot, 'webapp/manifest.json');
+            const originalManifest = await readJSON<{ dummy: string }>(join(appRoot, 'webapp/manifest.json'));
+            memFs.writeJSON(manifestPath, originalManifest, undefined, 4);
+            // Test execution
+            const appAccess = await createApplicationAccess(appRoot, memFs);
+            const annotationFiles = await appAccess.readAnnotationFiles();
+            // Result check
+            expect(annotationFiles.map((annotationFile) => annotationFile.dataSourceUri)).toEqual(expectedFiles);
+            expect(annotationFiles[0].fileContent).toEqual('Test2 metadata.xml');
+            expect(annotationFiles[1].fileContent).toEqual('Test2 annotation.xml');
         });
 
         test('Read annotation files of CAP app', async () => {
