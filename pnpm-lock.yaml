@@ -1250,8 +1250,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       js-yaml:
-        specifier: 3.14.2
-        version: 3.14.2
+        specifier: 4.1.1
+        version: 4.1.1
       memfs:
         specifier: 3.4.13
         version: 3.4.13
