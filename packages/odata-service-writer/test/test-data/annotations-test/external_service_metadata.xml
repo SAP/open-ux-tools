@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm" Version="4.0">
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI" />
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001" Alias="SAP__self">
+            <EntityType Name="CustomerParameters">
+                <Key>
+                    <PropertyRef Name="P_CompanyCode" />
+                </Key>
+                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <NavigationProperty
+                    Name="Set"
+                    Type="Collection(com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType)"
+                    Partner="Parameters"
+                    ContainsTarget="true"
+                />
+            </EntityType>
+            <EntityType Name="CustomerType">
+                <Key>
+                    <PropertyRef Name="Customer" />
+                    <PropertyRef Name="CompanyCode" />
+                    <PropertyRef Name="SalesOrganization" />
+                    <PropertyRef Name="DistributionChannel" />
+                    <PropertyRef Name="Division" />
+                    <PropertyRef Name="PartnerCounter" />
+                    <PropertyRef Name="IBAN" />
+                    <PropertyRef Name="CardNumber" />
+                    <PropertyRef Name="PaymentCardType" />
+                </Key>
+                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="SalesOrganization" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="DistributionChannel" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="Division" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="PartnerCounter" Type="Edm.String" Nullable="false" MaxLength="13" />
+                <Property Name="IBAN" Type="Edm.String" Nullable="false" MaxLength="34" />
+                <Property Name="CardNumber" Type="Edm.String" Nullable="false" MaxLength="25" />
+                <Property Name="PaymentCardType" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="PersonnelNumber" Type="Edm.String" Nullable="false" MaxLength="8" />
+                <Property Name="AccountingClerk" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="AccountingClerkName" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property Name="PaymentTerms" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="BusinessPartnerName" Type="Edm.String" Nullable="false" MaxLength="80" />
+                <Property Name="CityName" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="CreditScore" Type="Edm.Decimal" Scale="2" Precision="23" Nullable="false" />
+                <Property Name="CreditScore2" Type="Edm.Decimal" Scale="2" Precision="23" Nullable="false" />
+                <Property Name="PhoneNumber" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property Name="EmailAddress" Type="Edm.String" Nullable="false" MaxLength="241" />
+                <Property Name="DunningProcedure" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="DunningBlock" Type="Edm.String" Nullable="false" MaxLength="1" />
+                <Property Name="CustomerAccountGroup" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="AccountGroupName" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property Name="FirstName" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="LastName" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="OrganizationBPName1" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="OrganizationBPName2" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="GroupBusinessPartnerName1" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="GroupBusinessPartnerName2" Type="Edm.String" Nullable="false" MaxLength="40" />
+                <Property Name="BusinessPartnerType" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="LegalForm" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="LegalEntityOfOrganization" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="BusinessPartnerIDByExtSystem" Type="Edm.String" Nullable="false" MaxLength="20" />
+                <Property Name="IsMarkedForArchiving" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="BusinessPartnerIsBlocked" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="ContactPermission" Type="Edm.String" Nullable="false" MaxLength="1" />
+                <Property Name="StreetName" Type="Edm.String" Nullable="false" MaxLength="60" />
+                <Property Name="PostalCode" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="Country" Type="Edm.String" Nullable="false" MaxLength="3" />
+                <Property Name="Region" Type="Edm.String" Nullable="false" MaxLength="3" />
+                <Property Name="AddressTimeZone" Type="Edm.String" Nullable="false" MaxLength="6" />
+                <Property Name="POBox" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="POBoxPostalCode" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="CompanyPostalCode" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="CorrespondenceLanguage" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="MobilePhoneNumber" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property Name="FaxNumber" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property Name="PrfrdCommMediumType" Type="Edm.String" Nullable="false" MaxLength="3" />
+                <Property Name="SearchTerm1" Type="Edm.String" Nullable="false" MaxLength="20" />
+                <Property Name="SearchTerm2" Type="Edm.String" Nullable="false" MaxLength="20" />
+                <Property Name="Supplier" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="PostingIsBlocked" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="AuthorizationGroup" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="CreatedByUser" Type="Edm.String" Nullable="false" MaxLength="12" />
+                <Property Name="VATRegistration" Type="Edm.String" Nullable="false" MaxLength="20" />
+                <Property Name="TaxNumber1" Type="Edm.String" Nullable="false" MaxLength="16" />
+                <Property Name="TaxNumber2" Type="Edm.String" Nullable="false" MaxLength="11" />
+                <Property Name="TaxNumber3" Type="Edm.String" Nullable="false" MaxLength="18" />
+                <Property Name="TaxNumber4" Type="Edm.String" Nullable="false" MaxLength="18" />
+                <Property Name="TaxNumber5" Type="Edm.String" Nullable="false" MaxLength="60" />
+                <Property Name="VATLiability" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="ResponsibleType" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="TaxNumberType" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="SalesOffice" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="SalesGroup" Type="Edm.String" Nullable="false" MaxLength="3" />
+                <Property Name="CustomerPaymentTerms" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="LastDunnedOn" Type="Edm.Date" />
+                <Property Name="LegDunningProcedureOn" Type="Edm.Date" />
+                <Property Name="DunningLevel" Type="Edm.String" Nullable="false" MaxLength="1" />
+                <Property Name="PhysicalInventoryBlockInd" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="CreditMemoPaymentTerms" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="PaymentMethodsList" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="HouseBank" Type="Edm.String" Nullable="false" MaxLength="5" />
+                <Property Name="PaymentBlockingReason" Type="Edm.String" Nullable="false" MaxLength="1" />
+                <Property Name="DunningNoticeGroup" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="AccountByCustomer" Type="Edm.String" Nullable="false" MaxLength="12" />
+                <Property Name="UserAtCustomer" Type="Edm.String" Nullable="false" MaxLength="15" />
+                <Property Name="AccountingClerkPhoneNumber" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property Name="AccountingClerkInternetAddress" Type="Edm.String" Nullable="false" MaxLength="130" />
+                <Property Name="ReconciliationAccount" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="InterestCalculationCode" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="DunningRecipient" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="DunningClerk" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="IntrstCalcFrequencyInMonths" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="InterestCalculationDate" Type="Edm.Date" />
+                <Property Name="LastInterestCalcRunDate" Type="Edm.Date" />
+                <Property Name="BPCustomerNumber" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="BusinessPartnerIsVIP" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="CustomerIsUnwanted" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="UndesirabilityReason" Type="Edm.String" Nullable="false" MaxLength="2" />
+                <Property Name="UndesirabilityComment" Type="Edm.String" Nullable="false" MaxLength="35" />
+                <Property Name="TradingPartner" Type="Edm.String" Nullable="false" MaxLength="6" />
+                <Property Name="LastCustomerContactDate" Type="Edm.Date" />
+                <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="5" />
+                <Property Name="SystemStatusShortName" Type="Edm.String" Nullable="false" MaxLength="4" />
+                <Property Name="AddressText" Type="Edm.String" Nullable="false" MaxLength="50" />
+                <Property Name="CustomerListKeyField1" Type="Edm.String" Nullable="false" MaxLength="8" />
+                <Property Name="CustomerListKeyField2" Type="Edm.String" Nullable="false" MaxLength="8" />
+                <Property Name="CustomerListKeyField3" Type="Edm.String" Nullable="false" MaxLength="8" />
+                <Property Name="CustomerListKeyField4" Type="Edm.String" Nullable="false" MaxLength="8" />
+                <Property Name="FullName" Type="Edm.String" Nullable="false" MaxLength="80" />
+                <NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerParameters" Nullable="false" />
+                <NavigationProperty Name="_CreditLimitDetails" Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CreditLimitDetailsType">
+                    <ReferentialConstraint Property="CardNumber" ReferencedProperty="CardNumber" />
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="CreditLimitDetailsType">
+                <Key>
+                    <PropertyRef Name="CardNumber" />
+                </Key>
+                <Property Name="CardNumber" Type="Edm.String" MaxLength="10" Nullable="false" />
+                <Property Name="CustomerCreditExposureAmount" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="Delivered" Type="Edm.Boolean" />
+                <Property Name="CustomerCreditExposureAmountHidden" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="CustomerCreditForecast" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="CustomerCreditExposureAmount_text" Type="Edm.String" MaxLength="15" />
+                <Property Name="CustomerCreditLimitAmount" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="MaximumCreditValue" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="CustomerCreditLimitAmount_text" Type="Edm.String" MaxLength="15" />
+                <Property Name="TransactionCurrency" Type="Edm.String" MaxLength="5" />
+                <Property Name="CustomerIsAboveThreshold" Type="Edm.Int32" />
+                <Property Name="ToleranceRangeLow" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="ToleranceRangeHigh" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="DeviationRangeLow" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="DeviationRangeHigh" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="AcceptanceRangeLow" Type="Edm.Decimal" Scale="2" Precision="23" />
+                <Property Name="AcceptanceRangeHigh" Type="Edm.Decimal" Scale="2" Precision="23" />
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Customer" EntityType="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerParameters">
+                    <NavigationPropertyBinding Path="Set/Parameters" Target="Customer" />
+                    <NavigationPropertyBinding Path="Set/_CreditLimitDetails" Target="CreditLimitDetails" />
+                </EntitySet>
+                <EntitySet Name="CreditLimitDetails" EntityType="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CreditLimitDetailsType" />
+                <ActionImport Name="UnboundAction" Action="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.UnboundAction" />
+            </EntityContainer>
+            <Action Name="UnboundAction" IsBound="false">
+                <Parameter Name="MessageText" Type="Edm.String" MaxLength="4" />
+                <ReturnType Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType" />
+            </Action>
+            <Action Name="UnBlockBusinessPartner" IsBound="true" EntitySetPath="_it">
+                <Parameter Name="_it" Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType" />
+                <Parameter Name="BusinessPartnerName" Type="Edm.String" Nullable="false" MaxLength="80" />
+                <ReturnType Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType" />
+            </Action>
+            <Action Name="DummyStaticAction" IsBound="true" EntitySetPath="_it">
+                <Parameter Name="_it" Type="Collection(com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType)" />
+                <Parameter Name="MessageText" Type="Edm.String" MaxLength="4" />
+                <ReturnType Type="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType" />
+            </Action>
+            <Annotations Target="SAP__self.Container">
+                <Annotation Term="SAP__CodeList.CurrencyCodes">
+                    <Record>
+                        <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__CodeList.UnitsOfMeasure">
+                    <Record>
+                        <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="UnitsOfMeasure"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.CustomerParameters/P_CompanyCode">
+                <Annotation Term="SAP__core.Computed" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/i_companycodestdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-parameterz_arcustomer2.p_companycode'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Label" String="Company Code" />
+                <Annotation Term="SAP__common.Heading" String="CoCd" />
+            </Annotations>
+            <Annotations Target="SAP__self.CustomerType/Customer">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/i_customer_vh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.customer'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.SemanticObject" String="Customer" />
+                <Annotation Term="SAP__common.Label" String="Customer" />
+                <Annotation Term="SAP__common.QuickInfo" String="Customer Number" />
+            </Annotations>
+            <Annotations Target="SAP__self.CustomerType/PaymentCardType">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Label" String="Payment Card Type" />
+                <Annotation Term="SAP__common.Heading" String="Type" />
+            </Annotations>
+            <Annotations Target="SAP__self.CustomerType/AccountingClerk">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/i_accountingclerkstdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.accountingclerk'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Label" String="Clerk Abbrev." />
+                <Annotation Term="SAP__common.QuickInfo" String="Accounting Clerk Abbreviation" />
+            </Annotations>
+            <Annotations Target="SAP__self.CustomerType/PaymentTerms">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/i_paymentterms/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentterms'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Label" String="Financial Pyt Terms" />
+                <Annotation Term="SAP__common.Heading" String="Financial Payment Terms" />
+                <Annotation Term="SAP__common.QuickInfo" String="Terms of Payment Key Sales Data" />
+            </Annotations>
+            <Annotations Target="SAP__self.CustomerType/DunningProcedure">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/p_dunningprocedurevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.dunningprocedure'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Label" String="Dunning Procedure" />
+                <Annotation Term="SAP__common.Heading" String="Procedure" />
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -866,6 +866,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -3070,6 +3073,12 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.3
+        version: 0.10.3
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -3101,6 +3110,12 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2

@@ -50,6 +50,7 @@ export interface MockserverService {
     metadataPath: string;
     mockdataPath?: string;
     generateMockData?: boolean;
+    resolveExternalServiceReferences?: boolean;
 }
 
 export interface MockserverConfig {
