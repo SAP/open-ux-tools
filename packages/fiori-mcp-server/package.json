@@ -20,10 +20,10 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings --main-fields=module,main src/index.ts",
-        "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",
+        "build-esbuild-base": "node esbuild.config.js",
+        "build-dev": "node esbuild.config.js --dev",
         "build-compile": "tsc --noEmit",
-        "build-bundle": "pnpm run build-esbuild-base --minify",
+        "build-bundle": "node esbuild.config.js --minify",
         "build": "npm-run-all build-compile build-bundle",
         "watch": "tsc --watch",
         "bundle": "npm-run-all build tgz:package tgz:rename",
