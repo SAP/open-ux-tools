@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.56
+
+### Patch Changes
+
+-   d37ad9b: fix: adjust fallback UI5 version
+
 ## 0.23.55
 
 ### Patch Changes
