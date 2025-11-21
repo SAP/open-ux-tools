@@ -3147,6 +3147,9 @@ importers:
         specifier: workspace:*
         version: link:../odata-annotation-core-types
     devDependencies:
+      '@types/prettier':
+        specifier: 2.6.0
+        version: 2.6.0
       axios:
         specifier: 1.12.2
         version: 1.12.2(debug@4.4.3)
@@ -14555,6 +14558,10 @@ packages:
 
   /@types/pluralize@0.0.30:
     resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
+    dev: true
+
+  /@types/prettier@2.6.0:
+    resolution: {integrity: sha512-G/AdOadiZhnJp0jXCaBQU449W2h716OW/EoXeYkCytxKL06X1WCXB4DZpp8TpZ8eyIJVS1cw4lrlkkSYU21cDw==}
     dev: true
 
   /@types/prettier@2.7.3:
