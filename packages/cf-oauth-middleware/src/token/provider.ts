@@ -9,19 +9,19 @@ import type { ToolsLogger } from '@sap-ux/logger';
 const TOKEN_REFRESH_BUFFER_SECONDS = 60;
 
 /**
- * Manages OAuth2 token lifecycle with caching and automatic refresh.
+ * Provides OAuth2 tokens with caching and automatic refresh.
  */
-export class OAuthTokenManager {
+export class OAuthTokenProvider {
     private token: string | null = null;
     private tokenExpiry: number = 0;
 
     /**
-     * Creates a new OAuthTokenManager instance.
+     * Creates a new OAuthTokenProvider instance.
      *
-     * @param {string} clientId - OAuth2 client ID
-     * @param {string} clientSecret - OAuth2 client secret
-     * @param {string} tokenEndpoint - OAuth2 token endpoint URL
-     * @param {ToolsLogger} logger - Logger instance
+     * @param {string} clientId - OAuth2 client ID.
+     * @param {string} clientSecret - OAuth2 client secret.
+     * @param {string} tokenEndpoint - OAuth2 token endpoint URL.
+     * @param {ToolsLogger} logger - Logger instance.
      */
     constructor(
         private readonly clientId: string,
@@ -43,49 +43,43 @@ export class OAuthTokenManager {
         try {
             this.logger.debug('Fetching new OAuth2 token...');
 
-            const response = await axios.post(
-                this.tokenEndpoint,
-                `grant_type=client_credentials&client_id=${encodeURIComponent(
-                    this.clientId
-                )}&client_secret=${encodeURIComponent(this.clientSecret)}`,
-                {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+            const formData = new URLSearchParams({
+                grant_type: 'client_credentials',
+                client_id: this.clientId,
+                client_secret: this.clientSecret
+            });
+
+            const response = await axios.post(this.tokenEndpoint, formData.toString(), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
-            );
+            });
 
             this.token = response.data.access_token;
             this.tokenExpiry = Date.now() + (response.data.expires_in - TOKEN_REFRESH_BUFFER_SECONDS) * 1000;
 
             this.logger.debug('OAuth2 token obtained successfully');
             return this.token ?? '';
-        } catch (error: any) {
-            const errorMessage = error.response?.data || error.message;
-            this.logger.error(`Error fetching OAuth2 token: ${errorMessage}`);
-            throw new Error('Failed to fetch OAuth2 token');
+        } catch (e) {
+            throw new Error(`Failed to fetch OAuth2 token: ${e.message}`);
         }
     }
 
     /**
      * Creates an Express middleware function that adds OAuth Bearer token to requests.
      *
-     * @param {boolean} debug - Enable debug logging.
      * @returns {RequestHandler} Express middleware function.
      */
-    createTokenMiddleware(debug: boolean = false): (req: Request, res: Response, next: NextFunction) => Promise<void> {
+    createTokenMiddleware(): (req: Request, res: Response, next: NextFunction) => Promise<void> {
         return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-            if (debug) {
-                this.logger.debug(`Token middleware: req.url=${req.url}, req.originalUrl=${req.originalUrl}`);
-            }
+            this.logger.debug(`Token middleware: req.url=${req.url}, req.originalUrl=${req.originalUrl}`);
+
             try {
                 const token = await this.getAccessToken();
                 req.headers.authorization = `Bearer ${token}`;
-                if (debug) {
-                    this.logger.debug(`Added Bearer token to request: ${req.url}`);
-                }
-            } catch (error: any) {
-                this.logger.error(`Failed to get access token: ${error.message}`);
+                this.logger.debug(`Added Bearer token to request: ${req.url}`);
+            } catch (e) {
+                this.logger.error(`Failed to get access token: ${e.message}`);
             }
             next();
         };

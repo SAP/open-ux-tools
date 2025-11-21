@@ -2,6 +2,8 @@
 
 The `@sap-ux/cf-oauth-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for proxying requests to Cloud Foundry destinations with OAuth2 authentication. It supports proxying multiple OData source paths to a single destination URL with automatic OAuth token management.
 
+> **⚠️ Experimental**: This middleware is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
+
 ## Configuration Options
 
 | Option              | Value Type | Requirement Type | Default Value | Description                                                                                                      |

@@ -6,7 +6,7 @@ import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
 import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
 
-import type { DescriptorVariant, AdpPreviewConfig } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
 /**
  * Get the app descriptor variant.
@@ -84,6 +84,23 @@ export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefin
         ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
         ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
     return customMiddleware?.configuration?.adp;
+}
+
+/**
+ * Extracts the CF build task from the UI5 configuration.
+ *
+ * @param {UI5Config} ui5Conf - The UI5 configuration.
+ * @returns {UI5YamlCustomTaskConfiguration} The CF build task.
+ */
+export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfiguration {
+    const buildTask =
+        ui5Conf.findCustomTask<UI5YamlCustomTaskConfiguration>('app-variant-bundler-build')?.configuration;
+
+    if (!buildTask) {
+        throw new Error('No CF ADP project found');
+    }
+
+    return buildTask;
 }
 
 /**
