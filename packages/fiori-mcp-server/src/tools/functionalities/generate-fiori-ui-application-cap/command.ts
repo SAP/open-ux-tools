@@ -4,7 +4,7 @@ import type { GeneratorConfigCAP, GeneratorConfigCAPWithAPI } from '../../schema
 import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from '../../schemas';
-import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
+import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils';
 
 /**
@@ -60,7 +60,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     } catch (error) {
         logger.error(`Error generating application: ${error}`);
         return {
-            functionalityId: GENERATE_FIORI_UI_APP_ID,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             status: 'Error',
             message: 'Error generating application: ' + error.message,
             parameters: params.parameters,
@@ -76,7 +76,7 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
     }
 
     return {
-        functionalityId: GENERATE_FIORI_UI_APP_ID,
+        functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
         status: 'Success',
         message: `Generation completed successfully: ${appPath}. You must run \`npm install\` in ${targetDir} before trying to run the application.`,
         parameters: params.parameters,

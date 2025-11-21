@@ -145,7 +145,7 @@
 
 ### Patch Changes
 
--   5b06421: Simplify "generate-fiori-ui-app" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
+-   5b06421: Simplify "generate-fiori-ui-application-cap" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
 
 ## 0.0.8
 

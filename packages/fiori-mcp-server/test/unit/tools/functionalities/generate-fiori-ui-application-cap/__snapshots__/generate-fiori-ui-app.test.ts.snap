@@ -8,7 +8,7 @@ Object {
                 The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
                 The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
                 The configuration **MUST** be based on the project files in the projectPath.",
-  "functionalityId": "generate-fiori-ui-app",
+  "functionalityId": "generate-fiori-ui-application-cap",
   "name": "Generate SAP Fiori UI Application",
   "parameters": Object {
     "additionalProperties": false,

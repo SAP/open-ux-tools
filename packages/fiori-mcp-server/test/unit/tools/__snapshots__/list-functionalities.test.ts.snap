@@ -13,7 +13,7 @@ Array [
                 The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
                 The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
                 The configuration **MUST** be based on the project files in the projectPath.",
-    "functionalityId": "generate-fiori-ui-app",
+    "functionalityId": "generate-fiori-ui-application-cap",
   },
   Object {
     "description": "Remove existing fiori elements page from the application",
@@ -42,10 +42,10 @@ Array [
             you can parse the metadata.xml file to understand the data model structure, entities, and associations.
 
         3. After that, you can proceed to generate the SAP Fiori UI application based on the parsed metadata and the user's requirements.",
-    "functionalityId": "generate-fiori-ui-odata-app",
+    "functionalityId": "generate-fiori-ui-application",
   },
   Object {
-    "description": "(Used by 'generate-fiori-ui-odata-app' functionality).
+    "description": "(Used by 'generate-fiori-ui-application' functionality).
         Retrieves a list of user stored SAP Systems and matches the name, host or a URL to the sapSystemQuery provided by the user.
         Then retrieves the metadata of a specific SAP service using the matched SAP system and servicePath provided by the user.
         (if the user provided a full URL - pass the whole URL as sapSystemQuery parameter and just the path as servicePath).

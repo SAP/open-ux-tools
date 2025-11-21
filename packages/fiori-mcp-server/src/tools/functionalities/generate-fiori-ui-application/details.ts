@@ -2,7 +2,7 @@ import type { GetFunctionalityDetailsOutput } from '../../../types';
 import { generatorConfigODataJson as parameters } from '../../schemas';
 
 export default {
-    functionalityId: 'generate-fiori-ui-odata-app',
+    functionalityId: 'generate-fiori-ui-application',
     name: 'Generate SAP Fiori UI Application for OData Projects (non-CAP)',
     description: `Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP). Steps:
 

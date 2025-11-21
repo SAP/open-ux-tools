@@ -82,8 +82,8 @@ describe('fetch-service-metadata details', () => {
         expect(details.description).toContain('metadata.xml');
     });
 
-    test('should mention generate-fiori-ui-odata-app in description', () => {
-        expect(details.description).toContain('generate-fiori-ui-odata-app');
+    test('should mention generate-fiori-ui-application in description', () => {
+        expect(details.description).toContain('generate-fiori-ui-application');
     });
 
     test('should export as GetFunctionalityDetailsOutput type', () => {

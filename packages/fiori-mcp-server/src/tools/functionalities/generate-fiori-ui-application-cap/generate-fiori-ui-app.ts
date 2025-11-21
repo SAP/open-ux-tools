@@ -7,10 +7,10 @@ import type {
 
 import { command } from './command';
 import { generatorConfigCAPJson as parameters } from '../../schemas';
-import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
+import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant';
 
-export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
-    functionalityId: GENERATE_FIORI_UI_APP_ID,
+export const GENERATE_FIORI_UI_APPLICATION_CAP: GetFunctionalityDetailsOutput = {
+    functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
     name: 'Generate SAP Fiori UI Application',
     description: `Creates (generates) a new SAP Fiori UI application within an existing CAP project.
                 To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
@@ -27,7 +27,7 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
  * @returns A promise that resolves to the functionality details output.
  */
 async function getFunctionalityDetails(): Promise<GetFunctionalityDetailsOutput> {
-    return GENERATE_FIORI_UI_APP;
+    return GENERATE_FIORI_UI_APPLICATION_CAP;
 }
 
 /**
@@ -40,7 +40,7 @@ async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<
     return command(params);
 }
 
-export const generateFioriUIAppHandlers: FunctionalityHandlers = {
+export const generateFioriUIApplicationCapHandlers: FunctionalityHandlers = {
     getFunctionalityDetails,
     executeFunctionality
 };

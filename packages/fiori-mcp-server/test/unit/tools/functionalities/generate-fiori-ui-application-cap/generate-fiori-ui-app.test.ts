@@ -20,9 +20,9 @@ jest.mock('@sap-ux/nodejs-utils', () => ({
 }));
 
 import {
-    GENERATE_FIORI_UI_APP,
-    generateFioriUIAppHandlers
-} from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
+    GENERATE_FIORI_UI_APPLICATION_CAP,
+    generateFioriUIApplicationCapHandlers
+} from '../../../../../src/tools/functionalities/generate-fiori-ui-application-cap';
 import { existsSync, promises as fsPromises } from 'node:fs';
 
 // Mock child_process.exec
@@ -35,9 +35,9 @@ jest.mock('child_process', () => ({
 
 describe('getFunctionalityDetails', () => {
     test('getFunctionalityDetails', async () => {
-        const details = await generateFioriUIAppHandlers.getFunctionalityDetails({
+        const details = await generateFioriUIApplicationCapHandlers.getFunctionalityDetails({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId
         });
         expect(details).toMatchSnapshot();
     });
@@ -94,16 +94,16 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        const result = await generateFioriUIAppHandlers.executeFunctionality({
+        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
             parameters: paramTest
         });
         expect(result).toEqual(
             expect.objectContaining({
                 appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
-                functionalityId: 'generate-fiori-ui-app',
+                functionalityId: 'generate-fiori-ui-application-cap',
                 message: `Generation completed successfully: ${join(
                     testOutputDir,
                     'app1/app/app1'
@@ -189,9 +189,9 @@ describe('executeFunctionality', () => {
         mockFileWrite((content) => {
             generatedConfigContent = content;
         });
-        await generateFioriUIAppHandlers.executeFunctionality({
+        await generateFioriUIApplicationCapHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
             parameters: {
                 ...paramTest,
                 floorplan: 'FF_SIMPLE'
@@ -205,16 +205,16 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        const result = await generateFioriUIAppHandlers.executeFunctionality({
+        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
             parameters: paramTest
         });
         expect(result).toEqual(
             expect.objectContaining({
                 appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
-                functionalityId: 'generate-fiori-ui-app',
+                functionalityId: 'generate-fiori-ui-application-cap',
                 message: `Error generating application: Dummy`,
                 parameters: paramTest,
                 status: 'Error'
@@ -228,9 +228,9 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         await expect(
-            generateFioriUIAppHandlers.executeFunctionality({
+            generateFioriUIApplicationCapHandlers.executeFunctionality({
                 appPath: '',
-                functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
                 parameters: {}
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
@@ -284,9 +284,9 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         await expect(
-            generateFioriUIAppHandlers.executeFunctionality({
+            generateFioriUIApplicationCapHandlers.executeFunctionality({
                 appPath: 'app1',
-                functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+                functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
                 parameters: 'dummy'
             } as unknown as ExecuteFunctionalityInput)
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
@@ -305,8 +305,11 @@ describe('executeFunctionality', () => {
         mockExec.mockImplementation((cmd, opts, callback) => {
             throw new Error('Dummy');
         });
-        await expect(generateFioriUIAppHandlers.executeFunctionality(undefined as unknown as ExecuteFunctionalityInput))
-            .rejects.toThrowErrorMatchingInlineSnapshot(`
+        await expect(
+            generateFioriUIApplicationCapHandlers.executeFunctionality(
+                undefined as unknown as ExecuteFunctionalityInput
+            )
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`
             "Missing required fields in parameters. [
                 {
                     \\"expected\\": \\"object\\",

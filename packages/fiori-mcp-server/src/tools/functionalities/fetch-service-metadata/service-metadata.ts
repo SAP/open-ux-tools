@@ -51,11 +51,11 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
     }
 
     let matchingSystems = systems.filter((s) => s.url.startsWith(origin) && (!client || s.client === client));
-    if (!matchingSystems || matchingSystems.length === 0) {
+    if (!matchingSystems.length) {
         // try without client
         matchingSystems = systems.filter((s) => s.url.startsWith(origin));
     }
-    if (!matchingSystems || matchingSystems.length === 0) {
+    if (!matchingSystems.length) {
         // system not stored. Return raw props for further processing
         matchingSystems = [{ name: origin, url: origin, client }];
     }
@@ -77,22 +77,22 @@ export async function findSapSystem(query: string): Promise<BackendSystem> {
     // try case insensitive
     const queryLower = query.toLocaleLowerCase();
 
-    if (!matchingSystems || matchingSystems.length !== 1) {
+    if (matchingSystems?.length !== 1) {
         matchingSystems = systems.filter((s) => s.name.toLocaleLowerCase() === queryLower);
     }
 
     // try partial match from start
-    if (!matchingSystems || matchingSystems.length !== 1) {
+    if (matchingSystems?.length !== 1) {
         matchingSystems = systems.filter((s) => s.name.toLocaleLowerCase().startsWith(queryLower));
     }
 
     // try partial match anywhere in name
-    if (!matchingSystems || matchingSystems.length !== 1) {
+    if (matchingSystems?.length !== 1) {
         matchingSystems = systems.filter((s) => s.name.toLocaleLowerCase().includes(queryLower));
     }
 
     // try match system by host url
-    if (!matchingSystems || matchingSystems.length !== 1) {
+    if (matchingSystems?.length !== 1) {
         matchingSystems = matchSystemByUrl(systems, query);
     }
 

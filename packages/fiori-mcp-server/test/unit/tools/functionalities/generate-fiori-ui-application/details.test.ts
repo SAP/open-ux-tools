@@ -1,8 +1,8 @@
-import details from '../../../../../src/tools/functionalities/generate-fiori-ui-odata-app/details';
+import details from '../../../../../src/tools/functionalities/generate-fiori-ui-application/details';
 
-describe('generate-fiori-ui-odata-app details', () => {
+describe('generate-fiori-ui-application details', () => {
     test('should have correct functionalityId', () => {
-        expect(details.functionalityId).toBe('generate-fiori-ui-odata-app');
+        expect(details.functionalityId).toBe('generate-fiori-ui-application');
     });
 
     test('should have correct name', () => {

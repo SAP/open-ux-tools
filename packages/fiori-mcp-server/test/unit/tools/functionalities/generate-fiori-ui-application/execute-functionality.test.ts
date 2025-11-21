@@ -16,11 +16,11 @@ jest.mock('node:fs', () => {
 });
 jest.mock('../../../../../src/utils');
 
-import executeFunctionality from '../../../../../src/tools/functionalities/generate-fiori-ui-odata-app/execute-functionality';
+import executeFunctionality from '../../../../../src/tools/functionalities/generate-fiori-ui-application/execute-functionality';
 import * as utils from '../../../../../src/utils';
 import { promises as fsPromises, existsSync } from 'node:fs';
 
-describe('generate-fiori-ui-odata-app execute-functionality', () => {
+describe('generate-fiori-ui-application execute-functionality', () => {
     const mockAppPath = '/test/project';
     const mockMetadata = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx>...</edmx:Edmx>';
 
@@ -39,7 +39,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should successfully generate application with valid parameters', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -58,7 +58,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
         const result = await executeFunctionality(params);
 
         expect(result.status).toBe('Success');
-        expect(result.functionalityId).toBe('generate-fiori-ui-odata-app');
+        expect(result.functionalityId).toBe('generate-fiori-ui-application');
         expect(result.message).toContain('Generation completed successfully');
         expect(result.appPath).toContain('testapp');
         expect(utils.checkIfGeneratorInstalled).toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should read metadata from file', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -95,7 +95,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
         const customMetadataPath = '/custom/path/metadata.xml';
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -120,7 +120,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should write generator config file', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -148,7 +148,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should run generator command with correct parameters', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -175,7 +175,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should clean up temporary files after generation', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -201,7 +201,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should throw error when projectPath is invalid', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: '',
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -226,7 +226,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -251,7 +251,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should set sapux to false for FF_SIMPLE floorplan', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FF_SIMPLE',
@@ -277,7 +277,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should set sapux to true for non-FF_SIMPLE floorplan', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -305,7 +305,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -331,7 +331,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
 
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -355,7 +355,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should return timestamp in ISO format', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
@@ -379,7 +379,7 @@ describe('generate-fiori-ui-odata-app execute-functionality', () => {
     test('should use default app name when not provided', async () => {
         const params: ExecuteFunctionalityInput = {
             appPath: mockAppPath,
-            functionalityId: 'generate-fiori-ui-odata-app',
+            functionalityId: 'generate-fiori-ui-application',
             parameters: {
                 appGenConfig: {
                     floorplan: 'FE_LROP',
