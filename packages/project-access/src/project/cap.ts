@@ -944,10 +944,7 @@ function getWorkspacePackages(packageJson: Package): string[] | undefined {
  * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
  */
 export function satisfiesMinCdsVersion(packageJson: Package): boolean {
-    return (
-        hasMinCdsVersion(packageJson) ||
-        satisfies(MinCdsVersion, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0')
-    );
+    return hasMinCdsVersion(packageJson) || satisfies(MinCdsVersion, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0');
 }
 
 /**
