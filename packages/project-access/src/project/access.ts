@@ -1,5 +1,8 @@
 import { join, relative } from 'node:path';
+import type { Logger } from '@sap-ux/logger';
 import type { NewI18nEntry } from '@sap-ux/i18n';
+import { analyzeApp } from '@sap-ux/project-analyser';
+import type { AnalysisResult } from '@sap-ux/project-analyser';
 import type {
     ApplicationAccess,
     ApplicationAccessOptions,
@@ -30,6 +33,7 @@ import type { Editor } from 'mem-fs-editor';
 import { updateManifestJSON, updatePackageJSON } from '../file';
 import { FileName } from '../constants';
 import { getSpecification } from './specification';
+import { getWebappPath } from './ui5-config';
 
 /**
  *
@@ -180,6 +184,30 @@ class ApplicationAccessImp implements ApplicationAccess {
      */
     async getSpecification<T>(): Promise<T> {
         return getSpecification(this.app.appRoot);
+    }
+
+    /**
+     * Analyse the current application and return its bill of materials insights.
+     *
+     * @param logger - optional logger used during analysis
+     * @returns analysis result produced by @sap-ux/project-analyser
+     */
+    async getAppAnalysis(logger?: Logger): Promise<AnalysisResult> {
+        const effectiveLogger = logger ?? this.options?.logger;
+        let webappPath: string;
+        try {
+            webappPath = await getWebappPath(this.app.appRoot, this.options?.fs);
+        } catch (error: unknown) {
+            effectiveLogger?.debug?.(`Unable to resolve webapp path via ui5.yaml: ${String(error)}`);
+            webappPath = join(this.app.appRoot, 'webapp');
+        }
+
+        return analyzeApp(
+            {
+                appPath: webappPath
+            },
+            effectiveLogger
+        );
     }
 
     /**

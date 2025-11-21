@@ -1,5 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { NewI18nEntry } from '@sap-ux/i18n';
+import type { AnalysisResult } from '@sap-ux/project-analyser';
 import type { I18nBundles } from '../i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
 import type { Editor } from 'mem-fs-editor';
@@ -104,6 +105,12 @@ export interface ApplicationAccess extends BaseAccess {
      * Returns an instance of @sap/ux-specification for the application.
      */
     getSpecification<T>(): Promise<T>;
+    /**
+     * Analyses the application and returns the bill of materials summary.
+     *
+     * @param logger - optional logger to capture diagnostics during analysis
+     */
+    getAppAnalysis(logger?: Logger): Promise<AnalysisResult>;
     /**
      * Updates package.json file asynchronously by keeping the previous indentation.
      *

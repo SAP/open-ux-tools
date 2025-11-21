@@ -193,6 +193,9 @@
       "path": "packages/project-access"
     },
     {
+      "path": "packages/project-analyser"
+    },
+    {
       "path": "packages/project-input-validator"
     },
     {
