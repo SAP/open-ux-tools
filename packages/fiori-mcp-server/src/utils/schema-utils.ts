@@ -1,9 +1,10 @@
+import type { JSONSchema4 } from 'json-schema';
+import type { Appdetails } from '../types';
+
 import { findProjectRoot, createApplicationAccess, getProject, DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import * as zod from 'zod';
-import type { Appdetails } from '../types';
-import { logger } from '../utils/logger';
-import type { JSONSchema4 } from 'json-schema';
+import { logger } from './logger';
 
 /**
  * Resolves the application details from a given path.

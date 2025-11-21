@@ -49,9 +49,11 @@ describe('listFunctionalities', () => {
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
-            'generate-fiori-ui-app',
+            'generate-fiori-ui-application-cap',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'generate-fiori-ui-application',
+            'fetch-service-metadata'
         ]);
     });
 
@@ -74,9 +76,11 @@ describe('listFunctionalities', () => {
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
-            'generate-fiori-ui-app',
+            'generate-fiori-ui-application-cap',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'generate-fiori-ui-application',
+            'fetch-service-metadata'
         ]);
     });
 

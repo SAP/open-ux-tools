@@ -9,7 +9,7 @@ import { getFunctionalityDetails, resolveFunctionality } from './get-functionali
 import type { PropertyPath } from '../page-editor-api';
 import { PageEditorApi } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { resolveApplication } from './utils';
+import { resolveApplication } from '../utils';
 
 /**
  * Executes a functionality based on the provided parameters.

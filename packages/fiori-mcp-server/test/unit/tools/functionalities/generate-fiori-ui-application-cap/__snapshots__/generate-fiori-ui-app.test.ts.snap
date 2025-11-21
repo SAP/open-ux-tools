@@ -8,10 +8,12 @@ Object {
                 The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
                 The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
                 The configuration **MUST** be based on the project files in the projectPath.",
-  "functionalityId": "generate-fiori-ui-app",
+  "functionalityId": "generate-fiori-ui-application-cap",
   "name": "Generate SAP Fiori UI Application",
   "parameters": Object {
     "additionalProperties": false,
+    "description": "The configuration that will be used for the Application UI generation.
+            The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.",
     "properties": Object {
       "entityConfig": Object {
         "additionalProperties": false,
@@ -26,7 +28,7 @@ Object {
             "additionalProperties": false,
             "properties": Object {
               "entityName": Object {
-                "description": "The name of the main entity",
+                "description": "The name of the main entity. EntitySet Name attribute in OData Metadata",
                 "examples": Array [
                   "'SalesOrder'",
                   "'PurchaseOrderHeader'",
@@ -51,11 +53,11 @@ Object {
       "floorplan": Object {
         "description": "SAP Fiori Elements floor plan type.",
         "enum": Array [
-          "FE_LROP",
-          "FE_FEOP",
           "FE_FPM",
+          "FE_LROP",
           "FE_OVP",
           "FE_ALP",
+          "FE_FEOP",
           "FE_WORKLIST",
           "FF_SIMPLE",
         ],
@@ -67,25 +69,15 @@ Object {
           "description": Object {
             "type": "string",
           },
-          "localUI5Version": Object {
-            "default": "1.136.7",
-            "type": "string",
-          },
           "name": Object {
             "pattern": "^[a-z0-9-]+$",
             "type": "string",
           },
-          "namespace": Object {
-            "type": "string",
-          },
           "targetFolder": Object {
-            "description": "Absolute path to the CAP project folder (projectPath).",
+            "description": "Absolute path to the project folder (projectPath).",
             "type": "string",
           },
           "title": Object {
-            "type": "string",
-          },
-          "ui5Theme": Object {
             "type": "string",
           },
           "ui5Version": Object {
@@ -95,10 +87,9 @@ Object {
         },
         "required": Array [
           "name",
-          "targetFolder",
           "description",
+          "targetFolder",
           "ui5Version",
-          "localUI5Version",
         ],
         "type": "object",
       },
@@ -139,32 +130,18 @@ Object {
             ],
             "type": "object",
           },
-          "servicePath": Object {
-            "description": "The odata endpoint as provided by the cds mcp or as fallback in case that tool is not available from the service cds file.",
-            "examples": Array [
-              "/odata/v4/<servicename>/",
-              "/odata/v4/MyRiskService/",
-              "/odata/v2/MyOdataV2Service/",
-              "/odata/v4/MyOdataV4Service/",
-              "/odata/v4/<relative '@path' annotation from service cds file>/",
-              "<absolute '@path' annotation from service cds file>/",
-              "/myAbsolutePathFromServiceCdsFile/",
-            ],
-            "type": "string",
-          },
         },
         "required": Array [
-          "servicePath",
           "capService",
         ],
         "type": "object",
       },
     },
     "required": Array [
+      "entityConfig",
       "floorplan",
       "project",
       "service",
-      "entityConfig",
     ],
     "type": "object",
   },

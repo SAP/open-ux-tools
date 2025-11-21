@@ -3,7 +3,7 @@
  * Handles fallback mechanisms when @sap-ux/fiori-docs-embeddings package is not available
  */
 
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { logger } from './logger';
 
