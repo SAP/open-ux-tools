@@ -155,7 +155,8 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
+        const appRoot = await findProjectRoot(process.cwd(), false, true);
+        this.projectType = await getProjectType(appRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
@@ -169,7 +170,7 @@ export class FlpSandbox {
             {
                 componentId,
                 target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-                local: '.',
+                local: appRoot,
                 intent: this.flpConfig.intent
             },
             this.logger
@@ -221,21 +222,21 @@ export class FlpSandbox {
             return new Map([
                 // Run application in design time mode
                 // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-                ['xx-designMode', 'true'],
+                ['data-sap-ui-xx-designMode', 'true'],
                 // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-                ['xx-suppressDeactivationOfControllerCode', 'true'],
+                ['data-sap-ui-xx-suppressDeactivationOfControllerCode', 'true'],
                 // Make sure that XML preprocessing results are correctly invalidated
-                ['xx-viewCache', 'false']
+                ['data-sap-ui-xx-viewCache', 'false']
             ]);
         } else {
             return new Map([
                 // Run application in design time mode
                 // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-                ['xx-design-mode', 'true'],
+                ['data-sap-ui-xx-design-mode', 'true'],
                 // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-                ['xx-suppress-deactivation-of-controller-code', 'true'],
+                ['data-sap-ui-xx-suppress-deactivation-of-controller-code', 'true'],
                 // Make sure that XML preprocessing results are correctly invalidated
-                ['xx-view-cache', 'false']
+                ['data-sap-ui-xx-view-cache', 'false']
             ]);
         }
     }
@@ -1127,29 +1128,16 @@ export class FlpSandbox {
 }
 
 /**
- * Creates an attribute string that can be added to an HTML element.
- *
- * @param attributes map with attributes and their values
- * @param indent indentation that's inserted before each attribute
- * @param prefix value that should be added at the start of to all attribute names
- * @returns attribute string
- */
-function serializeDataAttributes(attributes: Map<string, string>, indent = '', prefix = 'data'): string {
-    return [...attributes.entries()]
-        .map(([name, value]) => {
-            return `${indent}${prefix}-${name}="${value}"`;
-        })
-        .join('\n');
-}
-
-/**
- * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ * Creates an attribute string that can be added to the UI5 bootstrap script of an HTML file.
  *
  * @param config ui5 configuration options
  * @returns attribute string
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
-    return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+    return (
+        '\n' +
+        [...config.entries()].map(([name, value]) => `        ${name}="${value}"`).join('\n')
+    );
 }
 
 /**
