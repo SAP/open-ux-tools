@@ -47,7 +47,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "axios": "1.12.2",
         "commander": "9.4.0",
-        "dotenv": "16.3.1",
+        "dotenv": "16.6.1",
         "prompts": "2.4.2",
         "adm-zip": "0.5.10",
         "chalk": "4.1.2"
