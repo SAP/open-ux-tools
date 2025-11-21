@@ -425,6 +425,8 @@ export const enum HttpStatusCodes {
     SERVICE_UNAVAILABLE = 503
 }
 
+export type NetworkError = { message?: string; name?: string; code?: string };
+
 export type OperationType = 'read' | 'write' | 'delete';
 
 /**
