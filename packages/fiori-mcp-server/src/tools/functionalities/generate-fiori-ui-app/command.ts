@@ -33,7 +33,7 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const generatorConfigCAP: GeneratorConfigCAP = validateWithSchema(GeneratorConfigSchemaCAP, params?.parameters);
+    const generatorConfigCAP: GeneratorConfigCAP = validateWithSchema(GeneratorConfigSchemaCAP(), params?.parameters);
     const generatorConfig: GeneratorConfigCAPWithAPI = {
         ...PREDEFINED_GENERATOR_VALUES,
         ...generatorConfigCAP,
