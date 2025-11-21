@@ -42,7 +42,7 @@
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.4"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
@@ -52,6 +52,6 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "fs-extra": "10.0.0",
-        "@types/semver": "7.5.2"
+        "@types/semver": "7.7.1"
     }
 }
