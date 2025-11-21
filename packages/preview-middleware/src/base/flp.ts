@@ -1134,10 +1134,7 @@ export class FlpSandbox {
  * @returns attribute string
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
-    return (
-        '\n' +
-        [...config.entries()].map(([name, value]) => `        ${name}="${value}"`).join('\n')
-    );
+    return '\n' + [...config.entries()].map(([name, value]) => `        ${name}="${value}"`).join('\n');
 }
 
 /**
