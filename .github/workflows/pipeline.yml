@@ -78,7 +78,7 @@ jobs:
                   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload playwright reports
               if: failure()
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v5
               with:
                   name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
                   path: |
@@ -100,7 +100,7 @@ jobs:
 
             - name: 'Upload sonar artifact'
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v5
               with:
                   name: sonar-artifact
                   path: |
