@@ -33,8 +33,8 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     const appName = (generatorConfig?.project.name as string) ?? 'default';
     const appPath = join(projectPath, appName);
     const targetDir = projectPath;
-    const configPath = `${appName}-generator-config.json`;
-    const outputPath = join(targetDir, configPath);
+    const configFileName = `${appName}-generator-config.json`;
+    const configPath = join(targetDir, configFileName);
 
     await checkIfGeneratorInstalled();
 
@@ -46,10 +46,10 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
         const content = JSON.stringify(generatorConfig, null, 4);
 
-        await FSpromises.mkdir(dirname(outputPath), { recursive: true });
-        await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
+        await FSpromises.mkdir(dirname(configPath), { recursive: true });
+        await FSpromises.writeFile(configPath, content, { encoding: 'utf8' });
 
-        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
+        const command = `npx -y yo@4 @sap/fiori:headless ${configFileName} --force --skipInstall`;
         const { stdout, stderr } = await runCmd(command, { cwd: targetDir });
         logger.info(stdout);
         if (stderr) {
@@ -68,8 +68,8 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         };
     } finally {
         //clean up temp config files used for the headless generator
-        if (existsSync(outputPath)) {
-            await FSpromises.unlink(outputPath);
+        if (existsSync(configPath)) {
+            await FSpromises.unlink(configPath);
         }
         if (existsSync(metadataPath)) {
             await FSpromises.unlink(metadataPath);

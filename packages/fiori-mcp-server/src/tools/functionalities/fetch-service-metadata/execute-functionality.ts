@@ -1,8 +1,8 @@
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 
-import path from 'path';
-import fs from 'fs';
-import { getServiceMetadata, findSapSystem } from './serevice-metadata';
+import path from 'node:path';
+import fs from 'node:fs';
+import { getServiceMetadata, findSapSystem } from './service-metadata';
 import details from './details';
 
 /**

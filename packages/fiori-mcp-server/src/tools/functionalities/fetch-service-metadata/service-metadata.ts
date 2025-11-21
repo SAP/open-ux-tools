@@ -6,7 +6,7 @@ import { SystemService } from '@sap-ux/store/dist/services/backend-system';
 import { ToolsLogger } from '@sap-ux/logger';
 
 /**
- * Fetches SAP backend systems based on provided parameters.
+ * Fetches SAP backend systems.
  *
  * @returns A promise that resolves to an array of BackendSystem objects.
  */
@@ -63,7 +63,7 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
 }
 
 /**
- * Finds a system by its name (partial match).
+ * Finds a system by its name, or url and client (partial match).
  *
  * @param query - The partial name to match.
  * @returns The matching system if found.

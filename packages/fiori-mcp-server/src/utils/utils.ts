@@ -1,7 +1,7 @@
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 
-import { promisify } from 'util';
-import { exec as execAsync } from 'child_process';
+import { promisify } from 'node:util';
+import { exec as execAsync } from 'node:child_process';
 import { findInstalledPackages } from '@sap-ux/nodejs-utils';
 
 /**

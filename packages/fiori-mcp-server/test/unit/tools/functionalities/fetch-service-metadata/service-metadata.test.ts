@@ -3,7 +3,7 @@ import type { ODataService } from '@sap-ux/axios-extension';
 import {
     findSapSystem,
     getServiceMetadata
-} from '../../../../../src/tools/functionalities/fetch-service-metadata/serevice-metadata';
+} from '../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata';
 import { SystemService } from '@sap-ux/store/dist/services/backend-system';
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 
@@ -12,7 +12,7 @@ jest.mock('@sap-ux/store/dist/services/backend-system');
 jest.mock('@sap-ux/axios-extension');
 jest.mock('@sap-ux/logger');
 
-describe('serevice-metadata', () => {
+describe('service-metadata', () => {
     let mockGetAll: jest.Mock;
     const mockSystems: BackendSystem[] = [
         {
