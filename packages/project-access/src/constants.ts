@@ -70,4 +70,5 @@ export const fioriToolsDirectory = join(homedir(), FioriToolsSettings.dir);
  */
 export const moduleCacheRoot = join(fioriToolsDirectory, DirName.ModuleCache);
 
-export const MinCdsVersionUi5Plugin = '6.8.2';
+export const MinCdsVersionUi5Plugin = '0.13.0';
+export const MinCdsVersion = '6.8.2';
