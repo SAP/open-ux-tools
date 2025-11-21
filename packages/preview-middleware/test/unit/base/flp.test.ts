@@ -24,7 +24,7 @@ import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
-jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 jest.mock('@sap-ux/adp-tooling', () => {
