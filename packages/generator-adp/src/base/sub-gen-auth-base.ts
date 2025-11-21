@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import { Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Manifest } from '@sap-ux/project-access';
@@ -13,7 +13,7 @@ import SubGeneratorBase from './sub-gen-base';
 import type { GeneratorOpts } from '../utils/opts';
 import type { GeneratorTypes, Credentials } from '../types';
 import { getCredentialsPrompts } from './questions/credentials';
-import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
+import { getSubGenAuthPages } from '../utils/steps';
 
 /**
  * Base class for *sub* generators that need authentication handling.
@@ -68,14 +68,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         super(args, opts, type);
         this.generatorType = type;
 
-        try {
-            if (opts.data) {
-                this.projectPath = opts.data.path;
-            }
-            this.vscode = opts.vscode;
-        } catch (e) {
-            this.validationError = e as Error;
+        if (opts.data) {
+            this.projectPath = opts.data.path;
         }
+        this.vscode = opts.vscode;
     }
 
     /**
@@ -85,23 +81,13 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     protected async onInit(): Promise<void> {
         await initI18n();
 
-        if (this.validationError) {
-            this._registerPrompts(new Prompts(getSubGenErrorPage(this.generatorType)));
-        } else {
-            this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
-        }
-
         this.systemLookup = new SystemLookup(this.logger);
         const adpConfig = await getAdpConfig(this.projectPath, path.join(this.projectPath, 'ui5.yaml'));
         this.abapTarget = adpConfig.target;
         this.system = (isAppStudio() ? this.abapTarget.destination : this.abapTarget.url) ?? '';
         this.logger.log(`Successfully retrieved abap target\n${JSON.stringify(this.abapTarget, null, 2)}`);
 
-        if (this.validationError) {
-            this.appWizard.showError(this.validationError.message, MessageType.notification);
-            await this.handleRuntimeCrash(this.validationError.message);
-            return;
-        }
+        this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
 
         try {
             this.requiresAuth = await this.systemLookup.getSystemRequiresAuth(this.system);

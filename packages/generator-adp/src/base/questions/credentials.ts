@@ -2,12 +2,20 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { getConfiguredProvider, getSystemUI5Version } from '@sap-ux/adp-tooling';
+import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n';
 import type { Credentials } from '../../types';
 import { configPromptNames } from '../../app/types';
+import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
+
+interface ClientCredentials {
+    system: string;
+    client: string;
+    username: string;
+    password: string;
+}
 
 /**
  * Returns the username prompt.
@@ -66,15 +74,14 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
             }
 
             try {
-                const options = {
+                const credentials = {
                     system,
                     client: abapTarget.client ?? '',
                     username: answers.username,
                     password: value
                 };
 
-                const abapProvider = await getConfiguredProvider(options, logger);
-                await getSystemUI5Version(abapProvider, logger);
+                await assertAuthenticated(credentials, logger);
 
                 return true;
             } catch (e) {
@@ -82,4 +89,20 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
             }
         }
     };
+}
+
+/**
+ * Helper function which asserts whether a client is authenticated on an ABAP system or throws.
+ * Since we do not have a dedicated api call to detect if a client is authenticated we use the
+ * {@link LayeredRepositoryService.getSystemInfo} call which is a protected one.
+ *
+ * @param {ClientCredentials} credentials - Object containing client credentials to a specific ABAP system.
+ * @param {ToolsLogger} logger - The logger instance.
+ * @returns {Promise<void>} A promise resolved if the client is authenticated, otherwise rejected with
+ * an error.
+ */
+async function assertAuthenticated(credentials: ClientCredentials, logger: ToolsLogger): Promise<void> {
+    const abapProvider = await getConfiguredProvider(credentials, logger);
+    const layeredRepositoryService = abapProvider.getLayeredRepository();
+    await layeredRepositoryService.getSystemInfo();
 }
