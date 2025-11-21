@@ -44,7 +44,9 @@ describe('CustomAction', () => {
                     },
                     routing: {
                         targets: {
-                            TestObjectPage: { name: 'sap.fe.templates.ListReport' }
+                            TestObjectPage: {
+                                name: 'sap.fe.templates.ListReport'
+                            }
                         }
                     }
                 }
@@ -164,6 +166,60 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
+        test('custom menu as target', async () => {
+            const testAppManifest = JSON.stringify(
+                {
+                    'sap.app': {
+                        id: 'my.test.App'
+                    },
+                    'sap.ui5': {
+                        dependencies: {
+                            libs: {
+                                'sap.fe.templates': {}
+                            }
+                        },
+                        routing: {
+                            targets: {
+                                TestObjectPage: {
+                                    name: 'sap.fe.templates.ObjectPage',
+                                    options: {
+                                        settings: {
+                                            content: {
+                                                header: {
+                                                    actions: {
+                                                        TestMenu: {
+                                                            menu: ['DummyAction']
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                null,
+                2
+            );
+            fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
+            await generateCustomAction(
+                testDir,
+                {
+                    name,
+                    target: {
+                        page: target.page,
+                        control: TargetControl.header,
+                        menuId: 'TestMenu'
+                    },
+                    settings
+                },
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
         const positionTests = [
