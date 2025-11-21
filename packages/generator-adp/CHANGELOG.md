@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.7.5
+
+### Patch Changes
+
+-   6872b31: fix: System SAPUI5 version not available for selection in ADP generator
+-   Updated dependencies [6872b31]
+    -   @sap-ux/adp-tooling@0.18.5
+
 ## 0.7.4
 
 ### Patch Changes
