@@ -899,6 +899,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
       http-proxy-middleware:
         specifier: 3.0.5
         version: 3.0.5
@@ -936,9 +939,6 @@ importers:
       connect:
         specifier: ^3.7.0
         version: 3.7.0
-      express:
-        specifier: 4.21.2
-        version: 4.21.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -5922,7 +5922,7 @@ packages:
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.2
       convert-source-map: 2.0.0
-      debug: 4.4.0
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -19320,7 +19320,7 @@ packages:
       body-parser: 2.2.0
       content-disposition: 1.0.0
       content-type: 1.0.5
-      cookie: 0.7.1
+      cookie: 0.7.2
       cookie-signature: 1.2.2
       debug: 4.4.3
       encodeurl: 2.0.0
