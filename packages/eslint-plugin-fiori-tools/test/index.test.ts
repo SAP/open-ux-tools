@@ -36,8 +36,7 @@ describe('Tests for utils.ts', () => {
     });
 
     test('configs', async () => {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const configs = require('../src/index');
+        const configs = await import('../src/index');
         expect(configs).toBeDefined();
     });
 });

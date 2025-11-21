@@ -1,5 +1,5 @@
-const { rules } = require('eslint-plugin-fiori-custom');
 const base = require('../../eslint.config.js');
+const { default:  eslintPlugin } = require('eslint-plugin-eslint-plugin');
 
 module.exports = [
     {
@@ -17,5 +17,6 @@ module.exports = [
         rules: {
             '@typescript-eslint/no-require-imports': 'warn'
         }
-    }
+    },
+    eslintPlugin.configs.recommended
 ];
