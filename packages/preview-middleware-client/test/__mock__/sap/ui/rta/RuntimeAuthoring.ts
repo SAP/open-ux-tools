@@ -1,5 +1,5 @@
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 class RuntimeAuthoringMock {
     constructor(_: RTAOptions) {}

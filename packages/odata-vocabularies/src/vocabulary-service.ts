@@ -802,7 +802,7 @@ export class VocabularyService {
     getDerivedTypeNames(typeName: FullyQualifiedName, includeAbstract?: boolean): Set<FullyQualifiedName> {
         let names: { fName: FullyQualifiedName; isAbstract: boolean | undefined }[] = [];
         const type = this.dictionary.get(typeName);
-        if (type && type.kind === COMPLEX_TYPE_KIND) {
+        if (type?.kind === COMPLEX_TYPE_KIND) {
             // collect all derived types
             names.push({ fName: typeName, isAbstract: type.isAbstract });
             const stack = [typeName];

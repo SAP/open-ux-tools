@@ -336,7 +336,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {boolean} True if section visible.
      */
     static isSectionVisible(node: React.ReactElement | undefined): boolean {
-        if (node && node.type === UISection) {
+        if (node?.type === UISection) {
             return !(node.props as UISectionProps).hidden;
         }
         return false;

@@ -1,21 +1,21 @@
-import UI5Element from 'sap/ui/core/Element';
-import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
+import type UI5Element from 'sap/ui/core/Element';
+import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 import type IconTabBar from 'sap/m/IconTabBar';
 import type IconTabFilter from 'sap/m/IconTabFilter';
 import type Table from 'sap/m/Table';
 import type MdcTable from 'sap/ui/mdc/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickActionChild, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { getParentContainer, getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
 import { getControlById, isA, isManagedObject } from '../../utils/core';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
-import ObjectPageSection from 'sap/uxap/ObjectPageSection';
-import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import { EnablementValidator } from './enablement-validator';
+import type ObjectPageSection from 'sap/uxap/ObjectPageSection';
+import type ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type { EnablementValidator } from './enablement-validator';
 import { QuickActionDefinitionBase } from './quick-action-base';
 import {
     ANALYTICAL_TABLE_TYPE,
@@ -33,6 +33,10 @@ const SETTINGS_ID = 'CTX_SETTINGS';
 const REARRANGE_TOOLBAR_SETTINGS_ID = 'CTX_SETTINGS0';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 
+/**
+ *
+ * @param table
+ */
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();
 
@@ -87,12 +91,24 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
     > = {};
     public iconTabBar: IconTabBar | undefined;
 
+    /**
+     *
+     */
     protected get textKey(): string {
         return this.defaultTextKey;
     }
 
     protected control: UI5Element | undefined;
 
+    /**
+     *
+     * @param type
+     * @param controlTypes
+     * @param defaultTextKey
+     * @param context
+     * @param options
+     * @param enablementValidators
+     */
     constructor(
         public readonly type: string,
         protected readonly controlTypes: string[],
@@ -106,6 +122,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     /**
      * Adds action id to the table map entry, if the service actions are needed.
+     *
      * @param table - table element
      * @param tableMapKey - map key
      */
@@ -187,13 +204,14 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 );
             }
             return tableInternal as UI5Element | undefined;
-        } catch (error) {
+        } catch {
             return undefined;
         }
     }
 
     /**
      * Determines table label for the given table element
+     *
      * @param table - table element
      * @returns table label if found or 'Unnamed table'
      */
@@ -215,6 +233,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     /**
      * Builds a map kay/tab_name for ICON_TAB_BAR control of the active page, if such exists
+     *
      * @returns built map
      */
     protected buildIconTabBarFilterMap(): { [key: string]: string } {
@@ -241,6 +260,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     /**
      * Collects subsection data in the table map for the given section and table
+     *
      * @param section - object page section
      * @param table - table element
      */
@@ -284,8 +304,12 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     /**
      * Processes table element and pushes table data to the children array
+     *
      * @param table - table element
      * @param sectionInfo - section info object
+     * @param sectionInfo.section
+     * @param sectionInfo.subSection
+     * @param sectionInfo.layout
      */
     private async processTable(
         table: UI5Element,
@@ -317,6 +341,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     /**
      * Selects closest overlay for the given table element
+     *
      * @param table - table element
      */
     protected selectOverlay(table: UI5Element): void {
@@ -328,6 +353,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     /**
      * Prepares nested quick action object
+     *
      * @returns action instance
      */
     getActionObject(): NestedQuickAction {

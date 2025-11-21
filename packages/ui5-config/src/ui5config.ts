@@ -103,7 +103,7 @@ export class UI5Config {
         let resources: Resources;
         try {
             resources = this.document.getMap({ path: 'resources' }).toJSON();
-        } catch (error) {
+        } catch {
             resources = {};
         }
         return resources.configuration ?? {};
@@ -171,7 +171,7 @@ export class UI5Config {
         try {
             const configNode = this.document.getMap({ path: 'customConfiguration' });
             configNode.setIn([key], value);
-        } catch (_error) {
+        } catch {
             this.document.setIn({
                 path: 'customConfiguration',
                 value: {

@@ -18,7 +18,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
+import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { promptNames } from '../../../../types';
 import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';

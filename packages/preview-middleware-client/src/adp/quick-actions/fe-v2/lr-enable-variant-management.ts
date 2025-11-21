@@ -1,8 +1,11 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
+import type ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import Component from 'sap/ui/core/Component';
@@ -22,6 +25,10 @@ export class EnableListReportVariantManagementQuickAction
     private ownerComponent: ListReportComponent;
     readonly forceRefreshAfterExecution = true;
 
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -73,6 +80,9 @@ export class EnableListReportVariantManagementQuickAction
         }
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

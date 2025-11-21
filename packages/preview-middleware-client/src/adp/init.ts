@@ -24,6 +24,10 @@ import { initDialogs } from './init-dialogs';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { CommunicationService } from '../cpe/communication-service';
 
+/**
+ *
+ * @param rta
+ */
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {

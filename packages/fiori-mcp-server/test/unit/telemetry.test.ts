@@ -1,8 +1,7 @@
-import { TelemetryHelper } from '../../src/telemetry';
+import { TelemetryHelper, mcpServerName } from '../../src/telemetry';
 import * as sapUxTelemetry from '@sap-ux/telemetry';
 import { ClientFactory } from '@sap-ux/telemetry';
 import type { TelemetryData } from '../../src/telemetry';
-import { mcpServerName } from '../../src/telemetry';
 
 describe('TelemetryHelper', () => {
     const opts = {

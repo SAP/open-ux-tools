@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="jest" />
 
 import type { DiffOptions } from 'jest-diff';

@@ -1,12 +1,15 @@
+// es
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { CARD_GENERATOR_DEFAULT, type TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, promises } from 'node:fs';
+import path, { join } from 'node:path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
@@ -17,9 +20,7 @@ import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
-import { promises } from 'node:fs';
 import { getWebappPath } from '@sap-ux/project-access';
-import path from 'node:path';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
@@ -43,8 +44,8 @@ jest.mock('@sap-ux/i18n', () => {
 const createPropertiesI18nEntriesMock = createPropertiesI18nEntries as jest.Mock;
 
 class FlpSandbox extends FlpSandboxUnderTest {
-    public declare templateConfig: TemplateConfig;
-    public declare readonly flpConfig: FlpConfig;
+    declare public templateConfig: TemplateConfig;
+    declare public readonly flpConfig: FlpConfig;
 }
 
 describe('FlpSandbox', () => {

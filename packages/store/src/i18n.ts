@@ -23,6 +23,11 @@ export async function initI18n(): Promise<void> {
 }
 
 type StringMap = { [key: string]: unknown };
+/**
+ *
+ * @param key
+ * @param options
+ */
 export function text(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
     return i18nInstance.t(key, typeof options === 'string' ? { defaultValue: options } : options);
 }

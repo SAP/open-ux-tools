@@ -1,6 +1,6 @@
-const { writeFile } = require('fs/promises');
-const { join } = require('path');
-const { getUI5Versions } = require('@sap-ux/ui5-info');
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
+import { getUI5Versions } from '@sap-ux/ui5-info';
 
 getUI5Versions({
     minSupportedUI5Version: '1.71',
@@ -10,7 +10,7 @@ getUI5Versions({
     .then((versions) => {
         'use strict';
         const maintenanceVersions = versions.filter((version) => version.maintained).map((version) => version.version);
-        return writeFile(join(__dirname, 'versions.json'), JSON.stringify(maintenanceVersions));
+        return writeFile(join(import.meta.dirname, 'versions.json'), JSON.stringify(maintenanceVersions));
     })
     .catch((error) => {
         'use strict';
