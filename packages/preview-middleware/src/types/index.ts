@@ -14,6 +14,9 @@ export interface Intent {
  */
 export interface App {
     target: string;
+    /**
+     * Either a local path to a folder containing the application or the componentId of a remote app
+     */
     local?: string;
     /**
      * Optional component id if it differs from the manifest (e.g. for adaptation projects)
