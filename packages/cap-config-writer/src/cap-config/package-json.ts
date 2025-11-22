@@ -2,11 +2,10 @@ import {
     type Package,
     getWorkspaceInfo,
     MinCdsVersionUi5Plugin,
+    MinCdsVersion,
     hasMinCdsVersion,
     hasDependency
 } from '@sap-ux/project-access';
-
-const minCdsPluginUi5Version = '0.13.0';
 
 /**
  * Ensure a minimum version of @sap/cds in dependencies.
@@ -16,7 +15,7 @@ const minCdsPluginUi5Version = '0.13.0';
 export function ensureMinCdsVersion(packageJson: Package): void {
     if (!hasMinCdsVersion(packageJson)) {
         packageJson.dependencies ??= {};
-        packageJson.dependencies['@sap/cds'] = `^${MinCdsVersionUi5Plugin}`;
+        packageJson.dependencies['@sap/cds'] = `^${MinCdsVersion}`;
     }
 }
 
@@ -51,6 +50,6 @@ export async function enableWorkspaces(basePath: string, packageJson: Package): 
 export function addCdsPluginUi5(packageJson: Package): void {
     if (!hasDependency(packageJson, 'cds-plugin-ui5')) {
         packageJson.devDependencies ??= {};
-        packageJson.devDependencies['cds-plugin-ui5'] = `^${minCdsPluginUi5Version}`;
+        packageJson.devDependencies['cds-plugin-ui5'] = `^${MinCdsVersionUi5Plugin}`;
     }
 }
