@@ -61,29 +61,24 @@ describe('writeValueListReferenceMetadata', () => {
         fs = create(createStorage());
     });
 
-    test('it should not do anything if there are no references', async () => {
+    test('it should do nothing if there are no references', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        writeExternalServiceMetadata(root, [], { version: OdataVersion.v4 }, fs);
+        writeExternalServiceMetadata(fs, root, []);
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
     test('it should do nothing if there is no service path specified', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        writeExternalServiceMetadata(
-            root,
-            [
-                {
-                    type: 'value-list',
-                    path: '/sap/opu/odata4/sap/my_service/',
-                    target: 'CustomerType/DunningProcedure',
-                    data: '<metadata>'
-                }
-            ],
-            { version: OdataVersion.v4 },
-            fs
-        );
+        writeExternalServiceMetadata(fs, root, [
+            {
+                type: 'value-list',
+                path: '/sap/opu/odata4/sap/my_service/',
+                target: 'CustomerType/DunningProcedure',
+                data: '<metadata>'
+            }
+        ]);
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
@@ -91,6 +86,7 @@ describe('writeValueListReferenceMetadata', () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
         writeExternalServiceMetadata(
+            fs,
             root,
             [
                 {
@@ -100,8 +96,8 @@ describe('writeValueListReferenceMetadata', () => {
                     data: '<metadata>'
                 }
             ],
-            { path: SERVICE_PATH, version: OdataVersion.v4 },
-            fs
+            undefined,
+            SERVICE_PATH
         );
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenNthCalledWith(
@@ -126,6 +122,7 @@ describe('writeValueListReferenceMetadata', () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
         writeExternalServiceMetadata(
+            fs,
             root,
             [
                 {
@@ -135,8 +132,8 @@ describe('writeValueListReferenceMetadata', () => {
                     data: '<metadata>'
                 }
             ],
-            { path: SERVICE_PATH, name: 'myService', version: OdataVersion.v4 },
-            fs
+            'myService',
+            SERVICE_PATH
         );
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenNthCalledWith(
@@ -161,6 +158,7 @@ describe('writeValueListReferenceMetadata', () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
         writeExternalServiceMetadata(
+            fs,
             root,
             [
                 {
@@ -169,8 +167,8 @@ describe('writeValueListReferenceMetadata', () => {
                     data: '<metadata>'
                 }
             ],
-            { path: SERVICE_PATH, name: 'myService', version: OdataVersion.v4 },
-            fs
+            'myService',
+            SERVICE_PATH
         );
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenNthCalledWith(

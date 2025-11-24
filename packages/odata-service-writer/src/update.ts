@@ -185,7 +185,7 @@ export async function updateServicesData(
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
     if (service.externalServices && webappPath) {
-        writeExternalServiceMetadata(webappPath, service.externalServices, service, fs);
+        writeExternalServiceMetadata(fs, webappPath, service.externalServices, service.name, service.path);
     }
 }
 
