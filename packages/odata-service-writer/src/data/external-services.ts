@@ -20,6 +20,8 @@ import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-ex
 
 import type { ExternalServiceCollectionOptions } from '../types';
 
+const INDENT_SIZE = 4;
+
 /**
  * Writes service metadata for external service references to the local service folder.
  *
@@ -39,20 +41,20 @@ export function writeExternalServiceMetadata(
     if (!externalServices.length || !servicePath) {
         return;
     }
+    const processedServices = new Set<string>();
     for (const reference of externalServices) {
-        const [valueListServicePath] = reference.path.split(';');
-        const segments = valueListServicePath.split('/');
-        let prefix = '/';
-        while (segments.length) {
-            const next = joinPosix(prefix, segments.shift()!);
-            if (!servicePath.startsWith(next)) {
-                break;
-            }
-            prefix = next;
-        }
-        const relativeServicePath = valueListServicePath.replace(prefix, '');
-
+        const relativeServicePath = getServiceRoot(servicePath, reference.path);
         const filePathSegments = [webappPath, DirName.LocalService, serviceName, relativeServicePath];
+
+        const servicePathWithoutParameters = reference.path.split(';')[0];
+        if (reference.entityData && !processedServices.has(servicePathWithoutParameters)) {
+            for (const entitySetData of reference.entityData) {
+                const entityDataPath = join(...filePathSegments, `${entitySetData.entitySetName}.json`);
+                fs.write(entityDataPath, JSON.stringify(entitySetData.items, undefined, INDENT_SIZE));
+            }
+            processedServices.add(servicePathWithoutParameters);
+        }
+
         if (reference.type === 'value-list') {
             filePathSegments.push(reference.target);
         }
@@ -60,10 +62,33 @@ export function writeExternalServiceMetadata(
         filePathSegments.push('metadata.xml');
         const path = join(...filePathSegments);
 
-        if (reference.data) {
-            fs.write(path, prettifyXml(reference.data, { indent: 4 }));
+        if (reference.metadata) {
+            fs.write(path, prettifyXml(reference.metadata, { indent: INDENT_SIZE }));
         }
     }
+}
+
+/**
+ * Builds relative service root for file system.
+ *
+ * @param mainServicePath - Path of the main service from which the external service reference originates.
+ * @param pathWithParameters - Full path of the external service reference, possibly including parameters.
+ * @returns Relative service root path.
+ */
+function getServiceRoot(mainServicePath: string, pathWithParameters: string): string {
+    const [servicePath] = pathWithParameters.split(';');
+    const segments = servicePath.split('/');
+    let prefix = '/';
+    let currentSegment = segments.shift();
+    while (currentSegment !== undefined) {
+        const next = joinPosix(prefix, currentSegment);
+        if (!mainServicePath.startsWith(next)) {
+            break;
+        }
+        prefix = next;
+        currentSegment = segments.shift();
+    }
+    return servicePath.replace(prefix, '');
 }
 
 const DEFAULT_OPTIONS: ExternalServiceCollectionOptions = {

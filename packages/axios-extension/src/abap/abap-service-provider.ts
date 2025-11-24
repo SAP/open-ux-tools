@@ -316,13 +316,13 @@ export class AbapServiceProvider extends ServiceProvider {
                         type: 'value-list',
                         path: externalServicePath,
                         target: reference.target,
-                        data
+                        metadata: data
                     });
                 } else if (reference.type === 'code-list') {
                     valueListReferences.push({
                         type: 'code-list',
                         path: externalServicePath,
-                        data
+                        metadata: data
                     });
                 }
             } catch (error) {
