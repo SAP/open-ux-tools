@@ -25,6 +25,8 @@ tests:
     - file://./pages/java-delete-page.yaml
     - file://./pages/add-first-lr-page.yaml
     - file://./pages/java-add-first-lr-page.yaml
+    - file://./pages/add-op-page-v2.yaml
+    - file://./pages/delete-page-v2.yaml
     # Controller extensions
     - file://./controller-extension/add-extension.yaml
     - file://./controller-extension/java-add-extension.yaml
