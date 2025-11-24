@@ -1,7 +1,7 @@
 import {
     type Package,
     getWorkspaceInfo,
-    MinCdsVersionUi5Plugin,
+    MinCdsPluginUi5Version,
     MinCdsVersion,
     hasMinCdsVersion,
     hasDependency
@@ -50,6 +50,6 @@ export async function enableWorkspaces(basePath: string, packageJson: Package): 
 export function addCdsPluginUi5(packageJson: Package): void {
     if (!hasDependency(packageJson, 'cds-plugin-ui5')) {
         packageJson.devDependencies ??= {};
-        packageJson.devDependencies['cds-plugin-ui5'] = `^${MinCdsVersionUi5Plugin}`;
+        packageJson.devDependencies['cds-plugin-ui5'] = `^${MinCdsPluginUi5Version}`;
     }
 }
