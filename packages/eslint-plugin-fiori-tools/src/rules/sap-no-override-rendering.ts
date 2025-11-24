@@ -5,6 +5,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -113,17 +114,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
-        }
 
         /**
          * Check if a property represents a not allowed method.

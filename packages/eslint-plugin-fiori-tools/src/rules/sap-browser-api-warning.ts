@@ -3,7 +3,15 @@
  */
 
 import type { Rule } from 'eslint';
-import { isType, isIdentifier, isMember, isCall, isLiteral, buildCalleePath } from '../utils/ast-helpers';
+import {
+    isType,
+    isIdentifier,
+    isMember,
+    isCall,
+    isLiteral,
+    buildCalleePath,
+    isForbiddenObviousApi
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -166,18 +174,6 @@ const rule: Rule.RuleModule = {
                     FORBIDDEN_HISTORY_OBJECT.push((node as any).id.name);
                 }
             }
-        }
-
-        /**
-         * Check if a callee path represents a forbidden obvious API.
-         *
-         * @param calleePath The path to check for forbidden APIs
-         * @returns The last element of the path
-         */
-        function isForbiddenObviousApi(calleePath: string): string {
-            const elementArray = calleePath.split('.');
-            const lastElement = elementArray.at(-1);
-            return lastElement ?? '';
         }
 
         /**

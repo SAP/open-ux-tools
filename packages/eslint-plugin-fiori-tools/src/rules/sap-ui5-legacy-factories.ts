@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------------------
 
 import type { Rule } from 'eslint';
-import type { ASTNode } from '../utils/ast-helpers';
+import type { ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

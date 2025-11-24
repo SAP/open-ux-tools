@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { isIdentifier, isMember, isWindow, contains } from '../utils/ast-helpers';
+import { isIdentifier, isMember, isWindow, contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

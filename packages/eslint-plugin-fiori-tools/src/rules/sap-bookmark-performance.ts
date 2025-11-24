@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/ast-helpers';
+import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

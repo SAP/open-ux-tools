@@ -10,7 +10,7 @@ import {
     isIdentifier,
     isLiteral,
     isMember
-} from '../utils/ast-helpers';
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

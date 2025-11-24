@@ -10,7 +10,7 @@ import {
     createVariableDeclaratorProcessor,
     isInteger,
     endsWith
-} from '../utils/ast-helpers';
+} from '../utils/helpers';
 
 const INTERESTING_PATH = {
     'sap': {

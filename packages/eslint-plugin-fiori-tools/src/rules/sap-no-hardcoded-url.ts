@@ -28,11 +28,8 @@ const rule: Rule.RuleModule = {
             // While this is not a true domain, adding the 'http version' here
             // is way easier and safer than trying to modify the regexp.
             'HTTP/1.1',
-            // https://jtrack/browse/CAINFRAANA-4
-            'http://www.sap.com/Protocols/',
-            // Used for the https://projectportal.neo.ondemand.com/projects/nw.core.extcfl project
-            // Contact: Sandro Schiefner
-            'http://www.sap.com/adt',
+            'https://www.sap.com/Protocols/',
+            'https://www.sap.com/adt',
             // localhost
             'http://localhost/offline/',
             'https://localhost/offline/'

@@ -13,7 +13,7 @@ import {
     createIsHistory,
     createIsHistoryObject,
     createRememberHistory
-} from '../utils/ast-helpers';
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

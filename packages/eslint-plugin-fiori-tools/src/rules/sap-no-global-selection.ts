@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, isIdentifier, contains, createIsWindowObject, createRememberWindow } from '../utils/ast-helpers';
+import { type ASTNode, isIdentifier, contains, createIsWindowObject, createRememberWindow } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

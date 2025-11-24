@@ -9,7 +9,7 @@ import {
     createIsLocation,
     createIsLocationObject,
     createRememberLocation
-} from '../utils/ast-helpers';
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

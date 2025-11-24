@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/ast-helpers';
+import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

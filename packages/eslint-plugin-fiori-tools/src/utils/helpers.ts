@@ -602,3 +602,14 @@ export function isInteger(value: number): boolean {
 export function endsWith(str: string, suffix: string): boolean {
     return typeof str === 'string' && typeof suffix === 'string' && str.endsWith(suffix);
 }
+
+/**
+ * Get the last element of a dot-separated path.
+ *
+ * @param calleePath The path to extract from
+ * @returns The last element of the path
+ */
+export function isForbiddenObviousApi(calleePath: string): string {
+    const elementArray = calleePath.split('.');
+    return elementArray.at(-1) ?? '';
+}
