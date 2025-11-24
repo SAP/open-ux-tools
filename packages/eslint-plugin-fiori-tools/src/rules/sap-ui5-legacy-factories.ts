@@ -82,6 +82,53 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Check if callee matches sap.ui.* pattern
+         */
+        function isSapUiPattern(callee: any): boolean {
+            return (
+                isMember(callee) &&
+                isIdentifier(callee.property) &&
+                contains(INTERESTING_METHODS, callee.property.name) &&
+                isMember(callee.object) &&
+                callee.object.property.name === 'ui' &&
+                isIdentifier(callee.object.object) &&
+                callee.object.object.name === 'sap'
+            );
+        }
+
+        /**
+         * Check if callee matches jQuery.sap.* or $.sap.* pattern
+         */
+        function isJQuerySapPattern(callee: any): boolean {
+            return (
+                isMember(callee) &&
+                isIdentifier(callee.property) &&
+                contains(INTERESTING_METHODS_JQUERY, callee.property.name) &&
+                isMember(callee.object) &&
+                callee.object.property.name === 'sap' &&
+                isIdentifier(callee.object.object) &&
+                (callee.object.object.name === 'jQuery' || callee.object.object.name === '$')
+            );
+        }
+
+        /**
+         * Check if callee matches sap.ui.component.* pattern
+         */
+        function isSapUiComponentPattern(callee: any): boolean {
+            return (
+                isMember(callee) &&
+                isIdentifier(callee.property) &&
+                contains(INTERESTING_METHODS, callee.property.name) &&
+                isMember(callee.object) &&
+                callee.object.property.name === 'component' &&
+                isMember(callee.object.object) &&
+                callee.object.object.property.name === 'ui' &&
+                isIdentifier(callee.object.object.object) &&
+                callee.object.object.object.name === 'sap'
+            );
+        }
+
+        /**
          * Check if a call expression represents an interesting legacy factory usage.
          *
          * @param node The call expression node to check
@@ -89,42 +136,7 @@ const rule: Rule.RuleModule = {
          */
         function isInteresting(node: ASTNode): boolean {
             const callee = (node as any).callee;
-            if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
-                    if (isMember(callee.object) && callee.object.property.name == 'ui') {
-                        if (isIdentifier(callee.object.object) && callee.object.object.name == 'sap') {
-                            return true;
-                        }
-                    }
-                }
-            }
-            if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS_JQUERY, callee.property.name)) {
-                    if (isMember(callee.object) && callee.object.property.name == 'sap') {
-                        if (
-                            isIdentifier(callee.object.object) &&
-                            (callee.object.object.name == 'jQuery' || callee.object.object.name == '$')
-                        ) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
-                    if (isMember(callee.object) && callee.object.property.name == 'component') {
-                        if (isMember(callee.object.object) && callee.object.object.property.name == 'ui') {
-                            if (
-                                isIdentifier(callee.object.object.object) &&
-                                callee.object.object.object.name == 'sap'
-                            ) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
+            return isSapUiPattern(callee) || isJQuerySapPattern(callee) || isSapUiComponentPattern(callee);
         }
 
         return {

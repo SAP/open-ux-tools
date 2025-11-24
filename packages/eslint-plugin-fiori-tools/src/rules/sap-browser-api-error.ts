@@ -149,6 +149,26 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process identifier initializer for API usage.
+         *
+         * @param node The variable declarator node
+         * @param init The identifier node
+         */
+        function processIdentifierInit(node: ASTNode, init: ASTNode): void {
+            const initName = (init as any).name;
+            if (initName === 'document') {
+                FORBIDDEN_DOCUMENT_OBJECT.push((node as any).id.name);
+            } else if (initName === 'location') {
+                FORBIDDEN_LOCATION_OBJECT.push((node as any).id.name);
+            } else if (initName === 'navigator') {
+                context.report({ node: node, messageId: 'proprietaryBrowserApi' });
+            } else if (initName === 'window') {
+                context.report({ node: node, messageId: 'proprietaryBrowserApi' });
+                FORBIDDEN_WINDOW_OBJECT.push((node as any).id.name);
+            }
+        }
+
+        /**
          * Process variable declarator nodes for API usage.
          *
          * @param node The variable declarator node to process
@@ -170,16 +190,7 @@ const rule: Rule.RuleModule = {
                         FORBIDDEN_WINDOW_EVENT_OBJECT.push((node as any).id.name);
                     }
                 } else if (isIdentifier(init)) {
-                    if (init.name === 'document') {
-                        FORBIDDEN_DOCUMENT_OBJECT.push((node as any).id.name);
-                    } else if (init.name === 'location') {
-                        FORBIDDEN_LOCATION_OBJECT.push((node as any).id.name);
-                    } else if (init.name === 'navigator') {
-                        context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                    } else if (init.name === 'window') {
-                        context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                        FORBIDDEN_WINDOW_OBJECT.push((node as any).id.name);
-                    }
+                    processIdentifierInit(node, init);
                 }
             }
         }
@@ -199,6 +210,203 @@ const rule: Rule.RuleModule = {
         }
 
         // --------------------------------------------------------------------------
+        // Helper Functions for MemberExpression Processing
+        // --------------------------------------------------------------------------
+
+        /**
+         * Handle call expression cases for MemberExpression.
+         *
+         * @param node The MemberExpression node
+         * @param parent The parent node (CallExpression)
+         */
+        function handleCallExpression(node: any, parent: any): void {
+            const methodName = getRightestMethodName(parent);
+            if (typeof methodName !== 'string' || !contains(FORBIDDEN_METHODS, methodName)) {
+                return;
+            }
+
+            const calleePath = buildCalleePath(node);
+            const speciousObject = isForbiddenObviousApi(calleePath);
+
+            if (speciousObject === 'document') {
+                processDocumentMessage(node, methodName);
+            } else if (speciousObject === 'location' && contains(FORBIDDEN_LOCATION_RELOAD, methodName)) {
+                context.report({ node: node, messageId: 'locationReload' });
+            } else if (speciousObject === 'navigator') {
+                context.report({ node: node, messageId: 'proprietaryBrowserApi' });
+            } else if (speciousObject === 'window' && !contains(FORBIDDEN_GLOB_EVENT, methodName)) {
+                processWindowMessage(node, methodName);
+            } else if (speciousObject !== 'document' && contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObject)) {
+                processDocumentMessage(node, methodName);
+            } else if (speciousObject !== 'location' && contains(FORBIDDEN_LOCATION_OBJECT, speciousObject)) {
+                context.report({ node: node, messageId: 'locationReload' });
+            } else if (speciousObject !== 'window' && contains(FORBIDDEN_WINDOW_OBJECT, speciousObject)) {
+                context.report({ node: node, messageId: 'proprietaryBrowserApi' });
+            }
+        }
+
+        /**
+         * Extract property name from node object.
+         *
+         * @param nodeObject The object node
+         * @returns The property name or empty string
+         */
+        function getPropertyName(nodeObject: any): string {
+            return nodeObject && 'property' in nodeObject && nodeObject.property && 'name' in nodeObject.property
+                ? nodeObject.property.name
+                : '';
+        }
+
+        /**
+         * Handle computed property access cases for MemberExpression.
+         *
+         * @param node The MemberExpression node
+         */
+        function handleComputedProperty(node: any): void {
+            const calleePathCmpt = buildCalleePath((node as any).object);
+            const speciousObjectCmpt = isForbiddenObviousApi(calleePathCmpt);
+            const methodNameCmpt = getPropertyName((node as any).object);
+
+            if (typeof methodNameCmpt !== 'string' || !contains(FORBIDDEN_DYNAMIC_STYLE_INSERTION, methodNameCmpt)) {
+                return;
+            }
+
+            if (speciousObjectCmpt === 'document') {
+                // document.styleSheets[i]; for exp
+                context.report({ node: node, messageId: 'dynamicStyleInsertion' });
+            } else if (speciousObjectCmpt !== 'document' && contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectCmpt)) {
+                // myDocument.styleSheets[i]; for exp
+                context.report({ node: node, messageId: 'dynamicStyleInsertion' });
+            }
+        }
+
+        /**
+         * Handle navigator-related checks.
+         *
+         * @param node The MemberExpression node
+         * @param calleePathNonCmpt The callee path
+         */
+        function handleNavigatorChecks(node: any, calleePathNonCmpt: string): void {
+            const isNavigatorAccess =
+                calleePathNonCmpt === 'navigator' ||
+                calleePathNonCmpt === 'window.navigator' ||
+                (calleePathNonCmpt === 'window' &&
+                    (node as any).property &&
+                    'name' in (node as any).property &&
+                    (node as any).property.name === 'navigator');
+
+            if (!isNavigatorAccess) {
+                return;
+            }
+
+            const isWindowNavigatorAssignment =
+                (calleePathNonCmpt === 'window.navigator' ||
+                    (calleePathNonCmpt === 'window' &&
+                        (node as any).property &&
+                        'name' in (node as any).property &&
+                        (node as any).property.name === 'navigator')) &&
+                node.parent.type === 'VariableDeclarator';
+
+            if (node.parent.parent.type !== 'CallExpression' && !isWindowNavigatorAssignment) {
+                // const x = navigator.appCodeName; for exp
+                context.report({ node: node, messageId: 'proprietaryBrowserApi' });
+            }
+        }
+
+        /**
+         * Handle window property checks.
+         *
+         * @param node The MemberExpression node
+         * @param calleePathNonCmpt The callee path
+         */
+        function handleWindowPropertyChecks(node: any, calleePathNonCmpt: string): void {
+            if (calleePathNonCmpt !== 'window' || !(node as any).property || !('name' in (node as any).property)) {
+                return;
+            }
+
+            const propertyName = (node as any).property.name;
+
+            if (!contains(FORBIDDEN_GLOB_EVENT, propertyName)) {
+                // window.onresize = 16; for exp
+                processWindowMessage(node, propertyName);
+            } else if (
+                contains(FORBIDDEN_GLOB_EVENT, propertyName) &&
+                node.parent.type === 'AssignmentExpression' &&
+                (node.parent as any).left === node
+            ) {
+                context.report({ node: node, messageId: 'forbiddenGlobEvent' });
+            }
+        }
+
+        /**
+         * Handle event property checks.
+         *
+         * @param node The MemberExpression node
+         * @param calleePathNonCmpt The callee path
+         */
+        function handleEventPropertyChecks(node: any, calleePathNonCmpt: string): void {
+            if (!(node as any).property || !('name' in (node as any).property)) {
+                return;
+            }
+
+            const propertyName = (node as any).property.name;
+            const isEventProperty = propertyName === 'returnValue' || propertyName === 'cancelBubble';
+            const isAssignmentTarget =
+                node.parent.type === 'AssignmentExpression' && (node.parent as any).left === node;
+
+            if (!isEventProperty || !isAssignmentTarget) {
+                return;
+            }
+
+            if (calleePathNonCmpt === 'window.event') {
+                context.report({ node: node, messageId: 'forbiddenGlobEvent' });
+            } else if (contains(FORBIDDEN_WINDOW_EVENT_OBJECT, calleePathNonCmpt)) {
+                context.report({ node: node, messageId: 'forbiddenGlobEvent' });
+            }
+        }
+
+        /**
+         * Handle styleSheets property checks.
+         *
+         * @param node The MemberExpression node
+         * @param calleePathNonCmpt The callee path
+         * @param speciousObjectNonCmpt The specious object
+         */
+        function handleStyleSheetsChecks(node: any, calleePathNonCmpt: string, speciousObjectNonCmpt: string): void {
+            if (!calleePathNonCmpt.endsWith('styleSheets')) {
+                return;
+            }
+
+            if (speciousObjectNonCmpt === 'document') {
+                // const abc = document.styleSheets.length; for exp
+                context.report({ node: node, messageId: 'dynamicStyleInsertion' });
+            } else if (
+                speciousObjectNonCmpt !== 'document' &&
+                contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectNonCmpt)
+            ) {
+                // const abc = myDocument.styleSheets.length; for exp
+                context.report({ node: node, messageId: 'dynamicStyleInsertion' });
+            }
+        }
+
+        /**
+         * Handle non-computed property access cases for MemberExpression.
+         *
+         * @param node The MemberExpression node
+         */
+        function handleNonComputedProperty(node: any): void {
+            const calleePathNonCmpt = buildCalleePath(node);
+            const speciousObjectNonCmpt = isForbiddenObviousApi(
+                calleePathNonCmpt.substr(0, calleePathNonCmpt.lastIndexOf('styleSheets') - 1)
+            );
+
+            handleNavigatorChecks(node, calleePathNonCmpt);
+            handleWindowPropertyChecks(node, calleePathNonCmpt);
+            handleEventPropertyChecks(node, calleePathNonCmpt);
+            handleStyleSheetsChecks(node, calleePathNonCmpt, speciousObjectNonCmpt);
+        }
+
+        // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
 
@@ -208,143 +416,13 @@ const rule: Rule.RuleModule = {
             },
             'MemberExpression': function (node): void {
                 const parent = node.parent;
+
                 if (isCall(parent)) {
-                    const methodName = getRightestMethodName(parent);
-                    if (typeof methodName === 'string' && contains(FORBIDDEN_METHODS, methodName)) {
-                        const calleePath = buildCalleePath(node);
-                        const speciousObject = isForbiddenObviousApi(calleePath);
-                        if (speciousObject === 'document') {
-                            processDocumentMessage(node, methodName);
-                        } else if (speciousObject === 'location' && contains(FORBIDDEN_LOCATION_RELOAD, methodName)) {
-                            context.report({ node: node, messageId: 'locationReload' });
-                        } else if (speciousObject === 'navigator') {
-                            context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                        } else if (speciousObject === 'window' && !contains(FORBIDDEN_GLOB_EVENT, methodName)) {
-                            processWindowMessage(node, methodName);
-                        } else if (
-                            speciousObject !== 'document' &&
-                            contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObject)
-                        ) {
-                            processDocumentMessage(node, methodName);
-                        } else if (
-                            speciousObject !== 'location' &&
-                            contains(FORBIDDEN_LOCATION_OBJECT, speciousObject)
-                        ) {
-                            context.report({ node: node, messageId: 'locationReload' });
-                        } else if (speciousObject !== 'window' && contains(FORBIDDEN_WINDOW_OBJECT, speciousObject)) {
-                            context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                        }
-                    }
+                    handleCallExpression(node, parent);
                 } else if ((node as any).computed) {
-                    const calleePathCmpt = buildCalleePath((node as any).object);
-                    const speciousObjectCmpt = isForbiddenObviousApi(calleePathCmpt),
-                        methodNameCmpt =
-                            (node as any).object &&
-                            'property' in (node as any).object &&
-                            (node as any).object.property &&
-                            'name' in (node as any).object.property
-                                ? (node as any).object.property.name
-                                : '';
-                    if (
-                        typeof methodNameCmpt === 'string' &&
-                        contains(FORBIDDEN_DYNAMIC_STYLE_INSERTION, methodNameCmpt) &&
-                        speciousObjectCmpt === 'document'
-                    ) {
-                        /*
-                         * document.styleSheets[i]; for exp
-                         */
-                        context.report({ node: node, messageId: 'dynamicStyleInsertion' });
-                    } else if (
-                        typeof methodNameCmpt === 'string' &&
-                        contains(FORBIDDEN_DYNAMIC_STYLE_INSERTION, methodNameCmpt) &&
-                        speciousObjectCmpt !== 'document' &&
-                        contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectCmpt)
-                    ) {
-                        /*
-                         * myDocument.styleSheets[i]; for exp
-                         */
-                        context.report({ node: node, messageId: 'dynamicStyleInsertion' });
-                    }
+                    handleComputedProperty(node);
                 } else {
-                    const calleePathNonCmpt = buildCalleePath(node);
-                    const speciousObjectNonCmpt = isForbiddenObviousApi(
-                        calleePathNonCmpt.substr(0, calleePathNonCmpt.lastIndexOf('styleSheets') - 1)
-                    );
-                    if (
-                        calleePathNonCmpt === 'navigator' ||
-                        calleePathNonCmpt === 'window.navigator' ||
-                        (calleePathNonCmpt === 'window' &&
-                            (node as any).property &&
-                            'name' in (node as any).property &&
-                            (node as any).property.name === 'navigator')
-                    ) {
-                        // Only report if not inside CallExpression AND
-                        // if it's window.navigator exactly (not a property access on it), don't report if parent is VariableDeclarator
-                        const isWindowNavigatorAssignment =
-                            (calleePathNonCmpt === 'window.navigator' ||
-                                (calleePathNonCmpt === 'window' &&
-                                    (node as any).property &&
-                                    'name' in (node as any).property &&
-                                    (node as any).property.name === 'navigator')) &&
-                            node.parent.type === 'VariableDeclarator';
-
-                        if (node.parent.parent.type !== 'CallExpression' && !isWindowNavigatorAssignment) {
-                            /*
-                             * const x = navigator.appCodeName; for exp
-                             */
-                            context.report({ node: node, messageId: 'proprietaryBrowserApi' });
-                        }
-                    }
-                    if (
-                        calleePathNonCmpt === 'window' &&
-                        (node as any).property &&
-                        'name' in (node as any).property &&
-                        !contains(FORBIDDEN_GLOB_EVENT, (node as any).property.name)
-                    ) {
-                        /*
-                         * window.onresize = 16; for exp
-                         */
-                        processWindowMessage(node, (node as any).property.name);
-                    } else if (
-                        calleePathNonCmpt === 'window' &&
-                        (node as any).property &&
-                        'name' in (node as any).property &&
-                        contains(FORBIDDEN_GLOB_EVENT, (node as any).property.name) &&
-                        node.parent.type === 'AssignmentExpression' &&
-                        (node.parent as any).left === node
-                    ) {
-                        context.report({ node: node, messageId: 'forbiddenGlobEvent' });
-                    }
-
-                    if (
-                        (node as any).property &&
-                        'name' in (node as any).property &&
-                        ((node as any).property.name === 'returnValue' ||
-                            (node as any).property.name === 'cancelBubble') &&
-                        node.parent.type === 'AssignmentExpression' &&
-                        (node.parent as any).left === node
-                    ) {
-                        if (calleePathNonCmpt === 'window.event') {
-                            context.report({ node: node, messageId: 'forbiddenGlobEvent' });
-                        } else if (contains(FORBIDDEN_WINDOW_EVENT_OBJECT, calleePathNonCmpt)) {
-                            context.report({ node: node, messageId: 'forbiddenGlobEvent' });
-                        }
-                    }
-                    if (calleePathNonCmpt.slice(-11) === 'styleSheets' && speciousObjectNonCmpt === 'document') {
-                        /*
-                         * const abc = document.styleSheets.length; for exp
-                         */
-                        context.report({ node: node, messageId: 'dynamicStyleInsertion' });
-                    } else if (
-                        calleePathNonCmpt.slice(-11) === 'styleSheets' &&
-                        speciousObjectNonCmpt !== 'document' &&
-                        contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectNonCmpt)
-                    ) {
-                        /*
-                         * const abc = myDocument.styleSheets.length; for exp
-                         */
-                        context.report({ node: node, messageId: 'dynamicStyleInsertion' });
-                    }
+                    handleNonComputedProperty(node);
                 }
             }
         };

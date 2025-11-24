@@ -105,69 +105,126 @@ const rule: Rule.RuleModule = {
             return a.includes(obj);
         }
         /**
+         * Check if array element contains interesting content methods
+         */
+        function hasInterestingContentMethods(elements: any[]): boolean {
+            for (let k = 0; k < elements.length; k++) {
+                if (isNewExpression(elements[k])) {
+                    const calleeNewExpression = elements[k].callee;
+                    if (
+                        isMember(calleeNewExpression) &&
+                        contains(INTERESTING_METHODS_CONTENT, calleeNewExpression.property.name)
+                    ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Check object properties for content arrays with interesting methods
+         */
+        function hasContentWithInterestingMethods(properties: any[]): boolean {
+            for (let j = 0; j < properties.length; j++) {
+                const prop = properties[j];
+                if (isIdentifier(prop.key) && isArrayExpression(prop.value) && prop.key.name === 'content') {
+                    if (hasInterestingContentMethods(prop.value.elements)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Check arguments for object expressions with interesting content
+         */
+        function hasArgumentsWithInterestingContent(args: any[]): boolean {
+            for (let i = 0; i < args.length; i++) {
+                if (isObjectExpression(args[i])) {
+                    if (hasContentWithInterestingMethods(args[i].properties)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Check if node has interesting methods pattern
+         */
+        function hasInterestingMethodsPattern(node: any): boolean {
+            const callee = node.callee;
+            if (!(isMember(callee) && contains(INTERESTING_METHODS, callee.property.name))) {
+                return false;
+            }
+            return hasArgumentsWithInterestingContent(node.arguments);
+        }
+
+        /**
+         * Check property elements for interesting content methods
+         */
+        function hasPropertyElementsWithInterestingMethods(elements: any[]): boolean {
+            for (let r = 0; r < elements.length; r++) {
+                if (isNewExpression(elements[r])) {
+                    const calleeToCheck = elements[r].callee;
+                    if (isMember(calleeToCheck) && contains(INTERESTING_METHODS_CONTENT, calleeToCheck.property.name)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Check properties for interesting property names and array values
+         */
+        function hasPropertiesWithInterestingNames(properties: any[]): boolean {
+            for (let q = 0; q < properties.length; q++) {
+                const prop = properties[q];
+                if (contains(INTERESTING_PROPERTY_NAMES, prop.key.name) && isArrayExpression(prop.value)) {
+                    if (hasPropertyElementsWithInterestingMethods(prop.value.elements)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Check arguments for object expressions with interesting property names
+         */
+        function hasArgumentsWithInterestingPropertyNames(args: any[]): boolean {
+            for (let p = 0; p < args.length; p++) {
+                if (isObjectExpression(args[p])) {
+                    if (hasPropertiesWithInterestingNames(args[p].properties)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Check if node has interesting property names pattern
+         */
+        function hasInterestingPropertyNamesPattern(node: any): boolean {
+            const callee = node.callee;
+            if (!(isMember(callee) && contains(INTERESTING_PROPERTY_NAMES, callee.property.name))) {
+                return false;
+            }
+            return hasArgumentsWithInterestingPropertyNames(node.arguments);
+        }
+
+        /**
          * Check if a node represents an interesting UI5 form construct.
          *
          * @param node The AST node to analyze
          * @returns True if the node represents an interesting UI5 form construct
          */
         function isInteresting(node: any): boolean {
-            const callee = node.callee;
-            if (isMember(callee) && contains(INTERESTING_METHODS, callee.property.name)) {
-                const argumentsNewExpression = node.arguments;
-                for (let i = 0; i < argumentsNewExpression.length; i++) {
-                    if (isObjectExpression(argumentsNewExpression[i])) {
-                        const properties = argumentsNewExpression[i].properties;
-                        for (let j = 0; j < properties.length; j++) {
-                            if (
-                                isIdentifier(properties[j].key) &&
-                                isArrayExpression(properties[j].value) &&
-                                properties[j].key.name == 'content'
-                            ) {
-                                const propertyValueElements = properties[j].value.elements;
-                                for (let k = 0; k < propertyValueElements.length; k++) {
-                                    if (isNewExpression(propertyValueElements[k])) {
-                                        const calleeNewExpression = propertyValueElements[k].callee;
-                                        if (
-                                            isMember(calleeNewExpression) &&
-                                            contains(INTERESTING_METHODS_CONTENT, calleeNewExpression.property.name)
-                                        ) {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (isMember(callee) && contains(INTERESTING_PROPERTY_NAMES, callee.property.name)) {
-                const valueElementArgs = node.arguments;
-                for (let p = 0; p < valueElementArgs.length; p++) {
-                    if (isObjectExpression(valueElementArgs[p])) {
-                        const argProperties2 = valueElementArgs[p].properties;
-                        for (let q = 0; q < argProperties2.length; q++) {
-                            if (
-                                contains(INTERESTING_PROPERTY_NAMES, argProperties2[q].key.name) &&
-                                isArrayExpression(argProperties2[q].value)
-                            ) {
-                                const argPropElements = argProperties2[q].value.elements;
-                                for (let r = 0; r < argPropElements.length; r++) {
-                                    if (isNewExpression(argPropElements[r])) {
-                                        const calleeToCheck = argPropElements[r].callee;
-                                        if (
-                                            isMember(calleeToCheck) &&
-                                            contains(INTERESTING_METHODS_CONTENT, calleeToCheck.property.name)
-                                        ) {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
+            return hasInterestingMethodsPattern(node) || hasInterestingPropertyNamesPattern(node);
         }
 
         return {

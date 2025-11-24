@@ -69,6 +69,27 @@ const rule: Rule.RuleModule = {
             return false;
         }
 
+        /**
+         * Check if an object argument contains a valid serviceRefreshInterval property.
+         *
+         * @param argument The object argument to check
+         * @returns True if the property value is valid
+         */
+        function isObjectArgumentValid(argument: ASTNode): boolean {
+            const propertyList = (argument as any).properties;
+            // argument is object literal, check every property
+            for (const key in propertyList) {
+                if (propertyList.hasOwnProperty(key)) {
+                    const property = propertyList[key];
+                    if (isProperty(property) && INTERESTING_KEY === property.key.name && isLiteral(property.value)) {
+                        // check if value is in range
+                        return !isInRange(property.value.value);
+                    }
+                }
+            }
+            return true;
+        }
+
         /*
          * @returns true if the parameters of the given functionCall are not critical.
          * */
@@ -84,21 +105,7 @@ const rule: Rule.RuleModule = {
                 // get firtst argument
                 const argument = args[0];
                 if (isObject(argument)) {
-                    const propertyList = argument.properties;
-                    // argument is object literal, check every property
-                    for (const key in propertyList) {
-                        if (propertyList.hasOwnProperty(key)) {
-                            const property = propertyList[key];
-                            if (
-                                isProperty(property) &&
-                                INTERESTING_KEY === property.key.name &&
-                                isLiteral(property.value)
-                            ) {
-                                // check if value is in range
-                                return !isInRange(property.value.value);
-                            }
-                        }
-                    }
+                    return isObjectArgumentValid(argument);
                 } else {
                     // argument is single literal
                     // check if value is in range

@@ -90,55 +90,96 @@ const rule: Rule.RuleModule = {
         const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isInterestingPath);
 
         /**
+         * Validate duration property for MessageToast.
+         *
+         * @param node The function call node
+         * @param property The property to validate
+         */
+        function validateDuration(node: ASTNode, property: any): void {
+            const value = property.value.value;
+            const isNegative = property.value.type === X_UNARY && property.value.operator === '-';
+
+            if ((isInteger(value) && value < DURATION_MIN) || isNegative) {
+                context.report({
+                    node,
+                    messageId: 'invalidDuration',
+                    data: { min: DURATION_MIN.toString() }
+                });
+            }
+        }
+
+        /**
+         * Validate width property for MessageToast.
+         *
+         * @param node The function call node
+         * @param property The property to validate
+         */
+        function validateWidth(node: ASTNode, property: any): void {
+            const value = property.value.value;
+            if (getEMValue(value) > WIDTH_MAX) {
+                context.report({
+                    node,
+                    messageId: 'invalidWidth',
+                    data: { max: WIDTH_MAX.toString() }
+                });
+            }
+        }
+
+        /**
+         * Validate position property (my/at) for MessageToast.
+         *
+         * @param node The function call node
+         * @param property The property to validate
+         * @param name The property name
+         */
+        function validatePosition(node: ASTNode, property: any, name: string): void {
+            const value = property.value.value;
+            if (typeof value === 'string' && value !== POSITION_DEFAULT) {
+                context.report({
+                    node,
+                    messageId: 'invalidPosition',
+                    data: { name, expected: POSITION_DEFAULT }
+                });
+            }
+        }
+
+        /**
+         * Validate a single property of MessageToast options.
+         *
+         * @param node The function call node
+         * @param property The property to validate
+         */
+        function validateProperty(node: ASTNode, property: any): void {
+            const name = property.key.name;
+
+            switch (name) {
+                case 'duration':
+                    validateDuration(node, property);
+                    break;
+                case 'width':
+                    validateWidth(node, property);
+                    break;
+                case 'my':
+                case 'at':
+                    validatePosition(node, property, name);
+                    break;
+            }
+        }
+
+        /**
          * Validate MessageToast function call options for compliance violations.
          *
          * @param node The function call node to validate
          */
         function validateFunctionOptions(node: ASTNode): void {
-            if ((node as any).arguments.length === 2) {
-                const optionList = (node as any).arguments[1].properties;
-                for (const key in optionList) {
-                    if (optionList.hasOwnProperty(key) && optionList[key].type === 'Property') {
-                        const property = optionList[key];
-                        const name = (property as any).key.name;
-                        const value = (property as any).value.value;
-                        switch (name) {
-                            case 'duration':
-                                if (
-                                    (isInteger(value) && value < DURATION_MIN) ||
-                                    // check if value is a negative value
-                                    ((property as any).value.type === X_UNARY &&
-                                        (property as any).value.operator === '-')
-                                ) {
-                                    context.report({
-                                        node,
-                                        messageId: 'invalidDuration',
-                                        data: { min: DURATION_MIN.toString() }
-                                    });
-                                }
-                                break;
-                            case 'width':
-                                if (getEMValue(value) > WIDTH_MAX) {
-                                    context.report({
-                                        node,
-                                        messageId: 'invalidWidth',
-                                        data: { max: WIDTH_MAX.toString() }
-                                    });
-                                }
-                                break;
-                            case 'my':
-                            case 'at':
-                                if (typeof value === 'string' && value !== POSITION_DEFAULT) {
-                                    context.report({
-                                        node,
-                                        messageId: 'invalidPosition',
-                                        data: { name, expected: POSITION_DEFAULT }
-                                    });
-                                }
-                                break;
-                            default:
-                        }
-                    }
+            if ((node as any).arguments.length !== 2) {
+                return;
+            }
+
+            const optionList = (node as any).arguments[1].properties;
+            for (const key in optionList) {
+                if (optionList.hasOwnProperty(key) && optionList[key].type === 'Property') {
+                    validateProperty(node, optionList[key]);
                 }
             }
         }

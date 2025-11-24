@@ -33,45 +33,57 @@ const rule: Rule.RuleModule = {
         // Public
         //----------------------------------------------------------------------
 
+        /**
+         * Check if node is Opa5.extendConfig call expression
+         */
+        function isOpa5ExtendConfigCall(node: any): boolean {
+            return (
+                node.callee.type === 'MemberExpression' &&
+                node.callee.object &&
+                'name' in node.callee.object &&
+                node.callee.object.name === 'Opa5' &&
+                node.callee.property &&
+                'name' in node.callee.property &&
+                node.callee.property.name === 'extendConfig'
+            );
+        }
+
+        /**
+         * Find autoWait property in object expression properties
+         */
+        function findAutoWaitProperty(propsList: any[]): { exists: boolean; value?: boolean } {
+            for (const property in propsList) {
+                const prop = propsList[property];
+                if (prop.type === 'Property' && 'key' in prop && 'name' in prop.key && prop.key.name === 'autoWait') {
+                    const value = 'value' in prop && 'value' in prop.value ? prop.value.value : undefined;
+                    return { exists: true, value };
+                }
+            }
+            return { exists: false };
+        }
+
+        /**
+         * Handle Opa5.extendConfig call expression validation
+         */
+        function handleOpa5ExtendConfig(node: any): void {
+            if (node.arguments[0]?.type !== 'ObjectExpression') {
+                return;
+            }
+
+            const propsList = node.arguments[0].properties;
+            const autoWaitInfo = findAutoWaitProperty(propsList);
+
+            if (!autoWaitInfo.exists) {
+                context.report({ node: node, messageId: 'autowaitPresent' });
+            } else if (!autoWaitInfo.value) {
+                context.report({ node: node, messageId: 'autowaitTrue' });
+            }
+        }
+
         return {
-            CallExpression(node) {
-                if (node.callee.type == 'MemberExpression') {
-                    if (node.callee.object && 'name' in node.callee.object && node.callee.object.name === 'Opa5') {
-                        if (
-                            node.callee.property &&
-                            'name' in node.callee.property &&
-                            node.callee.property.name === 'extendConfig'
-                        ) {
-                            if (node.arguments[0].type == 'ObjectExpression') {
-                                const propsList = node.arguments[0].properties;
-                                let ifautoWaitExists = false;
-                                let boolValueAutoWait;
-                                for (const property in propsList) {
-                                    if (
-                                        propsList[property].type === 'Property' &&
-                                        'key' in propsList[property] &&
-                                        'name' in propsList[property].key
-                                    ) {
-                                        const key = propsList[property].key.name;
-                                        if (key == 'autoWait') {
-                                            ifautoWaitExists = true;
-                                            if (
-                                                'value' in propsList[property] &&
-                                                'value' in propsList[property].value
-                                            ) {
-                                                boolValueAutoWait = propsList[property].value.value;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (!ifautoWaitExists) {
-                                    context.report({ node: node, messageId: 'autowaitPresent' });
-                                } else if (!boolValueAutoWait) {
-                                    context.report({ node: node, messageId: 'autowaitTrue' });
-                                }
-                            }
-                        }
-                    }
+            CallExpression(node): void {
+                if (isOpa5ExtendConfigCall(node)) {
+                    handleOpa5ExtendConfig(node);
                 }
             }
         };
