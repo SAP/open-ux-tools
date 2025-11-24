@@ -17,15 +17,25 @@ export type ExternalServiceReference = ValueListReference | CodeListReference;
 export interface ValueListService {
     type: ValueListReference['type'];
     target: string;
-    data: string;
+    entityData?: EntitySetData[];
+    metadata: string;
     path: string;
 }
 
 export interface CodeListService {
     type: CodeListReference['type'];
     collectionPath?: string;
-    data: string;
+    entityData?: EntitySetData[];
+    metadata: string;
     path: string;
+}
+
+export interface EntitySetData {
+    /**
+     * A list of objects in the entity set.
+     */
+    items: object[];
+    entitySetName: string;
 }
 
 export type ExternalService = ValueListService | CodeListService;
