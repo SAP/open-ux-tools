@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -94,7 +95,7 @@ const rule: Rule.RuleModule = {
          * @param node The node to extract method name from
          * @returns The rightmost method name
          */
-        function getRightestMethodName(node: Rule.Node): string {
+        function getRightestMethodName(node: ASTNode): string {
             const callee = (node as any).callee;
             return isMember(callee) ? callee.property.name : callee.name;
         }
@@ -105,7 +106,7 @@ const rule: Rule.RuleModule = {
          * @param node The callee node to build path from
          * @returns The path string representation
          */
-        function buildCalleePath(node: Rule.Node): string {
+        function buildCalleePath(node: ASTNode): string {
             if (isMember((node as any).object)) {
                 const propertyName = (node as any).object.property?.name ?? '';
                 return `${buildCalleePath((node as any).object)}.${propertyName}`;
@@ -121,7 +122,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to process
          * @param methodName The method name being called
          */
-        function processDocumentMessage(node: Rule.Node, methodName: string): void {
+        function processDocumentMessage(node: ASTNode, methodName: string): void {
             const parent = node.parent;
             if (contains(FORBIDDEN_DOM_INSERTION, methodName)) {
                 if (
@@ -152,7 +153,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The variable declarator node to process
          */
-        function processVariableDeclarator(node: Rule.Node): void {
+        function processVariableDeclarator(node: ASTNode): void {
             const init = (node as any).init;
             if (init) {
                 if (isMember(init)) {
@@ -189,7 +190,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to process
          * @param methodName The method name being called
          */
-        function processWindowMessage(node: Rule.Node, methodName: string): void {
+        function processWindowMessage(node: ASTNode, methodName: string): void {
             if (contains(FORBIDDEN_NAVIGATOR_WINDOW, methodName)) {
                 context.report({ node: node, messageId: 'proprietaryBrowserApi' });
             } else if (contains(FORBIDDEN_DEF_GLOB, methodName)) {

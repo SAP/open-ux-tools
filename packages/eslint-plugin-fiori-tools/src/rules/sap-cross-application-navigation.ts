@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-
+import { type ASTNode } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
+        function isType(node: ASTNode | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
@@ -39,7 +39,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an ObjectExpression
          */
-        function isObject(node: Rule.Node | undefined): boolean {
+        function isObject(node: ASTNode | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
         /**
@@ -48,7 +48,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: Rule.Node | undefined): boolean {
+        function isMember(node: ASTNode | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
@@ -57,7 +57,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
+        function isIdentifier(node: ASTNode | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
@@ -66,7 +66,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a CallExpression
          */
-        function isCall(node: Rule.Node | undefined): boolean {
+        function isCall(node: ASTNode | undefined): boolean {
             return isType(node, 'CallExpression');
         }
         /**
@@ -75,7 +75,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a LogicalExpression
          */
-        function isLogical(node: Rule.Node | undefined): boolean {
+        function isLogical(node: ASTNode | undefined): boolean {
             return isType(node, 'LogicalExpression');
         }
         /**
@@ -84,7 +84,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a Literal
          */
-        function isLiteral(node: Rule.Node | undefined): boolean {
+        function isLiteral(node: ASTNode | undefined): boolean {
             return isType(node, 'Literal');
         }
         /**
@@ -93,7 +93,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a Property
          */
-        function isProperty(node: Rule.Node | undefined): boolean {
+        function isProperty(node: ASTNode | undefined): boolean {
             return isType(node, 'Property');
         }
 
@@ -118,7 +118,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to extract path from
          * @returns The identifier path extracted from the node
          */
-        function getIdentifierPath(node: Rule.Node): string {
+        function getIdentifierPath(node: ASTNode): string {
             if (isIdentifier(node)) {
                 return (node as any).name;
             } else if (isLiteral(node)) {
@@ -136,7 +136,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to extract name from
          * @returns The name extracted from the node, or null if not found
          */
-        function getName(node: Rule.Node): string | null {
+        function getName(node: ASTNode): string | null {
             if (isIdentifier(node)) {
                 return (node as any).name;
             } else if (isLiteral(node)) {
@@ -152,7 +152,7 @@ const rule: Rule.RuleModule = {
          * @param key The property key to search for
          * @returns The property node if found, null otherwise
          */
-        function getProperty(node: Rule.Node, key: string): Rule.Node | null {
+        function getProperty(node: ASTNode, key: string): ASTNode | null {
             // check if node is an object, only objects have properties
             if (isObject(node)) {
                 // iterate properties
@@ -172,7 +172,7 @@ const rule: Rule.RuleModule = {
          * @param node - a CallExpression node
          * @returns True if the node is a getService call with CrossApplicationNavigation
          */
-        function isGetServiceCall(node: Rule.Node | undefined): boolean {
+        function isGetServiceCall(node: ASTNode | undefined): boolean {
             if (isCall(node)) {
                 if (
                     (node as any).arguments?.length === 1 &&
@@ -191,7 +191,7 @@ const rule: Rule.RuleModule = {
          * @param node The assignment node to check
          * @returns True if the assignment contains interesting nodes
          */
-        function isInterestingAssignment(node: Rule.Node | undefined): boolean {
+        function isInterestingAssignment(node: ASTNode | undefined): boolean {
             return (
                 isGetServiceCall(node) ||
                 (isLogical(node) &&
@@ -205,7 +205,7 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to check
          * @returns True if the call expression is interesting for cross-application navigation
          */
-        function isInterestingCall(node: Rule.Node): boolean {
+        function isInterestingCall(node: ASTNode): boolean {
             const path = getIdentifierPath((node as any).callee);
             if (isCall(node) && endsWith(path, 'toExternal')) {
                 const callee = (node as any).callee;
@@ -225,7 +225,7 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to validate
          * @returns True if the navigation has valid target configuration
          */
-        function isValid(node: Rule.Node): boolean {
+        function isValid(node: ASTNode): boolean {
             if ((node as any).arguments?.length > 0) {
                 const target = getProperty((node as any).arguments[0], 'target');
                 if (target) {

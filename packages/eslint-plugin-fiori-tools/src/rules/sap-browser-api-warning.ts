@@ -10,7 +10,8 @@ import {
     isCall,
     isLiteral,
     buildCalleePath,
-    isForbiddenObviousApi
+    isForbiddenObviousApi,
+    type ASTNode
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ const rule: Rule.RuleModule = {
          * @param node The node to check
          * @returns True if the node represents a condition statement
          */
-        function isCondition(node: Rule.Node | undefined): boolean {
+        function isCondition(node: ASTNode | undefined): boolean {
             return isType(node, IF_CONDITION) || isType(node, CONDITION_EXP);
         }
         /**
@@ -70,7 +71,7 @@ const rule: Rule.RuleModule = {
          * @param node The node to check
          * @returns True if the node represents a unary expression
          */
-        function isUnary(node: Rule.Node | undefined): boolean {
+        function isUnary(node: ASTNode | undefined): boolean {
             return isType(node, UNARY);
         }
 
@@ -100,7 +101,7 @@ const rule: Rule.RuleModule = {
          * @param node The node to check
          * @returns True if the node represents the window object
          */
-        function isWindow(node: Rule.Node | undefined): boolean {
+        function isWindow(node: ASTNode | undefined): boolean {
             return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
 
@@ -111,7 +112,7 @@ const rule: Rule.RuleModule = {
          * @param justHistory Whether to check only for history object
          * @returns True if the node represents history object access
          */
-        function isHistory(node: Rule.Node | undefined, justHistory: boolean): boolean {
+        function isHistory(node: ASTNode | undefined, justHistory: boolean): boolean {
             if (node && isIdentifier(node) && 'name' in node) {
                 return node.name === 'history' || (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes(node.name));
             } else if (node && isMember(node)) {
@@ -130,7 +131,7 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node
          * @returns The rightmost method name
          */
-        function getRightestMethodName(node: Rule.Node): string {
+        function getRightestMethodName(node: ASTNode): string {
             if (isMember((node as any).callee)) {
                 return (node as any).callee.property.name;
             } else {
@@ -143,7 +144,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The variable declarator node to process
          */
-        function processVariableDeclarator(node: Rule.Node): void {
+        function processVariableDeclarator(node: ASTNode): void {
             if ((node as any).init) {
                 if (isMember((node as any).init)) {
                     let firstElement = (node as any).init.object.name;
@@ -183,7 +184,7 @@ const rule: Rule.RuleModule = {
          * @param maxDepth Maximum depth to search for conditions
          * @returns True if the node is within a conditional statement
          */
-        function isInCondition(node: Rule.Node, maxDepth: number): boolean {
+        function isInCondition(node: ASTNode, maxDepth: number): boolean {
             // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
             // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
             if (maxDepth > 0) {
@@ -199,7 +200,7 @@ const rule: Rule.RuleModule = {
          * @param node The node to check
          * @returns True if the node represents the value -1
          */
-        function isMinusOne(node: Rule.Node): boolean {
+        function isMinusOne(node: ASTNode): boolean {
             return (
                 isUnary(node) &&
                 (node as any).operator === '-' &&
@@ -213,7 +214,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The call expression node to process
          */
-        function processHistory(node: Rule.Node): void {
+        function processHistory(node: ASTNode): void {
             const callee = (node as any).callee;
             if (isMember(callee)) {
                 // process window.history.back() | history.forward() | const h = history; h.go()

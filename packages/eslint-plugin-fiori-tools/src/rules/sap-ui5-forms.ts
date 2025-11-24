@@ -3,6 +3,7 @@
 // ------------------------------------------------------------------------------
 
 import type { Rule } from 'eslint';
+import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -45,7 +46,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
+        function isType(node: ASTNode | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
@@ -54,7 +55,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
+        function isIdentifier(node: ASTNode | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
@@ -63,7 +64,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: Rule.Node | undefined): boolean {
+        function isMember(node: ASTNode | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
@@ -72,7 +73,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a NewExpression
          */
-        function isNewExpression(node: Rule.Node | undefined): boolean {
+        function isNewExpression(node: ASTNode | undefined): boolean {
             return isType(node, 'NewExpression');
         }
         /**
@@ -81,7 +82,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an ArrayExpression
          */
-        function isArrayExpression(node: Rule.Node | undefined): boolean {
+        function isArrayExpression(node: ASTNode | undefined): boolean {
             return isType(node, 'ArrayExpression');
         }
         /**
@@ -90,7 +91,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an ObjectExpression
          */
-        function isObjectExpression(node: Rule.Node | undefined): boolean {
+        function isObjectExpression(node: ASTNode | undefined): boolean {
             return isType(node, 'ObjectExpression');
         }
         /**

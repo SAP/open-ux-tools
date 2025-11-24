@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-
+import { type ASTNode } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'Literal': function (node: Rule.Node): void {
+            'Literal': function (node: ASTNode): void {
                 const literalNode = node as { value: string | number | boolean | null | RegExp };
                 const val = literalNode.value;
                 let result;

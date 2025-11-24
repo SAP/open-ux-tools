@@ -9,7 +9,8 @@ import {
     resolveIdentifierPath,
     createVariableDeclaratorProcessor,
     isInteger,
-    endsWith
+    endsWith,
+    type ASTNode
 } from '../utils/helpers';
 
 const INTERESTING_PATH = {
@@ -93,7 +94,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The function call node to validate
          */
-        function validateFunctionOptions(node: Rule.Node): void {
+        function validateFunctionOptions(node: ASTNode): void {
             if ((node as any).arguments.length === 2) {
                 const optionList = (node as any).arguments[1].properties;
                 for (const key in optionList) {
@@ -147,7 +148,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The call expression node to process
          */
-        function processCallExpression(node: Rule.Node): void {
+        function processCallExpression(node: ASTNode): void {
             let path = getIdentifierPath((node as any).callee);
             path = resolveIdentifierPath(path, VARIABLES);
 

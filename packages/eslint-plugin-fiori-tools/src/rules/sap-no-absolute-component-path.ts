@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -35,7 +36,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to extract name from
          * @returns The name extracted from the literal or identifier node
          */
-        function getLiteralOrIdentifiertName(node: Rule.Node): string {
+        function getLiteralOrIdentifiertName(node: ASTNode): string {
             let result = '';
             if (node.type === T_IDENTIFIER) {
                 result = (node as any).name;
@@ -51,7 +52,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to extract path from
          * @returns The identifier path extracted from the node
          */
-        function getIdentifierPath(node: Rule.Node): string {
+        function getIdentifierPath(node: ASTNode): string {
             let result = '';
             switch (node.type) {
                 case T_IDENTIFIER:
@@ -72,10 +73,7 @@ const rule: Rule.RuleModule = {
          * @param propertyName The name of the property to find
          * @returns The property node if found, undefined otherwise
          */
-        function getPropertyFromObjectExpression(
-            node: Rule.Node | undefined,
-            propertyName: string
-        ): Rule.Node | undefined {
+        function getPropertyFromObjectExpression(node: ASTNode | undefined, propertyName: string): ASTNode | undefined {
             // Check if node is of type object expression
             if (node?.type === T_OBJECT) {
                 // Get property list from object expression
@@ -103,7 +101,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The function call node to validate
          */
-        function validateFunctionOptions(node: Rule.Node): void {
+        function validateFunctionOptions(node: ASTNode): void {
             if ((node as any).arguments.length > 1) {
                 // get options parameter (2nd)
                 const options = (node as any).arguments[1];
@@ -146,7 +144,7 @@ const rule: Rule.RuleModule = {
          *
          * @param node The call expression node to process
          */
-        function processCallExpression(node: Rule.Node): void {
+        function processCallExpression(node: ASTNode): void {
             const path = getIdentifierPath((node as any).callee);
             if (endsWith(path, `.${'extend'}`)) {
                 validateFunctionOptions(node);

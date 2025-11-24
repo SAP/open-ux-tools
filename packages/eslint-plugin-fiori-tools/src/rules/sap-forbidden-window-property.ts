@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the global window variable
          */
-        function isWindow(node: Rule.Node | undefined): boolean {
+        function isWindow(node: ASTNode | undefined): boolean {
             // true if node is the global variable 'window'
             return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
@@ -46,7 +47,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents a window object or reference to it
          */
-        function isWindowObject(node: Rule.Node | undefined): boolean {
+        function isWindowObject(node: ASTNode | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
             return !!(
                 isWindow(node) ||
@@ -64,7 +65,7 @@ const rule: Rule.RuleModule = {
          * @param right The right side of the assignment
          * @returns True if window object was remembered, false otherwise
          */
-        function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
+        function rememberWindow(left: ASTNode, right: ASTNode): boolean {
             if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
@@ -78,7 +79,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting window property access
          */
-        function isInteresting(node: Rule.Node): boolean {
+        function isInteresting(node: ASTNode): boolean {
             return isMember(node) && isWindowObject((node as any).object);
         }
 
@@ -88,7 +89,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to validate
          * @returns True if the window property access is valid
          */
-        function isValid(node: Rule.Node): boolean {
+        function isValid(node: ASTNode): boolean {
             let method = '';
 
             if (isIdentifier((node as any).property) && 'name' in (node as any).property) {

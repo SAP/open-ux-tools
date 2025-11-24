@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isWindow, contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents setTimeout
          */
-        function isTimeout(node: Rule.Node): boolean {
+        function isTimeout(node: ASTNode): boolean {
             return isIdentifier(node) && (node as { name: string }).name === 'setTimeout';
         }
 
@@ -50,10 +51,10 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents an interesting setTimeout call
          */
-        function isInteresting(node: Rule.Node): boolean {
-            let obj = (node as unknown as { callee: Rule.Node }).callee;
+        function isInteresting(node: ASTNode): boolean {
+            let obj = (node as unknown as { callee: ASTNode }).callee;
             if (isMember(obj)) {
-                const memberObj = obj as unknown as { object: Rule.Node; property: Rule.Node };
+                const memberObj = obj as unknown as { object: ASTNode; property: ASTNode };
                 if (
                     isWindow(memberObj.object) ||
                     (isIdentifier(memberObj.object) &&
@@ -76,8 +77,8 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the setTimeout call has valid timeout arguments
          */
-        function isValid(node: Rule.Node): boolean {
-            const args = (node as unknown as { arguments: Rule.Node[] }).arguments;
+        function isValid(node: ASTNode): boolean {
+            const args = (node as unknown as { arguments: ASTNode[] }).arguments;
             return (
                 args &&
                 (args.length === 1 ||
@@ -93,7 +94,7 @@ const rule: Rule.RuleModule = {
          * @param left The left side of the assignment
          * @param right The right side of the assignment
          */
-        function rememberWindow(left: Rule.Node, right: Rule.Node): void {
+        function rememberWindow(left: ASTNode, right: ASTNode): void {
             if (right && isWindow(right) && left && isIdentifier(left)) {
                 WINDOW_OBJECTS.push((left as { name: string }).name);
             }
@@ -103,17 +104,17 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node: Rule.Node): void {
-                const declaratorNode = node as unknown as { id: Rule.Node; init?: Rule.Node };
+            'VariableDeclarator': function (node: ASTNode): void {
+                const declaratorNode = node as unknown as { id: ASTNode; init?: ASTNode };
                 if (declaratorNode.init) {
                     rememberWindow(declaratorNode.id, declaratorNode.init);
                 }
             },
-            'AssignmentExpression': function (node: Rule.Node): void {
-                const assignmentNode = node as unknown as { left: Rule.Node; right: Rule.Node };
+            'AssignmentExpression': function (node: ASTNode): void {
+                const assignmentNode = node as unknown as { left: ASTNode; right: ASTNode };
                 rememberWindow(assignmentNode.left, assignmentNode.right);
             },
-            'CallExpression': function (node: Rule.Node): void {
+            'CallExpression': function (node: ASTNode): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'timeoutUsage' });
                 }

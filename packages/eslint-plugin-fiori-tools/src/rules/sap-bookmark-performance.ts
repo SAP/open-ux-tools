@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ const rule: Rule.RuleModule = {
          * @param node The node to check
          * @returns True if the node represents an interesting method call
          */
-        function isInteresting(node: Rule.Node): boolean {
+        function isInteresting(node: ASTNode): boolean {
             const callee = (node as any).callee;
             if (isMember(callee)) {
                 if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, (callee.property as any).name)) {
@@ -77,7 +78,7 @@ const rule: Rule.RuleModule = {
          * @param node The function call node to validate
          * @returns True if the function call parameters are valid
          */
-        function isValid(node: Rule.Node): boolean {
+        function isValid(node: ASTNode): boolean {
             const args = (node as any).arguments;
             if (args?.length > 0) {
                 // get firtst argument
