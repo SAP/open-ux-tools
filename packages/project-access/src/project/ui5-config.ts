@@ -7,6 +7,7 @@ import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file'
 
 /**
  * Get base directory of the project where package.json is located.
+ *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
  * @returns - base directory of the project
@@ -41,11 +42,15 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
 
 /**
  * Get path mappings depending on project type.
+ *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
  * @returns - path mappings or undefined if ui5.yaml does not exist or project type is unsupported
  */
-export async function getPathMappings(appRoot: string, memFs?: Editor): Promise<{ webappPath: string } | { srcPath: string, testPath: string } | undefined> {
+export async function getPathMappings(
+    appRoot: string,
+    memFs?: Editor
+): Promise<{ webappPath: string } | { srcPath: string; testPath: string } | undefined> {
     let ui5Config: UI5Config;
     try {
         ui5Config = await readUi5Yaml(appRoot, FileName.Ui5Yaml, memFs);
@@ -54,11 +59,11 @@ export async function getPathMappings(appRoot: string, memFs?: Editor): Promise<
     }
     const projectType = ui5Config.getType();
 
-    if(projectType === 'application') {
+    if (projectType === 'application') {
         return { webappPath: await getWebappPath(appRoot, memFs) };
     }
 
-    if(projectType === 'library') {
+    if (projectType === 'library') {
         return await getLibraryPathMappings(appRoot, ui5Config, memFs);
     }
 
@@ -67,22 +72,23 @@ export async function getPathMappings(appRoot: string, memFs?: Editor): Promise<
 
 /**
  * Get path mappings for project of type library.
+ *
  * @param appRoot - root to the application
  * @param ui5Config - ui5 config instance
  * @param memFs - optional mem-fs editor instance
  * @returns - path mappings
  */
-async function getLibraryPathMappings(appRoot: string, ui5Config: UI5Config, memFs?: Editor): Promise<{ srcPath: string, testPath: string }> {
+async function getLibraryPathMappings(
+    appRoot: string,
+    ui5Config: UI5Config,
+    memFs?: Editor
+): Promise<{ srcPath: string; testPath: string }> {
     const baseDir = await getBaseDir(appRoot, memFs);
     const configuration = ui5Config.getConfiguration();
 
     return {
-        srcPath: configuration?.paths?.src
-            ? join(baseDir, configuration.paths.src)
-            : join(appRoot, 'src'),
-        testPath: configuration?.paths?.test
-            ? join(baseDir, configuration.paths.test)
-            : join(appRoot, 'test')
+        srcPath: configuration?.paths?.src ? join(baseDir, configuration.paths.src) : join(appRoot, 'src'),
+        testPath: configuration?.paths?.test ? join(baseDir, configuration.paths.test) : join(appRoot, 'test')
     };
 }
 
