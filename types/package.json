@@ -12,8 +12,8 @@
         "node": ">=20.x"
     },
     "scripts": {
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix"
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "devDependencies": {
         "@types/mem-fs-editor": "7.0.1",

@@ -17,8 +17,8 @@
         "build:compile": "tsc --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
-        "lint": "eslint . --ext .ts,.tsx",
-        "lint:fix": "eslint . --ext .ts,.tsx --fix"
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",

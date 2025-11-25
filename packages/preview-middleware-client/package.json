@@ -16,8 +16,8 @@
         "build:component": "ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint-disabled-temp": "eslint . --ext .ts",
-        "lint:fix-disabled-temp": "eslint . --ext .ts --fix",
+        "lint-disabled-temp": "eslint .",
+        "lint:fix-disabled-temp": "eslint . --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u"
     },
