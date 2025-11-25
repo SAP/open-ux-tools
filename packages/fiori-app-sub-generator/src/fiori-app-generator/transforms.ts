@@ -236,8 +236,8 @@ export async function transformState<T>(
                 ...capServiceInfo,
                 cdsUi5PluginInfo
             } as CapServiceCdsInfo;
-            // Enable cds-ui5-plugin by default unless explicitly disabled
-            // set isWorkspaceEnabled && hasCdsUi5Plugin to true to ensure that npm install uses correct path.
+            // If enable cds-ui5-plugin is true (default) then
+            // set isWorkspaceEnabled && hasCdsUi5Plugin to true to ensure that npm install uses correct path for CAP.
             if (appConfig.appOptions?.addCdsUi5Plugin === true) {
                 appConfig.service.capService.cdsUi5PluginInfo = appConfig.service.capService.cdsUi5PluginInfo ?? {}
                 appConfig.service.capService.cdsUi5PluginInfo.isWorkspaceEnabled = true;
