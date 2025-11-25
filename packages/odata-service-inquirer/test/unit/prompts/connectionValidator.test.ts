@@ -1,9 +1,9 @@
-import type {
-    AbapServiceProvider,
-    ODataServiceInfo,
+import {
     ODataService,
     ODataVersion,
     ServiceProvider,
+    type AbapServiceProvider,
+    type ODataServiceInfo,
     type AxiosRequestConfig
 } from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
