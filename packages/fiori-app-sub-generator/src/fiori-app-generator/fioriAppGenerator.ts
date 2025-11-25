@@ -131,8 +131,7 @@ export class FioriAppGenerator extends Generator {
         await initTelemetrySettings({
             consumerModule: { name: APP_GENERATOR_MODULE, version: this.rootGeneratorVersion() },
             internalFeature: isInternalFeaturesSettingEnabled(),
-            watchTelemetrySettingStore: false,
-            resourceId: this.options.resourceId || process.env.SAP_UX_FIORI_TOOLS_TELEMETRY_RESOURCE_ID
+            watchTelemetrySettingStore: false
         });
 
         TelemetryHelper.createTelemetryData({
@@ -288,7 +287,6 @@ export class FioriAppGenerator extends Generator {
                     name: ui5AppAnswers.name ?? this.state.project?.name ?? '',
                     title: ui5AppAnswers.title ?? this.state.project?.title ?? '',
                     description: ui5AppAnswers.description ?? this.state.project?.description ?? '',
-                    ui5Theme: ui5AppAnswers.ui5Theme ?? this.state.project?.ui5Theme ?? '',
                     ui5Version: ui5AppAnswers?.ui5Version || localUI5Version,
                     localUI5Version
                 });

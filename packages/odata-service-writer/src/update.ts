@@ -184,8 +184,13 @@ export async function updateServicesData(
     }
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    console.log('🔍 DEBUG: update.ts - service.externalServices:', JSON.stringify(service.externalServices, null, 2));
+    console.log('🔍 DEBUG: update.ts - webappPath:', webappPath);
     if (service.externalServices && webappPath) {
-        writeExternalServiceMetadata(fs, webappPath, service.externalServices, service.name, service.path);
+        console.log('🔍 DEBUG: update.ts - calling writeExternalServiceMetadata');
+        writeExternalServiceMetadata(webappPath, service.externalServices, service, fs);
+    } else {
+        console.log('🔍 DEBUG: update.ts - NOT calling writeExternalServiceMetadata. externalServices exists:', !!service.externalServices, 'webappPath exists:', !!webappPath);
     }
 }
 

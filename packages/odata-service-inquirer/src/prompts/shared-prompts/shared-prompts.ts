@@ -38,7 +38,13 @@ export function getValueHelpDownloadPrompt(
      * @returns true if value list references are found, false otherwise
      */
     const detectValueListReferences = (): boolean => {
+        console.log('🔍 DEBUG: detectValueListReferences called');
         const currentServicePath = PromptState.odataService.servicePath;
+
+        console.log('🔍 DEBUG: detectValueListReferences called');
+        console.log('🔍 DEBUG: metadata exists:', !!PromptState.odataService.metadata);
+        console.log('🔍 DEBUG: currentServicePath:', currentServicePath);
+        console.log('🔍 DEBUG: odataVersion:', PromptState.odataService.odataVersion);
 
         // Only process if we have all required data and it's a V4 service
         if (
@@ -46,6 +52,7 @@ export function getValueHelpDownloadPrompt(
             !currentServicePath ||
             PromptState.odataService.odataVersion !== OdataVersion.v4
         ) {
+            console.log('🔍 DEBUG: Early return from detectValueListReferences - missing data or not V4');
             // Clear state for non-V4 services or missing data
             currentValueListRefsAnnotations = undefined;
             lastProcessedServicePath = undefined;
@@ -55,11 +62,13 @@ export function getValueHelpDownloadPrompt(
 
         // Re-process if service changed or not yet processed
         if (lastProcessedServicePath !== currentServicePath) {
+            console.log('🔍 DEBUG: Service path changed, detecting value list references');
             const valueListReferences = getExternalServiceReferences(
                 currentServicePath,
                 PromptState.odataService.metadata,
                 PromptState.odataService.annotations ?? []
             );
+            console.log('🔍 DEBUG: getExternalServiceReferences returned:', valueListReferences);
             currentValueListRefsAnnotations = valueListReferences;
 
             lastProcessedServicePath = currentServicePath;
@@ -117,7 +126,9 @@ export function getValueHelpDownloadPrompt(
                 });
 
             // Backend already filters out invalid entries and ensures data is always present
+            console.log('🔍 DEBUG: fetchValueListReferences - downloaded data:', JSON.stringify(valueListReferences, null, 2));
             PromptState.odataService.valueListReferences = valueListReferences;
+            console.log('🔍 DEBUG: PromptState.odataService.valueListReferences set to:', JSON.stringify(PromptState.odataService.valueListReferences, null, 2));
 
             const downloadTimeMs = Date.now() - downloadStartTime;
             // Send performance telemetry for successful download

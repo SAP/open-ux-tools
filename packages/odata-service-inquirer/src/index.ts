@@ -154,7 +154,9 @@ async function prompt(
     ).prompts;
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
     // Add dervied service answers to the answers object
+    console.log('🔍 DEBUG: Before Object.assign - PromptState.odataService.valueListReferences:', JSON.stringify(PromptState.odataService.valueListReferences, null, 2));
     Object.assign(answers, PromptState.odataService);
+    console.log('🔍 DEBUG: After Object.assign - answers.valueListReferences:', JSON.stringify(answers.valueListReferences, null, 2));
     return answers;
 }
 
