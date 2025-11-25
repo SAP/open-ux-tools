@@ -3,7 +3,7 @@
 exports[`AbapServiceProvider fetchValueListReferenceServices should log if metadata loading fails 1`] = `
 Array [
   Object {
-    "data": "metadata",
+    "metadata": "metadata",
     "path": "/sap/opu/odata/srv_f4/two",
     "target": "target",
     "type": "value-list",
@@ -14,7 +14,7 @@ Array [
 exports[`AbapServiceProvider fetchValueListReferenceServices should not crash if promise rejects 1`] = `
 Array [
   Object {
-    "data": "metadata",
+    "metadata": "metadata",
     "path": "/sap/opu/odata/srv_f4/two",
     "target": "target",
     "type": "value-list",
@@ -25,7 +25,7 @@ Array [
 exports[`AbapServiceProvider fetchValueListReferenceServices should return code list data 1`] = `
 Array [
   Object {
-    "data": "metadata",
+    "metadata": "metadata",
     "path": "/sap/opu/odata/srv_f4",
     "type": "code-list",
   },
@@ -35,7 +35,7 @@ Array [
 exports[`AbapServiceProvider fetchValueListReferenceServices should return value list data 1`] = `
 Array [
   Object {
-    "data": "metadata",
+    "metadata": "metadata",
     "path": "/sap/opu/odata/srv_f4",
     "target": "target",
     "type": "value-list",
