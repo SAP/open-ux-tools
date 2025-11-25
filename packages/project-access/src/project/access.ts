@@ -47,9 +47,9 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param options.fs - optional `mem-fs-editor` instance
      */
     constructor(
-        private _project: Project,
-        private appId: string,
-        private options?: ApplicationAccessOptions
+        private readonly _project: Project,
+        private readonly appId: string,
+        private readonly options?: ApplicationAccessOptions
     ) {}
 
     /**
@@ -315,8 +315,8 @@ class ProjectAccessImp implements ProjectAccess {
      * @param options - optional options, like logger
      */
     constructor(
-        private _project: Project,
-        private options?: ProjectAccessOptions
+        private readonly _project: Project,
+        private readonly options?: ProjectAccessOptions
     ) {}
 
     /**
