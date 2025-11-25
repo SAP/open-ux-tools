@@ -1,4 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import { isLoggedInCf, loadCfConfig } from '@sap-ux/adp-tooling';
 
 import type { CfOAuthMiddlewareConfig } from './types';
 
@@ -16,5 +17,10 @@ export function validateConfig(config: CfOAuthMiddlewareConfig, logger: ToolsLog
 
     if (!config.paths || !Array.isArray(config.paths) || config.paths.length === 0) {
         throw new Error('CF OAuth middleware has no paths configured.');
+    }
+
+    const cfConfig = loadCfConfig(logger);
+    if (!isLoggedInCf(cfConfig, logger)) {
+        throw new Error('User is not logged in to Cloud Foundry.');
     }
 }
