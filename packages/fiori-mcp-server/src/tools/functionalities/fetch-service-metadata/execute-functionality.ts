@@ -19,7 +19,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         throw new Error('Missing required parameter: servicePath');
     }
 
-    const sapSystem = await findSapSystem(sapSystemQuery);
+    const sapSystem = await findSapSystem(sapSystemQuery || servicePath);
     const metadata = await getServiceMetadata(sapSystem, servicePath);
     const metadataFilePath = path.join(params.appPath, 'metadata.xml');
     fs.writeFileSync(metadataFilePath, metadata, 'utf-8');

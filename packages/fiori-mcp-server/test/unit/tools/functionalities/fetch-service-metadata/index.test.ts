@@ -39,7 +39,8 @@ describe('fetch-service-metadata index', () => {
             name: 'Fetch Service Metadata'
         });
         expect(typeof result.description).toBe('string');
-        expect(Array.isArray(result.parameters)).toBe(true);
+        expect(typeof result.parameters).toBe('object');
+        expect(result.parameters.type).toBe('object');
     });
 
     test('should have correct functionalityId in exported object', () => {

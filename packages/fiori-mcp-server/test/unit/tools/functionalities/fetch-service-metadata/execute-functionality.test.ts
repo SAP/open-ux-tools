@@ -85,7 +85,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(serviceMetadata.findSapSystem).toHaveBeenCalledWith('');
+        expect(serviceMetadata.findSapSystem).toHaveBeenCalledWith(mockServicePath);
         expect(result.status).toBe('Success');
     });
 
@@ -101,7 +101,7 @@ describe('execute-functionality', () => {
 
         const result = await executeFunctionality(params);
 
-        expect(serviceMetadata.findSapSystem).toHaveBeenCalledWith('');
+        expect(serviceMetadata.findSapSystem).toHaveBeenCalledWith(mockServicePath);
         expect(result.status).toBe('Success');
     });
 

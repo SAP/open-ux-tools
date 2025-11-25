@@ -21,6 +21,8 @@ export default {
         2. Once the metadata EDMX is stored as metadata.xml (either from the "fetch-service-metadata" functionality or your own GET request),
             you can parse the metadata.xml file to understand the data model structure, entities, and associations.
 
-        3. After that, you can proceed to generate the SAP Fiori UI application based on the parsed metadata and the user's requirements.`,
+        3. After that, you can proceed to generate the SAP Fiori UI application based on the parsed metadata and the user's requirements.
+            **IMPORTANT**: Before calling the functionality "generate-fiori-ui-application",
+            you must ensure that the appGenConfig JSON argument is properly constructed and matches the functionality's input parameters!`,
     parameters
 } as GetFunctionalityDetailsOutput;

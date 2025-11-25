@@ -1,5 +1,5 @@
 import type { BackendSystem } from '@sap-ux/store';
-import type { AxiosRequestConfig, ODataService } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux/axios-extension';
 
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { SystemService } from '@sap-ux/store/dist/services/backend-system';
@@ -16,25 +16,27 @@ async function getSapSystems(): Promise<BackendSystem[]> {
 }
 
 /**
- * Extracts the origin and client from a given URL.
+ * Extracts the origin, path and client from a given URL.
  *
  * @param url - The URL to extract from.
- * @returns An object containing the origin and client.
+ * @returns An object containing the origin, path and client.
  */
-function getHostAndClientFromUrl(url: string): { origin: string; client: string } {
+function parseUrl(url: string): { origin: string; client: string; path: string } {
     let origin = '';
     let client = '';
+    let path = '';
 
     if (url.startsWith('http')) {
         try {
             const parsedUrl = new URL(url);
             origin = parsedUrl.origin;
             client = parsedUrl.searchParams.get('sap-client') ?? '';
+            path = parsedUrl.pathname;
         } catch {
             // invalid URL
         }
     }
-    return { origin, client };
+    return { origin, client, path };
 }
 
 /**
@@ -45,7 +47,7 @@ function getHostAndClientFromUrl(url: string): { origin: string; client: string 
  * @returns An array of matching BackendSystem objects.
  */
 function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[] {
-    const { origin, client } = getHostAndClientFromUrl(url);
+    const { origin, client } = parseUrl(url);
     if (!origin) {
         return [] as BackendSystem[];
     }
@@ -129,20 +131,27 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
             password: backendSystem.password
         };
     }
-
     const serviceProvider = new AbapServiceProvider(providerConfig);
-    const services = await serviceProvider.catalog(ODataVersion.v4).listServices();
 
-    if (!services?.length) {
-        throw new Error('No ODATA V4 Services found on the matched system.');
+    let services: ODataServiceInfo[] = [];
+    try {
+        services = await serviceProvider.catalog(ODataVersion.v4).listServices();
+    } catch (error) {
+        // no services found
     }
 
     const matchedServices = services.filter((s) => s.path === servicePath);
+
     if (matchedServices.length > 1) {
         throw new Error(`Multiple ODATA V4 Services found matching path: ${servicePath}`);
     }
     if (matchedServices.length === 1) {
         return serviceProvider.service(matchedServices[0].path) as ODataService;
+    }
+
+    // try to fetch service directly (if user provided full URL as servicePath)
+    if (servicePath.startsWith('http')) {
+        servicePath = parseUrl(servicePath).path;
     }
     return serviceProvider.service(servicePath) as ODataService;
 }

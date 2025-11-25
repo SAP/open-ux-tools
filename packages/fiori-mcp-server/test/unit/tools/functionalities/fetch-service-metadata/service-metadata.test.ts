@@ -196,7 +196,24 @@ describe('service-metadata', () => {
             expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service3');
         });
 
-        test('should throw error when no services found', async () => {
+        test('should handle when catalog listing fails', async () => {
+            mockServiceProvider.catalog.mockReturnValue({
+                listServices: jest.fn().mockRejectedValue(new Error('Catalog not available'))
+            });
+
+            const sapSystem: BackendSystem = {
+                name: 'TestSystem',
+                url: 'https://test.example.com',
+                client: '100'
+            };
+
+            const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
+
+            expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
+            expect(result).toBe(mockMetadata);
+        });
+
+        test('should handle when no services found in catalog', async () => {
             mockServiceProvider.catalog.mockReturnValue({
                 listServices: jest.fn().mockResolvedValue([])
             });
@@ -207,9 +224,10 @@ describe('service-metadata', () => {
                 client: '100'
             };
 
-            await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
-                'No ODATA V4 Services found on the matched system.'
-            );
+            const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
+
+            expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
+            expect(result).toBe(mockMetadata);
         });
 
         test('should throw error when multiple services match path', async () => {
@@ -252,6 +270,25 @@ describe('service-metadata', () => {
                     'sap-client': '500'
                 }
             });
+        });
+
+        test('should handle full URL in servicePath', async () => {
+            // Reset mock to original state
+            mockServiceProvider.catalog.mockReturnValue({
+                listServices: jest
+                    .fn()
+                    .mockResolvedValue([{ path: '/sap/opu/odata4/service1' }, { path: '/sap/opu/odata4/service2' }])
+            });
+
+            const sapSystem: BackendSystem = {
+                name: 'TestSystem',
+                url: 'https://test.example.com',
+                client: '100'
+            };
+
+            await getServiceMetadata(sapSystem, 'https://test.example.com/sap/opu/odata4/service3');
+
+            expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service3');
         });
     });
 

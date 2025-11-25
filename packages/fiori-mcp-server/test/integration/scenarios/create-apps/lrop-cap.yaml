@@ -1,0 +1,10 @@
+config:
+    project: 'node-ai-created'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: |
+      Create an new CAP application to manage expenses in {{appPath}}. It MUST be based on List Report Object Page floor plan.
+      Note: You MUST not asks for any additional information.
+assert:
+    - type: javascript
+      value: file://../assertions/projectStructureCap.ts:validate

@@ -2,11 +2,11 @@
 providers:
     - id: file://../provider/index.ts
       config:
-          model: 'gpt-4o'
+          model: 'gpt-5-mini'
 extensions:
     - file://../extensions/project.ts:setup
 prompts:
     - '{{query}}'
 tests:
     # replace with test case you want to run
-    - file://./properties/java-disable-fcl.yaml
+    - file://./create-apps/lrop.yaml

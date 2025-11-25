@@ -1,5 +1,4 @@
 import details from '../../../../../src/tools/functionalities/fetch-service-metadata/details';
-import type { Parameter } from '../../../../../src/types';
 
 describe('fetch-service-metadata details', () => {
     test('should have correct functionalityId', () => {
@@ -22,60 +21,76 @@ describe('fetch-service-metadata details', () => {
         expect(details.description).toContain('service');
     });
 
-    test('should have parameters array', () => {
-        expect(Array.isArray(details.parameters)).toBe(true);
-        expect(details.parameters).toHaveLength(2);
+    test('should have parameters as JSON Schema object', () => {
+        expect(details.parameters).toBeDefined();
+        expect(typeof details.parameters).toBe('object');
+        expect(details.parameters.type).toBe('object');
+        expect(details.parameters.properties).toBeDefined();
+        expect(details.parameters.required).toBeDefined();
     });
 
     test('should have sapSystemQuery parameter', () => {
-        const sapSystemQueryParam = details.parameters.find((p: Parameter) => p.id === 'sapSystemQuery');
-        expect(sapSystemQueryParam).toBeDefined();
-        expect(sapSystemQueryParam?.type).toBe('string');
-        expect(sapSystemQueryParam?.required).toBe(false);
-        expect(sapSystemQueryParam?.description).toBeDefined();
-        expect(sapSystemQueryParam?.description).toContain('SAP system');
+        const props = details.parameters.properties;
+        expect(props).toBeDefined();
+        if (props && typeof props === 'object') {
+            const sapSystemQuery = props['sapSystemQuery'];
+            expect(sapSystemQuery).toBeDefined();
+            expect(typeof sapSystemQuery === 'object' && 'type' in sapSystemQuery).toBe(true);
+            if (typeof sapSystemQuery === 'object' && sapSystemQuery && 'type' in sapSystemQuery) {
+                expect(sapSystemQuery.type).toBe('string');
+                expect(sapSystemQuery.description).toBeDefined();
+                expect(sapSystemQuery.description).toContain('SAP system');
+            }
+        }
     });
 
     test('should have servicePath parameter', () => {
-        const servicePathParam = details.parameters.find((p: Parameter) => p.id === 'servicePath');
-        expect(servicePathParam).toBeDefined();
-        expect(servicePathParam?.type).toBe('string');
-        expect(servicePathParam?.required).toBe(true);
-        expect(servicePathParam?.description).toBeDefined();
-        expect(servicePathParam?.description).toContain('path');
-    });
-
-    test('should have all required parameter properties', () => {
-        details.parameters.forEach((param: Parameter) => {
-            expect(param).toHaveProperty('id');
-            expect(param).toHaveProperty('type');
-            expect(param).toHaveProperty('description');
-            expect(param).toHaveProperty('required');
-        });
+        const props = details.parameters.properties;
+        expect(props).toBeDefined();
+        if (props && typeof props === 'object') {
+            const servicePath = props['servicePath'];
+            expect(servicePath).toBeDefined();
+            expect(typeof servicePath === 'object' && 'type' in servicePath).toBe(true);
+            if (typeof servicePath === 'object' && servicePath && 'type' in servicePath) {
+                expect(servicePath.type).toBe('string');
+                expect(servicePath.description).toBeDefined();
+                expect(servicePath.description).toContain('path');
+            }
+        }
     });
 
     test('should have exactly one required parameter', () => {
-        const requiredParams = details.parameters.filter((p: Parameter) => p.required);
-        expect(requiredParams).toHaveLength(1);
-        expect(requiredParams[0].id).toBe('servicePath');
+        expect(details.parameters.required).toEqual(['servicePath']);
     });
 
-    test('should have exactly one optional parameter', () => {
-        const optionalParams = details.parameters.filter((p: Parameter) => !p.required);
-        expect(optionalParams).toHaveLength(1);
-        expect(optionalParams[0].id).toBe('sapSystemQuery');
-    });
+    test('should have both parameters of type string', () => {
+        const props = details.parameters.properties;
+        if (props && typeof props === 'object') {
+            const sapSystemQuery = props['sapSystemQuery'];
+            const servicePath = props['servicePath'];
 
-    test('should have all parameters of type string', () => {
-        details.parameters.forEach((param: Parameter) => {
-            expect(param.type).toBe('string');
-        });
+            if (typeof sapSystemQuery === 'object' && sapSystemQuery && 'type' in sapSystemQuery) {
+                expect(sapSystemQuery.type).toBe('string');
+            }
+            if (typeof servicePath === 'object' && servicePath && 'type' in servicePath) {
+                expect(servicePath.type).toBe('string');
+            }
+        }
     });
 
     test('should have detailed parameter descriptions', () => {
-        details.parameters.forEach((param: Parameter) => {
-            expect(param.description?.length ?? 0).toBeGreaterThan(10);
-        });
+        const props = details.parameters.properties;
+        if (props && typeof props === 'object') {
+            const sapSystemQuery = props['sapSystemQuery'];
+            const servicePath = props['servicePath'];
+
+            if (typeof sapSystemQuery === 'object' && sapSystemQuery && 'description' in sapSystemQuery) {
+                expect((sapSystemQuery.description as string).length).toBeGreaterThan(10);
+            }
+            if (typeof servicePath === 'object' && servicePath && 'description' in servicePath) {
+                expect((servicePath.description as string).length).toBeGreaterThan(10);
+            }
+        }
     });
 
     test('should mention metadata.xml in description', () => {
