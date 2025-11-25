@@ -10,7 +10,7 @@ import type { CfOAuthMiddlewareConfig } from './types';
  * @param {ToolsLogger} logger - Logger instance.
  * @throws {Error} If configuration is invalid.
  */
-export function validateConfig(config: CfOAuthMiddlewareConfig, logger: ToolsLogger): void {
+export async function validateConfig(config: CfOAuthMiddlewareConfig, logger: ToolsLogger): Promise<void> {
     if (!config.url) {
         throw new Error('CF OAuth middleware requires url configuration.');
     }
@@ -20,7 +20,7 @@ export function validateConfig(config: CfOAuthMiddlewareConfig, logger: ToolsLog
     }
 
     const cfConfig = loadCfConfig(logger);
-    if (!isLoggedInCf(cfConfig, logger)) {
+    if (!(await isLoggedInCf(cfConfig, logger))) {
         throw new Error('User is not logged in to Cloud Foundry.');
     }
 }
