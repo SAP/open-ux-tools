@@ -167,7 +167,11 @@ export enum promptNames {
     /**
      * System selection
      */
-    systemSelection = 'systemSelection'
+    systemSelection = 'systemSelection',
+    /**
+     * Value help download
+     */
+    valueHelpDownload = 'valueHelpDownload'
 }
 
 /**
@@ -380,6 +384,13 @@ export type OdataServiceUrlPromptOptions = {
     showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL prompts allow extension with additional messages
 
+export type ValueHelpDownloadPromptOptions = {
+    /**
+     * This option allows the prompt to be hidden to avoid breaking existing consumers.
+     */
+    hide?: boolean;
+};
+
 /**
  * Provide the correct type checking for prompt options
  */
@@ -390,7 +401,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
-    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions> &
+    Record<promptNames.valueHelpDownload, ValueHelpDownloadPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

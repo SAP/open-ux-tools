@@ -117,11 +117,10 @@ export async function getSystemSelectionQuestions(
     if (!promptOptions?.serviceSelection?.hide) {
         questions.push(
             ...withCondition(
-                getSystemServiceQuestion(
-                    connectValidator,
-                    systemSelectionPromptNamespace,
-                    promptOptions?.serviceSelection
-                ) as Question[],
+                getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, {
+                    serviceSelection: promptOptions?.serviceSelection,
+                    valueHelpDownload: promptOptions?.valueHelpDownload
+                }) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
             )
         );
@@ -138,7 +137,10 @@ export async function getSystemSelectionQuestions(
     } else {
         questions.push(
             ...withCondition(
-                getCfAbapBASQuestions(promptOptions?.serviceSelection) as Question[],
+                getCfAbapBASQuestions({
+                    serviceSelection: promptOptions?.serviceSelection,
+                    valueHelpDownload: promptOptions?.valueHelpDownload
+                }) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );

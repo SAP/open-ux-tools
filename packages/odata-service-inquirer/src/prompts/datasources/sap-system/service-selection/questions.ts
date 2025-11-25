@@ -18,7 +18,11 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
+import type {
+    OdataServicePromptOptions,
+    ServiceSelectionPromptOptions,
+    ValueHelpDownloadPromptOptions
+} from '../../../../types';
 import { promptNames } from '../../../../types';
 import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
@@ -43,13 +47,16 @@ const cliServicePromptName = 'cliServiceSelection';
  * @param connectValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
- * @param promptOptions Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @param promptOptions Options for all OData service prompts see {@link OdataServicePromptOptions}
  * @returns the service selection prompt
  */
 export function getSystemServiceQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
-    promptOptions?: ServiceSelectionPromptOptions
+    promptOptions?: Partial<{
+        serviceSelection: ServiceSelectionPromptOptions;
+        valueHelpDownload: ValueHelpDownloadPromptOptions;
+    }>
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
@@ -60,14 +67,14 @@ export function getSystemServiceQuestion(
     let hasBackendAnnotations: boolean | undefined;
     let convertedMetadata: ConvertedMetadata | undefined;
 
-    const requiredOdataVersion = promptOptions?.requiredOdataVersion;
+    const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
 
     let systemServiceQuestion = {
         when: (): boolean =>
             connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
         name: serviceSelectionPromptName,
-        type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
+        type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
         message: () => getSelectedServiceLabel(connectValidator.connectedUserName),
         guiOptions: {
             breadcrumb: t('prompts.systemService.breadcrumb'),
@@ -87,7 +94,7 @@ export function getSystemServiceQuestion(
                     serviceChoices = await createServiceChoicesFromCatalog(
                         connectValidator.catalogs,
                         requiredOdataVersion,
-                        promptOptions?.serviceFilter
+                        promptOptions?.serviceSelection?.serviceFilter
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
@@ -131,7 +138,7 @@ export function getSystemServiceQuestion(
                 hasAnnotations: hasBackendAnnotations,
                 showCollabDraftWarnOptions: convertedMetadata
                     ? {
-                          showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
+                          showCollabDraftWarning: !!promptOptions?.serviceSelection?.showCollaborativeDraftWarning,
                           edmx: convertedMetadata
                       }
                     : undefined
@@ -143,7 +150,7 @@ export function getSystemServiceQuestion(
         ): Promise<string | boolean | ValidationLink> => {
             let serviceAnswer = service as ServiceAnswer;
             // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-            if (promptOptions?.useAutoComplete && (service as ListChoiceOptions).value) {
+            if (promptOptions?.serviceSelection?.useAutoComplete && (service as ListChoiceOptions).value) {
                 serviceAnswer = (service as ListChoiceOptions).value;
             }
 
@@ -169,9 +176,9 @@ export function getSystemServiceQuestion(
     } as Question<ServiceAnswer>;
 
     // Add additional messages to prompts if specified in the prompt options
-    if (promptOptions?.additionalMessages) {
+    if (promptOptions?.serviceSelection?.additionalMessages) {
         const promptOptsToApply: Record<string, CommonPromptOptions> = {
-            [serviceSelectionPromptName]: { additionalMessages: promptOptions.additionalMessages }
+            [serviceSelectionPromptName]: { additionalMessages: promptOptions.serviceSelection.additionalMessages }
         };
         systemServiceQuestion = extendWithOptions(
             [systemServiceQuestion] as YUIQuestion[],
@@ -183,10 +190,10 @@ export function getSystemServiceQuestion(
     const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
 
     // Add value help download prompt for V4 services (unless explicitly hidden)
-    questions.push(getValueHelpDownloadPrompt(connectValidator, promptNamespace));
+    questions.push(getValueHelpDownloadPrompt(connectValidator, promptNamespace, promptOptions?.valueHelpDownload));
 
     // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
-    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.useAutoComplete) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.serviceSelection?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
