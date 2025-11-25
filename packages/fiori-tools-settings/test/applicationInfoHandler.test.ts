@@ -14,6 +14,8 @@ describe('Application Info Settings', () => {
 
     beforeEach(() => {
         fs = create(createStorage());
+        // Ensure a clean state before each test
+        fs.exists(appInfoFilePath) && fs.delete(appInfoFilePath);
     });
 
     afterEach(() => {
@@ -30,8 +32,6 @@ describe('Application Info Settings', () => {
     it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', () => {
         const testPath = 'test-file-path';
         writeApplicationInfoSettings(testPath, fs);
-        // Ensure the file was written to the in-memory fs
-        // expect(fs.exists(appInfoFilePath)).toBe(true);
         const executeCommand = jest.fn();
         loadApplicationInfoFromSettings(executeCommand, fs);
         expect(executeCommand).toHaveBeenCalledWith(testPath);
