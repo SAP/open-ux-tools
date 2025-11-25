@@ -1,5 +1,18 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.82
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/cf-deploy-config-writer@0.3.38
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/deploy-config-generator-shared@0.1.53
+    -   @sap-ux/inquirer-common@0.9.4
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.40
+
 ## 0.2.81
 
 ### Patch Changes
