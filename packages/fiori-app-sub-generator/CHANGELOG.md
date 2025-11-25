@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.8.8
+
+### Patch Changes
+
+-   127e3b5: Fix npm install for CAP when adding first app so that preview works after install.
+
 ## 0.8.7
 
 ### Patch Changes
