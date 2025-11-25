@@ -8,6 +8,9 @@
  * using their preferred telemetry mechanisms (e.g., inquirer-common, fiori-generator-shared).
  */
 
+import type { TelemetryMeasurements, TelemetryProperties } from '../base/types';
+import { ClientFactory } from '../base/client';
+
 /**
  * Telemetry event names for value help functionality
  */
@@ -169,4 +172,130 @@ export function createValueHelpPerformanceTracker(
             }
         }
     };
+}
+
+/**
+ * Shared telemetry functions for value help functionality.
+ * These functions can be used across different tools and contexts where value help data is downloaded.
+ */
+
+/**
+ * Send telemetry event when value helps are detected in V4 service.
+ *
+ * @param valueHelpCount - Number of value helps detected
+ * @param additionalProperties - Additional telemetry properties
+ */
+export function sendValueHelpDetectedTelemetry(
+    valueHelpCount: number,
+    additionalProperties: Partial<ValueHelpDetectedProperties> = {}
+): void {
+    try {
+        const properties: TelemetryProperties = {
+            valueListCount: valueHelpCount.toString(),
+            odataVersion: 'v4',
+            ...Object.fromEntries(
+                Object.entries(additionalProperties).map(([key, value]) => [key, value?.toString() ?? ''])
+            )
+        };
+
+        const measurements: TelemetryMeasurements = {
+            valueListCount: valueHelpCount
+        };
+
+        ClientFactory.getTelemetryClient()
+            .reportEvent({
+                eventName: VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DETECTED,
+                properties,
+                measurements
+            })
+            .catch(() => {
+                // Silently ignore telemetry errors
+            });
+    } catch (error) {
+        // Silently fail - telemetry should never crash the application
+    }
+}
+
+/**
+ * Send telemetry event for user decision on value help download.
+ *
+ * @param downloadDecision - Whether user chose to download value helps
+ * @param valueHelpCount - Number of value helps available
+ * @param additionalProperties - Additional telemetry properties
+ */
+export function sendValueHelpDownloadDecisionTelemetry(
+    downloadDecision: boolean,
+    valueHelpCount: number,
+    additionalProperties: Partial<ValueHelpDownloadDecisionProperties> = {}
+): void {
+    try {
+        const properties: TelemetryProperties = {
+            downloadDecision: downloadDecision ? 'yes' : 'no',
+            availableValueLists: valueHelpCount.toString(),
+            ...Object.fromEntries(
+                Object.entries(additionalProperties).map(([key, value]) => [key, value?.toString() ?? ''])
+            )
+        };
+
+        const measurements: TelemetryMeasurements = {
+            availableValueLists: valueHelpCount
+        };
+
+        ClientFactory.getTelemetryClient()
+            .reportEvent({
+                eventName: VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DOWNLOAD_DECISION,
+                properties,
+                measurements
+            })
+            .catch(() => {
+                // Silently ignore telemetry errors
+            });
+    } catch (error) {
+        // Silently fail - telemetry should never crash the application
+    }
+}
+
+/**
+ * Send telemetry event for value help download performance.
+ *
+ * @param downloadTimeMs - Time taken to download value helps in milliseconds
+ * @param valueHelpCount - Number of value helps downloaded
+ * @param success - Whether the download was successful
+ * @param additionalProperties - Additional telemetry properties
+ */
+export function sendValueHelpDownloadPerformanceTelemetry(
+    downloadTimeMs: number,
+    valueHelpCount: number,
+    success: boolean,
+    additionalProperties: Partial<ValueHelpDownloadPerformanceProperties> = {}
+): void {
+    try {
+        const properties: TelemetryProperties = {
+            downloadDurationMs: downloadTimeMs.toString(),
+            successCount: (success ? valueHelpCount : 0).toString(),
+            failureCount: (success ? 0 : valueHelpCount).toString(),
+            downloadStatus: success ? 'completed' : 'error',
+            ...Object.fromEntries(
+                Object.entries(additionalProperties).map(([key, value]) => [key, value?.toString() ?? ''])
+            )
+        };
+
+        const measurements: TelemetryMeasurements = {
+            downloadDurationMs: downloadTimeMs,
+            successCount: success ? valueHelpCount : 0,
+            failureCount: success ? 0 : valueHelpCount
+        };
+
+        ClientFactory.getTelemetryClient()
+            .reportEvent({
+                eventName: VALUE_HELP_TELEMETRY_EVENTS.VALUE_HELP_DOWNLOAD_PERFORMANCE,
+                properties,
+                measurements
+            })
+            .catch(() => {
+                // Silently ignore telemetry errors
+            });
+    } catch (error) {
+        // Silently fail - telemetry should never crash the application
+    }
 }

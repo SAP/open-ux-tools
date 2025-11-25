@@ -13,7 +13,7 @@ import {
     sendValueHelpDetectedTelemetry,
     sendValueHelpDownloadDecisionTelemetry,
     sendValueHelpDownloadPerformanceTelemetry
-} from './value-help-telemetry';
+} from '@sap-ux/telemetry';
 
 /**
  * Get the value help download prompt that appears when V4 services have value helps associated with them.

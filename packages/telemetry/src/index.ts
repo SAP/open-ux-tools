@@ -28,7 +28,10 @@ export {
     ValueHelpDetectedSender,
     ValueHelpDownloadDecisionSender,
     ValueHelpDownloadPerformanceSender,
-    createValueHelpPerformanceTracker
+    createValueHelpPerformanceTracker,
+    sendValueHelpDetectedTelemetry,
+    sendValueHelpDownloadDecisionTelemetry,
+    sendValueHelpDownloadPerformanceTelemetry
 } from './events/value-help-telemetry';
 
 /* Decorator and measurements utils */
