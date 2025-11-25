@@ -1,4 +1,4 @@
-import { Authentication } from '@sap-ux/btp-utils'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen';
 import type { CapRuntime } from './cap';

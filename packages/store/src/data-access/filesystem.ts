@@ -276,8 +276,13 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
     }
 }
 
-/** Return an FSWatcher for a given entity name
- *  The client is responsible for disposing of the FSWatcher
+/**
+ * Return an FSWatcher for a given entity name
+ * The client is responsible for disposing of the FSWatcher
+ *
+ * @param entityName
+ * @param callback
+ * @param options
  */
 export function getFilesystemWatcherFor(
     entityName: Entity,

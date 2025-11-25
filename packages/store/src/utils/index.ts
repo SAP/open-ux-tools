@@ -69,6 +69,10 @@ export function toPersistenceName(s: string): string | undefined {
     return t && plural(t);
 }
 
+/**
+ *
+ * @param entityName
+ */
 export function getEntityFileName(entityName: string): string {
     return toPersistenceName(entityName) + '.json';
 }
