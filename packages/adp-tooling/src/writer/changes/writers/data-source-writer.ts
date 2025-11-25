@@ -13,8 +13,8 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @param {string} projectPath - The root path of the project.
      */
     constructor(
-        private fs: Editor,
-        private projectPath: string
+        private readonly fs: Editor,
+        private readonly projectPath: string
     ) {}
 
     /**

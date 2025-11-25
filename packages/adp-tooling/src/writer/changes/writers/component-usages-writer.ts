@@ -13,8 +13,8 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @param {string} projectPath - The root path of the project.
      */
     constructor(
-        private fs: Editor,
-        private projectPath: string
+        private readonly fs: Editor,
+        private readonly projectPath: string
     ) {}
 
     /**
