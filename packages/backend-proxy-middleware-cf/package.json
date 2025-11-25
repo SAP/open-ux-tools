@@ -1,13 +1,13 @@
 {
-    "name": "@sap-ux/cf-oauth-middleware",
+    "name": "@sap-ux/backend-proxy-middleware-cf",
     "description": "OAuth2 Bearer token middleware for Cloud Foundry adaptation projects",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/cf-oauth-middleware"
+        "directory": "packages/backend-proxy-middleware-cf"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acf-oauth-middleware"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Abackend-proxy-middleware-cf"
     },
     "version": "0.0.1",
     "license": "Apache-2.0",

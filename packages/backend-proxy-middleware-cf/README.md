@@ -1,6 +1,6 @@
-# `@sap-ux/cf-oauth-middleware`
+# `@sap-ux/backend-proxy-middleware-cf`
 
-The `@sap-ux/cf-oauth-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for proxying requests to Cloud Foundry destinations with OAuth2 authentication. It supports proxying multiple OData source paths to a single destination URL with automatic OAuth token management.
+The `@sap-ux/backend-proxy-middleware-cf` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for proxying requests to Cloud Foundry destinations with OAuth2 authentication. It supports proxying multiple OData source paths to a single destination URL with automatic OAuth token management.
 
 > **⚠️ Experimental**: This middleware is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
 
@@ -23,7 +23,7 @@ The `@sap-ux/cf-oauth-middleware` is a [Custom UI5 Server Middleware](https://sa
 ```yaml
 server:
   customMiddleware:
-    - name: cf-oauth-middleware
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
         url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
@@ -39,7 +39,7 @@ For Cloud Foundry adaptation projects, the middleware automatically detects the 
 ```yaml
 server:
   customMiddleware:
-    - name: cf-oauth-middleware
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
         url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
@@ -63,7 +63,7 @@ For custom setups or when auto-detection is not available, you can provide OAuth
 ```yaml
 server:
   customMiddleware:
-    - name: cf-oauth-middleware
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
         url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
@@ -86,7 +86,7 @@ You can proxy multiple OData paths to the same destination:
 ```yaml
 server:
   customMiddleware:
-    - name: cf-oauth-middleware
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
         url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
@@ -103,7 +103,7 @@ Enable debug logging to troubleshoot issues:
 ```yaml
 server:
   customMiddleware:
-    - name: cf-oauth-middleware
+    - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
         url: https://your-backend-service.cfapps.eu12.hana.ondemand.com

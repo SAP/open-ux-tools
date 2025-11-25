@@ -12,11 +12,11 @@ import type { CfOAuthMiddlewareConfig } from './types';
  */
 export async function validateConfig(config: CfOAuthMiddlewareConfig, logger: ToolsLogger): Promise<void> {
     if (!config.url) {
-        throw new Error('CF OAuth middleware requires url configuration.');
+        throw new Error('Backend proxy middleware (CF) requires url configuration.');
     }
 
     if (!config.paths || !Array.isArray(config.paths) || config.paths.length === 0) {
-        throw new Error('CF OAuth middleware has no paths configured.');
+        throw new Error('Backend proxy middleware (CF) has no paths configured.');
     }
 
     const cfConfig = loadCfConfig(logger);

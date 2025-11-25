@@ -77,7 +77,7 @@ export async function createTokenProvider(
     logger: ToolsLogger
 ): Promise<OAuthTokenProvider> {
     if (config.credentials) {
-        logger.info('Initializing CF OAuth middleware with provided credentials');
+        logger.info('Initializing backend proxy middleware (CF) with provided credentials');
         const { clientId, clientSecret, url } = config.credentials;
         return createManagerFromDirectCredentials(clientId, clientSecret, url, logger);
     }

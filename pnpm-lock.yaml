@@ -949,6 +949,43 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
 
+  packages/backend-proxy-middleware-cf:
+    dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      axios:
+        specifier: 1.12.2
+        version: 1.12.2(debug@4.4.3)
+      http-proxy-middleware:
+        specifier: 3.0.5
+        version: 3.0.5
+    devDependencies:
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
+      '@types/http-proxy':
+        specifier: ^1.17.5
+        version: 1.17.16
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
+      nock:
+        specifier: 13.4.0
+        version: 13.4.0
+      supertest:
+        specifier: 7.1.4
+        version: 7.1.4
+
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
@@ -1258,43 +1295,6 @@ importers:
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
-
-  packages/cf-oauth-middleware:
-    dependencies:
-      '@sap-ux/adp-tooling':
-        specifier: workspace:*
-        version: link:../adp-tooling
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
-      axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
-      http-proxy-middleware:
-        specifier: 3.0.5
-        version: 3.0.5
-    devDependencies:
-      '@types/express':
-        specifier: 4.17.21
-        version: 4.17.21
-      '@types/http-proxy':
-        specifier: ^1.17.5
-        version: 1.17.16
-      '@types/supertest':
-        specifier: 2.0.12
-        version: 2.0.12
-      express:
-        specifier: 4.21.2
-        version: 4.21.2
-      nock:
-        specifier: 13.4.0
-        version: 13.4.0
-      supertest:
-        specifier: 7.1.4
-        version: 7.1.4
 
   packages/control-property-editor:
     devDependencies:
@@ -19357,7 +19357,7 @@ packages:
       body-parser: 2.2.0
       content-disposition: 1.0.0
       content-type: 1.0.5
-      cookie: 0.7.1
+      cookie: 0.7.2
       cookie-signature: 1.2.2
       debug: 4.4.3
       encodeurl: 2.0.0
@@ -19805,18 +19805,6 @@ packages:
       minimatch: 5.1.6
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  /follow-redirects@1.15.6(debug@4.4.1):
-    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.4.1
     dev: false
 
   /follow-redirects@1.15.6(debug@4.4.3):
@@ -20855,7 +20843,7 @@ packages:
         optional: true
     dependencies:
       '@types/http-proxy': 1.17.16
-      http-proxy: 1.18.1
+      http-proxy: 1.18.1(debug@4.4.3)
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
       micromatch: 4.0.8
@@ -20868,8 +20856,8 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@types/http-proxy': 1.17.16
-      debug: 4.4.1
-      http-proxy: 1.18.1(debug@4.4.1)
+      debug: 4.4.3
+      http-proxy: 1.18.1(debug@4.4.3)
       is-glob: 4.0.3
       is-plain-object: 5.0.0
       micromatch: 4.0.8
@@ -20877,7 +20865,7 @@ packages:
       - supports-color
     dev: false
 
-  /http-proxy@1.18.1:
+  /http-proxy@1.18.1(debug@4.4.3):
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
     engines: {node: '>=8.0.0'}
     dependencies:
@@ -20886,18 +20874,6 @@ packages:
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
-    dev: true
-
-  /http-proxy@1.18.1(debug@4.4.1):
-    resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
-    engines: {node: '>=8.0.0'}
-    dependencies:
-      eventemitter3: 4.0.7
-      follow-redirects: 1.15.6(debug@4.4.1)
-      requires-port: 1.0.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /http-server@14.1.1:
     resolution: {integrity: sha512-+cbxadF40UXd9T01zUHgA+rlo2Bg1Srer4+B4NwIHdaGxAGGv59nYRnGGDJ9LBk7alpS0US+J+bLLdQOOkJq4A==}
@@ -20909,7 +20885,7 @@ packages:
       corser: 2.0.1
       he: 1.2.0
       html-encoding-sniffer: 3.0.0
-      http-proxy: 1.18.1
+      http-proxy: 1.18.1(debug@4.4.3)
       mime: 1.6.0
       minimist: 1.2.8
       opener: 1.5.2
@@ -24171,7 +24147,7 @@ packages:
     resolution: {integrity: sha512-W8NVHjO/LCTNA64yxAPHV/K47LpGYcVzgKd3Q0n6owhwvD0Dgoterc25R4rnZbckJEb6Loxz1f5QMuJpJnbSyQ==}
     engines: {node: '>= 10.13'}
     dependencies:
-      debug: 4.3.4
+      debug: 4.4.3
       json-stringify-safe: 5.0.1
       propagate: 2.0.1
     transitivePeerDependencies:
