@@ -57,8 +57,7 @@ export function getValueHelpDownloadPrompt(
         if (lastProcessedServicePath !== currentServicePath) {
             const valueListReferences = getExternalServiceReferences(
                 currentServicePath,
-                PromptState.odataService.metadata,
-                PromptState.odataService.annotations ?? []
+                PromptState.odataService.metadata
             );
             currentValueListRefsAnnotations = valueListReferences;
 

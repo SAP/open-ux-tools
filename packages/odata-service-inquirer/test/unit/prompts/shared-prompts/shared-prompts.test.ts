@@ -134,8 +134,7 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(result).toBe(false);
             expect(mockGetExternalServiceReferences).toHaveBeenCalledWith(
                 '/test/service',
-                '<metadata>test</metadata>',
-                []
+                '<metadata>test</metadata>'
             );
         });
 
@@ -166,8 +165,7 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(result).toBe(true);
             expect(mockGetExternalServiceReferences).toHaveBeenCalledWith(
                 '/test/service',
-                '<metadata>test</metadata>',
-                []
+                '<metadata>test</metadata>'
             );
         });
 
