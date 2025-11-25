@@ -29,9 +29,9 @@ describe('Application Info Settings', () => {
 
     it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', () => {
         const testPath = 'test-file-path';
-        writeApplicationInfoSettings(testPath);
+        writeApplicationInfoSettings(testPath, fs);
         const executeCommand = jest.fn();
-        loadApplicationInfoFromSettings(executeCommand);
+        loadApplicationInfoFromSettings(executeCommand, fs);
         expect(executeCommand).toHaveBeenCalledWith(testPath);
     });
 
