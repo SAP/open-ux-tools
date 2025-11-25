@@ -6,6 +6,17 @@ import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
 
 /**
+ * Get base directory of the project where package.json is located.
+ * @param appRoot - root to the application
+ * @param memFs - optional mem-fs editor instance
+ * @returns - base directory of the project
+ */
+async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
+    const packageJsonPath = await findFileUp(FileName.Package, appRoot, memFs);
+    return packageJsonPath ? dirname(packageJsonPath) : appRoot;
+}
+
+/**
  * Get path to webapp.
  *
  * @param appRoot - root to the application
@@ -13,22 +24,66 @@ import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file'
  * @returns - path to webapp folder
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
-    const ui5YamlPath = join(appRoot, FileName.Ui5Yaml);
-    let webappPath = join(appRoot, DirName.Webapp);
-    if (await fileExists(ui5YamlPath, memFs)) {
-        const yamlString = await readFile(ui5YamlPath, memFs);
-        const ui5Config = await UI5Config.newInstance(yamlString);
-        const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
-        if (relativeWebappPath) {
-            // Search for folder with package.json inside
-            const packageJsonPath = await findFileUp(FileName.Package, appRoot, memFs);
-            if (packageJsonPath) {
-                const packageJsonDirPath = dirname(packageJsonPath);
-                webappPath = join(packageJsonDirPath, relativeWebappPath);
-            }
-        }
+    const defaultWebappPath = join(appRoot, DirName.Webapp);
+    let ui5Config: UI5Config;
+    try {
+        ui5Config = await readUi5Yaml(appRoot, FileName.Ui5Yaml, memFs);
+    } catch {
+        return defaultWebappPath;
     }
-    return webappPath;
+    const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
+    if (!relativeWebappPath) {
+        return defaultWebappPath;
+    }
+    const baseDir = await getBaseDir(appRoot, memFs);
+    return join(baseDir, relativeWebappPath);
+}
+
+/**
+ * Get path mappings depending on project type.
+ * @param appRoot - root to the application
+ * @param memFs - optional mem-fs editor instance
+ * @returns - path mappings or undefined if ui5.yaml does not exist or project type is unsupported
+ */
+export async function getPathMappings(appRoot: string, memFs?: Editor): Promise<{ webappPath: string } | { srcPath: string, testPath: string } | undefined> {
+    let ui5Config: UI5Config;
+    try {
+        ui5Config = await readUi5Yaml(appRoot, FileName.Ui5Yaml, memFs);
+    } catch {
+        return undefined;
+    }
+    const projectType = ui5Config.getType();
+
+    if(projectType === 'application') {
+        return { webappPath: await getWebappPath(appRoot, memFs) };
+    }
+
+    if(projectType === 'library') {
+        return await getLibraryPathMappings(appRoot, ui5Config, memFs);
+    }
+
+    return undefined;
+}
+
+/**
+ * Get path mappings for project of type library.
+ * @param appRoot - root to the application
+ * @param ui5Config - ui5 config instance
+ * @param memFs - optional mem-fs editor instance
+ * @returns - path mappings
+ */
+async function getLibraryPathMappings(appRoot: string, ui5Config: UI5Config, memFs?: Editor): Promise<{ srcPath: string, testPath: string }> {
+    const baseDir = await getBaseDir(appRoot, memFs);
+    const configuration = ui5Config.getConfiguration();
+
+    return {
+        srcPath: configuration?.paths?.src
+            ? join(baseDir, configuration.paths.src)
+            : join(appRoot, 'src'),
+        testPath: configuration?.paths?.test
+            ? join(baseDir, configuration.paths.test)
+            : join(appRoot, 'test')
+    };
 }
 
 /**
