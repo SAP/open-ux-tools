@@ -1133,13 +1133,13 @@ describe('update', () => {
                 externalServices: [
                     {
                         type: 'value-list',
-                        data: 'ValueListReferences',
+                        metadata: 'ValueListReferences',
                         path: '/sap/my_service',
                         target: 'MyEntity/MyProperty'
                     },
                     {
                         type: 'code-list',
-                        data: 'CodeListReferences',
+                        metadata: 'CodeListReferences',
                         path: '/sap/my_service2',
                         collectionPath: 'Currencies'
                     }

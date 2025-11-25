@@ -174,4 +174,4 @@ export {
     ExternalServiceCollectionOptions,
     NamespaceAlias
 } from './types';
-export { getExternalServiceReferences, getAnnotationNamespaces } from './data';
+export { getExternalServiceReferences, getAnnotationNamespaces, writeExternalServiceMetadata } from './data';

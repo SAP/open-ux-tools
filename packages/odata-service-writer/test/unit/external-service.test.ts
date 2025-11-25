@@ -61,29 +61,24 @@ describe('writeValueListReferenceMetadata', () => {
         fs = create(createStorage());
     });
 
-    test('it should not do anything if there are no references', async () => {
+    test('it should do nothing if there are no references', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        writeExternalServiceMetadata(root, [], { version: OdataVersion.v4 }, fs);
+        writeExternalServiceMetadata(fs, root, []);
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
     test('it should do nothing if there is no service path specified', async () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
-        writeExternalServiceMetadata(
-            root,
-            [
-                {
-                    type: 'value-list',
-                    path: '/sap/opu/odata4/sap/my_service/',
-                    target: 'CustomerType/DunningProcedure',
-                    data: '<metadata>'
-                }
-            ],
-            { version: OdataVersion.v4 },
-            fs
-        );
+        writeExternalServiceMetadata(fs, root, [
+            {
+                type: 'value-list',
+                path: '/sap/opu/odata4/sap/my_service/',
+                target: 'CustomerType/DunningProcedure',
+                metadata: '<metadata>'
+            }
+        ]);
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
@@ -91,17 +86,18 @@ describe('writeValueListReferenceMetadata', () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
         writeExternalServiceMetadata(
+            fs,
             root,
             [
                 {
                     type: 'value-list',
                     path: "/sap/opu/odata4/sap/my_service/srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'",
                     target: 'CustomerType/DunningProcedure',
-                    data: '<metadata>'
+                    metadata: '<metadata>'
                 }
             ],
-            { path: SERVICE_PATH, version: OdataVersion.v4 },
-            fs
+            undefined,
+            SERVICE_PATH
         );
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenNthCalledWith(
@@ -126,21 +122,112 @@ describe('writeValueListReferenceMetadata', () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
         writeExternalServiceMetadata(
+            fs,
             root,
             [
                 {
                     type: 'value-list',
                     path: "/sap/opu/odata4/sap/my_service/srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'",
                     target: 'CustomerType/DunningProcedure',
-                    data: '<metadata>'
+                    metadata: '<metadata>',
+                    entityData: [
+                        {
+                            entitySetName: 'PaymentCard',
+                            items: [{ Card: 'A' }, { Card: 'B' }]
+                        }
+                    ]
                 }
             ],
-            { path: SERVICE_PATH, name: 'myService', version: OdataVersion.v4 },
-            fs
+            'myService',
+            SERVICE_PATH
         );
-        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledTimes(2);
+
         expect(spy).toHaveBeenNthCalledWith(
             1,
+            join(
+                root,
+                'localService',
+                'myService',
+                'srvd_f4',
+                'sap',
+                'p_paymentcardtypevaluehelp',
+                '0001',
+                'PaymentCard.json'
+            ),
+            JSON.stringify([{ Card: 'A' }, { Card: 'B' }], undefined, 4)
+        );
+        expect(spy).toHaveBeenNthCalledWith(
+            2,
+            join(
+                root,
+                'localService',
+                'myService',
+                'srvd_f4',
+                'sap',
+                'p_paymentcardtypevaluehelp',
+                '0001',
+                'CustomerType',
+                'DunningProcedure',
+                'metadata.xml'
+            ),
+            '<metadata>'
+        );
+    });
+
+    test('it should write service data only once', async () => {
+        const root = dirname(getTestDataPath('metadata.xml'));
+        const spy = jest.spyOn(fs, 'write');
+        writeExternalServiceMetadata(
+            fs,
+            root,
+            [
+                {
+                    type: 'value-list',
+                    path: "/sap/opu/odata4/sap/my_service/srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'",
+                    target: 'CustomerType/DunningProcedure',
+                    metadata: '<metadata>',
+                    entityData: [
+                        {
+                            entitySetName: 'PaymentCard',
+                            items: [{ Card: 'A' }, { Card: 'B' }]
+                        }
+                    ]
+                },
+                {
+                    type: 'value-list',
+                    path: "/sap/opu/odata4/sap/my_service/srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.B'",
+                    target: 'CustomerType/B',
+                    metadata: '<metadata>',
+                    entityData: [
+                        {
+                            entitySetName: 'PaymentCard',
+                            items: [{ Card: 'A' }, { Card: 'B' }]
+                        }
+                    ]
+                }
+            ],
+            'myService',
+            SERVICE_PATH
+        );
+        expect(spy).toHaveBeenCalledTimes(3);
+
+        expect(spy).toHaveBeenNthCalledWith(
+            1,
+            join(
+                root,
+                'localService',
+                'myService',
+                'srvd_f4',
+                'sap',
+                'p_paymentcardtypevaluehelp',
+                '0001',
+                'PaymentCard.json'
+            ),
+            JSON.stringify([{ Card: 'A' }, { Card: 'B' }], undefined, 4)
+        );
+        expect(spy).toHaveBeenNthCalledWith(
+            2,
             join(
                 root,
                 'localService',
@@ -161,20 +248,32 @@ describe('writeValueListReferenceMetadata', () => {
         const root = dirname(getTestDataPath('metadata.xml'));
         const spy = jest.spyOn(fs, 'write');
         writeExternalServiceMetadata(
+            fs,
             root,
             [
                 {
                     type: 'code-list',
                     path: '/sap/opu/odata4/sap/my_service/default/iwbep/common/0001',
-                    data: '<metadata>'
+                    metadata: '<metadata>',
+                    entityData: [
+                        {
+                            entitySetName: 'CodeListSet',
+                            items: [{ Code: 'A' }, { Code: 'B' }]
+                        }
+                    ]
                 }
             ],
-            { path: SERVICE_PATH, name: 'myService', version: OdataVersion.v4 },
-            fs
+            'myService',
+            SERVICE_PATH
         );
-        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledTimes(2);
         expect(spy).toHaveBeenNthCalledWith(
             1,
+            join(root, 'localService', 'myService', 'default', 'iwbep', 'common', '0001', 'CodeListSet.json'),
+            JSON.stringify([{ Code: 'A' }, { Code: 'B' }], undefined, 4)
+        );
+        expect(spy).toHaveBeenNthCalledWith(
+            2,
             join(root, 'localService', 'myService', 'default', 'iwbep', 'common', '0001', 'metadata.xml'),
             '<metadata>'
         );
