@@ -19,6 +19,7 @@ import { DirName } from '@sap-ux/project-access';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 
 import type { ExternalServiceCollectionOptions } from '../types';
+import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 const INDENT_SIZE = 4;
 
@@ -35,7 +36,7 @@ export function writeExternalServiceMetadata(
     fs: Editor,
     webappPath: string,
     externalServices: ExternalService[],
-    serviceName = 'mainService',
+    serviceName = DEFAULT_DATASOURCE_NAME,
     servicePath?: string
 ): void {
     if (!externalServices.length || !servicePath) {
