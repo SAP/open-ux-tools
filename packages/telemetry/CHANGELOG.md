@@ -1,5 +1,19 @@
 # @sap-ux/telemetry
 
+## 0.6.39
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+
+## 0.6.38
+
+### Patch Changes
+
+-   56235f8: bump app insights
+
 ## 0.6.37
 
 ### Patch Changes

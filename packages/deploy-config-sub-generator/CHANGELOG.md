@@ -1,5 +1,87 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.96
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.82
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/odata-service-inquirer@2.11.8
+    -   @sap-ux/deploy-config-generator-shared@0.1.53
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [5eb784b]
+    -   @sap-ux/odata-service-inquirer@2.11.7
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [1357412]
+    -   @sap-ux/odata-service-inquirer@2.11.6
+
+## 0.5.2
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+-   Updated dependencies [744fa93]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.81
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [caff0ca]
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.5.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.4.46
+
+### Patch Changes
+
+-   Updated dependencies [2e75589]
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.4.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+-   @sap-ux/cf-deploy-config-sub-generator@0.2.80
+-   @sap-ux/deploy-config-generator-shared@0.1.52
+-   @sap-ux/odata-service-inquirer@2.11.3
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.95
+
+## 0.4.44
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/odata-service-inquirer@2.11.2
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.94
+-   @sap-ux/cf-deploy-config-sub-generator@0.2.79
+-   @sap-ux/deploy-config-generator-shared@0.1.52
+
 ## 0.4.43
 
 ### Patch Changes

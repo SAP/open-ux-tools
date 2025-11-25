@@ -1,5 +1,114 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/cap-config-writer@0.12.25
+    -   @sap-ux/annotation-generator@0.3.75
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/launch-config@0.10.35
+    -   @sap-ux/odata-service-inquirer@2.11.8
+    -   @sap-ux/odata-service-writer@0.27.30
+    -   @sap-ux/telemetry@0.6.39
+    -   @sap-ux/ui5-application-inquirer@0.15.35
+    -   @sap-ux/fiori-elements-writer@2.8.4
+    -   @sap-ux/fiori-freestyle-writer@2.5.2
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [5eb784b]
+    -   @sap-ux/odata-service-inquirer@2.11.7
+
+## 0.8.5
+
+### Patch Changes
+
+-   1357412: add error handling for store read and writes
+-   Updated dependencies [1357412]
+    -   @sap-ux/odata-service-inquirer@2.11.6
+
+## 0.8.4
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.3
+-   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.2
+-   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.8.2
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+-   Updated dependencies [744fa93]
+    -   @sap-ux/fiori-freestyle-writer@2.5.1
+    -   @sap-ux/fiori-elements-writer@2.8.1
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [caff0ca]
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.8.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/fiori-freestyle-writer@2.5.0
+    -   @sap-ux/fiori-elements-writer@2.8.0
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.7.61
+
+### Patch Changes
+
+-   Updated dependencies [2e75589]
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.7.60
+
+### Patch Changes
+
+-   fef7496: Bump fallback versions
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/launch-config@0.10.34
+    -   @sap-ux/ui5-application-inquirer@0.15.34
+    -   @sap-ux/odata-service-inquirer@2.11.3
+
+## 0.7.59
+
+### Patch Changes
+
+-   Updated dependencies [56235f8]
+    -   @sap-ux/telemetry@0.6.38
+    -   @sap-ux/fiori-generator-shared@0.13.33
+    -   @sap-ux/odata-service-inquirer@2.11.2
+    -   @sap-ux/cap-config-writer@0.12.24
+    -   @sap-ux/fiori-elements-writer@2.7.37
+    -   @sap-ux/fiori-freestyle-writer@2.4.61
+    -   @sap-ux/ui5-application-inquirer@0.15.33
+
 ## 0.7.58
 
 ### Patch Changes

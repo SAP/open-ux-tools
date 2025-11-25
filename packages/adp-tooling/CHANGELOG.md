@@ -1,5 +1,68 @@
 # @sap-ux/adp-tooling
 
+## 0.18.6
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/odata-service-writer@0.27.30
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.18.5
+
+### Patch Changes
+
+-   6872b31: fix: System SAPUI5 version not available for selection in ADP generator
+
+## 0.18.4
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+
+## 0.18.3
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
+## 0.18.2
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+
+## 0.18.1
+
+### Patch Changes
+
+-   3017ce7: chore: Update @sap/cf-tools version to latest to avoid security issues
+
+## 0.18.0
+
+### Minor Changes
+
+-   aa2c7df: Bump specVersion
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/inquirer-common@0.9.3
+
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.2
+
 ## 0.17.6
 
 ### Patch Changes

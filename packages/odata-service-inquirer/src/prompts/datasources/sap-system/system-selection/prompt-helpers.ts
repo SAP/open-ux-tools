@@ -19,7 +19,7 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { ValidationResult } from '../../../types';
 import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
-import { getBackendSystemService } from '../../../../utils/store';
+import { getAllBackendSystems, getBackendSystemService } from '../../../../utils/store';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -88,11 +88,7 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (
-                errorType === ERROR_TYPE.AUTH &&
-                typeof backendSystem.username === 'string' &&
-                typeof backendSystem.password === 'string'
-            ) {
+            if (errorType === ERROR_TYPE.AUTH) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', {
                         systemName: backendSystem.name,
@@ -241,8 +237,8 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendService = await getBackendSystemService();
-        const backendSystems = await backendService.getAll({ includeSensitiveData: false });
+        const backendSystems = await getAllBackendSystems(false);
+
         // Cache the backend systems
         PromptState.backendSystemsCache = backendSystems;
 

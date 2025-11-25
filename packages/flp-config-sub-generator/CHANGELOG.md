@@ -1,5 +1,81 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.67
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/app-config-writer@0.6.57
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/flp-config-inquirer@0.4.65
+    -   @sap-ux/deploy-config-generator-shared@0.1.53
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.3.66
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.64
+-   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.65
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.63
+-   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.64
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.62
+-   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.63
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+-   Updated dependencies [92ec778]
+    -   @sap-ux/flp-config-inquirer@0.4.61
+    -   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.62
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.60
+-   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.61
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.59
+-   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.60
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+-   @sap-ux/flp-config-inquirer@0.4.58
+-   @sap-ux/deploy-config-generator-shared@0.1.52
+-   @sap-ux/app-config-writer@0.6.56
+
+## 0.3.59
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/deploy-config-generator-shared@0.1.52
+-   @sap-ux/flp-config-inquirer@0.4.57
+-   @sap-ux/app-config-writer@0.6.56
+
 ## 0.3.58
 
 ### Patch Changes

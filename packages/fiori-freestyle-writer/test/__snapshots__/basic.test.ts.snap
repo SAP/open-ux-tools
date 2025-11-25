@@ -15,7 +15,7 @@ Object {
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -28,7 +28,7 @@ Object {
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -702,7 +702,7 @@ Object {
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -750,7 +750,7 @@ Object {
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -1423,7 +1423,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -1442,7 +1442,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -1486,7 +1486,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -2167,7 +2167,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -2236,7 +2236,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -2309,7 +2309,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -2374,7 +2374,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -3054,7 +3054,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -3123,7 +3123,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -3191,7 +3191,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -3256,7 +3256,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -3930,7 +3930,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.114.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -3990,7 +3990,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -4058,7 +4058,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -4123,7 +4123,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -4574,7 +4574,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.120.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -4634,7 +4634,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -4702,7 +4702,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -4767,7 +4767,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -5204,7 +5204,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -5225,7 +5225,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -5277,7 +5277,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -5326,7 +5326,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -5763,7 +5763,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"eslint\\": \\"8.57.0\\",
@@ -5789,7 +5789,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -5841,7 +5841,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -5890,7 +5890,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -6587,7 +6587,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -6608,7 +6608,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -6665,7 +6665,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -6714,7 +6714,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -7410,7 +7410,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -7431,7 +7431,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -7488,7 +7488,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -7537,7 +7537,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -8233,7 +8233,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -8254,7 +8254,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -8311,7 +8311,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -8360,7 +8360,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -9057,7 +9057,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -9078,7 +9078,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -9131,7 +9131,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -9176,7 +9176,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -9539,7 +9539,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -9559,7 +9559,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -9616,7 +9616,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application
@@ -9665,7 +9665,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: nods1
 type: application

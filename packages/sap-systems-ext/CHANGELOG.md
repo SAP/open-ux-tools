@@ -1,5 +1,41 @@
 # sap-ux-sap-systems-ext
 
+## 0.1.0
+
+### Minor Changes
+
+-   bdf6eb7: Update extension name and readme
+
+## 0.0.11
+
+### Patch Changes
+
+-   7ac21d6: fix for sap systems extension
+
+## 0.0.10
+
+### Patch Changes
+
+-   caff0ca: fix for saving systems
+
+## 0.0.9
+
+### Patch Changes
+
+-   452e49a: correct publisher
+
+## 0.0.8
+
+### Patch Changes
+
+-   fea04a4: Adjust cloud system component rendering logic, adjust log message. Add log message when testing connection, service summary include catalog results log.
+
+## 0.0.7
+
+### Patch Changes
+
+-   f1a2795: fix: Instrumentation key
+
 ## 0.0.6
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.20
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/fiori-annotation-api@0.7.13
+
+## 0.39.19
+
+### Patch Changes
+
+-   5ed4083: feat(fpm-writer): Filter building block custom filter
+
+## 0.39.18
+
+### Patch Changes
+
+-   3d3c18b: Fix: `generateCustomField` now includes the `core:require` attribute with the handler file in new fragment files when `eventHandler` is set.
+
 ## 0.39.17
 
 ### Patch Changes

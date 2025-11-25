@@ -1,5 +1,76 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.65
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/adp-tooling@0.18.6
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.4.64
+
+### Patch Changes
+
+-   Updated dependencies [6872b31]
+    -   @sap-ux/adp-tooling@0.18.5
+
+## 0.4.63
+
+### Patch Changes
+
+-   Updated dependencies [5475b5b]
+    -   @sap-ux/adp-tooling@0.18.4
+
+## 0.4.62
+
+### Patch Changes
+
+-   Updated dependencies [744fa93]
+    -   @sap-ux/adp-tooling@0.18.3
+
+## 0.4.61
+
+### Patch Changes
+
+-   92ec778: feat: Replace existing inbounds scenario now replaces all inbounds in FLP configuration generator for ADP
+-   Updated dependencies [92ec778]
+    -   @sap-ux/adp-tooling@0.18.2
+
+## 0.4.60
+
+### Patch Changes
+
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+
+## 0.4.59
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+
+## 0.4.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+-   @sap-ux/inquirer-common@0.9.3
+
+## 0.4.57
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/adp-tooling@0.17.7
+
 ## 0.4.56
 
 ### Patch Changes

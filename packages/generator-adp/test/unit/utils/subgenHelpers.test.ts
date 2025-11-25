@@ -1,4 +1,4 @@
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLookup } from '@sap-ux/adp-tooling';
 
@@ -46,7 +46,19 @@ describe('Sub-generator helpers', () => {
                     }
                 } as unknown as ManifestNamespace.Inbound,
                 layer: FlexLayer.CUSTOMER_BASE,
-                vscode: {}
+                vscode: {},
+                prompts: {
+                    items: [
+                        {
+                            name: 'SAP Fiori Launchpad Configuration - Tile Settings',
+                            description: ''
+                        },
+                        {
+                            name: 'SAP Fiori Launchpad Configuration',
+                            description: ''
+                        }
+                    ]
+                } as unknown as Prompts
             };
             const resolvePath = 'flp-generator';
             jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);

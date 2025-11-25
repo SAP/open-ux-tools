@@ -1,5 +1,57 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.8
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/telemetry@0.6.39
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 2.11.7
+
+### Patch Changes
+
+-   5eb784b: Fixes auth fail when required catalog is not accessible
+
+## 2.11.6
+
+### Patch Changes
+
+-   1357412: add error handling for store read and writes
+
+## 2.11.5
+
+### Patch Changes
+
+-   caff0ca: fix for saving systems
+
+## 2.11.4
+
+### Patch Changes
+
+-   2e75589: Change condition and location of the password store warning
+
+## 2.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.3
+
+## 2.11.2
+
+### Patch Changes
+
+-   Updated dependencies [56235f8]
+    -   @sap-ux/telemetry@0.6.38
+    -   @sap-ux/fiori-generator-shared@0.13.33
+    -   @sap-ux/inquirer-common@0.9.2
+
 ## 2.11.1
 
 ### Patch Changes

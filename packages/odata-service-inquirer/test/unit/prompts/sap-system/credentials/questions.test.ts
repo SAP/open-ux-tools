@@ -49,6 +49,7 @@ describe('Test credentials prompts', () => {
     const promptNamespace = 'someNamespace';
     const systemUsernamePromptName = `${promptNamespace}:systemUsername`;
     const systemPasswordPromptName = `${promptNamespace}:systemPassword`;
+    const confirmCredentialStoragePromptName = `${promptNamespace}:storeSystemCredentials`;
 
     beforeAll(async () => {
         await initI18nOdataServiceInquirer();
@@ -324,9 +325,9 @@ describe('Test credentials prompts', () => {
         connectionValidatorMock.ignoreCertError = false;
 
         const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
-        const passwordPrompt = credentialsPrompts.find(
-            (question) => question.name === systemPasswordPromptName
-        ) as PasswordQuestion;
+        const confirmCredentialStoragePrompt = credentialsPrompts.find(
+            (question) => question.name === confirmCredentialStoragePromptName
+        ) as ConfirmQuestion;
 
         // Set up a connected system with newOrUpdated flag
         PromptState.odataService.connectedSystem = {
@@ -342,10 +343,13 @@ describe('Test credentials prompts', () => {
         };
 
         // Should show password store warning when system is new or updated
-        expect(passwordPrompt.additionalMessages?.('123')).toEqual({
+        expect(confirmCredentialStoragePrompt.additionalMessages?.(true)).toEqual({
             message: t('texts.passwordStoreWarning'),
             severity: Severity.warning
         });
+
+        // Don't show warning if user chooses not to store credentials
+        expect(confirmCredentialStoragePrompt.additionalMessages?.(false)).toBeUndefined();
     });
 
     test('should show store credentials prompt when conditions are met and hide when conditions are not met', async () => {

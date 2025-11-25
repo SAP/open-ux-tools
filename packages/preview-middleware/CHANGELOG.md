@@ -1,5 +1,82 @@
 # @sap-ux/preview-middleware
 
+## 0.23.58
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/adp-tooling@0.18.6
+    -   @sap-ux/system-access@0.6.28
+
+## 0.23.57
+
+### Patch Changes
+
+-   Updated dependencies [6872b31]
+    -   @sap-ux/adp-tooling@0.18.5
+
+## 0.23.56
+
+### Patch Changes
+
+-   d37ad9b: fix: adjust fallback UI5 version
+
+## 0.23.55
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+-   Updated dependencies [5475b5b]
+    -   @sap-ux/adp-tooling@0.18.4
+
+## 0.23.54
+
+### Patch Changes
+
+-   Updated dependencies [744fa93]
+    -   @sap-ux/adp-tooling@0.18.3
+
+## 0.23.53
+
+### Patch Changes
+
+-   Updated dependencies [92ec778]
+    -   @sap-ux/adp-tooling@0.18.2
+
+## 0.23.52
+
+### Patch Changes
+
+-   Updated dependencies [3017ce7]
+    -   @sap-ux/adp-tooling@0.18.1
+
+## 0.23.51
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/adp-tooling@0.18.0
+
+## 0.23.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.8
+
+## 0.23.49
+
+### Patch Changes
+
+-   81c99f9: chore - upgrade ui5 devDeps
+
+## 0.23.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.17.7
+
 ## 0.23.47
 
 ### Patch Changes

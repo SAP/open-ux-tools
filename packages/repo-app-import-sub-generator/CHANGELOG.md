@@ -1,5 +1,105 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.159
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/abap-deploy-config-writer@0.2.34
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/launch-config@0.10.35
+    -   @sap-ux/odata-service-inquirer@2.11.8
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/fiori-elements-writer@2.8.4
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.3.158
+
+### Patch Changes
+
+-   Updated dependencies [5eb784b]
+    -   @sap-ux/odata-service-inquirer@2.11.7
+
+## 0.3.157
+
+### Patch Changes
+
+-   Updated dependencies [1357412]
+    -   @sap-ux/odata-service-inquirer@2.11.6
+
+## 0.3.156
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.3
+-   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.3.155
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.2
+-   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.3.154
+
+### Patch Changes
+
+-   Updated dependencies [744fa93]
+    -   @sap-ux/fiori-elements-writer@2.8.1
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.3.153
+
+### Patch Changes
+
+-   Updated dependencies [caff0ca]
+    -   @sap-ux/odata-service-inquirer@2.11.5
+
+## 0.3.152
+
+### Patch Changes
+
+-   d2aae59: Resolve Transport request in adt app download logic
+
+## 0.3.151
+
+### Patch Changes
+
+-   Updated dependencies [aa2c7df]
+    -   @sap-ux/fiori-elements-writer@2.8.0
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.3.150
+
+### Patch Changes
+
+-   Updated dependencies [2e75589]
+    -   @sap-ux/odata-service-inquirer@2.11.4
+
+## 0.3.149
+
+### Patch Changes
+
+-   Updated dependencies [fef7496]
+    -   @sap-ux/ui5-info@0.13.2
+    -   @sap-ux/inquirer-common@0.9.3
+    -   @sap-ux/launch-config@0.10.34
+    -   @sap-ux/odata-service-inquirer@2.11.3
+
+## 0.3.148
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.33
+-   @sap-ux/inquirer-common@0.9.2
+-   @sap-ux/odata-service-inquirer@2.11.2
+-   @sap-ux/fiori-elements-writer@2.7.37
+
 ## 0.3.147
 
 ### Patch Changes
