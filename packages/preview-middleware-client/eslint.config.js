@@ -2,12 +2,13 @@ const { defineConfig } = require('eslint/config');
 const js = require('@eslint/js');
 
 const jsdoc = require('eslint-plugin-jsdoc');
-// TODO re-enable `@sap-ux/eslint-plugin-fiori-tools` after updating to eslint v9
-// const config  = require('@sap-ux/eslint-plugin-fiori-tools');
+const config  = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = defineConfig([
-// TODO re-enable `@sap-ux/eslint-plugin-fiori-tools` after updating to eslint v9
-    // ...config.defaultTS,
+    {
+        ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js']
+    },
+    ...config.defaultTS,
     {
         languageOptions: {
             ecmaVersion: 5,
@@ -63,7 +64,6 @@ module.exports = defineConfig([
     },
     {
         files: ['types/*.*'],
-
         rules: {
             '@typescript-eslint/no-namespace': 'off',
             'jsdoc/require-jsdoc': 'off'
