@@ -11,7 +11,8 @@ import type {
     ProjectType,
     ApplicationStructure,
     Package,
-    Manifest
+    Manifest,
+    AnnotationFile
 } from '../types';
 
 import {
@@ -27,9 +28,11 @@ import { getProject } from './info';
 import { findAllApps } from './search';
 
 import type { Editor } from 'mem-fs-editor';
-import { updateManifestJSON, updatePackageJSON } from '../file';
+import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file';
 import { FileName } from '../constants';
 import { getSpecification } from './specification';
+import { readFlexChanges } from './flex-changes';
+import { readCapServiceMetadataEdmx } from './cap';
 
 /**
  *
@@ -204,6 +207,72 @@ class ApplicationAccessImp implements ApplicationAccess {
      */
     async updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void> {
         await updateManifestJSON(this.app.manifest, manifest, memFs ?? this.options?.fs);
+    }
+
+    /**
+     * Reads and returns the parsed `manifest.json` file for the application.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise resolving to the parsed `manifest.json` content.
+     */
+    async readManifest(memFs?: Editor): Promise<Manifest> {
+        return readJSON<Manifest>(this.app.manifest, memFs ?? this.options?.fs);
+    }
+
+    /**
+     * Reads and returns all Flex Changes (`*.change` files) associated with the application.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise that resolves to an array of flex change files.
+     */
+    async readFlexChanges(memFs?: Editor): Promise<{
+        [key: string]: string;
+    }> {
+        return readFlexChanges(this.app.changes, memFs ?? this.options?.fs);
+    }
+
+    /**
+     * Reads and returns all annotation files associated with the application's main service.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise resolving to an array of annotation file descriptors.
+     */
+    async readAnnotationFiles(memFs?: Editor): Promise<AnnotationFile[]> {
+        const annotationData: AnnotationFile[] = [];
+        const mainServiceName = this.app.mainService ?? 'mainService';
+        const mainService = this.app?.services?.[mainServiceName];
+        if (!mainService) {
+            return [];
+        }
+        if (mainService.uri && (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs')) {
+            const serviceUri = mainService?.uri ?? '';
+            if (serviceUri) {
+                const edmx = await readCapServiceMetadataEdmx(this.root, serviceUri);
+                annotationData.push({
+                    fileContent: edmx,
+                    dataSourceUri: serviceUri
+                });
+            }
+        } else {
+            if (mainService.local) {
+                const serviceFile = await readFile(mainService.local, memFs ?? this.options?.fs);
+                annotationData.push({
+                    dataSourceUri: mainService.local,
+                    fileContent: serviceFile.toString()
+                });
+            }
+            const { annotations = [] } = mainService;
+            for (const annotation of annotations) {
+                if (annotation.local) {
+                    const annotationFile = await readFile(annotation.local, memFs ?? this.options?.fs);
+                    annotationData.push({
+                        dataSourceUri: annotation.local,
+                        fileContent: annotationFile.toString()
+                    });
+                }
+            }
+        }
+        return annotationData;
     }
 
     /**

@@ -1,5 +1,5 @@
 'use strict';
-const { getResourcePaths } = require('../../lib/utils');
+const { getResourcePaths } = require('./lib/utils');
 const { sourceCodePath, testCodePath } = getResourcePaths();
 module.exports = {
     overrides: [
