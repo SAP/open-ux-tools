@@ -246,7 +246,7 @@ function collectCodeLists(
  */
 function getPropertyValue(record: AnnotationRecord, propertyName: string): string | undefined {
     const property = record.propertyValues.find((prop) => prop.name === propertyName);
-    if (property && property.value.type === 'String') {
+    if (property?.value?.type === 'String') {
         const value = property.value as StringExpression;
         return value.String;
     }
