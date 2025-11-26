@@ -1,3 +1,5 @@
+import { join as joinPosix } from 'node:path/posix';
+
 import { ODataVersion } from '../base/odata-service';
 import { ServiceProvider } from '../base/service-provider';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
@@ -5,7 +7,14 @@ import { AppIndexService } from './app-index-service';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
 import { LayeredRepositoryService } from './lrep-service';
-import type { AbapCDSView, AtoSettings, BusinessObject, SystemInfo } from './types';
+import type {
+    AbapCDSView,
+    AtoSettings,
+    BusinessObject,
+    ExternalService,
+    ExternalServiceReference,
+    SystemInfo
+} from './types';
 import { TenantType } from './types';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
@@ -286,6 +295,46 @@ export class AbapServiceProvider extends ServiceProvider {
         generator.setContentType(this.getContentType(config));
         generator.configure(config, packageName || '$TMP');
         return generator;
+    }
+
+    /**
+     * Collects ValueListReferences annotation values from the service metadata and annotation files.
+     *
+     * @param references - Service references for which metadata should be fetched.
+     * @returns A list of ValueListReferences found in the metadata and annotations.
+     */
+    public async fetchExternalServices(references: ExternalServiceReference[]): Promise<ExternalService[]> {
+        const valueListReferences: ExternalService[] = [];
+        const allPromises = references.map(async (reference) => {
+            const { serviceRootPath, value } = reference;
+            const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
+            const externalService = this.service(externalServicePath);
+            try {
+                const data = await externalService.metadata();
+                if (reference.type === 'value-list') {
+                    valueListReferences.push({
+                        type: 'value-list',
+                        path: externalServicePath,
+                        target: reference.target,
+                        metadata: data
+                    });
+                } else if (reference.type === 'code-list') {
+                    valueListReferences.push({
+                        type: 'code-list',
+                        path: externalServicePath,
+                        metadata: data
+                    });
+                }
+            } catch (error) {
+                this.log.warn(
+                    `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
+                );
+            }
+        });
+
+        await Promise.allSettled(allPromises);
+
+        return valueListReferences;
     }
 
     /**

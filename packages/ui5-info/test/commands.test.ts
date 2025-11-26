@@ -105,14 +105,11 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             onlyNpmVersion: true
         }); // expect defaults
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.142.0' });
-        expect(retrievedUI5Versions.length).toEqual(9);
+        expect(retrievedUI5Versions.length).toEqual(8);
         expect(retrievedUI5Versions).toMatchInlineSnapshot(`
             [
               {
                 "version": "1.142.0",
-              },
-              {
-                "version": "1.141.0",
               },
               {
                 "version": "1.139.0",

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.10
+
+### Patch Changes
+
+-   5d0598d: feat: save service metadata referenced in ValueListReferences and CodeList annotations.
+
 ## 0.29.9
 
 ### Patch Changes
