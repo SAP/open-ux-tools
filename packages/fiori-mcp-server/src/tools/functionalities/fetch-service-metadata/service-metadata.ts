@@ -136,7 +136,7 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
     let services: ODataServiceInfo[] = [];
     try {
         services = await serviceProvider.catalog(ODataVersion.v4).listServices();
-    } catch (error) {
+    } catch {
         // no services found
     }
 
