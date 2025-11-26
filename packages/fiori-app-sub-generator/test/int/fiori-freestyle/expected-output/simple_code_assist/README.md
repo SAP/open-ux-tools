@@ -1,7 +1,7 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Tue Jun 24 2025 22:44:34 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Fri Nov 21 2025 14:53:21 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
@@ -13,7 +13,7 @@
 |**Namespace**<br>|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.82.2|
-|**Enable Code Assist Libraries**<br>True|
+|**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 

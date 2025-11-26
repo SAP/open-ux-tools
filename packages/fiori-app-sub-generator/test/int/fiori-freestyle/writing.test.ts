@@ -255,7 +255,7 @@ describe('Freestyle generation', () => {
                 name: testProjectName,
                 description: 'An SAP Fiori application.',
                 title: 'App Title',
-                enableCodeAssist: true,
+                enableCodeAssist: false,
                 ui5Theme: 'sap_fiori_3',
                 ui5Version: '1.82.2',
                 localUI5Version: '1.82.2',
