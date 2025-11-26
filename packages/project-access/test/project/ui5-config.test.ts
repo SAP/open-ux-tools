@@ -6,6 +6,7 @@ import {
     getAllUi5YamlFileNames,
     getMockDataPath,
     getMockServerConfig,
+    getPathMappings,
     getWebappPath,
     readUi5Yaml
 } from '../../src';
@@ -192,6 +193,115 @@ describe('Test readUi5Yaml()', () => {
               },
             }
         `);
+    });
+});
+
+describe('Test getPathMappings()', () => {
+    const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'path-mappings');
+
+    describe('Application type projects', () => {
+        test('Get path mappings from default application', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'default-application'));
+            expect(result).toEqual({
+                webappPath: join(samplesRoot, 'default-application', 'webapp')
+            });
+        });
+
+        test('Get path mappings from application with custom webapp mapping', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'custom-application'));
+            expect(result).toEqual({
+                webappPath: join(samplesRoot, 'custom-application', 'src', 'main', 'webapp')
+            });
+        });
+
+        test('Get custom webapp path mappings from mem-fs editor instance', async () => {
+            const memFs = create(createStorage());
+            const ui5YamlPath = join(samplesRoot, 'custom-application/ui5.yaml');
+            const ui5YamlContent = await readFile(ui5YamlPath, 'utf-8');
+            memFs.write(ui5YamlPath, ui5YamlContent);
+            memFs.writeJSON(join(samplesRoot, 'custom-application/package.json'), {});
+            const result = await getPathMappings(join(samplesRoot, 'custom-application'), memFs);
+            expect(result).toEqual({
+                webappPath: join(samplesRoot, 'custom-application/src/main/webapp')
+            });
+        });
+    });
+
+    describe('Library type projects', () => {
+        test('Get path mappings from default library', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'default-library'));
+            expect(result).toEqual({
+                srcPath: join(samplesRoot, 'default-library', 'src'),
+                testPath: join(samplesRoot, 'default-library', 'test')
+            });
+        });
+
+        test('Get path mappings from library with custom src and test mappings', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'custom-library'));
+            expect(result).toEqual({
+                srcPath: join(samplesRoot, 'custom-library', 'custom', 'src'),
+                testPath: join(samplesRoot, 'custom-library', 'custom', 'test')
+            });
+        });
+
+        test('Get custom library path mappings from mem-fs editor instance', async () => {
+            const memFs = create(createStorage());
+            const ui5YamlPath = join(samplesRoot, 'custom-library/ui5.yaml');
+            const ui5YamlContent = await readFile(ui5YamlPath, 'utf-8');
+            memFs.write(ui5YamlPath, ui5YamlContent);
+            memFs.writeJSON(join(samplesRoot, 'custom-library/package.json'), {});
+            const result = await getPathMappings(join(samplesRoot, 'custom-library'), memFs);
+            expect(result).toEqual({
+                srcPath: join(samplesRoot, 'custom-library/custom/src'),
+                testPath: join(samplesRoot, 'custom-library/custom/test')
+            });
+        });
+
+        test('Get path mappings from library with partial custom paths (only src)', async () => {
+            const memFs = create(createStorage());
+            const ui5YamlPath = join(samplesRoot, 'default-library/ui5.yaml');
+            const ui5YamlContent = await readFile(ui5YamlPath, 'utf-8');
+            const modifiedContent = ui5YamlContent + 'resources:\n  configuration:\n    paths:\n      src: custom/src\n';
+            memFs.write(ui5YamlPath, modifiedContent);
+            memFs.writeJSON(join(samplesRoot, 'default-library/package.json'), {});
+            const result = await getPathMappings(join(samplesRoot, 'default-library'), memFs);
+            expect(result).toEqual({
+                srcPath: join(samplesRoot, 'default-library/custom/src'),
+                testPath: join(samplesRoot, 'default-library', 'test')
+            });
+        });
+
+        test('Get path mappings from library with partial custom paths (only test)', async () => {
+            const memFs = create(createStorage());
+            const ui5YamlPath = join(samplesRoot, 'default-library/ui5.yaml');
+            const ui5YamlContent = await readFile(ui5YamlPath, 'utf-8');
+            const modifiedContent = ui5YamlContent + 'resources:\n  configuration:\n    paths:\n      test: custom/test\n';
+            memFs.write(ui5YamlPath, modifiedContent);
+            memFs.writeJSON(join(samplesRoot, 'default-library/package.json'), {});
+            const result = await getPathMappings(join(samplesRoot, 'default-library'), memFs);
+            expect(result).toEqual({
+                srcPath: join(samplesRoot, 'default-library', 'src'),
+                testPath: join(samplesRoot, 'default-library/custom/test')
+            });
+        });
+    });
+
+    describe('Edge cases', () => {
+        test('Return undefined when ui5.yaml does not exist', async () => {
+            const result = await getPathMappings(join(samplesRoot, 'no-ui5-yaml'));
+            expect(result).toBeUndefined();
+        });
+
+        test('Return undefined for unsupported project type', async () => {
+            const memFs = create(createStorage());
+            memFs.write(
+                join(samplesRoot, 'no-ui5-yaml/ui5.yaml'),
+                'specVersion: "3.0"\ntype: module\nmetadata:\n  name: test.module'
+            );
+            memFs.writeJSON(join(samplesRoot, 'no-ui5-yaml/package.json'), {});
+            const result = await getPathMappings(join(samplesRoot, 'no-ui5-yaml'), memFs);
+            expect(result).toBeUndefined();
+        });
     });
 });
 
