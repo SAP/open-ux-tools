@@ -68,8 +68,7 @@ It will use the configuration from the yaml file passed by cli or default to ui5
 sap-ux add cards-editor [path]
 ```
 - `-c | --config` path to project configuration file in YAML format, e.g.: -c ui5Custom.yaml
-`Note:` Adding the card generator configuration is not supported for CAP projects.
-- 
+ 
 ### [component-usages](#add-component-usages)<a id="add-component-usages"></a>
 Calling `sap-ux add component-usages` adds the component usages to an adaptation project.
 ```sh
