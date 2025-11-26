@@ -5,6 +5,7 @@ import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
 import { join } from 'node:path';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('mem-fs-editor', () => {
     const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
@@ -43,6 +44,19 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+    });
+
+    test('add cards-generator CAP', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+        // Test execution
+        const command = new Command('add');
+        addCardsEditorConfigCommand(command);
+        await command.parseAsync(testArgv([]));
+
+        // Flow check - CAP projects are now supported
+
         expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
     });
