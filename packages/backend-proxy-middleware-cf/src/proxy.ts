@@ -1,6 +1,7 @@
-import { Router } from 'express';
+import type connect from 'connect';
 import type { Url } from 'node:url';
 import type { Socket } from 'node:net';
+import { type Request, Router } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -8,6 +9,8 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { OAuthTokenProvider } from './token';
+
+export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
 /**
  * Creates proxy options for http-proxy-middleware.
@@ -20,26 +23,24 @@ export function createProxyOptions(targetUrl: string, logger: ToolsLogger): Opti
     return {
         target: targetUrl,
         changeOrigin: true,
-        pathRewrite: (strippedPath: string, req: IncomingMessage) => {
+        pathRewrite: (path: string, req: EnhancedIncomingMessage): string => {
             // Express router.use() strips the matched path from req.url,
             // use originalUrl to get the full path before Express stripped it
-            const originalUrl = (req as any).originalUrl || req.url || strippedPath;
-            const urlPath = originalUrl.split('?')[0];
+            const originalUrl = req.originalUrl ?? req.url ?? path;
+            const urlPath = originalUrl.split('?')?.[0];
             const queryString = originalUrl.includes('?') ? originalUrl.substring(originalUrl.indexOf('?')) : '';
             const fullPath = urlPath + queryString;
-            logger.debug(
-                `Forwarding full path: ${fullPath} (originalUrl=${originalUrl}, req.url=${req.url}, strippedPath=${strippedPath})`
-            );
+            logger.debug(`Rewrite path ${path} > ${fullPath}`);
             return fullPath;
         },
         on: {
             error: (
                 err: Error & { code?: string },
-                req: IncomingMessage & { next?: Function; originalUrl?: string },
+                req: EnhancedIncomingMessage & { next?: Function },
                 _res: ServerResponse | Socket,
                 _target: string | Partial<Url> | undefined
-            ) => {
-                logger.error(`Proxy error for ${req.originalUrl || req.url}: ${err.message}`);
+            ): void => {
+                logger.error(`Proxy error for ${req.originalUrl ?? req.url}: ${err.message}`);
                 if (typeof req.next === 'function') {
                     req.next(err);
                 }
