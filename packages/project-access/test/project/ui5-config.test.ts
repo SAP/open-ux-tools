@@ -261,7 +261,8 @@ describe('Test getPathMappings()', () => {
             const memFs = create(createStorage());
             const ui5YamlPath = join(samplesRoot, 'default-library/ui5.yaml');
             const ui5YamlContent = await readFile(ui5YamlPath, 'utf-8');
-            const modifiedContent = ui5YamlContent + 'resources:\n  configuration:\n    paths:\n      src: custom/src\n';
+            const modifiedContent =
+                ui5YamlContent + 'resources:\n  configuration:\n    paths:\n      src: custom/src\n';
             memFs.write(ui5YamlPath, modifiedContent);
             memFs.writeJSON(join(samplesRoot, 'default-library/package.json'), {});
             const result = await getPathMappings(join(samplesRoot, 'default-library'), memFs);
@@ -275,7 +276,8 @@ describe('Test getPathMappings()', () => {
             const memFs = create(createStorage());
             const ui5YamlPath = join(samplesRoot, 'default-library/ui5.yaml');
             const ui5YamlContent = await readFile(ui5YamlPath, 'utf-8');
-            const modifiedContent = ui5YamlContent + 'resources:\n  configuration:\n    paths:\n      test: custom/test\n';
+            const modifiedContent =
+                ui5YamlContent + 'resources:\n  configuration:\n    paths:\n      test: custom/test\n';
             memFs.write(ui5YamlPath, modifiedContent);
             memFs.writeJSON(join(samplesRoot, 'default-library/package.json'), {});
             const result = await getPathMappings(join(samplesRoot, 'default-library'), memFs);
