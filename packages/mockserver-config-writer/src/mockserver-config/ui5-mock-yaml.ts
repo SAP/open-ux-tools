@@ -60,12 +60,14 @@ export async function enhanceYaml(
     const dataSourcesConfig: DataSourceConfig[] = [];
     for (const dataSource in dataSources) {
         const localUri = dataSources[dataSource].settings?.localUri;
+        const resolveExternalServiceReferences = config?.resolveExternalServiceReferences?.[dataSource];
         dataSourcesConfig.push({
             serviceName: dataSource,
             servicePath: dataSources[dataSource].uri,
             metadataPath: localUri
                 ? `.${posix.sep}${relative(basePath, join(webappPath, localUri)).replaceAll(sep, posix.sep)}`
-                : undefined
+                : undefined,
+            resolveExternalServiceReferences
         });
     }
 
