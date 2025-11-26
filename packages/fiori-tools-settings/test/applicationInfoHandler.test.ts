@@ -33,11 +33,10 @@ describe('Application Info Settings', () => {
         expect(appInfoContents.latestGeneratedFiles).toContain(testPath);
     });
 
-    it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', async () => {
+    it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', () => {
         const testPath = 'test-file-path';
         writeApplicationInfoSettings(testPath);
         const executeCommand = jest.fn();
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for async commit
         loadApplicationInfoFromSettings(executeCommand);
         expect(executeCommand).toHaveBeenCalledWith(testPath);
     });
