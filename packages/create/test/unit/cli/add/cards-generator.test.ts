@@ -33,6 +33,11 @@ const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 describe('add/cards-generator', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
 
+    beforeEach(() => {
+        jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
