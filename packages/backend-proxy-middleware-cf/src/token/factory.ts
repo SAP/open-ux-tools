@@ -33,11 +33,11 @@ export function createManagerFromServiceKeys(serviceKeys: ServiceKeys, logger: T
         throw new Error('Invalid credentials: missing UAA URL');
     }
 
-    if (!uaa.clientid) {
+    if (!uaa?.clientid) {
         throw new Error('Invalid credentials: missing client ID');
     }
 
-    if (!uaa.clientsecret) {
+    if (!uaa?.clientsecret) {
         throw new Error('Invalid credentials: missing client secret');
     }
 

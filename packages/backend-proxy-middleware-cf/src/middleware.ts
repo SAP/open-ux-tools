@@ -23,7 +23,7 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware-cf' })]
     });
 
-    validateConfig(config, logger);
+    await validateConfig(config, logger);
 
     const tokenProvider = await createTokenProvider(config, logger);
     const router = setupProxyRoutes(config.paths, config.url, tokenProvider, logger);
