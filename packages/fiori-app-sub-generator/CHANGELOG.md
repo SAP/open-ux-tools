@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.9.0
+
+### Minor Changes
+
+-   cefffb1: Do not ask the user if they want to use code assist with their generated project or not.
+
 ## 0.8.9
 
 ### Patch Changes
