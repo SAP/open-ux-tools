@@ -2777,9 +2777,6 @@ importers:
       minimatch:
         specifier: 3.0.5
         version: 3.0.5
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
 
   packages/jest-runner-puppeteer:
     dependencies:
@@ -2793,9 +2790,6 @@ importers:
       jest-environment-node:
         specifier: 30.2.0
         version: 30.2.0
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
