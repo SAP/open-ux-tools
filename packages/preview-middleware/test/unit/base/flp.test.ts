@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { CARD_GENERATOR_DEFAULT, type TemplateConfig } from '../../../src/base/config';
-import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
+import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
@@ -1436,7 +1436,7 @@ describe('initAdp', () => {
     test('initAdp: throw an error if no adp project', async () => {
         const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
         try {
-            await initAdp(mockNonAdpProject, {} as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+            await flp.initAdp({} as AdpPreviewConfig);
         } catch (error) {
             expect(error).toBeDefined();
         }
@@ -1448,7 +1448,7 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
+        await flp.initAdp(config.adp);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
     });
@@ -1483,7 +1483,7 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(mockAdpProject, config.adp as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+        await flp.initAdp(config.adp as AdpPreviewConfig);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);

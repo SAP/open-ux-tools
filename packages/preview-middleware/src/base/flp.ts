@@ -1125,6 +1125,51 @@ export class FlpSandbox {
             await this.storeI18nKeysHandler(req, res);
         });
     }
+
+    /**
+     * Initialize the preview for an adaptation project.
+     *
+     * @param config configuration from the ui5.yaml
+     * @throws Error in case no manifest.appdescr_variant found
+     */
+    async initAdp(config: AdpPreviewConfig): Promise<void> {
+        const variant = await loadAppVariant(this.project);
+        const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
+        const layer = await adp.init(variant);
+
+        // CF ADP local dist mode: serve built resources directly and initialize FLP without backend merge
+        if (config.useLocal) {
+            const distPath = join(process.cwd(), config.useLocal);
+            const manifestPath = join(distPath, 'manifest.json');
+            const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
+
+            this.router.use('/', serveStatic(distPath));
+            this.logger.info(`Initialized CF ADP in useLocal mode, serving from ${config.useLocal}`);
+
+            configureRta(this.rta, layer, variant.id, false);
+            await this.init(manifest, variant.reference);
+            this.setupAdpCommonHandlers(adp);
+            return;
+        }
+
+        configureRta(this.rta, layer, variant.id, adp.isCloudProject);
+        const descriptor = adp.descriptor;
+        const { name, manifest } = descriptor;
+        await this.init(manifest, name, adp.resources, adp);
+        this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
+        this.setupAdpCommonHandlers(adp);
+    }
+
+    /**
+     * Setup common ADP middleware and handlers.
+     *
+     * @param adp AdpPreview instance
+     */
+    private setupAdpCommonHandlers(adp: AdpPreview): void {
+        this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
+        this.router.use(json());
+        adp.addApis(this.router);
+    }
 }
 
 /**
@@ -1180,18 +1225,6 @@ function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId
 }
 
 /**
- * Setup common ADP middleware and handlers.
- *
- * @param flpSandbox FlpSandbox instance
- * @param adp AdpPreview instance
- */
-function setupAdpCommonHandlers(flpSandbox: FlpSandbox, adp: AdpPreview): void {
-    flpSandbox.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
-    flpSandbox.router.use(json());
-    adp.addApis(flpSandbox.router);
-}
-
-/**
  * Load and parse the app variant descriptor.
  *
  * @param rootProject reference to the project
@@ -1212,48 +1245,4 @@ async function loadAppVariant(rootProject: ReaderCollection): Promise<Descriptor
     } catch (e) {
         throw new Error(`Failed to parse manifest.appdescr_variant: ${e.message}`);
     }
-}
-
-/**
- * Initialize the preview for an adaptation project.
- *
- * @param rootProject reference to the project
- * @param config configuration from the ui5.yaml
- * @param flpSandbox FlpSandbox instance
- * @param util middleware utilities provided by the UI5 CLI
- * @param logger logger instance
- * @throws Error in case no manifest.appdescr_variant found
- */
-export async function initAdp(
-    rootProject: ReaderCollection,
-    config: AdpPreviewConfig,
-    flpSandbox: FlpSandbox,
-    util: MiddlewareUtils,
-    logger: ToolsLogger
-): Promise<void> {
-    const variant = await loadAppVariant(rootProject);
-    const adp = new AdpPreview(config, rootProject, util, logger);
-    const layer = await adp.init(variant);
-
-    // CF ADP local dist mode: serve built resources directly and initialize FLP without backend merge
-    if (config.useLocal) {
-        const distPath = join(process.cwd(), config.useLocal);
-        const manifestPath = join(distPath, 'manifest.json');
-        const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
-
-        flpSandbox.router.use('/', serveStatic(distPath));
-        logger.info(`Initialized CF ADP in useLocal mode, serving from ${config.useLocal}`);
-
-        configureRta(flpSandbox.rta, layer, variant.id, false);
-        await flpSandbox.init(manifest, variant.reference);
-        setupAdpCommonHandlers(flpSandbox, adp);
-        return;
-    }
-
-    configureRta(flpSandbox.rta, layer, variant.id, adp.isCloudProject);
-    const descriptor = adp.descriptor;
-    const { name, manifest } = descriptor;
-    await flpSandbox.init(manifest, name, adp.resources, adp);
-    flpSandbox.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-    setupAdpCommonHandlers(flpSandbox, adp);
 }
