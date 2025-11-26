@@ -26,10 +26,5 @@
     "@sap/ux-ui5-tooling": "1",
     "rimraf": "3.0.2",
     "@sap/ux-specification": "UI5-1.71"
-  },
-  "ui5": {
-    "dependencies": [
-      "@sap/ux-ui5-tooling"
-    ]
   }
 }

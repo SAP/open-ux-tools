@@ -30,11 +30,5 @@
     "rimraf": "3.0.2",
     "@sap/ux-specification": "^1.102.4",
     "@sap-ux/ui5-middleware-fe-mockserver": "2"
-  },
-  "ui5": {
-    "dependencies": [
-      "@sap/ux-ui5-tooling",
-      "@sap-ux/ui5-middleware-fe-mockserver"
-    ]
   }
 }

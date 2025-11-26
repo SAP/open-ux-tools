@@ -51,9 +51,6 @@
         "supertest": "7.1.4",
         "yaml": "2.2.2"
     },
-    "ui5": {
-        "dependencies": []
-    },
     "engines": {
         "node": ">=20.x"
     }

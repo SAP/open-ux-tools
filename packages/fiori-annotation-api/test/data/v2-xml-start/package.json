@@ -29,10 +29,5 @@
 		"@ui5/logger": "2.0.0",
 		"@sap/ux-specification": "",
 		"@sap/ux-ui5-tooling": "1"
-	},
-	"ui5": {
-		"dependencies": [
-			"@sap/ux-ui5-tooling"
-		]
 	}
 }

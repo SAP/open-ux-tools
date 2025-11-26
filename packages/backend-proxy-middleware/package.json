@@ -54,10 +54,7 @@
         "yaml": "2.2.2",
         "connect": "^3.7.0",
         "@types/connect": "^3.4.38"
-    },
-    "ui5": {
-        "dependencies": []
-    },
+    }
     "engines": {
         "node": ">=20.x"
     }

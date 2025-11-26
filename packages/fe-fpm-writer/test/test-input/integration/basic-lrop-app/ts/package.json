@@ -26,12 +26,5 @@
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
     "ts-typecheck": "tsc --noEmit"
   },
-  "ui5": {
-    "dependencies": [
-      "@sap/ux-ui5-tooling",
-      "ui5-tooling-transpile",
-      "@sap-ux/ui5-middleware-fe-mockserver"
-    ]
-  },
   "sapux": true
 }
