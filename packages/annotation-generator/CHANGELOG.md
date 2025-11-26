@@ -1,5 +1,22 @@
 # @sap-ux/annotation-generator
 
+## 0.3.76
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+-   Updated dependencies [597834f]
+    -   @sap-ux/fiori-annotation-api@0.7.14
+
+## 0.3.75
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/fiori-annotation-api@0.7.13
+
 ## 0.3.74
 
 ### Patch Changes

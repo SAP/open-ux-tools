@@ -11,7 +11,7 @@ import { GUIDED_ANSWERS_EXTENSION_ID } from '@sap-ux/guided-answers-helper';
 import SystemsLogger from '../../utils/logger';
 
 /**
- * Class representing a system panel in the SAP Systems extension.
+ * Class representing a system panel in the extension.
  */
 export class SystemPanel implements Disposable {
     private panel?: WebviewPanel;

@@ -111,7 +111,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "$t(texts.authenticationFailed). Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -266,7 +266,7 @@
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None",
         "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
-        "authorization": "authorization",
-        "authentication": "authentication"
+        "authorizationFailed": "Authorization failed",
+        "authenticationFailed": "Authentication failed"
     }
 }
