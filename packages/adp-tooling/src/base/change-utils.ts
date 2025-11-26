@@ -86,7 +86,12 @@ export async function writeAnnotationChange(
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  * @returns {Promise<void>}
  */
-export async function writeChangeToFolder(projectPath: string, change: ManifestChangeProperties, fs: Editor, dir = ''): Promise<void> {
+export async function writeChangeToFolder(
+    projectPath: string,
+    change: ManifestChangeProperties,
+    fs: Editor,
+    dir = ''
+): Promise<void> {
     try {
         const webappPath = await getWebappPath(projectPath, fs);
         let targetFolderPath = path.join(webappPath, DirName.Changes);
