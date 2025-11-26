@@ -866,6 +866,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2777,9 +2780,6 @@ importers:
       minimatch:
         specifier: 3.0.5
         version: 3.0.5
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
 
   packages/jest-runner-puppeteer:
     dependencies:
@@ -2793,9 +2793,6 @@ importers:
       jest-environment-node:
         specifier: 30.2.0
         version: 30.2.0
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
@@ -3070,6 +3067,12 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.8
+        version: 0.10.8
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -3101,6 +3104,12 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
