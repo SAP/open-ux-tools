@@ -7,6 +7,7 @@ import { getRemoveCommands } from './remove';
 import { getGenerateCommands } from './generate';
 import { getChangeCommands } from './change';
 import { getConvertCommands } from './convert';
+import { getSetupCommands } from './setup';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -108,6 +109,15 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(changeCommands.commands)}`
     );
     program.addCommand(changeCommands);
+
+    // Handler for create-fiori setup <feature> ..
+    const setupCommands = getSetupCommands();
+    setupCommands.description(
+        `Command group for setting up SAP Fiori projects. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest setup [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(setupCommands.commands)}`
+    );
+    program.addCommand(setupCommands);
 
     return program;
 }
