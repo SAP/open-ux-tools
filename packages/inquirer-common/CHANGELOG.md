@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.9.5
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
+## 0.9.4
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.34
+-   @sap-ux/odata-service-writer@0.27.30
+-   @sap-ux/telemetry@0.6.39
+
 ## 0.9.3
 
 ### Patch Changes

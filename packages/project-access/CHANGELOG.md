@@ -1,5 +1,15 @@
 # @sap-ux/project-access
 
+## 1.32.9
+
+### Patch Changes
+
+-   7c09c8e: New public method for `ApplicationAccess`
+    -   `readManifest` - reads and returns the parsed `manifest.json` file for the application.
+    -   `readFlexChanges` - reads and returns all Flex Changes (`*.change` files) associated with the application.
+    -   `readAnnotationFiles` - reads and returns all annotation files associated with the application's main service.
+-   1c13c9c: fix: min cds version
+
 ## 1.32.8
 
 ### Patch Changes
