@@ -19,6 +19,7 @@ import { DirName } from '@sap-ux/project-access';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
 
 import type { ExternalServiceCollectionOptions } from '../types';
+import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 const INDENT_SIZE = 4;
 
@@ -35,7 +36,7 @@ export function writeExternalServiceMetadata(
     fs: Editor,
     webappPath: string,
     externalServices: ExternalService[],
-    serviceName = 'mainService',
+    serviceName = DEFAULT_DATASOURCE_NAME,
     servicePath?: string
 ): void {
     if (!externalServices.length || !servicePath) {
@@ -245,7 +246,7 @@ function collectCodeLists(
  */
 function getPropertyValue(record: AnnotationRecord, propertyName: string): string | undefined {
     const property = record.propertyValues.find((prop) => prop.name === propertyName);
-    if (property && property.value.type === 'String') {
+    if (property?.value?.type === 'String') {
         const value = property.value as StringExpression;
         return value.String;
     }

@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "@sap-ux/edmx-parser": "0.9.1",
-        "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/annotation-converter": "0.10.8",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
