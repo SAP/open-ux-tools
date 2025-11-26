@@ -3,7 +3,7 @@ import path from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-import { DirName } from '@sap-ux/project-access';
+import { DirName, getWebappPath } from '@sap-ux/project-access';
 import {
     TemplateFileName,
     type AnnotationsData,
@@ -32,18 +32,19 @@ interface InboundChange extends ManifestChangeProperties {
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} templatesPath - The path to the templates used for generating changes.
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function writeAnnotationChange(
+export async function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
     annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties | undefined,
     fs: Editor,
     templatesPath?: string
-): void {
+): Promise<void> {
     try {
-        const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
+        const webappPath = await getWebappPath(projectPath, fs);
+        const changesFolderPath = path.join(webappPath, DirName.Changes);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         if (change) {
@@ -83,11 +84,12 @@ export function writeAnnotationChange(
  * @param {ManifestChangeProperties} change - The change data to be written to the file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function writeChangeToFolder(projectPath: string, change: ManifestChangeProperties, fs: Editor, dir = ''): void {
+export async function writeChangeToFolder(projectPath: string, change: ManifestChangeProperties, fs: Editor, dir = ''): Promise<void> {
     try {
-        let targetFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
+        const webappPath = await getWebappPath(projectPath, fs);
+        let targetFolderPath = path.join(webappPath, DirName.Changes);
 
         if (dir) {
             targetFolderPath = path.join(targetFolderPath, dir);
@@ -210,11 +212,12 @@ export function getChangesByType(
  * @returns {InboundChangeData} An object containing the file path and the change object with the matching inbound ID.
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
-export function findChangeWithInboundId(projectPath: string, inboundId: string): InboundChangeData {
+export async function findChangeWithInboundId(projectPath: string, inboundId: string): Promise<InboundChangeData> {
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes);
+    const webappPath = await getWebappPath(projectPath);
+    const pathToInboundChangeFiles = path.join(webappPath, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
