@@ -41,7 +41,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
 }
 
 /**
- * Get path mappings depending on project type.
+ * Get path mappings defined in 'ui5.yaml' depending on the project type defined in 'ui5.yaml'.
  *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
