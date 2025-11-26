@@ -353,7 +353,6 @@ function getBaseAppConfig(
             ui5Libs: []
         },
         appOptions: {
-            codeAssist: project.enableCodeAssist,
             eslint: project.enableEslint,
             typescript: project.enableTypeScript,
             sapux: project.sapux,

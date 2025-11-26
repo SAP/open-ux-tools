@@ -29,6 +29,7 @@ export interface Project {
     localUI5Version: string;
     sapux?: boolean;
     skipAnnotations?: boolean;
+    /** @deprecated Code assist prompt is hidden and this property is no longer used */
     enableCodeAssist?: boolean;
     enableEslint?: boolean;
     enableTypeScript?: boolean;
