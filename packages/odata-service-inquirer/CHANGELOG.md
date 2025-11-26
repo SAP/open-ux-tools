@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.9
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+-   Updated dependencies [597834f]
+    -   @sap-ux/inquirer-common@0.9.5
+
 ## 2.11.8
 
 ### Patch Changes
