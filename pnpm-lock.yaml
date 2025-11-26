@@ -867,8 +867,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -3074,8 +3074,8 @@ importers:
   packages/odata-service-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/edmx-parser':
         specifier: 0.9.1
         version: 0.9.1
