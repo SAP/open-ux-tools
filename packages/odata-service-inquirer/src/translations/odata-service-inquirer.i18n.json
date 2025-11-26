@@ -206,6 +206,10 @@
         "smartVariantManagement": {
             "message": "Enable Smart Variant Management",
             "hint": "Enables page level variant."
+        },
+        "valueHelpDownload": {
+            "message": "The service contains references to value help services. Do you want to download the associated metadata during generation (this may increase generation time).",
+            "hint": "Download value help metadata for improved user experience with dropdowns and search helps."
         }
     },
     "errors": {
@@ -256,7 +260,8 @@
         "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft.",
         "certificateErrors": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}.",
         "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
-        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs."
+        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs.",
+        "noExternalServiceMetdataFetched": "No external service metadata were fetched. $t(texts.seeLogForDetails)."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
