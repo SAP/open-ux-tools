@@ -305,6 +305,9 @@ export async function createUI5ApplicationPromptOptions(
         [ui5AppInquirerPromptNames.enableTypeScript]: {
             default: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
         },
+        [ui5AppInquirerPromptNames.enableCodeAssist]: {
+            hide: true
+        },
         [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
             hide: service.capService?.capType === 'Java'
         }
@@ -313,7 +316,6 @@ export async function createUI5ApplicationPromptOptions(
 
     // Configure the prompts which should be hidden behind the advanced option switch
     const advancedPrompts = [
-        ui5AppInquirerPromptNames.enableCodeAssist,
         ui5AppInquirerPromptNames.skipAnnotations,
         ui5AppInquirerPromptNames.enableEslint,
         ui5AppInquirerPromptNames.ui5Theme
