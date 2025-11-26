@@ -1,5 +1,21 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.9.1
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+    -   @sap-ux/launch-config@0.10.36
+    -   @sap-ux/ui5-application-inquirer@0.15.37
+    -   @sap-ux/odata-service-inquirer@2.11.10
+
+## 0.9.0
+
+### Minor Changes
+
+-   cefffb1: Do not ask the user if they want to use code assist with their generated project or not.
+
 ## 0.8.9
 
 ### Patch Changes
