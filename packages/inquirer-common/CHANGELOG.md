@@ -1,5 +1,18 @@
 # @sap-ux/inquirer-common
 
+## 0.9.6
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+
+## 0.9.5
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
 ## 0.9.4
 
 ### Patch Changes
