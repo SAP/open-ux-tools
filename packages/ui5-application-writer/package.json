@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
-        "@ui5/manifest": "1.76.0",
+        "@ui5/manifest": "1.81.0",
         "ejs": "3.1.10",
         "i18next": "25.3.0",
         "lodash": "4.17.21",
