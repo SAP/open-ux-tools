@@ -8,14 +8,18 @@ import {
     appInfoFilePath,
     defaultAppInfoContents
 } from '../src';
+import { promises as fsPromises } from 'node:fs';
 
 describe('Application Info Settings', () => {
     let fs: Editor;
 
-    beforeEach(() => {
-        fs = create(createStorage());
+    beforeEach(async () => {
         // Ensure a clean state before each test
-        fs.exists(appInfoFilePath) && fs.delete(appInfoFilePath);
+        await fsPromises.rm(appInfoFilePath).catch(() => {
+            // Ignore errors if the file does not exist
+        });
+
+        fs = create(createStorage());
     });
 
     afterEach(() => {
@@ -29,11 +33,12 @@ describe('Application Info Settings', () => {
         expect(appInfoContents.latestGeneratedFiles).toContain(testPath);
     });
 
-    it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', () => {
+    it('writeApplicationInfoSettings should add a file path to appInfo.json when mem-fs editor not provided', async () => {
         const testPath = 'test-file-path';
-        writeApplicationInfoSettings(testPath, fs);
+        writeApplicationInfoSettings(testPath);
         const executeCommand = jest.fn();
-        loadApplicationInfoFromSettings(executeCommand, fs);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for async commit
+        loadApplicationInfoFromSettings(executeCommand);
         expect(executeCommand).toHaveBeenCalledWith(testPath);
     });
 
