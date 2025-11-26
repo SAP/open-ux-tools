@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.2
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
 ## 0.4.1
 
 ### Patch Changes
