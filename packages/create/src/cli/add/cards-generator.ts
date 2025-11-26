@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Add the cards-editor command.
