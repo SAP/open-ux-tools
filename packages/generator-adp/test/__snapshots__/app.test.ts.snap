@@ -371,12 +371,6 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 		"type": "git",
 		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
 	},
-	"ui5": {
-		"dependencies": [
-			"@sap/ui5-builder-webide-extension",
-			"@ui5/task-adaptation"
-		]
-	},
 	"devDependencies": {
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
 		"@sapui5/ts-types": "^1.141.2",
