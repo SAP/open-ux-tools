@@ -3,7 +3,7 @@ import type { Url } from 'node:url';
 import type { Socket } from 'node:net';
 import { type Request, Router } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import type { ToolsLogger } from '@sap-ux/logger';

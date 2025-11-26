@@ -7,7 +7,8 @@ import type {
     AppRouterType,
     CfConfig,
     CFApp,
-    ServiceInfo
+    ServiceInfo,
+    HTML5Content
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -24,7 +25,6 @@ import {
     getOAuthPathsFromXsApp,
     getBackendUrlFromServiceKeys
 } from '@sap-ux/adp-tooling';
-import type { HTML5Content } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';

@@ -1237,7 +1237,7 @@ async function loadAppVariant(rootProject: ReaderCollection): Promise<Descriptor
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
     try {
-        const content = (await appVariant.getString()) as string;
+        const content = await appVariant.getString();
         if (!content || content.trim() === '') {
             throw new Error('ADP configured but manifest.appdescr_variant file is empty.');
         }
