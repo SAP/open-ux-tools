@@ -76,13 +76,11 @@ description: Test MTA Project for CF Writer Tests
     "state": "modified",
   },
   "../minimal-cf/test-cf-project/.gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
     "state": "modified",
   },
   "../minimal-cf/test-cf-project/package.json": Object {
@@ -94,7 +92,8 @@ UIAdaptation*.html
 	\\"scripts\\": {
 		\\"prestart\\": \\"npm run build\\",
 		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"build\\": \\"npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip\\",
+		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
@@ -122,9 +121,9 @@ UIAdaptation*.html
 ",
     "state": "modified",
   },
-  "../minimal-cf/test-cf-project/ui5-build.yaml": Object {
+  "../minimal-cf/test-cf-project/ui5.yaml": Object {
     "contents": "---
-specVersion: \\"2.2\\"
+specVersion: \\"3.1\\"
 type: application
 metadata:
   name: test-cf-project
@@ -145,20 +144,6 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
-",
-    "state": "modified",
-  },
-  "../minimal-cf/test-cf-project/ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test-cf-project
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -175,6 +160,8 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          useLocal: dist
 ",
     "state": "modified",
   },
@@ -323,13 +310,11 @@ description: Test MTA Project for CF Writer Tests
     "state": "modified",
   },
   "test-cf-project/.gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
     "state": "modified",
   },
   "test-cf-project/package.json": Object {
@@ -341,7 +326,8 @@ UIAdaptation*.html
 	\\"scripts\\": {
 		\\"prestart\\": \\"npm run build\\",
 		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"build\\": \\"npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip\\",
+		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
@@ -369,9 +355,9 @@ UIAdaptation*.html
 ",
     "state": "modified",
   },
-  "test-cf-project/ui5-build.yaml": Object {
+  "test-cf-project/ui5.yaml": Object {
     "contents": "---
-specVersion: \\"2.2\\"
+specVersion: \\"3.1\\"
 type: application
 metadata:
   name: test-cf-project
@@ -392,20 +378,6 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
-",
-    "state": "modified",
-  },
-  "test-cf-project/ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test-cf-project
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -422,6 +394,8 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          useLocal: dist
 ",
     "state": "modified",
   },
@@ -575,13 +549,11 @@ description: Test MTA Project for CF Writer Tests
     "state": "modified",
   },
   "../managed-approuter/test-cf-project/.gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
     "state": "modified",
   },
   "../managed-approuter/test-cf-project/package.json": Object {
@@ -593,7 +565,8 @@ UIAdaptation*.html
 	\\"scripts\\": {
 		\\"prestart\\": \\"npm run build\\",
 		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"build\\": \\"npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip\\",
+		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
@@ -621,9 +594,9 @@ UIAdaptation*.html
 ",
     "state": "modified",
   },
-  "../managed-approuter/test-cf-project/ui5-build.yaml": Object {
+  "../managed-approuter/test-cf-project/ui5.yaml": Object {
     "contents": "---
-specVersion: \\"2.2\\"
+specVersion: \\"3.1\\"
 type: application
 metadata:
   name: test-cf-project
@@ -644,20 +617,6 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
-",
-    "state": "modified",
-  },
-  "../managed-approuter/test-cf-project/ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test-cf-project
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -674,6 +633,8 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          useLocal: dist
 ",
     "state": "modified",
   },
@@ -796,13 +757,11 @@ description: Test MTA Project for CF Writer Tests
     "state": "modified",
   },
   "../minimal-cf/test-cf-project/.gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
     "state": "modified",
   },
   "../minimal-cf/test-cf-project/package.json": Object {
@@ -814,7 +773,8 @@ UIAdaptation*.html
 	\\"scripts\\": {
 		\\"prestart\\": \\"npm run build\\",
 		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"build\\": \\"npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip\\",
+		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
@@ -842,9 +802,9 @@ UIAdaptation*.html
 ",
     "state": "modified",
   },
-  "../minimal-cf/test-cf-project/ui5-build.yaml": Object {
+  "../minimal-cf/test-cf-project/ui5.yaml": Object {
     "contents": "---
-specVersion: \\"2.2\\"
+specVersion: \\"3.1\\"
 type: application
 metadata:
   name: test-cf-project
@@ -865,20 +825,6 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
-",
-    "state": "modified",
-  },
-  "../minimal-cf/test-cf-project/ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test-cf-project
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -895,6 +841,8 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          useLocal: dist
 ",
     "state": "modified",
   },
@@ -1079,13 +1027,11 @@ description: Test MTA Project for CF Writer Tests
     "state": "modified",
   },
   "test-cf-project/.gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
     "state": "modified",
   },
   "test-cf-project/package.json": Object {
@@ -1097,7 +1043,8 @@ UIAdaptation*.html
 	\\"scripts\\": {
 		\\"prestart\\": \\"npm run build\\",
 		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"build\\": \\"npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip\\",
+		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
@@ -1125,9 +1072,9 @@ UIAdaptation*.html
 ",
     "state": "modified",
   },
-  "test-cf-project/ui5-build.yaml": Object {
+  "test-cf-project/ui5.yaml": Object {
     "contents": "---
-specVersion: \\"2.2\\"
+specVersion: \\"3.1\\"
 type: application
 metadata:
   name: test-cf-project
@@ -1148,20 +1095,6 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
-",
-    "state": "modified",
-  },
-  "test-cf-project/ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test-cf-project
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -1178,6 +1111,8 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          useLocal: dist
 ",
     "state": "modified",
   },
@@ -1305,13 +1240,11 @@ description: Test MTA Project for CF Writer Tests
     "state": "modified",
   },
   "test-cf-project/.gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
     "state": "modified",
   },
   "test-cf-project/package.json": Object {
@@ -1323,7 +1256,8 @@ UIAdaptation*.html
 	\\"scripts\\": {
 		\\"prestart\\": \\"npm run build\\",
 		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"build\\": \\"npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip\\",
+		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
 		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
@@ -1351,9 +1285,9 @@ UIAdaptation*.html
 ",
     "state": "modified",
   },
-  "test-cf-project/ui5-build.yaml": Object {
+  "test-cf-project/ui5.yaml": Object {
     "contents": "---
-specVersion: \\"2.2\\"
+specVersion: \\"3.1\\"
 type: application
 metadata:
   name: test-cf-project
@@ -1374,20 +1308,6 @@ builder:
         space: space-guid
         sapCloudService: test-solution
         serviceInstanceName: test-service
-",
-    "state": "modified",
-  },
-  "test-cf-project/ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test-cf-project
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -1404,6 +1324,8 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          useLocal: dist
 ",
     "state": "modified",
   },

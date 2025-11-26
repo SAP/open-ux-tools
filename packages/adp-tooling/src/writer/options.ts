@@ -388,7 +388,7 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
     if (oauthPaths && oauthPaths.length > 0 && backendUrl) {
         ui5Config.addCustomMiddleware([
             {
-                name: 'cf-oauth-middleware',
+                name: 'backend-proxy-middleware-cf',
                 afterMiddleware: 'compression',
                 configuration: {
                     url: backendUrl,
@@ -401,7 +401,7 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
                 ui5: ui5ConfigOptions,
                 backend: []
             },
-            'cf-oauth-middleware'
+            'backend-proxy-middleware-cf'
         );
     } else {
         ui5Config.addFioriToolsProxyMiddleware(

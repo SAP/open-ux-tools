@@ -20,14 +20,14 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
     const config = options.configuration || {};
     const logger = new ToolsLogger({
         logLevel: config.debug ? LogLevel.Debug : LogLevel.Info,
-        transports: [new UI5ToolingTransport({ moduleName: 'cf-oauth-middleware' })]
+        transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware-cf' })]
     });
 
-    validateConfig(config, logger);
+    await validateConfig(config, logger);
 
     const tokenProvider = await createTokenProvider(config, logger);
     const router = setupProxyRoutes(config.paths, config.url, tokenProvider, logger);
-    logger.info(`CF OAuth middleware initialized: url=${config.url}, paths=${config.paths.join(', ')}`);
+    logger.info(`Backend proxy middleware (CF) initialized: url=${config.url}, paths=${config.paths.join(', ')}`);
 
     return router as unknown as RequestHandler;
 };

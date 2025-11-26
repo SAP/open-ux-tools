@@ -49,6 +49,9 @@
       "path": "packages/axios-extension"
     },
     {
+      "path": "packages/backend-proxy-middleware-cf"
+    },
+    {
       "path": "packages/backend-proxy-middleware"
     },
     {
@@ -71,9 +74,6 @@
     },
     {
       "path": "packages/cf-deploy-config-writer"
-    },
-    {
-      "path": "packages/cf-oauth-middleware"
     },
     {
       "path": "packages/control-property-editor-common"

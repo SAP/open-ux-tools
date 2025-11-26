@@ -111,7 +111,7 @@ describe('Target Environment', () => {
             const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig);
 
             const validateResult = prompt.validate!('ABAP');
-            expect(mockValidateEnvironment).toHaveBeenCalledWith('ABAP', true, mockVscode);
+            expect(mockValidateEnvironment).toHaveBeenCalledWith('ABAP', true);
             expect(validateResult).toBeUndefined();
         });
 
