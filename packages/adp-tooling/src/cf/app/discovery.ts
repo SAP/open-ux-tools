@@ -82,8 +82,10 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
         path = path.replace(/\$\d+/g, '');
         // Clean up any remaining regex characters at the end
         path = path.replace(/\/?\*$/, '');
-        // Normalize double slashes to single slash
-        path = path.replace(/\/+/g, '/');
+        // Normalize multiple consecutive slashes to single slash
+        while (path.includes('//')) {
+            path = path.replaceAll('//', '/');
+        }
 
         if (path) {
             pathsSet.add(path);
