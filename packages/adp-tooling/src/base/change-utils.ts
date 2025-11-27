@@ -214,14 +214,15 @@ export function getChangesByType(
  *
  * @param {string} projectPath - The root path of the project.
  * @param {string} inboundId - The inbound ID to search for within change files.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {InboundChangeData} An object containing the file path and the change object with the matching inbound ID.
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
-export async function findChangeWithInboundId(projectPath: string, inboundId: string): Promise<InboundChangeData> {
+export async function findChangeWithInboundId(projectPath: string, inboundId: string, fs: Editor): Promise<InboundChangeData> {
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const webappPath = await getWebappPath(projectPath);
+    const webappPath = await getWebappPath(projectPath, fs);
     const pathToInboundChangeFiles = path.join(webappPath, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {

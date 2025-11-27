@@ -77,7 +77,7 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: InboundData): Promise<void> {
-        const { changeWithInboundId, filePath } = await findChangeWithInboundId(this.projectPath, data.inboundId);
+        const { changeWithInboundId, filePath } = await findChangeWithInboundId(this.projectPath, data.inboundId, this.fs);
         const timestamp = Date.now();
 
         if (!changeWithInboundId) {

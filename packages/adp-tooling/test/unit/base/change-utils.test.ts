@@ -1,5 +1,5 @@
 import path, { resolve } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { renderFile } from 'ejs';
@@ -26,6 +26,7 @@ import {
     writeAnnotationChange,
     writeChangeToFolder
 } from '../../../src/base/change-utils';
+import {create as createStorage} from "mem-fs";
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -265,6 +266,7 @@ describe('Change Utils', () => {
     describe('findChangeWithInboundId', () => {
         const mockProjectPath = '/mock/project/path';
         const mockInboundId = 'mockInboundId';
+        const memFs = create(createStorage());
 
         beforeEach(() => {
             jest.resetAllMocks();
@@ -277,7 +279,7 @@ describe('Change Utils', () => {
         it('should return empty results if the directory does not exist', async () => {
             existsSyncMock.mockReturnValue(false);
 
-            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
         });
@@ -286,7 +288,7 @@ describe('Change Utils', () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([]);
 
-            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
         });
@@ -299,7 +301,7 @@ describe('Change Utils', () => {
             ]);
             readFileSyncMock.mockReturnValue(JSON.stringify({ content: { inboundId: mockInboundId } }));
 
-            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({
                 filePath: expect.stringContaining('id_changeInbound.change'),
@@ -314,7 +316,7 @@ describe('Change Utils', () => {
                 throw new Error('Read file error');
             });
 
-            await expect(() => findChangeWithInboundId(mockProjectPath, mockInboundId)).rejects.toThrow(
+            await expect(() => findChangeWithInboundId(mockProjectPath, mockInboundId, memFs)).rejects.toThrow(
                 'Could not find change with inbound id'
             );
         });
