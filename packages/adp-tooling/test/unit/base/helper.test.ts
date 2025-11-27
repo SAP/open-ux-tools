@@ -6,7 +6,6 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { Inbound } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 import {
     getVariant,
@@ -16,7 +15,8 @@ import {
     updateVariant,
     isTypescriptSupported,
     filterAndMapInboundsToManifest,
-    readUi5Config
+    readUi5Config,
+    extractCfBuildTask
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
@@ -329,6 +329,44 @@ describe('helper', () => {
             const result = filterAndMapInboundsToManifest([]);
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('extractCfBuildTask', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should return CF build task configuration when found', () => {
+            const mockBuildTask = {
+                target: {
+                    url: '/cf.example',
+                    client: '100'
+                },
+                serviceInstance: 'test-service-instance'
+            };
+
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({
+                    configuration: mockBuildTask
+                })
+            } as unknown as UI5Config;
+
+            const result = extractCfBuildTask(mockUi5Config);
+
+            expect(mockUi5Config.findCustomTask).toHaveBeenCalledWith('app-variant-bundler-build');
+            expect(result).toEqual(mockBuildTask);
+        });
+
+        test('should throw error when build task configuration is undefined', () => {
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({
+                    configuration: undefined
+                })
+            } as unknown as UI5Config;
+
+            expect(() => extractCfBuildTask(mockUi5Config)).toThrow('No CF ADP project found');
+            expect(mockUi5Config.findCustomTask).toHaveBeenCalledWith('app-variant-bundler-build');
         });
     });
 });
