@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.14
+
+### Patch Changes
+
+-   bf7e266: Add missing 'express' dependency
+
 ## 0.10.13
 
 ### Patch Changes
