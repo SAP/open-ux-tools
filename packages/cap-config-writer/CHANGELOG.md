@@ -1,5 +1,22 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.26
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.35
+-   @sap-ux/project-access@1.32.10
+
+## 0.12.25
+
+### Patch Changes
+
+-   1c13c9c: fix: min cds version
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/fiori-generator-shared@0.13.34
+
 ## 0.12.24
 
 ### Patch Changes
