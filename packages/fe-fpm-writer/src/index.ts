@@ -4,6 +4,9 @@ export { generateCustomPage, generateObjectPage, generateListReport } from './pa
 export { CustomAction, TargetControl } from './action/types';
 export { generateCustomAction } from './action';
 
+export { ActionMenu, TargetControl as ActionMenuTargetControl } from './action-menu/types';
+export { generateActionMenu } from './action-menu';
+
 export { CustomTableColumn } from './column/types';
 export { generateCustomColumn } from './column';
 

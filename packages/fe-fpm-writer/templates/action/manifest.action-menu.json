@@ -1,0 +1,10 @@
+{
+    "<%- name %>": {
+        "text": "<%- settings.text %>",
+        "menu": <%- JSON.stringify(settings.actions) %><%if (settings.position) {%>,
+        "position": {
+            "placement": "<%- settings.position.placement %>"<%if (settings.position.anchor !== undefined) {%>,
+            "anchor": "<%- settings.position.anchor %>"<% } %>
+        }<% } %>
+    }
+}
