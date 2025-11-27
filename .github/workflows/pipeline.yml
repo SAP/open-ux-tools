@@ -45,11 +45,14 @@ jobs:
             - name: Run build
               run: pnpm run build
               env:
-                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
+            - name: Run lint on forks
+              if: github.event.pull_request.head.repo.full_name != github.repository
+              run: pnpm run lint
             - name: Run unit tests
               run: pnpm run test --tuiAutoExit
               env:
-                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
             - name: Check for changeset files
               id: check_changeset_files
               uses: andstor/file-existence-action@v3
@@ -75,7 +78,7 @@ jobs:
             - name: Run integration tests
               run: pnpm run test:integration
               env:
-                  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                  NX_CLOUD_ACCESS_TOKEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NX_CLOUD_ACCESS_TOKEN || '' }}
             - name: Upload playwright reports
               if: failure()
               uses: actions/upload-artifact@v4
