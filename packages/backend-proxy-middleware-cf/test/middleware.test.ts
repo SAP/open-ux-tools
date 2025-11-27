@@ -107,6 +107,12 @@ describe('backend-proxy-middleware-cf', () => {
             );
         });
 
+        test('throws error configuration is missing', async () => {
+            await expect(getTestServer(undefined as unknown as CfOAuthMiddlewareConfig)).rejects.toThrow(
+                'Backend proxy middleware (CF) has no configuration.'
+            );
+        });
+
         test('throws error when validation fails', async () => {
             const config: CfOAuthMiddlewareConfig = {
                 url: '/backend.example',
