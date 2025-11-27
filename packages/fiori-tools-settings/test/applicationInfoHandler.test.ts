@@ -8,11 +8,17 @@ import {
     appInfoFilePath,
     defaultAppInfoContents
 } from '../src';
+import { promises as fsPromises } from 'node:fs';
 
 describe('Application Info Settings', () => {
     let fs: Editor;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+        // Ensure a clean state before each test
+        await fsPromises.rm(appInfoFilePath).catch(() => {
+            // Ignore errors if the file does not exist
+        });
+
         fs = create(createStorage());
     });
 
