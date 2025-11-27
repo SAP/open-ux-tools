@@ -1139,13 +1139,7 @@ export class FlpSandbox {
 
         // CF ADP local dist mode: serve built resources directly and initialize FLP without backend merge
         if (config.useLocal) {
-            const distPath = join(process.cwd(), config.useLocal);
-            const manifestPath = join(distPath, 'manifest.json');
-            const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
-
-            this.router.use('/', serveStatic(distPath));
-            this.logger.info(`Initialized CF ADP in useLocal mode, serving from ${config.useLocal}`);
-
+            const manifest = this.setupUseLocalMode(config.useLocal);
             configureRta(this.rta, layer, variant.id, false);
             await this.init(manifest, variant.reference);
             this.setupAdpCommonHandlers(adp);
@@ -1169,6 +1163,19 @@ export class FlpSandbox {
         this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         this.router.use(json());
         adp.addApis(this.router);
+    }
+
+    /**
+     * Setup the use local mode for the ADP project.
+     *
+     * @param useLocal path to the dist folder
+     * @returns the manifest
+     */
+    private setupUseLocalMode(useLocal: string): Manifest {
+        const manifest = readLocalManifest(useLocal);
+        this.router.use('/', serveStatic(useLocal));
+        this.logger.info(`Initialized CF ADP in useLocal mode, serving from ${useLocal}`);
+        return manifest;
     }
 }
 
@@ -1222,6 +1229,18 @@ function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId
     for (const editor of rta.endpoints) {
         editor.pluginScript ??= 'open/ux/preview/client/adp/init';
     }
+}
+
+/**
+ * Read the manifest from the local dist folder.
+ *
+ * @param useLocal path to the dist folder
+ * @returns the manifest
+ */
+function readLocalManifest(useLocal: string): Manifest {
+    const distPath = join(process.cwd(), useLocal);
+    const manifestPath = join(distPath, 'manifest.json');
+    return JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
 }
 
 /**
