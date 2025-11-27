@@ -8,7 +8,6 @@
   "devDependencies": {
     "@ui5/cli": "^2.14.1",
     "@sap/ux-ui5-tooling": "1",
-    "@sap/ux-specification": "UI5-1.105",
     "@sap/ux-ui5-fe-mockserver-middleware": "1"
   },
   "scripts": {

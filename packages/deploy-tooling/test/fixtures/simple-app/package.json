@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "devDependencies": {
-        "@ui5/cli": "2.14.1",
+        "@ui5/cli": "^4.0.0",
         "ui5-tooling-transpile": "^0.2.0",
         "@sap-ux/abap-deploy-task": "../../"
     },
