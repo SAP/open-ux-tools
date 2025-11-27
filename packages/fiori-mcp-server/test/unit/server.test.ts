@@ -38,9 +38,9 @@ describe('FioriFunctionalityServer', () => {
         // Check initialization
         expect(Server).toHaveBeenCalledWith(
             { name: 'fiori-mcp', version: expect.any(String) },
-            { capabilities: { tools: {} } }
+            { capabilities: { tools: {}, prompts: {} } }
         );
-        expect(setRequestHandlerMock).toHaveBeenCalledTimes(2);
+        expect(setRequestHandlerMock).toHaveBeenCalledTimes(4);
     });
 
     test('setup tools', async () => {
@@ -53,7 +53,8 @@ describe('FioriFunctionalityServer', () => {
             'list_fiori_apps',
             'list_functionality',
             'get_functionality_details',
-            'execute_functionality'
+            'execute_functionality',
+            'get_fiori_rules'
         ]);
     });
 
@@ -266,6 +267,31 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('get_fiori_rules', async () => {
+            const getFioriRulesSpy = jest.spyOn(tools, 'getFioriRules').mockReturnValue('# Rules for Fiori...');
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'get_fiori_rules',
+                    arguments: {}
+                }
+            });
+            expect(getFioriRulesSpy).toHaveBeenCalledTimes(1);
+            expect(result.content).toEqual([
+                {
+                    text: '# Rules for Fiori...',
+                    type: 'text'
+                }
+            ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'get_fiori_rules',
+                { tool: 'get_fiori_rules', functionalityId: undefined },
+                undefined
+            );
+        });
+
         test('Unknown tool', async () => {
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
@@ -280,7 +306,7 @@ describe('FioriFunctionalityServer', () => {
             });
             expect(result.content).toEqual([
                 {
-                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    text: 'Error: Unknown tool: unknown-tool-id. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality, get_fiori_rules.',
                     type: 'text'
                 }
             ]);
@@ -292,6 +318,57 @@ describe('FioriFunctionalityServer', () => {
                 },
                 undefined
             );
+        });
+    });
+
+    describe('Prompts', () => {
+        test('list_prompts', async () => {
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB();
+            expect(result.prompts).toEqual([
+                {
+                    name: 'fiori-rules',
+                    description:
+                        'Complete set of rules and best practices for creating or modifying SAP Fiori elements applications'
+                }
+            ]);
+        });
+
+        test('get_prompt - fiori-rules', async () => {
+            const getFioriRulesSpy = jest.spyOn(tools, 'getFioriRules').mockReturnValue('# Fiori Rules Content...');
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[3];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'fiori-rules'
+                }
+            });
+            expect(getFioriRulesSpy).toHaveBeenCalledTimes(1);
+            expect(result.messages).toEqual([
+                {
+                    role: 'user',
+                    content: {
+                        type: 'text',
+                        text: '# Fiori Rules Content...'
+                    }
+                }
+            ]);
+        });
+
+        test('get_prompt - unknown prompt', async () => {
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[3];
+            const onRequestCB = setRequestHandlerCall[1];
+            await expect(
+                onRequestCB({
+                    params: {
+                        name: 'unknown-prompt'
+                    }
+                })
+            ).rejects.toThrow('Unknown prompt: unknown-prompt');
         });
     });
 
