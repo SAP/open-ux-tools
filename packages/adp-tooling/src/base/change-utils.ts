@@ -218,7 +218,11 @@ export function getChangesByType(
  * @returns {InboundChangeData} An object containing the file path and the change object with the matching inbound ID.
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
-export async function findChangeWithInboundId(projectPath: string, inboundId: string, fs: Editor): Promise<InboundChangeData> {
+export async function findChangeWithInboundId(
+    projectPath: string,
+    inboundId: string,
+    fs: Editor
+): Promise<InboundChangeData> {
     let changeObj: InboundChange | undefined;
     let filePath = '';
 

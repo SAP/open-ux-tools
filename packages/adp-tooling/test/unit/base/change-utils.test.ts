@@ -26,7 +26,7 @@ import {
     writeAnnotationChange,
     writeChangeToFolder
 } from '../../../src/base/change-utils';
-import {create as createStorage} from "mem-fs";
+import { create as createStorage } from 'mem-fs';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
