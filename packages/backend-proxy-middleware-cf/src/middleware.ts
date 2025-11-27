@@ -30,5 +30,5 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
     await validateConfig(config, logger);
 
     const tokenProvider = await createTokenProvider(config, logger);
-    return setupProxyRoutes(config.paths, config.url, tokenProvider, logger) as unknown as RequestHandler;
+    return setupProxyRoutes(config.paths, config.url, tokenProvider, logger);
 };
