@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { EntityKey } from '../entities';
-import type { ServiceOptions } from '../types';
+import type { ServiceOptions, SystemType } from '../types';
 
 /**
  * Data provider for an entity. It is responsible for reading
@@ -16,7 +16,7 @@ export interface DataProvider<E, K extends EntityKey> {
      *
      * @param includeSensitiveData If true and relevant for the entity, sensitive data will be returned - defaults to true.
      */
-    getAll(options?: { includeSensitiveData?: boolean }): Promise<E[] | []>;
+    getAll(options?: { includeSensitiveData?: boolean; includeSystemTypes?: SystemType[] }): Promise<E[] | []>;
 }
 
 export interface DataProviderConstructor<E, K extends EntityKey> {

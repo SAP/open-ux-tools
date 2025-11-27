@@ -1,6 +1,5 @@
 import type { BackendSystem } from '../entities/backend-system';
-
-export type SystemType = 'OnPrem' | 'AbapCloud' | undefined;
+import type { SystemType } from '../types';
 
 /**
  * Determines the backend system type based on the authentication type and service keys (defaults to OnPrem).
