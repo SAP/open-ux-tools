@@ -56,7 +56,9 @@ const cfData = {
         space: { Name: 'test-space', GUID: 'space-guid' },
         html5RepoRuntimeGuid: 'runtime-guid',
         approuter: AppRouterType.MANAGED,
-        businessService: 'business-service'
+        businessService: 'business-service',
+        backendUrl: '/backend.example',
+        oauthPaths: ['/sap/opu/odata', '/api/v1']
     },
     project: {
         name: 'my-test-cf-project',
