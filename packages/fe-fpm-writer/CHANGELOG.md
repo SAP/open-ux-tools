@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.23
+
+### Patch Changes
+
+-   796129a: feat: Action Menu generator added to the FE fpm-writer
+
 ## 0.39.22
 
 ### Patch Changes
