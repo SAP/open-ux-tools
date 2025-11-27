@@ -1,3 +1,5 @@
 {
-    "devDependencies": {}
+    "devDependencies": {
+        "@sap/ux-specification": "0.1.2"
+    }
 }
