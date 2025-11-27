@@ -79,7 +79,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     return {
         functionalityId: details.functionalityId,
         status: 'Success',
-        message: `Generation completed successfully. You must run \`npm install\` in ${appPath} first, and then run the application using \`npm run start-mock\`.`,
+        message: `Generation completed successfully. You must run \`npm install\` in ${appPath} first, and then run the application using \`npm run start\`.`,
         parameters: params.parameters,
         appPath,
         changes: [],
