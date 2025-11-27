@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.14.0
+
+### Minor Changes
+
+-   e94df25: feat(create): enable card generator for CAP project
+
 ## 0.13.172
 
 ### Patch Changes
