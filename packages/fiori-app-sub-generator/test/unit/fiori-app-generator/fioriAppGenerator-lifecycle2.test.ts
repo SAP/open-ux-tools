@@ -320,7 +320,7 @@ describe('Test FioriAppGenerator', () => {
             project: {
                 name: 'testApp',
                 targetFolder,
-                enableCodeAssist: true
+                enableCodeAssist: false
             } as Project,
             service: {
                 capService: {
@@ -348,7 +348,6 @@ describe('Test FioriAppGenerator', () => {
             {
                 appPackagePath: appPath,
                 capService: mockState.service!.capService,
-                enableCodeAssist: true,
                 useNpmWorkspaces: true
             },
             expect.objectContaining({ debug: expect.any(Function) }) // Logger

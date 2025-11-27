@@ -1,5 +1,18 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.10
+-   @sap-ux/cds-odata-annotation-converter@0.6.14
+
+## 0.7.14
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
 ## 0.7.13
 
 ### Patch Changes
