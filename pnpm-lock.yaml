@@ -3303,8 +3303,8 @@ importers:
         specifier: 4.0.33
         version: 4.0.33
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -3358,8 +3358,8 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -4316,8 +4316,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -14283,8 +14283,8 @@ packages:
       figures: 6.1.0
     dev: true
 
-  /@ui5/manifest@1.76.0:
-    resolution: {integrity: sha512-PCNdn+uC2r66Uo8jlQZNue5faUy9lHctHb0p9IPl2qnj1mJph2i76WxDG61Nkgagzq7Qx8MCR9LBzJW7G/C7Iw==}
+  /@ui5/manifest@1.81.0:
+    resolution: {integrity: sha512-UMsyfGYiqfovieLTqsOe9cOig3Aruzj+phdgun5S3w3kgnXvnuelZvpU2S6zeq1Pny92ElaTJUqAgfofK/224w==}
 
   /@ui5/project@4.0.8(@ui5/builder@4.1.1):
     resolution: {integrity: sha512-kv8tKiiwT175BvAfYdJJ8Fw038p5fNRqJNCDchipeTHMnVsvOdcyw8YVXGk8btngYEVfaX6v936RJAa2hlgf2g==}

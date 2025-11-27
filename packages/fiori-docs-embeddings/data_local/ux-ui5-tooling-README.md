@@ -7,11 +7,11 @@ Furthermore, the module expose the cli `fiori` offering e.g. the [`fiori run`](#
 - For more information about migration to the latest `@ui5/cli`, see [here](https://sap.github.io/ui5-tooling/stable/).
 - Starting with version `1.17.6`, the minimum required Node.js version is 20.19.2 or higher!
 
-## [**Middlewares**](#middlewares)
+# [**Middlewares**](#middlewares)
 
 SAP Fiori tools use the capabilities of custom middlewares to start and preview SAP Fiori elements or SAPUI5 freestyle applications, e.g. to enable auto refresh, to switch the version of SAPUI5 sources or to serve static resources. Starting with version `1.3.0` the behaviour of the preview of the SAP Fiori applications has changed. Now the persistent iAppState is ignored in order to have the source code changes always apply when application is refreshed. If you want to enable the iAppState then you need to add the URL parameter `fiori-tools-iapp-state=true` to the browser URL, e.g. `http://localhost:8080/test/flpSandbox.html?fiori-tools-iapp-state=true#masterDetail-display`.
 
-### [**1. Application Reload**](#1-application-reload)
+## [**1. Application Reload**](#1-application-reload)
 
 The application reload middleware allows developers to preview SAP Fiori applications while developing/configuring them. Whenever a file relevant for the SAP Fiori application is changed, the reload middleware will refresh the application preview.
 
@@ -50,7 +50,7 @@ Port to be used to communicate file system changes
 - `<boolean>` (default: `false`)
 Set this parameter to get more log information.
 
-### [**2. Proxy**](#2-proxy)
+## [**2. Proxy**](#2-proxy)
 
 The proxy middleware provides you with the capabilities to connect to different back-end systems or to switch the SAPUI5 version of the application. The proxy is based on the [@sap-ux/ui5-proxy-middleware](https://www.npmjs.com/package/@sap-ux/ui5-proxy-middleware) for proxying the UI5 sources (starting with version `1.6.0`) and the [@sap-ux/backend-proxy-middleware](https://www.npmjs.com/package/@sap-ux/backend-proxy-middleware) for connecting to different back-end systems (starting with version `1.6.7`). Both `@sap-ux/ui5-proxy-middleware` and `@sap-ux/backend-proxy-middleware` are based on the [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware).
 
@@ -157,7 +157,7 @@ Let's that you want to configure the proxy to send requests from a certain path 
   configuration:
     backend:
     - path: /services/odata
-      pathPrefix: /my/entry/path
+      pathReplace: /my/entry/path
       url: https://my.backend.com:1234
       destination: my_backend
 ```
@@ -191,12 +191,12 @@ By default, the `fiori-tools-proxy` will verify the SSL certificates and will th
 
 **Note**: The singular form `ignoreCertError` is also supported for backward compatibility but is deprecated. When using the singular form, a deprecation warning will be displayed encouraging migration to `ignoreCertErrors` (plural).
 #### [Providing Credentials](#providing-credentials)
-### Local Testing 
+##### Local Testing 
 For local testing the logon credentials to a backend system need to be provided using the secure storage of the operating system.
 
 Configure the needed connections here: `SAP Fiori -> SAP SYSTEMS`
 
-### CI Scenario
+##### CI Scenario
 In the CI scenario the logon credentials to a backend system need to be provided by the two environment variables
 
 `FIORI_TOOLS_USER` and `FIORI_TOOLS_PASSWORD`
@@ -322,12 +322,12 @@ server:
             pathReplace: /sap/public/ui5/resources  
 ```
 
-### [**3. Serve Static**](#3-serve-static)
+## [**3. Serve Static**](#3-serve-static)
 
 The serve static middleware provides the capability to serve any static resources locally from your machine. E.g. you can serve SAPUI5 locally or any other resources.
 
 
-#### [Example Configuration for serving locally SAPUI5](#example-configuration-for-serving-locally-ui5)
+### [Example Configuration for serving locally SAPUI5](#example-configuration-for-serving-locally-ui5)
 
 **Pre-requisites:**
 SAPUI5 SDK version is downloaded and extracted locally on the machine. One can download UI5 resources from <https://tools.hana.ondemand.com/#sapui5>
@@ -347,7 +347,7 @@ server:
           src: "Path/To/SAPUI5-SDK"
 ```
 
-#### [Example Configuration for serving any resources locally](#example-configuration-for-serving-any-resources-locally)
+### [Example Configuration for serving any resources locally](#example-configuration-for-serving-any-resources-locally)
 Executing `npx fiori run` in your project with the configuration below in a `ui5.yaml` file would serve resources from your machine. Any request starting with the `path` parameter will be forwarded to the local path provided in the `src` parameter.
 
 ```
@@ -363,7 +363,7 @@ server:
           src: "Path/To/libs"
 ```
 
-#### [Example configuration for mocking the User API Service from @sap/approuter](#example-configuration-for-mocking-the-user-api-service-from-sapapprouter)
+### [Example configuration for mocking the User API Service from @sap/approuter](#example-configuration-for-mocking-the-user-api-service-from-sapapprouter)
 If you are using the [User API Service](https://www.npmjs.com/package/@sap/approuter#user-api-service) from `@sap/approuter` in your application, then you can mock by providing the following configuration.
 
 ```
@@ -427,10 +427,10 @@ server:
           src: "Path/To/SAPUI5-SDK"
 ```
 
-### [**4. Preview**](#4-preview)
+## [**4. Preview**](#4-preview)
 The preview middleware provides the capability to preview an application in a local Fiori launchpad. It hosts a local Fiori launchpad based on your configuration and offers an API to modify flex changes in your project. The middleware is a wrapper for the open source middleware `@sap-ux/preview-middleware` (https://www.npmjs.com/package/@sap-ux/preview-middleware) with a handful of default settings that are useful for the Fiori application development.
 
-#### [Configuration Options](#configuration-options-2)
+### [Configuration Options](#configuration-options-2)
 
 The full list of configuration options is described at https://www.npmjs.com/package/@sap-ux/preview-middleware. 
 
@@ -445,7 +445,7 @@ The following properties are the most important:
 - `debug:` boolean: enables debug output
 
 
-#### [Minimal configuration](#minimal-configuration)
+### [Minimal configuration](#minimal-configuration)
 With no configuration provided, the local Fiori launchpad will be available at `/test/flp.html` and the log level is info. Additionally, an editor in UI adaptation mode for variant creation will be hosted at `/preview.html`.
 
 ```yaml
@@ -454,7 +454,7 @@ With no configuration provided, the local Fiori launchpad will be available at `
     afterMiddleware: fiori-tools-appreload
 ```
 
-#### [Configuring path and theme](#configuring-path-and-theme)
+### [Configuring path and theme](#configuring-path-and-theme)
 With the following configuration, the local Fiori launchpad will be available at `/test/flpSandbox.html`, the used theme will be SAP Horizon and the log level is debug. Additionally, an editor in UI adaptation mode for variant creation will be hosted at `/preview.html`.
 
 ```yaml
@@ -468,7 +468,7 @@ With the following configuration, the local Fiori launchpad will be available at
       debug: true
 ```
 
-#### [Deprecated configuration](#deprecated-configuration)
+### [Deprecated configuration](#deprecated-configuration)
 The initial version of the middleware allowed setting the theme and required to set an application component. The component is not required anymore and the theme property has move to `flp-theme`, however, for backward compatibility, the following configuration is deprecated but still supported.
 
 ```yaml
@@ -493,7 +493,7 @@ This configuration is internally converted to following.
           action: app
         theme: sap_fiori_3
 ```
-#### [Custom Init](#custom-init)
+### [Custom Init](#custom-init)
 
 If you want to add custom modifications to the local SAP Fiori Launchpad sandbox file that is served at a virtual endpoint, you can do so by creating a `.js` or `.ts` file (depending on your setup).
 This file can then be used as a custom init in the configuration options. It will be executed after the standard initialization of the middleware.
@@ -518,11 +518,11 @@ sap.ui.require(['sap/base/i18n/Formatting'], function(Formatting) {
         init: /test/myCustomInit
 ```
 
-## [**Tasks**](#tasks)
+# [**Tasks**](#tasks)
 
 SAP Fiori Tools use the capabilities of custom tasks to deploy the SAP Fiori projects to ABAP servers.
 
-### [Deployment to ABAP](#deployment-to-abap)
+## [Deployment to ABAP](#deployment-to-abap)
 
 The deployment to ABAP task allows deploying SAP Fiori applications to SAP systems using the [SAPUI5 Repository OData service](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8.html).
 
@@ -532,7 +532,7 @@ The deployment to ABAP task allows deploying SAP Fiori applications to SAP syste
 * Service `/UI5/ABAP_REPOSITORY_SRV` needs to be enabled and accessible from your development environment ([how to check this](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8))
 * For operations on a SAPUI5 ABAP repository, you need the `S_DEVELOP` authorization.
 
-## Example Configuration
+### Example Configuration
 
 Executing the command `npm run deploy` from the root of your project, using the `ui5-deploy.yaml` configuration below, will deploy all files of your `dist` folder except files found in the `test` folder. The `username` and `password` for authentication will be read from the environment variables `XYZ_USER` and `XYZ_PASSWORD`, continue reading to see more examples of how to configure credentials.
 
@@ -575,7 +575,7 @@ XYZ_USER=[MY_USER_NAME]
 XYZ_PASSWORD=[MY_PASSWORD]
 ```
 
-## Command to deploy
+### Command to deploy
 
 After completing the changes in the configuration files, execute the command `npm run deploy`.
 
@@ -605,102 +605,105 @@ builder:
 
 Based on the sample configurations above, after deploying the app, you can access the app using URL: <https://XYZ.sap-system.corp:44311/sap/bc/ui5-ui5/test/sample_app/index.html?sap-client=200#app-preview>
 
-## Documentation on the Configuration options
+### Documentation on the Configuration options
 
 In addition to defining parameters in the main yaml file, every parameter can also be defined as environment variable that is referenced in yaml. Using the `dotenv` module, the task also supports project specific environment variables defined in a `.env` file in the root of your project. To reference an environment variable the pattern `env:VAR_NAME` must be used.
 
-### target
+#### target
 
 The target object contains properties identifying your target SAP system.
 
-#### url
+##### url
 
 - `<string> pattern <protocol>://<hostname>[:<port>]` (required)
 - This parameter must contain a url pointing to your target SAP system
 
-#### client
+##### client
 
 - `<number> range [0..999]` (optional)
 - The client property is used to identify the SAP client that is to be used in the backend system. It translates to the url parameter `sap-client=<client>` If the client parameter is not provide, the default client will be used.
 
-#### scp
+##### scp
 
 - `<boolean>` (default: `false`)
 - By default, the deployment task will use basic authentication when connecting to the backend. If the target system is ABAP Environment on SAP Business Technology Platform, this parameter needs to be set to `true`.
 
-#### service
+##### service
 
 - `<string>` (default: `/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV`)
 - Path pointing to the SAPUI5 ABAP repository OData service in your target system. This parameter only needs to be used if the service is exposed at a different path in your backend system e.g. via alias.
 
-### credentials (optional)
+#### credentials (optional)
 
 The credentials object is mainly required for CI/CD based deployments and it needs to contain the required parameters to authenticate at your target system. It is only possible to use references to environment variables e.g. `env:MY_VARIABLE` here, plain username and password are not supported.
 
 For local usage, we recommend to not use the credentials object at all. As result, the deployment task will utilize the operating systems secure storage maintain credentials.
 
-#### username
+##### username
 
 - `<string>` (required)
 - SAP business user for the target system. The user requires authorizations to create/update the target ABAP development object.
 
-#### password
+##### password
 
 - `<string>` (required)
 - Password required to authenticate the previously configured user. IMPORTANT: while technically possible to add the password to your config, we strongly DISCOURAGE that but recommend instead the use of environment variables.
 
-#### authenticationType 
+##### authenticationType 
 - `<string>` (optional)
 - Authentication type for the app (e.g. 'basic', 'reentranceTicket'). IMPORTANT: It is required for authentication with reentrance tickets.
 
-### app
+#### app
 
 The app object describes the backend object that is created/updated as result of the deployment.
 
-#### name
+##### name
 
 - `<string>` (required)
 - Unique name of the application. The name is used as part of the application url as well as the name of the ABAP development object used as container for the app.
 
-#### package
+##### package
 
 - `<string>` (required for new apps)
 - Name of an existing ABAP package that is used as parent of the deployed application. The parameter is required for the creation of the application in the backend. Any following deployment updating the application does not require the package parameter, i.e. it will be ignored.
 
-#### transport
+##### transport
 
 - `<string>` (optional)
 - The transport parameter refers to a transport request number that is to be used to record changes to the backend application object. The property is optional because it is only required if the package that is used for deployments requires transport requests.
 - To dynamically create a Transport Request during the deployment or undeployment task, use the value `REPLACE_WITH_TRANSPORT`.
 
-#### description
+##### description
 
 - `<string>` (optional)
 - Optional description added to the created application object in the backend.
 
-### exclude
+#### exclude
 
 - `<string[] array of regex>` (optional)
 - By default, the deployment task will create an archive (zip file) of all build files and send it to the backend. By using `exclude`, you can define expressions to match files that shall not be included into the deployment. Note: `string.match()` is used to evaluate the expressions.
 
-### index
+#### index
 
 - `boolean` (default: `false`)
 - If set to `true`, then an additional index.html will be generated and deployed to run the application standalone.
 
-### test
+#### test
 
 - `boolean` (default: `false`)
 - If set to `true`, the task will run through all steps including sending the archive to the SAP backend. The backend will not deploy the app but run the pre-deployment checklist and return the result.
 
-### verbose
+#### verbose
 
 - `boolean` (default: `false`)
 - If set to `true`, the task will log additional information about the deployment process. This is useful for debugging purposes.
 
-## [CLI Commands](#commands)
-### [fiori run](#fiori-run---starts-a-local-web-server-for-running-a-fe-application) - starts a local web server for running a FE application
-#### Options
+# [CLI Commands](#commands)
+
+The cli `fiori` offering provides the [`fiori run`](#run) command which is a wrapper of the `ui5 serve` command and provides some additional parameters as well as `fiori add deploy-config` and `fiori add flp-config` to extend an existing project and `fiori deploy` to perform the deployment of the application to an ABAP frontend server.
+
+## [fiori run](#fiori-run---starts-a-local-web-server-for-running-a-fe-application)
+### Options
 
 * `--config, c` - Path to config file (default: `ui5.yaml` in root folder of the project).
 * `--verbose` - Enable verbose logging (default: `false`).
@@ -713,14 +716,14 @@ The app object describes the backend object that is created/updated as result of
 * `--ui5Uri` - UI5 uri to load the UI5 resources from (default: uri from `ui5.yaml`).
 * `--proxy` - specify proxy configuration, e.g. `https://myproxy:8443` (default: uses host machine proxy configuration, if any).
 
-### [fiori add deploy-config](#fiori-add-deploy-config---adds-a-deployment-configuration-to-the-project) - adds a deployment configuration to the project
+## [fiori add deploy-config](#fiori-add-deploy-config---adds-a-deployment-configuration-to-the-project)
 
 The command allows adding a deployment configuration to the project. The command supports the generation of a configuration for deployment to an ABAP system or to a Cloud Foundry space.
 
-#### Deployment to ABAP 
+### Deployment to ABAP 
 If `ABAP` is chosen as target then the CLI will prompt the required information to generate a `ui5-deploy.yaml` required for the `deploy-to-abap` task.
 
-#### Deployment to Cloud Foundry (CF)
+### Deployment to Cloud Foundry (CF)
 For the deployment to CF, an MTA configuration will be created. The command allows to create a new configuration i.e. a new `mta.yaml` file or updates an existing `mta.yaml` with the information required for deployment. After successfully creating the configuration, running `npm run build` in the MTA directory that contains the application will try to build a deployable mtar file that can then be deployed to CF with `npm run deploy`.
 
 **Pre-requisites:**
@@ -732,7 +735,7 @@ Use `npm i -g mta` to install globally
 * A correctly configured destination to the backend system
 * User authorization on CF to deploy
 
-#### Artifacts & Configuration
+### Artifacts & Configuration
 
 A Cloud Foundry MTA project structure is created in the current directory. The following files are generated or updated:
 ```
@@ -752,25 +755,27 @@ mta_directory
    |_ ui5-deploy.yaml
 ```
 
-#### Information required to generate the configuration
-##### Location of MTA Directory
+### Information required to generate the configuration
+#### Location of MTA Directory
 The tool finds the nearest parent directory that contains a `mta.yaml` and offers that as the MTA directory. Failing that, it defaults to the parent directory of the application.
 
-##### Destination
+#### Destination
 Destination configured to connect to the backend on Cloud Foundry. If there's a setting in `ui5.yaml`, that value is offered as the default.
 
-##### Prefix
+#### Prefix
 Prefix used for the ID of the MTA and the service names. It defaults to the namespace of the app. If a namespace is not found, it defaults to `test`. Please choose a prefix so that the service names are unique to your MTA. Otherwise deployment by multiple people will overwrite the same service.
 
 At the end of the generation, it's possible to optionally generate  SAP Fiori launchpad configuration (default: no).
 
-### [fiori add flp-config](#fiori-add-flp-config---fiori-launchpad-configuration-generation) - Fiori Launchpad configuration generation
+## [fiori add flp-config](#fiori-add-flp-config---fiori-launchpad-configuration-generation)
+
 It's possible to create configuration and artifacts required to run the application in an SAP Fiori launchpad. Depending on the target, the command will update either only the application `manifest.json` with the required inbound navigation property, or will also enhance the MTA configuration to contain a standalone FLP on CF.
 
-### [fiori deploy](#fiori-deploy---performs-the-deployment-of-the-application-into-an-abap-system) - performs the deployment of the application into an ABAP system
-Deploys an application to an ABAP frontend server.
+## [fiori deploy](#fiori-deploy---performs-the-deployment-of-the-application-into-an-abap-system)
 
-#### Options
+The command performs the deployment of the application to an ABAP frontend server.
+
+### Options
 
 * `--config, -c` - Path to config file (default: `ui5-deploy.yaml` in root folder of the project).
 * `--noConfig, -nc` - Only CLI arguments will be used, no config file is read.
@@ -793,7 +798,7 @@ Deploys an application to an ABAP frontend server.
 * `--ignore-cert-error, -ic` - Deprecated. Use `ignoreCertErrors` (plural) instead.
 * `--ignore-cert-errors, -ics` - Disabled by default. If set to `true`, the task will not validate the SSL certificate of the target system. This is useful for development purposes but must not be used in production environments.
 
-## [FAQ](#faq)
+# [FAQ](#faq)
 
 **My backend system contains the SAP_UI component version 7.53 or newer, but the SAPUI5 repository service cannot be reached.**
 
@@ -807,18 +812,18 @@ This could have multiple reasons, please check the console for more information 
 
 Most probably the `OpenSSL` package is not installed on your OS. Please install it and make sure that it is available in your `PATH` environment variable.
 
-## [Support](#support)
+# [Support](#support)
 
 Join the [SAP Fiori Tools Community](https://pages.community.sap.com/topics/fiori-tools). Ask Questions, Read the Latest Blogs, Explore Content.  
 Please assign tag: _SAP Fiori tools_.
 
 To log an issue with SAP Fiori Tools, please see [Contact SAP Support](https://help.sap.com/viewer/1bb01966b27a429ebf62fa2e45354fea/Latest/en-US).
 
-## [Documentation](#documentation) 
+# [Documentation](#documentation) 
 
 - Visit **SAP Help Portal** for [SAP Fiori Tools](https://help.sap.com/viewer/product/SAP_FIORI_tools/Latest/en-US) documentation. 
 
-## [License](#license)
+# [License](#license)
 
 <details>
     <summary>SAP DEVELOPER LICENSE AGREEMENT</summary>
