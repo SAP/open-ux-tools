@@ -117,8 +117,7 @@ Object {
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>
-",
+</core:FragmentDefinition>",
     "state": "modified",
   },
   "generate-custom-filter-field-minimal/webapp/manifest.json": Object {
@@ -166,8 +165,7 @@ Object {
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>
-",
+</core:FragmentDefinition>",
     "state": "modified",
   },
   "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/main/Main.view.xml": Object {
