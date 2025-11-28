@@ -902,9 +902,6 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
-      express:
-        specifier: 4.21.2
-        version: 4.21.2
       http-proxy-middleware:
         specifier: 3.0.5
         version: 3.0.5
@@ -942,6 +939,9 @@ importers:
       connect:
         specifier: ^3.7.0
         version: 3.7.0
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
       nock:
         specifier: 13.4.0
         version: 13.4.0

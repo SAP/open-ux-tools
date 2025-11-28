@@ -32,6 +32,9 @@
         "!dist/*.map",
         "!dist/**/*.map"
     ],
+    "peerDependencies": {
+        "express": "4"
+    },
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
