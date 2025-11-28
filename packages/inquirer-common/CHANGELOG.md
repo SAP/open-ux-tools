@@ -1,5 +1,29 @@
 # @sap-ux/inquirer-common
 
+## 0.9.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.36
+-   @sap-ux/odata-service-writer@0.27.32
+-   @sap-ux/telemetry@0.6.41
+
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/odata-service-writer@0.27.31
+    -   @sap-ux/fiori-generator-shared@0.13.35
+    -   @sap-ux/telemetry@0.6.40
+
+## 0.9.6
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+
 ## 0.9.5
 
 ### Patch Changes
