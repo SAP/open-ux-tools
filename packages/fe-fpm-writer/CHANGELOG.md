@@ -1,5 +1,55 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.24
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/fiori-annotation-api@0.7.16
+
+## 0.39.23
+
+### Patch Changes
+
+-   796129a: feat: Action Menu generator added to the FE fpm-writer
+
+## 0.39.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.10
+-   @sap-ux/fiori-annotation-api@0.7.15
+
+## 0.39.21
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+-   Updated dependencies [597834f]
+    -   @sap-ux/fiori-annotation-api@0.7.14
+
+## 0.39.20
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/fiori-annotation-api@0.7.13
+
+## 0.39.19
+
+### Patch Changes
+
+-   5ed4083: feat(fpm-writer): Filter building block custom filter
+
+## 0.39.18
+
+### Patch Changes
+
+-   3d3c18b: Fix: `generateCustomField` now includes the `core:require` attribute with the handler file in new fragment files when `eventHandler` is set.
+
 ## 0.39.17
 
 ### Patch Changes

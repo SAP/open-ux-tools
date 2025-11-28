@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.4.0",
+    "version": "0.4.2",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -37,6 +37,7 @@
         "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
         "view:integration": "promptfoo view -y",
         "test:integration:once": "promptfoo eval --config test/integration/scenarios/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
+        "test:integration:dev": "promptfoo eval --config test/integration/scenarios/test-dev.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
         "test:integration:multiple": "npm run test:promptfoo -- --repeat 5"
     },
     "files": [
@@ -54,7 +55,7 @@
         "@sap/ux-specification": "1.136.6",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/annotation-converter": "0.10.8",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/logger": "workspace:*",

@@ -8,7 +8,6 @@ import chalk from 'chalk';
 import { diff } from 'jest-diff';
 import type { MatcherIgnore } from '../types';
 import type { FileMatcherOptions } from './types';
-import mkdirp from 'mkdirp';
 import filenamify from 'filenamify';
 
 const removedValueToken = '--IGNORED-VALUE--';
@@ -133,7 +132,7 @@ const handleExistingFile = (
         if (comparedContent.equal) {
             return { pass: true, message: () => '' };
         } else if (snapshotState._updateSnapshot === 'all') {
-            mkdirp.sync(path.dirname(filename));
+            fs.mkdirSync(path.dirname(filename), { recursive: true });
             fs.writeFileSync(filename, content);
 
             snapshotState.updated++;
@@ -203,7 +202,7 @@ export function toMatchFile(
     if (fs.existsSync(filename)) {
         return handleExistingFile(isNot, filename, content, options, snapshotState);
     } else if (!isNot && (snapshotState._updateSnapshot === 'new' || snapshotState._updateSnapshot === 'all')) {
-        mkdirp.sync(path.dirname(filename));
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
         fs.writeFileSync(filename, content);
 
         snapshotState.added++;
