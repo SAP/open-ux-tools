@@ -739,7 +739,7 @@ describe('ControllerExtension', () => {
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'SAPUI5 Version Retrieval Failed',
-                    description: 'Could not get the SAPUI5 version of the application. Using 1.130.0 as fallback.',
+                    description: 'Could not get the SAPUI5 version of the application. Using 1.130.9 as fallback.',
                     type: MessageBarType.error
                 })
             );

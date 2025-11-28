@@ -1,5 +1,24 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.15
+
+### Patch Changes
+
+-   ce69893: fix: simplify type usage
+
+## 0.10.14
+
+### Patch Changes
+
+-   bf7e266: Add missing 'express' dependency
+
+## 0.10.13
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/axios-extension@1.24.3
+
 ## 0.10.12
 
 ### Patch Changes
