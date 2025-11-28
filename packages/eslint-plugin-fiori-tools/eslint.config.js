@@ -1,27 +1,22 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+const base = require('../../eslint.config.js');
+const { default: eslintPlugin } = require('eslint-plugin-eslint-plugin');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname
-});
-
-const base = compat.extends('../../.eslintrc');
-
-export default [
-    { ignores: ['**/dist', '**/lib', './eslint.config.js'] },
+module.exports = [
+    {
+        ignores: ['config/**/eslintrc*.js']
+    },
     ...base,
     {
-        files: ['**/*.ts', , '**/*.tsx'],
         languageOptions: {
             parserOptions: {
-                projectService: false,
-                project: './tsconfig.eslint.json',
-                tsconfigRootDir: __dirname
+                parser: '@typescript-eslint/parser',
+                tsconfigRootDir: __dirname,
+                project: './tsconfig.eslint.json'
             }
+        },
+        rules: {
+            '@typescript-eslint/no-require-imports': 'warn'
         }
-    }
+    },
+    eslintPlugin.configs.recommended
 ];
