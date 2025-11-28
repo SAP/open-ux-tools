@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.4
+
+### Patch Changes
+
+-   66ca93f: chore(fiori-mcp): fix pipeline
+
 ## 0.4.3
 
 ### Patch Changes
