@@ -412,11 +412,11 @@ export async function init({
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
-        appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
-        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
+        appUrls: bootstrapConfig.dataset['open-ux-preview-libs-manifests'],
+        flex: bootstrapConfig.dataset['open-ux-preview-flex-settings'],
+        customInit: bootstrapConfig.dataset['open-ux-preview-customInit'],
+        enhancedHomePage: !!bootstrapConfig.dataset['open-ux-preview-enhanced-homepage'],
+        enableCardGenerator: !!bootstrapConfig.dataset['open-ux-preview-enable-card-generator']
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

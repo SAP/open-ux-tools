@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 import { promptNames, type SapSystemType } from '../../../../types';
 
 export const newSystemPromptNames = {

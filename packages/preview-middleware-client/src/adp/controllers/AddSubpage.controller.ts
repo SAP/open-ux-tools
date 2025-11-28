@@ -216,6 +216,6 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         this.model.setProperty('/navigationOptions', navigationOptions);
         this.model.setProperty('/selectedNavigation', navigationOptions[0]);
 
-        return Promise.resolve();
+        return;
     }
 }

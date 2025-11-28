@@ -52,11 +52,11 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         return (this.context.rta.getRootControlInstance().getModel() as ODataModelV2)?.getMetaModel();
     }
 
-    protected getEntitySetNameFromPageComponent(component: Component | undefined): Promise<string> {
+    protected async getEntitySetNameFromPageComponent(component: Component | undefined): Promise<string> {
         if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
             throw new Error('Unexpected type of page owner component');
         }
-        return Promise.resolve(component.getEntitySet());
+        return component.getEntitySet();
     }
 
     protected async prepareNavigationData(metaModel: ODataMetaModelV2): Promise<void> {
@@ -75,12 +75,12 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
             const targetEntitySet = entityContainer.entitySet.find((item) => item.entityType === associationEnd.type);
             await this.addNavigationOptionIfAvailable(metaModel, targetEntitySet?.name, navProp.name);
         }
-        return Promise.resolve();
+        return;
     }
 
     async initialize(): Promise<void> {
         if (!(await areManifestChangesSupported(this.context.manifest))) {
-            return Promise.resolve();
+            return;
         }
         this.appComponent = getV2AppComponent(this.context.view);
         return super.initialize();
