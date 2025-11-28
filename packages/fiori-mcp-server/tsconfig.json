@@ -11,6 +11,9 @@
   },
   "references": [
     {
+      "path": "../axios-extension"
+    },
+    {
       "path": "../btp-utils"
     },
     {
@@ -39,6 +42,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../store"
     },
     {
       "path": "../telemetry"
