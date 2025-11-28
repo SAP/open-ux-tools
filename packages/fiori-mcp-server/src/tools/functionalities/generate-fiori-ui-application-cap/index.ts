@@ -1,1 +1,4 @@
-export { GENERATE_FIORI_UI_APPLICATION_CAP, generateFioriUIApplicationCapHandlers } from './generate-fiori-ui-application-cap';
+export {
+    GENERATE_FIORI_UI_APPLICATION_CAP,
+    generateFioriUIApplicationCapHandlers
+} from './generate-fiori-ui-application-cap';
