@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.24.3
+
+### Patch Changes
+
+-   5d0598d: feat: save service metadata referenced in ValueListReferences and CodeList annotations.
+
 ## 1.24.2
 
 ### Patch Changes

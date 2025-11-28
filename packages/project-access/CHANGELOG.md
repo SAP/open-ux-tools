@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.32.11
+
+### Patch Changes
+
+-   07725fe: Bump @sap/manifest version
+
+## 1.32.10
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/ui5-config@0.29.10
+
 ## 1.32.9
 
 ### Patch Changes
