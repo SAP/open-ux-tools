@@ -1,14 +1,17 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "src/**/*.json"],
+    "include": [
+        "../../types/ui5.d.ts",
+        "src",
+        "src/**/*.json"],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
     },
     "references": [
-        { "path": "../axios-extension" }, 
-        { "path": "../btp-utils" }, 
-        { "path": "../logger" }, 
+        { "path": "../axios-extension" },
+        { "path": "../btp-utils" },
+        { "path": "../logger" },
         { "path": "../store" }
     ]
 }

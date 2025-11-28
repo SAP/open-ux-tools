@@ -45,7 +45,9 @@ export enum ProjectName {
     /** Java based cap project - V4 */
     java = 'java-ai-created',
     /** List Report Object Page project - V2 */
-    lropv2 = 'lrop-v2'
+    lropv2 = 'lrop-v2',
+    /** Empty project */
+    empty = 'empty-folder'
 }
 
 /**
@@ -76,6 +78,14 @@ const TEST_PROJECTS = {
         appPath: getCopiedProjectPath(ProjectName.lropv2),
         npmInstall: false,
         skipNodeModulesDel: false
+    },
+    [ProjectName.empty]: {
+        type: '',
+        originalPath: getProjectOriginalPath(ProjectName.empty),
+        path: getCopiedProjectPath(ProjectName.empty),
+        appPath: getCopiedProjectPath(ProjectName.empty),
+        npmInstall: false,
+        skipNodeModulesDel: true
     }
 };
 

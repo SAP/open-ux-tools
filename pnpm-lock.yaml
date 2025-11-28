@@ -717,8 +717,8 @@ importers:
   packages/annotation-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -732,8 +732,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -866,6 +866,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -899,6 +902,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
       http-proxy-middleware:
         specifier: 3.0.5
         version: 3.0.5
@@ -936,9 +942,6 @@ importers:
       connect:
         specifier: ^3.7.0
         version: 3.7.0
-      express:
-        specifier: 4.21.2
-        version: 4.21.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -1754,8 +1757,8 @@ importers:
   packages/fe-fpm-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1766,8 +1769,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1836,8 +1839,8 @@ importers:
   packages/fiori-annotation-api:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/cds-annotation-parser':
         specifier: workspace:*
         version: link:../cds-annotation-parser
@@ -1863,8 +1866,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@sap-ux/xml-odata-annotation-converter':
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
@@ -1903,8 +1906,8 @@ importers:
   packages/fiori-app-sub-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/annotation-generator':
         specifier: workspace:*
         version: link:../annotation-generator
@@ -2319,8 +2322,11 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2348,6 +2354,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -2665,8 +2674,8 @@ importers:
   packages/inquirer-common:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2726,8 +2735,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2777,9 +2786,6 @@ importers:
       minimatch:
         specifier: 3.0.5
         version: 3.0.5
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
 
   packages/jest-runner-puppeteer:
     dependencies:
@@ -2793,9 +2799,6 @@ importers:
       jest-environment-node:
         specifier: 30.2.0
         version: 30.2.0
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
@@ -2971,8 +2974,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3053,8 +3056,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3070,6 +3073,12 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.8
+        version: 0.10.8
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -3101,6 +3110,12 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -3294,8 +3309,8 @@ importers:
         specifier: 4.0.33
         version: 4.0.33
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -3349,8 +3364,8 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -4307,8 +4322,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -5922,7 +5937,7 @@ packages:
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.2
       convert-source-map: 2.0.0
-      debug: 4.4.0
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -11196,16 +11211,16 @@ packages:
   /@sap-devx/yeoman-ui-types@1.16.9:
     resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
 
-  /@sap-ux/annotation-converter@0.10.2:
-    resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.13.0
-    dev: false
-
   /@sap-ux/annotation-converter@0.10.3:
     resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
     dependencies:
       '@sap-ux/vocabularies-types': 0.13.0
+    dev: true
+
+  /@sap-ux/annotation-converter@0.10.8:
+    resolution: {integrity: sha512-eUSTT0oPBdyDC/jGay+VVgW9BB80NSpl/HeTo3H+K99or88MR2eHtXH8wCabH55Qgzyrnc7BSWaYXk9AMbYWJg==}
+    dependencies:
+      '@sap-ux/vocabularies-types': 0.13.1
 
   /@sap-ux/cds-annotation-parser@0.2.15:
     resolution: {integrity: sha512-m7q1NzY3aMLpRlZ+G4thvXHITrbd96/BLhIR3/Fs4exNNdDBxOluCIk4LdaTdO0HEX3Czuhp/Ais/pexbakyuw==}
@@ -11415,6 +11430,11 @@ packages:
 
   /@sap-ux/vocabularies-types@0.13.0:
     resolution: {integrity: sha512-srR9ffXpgvVxsrD/3ZvX6PnxXyY6yeth6LuKfCDgcyDoPeRj1jQknpgVF+k9hHDv7LkGkDiHYvjWY+JP8OlDLw==}
+    engines: {node: '>=18.x'}
+    dev: true
+
+  /@sap-ux/vocabularies-types@0.13.1:
+    resolution: {integrity: sha512-1FUwupX3jF/oNiRbHRx9JlydVgtuSvqpJJFORrh7cnQ71pCmKRvZL8cVkqMF+TQ0/WL3/TJBiGzYSsoQO5xRUQ==}
     engines: {node: '>=18.x'}
 
   /@sap-ux/xml-odata-annotation-converter@0.3.6:
@@ -14269,8 +14289,8 @@ packages:
       figures: 6.1.0
     dev: true
 
-  /@ui5/manifest@1.76.0:
-    resolution: {integrity: sha512-PCNdn+uC2r66Uo8jlQZNue5faUy9lHctHb0p9IPl2qnj1mJph2i76WxDG61Nkgagzq7Qx8MCR9LBzJW7G/C7Iw==}
+  /@ui5/manifest@1.81.0:
+    resolution: {integrity: sha512-UMsyfGYiqfovieLTqsOe9cOig3Aruzj+phdgun5S3w3kgnXvnuelZvpU2S6zeq1Pny92ElaTJUqAgfofK/224w==}
 
   /@ui5/project@4.0.8(@ui5/builder@4.1.1):
     resolution: {integrity: sha512-kv8tKiiwT175BvAfYdJJ8Fw038p5fNRqJNCDchipeTHMnVsvOdcyw8YVXGk8btngYEVfaX6v936RJAa2hlgf2g==}
@@ -19320,7 +19340,7 @@ packages:
       body-parser: 2.2.0
       content-disposition: 1.0.0
       content-type: 1.0.5
-      cookie: 0.7.1
+      cookie: 0.7.2
       cookie-signature: 1.2.2
       debug: 4.4.3
       encodeurl: 2.0.0

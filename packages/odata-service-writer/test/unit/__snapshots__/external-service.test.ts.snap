@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`getExternalServiceReferences it should return external service references 1`] = `
+Array [
+  Object {
+    "collectionPath": "Currencies",
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "type": "code-list",
+    "value": "../../../../default/iwbep/common/0001/$metadata",
+  },
+  Object {
+    "collectionPath": "UnitsOfMeasure",
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "type": "code-list",
+    "value": "../../../../default/iwbep/common/0001/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerParameters/P_CompanyCode",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_companycodestdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-parameterz_arcustomer2.p_companycode'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/Customer",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_customer_vh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.customer'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/PaymentCardType",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/AccountingClerk",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_accountingclerkstdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.accountingclerk'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/PaymentTerms",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_paymentterms/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentterms'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/DunningProcedure",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_dunningprocedurevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.dunningprocedure'/$metadata",
+  },
+]
+`;
+
+exports[`getExternalServiceReferences it should return only code list references 1`] = `
+Array [
+  Object {
+    "collectionPath": "Currencies",
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "type": "code-list",
+    "value": "../../../../default/iwbep/common/0001/$metadata",
+  },
+  Object {
+    "collectionPath": "UnitsOfMeasure",
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "type": "code-list",
+    "value": "../../../../default/iwbep/common/0001/$metadata",
+  },
+]
+`;
+
+exports[`getExternalServiceReferences it should return only value list references 1`] = `
+Array [
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerParameters/P_CompanyCode",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_companycodestdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-parameterz_arcustomer2.p_companycode'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/Customer",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_customer_vh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.customer'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/PaymentCardType",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/AccountingClerk",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_accountingclerkstdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.accountingclerk'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/PaymentTerms",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_paymentterms/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentterms'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/DunningProcedure",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_dunningprocedurevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.dunningprocedure'/$metadata",
+  },
+]
+`;
+
+exports[`getExternalServiceReferences it should return value external service references from annotation file 1`] = `
+Array [
+  Object {
+    "collectionPath": "Currencies",
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "type": "code-list",
+    "value": "../../../../default/iwbep/common/0001/$metadata",
+  },
+  Object {
+    "collectionPath": "UnitsOfMeasure",
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "type": "code-list",
+    "value": "../../../../default/iwbep/common/0001/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerParameters/P_CompanyCode",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_companycodestdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-parameterz_arcustomer2.p_companycode'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/Customer",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_customer_vh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.customer'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/PaymentCardType",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/AccountingClerk",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_accountingclerkstdvh/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.accountingclerk'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/PaymentTerms",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/i_paymentterms/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentterms'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "CustomerType/DunningProcedure",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_dunningprocedurevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.dunningprocedure'/$metadata",
+  },
+  Object {
+    "serviceRootPath": "/sap/opu/odata4/sap/my_service/",
+    "target": "com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.CustomerType/TradingPartner",
+    "type": "value-list",
+    "value": "../../../../srvd_f4/sap/p_globalcompanyvaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.tradingpartner'/$metadata",
+  },
+]
+`;
