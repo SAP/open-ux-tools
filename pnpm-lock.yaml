@@ -647,8 +647,8 @@ importers:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.19.130)
       js-yaml:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.1.1
+        version: 4.1.1
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -717,8 +717,8 @@ importers:
   packages/annotation-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -732,8 +732,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -866,6 +866,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -899,6 +902,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
       http-proxy-middleware:
         specifier: 3.0.5
         version: 3.0.5
@@ -936,9 +942,6 @@ importers:
       connect:
         specifier: ^3.7.0
         version: 3.7.0
-      express:
-        specifier: 4.21.2
-        version: 4.21.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -1205,8 +1208,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       js-yaml:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.1.1
+        version: 4.1.1
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1293,8 +1296,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       js-yaml:
-        specifier: 3.14.0
-        version: 3.14.0
+        specifier: 3.14.2
+        version: 3.14.2
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1644,8 +1647,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       js-yaml:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.1.1
+        version: 4.1.1
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1797,8 +1800,8 @@ importers:
   packages/fe-fpm-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1809,8 +1812,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1879,8 +1882,8 @@ importers:
   packages/fiori-annotation-api:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/cds-annotation-parser':
         specifier: workspace:*
         version: link:../cds-annotation-parser
@@ -1906,8 +1909,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@sap-ux/xml-odata-annotation-converter':
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
@@ -1946,8 +1949,8 @@ importers:
   packages/fiori-app-sub-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/annotation-generator':
         specifier: workspace:*
         version: link:../annotation-generator
@@ -2362,8 +2365,11 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2391,6 +2397,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -2708,8 +2717,8 @@ importers:
   packages/inquirer-common:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2769,8 +2778,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2820,9 +2829,6 @@ importers:
       minimatch:
         specifier: 3.0.5
         version: 3.0.5
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
 
   packages/jest-runner-puppeteer:
     dependencies:
@@ -2836,9 +2842,6 @@ importers:
       jest-environment-node:
         specifier: 30.2.0
         version: 30.2.0
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
@@ -3014,8 +3017,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3096,8 +3099,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3113,6 +3116,12 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.8
+        version: 0.10.8
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -3144,6 +3153,12 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -3336,6 +3351,9 @@ importers:
       '@ui5/cli':
         specifier: 4.0.33
         version: 4.0.33
+      '@ui5/manifest':
+        specifier: 1.81.0
+        version: 1.81.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -3389,8 +3407,8 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -4347,8 +4365,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -4408,8 +4426,8 @@ importers:
         specifier: 1.12.2
         version: 1.12.2(debug@4.4.3)
       js-yaml:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.1.1
+        version: 4.1.1
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -5089,7 +5107,7 @@ packages:
     dependencies:
       '@jsdevtools/ono': 7.1.3
       '@types/json-schema': 7.0.15
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
     dev: true
 
   /@asamuzakjp/css-color@3.2.0:
@@ -5962,7 +5980,7 @@ packages:
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.2
       convert-source-map: 2.0.0
-      debug: 4.4.0
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -7536,7 +7554,7 @@ packages:
     resolution: {integrity: sha512-iwksMs5Bf/wUItfcg+OXrEpravm5rEd9Bf4oyIPL4kVTmJQ7PNDSd6MDYkpSJR1pn7tz/k8Zf2DhTCqX08Ou+Q==}
     dependencies:
       '@changesets/types': 6.1.0
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
     dev: true
 
   /@changesets/pre@2.0.2:
@@ -8500,7 +8518,7 @@ packages:
       globals: 13.24.0
       ignore: 5.2.4
       import-fresh: 3.3.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 3.1.2
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -9263,7 +9281,7 @@ packages:
       camelcase: 5.3.1
       find-up: 4.1.0
       get-package-type: 0.1.0
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
       resolve-from: 5.0.0
     dev: true
 
@@ -11236,16 +11254,16 @@ packages:
   /@sap-devx/yeoman-ui-types@1.16.9:
     resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
 
-  /@sap-ux/annotation-converter@0.10.2:
-    resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.13.0
-    dev: false
-
   /@sap-ux/annotation-converter@0.10.3:
     resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
     dependencies:
       '@sap-ux/vocabularies-types': 0.13.0
+    dev: true
+
+  /@sap-ux/annotation-converter@0.10.8:
+    resolution: {integrity: sha512-eUSTT0oPBdyDC/jGay+VVgW9BB80NSpl/HeTo3H+K99or88MR2eHtXH8wCabH55Qgzyrnc7BSWaYXk9AMbYWJg==}
+    dependencies:
+      '@sap-ux/vocabularies-types': 0.13.1
 
   /@sap-ux/cds-annotation-parser@0.2.15:
     resolution: {integrity: sha512-m7q1NzY3aMLpRlZ+G4thvXHITrbd96/BLhIR3/Fs4exNNdDBxOluCIk4LdaTdO0HEX3Czuhp/Ais/pexbakyuw==}
@@ -11459,6 +11477,11 @@ packages:
 
   /@sap-ux/vocabularies-types@0.13.0:
     resolution: {integrity: sha512-srR9ffXpgvVxsrD/3ZvX6PnxXyY6yeth6LuKfCDgcyDoPeRj1jQknpgVF+k9hHDv7LkGkDiHYvjWY+JP8OlDLw==}
+    engines: {node: '>=18.x'}
+    dev: true
+
+  /@sap-ux/vocabularies-types@0.13.1:
+    resolution: {integrity: sha512-1FUwupX3jF/oNiRbHRx9JlydVgtuSvqpJJFORrh7cnQ71pCmKRvZL8cVkqMF+TQ0/WL3/TJBiGzYSsoQO5xRUQ==}
     engines: {node: '>=18.x'}
 
   /@sap-ux/xml-odata-annotation-converter@0.3.6:
@@ -12905,7 +12928,7 @@ packages:
       '@textlint/types': 15.2.3
       chalk: 4.1.2
       debug: 4.4.3
-      js-yaml: 3.14.1
+      js-yaml: 3.14.2
       lodash: 4.17.21
       pluralize: 2.0.0
       string-width: 4.2.3
@@ -14254,7 +14277,7 @@ packages:
       chalk: 5.6.2
       data-with-position: 0.5.0
       import-local: 3.2.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       open: 10.2.0
       pretty-hrtime: 1.0.3
       semver: 7.7.3
@@ -14312,8 +14335,8 @@ packages:
       figures: 6.1.0
     dev: true
 
-  /@ui5/manifest@1.76.0:
-    resolution: {integrity: sha512-PCNdn+uC2r66Uo8jlQZNue5faUy9lHctHb0p9IPl2qnj1mJph2i76WxDG61Nkgagzq7Qx8MCR9LBzJW7G/C7Iw==}
+  /@ui5/manifest@1.81.0:
+    resolution: {integrity: sha512-UMsyfGYiqfovieLTqsOe9cOig3Aruzj+phdgun5S3w3kgnXvnuelZvpU2S6zeq1Pny92ElaTJUqAgfofK/224w==}
 
   /@ui5/project@4.0.8(@ui5/builder@4.1.1):
     resolution: {integrity: sha512-kv8tKiiwT175BvAfYdJJ8Fw038p5fNRqJNCDchipeTHMnVsvOdcyw8YVXGk8btngYEVfaX6v936RJAa2hlgf2g==}
@@ -14334,7 +14357,7 @@ packages:
       escape-string-regexp: 5.0.0
       globby: 14.1.0
       graceful-fs: 4.2.11
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       lockfile: 1.0.4
       make-fetch-happen: 14.0.3
       node-stream-zip: 1.15.0
@@ -14944,7 +14967,7 @@ packages:
     resolution: {integrity: sha512-/HcYgtUSiJiot/XWGLOlGxPYUG65+/31V8oqk17vZLW1xlCoR4PampyePljOxY2n8/3jz9+tIFzICsyGujJZoA==}
     engines: {node: '>=18.12.0'}
     dependencies:
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
       tslib: 2.8.1
     dev: true
 
@@ -16517,7 +16540,7 @@ packages:
       commander: 13.1.0
       edit-json-file: 1.8.1
       globby: 14.1.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       semver: 7.7.1
       table: 6.9.0
       type-fest: 4.41.0
@@ -19074,7 +19097,7 @@ packages:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.4.1
       lodash.merge: 4.6.2
@@ -19121,7 +19144,7 @@ packages:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.4.1
       lodash.merge: 4.6.2
@@ -19934,7 +19957,7 @@ packages:
   /front-matter@4.0.2:
     resolution: {integrity: sha512-I8ZuJ/qG92NWX8i5x1Y8qyj3vizhXS31OxjKDu3LKP+7/qBgfIKValiZIEwoVoJKUHlhWtYrktkxV1XsX+pPlg==}
     dependencies:
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
     dev: true
 
   /fs-constants@1.0.0:
@@ -20524,7 +20547,7 @@ packages:
     resolution: {integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==}
     engines: {node: '>=6.0'}
     dependencies:
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
       kind-of: 6.0.3
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
@@ -22625,22 +22648,22 @@ packages:
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  /js-yaml@3.14.0:
-    resolution: {integrity: sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==}
-    dependencies:
-      argparse: 1.0.10
-      esprima: 4.0.1
-
-  /js-yaml@3.14.1:
-    resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
+  /js-yaml@3.14.2:
+    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
     hasBin: true
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
-    dev: true
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+    dev: true
+
+  /js-yaml@4.1.1:
+    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
     dependencies:
       argparse: 2.0.1
@@ -23102,7 +23125,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
       pify: 4.0.1
       strip-bom: 3.0.0
 
@@ -26216,7 +26239,7 @@ packages:
       ibm-cloud-sdk-core: 5.4.3
       jks-js: 1.1.4
       js-rouge: 3.0.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       jsdom: 26.1.0
       langfuse: 3.38.6
       lru-cache: 11.2.2
@@ -26655,7 +26678,7 @@ packages:
     resolution: {integrity: sha512-kD7FqML7l800i6pS6pvLyIE2ncbk9Du8Q0gp/4hMPhJU6ZxApkoLcGD8ZeqgiAlfwZ6BlETq6qqe+12DUL207w==}
     dependencies:
       debug: 4.4.3
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       json5: 2.2.3
       require-from-string: 2.0.2
     transitivePeerDependencies:
@@ -26984,7 +27007,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.0
+      js-yaml: 3.14.2
       pify: 4.0.1
       strip-bom: 3.0.0
     dev: true
@@ -30006,7 +30029,7 @@ packages:
       fast-xml-parser: 5.3.0
       handlebars: 4.7.8
       ignore-walk: 7.0.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 7.4.6
       rollup: 4.52.5
       rollup-plugin-polyfill-node: 0.13.0(rollup@4.52.5)
@@ -30035,7 +30058,7 @@ packages:
       babel-preset-transform-ui5: 7.8.0(@babel/core@7.28.0)
       browserslist: 4.26.3
       comment-json: 4.2.5
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -30341,7 +30364,7 @@ packages:
     dependencies:
       comment-json: 4.2.5
       glob: 7.2.3
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 3.0.5
       minimist: 1.2.8
     dev: true

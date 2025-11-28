@@ -293,6 +293,50 @@ export function onPress(this: ExtensionAPI, context: Context | undefined, select
 }"
 `;
 
+exports[`CustomAction generateCustomAction custom menu as target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomAction": Object {
+                      "enabled": true,
+                      "press": "",
+                      "text": "My custom action text",
+                      "visible": true,
+                    },
+                    "TestMenu": Object {
+                      "menu": Array [
+                        "DummyAction",
+                        "MyCustomAction",
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomAction generateCustomAction custom section as target 1`] = `
 Object {
   "sap.app": Object {

@@ -5,7 +5,7 @@ import {
     resolveApplication,
     resolveRefs,
     validateWithSchema
-} from '../../../src/tools/utils';
+} from '../../../src/utils';
 import { join } from 'node:path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
 import * as zod from 'zod';

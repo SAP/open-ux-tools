@@ -18,6 +18,17 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
     };
 });
 
+// Mock StdioServerTransport to prevent open handles
+jest.mock('@modelcontextprotocol/sdk/server/stdio.js', () => {
+    return {
+        StdioServerTransport: jest.fn().mockImplementation(() => {
+            return {
+                start: jest.fn()
+            };
+        })
+    };
+});
+
 jest.mock('../../src/telemetry', () => ({
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),

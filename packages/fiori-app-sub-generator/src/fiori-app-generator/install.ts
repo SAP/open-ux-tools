@@ -2,26 +2,11 @@ import type { CapService } from '@sap-ux/cap-config-writer';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import { CommandRunner, t } from '../utils';
 
-type Dependency = {
-    [moduleId: string]: string;
-};
-
-/**
- * The dependencies required for code assist for the root CAP project package.json.
- * These are not written to the `app` package.json by the `@sap-ux/ui5-application-writer`, as is done for non-CAP projects.
- */
-const codeAssistDeps: Dependency = {
-    eslint: '7.32.0',
-    '@sap/eslint-plugin-ui5-jsdocs': '2.0.5',
-    '@sapui5/ts-types': '1.92.2'
-};
-
 /**
  * Defines the options used to install deps to a CAP project.
  */
 export type CapInstallOptions = {
     ui5Version?: string; // Presence of a property indicates specification should be installed, hence adding tools suite support
-    codeAssist?: boolean; // Add code assist libs during CAP install
     rootPath?: string; // Root path for the CAP project
     depsInstallPath?: string; // Path to install dependancies in project (app or root),
     useWorkspaces?: boolean; // Use NPM workspaces during project generation
@@ -43,10 +28,6 @@ async function installProjectDependencies(
     const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
     const runner = new CommandRunner(log);
     const runArgs = [];
-
-    if (capOptions?.codeAssist) {
-        runArgs.push(...Object.keys(codeAssistDeps).map((dep) => `${dep}@${codeAssistDeps[dep]}`));
-    }
 
     runArgs.unshift('install');
 
@@ -83,7 +64,6 @@ async function installProjectDependencies(
  * @param param0
  * @param param0.appPackagePath
  * @param param0.capService
- * @param param0.enableCodeAssist
  * @param param0.useNpmWorkspaces
  * @param param0.ui5Version
  * @param logger The logger to use for output
@@ -93,13 +73,11 @@ export async function installDependencies(
     {
         appPackagePath,
         capService,
-        enableCodeAssist,
         useNpmWorkspaces,
         ui5Version
     }: {
         appPackagePath: string;
         capService?: CapService;
-        enableCodeAssist: boolean;
         useNpmWorkspaces: boolean;
         ui5Version: string;
     },
@@ -109,7 +87,6 @@ export async function installDependencies(
     let capInstallOpts: CapInstallOptions | undefined;
     if (capService) {
         capInstallOpts = {
-            codeAssist: enableCodeAssist,
             rootPath: capService.projectPath,
             // if NPM workspaces are used, depsInstallPath will be the CAP projectpackage.json. Otherwise the CAP app package.json.
             depsInstallPath: useNpmWorkspaces ? capService.projectPath : appPackagePath,
