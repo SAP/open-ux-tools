@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.2
+
+### Patch Changes
+
+-   605fdca: Remove replace mkdirp with node native functionality
+
 ## 0.2.1
 
 ### Patch Changes

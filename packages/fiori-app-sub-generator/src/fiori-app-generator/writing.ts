@@ -96,7 +96,6 @@ export async function writeAppGenInfoFiles(
         appNamespace: project.namespace ?? '',
         ui5Theme: project.ui5Theme,
         ui5Version: appGenInfoCustom?.ui5Version || project.manifestMinUI5Version || project.ui5Version,
-        enableCodeAssist: project.enableCodeAssist,
         enableEslint: project.enableEslint,
         enableTypeScript: project.enableTypeScript,
         showMockDataInfo: !!service.edmx && !service.capService,
