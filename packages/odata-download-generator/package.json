@@ -33,11 +33,14 @@
     ],
     "dependencies": {
         "odata-query": "8.0.5",
+        "@sap-ux/annotation-converter": "0.10.8",
         "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/edmx-parser": "0.9.1",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
+        "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
@@ -46,10 +49,11 @@
         "i18next": "25.3.0",
         "inquirer": "8.2.7",
         "lodash": "4.17.21",
+        "prettify-xml": "1.2.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@sap-ux/vocabularies-types": "0.13.0",
+        "@sap-ux/vocabularies-types": "0.13.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
         "@types/yeoman-generator": "5.2.14",

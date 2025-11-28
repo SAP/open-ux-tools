@@ -53,11 +53,27 @@ export async function fetchData(
         }
     }
     const mainEntity = entities.listEntity;
-    let mainEntityFilters: { [key: string]: string } | undefined;
+    let mainEntityFilters: object[] = [];
     mainEntity.semanticKeys.forEach((key) => {
         if (key.value) {
-            mainEntityFilters = mainEntityFilters ?? {};
-            mainEntityFilters[key.name] = key.value;
+            let filter: string | object = key.value;
+            // Create the range and set values
+            const filterAndParts = key.value.split(',');
+
+            filterAndParts.forEach((filterPart) => {
+                const filterRangeParts = filterPart.split('-');
+
+                if (filterRangeParts.length === 2) {
+                    filter = {
+                        ge: filterRangeParts[0],
+                        le: filterRangeParts[1]
+                    }
+                }
+                
+            });
+            mainEntityFilters.push({
+                [key.name]: filter
+            });
         }
     });
 

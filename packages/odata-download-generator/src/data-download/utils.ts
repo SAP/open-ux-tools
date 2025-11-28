@@ -8,6 +8,7 @@ import { join } from 'path';
 import { SelectedEntityAnswer } from './prompts';
 import { AppConfig, Entity, navPropNameExclusions, ReferencedEntities, SemanticKeyFilter } from './types';
 
+
 /**
  * Parses the OData result and converts it into separate entity data containing rows of data for each entity.
  *
@@ -114,6 +115,8 @@ function getSemanticKeyProperties(entitySetName: string, convertedEdmx: Converte
 function getNavPropertyEntities(entitySet: EntitySet, omitEntities?: string[]): Entity[] | undefined {
     const entities: Entity[] = [];
     Object.entries(entitySet.navigationPropertyBinding).forEach(([path, entitySet]) => {
+        // todo: Should we use the entity type exclusion instead
+        entitySet.entityTypeName
         if (!navPropNameExclusions.includes(path) && !omitEntities?.includes(entitySet.name)) {
             entities.push({
                 entitySet: entitySet,

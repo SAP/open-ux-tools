@@ -32,4 +32,4 @@ export type AppConfig = {
 
 
 export const navPropNameExclusions = ['DraftAdministrativeData', 'SiblingEntity'];
-
+export const entityTypeExclusions = ['I_DraftAdministrativeData'];

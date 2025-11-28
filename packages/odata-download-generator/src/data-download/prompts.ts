@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { CheckBoxQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { Logger } from '@sap-ux/logger';
 import {
     getSystemSelectionQuestions,
@@ -8,7 +8,7 @@ import {
     promptNames as servicePromptNames
 } from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
-import { Answers, CheckboxChoiceOptions, InputQuestion, PromptFunction, Question } from 'inquirer';
+import { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
 import type { AppConfig, Entity } from './types';
 import { getAppConfig, getSystemNameFromStore } from './utils';
@@ -16,7 +16,8 @@ import { getData } from './prompt-helpers';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
-    confirmDownload: 'confirmDownload'
+    confirmDownload: 'confirmDownload',
+    updateMainServiceMetadata: 'updateMainServiceMetadata'
 };
 
 export interface SelectedEntityAnswer extends Answers {
@@ -59,7 +60,11 @@ function createRelatedEntityChoices(
  */
 export async function getODataDownloaderPrompts(): Promise<{
     questions: Question[];
-    answers: { application: AppConfig; odataQueryResult: { odata: object | undefined } };
+    answers: {
+        application: AppConfig;
+        odataQueryResult: { odata: object | undefined };
+        odataServiceAnswers: Partial<OdataServiceAnswers>;
+    };
 }> {
     const selectSourceQuestions: Question[] = [];
     let appConfig: AppConfig = {
@@ -166,13 +171,14 @@ export async function getODataDownloaderPrompts(): Promise<{
     selectSourceQuestions.push(
         appSelectionQuestion,
         ...(systemSelectionQuestions.prompts as Question[]),
+        getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers),
         ...keyPrompts,
         relatedEntitySelectionQuestion,
         getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
     );
     return {
         questions: selectSourceQuestions,
-        answers: { application: appConfig, odataQueryResult }
+        answers: { application: appConfig, odataQueryResult, odataServiceAnswers: systemSelectionQuestions.answers }
     };
 }
 
@@ -185,12 +191,24 @@ function getKeyPrompts(size: number, appInfo: AppConfig): InputQuestion[] {
                 return !!appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
             },
             name: `entityKeyIdx:${keypart}`,
-            message: () => `Enter value for: ${appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
+            message: () => `Enter values for: ${appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
             type:
                 appInfo.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean'
                     ? 'confirm'
                     : 'input',
+            guiOptions: {
+                hint: 'For range selection use \'-\' between values. Use commas to select non-contigous values.'
+            },
             validate: (keyValue: string) => {
+                let validationMsg;
+                const filterAndParts = keyValue.split(',');
+                filterAndParts.forEach((filterPart) => {
+                    const filterRangeParts = filterPart.split('-');
+                    if (filterAndParts.length > 2) {
+                        return 'Invalid range specified, only the lowest and highest values allowed. e.g. \'1-10\''
+                    }
+                });
+
                 // todo: validate the input based on the key type
                 if (keyValue && appInfo.referencedEntities?.listEntity.semanticKeys[keypart]) {
                     appInfo.referencedEntities.listEntity.semanticKeys[keypart].value = keyValue;
@@ -254,4 +272,26 @@ function getConfirmDownloadPrompt(
             };
         }
     } as ConfirmQuestion;
+}
+
+function getUpdateMainServiceMetadataPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>): ConfirmQuestion {
+    const question: ConfirmQuestion = {
+        when: () => {
+            return !!odataServiceAnswers.metadata;
+        },
+        name: promptNames.updateMainServiceMetadata,
+        type: 'confirm',
+        message: 'Update local metadata file from backend:',
+        default: false,
+        /* additionalMessages: (updateMetadata: unknown) => {
+            if (updateMetadata === true) {
+                return {
+                    message: 'The local metadata file will be updated from the backend',
+                    severity: Severity.information 
+                }
+            }
+            return;
+        } */
+    }
+    return question;
 }

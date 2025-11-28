@@ -6,7 +6,8 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "generators"
+    "outDir": "generators",
+    "noImplicitAny": false
   },
   "references": [
     {
@@ -23,6 +24,9 @@
     },
     {
       "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../odata-service-writer"
     },
     {
       "path": "../project-access"
