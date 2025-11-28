@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import type { create, Editor } from 'mem-fs-editor';
+import type { ReaderCollection } from '@ui5/fs';
 
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { Inbound } from '@sap-ux/axios-extension';
@@ -16,7 +17,9 @@ import {
     isTypescriptSupported,
     filterAndMapInboundsToManifest,
     readUi5Config,
-    extractCfBuildTask
+    extractCfBuildTask,
+    readLocalManifest,
+    loadAppVariant
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
@@ -367,6 +370,120 @@ describe('helper', () => {
 
             expect(() => extractCfBuildTask(mockUi5Config)).toThrow('No CF ADP project found');
             expect(mockUi5Config.findCustomTask).toHaveBeenCalledWith('app-variant-bundler-build');
+        });
+    });
+
+    describe('readLocalManifest', () => {
+        const mockManifest = {
+            'sap.app': {
+                id: 'test.app',
+                title: 'Test App'
+            }
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should read manifest from local dist folder', () => {
+            const useLocal = 'dist';
+            const expectedPath = join(process.cwd(), useLocal, 'manifest.json');
+            const manifestContent = JSON.stringify(mockManifest);
+
+            readFileSyncMock.mockReturnValueOnce(manifestContent);
+
+            const result = readLocalManifest(useLocal);
+
+            expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
+            expect(result).toEqual(mockManifest);
+        });
+
+        test('should throw error when file does not exist', () => {
+            const useLocal = 'dist';
+            const expectedPath = join(process.cwd(), useLocal, 'manifest.json');
+
+            readFileSyncMock.mockImplementationOnce(() => {
+                const error = new Error('ENOENT: no such file or directory');
+                (error as NodeJS.ErrnoException).code = 'ENOENT';
+                throw error;
+            });
+
+            expect(() => readLocalManifest(useLocal)).toThrow();
+            expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
+        });
+    });
+
+    describe('loadAppVariant', () => {
+        const mockVariantContent = {
+            layer: 'VENDOR',
+            reference: 'base.app',
+            id: 'my.adaptation',
+            namespace: 'apps/base.app/appVariants/my.adaptation/',
+            content: []
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should load and parse app variant descriptor successfully', async () => {
+            const mockResource = {
+                getString: jest.fn().mockResolvedValue(JSON.stringify(mockVariantContent))
+            };
+
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(mockResource)
+            } as unknown as ReaderCollection;
+
+            const result = await loadAppVariant(mockRootProject);
+
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+            expect(mockResource.getString).toHaveBeenCalled();
+            expect(result).toEqual(mockVariantContent);
+        });
+
+        test('should throw error when manifest.appdescr_variant is not found', async () => {
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(null)
+            } as unknown as ReaderCollection;
+
+            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+                'ADP configured but no manifest.appdescr_variant found.'
+            );
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+        });
+
+        test('should throw error when manifest.appdescr_variant is empty', async () => {
+            const mockResource = {
+                getString: jest.fn().mockResolvedValue('')
+            };
+
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(mockResource)
+            } as unknown as ReaderCollection;
+
+            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+                'ADP configured but manifest.appdescr_variant file is empty.'
+            );
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+            expect(mockResource.getString).toHaveBeenCalled();
+        });
+
+        test('should throw error when getString throws an error', async () => {
+            const mockError = new Error('File read error');
+            const mockResource = {
+                getString: jest.fn().mockRejectedValue(mockError)
+            };
+
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(mockResource)
+            } as unknown as ReaderCollection;
+
+            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+                'Failed to parse manifest.appdescr_variant: File read error'
+            );
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+            expect(mockResource.getString).toHaveBeenCalled();
         });
     });
 });

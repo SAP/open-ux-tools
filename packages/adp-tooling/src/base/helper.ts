@@ -1,10 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
+import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
+import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
@@ -101,6 +102,40 @@ export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfigu
     }
 
     return buildTask;
+}
+
+/**
+ * Read the manifest from the local dist folder.
+ *
+ * @param {string} useLocal - The path to the dist folder.
+ * @returns {Manifest} The manifest.
+ */
+export function readLocalManifest(useLocal: string): Manifest {
+    const distPath = join(process.cwd(), useLocal);
+    const manifestPath = join(distPath, 'manifest.json');
+    return JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
+}
+
+/**
+ * Load and parse the app variant descriptor.
+ *
+ * @param {ReaderCollection} rootProject - The root project.
+ * @returns {Promise<DescriptorVariant>} The parsed descriptor variant.
+ */
+export async function loadAppVariant(rootProject: ReaderCollection): Promise<DescriptorVariant> {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (!appVariant) {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+    try {
+        const content = await appVariant.getString();
+        if (!content || content.trim() === '') {
+            throw new Error('ADP configured but manifest.appdescr_variant file is empty.');
+        }
+        return JSON.parse(content) as DescriptorVariant;
+    } catch (e) {
+        throw new Error(`Failed to parse manifest.appdescr_variant: ${e.message}`);
+    }
 }
 
 /**

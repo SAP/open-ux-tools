@@ -1488,4 +1488,58 @@ describe('initAdp', () => {
         expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
     });
+
+    test('initAdp with useLocal mode', async () => {
+        const mockManifest = {
+            'sap.app': {
+                id: 'test.app',
+                title: 'Test App',
+                type: 'application',
+                applicationVersion: {
+                    version: '1.0.0'
+                }
+            }
+        } as Manifest;
+        const useLocal = 'dist';
+        const readLocalManifestMock = jest.spyOn(adpTooling, 'readLocalManifest').mockReturnValue(mockManifest);
+        const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: jest.fn().mockResolvedValue('CUSTOMER_BASE'),
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudProject: false
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const config: AdpPreviewConfig = {
+            target: { url },
+            useLocal
+        };
+        const flpConfig = {
+            adp: config,
+            rta: { options: {}, editors: [] }
+        } as unknown as Partial<MiddlewareConfig>;
+        const flp = new FlpSandbox(flpConfig, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp(config);
+
+        expect(readLocalManifestMock).toHaveBeenCalledWith(useLocal);
+        expect(adpToolingMock).toHaveBeenCalled();
+        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
+        expect(flp.rta?.options?.isCloud).toBe(false);
+    });
 });

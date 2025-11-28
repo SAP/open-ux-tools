@@ -25,9 +25,10 @@ import {
     AdpPreview,
     type AdpPreviewConfig,
     type CommonChangeProperties,
-    type DescriptorVariant,
     type OperationType,
-    type CommonAdditionalChangeInfoProperties
+    type CommonAdditionalChangeInfoProperties,
+    loadAppVariant,
+    readLocalManifest
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -1228,40 +1229,5 @@ function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId
 
     for (const editor of rta.endpoints) {
         editor.pluginScript ??= 'open/ux/preview/client/adp/init';
-    }
-}
-
-/**
- * Read the manifest from the local dist folder.
- *
- * @param useLocal path to the dist folder
- * @returns the manifest
- */
-function readLocalManifest(useLocal: string): Manifest {
-    const distPath = join(process.cwd(), useLocal);
-    const manifestPath = join(distPath, 'manifest.json');
-    return JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
-}
-
-/**
- * Load and parse the app variant descriptor.
- *
- * @param rootProject reference to the project
- * @returns parsed descriptor variant
- * @throws Error if manifest.appdescr_variant is not found
- */
-async function loadAppVariant(rootProject: ReaderCollection): Promise<DescriptorVariant> {
-    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
-    if (!appVariant) {
-        throw new Error('ADP configured but no manifest.appdescr_variant found.');
-    }
-    try {
-        const content = await appVariant.getString();
-        if (!content || content.trim() === '') {
-            throw new Error('ADP configured but manifest.appdescr_variant file is empty.');
-        }
-        return JSON.parse(content) as DescriptorVariant;
-    } catch (e) {
-        throw new Error(`Failed to parse manifest.appdescr_variant: ${e.message}`);
     }
 }
