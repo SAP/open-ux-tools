@@ -1,5 +1,5 @@
 import type Generator from 'yeoman-generator';
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
@@ -24,6 +24,7 @@ interface FlpGenProps {
     projectRootPath: string;
     inbounds?: ManifestNamespace.Inbound;
     layer: FlexLayer;
+    prompts: Prompts;
 }
 
 /**
@@ -57,7 +58,7 @@ const PACKAGE_ADDITIONAL_VALIDATION = {
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export function addFlpGen(
-    { projectRootPath, vscode, inbounds, layer }: FlpGenProps,
+    { projectRootPath, vscode, inbounds, layer, prompts }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
@@ -71,6 +72,7 @@ export function addFlpGen(
             vscode,
             inbounds,
             layer,
+            prompts,
             data: { projectRootPath },
             appWizard
         });

@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.3
+
+### Patch Changes
+
+-   07725fe: Bump @sap/manifest version
+
+## 0.18.2
+
+### Patch Changes
+
+-   d37ad9b: fix: adjust fallback UI5 version
+
+## 0.18.1
+
+### Patch Changes
+
+-   5475b5b: Store fragment parent control info in fragment body
+
+## 0.18.0
+
+### Minor Changes
+
+-   a0a1570: feat(ADP)(OData): Display in the Info center the OData service connectivity status at startup of the Visual Editor.
+
 ## 0.17.4
 
 ### Patch Changes
