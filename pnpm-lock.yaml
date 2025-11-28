@@ -902,6 +902,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
       http-proxy-middleware:
         specifier: 3.0.5
         version: 3.0.5
@@ -939,9 +942,6 @@ importers:
       connect:
         specifier: ^3.7.0
         version: 3.7.0
-      express:
-        specifier: 4.21.2
-        version: 4.21.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -2324,6 +2324,9 @@ importers:
       '@sap-ux/annotation-converter':
         specifier: 0.10.8
         version: 0.10.8
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2351,6 +2354,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -2780,9 +2786,6 @@ importers:
       minimatch:
         specifier: 3.0.5
         version: 3.0.5
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
 
   packages/jest-runner-puppeteer:
     dependencies:
@@ -2796,9 +2799,6 @@ importers:
       jest-environment-node:
         specifier: 30.2.0
         version: 30.2.0
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
       puppeteer-core:
         specifier: 22.15.0
         version: 22.15.0
@@ -2967,9 +2967,15 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.16.9
         version: 1.16.9
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.8
+        version: 0.10.8
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -2982,6 +2988,9 @@ importers:
       '@sap-ux/odata-service-inquirer':
         specifier: workspace:*
         version: link:../odata-service-inquirer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -3006,13 +3015,16 @@ importers:
       odata-query:
         specifier: 8.0.5
         version: 8.0.5
+      prettify-xml:
+        specifier: 1.2.0
+        version: 1.2.0
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0
     devDependencies:
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3178,8 +3190,8 @@ importers:
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -3373,8 +3385,8 @@ importers:
         specifier: 4.0.33
         version: 4.0.33
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -3428,8 +3440,8 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -4386,8 +4398,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.76.0
-        version: 1.76.0
+        specifier: 1.81.0
+        version: 1.81.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -14353,8 +14365,8 @@ packages:
       figures: 6.1.0
     dev: true
 
-  /@ui5/manifest@1.76.0:
-    resolution: {integrity: sha512-PCNdn+uC2r66Uo8jlQZNue5faUy9lHctHb0p9IPl2qnj1mJph2i76WxDG61Nkgagzq7Qx8MCR9LBzJW7G/C7Iw==}
+  /@ui5/manifest@1.81.0:
+    resolution: {integrity: sha512-UMsyfGYiqfovieLTqsOe9cOig3Aruzj+phdgun5S3w3kgnXvnuelZvpU2S6zeq1Pny92ElaTJUqAgfofK/224w==}
 
   /@ui5/project@4.0.8(@ui5/builder@4.1.1):
     resolution: {integrity: sha512-kv8tKiiwT175BvAfYdJJ8Fw038p5fNRqJNCDchipeTHMnVsvOdcyw8YVXGk8btngYEVfaX6v936RJAa2hlgf2g==}
@@ -26060,7 +26072,7 @@ packages:
     dev: true
 
   /prettify-xml@1.2.0:
-    resolution: {integrity: sha1-Rtzx7oqNi3PbMLfgbvJtyc8/bxg=}
+    resolution: {integrity: sha512-kuoTbmC+QQUfx45PrdkVzJqrNEp2lhK++WGyiqBx6JrCvZUQDgeYjdV3h53n7p+37s1Iwx6GjAQ7fcIgD8kkLQ==}
     dev: false
 
   /pretty-bytes@5.6.0:
