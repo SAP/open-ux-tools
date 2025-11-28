@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.24
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/fiori-annotation-api@0.7.16
+
+## 0.39.23
+
+### Patch Changes
+
+-   796129a: feat: Action Menu generator added to the FE fpm-writer
+
 ## 0.39.22
 
 ### Patch Changes
