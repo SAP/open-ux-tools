@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.11
+
+### Patch Changes
+
+-   9c66de4: fix: remove hard coded usage of webapp folder name
+
 ## 0.18.10
 
 ### Patch Changes
