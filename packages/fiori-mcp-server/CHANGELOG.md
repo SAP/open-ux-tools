@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.3
+
+### Patch Changes
+
+-   00c7a0a: feat: add generate-fiori-ui-application functionality and rename existing generate-fiori-ui-app to generate-fiori-ui-application-cap
+
 ## 0.4.2
 
 ### Patch Changes
