@@ -196,7 +196,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
     /**
      * Builds data that is used in the dialog
      */
-    async buildDialogData(): Promise<void> {
+    buildDialogData(): void {
         this.getControlMetadata(); // is called to fill this.runtimeControl
 
         const pageTypeOptions: { key: string; value: string }[] = [

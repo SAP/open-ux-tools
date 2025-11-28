@@ -52,11 +52,11 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         return (this.context.rta.getRootControlInstance().getModel() as ODataModelV2)?.getMetaModel();
     }
 
-    protected async getEntitySetNameFromPageComponent(component: Component | undefined): Promise<string> {
+    protected getEntitySetNameFromPageComponent(component: Component | undefined): Promise<string> {
         if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
             throw new Error('Unexpected type of page owner component');
         }
-        return component.getEntitySet();
+        return Promise.resolve(component.getEntitySet());
     }
 
     protected async prepareNavigationData(metaModel: ODataMetaModelV2): Promise<void> {
