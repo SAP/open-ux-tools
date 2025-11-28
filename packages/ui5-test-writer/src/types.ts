@@ -22,6 +22,7 @@ export type FEV4OPAConfig = {
     opaJourneyFileName: string;
     htmlTarget: string;
     hideFilterBar: boolean;
+    filterBarItems?: string[];
 };
 
 export type FEV4ManifestTarget = {

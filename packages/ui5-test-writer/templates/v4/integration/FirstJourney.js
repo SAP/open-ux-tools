@@ -11,6 +11,11 @@ sap.ui.define([
             Given.iStartMyApp();
 <% startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName%>.iSeeThisPage();
+            <% if (filterBarItems) { %>
+                <% filterBarItems.forEach(function(item) { %>
+            Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
+                <% }); %>
+            <% } %>
 <% });%>
         });
 

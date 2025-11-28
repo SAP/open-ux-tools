@@ -257,7 +257,7 @@ async function generate<T extends {}>(
             },
             feApp.app.flpAppId
         );
-        generateOPAFiles(basePath, opaConfig, fs);
+        generateOPAFiles(basePath, opaConfig, fs, log);
     }
 
     if (feApp.service.capService) {

@@ -6,7 +6,10 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
-import { FileName, DirName } from '@sap-ux/project-access';
+import { FileName, DirName, getSpecification } from '@sap-ux/project-access';
+import pageModel from './sampleListReportModel.json';
+import { getFilterFields } from './utils';
+import { Logger } from '@sap-ux/logger/src/types';
 
 /**
  * Reads the manifest for an app.
@@ -261,13 +264,15 @@ function writePageObject(
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-export function generateOPAFiles(
+export async function generateOPAFiles(
     basePath: string,
     opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
-    fs?: Editor
-): Editor {
+    fs?: Editor,
+    log?: Logger
+): Promise<Editor> {
     const editor = fs ?? create(createStorage());
 
     const manifest = readManifest(editor, basePath);
@@ -278,6 +283,11 @@ export function generateOPAFiles(
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
     const testOutDirPath = join(basePath, 'webapp/test');
+
+    const specification: any = await getSpecification(basePath);
+    const appSpec = await specification.readApp({ app: basePath, fs: editor });
+    // pageModel based on description https://github.wdf.sap.corp/ux-engineering/tools-suite/issues/36325, needs to be confirmed/changed
+    const pageModel = appSpec.applicationModel.pages[0].pageModel;
 
     // Common test files
     editor.copyTpl(
@@ -310,12 +320,23 @@ export function generateOPAFiles(
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
+    let filterBarItems: string[] = [];
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        filterBarItems = getFilterFields(pageModel as any['root']);
+    } catch (error) {
+        // If anything goes wrong, we just don't add filter bar items
+    }
+    log?.error(`Filter bar items for OPA tests: ${JSON.stringify(filterBarItems)}`);
+
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar
+        hideFilterBar: config.hideFilterBar,
+        filterBarItems: filterBarItems
     };
+
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
         join(testOutDirPath, `integration/${config.opaJourneyFileName}.js`),
