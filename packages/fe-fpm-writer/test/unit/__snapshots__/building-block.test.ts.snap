@@ -110,14 +110,15 @@ Object {
   },
   "generate-custom-filter-field-minimal/webapp/ext/minimalFilterField/MinimalFilterField.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-        <ComboBox id=\\"\\">
+        <ComboBox 
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
                 <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>",
+</core:FragmentDefinition>
+",
     "state": "modified",
   },
   "generate-custom-filter-field-minimal/webapp/manifest.json": Object {
@@ -158,14 +159,15 @@ exports[`Building Blocks CustomFilterField building block generate CustomFilterF
 Object {
   "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/fragment/CustomFilterField2.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-        <ComboBox id=\\"\\">
+        <ComboBox 
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
                 <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>",
+</core:FragmentDefinition>
+",
     "state": "modified",
   },
   "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/main/Main.view.xml": Object {
