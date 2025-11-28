@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.7
+
+### Patch Changes
+
+-   605fdca: Remove replace mkdirp with node native functionality
+
 ## 0.2.6
 
 ### Patch Changes

@@ -4,6 +4,7 @@ import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
+import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import {
     writeLocalServiceAnnotationXMLFiles,
@@ -11,6 +12,7 @@ import {
     writeRemoteServiceAnnotationXmlFiles
 } from './data/annotations';
 import { updatePackageJson } from './data/package';
+import { writeExternalServiceMetadata } from './data';
 
 /**
  * Generates mockserver middleware config for ui5-local.yaml file based on ui5-mock.yaml.
@@ -160,7 +162,7 @@ export async function updateServicesData(
 ): Promise<void> {
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
-    let ui5MockConfig: UI5Config | undefined;
+
     if (updateMiddlewares) {
         if (paths.ui5Yaml) {
             ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
@@ -174,38 +176,74 @@ export async function updateServicesData(
         }
     }
     // For update, updatable files should already exist
-    if (service.metadata) {
-        const webappPath = await getWebappPath(basePath, fs);
-        // Generate mockserver only when ui5-mock.yaml already exists
-        if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMiddlewares) {
-            const config = {
-                webappPath: webappPath,
-                // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
-                packageJsonConfig: {
-                    skip: true
-                },
-                // Set 'overwrite' to true to overwrite services data in YAML files
-                ui5MockYamlConfig: {
-                    overwrite: true
-                }
-            };
-            // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
-            await generateMockserverConfig(basePath, config, fs);
-            // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
-            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
-            // Update ui5-mock.yaml with backend middleware
-            if (paths.ui5MockYaml) {
-                ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
-                extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
-            }
-        }
-        // Write metadata.xml file
-        await writeMetadata(fs, webappPath, service);
-    }
+    const webappPath = await updateMetadata(basePath, paths, service, ui5Config, ui5LocalConfig, fs, updateMiddlewares);
+
     if (paths.ui5LocalYaml && ui5LocalConfig) {
         // write ui5 local yaml if service type is not CDS
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    if (service.externalServices && webappPath) {
+        writeExternalServiceMetadata(fs, webappPath, service.externalServices, service.name, service.path);
+    }
+}
+
+/**
+ * Updates metadata related data for the given service in the project files.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
+ * @param {EdmxOdataService} service - the OData service instance
+ * @param {UI5Config | undefined} ui5Config - ui5.yaml configuration
+ * @param {UI5Config | undefined} ui5LocalConfig - ui5-local.yaml configuration
+ * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} updateMiddlewares - whether the YAML files for the service (mock-server and fiori-tools-proxy middlewares) should be updated
+ * @returns {Promise<string | undefined>} webapp path if metadata was written, undefined otherwise
+ */
+async function updateMetadata(
+    basePath: string,
+    paths: ProjectPaths,
+    service: EdmxOdataService,
+    ui5Config: UI5Config | undefined,
+    ui5LocalConfig: UI5Config | undefined,
+    fs: Editor,
+    updateMiddlewares: boolean
+): Promise<string | undefined> {
+    if (!service.metadata) {
+        return undefined;
+    }
+    const webappPath = await getWebappPath(basePath, fs);
+    // Generate mockserver only when ui5-mock.yaml already exists
+    if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMiddlewares) {
+        const config: MockserverConfig = {
+            webappPath: webappPath,
+            // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
+            packageJsonConfig: {
+                skip: true
+            },
+            // Set 'overwrite' to true to overwrite services data in YAML files
+            ui5MockYamlConfig: {
+                overwrite: true
+            }
+        };
+        if (config.ui5MockYamlConfig && service.name && service.externalServices?.length) {
+            config.ui5MockYamlConfig.resolveExternalServiceReferences = {
+                [service.name]: true
+            };
+        }
+
+        // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
+        await generateMockserverConfig(basePath, config, fs);
+        // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
+        await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
+        // Update ui5-mock.yaml with backend middleware
+        if (paths.ui5MockYaml) {
+            const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+            extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
+        }
+    }
+    // Write metadata.xml file
+    await writeMetadata(fs, webappPath, service);
+    return webappPath;
 }

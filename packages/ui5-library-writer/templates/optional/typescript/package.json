@@ -5,7 +5,7 @@
       "<%= tsTypes %>": "<%= tsTypesVersion %>",
       "@typescript-eslint/eslint-plugin": "^7.1.1",
       "@typescript-eslint/parser": "^7.1.1",
-      "@ui5/cli": "^3.9.1",
+      "@ui5/cli": "^4.0.33",
       "@ui5/ts-interface-generator": "^0.8.1",
       "eslint": "^8.57.0",
       "karma": "^6.3.17",

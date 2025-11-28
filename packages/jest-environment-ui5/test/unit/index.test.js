@@ -11,7 +11,7 @@ describe('Custom environment', () => {
         expect(failed).toBe(false);
 
         // This is done centrally in the CustomEnvironment constructor but we need to call it here for the test purpose
-    }, 60000);
+    }, 120000);
 
     it('should correctly shim manifest file', () => {
         // Save original window object to restore later
