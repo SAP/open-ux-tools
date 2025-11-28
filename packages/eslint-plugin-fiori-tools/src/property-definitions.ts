@@ -7,7 +7,7 @@ export const FioriPropertyName = {
     // Add more properties as needed
 };
 
-type FioriPropertyDefinition = {
+export type FioriPropertyDefinition = {
     name: string;
     description: string;
     applicableToV2: boolean;
@@ -24,17 +24,17 @@ type FioriPropertyDefinition = {
         freestyle?: Value[];
     };
     manifestPaths: {
-        V2?: string;
-        V4?: string;
-        freestyle?: string;
+        V2?: (string | undefined)[];
+        V4?: (string | undefined)[];
+        freestyle?: (string | undefined)[];
     };
     documentationUrl: string;
     availableInPageEditor: boolean;
     fixable?: RuleFixType;
 };
 
-const PROPERTY_DEFINITIONS: {
-    [name in keyof typeof FioriPropertyName]: FioriPropertyDefinition;
+export const PROPERTY_DEFINITIONS: {
+    [name: string]: FioriPropertyDefinition;
 } = {
     flexEnabled: {
         name: 'Flex Enabled',
@@ -53,15 +53,12 @@ const PROPERTY_DEFINITIONS: {
         },
         type: 'problem',
         manifestPaths: {
-            V2: '["sap.ui5"].flexEnabled',
-            V4: '["sap.ui5"].flexEnabled',
-            freestyle: '["sap.ui5"].flexEnabled'
+            V2: ['sap.ui5', 'flexEnabled'],
+            V4: ['sap.ui5', 'flexEnabled'],
+            freestyle: ['sap.ui5', 'flexEnabled']
         },
         documentationUrl: 'https://ui5.sap.com/sdk/#/topic/ccd45ba3f0b446a0901b2c9d42b8ad53',
         availableInPageEditor: true,
         fixable: 'code'
     }
 };
-
-export { PROPERTY_DEFINITIONS };
-export type { FioriPropertyDefinition };

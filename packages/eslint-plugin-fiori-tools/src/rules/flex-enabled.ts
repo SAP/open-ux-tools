@@ -16,7 +16,8 @@ const rule: ManifestRuleDefinition = {
         messages: {
             flexEnabled: flexEnabledDefinition.message
         },
-        fixable: flexEnabledDefinition.fixable
+        fixable: flexEnabledDefinition.fixable,
+        schema: []
     },
 
     create(context) {

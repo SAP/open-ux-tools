@@ -31,20 +31,20 @@ function compareVersions(a: string, b: string): boolean {
  * Determines if a node is an ObjectNode.
  *
  * @param node - The AST node to check.
- * @returns
+ * @returns - true if the node is an ObjectNode, false otherwise.
  */
 function isObjectNode(node: AnyNode): node is ObjectNode {
-    return node && node.type === 'Object';
+    return node?.type === 'Object';
 }
 
 /**
  * Determines if a node is a MemberNode.
  *
  * @param node - The AST node to check.
- * @returns
+ * @returns - true if the node is a MemberNode, false otherwise.
  */
 function isMemberNode(node: AnyNode): node is MemberNode {
-    return node && node.type === 'Member';
+    return node?.type === 'Member';
 }
 
 /**
@@ -52,7 +52,7 @@ function isMemberNode(node: AnyNode): node is MemberNode {
  *
  * @param node - The object AST node.
  * @param propertyName - The name of the property to retrieve.
- * @returns
+ * @returns - The property node if found, otherwise undefined.
  */
 function getProperty(node: ObjectNode, propertyName: string): AnyNode | undefined {
     return node.members.find((member) => member.name.type === 'String' && member.name.value === propertyName);
@@ -63,7 +63,7 @@ function getProperty(node: ObjectNode, propertyName: string): AnyNode | undefine
  *
  * @param currentNode - The current AST node.
  * @param propName - The property name to retrieve.
- * @returns
+ * @returns - The property node if found, otherwise undefined.
  */
 function getManifestProperty(currentNode: AnyNode, propName: string): AnyNode | undefined {
     if (isMemberNode(currentNode)) {
@@ -98,7 +98,7 @@ function getManifestProperties(currentNode: AnyNode, props: string[]): AnyNode |
  *
  * @param node - The manifest AST node.
  * @param pathArray - An array of property names representing the path to the desired property.
- * @returns
+ * @returns - The value node if found, otherwise undefined.
  */
 function getManifestPropertyValue(node: DocumentNode | AnyNode, pathArray: string[]): AnyNode | undefined {
     let currentNode: AnyNode | undefined = isMemberNode(node) ? node.value : node;
@@ -122,15 +122,15 @@ function getManifestPropertyValue(node: DocumentNode | AnyNode, pathArray: strin
  */
 function getMinUI5Version(node: ValueNode): string | null {
     const prop = getManifestPropertyValue(node, ['sap.ui5', 'dependencies', 'minUI5Version']);
-    return prop && prop.type === 'String' ? prop.value : null;
+    return prop?.type === 'String' ? prop.value : null;
 }
 
 /**
  * Determines if a rule is applicable based on the minUI5Version specified in the rule definition.
  *
- * @param {string | undefined} ruleMinUI5Version
- * @param {ValueNode} node
- * @returns
+ * @param {string | undefined} ruleMinUI5Version - The minUI5Version from the rule definition.
+ * @param {ValueNode} node - The manifest AST node.
+ * @returns - true if the rule is applicable, false otherwise.
  */
 function checkMinUI5VersionApplicable(ruleMinUI5Version: string | undefined, node: ValueNode): boolean {
     if (ruleMinUI5Version) {
@@ -151,7 +151,7 @@ function checkMinUI5VersionApplicable(ruleMinUI5Version: string | undefined, nod
  */
 function getODataVersion(node: ValueNode): string | null {
     const prop = getManifestPropertyValue(node, ['sap.app', 'dataSources', 'mainService', 'settings', 'odataVersion']);
-    return prop && prop.type === 'String' ? prop.value : null;
+    return prop?.type === 'String' ? prop.value : null;
 }
 
 /**
@@ -166,10 +166,9 @@ function readPackageJson(packageJsonPath: string): AnyNode | undefined {
             encoding: 'utf8',
             flag: 'r'
         });
-        const packageJson = JSON.parse(packageJsonContent);
+        const packageJson = JSON.parse(packageJsonContent) as Record<string, any>;
         return packageJson.sapux;
     } catch (error) {
-        console.error(error);
         return undefined;
     }
 }
@@ -180,7 +179,7 @@ function readPackageJson(packageJsonPath: string): AnyNode | undefined {
  * @param {object} ruleDefinition - The rule definition object.
  * @param {ValueNode} node - The manifest AST node.
  * @param {string} manifestPath - The path to the manifest file.
- * @returns
+ * @returns - true if the rule is applicable, false otherwise.
  */
 function checkODataVersionApplicable(
     ruleDefinition: FioriPropertyDefinition,
@@ -220,7 +219,7 @@ function checkODataVersionApplicable(
  * @param {object} ruleDefinition - The rule definition object.
  * @param {ValueNode} node - The manifest document body node.
  * @param {string} manifestPath - The path to the manifest file.
- * @returns
+ * @returns - true if the rule is applicable, false otherwise.
  */
 function checkRuleApplicable(ruleDefinition: FioriPropertyDefinition, node: ValueNode, manifestPath: string): boolean {
     if (!manifestPath.endsWith('manifest.json')) {
@@ -240,10 +239,10 @@ function checkRuleApplicable(ruleDefinition: FioriPropertyDefinition, node: Valu
  *
  * @param objectNode - The object AST node.
  * @param name - The name of the member to find.
- * @returns
+ * @returns - The MemberNode if found, otherwise undefined.
  */
 function findMember(objectNode: any, name: string): MemberNode | undefined {
-    if (!objectNode || objectNode.type !== 'Object') {
+    if (objectNode?.type !== 'Object') {
         return undefined;
     }
     const node = getProperty(objectNode, name);
