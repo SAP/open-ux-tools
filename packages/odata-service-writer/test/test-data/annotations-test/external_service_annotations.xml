@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+    >
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common" />
+    </edmx:Reference>
+    <edmx:Reference Uri="http://example.host:50017/sap/opu/odata/SAP/SEPMRA_PROD_MAN/$metadata">
+        <edmx:Include Namespace="com.sap.gateway.srvd.zrc_arcustomer_definition.v0001" Alias="SAP__self"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="annotations" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="SAP__self.CustomerType/TradingPartner">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.ValueListReferences">
+                    <Collection>
+                        <String>../../../../srvd_f4/sap/p_globalcompanyvaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.tradingpartner'/$metadata</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Label" String="Trading Partner No." />
+                <Annotation Term="SAP__common.Heading" String="Tr.prt" />
+                <Annotation Term="SAP__common.QuickInfo" String="Company ID of trading partner" />
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
