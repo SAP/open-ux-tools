@@ -138,7 +138,7 @@ describe('executeFunctionality', () => {
                     },
                     telemetryData: {
                         generationSourceName: '@sap-ux/fiori-mcp-server',
-                        generationSourceVersion: '0.4.2'
+                        generationSourceVersion: packageJson.version as string
                     },
                     version: '0.2'
                 },
