@@ -174,5 +174,51 @@ describe('OAuthTokenProvider', () => {
             expect(params.get('client_id')).toBe(clientId);
             expect(params.get('client_secret')).toBe(clientSecret);
         });
+
+        test('prevents concurrent token fetches - multiple requests wait for same in-flight fetch', async () => {
+            const mockResponse = {
+                data: {
+                    access_token: 'shared-token',
+                    expires_in: 3600
+                }
+            };
+
+            // Create a delayed promise to simulate network latency
+            let resolveTokenFetch: ((value: typeof mockResponse) => void) | undefined;
+            const delayedTokenFetch = new Promise<typeof mockResponse>((resolve) => {
+                resolveTokenFetch = resolve;
+            });
+
+            mockedAxios.post.mockImplementation(() => delayedTokenFetch);
+
+            const provider = new OAuthTokenProvider(clientId, clientSecret, tokenEndpoint, logger);
+            const middleware = provider.createTokenMiddleware();
+
+            const req1 = { url: '/test1', headers: {} } as Request;
+            const req2 = { url: '/test2', headers: {} } as Request;
+            const req3 = { url: '/test3', headers: {} } as Request;
+            const res = {} as Response;
+            const next = jest.fn();
+
+            // Start all three requests simultaneously (before token is cached)
+            const promise1 = middleware(req1, res, next);
+            const promise2 = middleware(req2, res, next);
+            const promise3 = middleware(req3, res, next);
+
+            expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+
+            if (!resolveTokenFetch) {
+                throw new Error('resolveTokenFetch was not initialized');
+            }
+            resolveTokenFetch(mockResponse);
+
+            await Promise.all([promise1, promise2, promise3]);
+
+            expect(req1.headers.authorization).toBe('Bearer shared-token');
+            expect(req2.headers.authorization).toBe('Bearer shared-token');
+            expect(req3.headers.authorization).toBe('Bearer shared-token');
+
+            expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+        });
     });
 });
