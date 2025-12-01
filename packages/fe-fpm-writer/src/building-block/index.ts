@@ -345,7 +345,6 @@ function processCustomFilterField(
     }
 
     const filterConfig = {
-        controlID: buildingBlockData.filterFieldKey!,
         label: buildingBlockData.label,
         property: buildingBlockData.property,
         required: buildingBlockData.required ?? false,
