@@ -139,6 +139,7 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+    cloudDevAdaptationStatus: string;
 }
 
 export interface FlexUISupportedSystem {

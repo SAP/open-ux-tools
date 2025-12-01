@@ -1,9 +1,11 @@
-import type {
-    ConfigAnswers,
-    FlexUISupportedSystem,
-    SourceApplication,
-    SystemLookup,
-    UI5Version
+import {
+    type ConfigAnswers,
+    type FlexUISupportedSystem,
+    type SourceApplication,
+    type SystemLookup,
+    SupportedProject,
+    type UI5Version,
+    ADP_CLOUD_PROJECT_STATUS_RELEASED
 } from '@sap-ux/adp-tooling';
 import {
     checkSystemVersionPattern,
@@ -16,6 +18,7 @@ import {
     getFioriId,
     getFlexUISupportedSystem,
     getRelevantVersions,
+    getSupportedProject,
     getSystemUI5Version,
     isAppSupported,
     isFeatureSupportedVersion,
@@ -24,7 +27,7 @@ import {
     loadApps,
     SourceManifest
 } from '@sap-ux/adp-tooling';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type {
     ConfirmQuestion,
@@ -45,13 +48,14 @@ import type {
     ConfigQuestion,
     FioriIdPromptOptions,
     PasswordPromptOptions,
+    ProjectTypeClassicLabelPromptOptions,
     ShouldCreateExtProjectPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
 import { configPromptNames } from '../types';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
-import { getApplicationChoices } from './helper/choices';
+import { getApplicationChoices, getProjectTypeChoices } from './helper/choices';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
@@ -60,7 +64,7 @@ import {
 } from './helper/conditions';
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -99,6 +103,8 @@ export class ConfigPrompter {
      * Flag indicating if the project is a cloud project.
      */
     private isCloudProject: boolean | undefined;
+    private supportedProject: SupportedProject;
+    private selectedProjectType: AdaptationProjectType;
     /**
      * Flag indicating whether the selected application is supported.
      */
@@ -157,13 +163,8 @@ export class ConfigPrompter {
         };
     }
 
-    /**
-     * Returns flag indicating if the project is a cloud project.
-     *
-     * @returns Whether system is cloud-ready.
-     */
-    public get isCloud(): boolean {
-        return !!this.isCloudProject;
+    public get projectType(): AdaptationProjectType {
+        return this.selectedProjectType;
     }
 
     /**
@@ -239,6 +240,12 @@ export class ConfigPrompter {
                 promptOptions?.[configPromptNames.application]
             ),
             [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
+            [configPromptNames.projectType]: this.getProjectTypeListPrompt(
+                promptOptions?.[configPromptNames.projectType]
+            ),
+            [configPromptNames.projectTypeClassicLabel]: this.getProjectTypeClassicLabelPrompt(
+                promptOptions?.[configPromptNames.projectTypeClassicLabel]
+            ),
             [configPromptNames.fioriId]: this.getFioriIdPrompt(),
             [configPromptNames.ach]: this.getAchPrompt(),
             [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
@@ -279,7 +286,10 @@ export class ConfigPrompter {
             default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
             additionalMessages: () => {
-                this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                if (this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM) {
+                    return undefined;
+                }
+                this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject);
                 return this.systemAdditionalMessage;
             }
         };
@@ -350,12 +360,63 @@ export class ConfigPrompter {
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
             additionalMessages: () => {
+                if (this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM) {
+                    return undefined;
+                }
+
                 if (!this.systemAdditionalMessage) {
-                    this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                    this.systemAdditionalMessage = getSystemAdditionalMessages(
+                        this.flexUISystem,
+                        !!this.isCloudProject
+                    );
                     return this.systemAdditionalMessage;
                 }
                 return undefined;
             }
+        };
+    }
+
+    private getProjectTypeListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
+        return {
+            type: 'list',
+            name: configPromptNames.projectType,
+            message: t('prompts.projectTypeListLabel'),
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
+            },
+            choices: getProjectTypeChoices,
+            default: options?.default,
+            when: (answers: ConfigAnswers) =>
+                this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM &&
+                answers?.application?.cloudDevAdaptationStatus === ADP_CLOUD_PROJECT_STATUS_RELEASED,
+            validate: (projectType: AdaptationProjectType) => {
+                this.selectedProjectType = projectType;
+                return true;
+            }
+        };
+    }
+
+    private getProjectTypeClassicLabelPrompt(
+        options?: ProjectTypeClassicLabelPromptOptions
+    ): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: configPromptNames.projectTypeClassicLabel,
+            message: '',
+            guiOptions: {
+                type: 'label',
+                mandatory: false
+            },
+            when: (answers: ConfigAnswers) =>
+                !options?.hide &&
+                this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM &&
+                answers?.application?.cloudDevAdaptationStatus === '',
+            additionalMessages: () => ({
+                message: t('prompts.projectTypeClassicLabel'),
+                severity: Severity.information
+            })
         };
     }
 
@@ -527,7 +588,7 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isAppStudio() && isKnownUnsupported && !this.isCloud) {
+        if (isAppStudio() && isKnownUnsupported && !this.isCloudProject) {
             this.logger.error(validationResult);
             this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
@@ -539,12 +600,18 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        if (this.isCloud) {
+        if (this.isCloudProject) {
             try {
                 this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider);
             } catch (error) {
                 return t('error.fetchBaseInboundsFailed', { error: error.message });
             }
+        }
+
+        // When we select a released app and then we switch to a NOT released, we need to
+        // continue with the onPremise workflow.
+        if (this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM && !app.cloudDevAdaptationStatus) {
+            this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
         }
 
         return true;
@@ -678,6 +745,11 @@ export class ConfigPrompter {
         try {
             this.isCloudProject = await this.abapProvider.isAbapCloud();
             this.flexUISystem = await getFlexUISupportedSystem(this.abapProvider, this.isCustomerBase);
+            this.supportedProject = await getSupportedProject(this.abapProvider);
+            this.selectedProjectType =
+                this.supportedProject === SupportedProject.ON_PREMISE
+                    ? AdaptationProjectType.ON_PREMISE
+                    : AdaptationProjectType.CLOUD_READY;
         } catch (e) {
             this.handleSystemError(e);
         }

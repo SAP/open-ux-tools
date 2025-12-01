@@ -2,8 +2,15 @@ import { getService } from '@sap-ux/store';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import type { Endpoint } from '../types';
+
+export enum SupportedProject {
+    ON_PREMISE = 'onPremise',
+    CLOUD_READY = 'cloudReady',
+    CLOUD_READY_AND_ON_PREM = 'cloudReadyAndOnPrem'
+}
 
 /**
  * Retrieves the names of all stored systems, sorted alphabetically.
@@ -35,6 +42,19 @@ export const transformBackendSystem = (system: BackendSystem): Endpoint => ({
         password: system.password
     }
 });
+
+export async function getSupportedProject(provider: AbapServiceProvider): Promise<SupportedProject> {
+    const layerdRepositoryService = provider.getLayeredRepository();
+    const systemInfo = await layerdRepositoryService.getSystemInfo();
+    const { adaptationProjectTypes } = systemInfo;
+    if (adaptationProjectTypes.every((projectType) => projectType === AdaptationProjectType.CLOUD_READY)) {
+        return SupportedProject.CLOUD_READY;
+    }
+    if (adaptationProjectTypes.every((projectType) => projectType === AdaptationProjectType.ON_PREMISE)) {
+        return SupportedProject.ON_PREMISE;
+    }
+    return SupportedProject.CLOUD_READY_AND_ON_PREM;
+}
 
 /**
  * Service class to manage and retrieve information about system systems,

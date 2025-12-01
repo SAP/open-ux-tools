@@ -3,7 +3,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { initI18n, t } from '../../../src/i18n';
 import type { SourceApplication } from '../../../src';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, filterApps, isAppSupported, loadApps } from '../../../src';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, sortByTitleOrId, isAppSupported, loadApps } from '../../../src';
 
 describe('Target Applications', () => {
     const searchMock = jest.fn();
@@ -127,23 +127,23 @@ describe('Target Applications', () => {
             const appA = { id: '1', title: 'Application B' } as SourceApplication;
             const appB = { id: '2', title: 'Application A' } as SourceApplication;
 
-            expect(filterApps(appA, appB)).toBe(1);
-            expect(filterApps(appB, appA)).toBe(-1);
+            expect(sortByTitleOrId(appA, appB)).toBe(1);
+            expect(sortByTitleOrId(appB, appA)).toBe(-1);
         });
 
         it('uses IDs if titles are empty', () => {
             const appA = { id: '2', title: '' } as SourceApplication;
             const appB = { id: '1', title: '' } as SourceApplication;
 
-            expect(filterApps(appA, appB)).toBe(1);
-            expect(filterApps(appB, appA)).toBe(-1);
+            expect(sortByTitleOrId(appA, appB)).toBe(1);
+            expect(sortByTitleOrId(appB, appA)).toBe(-1);
         });
 
         it('returns 0 when both titles and IDs are identical', () => {
             const appA = { id: '1', title: 'Application' } as SourceApplication;
             const appB = { id: '1', title: 'Application' } as SourceApplication;
 
-            expect(filterApps(appA, appB)).toBe(0);
+            expect(sortByTitleOrId(appA, appB)).toBe(0);
         });
     });
 });

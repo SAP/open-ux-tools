@@ -37,6 +37,8 @@ export enum configPromptNames {
     username = 'username',
     password = 'password',
     application = 'application',
+    projectType = 'projectType',
+    projectTypeClassicLabel = 'projectTypeClassicLabel',
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
     ach = 'ach',
@@ -68,6 +70,15 @@ export interface PasswordPromptOptions {
     hide?: boolean;
 }
 
+export interface ProjectTypePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface ProjectTypeClassicLabelPromptOptions {
+    hide?: boolean;
+}
+
 export interface ApplicationPromptOptions {
     default?: string;
     hide?: boolean;
@@ -96,6 +107,8 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
+    [configPromptNames.projectType]: ProjectTypePromptOptions;
+    [configPromptNames.projectTypeClassicLabel]: ProjectTypeClassicLabelPromptOptions;
     [configPromptNames.fioriId]: FioriIdPromptOptions;
     [configPromptNames.ach]: AchPromptOptions;
     [configPromptNames.shouldCreateExtProject]: ShouldCreateExtProjectPromptOptions;

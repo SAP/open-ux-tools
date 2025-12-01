@@ -14,6 +14,8 @@ export const MAIN_I18N_PATH = 'i18n/i18n.properties';
 export const BASE_I18N_DESCRIPTION =
     '#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.';
 
+export const ADP_CLOUD_PROJECT_STATUS_RELEASED = 'released';
+
 export const S4HANA_APPS_PARAMS = {
     'sap.app/type': 'application',
     'sap.fiori/cloudDevAdaptationStatus': 'released',
@@ -22,14 +24,16 @@ export const S4HANA_APPS_PARAMS = {
 };
 
 export const ABAP_APPS_PARAMS = {
-    'fields': 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
+    'fields':
+        'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus',
     'sap.ui/technology': 'UI5',
     'sap.app/type': 'application',
     'fileType': 'appdescr'
 };
 
 export const ABAP_VARIANT_APPS_PARAMS = {
-    'fields': 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
+    'fields':
+        'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus',
     'sap.ui/technology': 'UI5',
     'sap.app/type': 'application',
     'fileType': 'appdescr_variant',

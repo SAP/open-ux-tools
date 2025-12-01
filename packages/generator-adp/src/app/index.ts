@@ -30,7 +30,7 @@ import {
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
@@ -264,7 +264,9 @@ export default class extends Generator {
             const configQuestions = this.prompter.getPrompts({
                 appValidationCli: { hide: !this.isCli },
                 systemValidationCli: { hide: !this.isCli },
-                shouldCreateExtProject: { isExtensibilityExtInstalled }
+                shouldCreateExtProject: { isExtensibilityExtInstalled },
+                projectType: { default: AdaptationProjectType.CLOUD_READY },
+                projectTypeClassicLabel: { hide: this.isCli }
             });
             this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
             this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
@@ -276,7 +278,7 @@ export default class extends Generator {
             const promptConfig = {
                 ui5Versions,
                 isVersionDetected: !!systemVersion,
-                isCloudProject: this.prompter.isCloud,
+                isCloudProject: this.prompter.projectType === AdaptationProjectType.CLOUD_READY,
                 layer: this.layer,
                 prompts: this.prompts
             };

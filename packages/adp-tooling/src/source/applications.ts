@@ -1,5 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AbapServiceProvider, App, AppIndex } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, App } from '@sap-ux/axios-extension';
 
 import { t } from '../i18n';
 import type { SourceApplication } from '../types';
@@ -13,7 +13,7 @@ import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '
  * @param {SourceApplication} appB - The second application to compare.
  * @returns {number} A number indicating the sort order.
  */
-export const filterApps = (appA: SourceApplication, appB: SourceApplication): number => {
+export const sortByTitleOrId = (appA: SourceApplication, appB: SourceApplication): number => {
     let titleA = appA.title.toUpperCase();
     let titleB = appB.title.toUpperCase();
 
@@ -39,14 +39,15 @@ export const filterApps = (appA: SourceApplication, appB: SourceApplication): nu
  * @param {Partial<App>} app - The raw application data, possibly incomplete.
  * @returns {SourceApplication} A structured application object with defined properties, even if some may be empty.
  */
-export const mapApps = (app: Partial<App>): SourceApplication => ({
+export const toSourceApplication = (app: Partial<App>): SourceApplication => ({
     id: app['sap.app/id'] ?? '',
     title: app['sap.app/title'] ?? '',
     ach: app['sap.app/ach'] ?? '',
     registrationIds: app['sap.fiori/registrationIds'] ?? [],
     fileType: app['fileType'] ?? '',
     bspUrl: app['url'] ?? '',
-    bspName: app['repoName'] ?? ''
+    bspName: app['repoName'] ?? '',
+    cloudDevAdaptationStatus: app['sap.fiori/cloudDevAdaptationStatus']?.toString() ?? ''
 });
 
 /**
@@ -80,20 +81,20 @@ export async function isAppSupported(provider: AbapServiceProvider, id: string, 
  * @returns {Promise<SourceApplication[]>} A promise that resolves to a sorted list of applications.
  */
 export async function loadApps(provider: AbapServiceProvider, isCustomerBase: boolean): Promise<SourceApplication[]> {
-    let result: AppIndex = [];
-
     try {
         const isCloudSystem = await provider.isAbapCloud();
-        const appIndex = provider.getAppIndex();
+        const appIndexService = provider.getAppIndex();
 
-        result = await appIndex.search(isCloudSystem ? S4HANA_APPS_PARAMS : ABAP_APPS_PARAMS);
+        const appIndex = (
+            await Promise.all([
+                appIndexService.search(isCloudSystem ? S4HANA_APPS_PARAMS : ABAP_APPS_PARAMS),
+                !isCloudSystem && isCustomerBase
+                    ? appIndexService.search(ABAP_VARIANT_APPS_PARAMS)
+                    : Promise.resolve([])
+            ])
+        ).flat();
 
-        if (!isCloudSystem && isCustomerBase) {
-            const extraApps = await appIndex.search(ABAP_VARIANT_APPS_PARAMS);
-            result = result.concat(extraApps);
-        }
-
-        return result.map(mapApps).sort(filterApps);
+        return appIndex.map(toSourceApplication).sort(sortByTitleOrId);
     } catch (e) {
         throw new Error(`Could not load applications: ${e.message}`);
     }
