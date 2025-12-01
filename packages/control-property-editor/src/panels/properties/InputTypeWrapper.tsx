@@ -203,12 +203,12 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
                             onLayerDidMount: () => {
                                 fixedArea.current = document.querySelector('[data-portal-element]');
                                 if (fixedArea.current) {
-                                    delete fixedArea.current.dataset['portal-element'];
+                                    fixedArea.current.removeAttribute('data-portal-element');
                                 }
                             },
                             onLayerWillUnmount: () => {
                                 if (fixedArea.current) {
-                                    fixedArea.current.dataset['portal-element'] = '';
+                                    fixedArea.current.setAttribute('data-portal-element', '');
                                 }
                             }
                         },
