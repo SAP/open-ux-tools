@@ -59,5 +59,4 @@ export async function addVariantsManagementScript(
     packageJson.scripts['start-variants-management'] = startVariantsManagementScriptNew;
     fs.writeJSON(packageJsonPath, packageJson);
     logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
-    return;
 }

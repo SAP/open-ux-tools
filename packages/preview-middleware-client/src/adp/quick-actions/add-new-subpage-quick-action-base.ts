@@ -117,8 +117,6 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
             await this.prepareNavigationData(metaModel);
         }
         this.control = modifiedControl;
-
-        return;
     }
 
     async execute(): Promise<FlexCommand[]> {
