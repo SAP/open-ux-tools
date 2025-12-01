@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.5
+
+### Patch Changes
+
+-   9d0c8e0: fix(fiori-mcp): fix missing dependency
+
 ## 0.4.4
 
 ### Patch Changes
