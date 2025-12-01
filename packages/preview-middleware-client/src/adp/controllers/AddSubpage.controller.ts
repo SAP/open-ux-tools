@@ -94,7 +94,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
 
         this.setEscapeHandler();
 
-        await this.buildDialogData();
+        this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
 
         this.dialog.setModel(resourceModel, 'i18n');
