@@ -110,6 +110,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -344,6 +345,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -583,6 +585,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -791,6 +794,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -1061,6 +1065,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -1274,6 +1279,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
