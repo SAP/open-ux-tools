@@ -7,7 +7,7 @@ import type {
 } from '../../../types';
 import { Application } from './application';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils';
 import { DELETE_PAGE } from '../../../constant';
 import { buildPageDeletionSchema } from './schema';
 

@@ -2361,6 +2361,9 @@ importers:
       '@sap-ux/annotation-converter':
         specifier: 0.10.8
         version: 0.10.8
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2388,6 +2391,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
