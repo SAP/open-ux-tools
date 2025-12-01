@@ -18,7 +18,9 @@ export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
     confirmDownload: 'confirmDownload',
     updateMainServiceMetadata: 'updateMainServiceMetadata'
-};
+}
+
+const invalidEntityKeyFilterChars = ['.'];
 
 export interface SelectedEntityAnswer extends Answers {
     fullPath: string;
@@ -201,6 +203,10 @@ function getKeyPrompts(size: number, appInfo: AppConfig): InputQuestion[] {
             },
             validate: (keyValue: string) => {
                 let validationMsg;
+                // todo : move to a validator
+                if (invalidEntityKeyFilterChars.includes(keyValue)) {
+                    return `Invalid key value contain not allowed characters: ${invalidEntityKeyFilterChars.join()}`;
+                }
                 const filterAndParts = keyValue.split(',');
                 filterAndParts.forEach((filterPart) => {
                     const filterRangeParts = filterPart.split('-');

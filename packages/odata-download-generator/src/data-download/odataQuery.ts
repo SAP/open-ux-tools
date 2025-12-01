@@ -1,8 +1,8 @@
 import { ODataService } from '@sap-ux/axios-extension';
-import buildQuery from 'odata-query';
+import buildQuery, { type Filter } from 'odata-query';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import { type ReferencedEntities } from './types';
 import { type SelectedEntityAnswer } from './prompts';
+import { type ReferencedEntities } from './types';
 
 /**
  * todo: take a single entity list to download
@@ -53,27 +53,33 @@ export async function fetchData(
         }
     }
     const mainEntity = entities.listEntity;
-    let mainEntityFilters: object[] = [];
+    let mainEntityFilters: Filter<string>[] = [];
     mainEntity.semanticKeys.forEach((key) => {
         if (key.value) {
             let filter: string | object = key.value;
             // Create the range and set values
-            const filterAndParts = key.value.split(',');
-
-            filterAndParts.forEach((filterPart) => {
-                const filterRangeParts = filterPart.split('-');
+            const filterParts = key.value.split(',');
+            let filterRanges: Filter<string>[] = [];
+            filterParts.forEach((filterPart) => {
+                const filterRangeParts = filterPart.trim().split('-');
 
                 if (filterRangeParts.length === 2) {
-                    filter = {
-                        ge: filterRangeParts[0],
-                        le: filterRangeParts[1]
-                    }
+                    filterRanges.push({
+                        [key.name]: {
+                            ge: filterRangeParts[0],
+                            le: filterRangeParts[1]
+                        }
+                    });
                 }
-                
             });
-            mainEntityFilters.push({
-                [key.name]: filter
-            });
+
+            mainEntityFilters.push(
+                filterRanges.length == 1
+                    ? filterRanges[0]
+                    : {
+                          or: filterRanges
+                      }
+            );
         }
     });
 
@@ -85,7 +91,8 @@ export async function fetchData(
     }
     if (mainEntityFilters) {
         Object.assign(queryInput, {
-            filter: mainEntityFilters
+            // todo: multiple keys should be and'd
+            filter: mainEntityFilters.length === 1 ? mainEntityFilters[0] : mainEntityFilters
         });
     } else if (top) {
         Object.assign(queryInput, {
