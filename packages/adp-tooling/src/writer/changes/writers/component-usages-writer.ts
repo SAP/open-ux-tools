@@ -68,7 +68,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        writeChangeToFolder(this.projectPath, compUsagesChange, this.fs);
+        await writeChangeToFolder(this.projectPath, compUsagesChange, this.fs);
 
         if (!('library' in data)) {
             return;
@@ -78,6 +78,6 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
         const libTimestamp = timestamp + 1;
         const refLibChange = getChange(data.variant, libTimestamp, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
 
-        writeChangeToFolder(this.projectPath, refLibChange, this.fs);
+        await writeChangeToFolder(this.projectPath, refLibChange, this.fs);
     }
 }

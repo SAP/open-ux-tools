@@ -2,7 +2,7 @@ import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDet
 import { PageEditorApi, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { prepatePropertySchema, resolveApplication, resolveRefs } from './utils';
+import { prepatePropertySchema, resolveApplication, resolveRefs } from '../utils';
 import type { JSONSchema4 } from 'json-schema';
 
 /**
