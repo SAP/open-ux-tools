@@ -6,7 +6,7 @@ import type {
     GetFunctionalityDetailsOutput
 } from '../../../types';
 import { Application } from './application';
-import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils';
 import { ADD_PAGE } from '../../../constant';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
 import { buildPageCreationSchema } from './schema';

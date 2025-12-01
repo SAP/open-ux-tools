@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.25
+
+### Patch Changes
+
+-   8b334e5: fix(fpm-writer): unique ids in fragment
+
 ## 0.39.24
 
 ### Patch Changes
