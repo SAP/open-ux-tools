@@ -30,7 +30,7 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
+        url: https://your-backend-service
         paths:
           - /odata/v4/visitorservice
           - /odata
@@ -46,7 +46,7 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
+        url: https://your-backend-service
         paths:
           - /odata/v4/visitorservice
           - /odata
@@ -70,35 +70,18 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
+        url: https://your-backend-service
         paths:
           - /odata/v4/visitorservice
           - /odata
         credentials:
-          clientId: "sb-your-service-instance!b123|your-app!b456"
+          clientId: "your-service-instance!b123|your-app!b456"
           clientSecret: "your-client-secret"
-          url: "https://example.authentication.eu12.hana.ondemand.com"
+          url: "https://example.authentication"
         debug: true
 ```
 
 The `credentials.url` should be the base URL of the UAA service (without `/oauth/token`). The middleware will automatically construct the full token endpoint.
-
-### Multiple OData Sources
-
-You can proxy multiple OData paths to the same destination:
-
-```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-        paths:
-          - /odata/v4/service1
-          - /odata/v4/service2
-          - /odata/v2/legacy
-```
 
 ### With Debug Logging
 
@@ -110,46 +93,15 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
+        url: https://your-backend-service
         paths:
           - /odata
         debug: true
 ```
 
-## How It Works
-
-1. **Proxy Setup**: Creates HTTP proxy middleware for each configured path, proxying to the destination URL.
-2. **Path Rewriting**: Removes the matched path prefix before forwarding requests (e.g., `/odata/v4/service` → `/service`).
-3. **OAuth Detection**: For automatic mode, checks if the project is a CF ADP project by reading `ui5.yaml` and looking for the `app-variant-bundler-build` custom task.
-4. **Credentials**: Extracts `serviceInstanceName` and `serviceInstanceGuid` from the custom task configuration.
-5. **Service Keys**: Retrieves service keys using `@sap-ux/adp-tooling`, which communicates with Cloud Foundry CLI.
-6. **Token Endpoint**: Constructs the token endpoint from the UAA base URL as `{url}/oauth/token`.
-7. **Token Management**: Requests OAuth tokens using client credentials flow.
-8. **Caching**: Caches tokens in memory and refreshes them automatically 60 seconds before expiry.
-9. **Request Proxying**: Adds `Authorization: Bearer <token>` header to proxied requests before forwarding.
-
-## Error Handling
-
-- If `url` is not provided, the middleware will be inactive and log a warning.
-- If no paths are configured, the middleware will be inactive and log a warning.
-- If auto-detection fails and no manual credentials are provided, the middleware will proxy requests without OAuth tokens (may fail if backend requires authentication).
-- If token request fails, an error is logged but the request may still proceed (depending on the backend's authentication requirements).
-- All errors are logged for debugging purposes.
-
-## Security Considerations
-
-- Credentials are never logged in production mode.
-- Tokens are cached in memory only and never persisted to disk.
-- Token refresh happens automatically 60 seconds before expiry to avoid using expired tokens.
-- Service keys are obtained securely through Cloud Foundry CLI.
-- The middleware only proxies requests matching any of the configured path prefixes.
-- If no paths are configured, the middleware will be inactive and log a warning.
-
 ## Keywords
 
-- OAuth2 Middleware
+- OAuth2 Proxy Middleware
 - Cloud Foundry ADP
-- Bearer Token
 - Fiori tools
 - SAP UI5
-- Proxy Middleware
