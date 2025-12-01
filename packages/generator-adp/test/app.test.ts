@@ -642,12 +642,19 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             await expect(runContext.run()).resolves.not.toThrow();
 
-            expect(executeCommandSpy).not.toHaveBeenCalled();
-            expect(sendTelemetryMock).not.toHaveBeenCalled();
-
             const generatedDirs = fs.readdirSync(cfTestOutputDir);
             expect(generatedDirs).toContain(answers.projectName);
             const projectFolder = join(cfTestOutputDir, answers.projectName);
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                EventName.ADAPTATION_PROJECT_CREATED,
+                expect.objectContaining({
+                    OperatingSystem: 'testOS',
+                    Platform: 'testPlatform'
+                }),
+                projectFolder
+            );
+            expect(executeCommandSpy).not.toHaveBeenCalled();
 
             const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
             const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');

@@ -385,7 +385,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.isCfEnv) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
             return;
         }
 
@@ -397,7 +397,7 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject || this.isCfEnv) {
+        if (this.shouldCreateExtProject) {
             return;
         }
 
@@ -413,7 +413,7 @@ export default class extends Generator {
             });
         }
 
-        if (this.isCli) {
+        if (this.isCli || this.isCfEnv) {
             return;
         }
 
@@ -537,7 +537,7 @@ export default class extends Generator {
      * Generates the ADP project artifacts for the CF environment.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
-        const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
+        const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
 
         const manifest = this.cfPrompter.manifest;
@@ -576,6 +576,9 @@ export default class extends Generator {
      * @returns {string} The project path from the answers.
      */
     private _getProjectPath(): string {
+        if (this.isCfEnv) {
+            return join(this.destinationPath(), this.attributeAnswers.projectName);
+        }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 
