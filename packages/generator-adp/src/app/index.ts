@@ -547,7 +547,7 @@ export default class extends Generator {
 
         const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
         const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
-        const backendUrl = this.cfPrompter.backendUrl;
+        const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
@@ -557,7 +557,7 @@ export default class extends Generator {
             manifest,
             html5RepoRuntimeGuid,
             serviceInstanceGuid,
-            backendUrl,
+            backendUrls,
             oauthPaths,
             projectPath,
             publicVersions

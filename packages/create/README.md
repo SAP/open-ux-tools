@@ -346,6 +346,5 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write or build. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
-- `--skip-build` - Skip the build step.
 - `--endpoint <string>` _(required)_ - CF endpoint URL to fetch reusable libraries from.
 

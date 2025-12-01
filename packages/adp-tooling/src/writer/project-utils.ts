@@ -18,7 +18,7 @@ import {
     enhanceUI5YamlWithCustomTask,
     enhanceUI5YamlWithTranspileMiddleware,
     enhanceUI5YamlWithCfCustomTask,
-    enhanceUI5YamlWithCfCustomMiddleware
+    enhanceUI5YamlWithFioriToolsMiddleware
 } from './options';
 
 import type { Package } from '@sap-ux/project-access';
@@ -206,8 +206,12 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
 
         /** Builder task */
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
+        
         /** Middlewares */
-        enhanceUI5YamlWithCfCustomMiddleware(ui5Config, data);
+        // Add fiori-tools-proxy and fiori-tools-preview for local development
+        enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
+        // Note: backend-proxy-middleware-cf configuration is handled by the setup command
+        // which reads OAuth paths from .reuse folder xs-app.json files
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {

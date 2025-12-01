@@ -378,24 +378,71 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
  * @param {CfAdpWriterConfig} config - Full project configuration.
  */
+/**
+ * Generate custom middleware configuration (fiori-tools-proxy and fiori-tools-preview only).
+ * Note: backend-proxy-middleware-cf is now added by the setup command.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ */
+export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): void {
+    const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
+        url: UI5_CDN_URL
+    };
+
+    // Add fiori-tools-proxy (for UI5 resources)
+    ui5Config.addFioriToolsProxyMiddleware(
+        {
+            ui5: ui5ConfigOptions,
+            backend: []
+        },
+        'compression'
+    );
+    
+    // Add fiori-tools-preview (for local preview)
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-proxy',
+            configuration: {
+                flp: {
+                    theme: 'sap_horizon'
+                },
+                adp: {
+                    useLocal: 'dist'
+                }
+            }
+        }
+    ]);
+}
+
+/**
+ * Generate custom middleware configuration including backend-proxy-middleware-cf.
+ * This function is used when backend URLs and OAuth paths are available during generation.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
+ */
 export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
     const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
         url: UI5_CDN_URL
     };
 
     const oauthPaths = config.cf?.oauthPaths;
-    const backendUrl = config.cf?.backendUrl;
-    if (oauthPaths && oauthPaths.length > 0 && backendUrl) {
-        ui5Config.addCustomMiddleware([
-            {
-                name: 'backend-proxy-middleware-cf',
-                afterMiddleware: 'compression',
-                configuration: {
-                    url: backendUrl,
-                    paths: oauthPaths
+    const backendUrls = config.cf?.backendUrls;
+    if (oauthPaths && oauthPaths.length > 0 && backendUrls && backendUrls.length > 0) {
+        // Add a separate middleware instance for each backend URL
+        backendUrls.forEach((url) => {
+            ui5Config.addCustomMiddleware([
+                {
+                    name: 'backend-proxy-middleware-cf',
+                    afterMiddleware: 'compression',
+                    configuration: {
+                        url,
+                        paths: oauthPaths
+                    }
                 }
-            }
-        ]);
+            ]);
+        });
         ui5Config.addFioriToolsProxyMiddleware(
             {
                 ui5: ui5ConfigOptions,

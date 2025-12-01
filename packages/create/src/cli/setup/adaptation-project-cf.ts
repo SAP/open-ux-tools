@@ -6,6 +6,12 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
+import {
+    getOAuthPathsFromReuseFolder,
+    getBackendUrlsFromServiceKeys,
+    getBackendUrlsWithPaths,
+    getServiceInstanceKeys
+} from '@sap-ux/adp-tooling';
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
@@ -55,6 +61,12 @@ async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _en
 
         // Step 3: Add serve-static-middleware configuration to ui5.yaml
         await addServeStaticMiddleware(basePath, simulate, logger);
+
+        // Step 4: Build the project
+        await buildProject(basePath, simulate, logger);
+
+        // Step 5: Add backend-proxy-middleware-cf configuration to ui5.yaml
+        await addBackendProxyMiddleware(basePath, simulate, logger);
 
         if (simulate) {
             logger.info('Simulation complete. No changes were written.');
@@ -131,6 +143,50 @@ async function processUi5AppInfo(basePath: string, simulate: boolean, logger: an
         }
     } catch (error) {
         logger.error(`Failed to process ui5appinfo.json: ${(error as Error).message}`);
+        throw error;
+    }
+}
+
+/**
+ * Build the project using npm run build.
+ *
+ * @param basePath - path to application root
+ * @param simulate - simulate only, do not build
+ * @param logger - logger instance
+ */
+async function buildProject(basePath: string, simulate: boolean, logger: any): Promise<void> {
+    try {
+        if (simulate) {
+            logger.info('[Simulate] Would run: npm run build');
+            return;
+        }
+
+        logger.info('Building the project...');
+
+        const { spawn } = await import('child_process');
+
+        await new Promise<void>((resolve, reject) => {
+            const buildProcess = spawn('npm', ['run', 'build'], {
+                cwd: basePath,
+                stdio: 'inherit',
+                shell: true
+            });
+
+            buildProcess.on('close', (code) => {
+                if (code === 0) {
+                    logger.info('Project built successfully');
+                    resolve();
+                } else {
+                    reject(new Error(`Build process exited with code ${code}`));
+                }
+            });
+
+            buildProcess.on('error', (error) => {
+                reject(new Error(`Failed to start build process: ${error.message}`));
+            });
+        });
+    } catch (error) {
+        logger.error(`Build failed: ${(error as Error).message}`);
         throw error;
     }
 }
@@ -240,5 +296,121 @@ async function addServeStaticMiddleware(basePath: string, simulate: boolean, log
     } catch (error) {
         logger.warn(`Could not add serve-static-middleware configuration: ${(error as Error).message}`);
         throw error;
+    }
+}
+
+/**
+ * Add backend-proxy-middleware-cf configuration to ui5.yaml.
+ *
+ * @param basePath - path to application root
+ * @param simulate - simulate only, do not write
+ * @param logger - logger instance
+ */
+async function addBackendProxyMiddleware(basePath: string, simulate: boolean, logger: any): Promise<void> {
+    try {
+        const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
+        const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
+
+        // Get service keys from Cloud Foundry
+        const serviceKeys = await fetchServiceKeys(basePath, logger);
+        if (!serviceKeys || serviceKeys.length === 0) {
+            logger.warn('No service keys found. Backend proxy middleware will not be configured.');
+            return;
+        }
+
+        // Extract backend URLs mapped to their corresponding paths based on destination matching
+        const reusePath = join(basePath, '.reuse');
+        const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, reusePath);
+
+        if (urlsWithPaths.length === 0) {
+            logger.info('No backend URLs with matching destinations found');
+            return;
+        }
+
+        logger.info(`Configuring backend proxy for ${urlsWithPaths.length} backend URL(s)`);
+
+        // Add a separate middleware instance for each backend URL with its specific paths
+        urlsWithPaths.forEach(({ url, paths }) => {
+            ui5Config.addCustomMiddleware([
+                {
+                    name: 'backend-proxy-middleware-cf',
+                    afterMiddleware: 'compression',
+                    configuration: {
+                        url,
+                        paths
+                    }
+                }
+            ]);
+            logger.info(`Added backend-proxy-middleware-cf for: ${url} with ${paths.length} path(s)`);
+        });
+
+        if (!simulate) {
+            // Write the updated configuration back to the file
+            const fs = create(createStorage());
+            fs.write(ui5YamlPath, ui5Config.toString());
+            await new Promise<void>((resolve, reject) => {
+                fs.commit([], (err: Error | null) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+            await traceChanges(fs);
+            logger.info('Successfully added backend-proxy-middleware-cf to ui5.yaml');
+        } else {
+            logger.info('[Simulate] Would add backend-proxy-middleware-cf to ui5.yaml');
+        }
+    } catch (error) {
+        logger.warn(`Could not add backend-proxy-middleware-cf configuration: ${(error as Error).message}`);
+    }
+}
+
+/**
+ * Fetch service keys from Cloud Foundry.
+ * This reads the service instance name from ui5.yaml and fetches the service keys from CF.
+ *
+ * @param basePath - path to application root
+ * @param logger - logger instance
+ * @returns Service keys array or null if not found
+ */
+async function fetchServiceKeys(basePath: string, logger: any): Promise<Array<{ credentials: any }> | null> {
+    try {
+        const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
+        const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string }>('app-variant-bundler-build');
+
+        if (!bundlerTask) {
+            logger.warn('No app-variant-bundler-build task found in ui5.yaml');
+            return null;
+        }
+
+        const serviceInstanceName = bundlerTask.configuration?.serviceInstanceName;
+
+        if (!serviceInstanceName) {
+            logger.warn('No serviceInstanceName found in app-variant-bundler-build configuration');
+            return null;
+        }
+
+        logger.info(`Fetching service keys for: ${serviceInstanceName}`);
+
+        // Get service keys from Cloud Foundry
+        const serviceInfo = await getServiceInstanceKeys(
+            {
+                names: [serviceInstanceName]
+            },
+            logger
+        );
+
+        if (!serviceInfo?.serviceKeys || serviceInfo.serviceKeys.length === 0) {
+            logger.warn(`No service keys found for service instance: ${serviceInstanceName}`);
+            return null;
+        }
+
+        logger.info(`Retrieved ${serviceInfo.serviceKeys.length} service key(s) from CF`);
+        return serviceInfo.serviceKeys;
+    } catch (error) {
+        logger.warn(`Could not fetch service keys: ${(error as Error).message}`);
+        return null;
     }
 }
