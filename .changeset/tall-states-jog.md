@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Fix: Switch Page Action creation for v4 from addXML to appDescriptor based
+Fix: Switch Page Action creation for OData V4 from addXML to appDescriptor based
