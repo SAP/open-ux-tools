@@ -8,7 +8,7 @@ The `@sap-ux/backend-proxy-middleware-cf` is a [Custom UI5 Server Middleware](ht
 
 It can be used either with the `ui5 serve` or the `fiori run` commands.
 
-## Configuration Options
+## [Configuration Options](#configuration-options)
 
 | Option              | Value Type | Requirement Type | Default Value | Description                                                                                                      |
 | ------------------- | ---------- | ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -20,9 +20,9 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 | `credentials.url`    | `string`   | mandatory (if credentials provided) | `undefined` | Base URL for the OAuth service. The token endpoint will be constructed as `{url}/oauth/token`.                   |
 | `debug`             | `boolean`  | optional         | `false`        | Enable debug logging for troubleshooting.                                                                        |
 
-## Usage
+## [Usage](#usage)
 
-### Basic Configuration
+### [Basic Configuration](#basic-configuration)
 
 ```yaml
 server:
@@ -36,7 +36,7 @@ server:
           - /odata
 ```
 
-### Automatic Detection (Recommended)
+### [Automatic Detection (Recommended)](#automatic-detection-recommended)
 
 For Cloud Foundry adaptation projects, the middleware automatically detects the project configuration from `ui5.yaml` and extracts OAuth credentials from service keys. You only need to provide the `url` and `paths`:
 
@@ -60,7 +60,7 @@ The middleware will:
 4. Extract UAA credentials and construct the token endpoint
 5. Automatically add Bearer tokens to proxied requests
 
-### Manual Credentials
+### [Manual Credentials](#manual-credentials)
 
 For custom setups or when auto-detection is not available, you can provide OAuth credentials manually:
 
@@ -83,7 +83,7 @@ server:
 
 The `credentials.url` should be the base URL of the UAA service (without `/oauth/token`). The middleware will automatically construct the full token endpoint.
 
-### With Debug Logging
+### [With Debug Logging](#with-debug-logging)
 
 Enable debug logging to troubleshoot issues:
 
@@ -99,7 +99,7 @@ server:
         debug: true
 ```
 
-## Keywords
+## [Keywords](#keywords)
 
 - OAuth2 Proxy Middleware
 - Cloud Foundry ADP
