@@ -320,10 +320,21 @@ async function addBackendProxyMiddleware(basePath: string, simulate: boolean, lo
 
         // Extract backend URLs mapped to their corresponding paths based on destination matching
         const reusePath = join(basePath, '.reuse');
+
+        // Debug logging
+        logger.debug(`Reuse path: ${reusePath}`);
+        logger.debug(`Reuse path exists: ${existsSync(reusePath)}`);
+        logger.debug(`xs-app.json exists: ${existsSync(join(reusePath, 'xs-app.json'))}`);
+        logger.debug(`Service keys endpoints: ${JSON.stringify(serviceKeys[0]?.credentials?.endpoints, null, 2)}`);
+
         const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, reusePath);
 
         if (urlsWithPaths.length === 0) {
-            logger.info('No backend URLs with matching destinations found');
+            logger.warn('No backend URLs with matching destinations found');
+            logger.warn('Please check:');
+            logger.warn('1. .reuse/xs-app.json exists and contains routes with destinations');
+            logger.warn('2. Service keys endpoints have matching destination names');
+            logger.warn('3. xs-app.json routes have source paths defined');
             return;
         }
 
