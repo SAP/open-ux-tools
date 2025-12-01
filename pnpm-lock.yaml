@@ -2296,6 +2296,9 @@ importers:
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
         version: link:../fiori-docs-embeddings
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -2354,9 +2357,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
