@@ -48,9 +48,9 @@ type ControllerInfo = { controllerName: string };
  */
 export default class RoutesHandler {
     /**
-     * Whether this is running in local mode (CF ADP without backend).
+     * Whether this is running in build path mode (CF ADP without backend merge).
      */
-    private readonly isLocalMode: boolean;
+    private readonly isBuildPathMode: boolean;
 
     /**
      * Constructor taking project as input.
@@ -66,7 +66,7 @@ export default class RoutesHandler {
         private readonly provider: AbapServiceProvider,
         private readonly logger: ToolsLogger
     ) {
-        this.isLocalMode = !provider || typeof provider.getLayeredRepository !== 'function';
+        this.isBuildPathMode = !provider || typeof provider.getLayeredRepository !== 'function';
     }
 
     /**
@@ -295,8 +295,8 @@ export default class RoutesHandler {
         try {
             const isRunningInBAS = isAppStudio();
 
-            if (this.isLocalMode) {
-                // In local mode (CF ADP), skip ManifestService as it requires ABAP backend
+            if (this.isBuildPathMode) {
+                // In build path mode (CF ADP), skip ManifestService as it requires ABAP backend
                 const apiResponse: AnnotationDataSourceResponse = {
                     isRunningInBAS,
                     annotationDataSourceMap: {}

@@ -173,10 +173,10 @@ server:
             developerMode: true
 ```
 
-### [CF ADP Local Mode (Experimental)](#cf-adp-local-mode-experimental)
+### [CF ADP Build Path Mode (Experimental)](#cf-adp-build-path-mode-experimental)
 **⚠️ Experimental feature - CF ADP projects only**
 
-For Cloud Foundry ADP projects, you can use the `cfBuildPath` option to serve built resources directly from a build output folder instead of merging from the backend. This is useful for testing locally built applications without requiring backend connectivity.
+For Cloud Foundry ADP projects, you can use the `cfBuildPath` option to serve built resources directly from a build output folder instead of merging from the backend. This is useful for testing built applications without requiring backend connectivity.
 
 When `cfBuildPath` is set:
 - The middleware serves static files directly from the specified path (e.g., `dist` or `build/dist`)
@@ -197,7 +197,7 @@ server:
           url: http://sap.example
         cfBuildPath: dist  # Path to build output folder (experimental, CF only)
 ```
-When the middleware is used in an adaptation project together with a middleware proxying requests to the back end e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the back-end proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the local variant.
+When the middleware is used in an adaptation project together with a middleware proxying requests to the back end e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the back-end proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the variant.
 ```Yaml
 - name: preview-middleware
   afterMiddleware: rcompression

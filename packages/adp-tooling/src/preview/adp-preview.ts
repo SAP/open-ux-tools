@@ -134,7 +134,7 @@ export class AdpPreview {
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         if (this.config.cfBuildPath) {
-            return this.initLocal(descriptorVariant);
+            return this.initCfBuildMode(descriptorVariant);
         }
 
         this.descriptorVariantId = descriptorVariant.id;
@@ -157,12 +157,12 @@ export class AdpPreview {
     }
 
     /**
-     * Initialize the preview for a local CF ADP project.
+     * Initialize the preview for a CF ADP project using build output (without backend merge).
      *
      * @param descriptorVariant descriptor variant from the project
      * @returns the UI5 flex layer for which editing is enabled
      */
-    private async initLocal(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
+    private async initCfBuildMode(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         this.descriptorVariantId = descriptorVariant.id;
         this.isCloud = false;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);

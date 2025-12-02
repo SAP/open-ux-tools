@@ -28,7 +28,7 @@ import {
     type OperationType,
     type CommonAdditionalChangeInfoProperties,
     loadAppVariant,
-    readLocalManifest
+    readManifestFromBuildPath
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -1138,7 +1138,7 @@ export class FlpSandbox {
         const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
         const layer = await adp.init(variant);
 
-        // CF ADP local dist mode: serve built resources directly and initialize FLP without backend merge
+        // CF ADP build path mode: serve built resources directly and initialize FLP without backend merge
         if (config.cfBuildPath) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false);
@@ -1173,7 +1173,7 @@ export class FlpSandbox {
      * @returns the manifest
      */
     private setupCfBuildMode(cfBuildPath: string): Manifest {
-        const manifest = readLocalManifest(cfBuildPath);
+        const manifest = readManifestFromBuildPath(cfBuildPath);
         this.router.use('/', serveStatic(cfBuildPath));
         this.logger.info(`Initialized CF ADP with cfBuildPath, serving from ${cfBuildPath}`);
         return manifest;

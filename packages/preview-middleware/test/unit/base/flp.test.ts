@@ -1501,7 +1501,9 @@ describe('initAdp', () => {
             }
         } as Manifest;
         const cfBuildPath = 'dist';
-        const readLocalManifestMock = jest.spyOn(adpTooling, 'readLocalManifest').mockReturnValue(mockManifest);
+        const readManifestFromBuildPathMock = jest
+            .spyOn(adpTooling, 'readManifestFromBuildPath')
+            .mockReturnValue(mockManifest);
         const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
             return {
                 init: jest.fn().mockResolvedValue('CUSTOMER_BASE'),
@@ -1537,7 +1539,7 @@ describe('initAdp', () => {
 
         await flp.initAdp(config);
 
-        expect(readLocalManifestMock).toHaveBeenCalledWith(cfBuildPath);
+        expect(readManifestFromBuildPathMock).toHaveBeenCalledWith(cfBuildPath);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
         expect(flp.rta?.options?.isCloud).toBe(false);

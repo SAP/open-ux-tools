@@ -18,7 +18,7 @@ import {
     filterAndMapInboundsToManifest,
     readUi5Config,
     extractCfBuildTask,
-    readLocalManifest,
+    readManifestFromBuildPath,
     loadAppVariant
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
@@ -373,7 +373,7 @@ describe('helper', () => {
         });
     });
 
-    describe('readLocalManifest', () => {
+    describe('readManifestFromBuildPath', () => {
         const mockManifest = {
             'sap.app': {
                 id: 'test.app',
@@ -385,14 +385,14 @@ describe('helper', () => {
             jest.clearAllMocks();
         });
 
-        test('should read manifest from local dist folder', () => {
+        test('should read manifest from build output folder', () => {
             const cfBuildPath = 'dist';
             const expectedPath = join(process.cwd(), cfBuildPath, 'manifest.json');
             const manifestContent = JSON.stringify(mockManifest);
 
             readFileSyncMock.mockReturnValueOnce(manifestContent);
 
-            const result = readLocalManifest(cfBuildPath);
+            const result = readManifestFromBuildPath(cfBuildPath);
 
             expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
             expect(result).toEqual(mockManifest);
@@ -408,7 +408,7 @@ describe('helper', () => {
                 throw error;
             });
 
-            expect(() => readLocalManifest(cfBuildPath)).toThrow();
+            expect(() => readManifestFromBuildPath(cfBuildPath)).toThrow();
             expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
         });
     });
