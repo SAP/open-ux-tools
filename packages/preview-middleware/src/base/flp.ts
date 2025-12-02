@@ -1138,7 +1138,7 @@ export class FlpSandbox {
         const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
         const layer = await adp.init(variant);
 
-        // CF ADP build path mode: serve built resources directly and initialize FLP without backend merge
+        // CF ADP build path mode: serve built resources directly from build output
         if (config.cfBuildPath) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false);

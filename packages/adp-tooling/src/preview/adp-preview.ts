@@ -157,7 +157,7 @@ export class AdpPreview {
     }
 
     /**
-     * Initialize the preview for a CF ADP project using build output (without backend merge).
+     * Initialize the preview for a CF ADP project using build output.
      *
      * @param descriptorVariant descriptor variant from the project
      * @returns the UI5 flex layer for which editing is enabled

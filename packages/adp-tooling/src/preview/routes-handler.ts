@@ -48,7 +48,7 @@ type ControllerInfo = { controllerName: string };
  */
 export default class RoutesHandler {
     /**
-     * Whether this is running in build path mode (CF ADP without backend merge).
+     * Whether this is running in build path mode (CF ADP using build output).
      */
     private readonly isBuildPathMode: boolean;
 

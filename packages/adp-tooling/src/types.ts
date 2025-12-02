@@ -40,7 +40,7 @@ export interface AdpPreviewConfig {
      */
     ignoreCertErrors?: boolean;
     /**
-     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly instead of merging from backend.
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
     cfBuildPath?: string;
 }
