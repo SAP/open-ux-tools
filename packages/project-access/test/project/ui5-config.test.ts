@@ -303,7 +303,9 @@ describe('Test getPathMappings()', () => {
                 'specVersion: "3.0"\ntype: unknown\nmetadata:\n  name: test.unknown'
             );
             memFs.writeJSON(join(samplesRoot, 'no-ui5-yaml/package.json'), {});
-            await expect(getPathMappings(join(samplesRoot, 'no-ui5-yaml'), memFs)).rejects.toThrow('Unsupported project type for path mappings: unknown');
+            await expect(getPathMappings(join(samplesRoot, 'no-ui5-yaml'), memFs)).rejects.toThrow(
+                'Unsupported project type for path mappings: unknown'
+            );
         });
     });
 });

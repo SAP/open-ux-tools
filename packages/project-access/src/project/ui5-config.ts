@@ -40,7 +40,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
     } catch {
         // For backward compatibility ignore errors and use default
     }
-    return pathMappings?.webapp ?? join(appRoot, DirName.Webapp)
+    return pathMappings?.webapp ?? join(appRoot, DirName.Webapp);
 }
 
 /**
@@ -74,7 +74,7 @@ export async function getPathMappings(
     }
 
     const baseDir = await getBaseDir(appRoot, memFs);
-    const pathMappings: PathMappings = { };
+    const pathMappings: PathMappings = {};
     for (const [key, value] of Object.entries(configuration?.paths || {})) {
         pathMappings[key] = join(baseDir, value ?? PATH_MAPPING_DEFAULTS[type][key] ?? undefined);
     }
