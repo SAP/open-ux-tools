@@ -386,21 +386,21 @@ describe('helper', () => {
         });
 
         test('should read manifest from local dist folder', () => {
-            const useLocal = 'dist';
-            const expectedPath = join(process.cwd(), useLocal, 'manifest.json');
+            const cfBuildPath = 'dist';
+            const expectedPath = join(process.cwd(), cfBuildPath, 'manifest.json');
             const manifestContent = JSON.stringify(mockManifest);
 
             readFileSyncMock.mockReturnValueOnce(manifestContent);
 
-            const result = readLocalManifest(useLocal);
+            const result = readLocalManifest(cfBuildPath);
 
             expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
             expect(result).toEqual(mockManifest);
         });
 
         test('should throw error when file does not exist', () => {
-            const useLocal = 'dist';
-            const expectedPath = join(process.cwd(), useLocal, 'manifest.json');
+            const cfBuildPath = 'dist';
+            const expectedPath = join(process.cwd(), cfBuildPath, 'manifest.json');
 
             readFileSyncMock.mockImplementationOnce(() => {
                 const error = new Error('ENOENT: no such file or directory');
@@ -408,7 +408,7 @@ describe('helper', () => {
                 throw error;
             });
 
-            expect(() => readLocalManifest(useLocal)).toThrow();
+            expect(() => readLocalManifest(cfBuildPath)).toThrow();
             expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
         });
     });

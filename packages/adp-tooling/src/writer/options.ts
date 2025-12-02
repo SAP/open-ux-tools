@@ -421,7 +421,7 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
                     theme: 'sap_horizon'
                 },
                 adp: {
-                    useLocal: 'dist'
+                    cfBuildPath: 'dist'
                 }
             }
         }

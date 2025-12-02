@@ -1139,8 +1139,8 @@ export class FlpSandbox {
         const layer = await adp.init(variant);
 
         // CF ADP local dist mode: serve built resources directly and initialize FLP without backend merge
-        if (config.useLocal) {
-            const manifest = this.setupUseLocalMode(config.useLocal);
+        if (config.cfBuildPath) {
+            const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false);
             await this.init(manifest, variant.reference);
             this.setupAdpCommonHandlers(adp);
@@ -1167,15 +1167,15 @@ export class FlpSandbox {
     }
 
     /**
-     * Setup the use local mode for the ADP project.
+     * Setup the CF build path mode for the ADP project.
      *
-     * @param useLocal path to the dist folder
+     * @param cfBuildPath path to the build output folder
      * @returns the manifest
      */
-    private setupUseLocalMode(useLocal: string): Manifest {
-        const manifest = readLocalManifest(useLocal);
-        this.router.use('/', serveStatic(useLocal));
-        this.logger.info(`Initialized CF ADP in useLocal mode, serving from ${useLocal}`);
+    private setupCfBuildMode(cfBuildPath: string): Manifest {
+        const manifest = readLocalManifest(cfBuildPath);
+        this.router.use('/', serveStatic(cfBuildPath));
+        this.logger.info(`Initialized CF ADP with cfBuildPath, serving from ${cfBuildPath}`);
         return manifest;
     }
 }

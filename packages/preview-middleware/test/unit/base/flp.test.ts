@@ -1489,7 +1489,7 @@ describe('initAdp', () => {
         expect(flp.rta?.options?.isCloud).toBe(true);
     });
 
-    test('initAdp with useLocal mode', async () => {
+    test('initAdp with cfBuildPath mode', async () => {
         const mockManifest = {
             'sap.app': {
                 id: 'test.app',
@@ -1500,7 +1500,7 @@ describe('initAdp', () => {
                 }
             }
         } as Manifest;
-        const useLocal = 'dist';
+        const cfBuildPath = 'dist';
         const readLocalManifestMock = jest.spyOn(adpTooling, 'readLocalManifest').mockReturnValue(mockManifest);
         const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
             return {
@@ -1524,7 +1524,7 @@ describe('initAdp', () => {
 
         const config: AdpPreviewConfig = {
             target: { url },
-            useLocal
+            cfBuildPath
         };
         const flpConfig = {
             adp: config,
@@ -1537,7 +1537,7 @@ describe('initAdp', () => {
 
         await flp.initAdp(config);
 
-        expect(readLocalManifestMock).toHaveBeenCalledWith(useLocal);
+        expect(readLocalManifestMock).toHaveBeenCalledWith(cfBuildPath);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
         expect(flp.rta?.options?.isCloud).toBe(false);

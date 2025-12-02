@@ -29,7 +29,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `flp.enhancedHomePage`  | `boolean`  | optional                                       | `false`          | Flag for enabling enhanced FLP homepage, available only from UI5 version 1.123.0 onwards                                                                                                                                                              |
 | `adp.target`            | ---        | mandatory for adaptation projects              | ---              | Configuration object defining the connected back end                                                                                                                                                                                                  |
 | `adp.ignoreCertErrors`  | `boolean`  | optional                                       | `false`          | Flag to ignore certification validation errors when working with development systems with self-signed certificates, for example                                                                                                                       |
-| `adp.useLocal`          | `string`   | optional (experimental, CF only)               | `undefined`      | **Experimental**: For CF ADP projects only. Path to local dist folder (e.g., `dist`) to serve built resources directly instead of merging from backend. When set, the middleware serves static files from this path and reads manifest.json from it. |
+| `adp.cfBuildPath`       | `string`   | optional (experimental, CF only)               | `undefined`      | **Experimental**: For CF ADP projects only. Path to build output folder (e.g., `dist`) to serve built resources directly instead of merging from backend. When set, the middleware serves static files from this path and reads manifest.json from it. |
 | `rta`                   | ---        | 🚫 deprecated</br> *use `editors.rta` instead* | ---              | Configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                     |
 | `editors`               | `array`    | optional                                       | `undefined`      | List of configurations allowing to add mount points for additional editors                                                                                                                                                                            |
 | `editors.rta`           | `array`    | optional                                       | `undefined`      | Configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                     |
@@ -176,11 +176,11 @@ server:
 ### [CF ADP Local Mode (Experimental)](#cf-adp-local-mode-experimental)
 **⚠️ Experimental feature - CF ADP projects only**
 
-For Cloud Foundry ADP projects, you can use the `useLocal` option to serve built resources directly from a local dist folder instead of merging from the backend. This is useful for testing locally built applications without requiring backend connectivity.
+For Cloud Foundry ADP projects, you can use the `cfBuildPath` option to serve built resources directly from a build output folder instead of merging from the backend. This is useful for testing locally built applications without requiring backend connectivity.
 
-When `useLocal` is set:
+When `cfBuildPath` is set:
 - The middleware serves static files directly from the specified path (e.g., `dist` or `build/dist`)
-- The manifest.json is read from the local dist folder
+- The manifest.json is read from the build output folder
 - Backend merging is bypassed
 - The FLP is initialized without backend merge
 
@@ -195,7 +195,7 @@ server:
       adp: 
         target: 
           url: http://sap.example
-        useLocal: dist  # Path to local dist folder (experimental, CF only)
+        cfBuildPath: dist  # Path to build output folder (experimental, CF only)
 ```
 When the middleware is used in an adaptation project together with a middleware proxying requests to the back end e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the back-end proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the local variant.
 ```Yaml

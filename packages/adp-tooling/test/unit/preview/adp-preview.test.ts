@@ -243,13 +243,13 @@ describe('AdaptationProject', () => {
             await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
         });
 
-        test('should initialize with useLocal mode', async () => {
+        test('should initialize with cfBuildPath mode', async () => {
             const adp = new AdpPreview(
                 {
                     target: {
                         url: backend
                     },
-                    useLocal: 'dist'
+                    cfBuildPath: 'dist'
                 },
                 mockProject as unknown as ReaderCollection,
                 middlewareUtil,
@@ -298,7 +298,7 @@ describe('AdaptationProject', () => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
         });
 
-        test('should return early when useLocal is set', async () => {
+        test('should return early when cfBuildPath is set', async () => {
             // Create a separate nock scope for this test to avoid interfering with other tests
             const testBackend = 'https://test-backend.example';
             const adp = new AdpPreview(
@@ -306,7 +306,7 @@ describe('AdaptationProject', () => {
                     target: {
                         url: testBackend
                     },
-                    useLocal: 'dist'
+                    cfBuildPath: 'dist'
                 },
                 mockProject as unknown as ReaderCollection,
                 middlewareUtil,
@@ -317,7 +317,7 @@ describe('AdaptationProject', () => {
             await adp.init(parsedVariant);
 
             // sync should return immediately without making any backend calls
-            // Since useLocal is set, sync should return early
+            // Since cfBuildPath is set, sync should return early
             await adp.sync();
 
             // Verify that sync completed without errors
@@ -984,15 +984,15 @@ describe('AdaptationProject', () => {
         });
     });
 
-    describe('addApis - useLocal mode', () => {
-        let useLocalServer: SuperTest<Test>;
+    describe('addApis - cfBuildPath mode', () => {
+        let cfBuildPathServer: SuperTest<Test>;
         beforeAll(async () => {
             const adp = new AdpPreview(
                 {
                     target: {
                         url: backend
                     },
-                    useLocal: 'dist'
+                    cfBuildPath: 'dist'
                 },
                 mockProject as unknown as ReaderCollection,
                 middlewareUtil,
@@ -1018,11 +1018,11 @@ describe('AdaptationProject', () => {
             const app = express();
             app.use(express.json());
             adp.addApis(app);
-            useLocalServer = supertest(app);
+            cfBuildPathServer = supertest(app);
         });
 
-        test('GET /adp/api/annotation should return empty annotationDataSourceMap in useLocal mode', async () => {
-            const response = await useLocalServer.get('/adp/api/annotation').send().expect(200);
+        test('GET /adp/api/annotation should return empty annotationDataSourceMap in cfBuildPath mode', async () => {
+            const response = await cfBuildPathServer.get('/adp/api/annotation').send().expect(200);
 
             const message = response.text;
             expect(message).toMatchInlineSnapshot(`"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{}}"`);

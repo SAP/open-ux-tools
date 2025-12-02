@@ -107,11 +107,11 @@ export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfigu
 /**
  * Read the manifest from the local dist folder.
  *
- * @param {string} useLocal - The path to the dist folder.
+ * @param {string} cfBuildPath - The path to the build output folder.
  * @returns {Manifest} The manifest.
  */
-export function readLocalManifest(useLocal: string): Manifest {
-    const distPath = join(process.cwd(), useLocal);
+export function readLocalManifest(cfBuildPath: string): Manifest {
+    const distPath = join(process.cwd(), cfBuildPath);
     const manifestPath = join(distPath, 'manifest.json');
     return JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
 }

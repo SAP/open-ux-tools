@@ -162,7 +162,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -397,7 +397,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -637,7 +637,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -846,7 +846,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -1117,7 +1117,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -1331,7 +1331,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 ",
     "state": "modified",
   },

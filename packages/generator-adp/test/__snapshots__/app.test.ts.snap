@@ -238,7 +238,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 "
 `;
 
