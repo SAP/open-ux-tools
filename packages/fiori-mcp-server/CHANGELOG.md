@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.6
+
+### Patch Changes
+
+-   4f7aa43: fix(fiori-mcp): improve non-cap app-gen input schema
+
 ## 0.4.5
 
 ### Patch Changes
