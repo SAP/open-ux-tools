@@ -71,13 +71,13 @@
         "connect": "^3.7.0",
         "copyfiles": "2.4.1",
         "dotenv": "16.3.1",
-        "express": "4.21.2",
+        "express": "4.22.0",
         "nock": "13.4.0",
         "npm-run-all2": "6.2.0",
         "supertest": "7.1.4"
     },
     "peerDependencies": {
-        "express": "4"
+        "express": "4.22.0"
     },
     "engines": {
         "node": ">=20.x"

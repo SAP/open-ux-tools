@@ -30,7 +30,7 @@
         "!dist/**/*.map"
     ],
     "peerDependencies": {
-        "express": "4"
+        "express": "4.22.0"
     },
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",
@@ -52,7 +52,7 @@
         "@types/prompts": "2.4.4",
         "@types/proxy-from-env": "1.0.1",
         "@types/supertest": "2.0.12",
-        "express": "4.21.2",
+        "express": "4.22.0",
         "connect": "^3.7.0",
         "nock": "13.4.0",
         "supertest": "7.1.4",
