@@ -96,6 +96,7 @@ export interface AppConfig {
         readonly localUI5Version?: string;
         readonly sapux?: boolean;
         readonly skipAnnotations?: boolean;
+        /** @deprecated Code assist prompt is hidden and this property is no longer used */
         readonly enableCodeAssist?: boolean;
         readonly enableEslint?: boolean;
         readonly enableTypeScript?: boolean;

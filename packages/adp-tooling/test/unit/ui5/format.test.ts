@@ -4,14 +4,14 @@ import {
     buildSystemVersionLabel,
     removeBracketsFromVersion,
     removeMicroPart,
-    removeTimestampFromVersion,
     addSnapshot,
     parseUI5Version,
     isFeatureSupportedVersion,
-    removeSnapshotFromVersion
+    formatUi5Version
 } from '../../../src/ui5/format';
 
 import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../../../src/base/constants';
+import { format } from 'node:path';
 
 describe('getOfficialBaseUI5VersionUrl', () => {
     it('returns SNAPSHOT_CDN_URL for snapshot versions', () => {
@@ -60,25 +60,18 @@ describe('removeMicroPart', () => {
     });
 });
 
-describe('removeTimestampFromVersion', () => {
+describe('formatUi5Version', () => {
     it('removes the fourth segment if exists', () => {
-        expect(removeTimestampFromVersion('1.95.0.1234567890')).toBe('1.95.0');
+        expect(formatUi5Version('1.95.0.1234567890')).toBe('1.95.0');
     });
-
-    it('returns original if only 3 segments', () => {
-        expect(removeTimestampFromVersion('1.95.0')).toBe('1.95.0');
-    });
-});
-
-describe('removeSnapshotFromVersion', () => {
     it('removes the snapshot from the patch number', () => {
-        expect(removeSnapshotFromVersion('1.96.0-snapshot')).toBe('1.96.0');
-        expect(removeSnapshotFromVersion('1.96.123-snapshot')).toBe('1.96.123');
-        expect(removeSnapshotFromVersion('1.96.3-SNAPSHOT')).toBe('1.96.3');
+        expect(formatUi5Version('1.96.0-snapshot')).toBe('1.96.0');
+        expect(formatUi5Version('1.96.123-snapshot')).toBe('1.96.123');
+        expect(formatUi5Version('1.96.3-SNAPSHOT')).toBe('1.96.3');
     });
 
     it('returns original if only 3 segments', () => {
-        expect(removeTimestampFromVersion('1.120.1')).toBe('1.120.1');
+        expect(formatUi5Version('1.120.1')).toBe('1.120.1');
     });
 });
 

@@ -1,5 +1,39 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.24
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+
+## 0.0.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.10
+
+## 0.0.22
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+
+## 0.0.21
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+
+## 0.0.20
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+
 ## 0.0.19
 
 ### Patch Changes

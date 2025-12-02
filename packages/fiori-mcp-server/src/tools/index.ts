@@ -1,7 +1,7 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import * as Input from '../types/input';
 import * as Output from '../types/output';
-import { convertToSchema } from './utils';
+import { convertToSchema } from '../utils';
 
 export { docSearch } from './hybrid-search';
 export type { SearchResponseData } from './hybrid-search';

@@ -1,5 +1,93 @@
 # @sap-ux/generator-adp
 
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [9c66de4]
+    -   @sap-ux/adp-tooling@0.18.11
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/adp-tooling@0.18.10
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.36
+    -   @sap-ux/odata-service-writer@0.27.32
+    -   @sap-ux/project-input-validator@0.6.33
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.8
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/odata-service-writer@0.27.31
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/adp-tooling@0.18.9
+    -   @sap-ux/inquirer-common@0.9.7
+    -   @sap-ux/fiori-generator-shared@0.13.35
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/project-access@1.32.10
+    -   @sap-ux/project-input-validator@0.6.32
+
+## 0.7.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.8
+-   @sap-ux/inquirer-common@0.9.6
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [597834f]
+    -   @sap-ux/inquirer-common@0.9.5
+    -   @sap-ux/adp-tooling@0.18.7
+
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/adp-tooling@0.18.6
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/odata-service-writer@0.27.30
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.7.5
+
+### Patch Changes
+
+-   6872b31: fix: System SAPUI5 version not available for selection in ADP generator
+-   Updated dependencies [6872b31]
+    -   @sap-ux/adp-tooling@0.18.5
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [5475b5b]
+    -   @sap-ux/adp-tooling@0.18.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   744fa93: Updating @ui5/cli references to v4 and align version
+-   Updated dependencies [744fa93]
+    -   @sap-ux/adp-tooling@0.18.3
+
 ## 0.7.2
 
 ### Patch Changes

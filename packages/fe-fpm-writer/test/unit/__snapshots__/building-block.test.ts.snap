@@ -75,6 +75,149 @@ Object {
 }
 `;
 
+exports[`Building Blocks CustomFilterField building block CustomFilterField detects macros:filterFields elements correctly: generate-custom-filter-field-with-macros-filter-fields 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar>
+                <macros:filterFields>
+                    <macros:FilterField/>
+                    <macros:FilterField key=\\"myFilterFieldKey\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\" placement=\\"After\\" required=\\"true\\" property=\\"testProperty\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFilterField2\\" type=\\"XML\\"/>
+                    </macros:FilterField>
+                </macros:filterFields>
+            </macros:FilterBar>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks CustomFilterField building block generate CustomFilterField with minimal required properties: generate-custom-filter-field-minimal 1`] = `
+Object {
+  "generate-custom-filter-field-minimal/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:filterFields>
+                <macros:FilterField key=\\"myFilterFieldKey\\" label=\\"Minimal Filter Field\\" id=\\"minimalCustomFilterField\\" placement=\\"After\\" property=\\"SimpleProperty\\">
+                    <core:Fragment fragmentName=\\"my.test.App.ext.minimalFilterField.MinimalFilterField\\" type=\\"XML\\"/>
+                </macros:FilterField>
+            </macros:filterFields>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-minimal/webapp/ext/minimalFilterField/MinimalFilterField.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox>
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-minimal/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks CustomFilterField building block generate CustomFilterField without macros:filterFields - should not update aggregation path: generate-custom-filter-field-without-macros-filter-fields 1`] = `
+Object {
+  "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/fragment/CustomFilterField2.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox>
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar>
+                <macros:filterFields>
+                    <macros:FilterField key=\\"myFilterFieldKey\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\" placement=\\"After\\" required=\\"true\\" property=\\"testProperty\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFilterField2\\" type=\\"XML\\"/>
+                    </macros:FilterField>
+                </macros:filterFields>
+            </macros:FilterBar>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-without-macros-filter-fields/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
   "default": Object {
