@@ -80,7 +80,7 @@ describe('Test getWebappPath()', () => {
         const memFs = create(createStorage());
         memFs.write(
             join(samplesRoot, 'custom-webapp-path/ui5.yaml'),
-            'resources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
         );
         memFs.writeJSON(join(samplesRoot, 'custom-webapp-path/package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path'), memFs)).toEqual(
@@ -92,7 +92,7 @@ describe('Test getWebappPath()', () => {
         const memFs = create(createStorage());
         memFs.write(
             join(samplesRoot, 'app/app1/ui5.yaml'),
-            'resources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
         );
         memFs.writeJSON(join(samplesRoot, 'package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
@@ -115,6 +115,7 @@ describe('Test readUi5Yaml()', () => {
                         },
                       },
                     },
+                    "type": "application",
                   },
                 ],
               },
@@ -203,14 +204,14 @@ describe('Test getPathMappings()', () => {
         test('Get path mappings from default application', async () => {
             const result = await getPathMappings(join(samplesRoot, 'default-application'));
             expect(result).toEqual({
-                webappPath: join(samplesRoot, 'default-application', 'webapp')
+                webapp: join(samplesRoot, 'default-application', 'webapp')
             });
         });
 
         test('Get path mappings from application with custom webapp mapping', async () => {
             const result = await getPathMappings(join(samplesRoot, 'custom-application'));
             expect(result).toEqual({
-                webappPath: join(samplesRoot, 'custom-application', 'src', 'main', 'webapp')
+                webapp: join(samplesRoot, 'custom-application', 'src', 'main', 'webapp')
             });
         });
 
@@ -222,7 +223,7 @@ describe('Test getPathMappings()', () => {
             memFs.writeJSON(join(samplesRoot, 'custom-application/package.json'), {});
             const result = await getPathMappings(join(samplesRoot, 'custom-application'), memFs);
             expect(result).toEqual({
-                webappPath: join(samplesRoot, 'custom-application/src/main/webapp')
+                webapp: join(samplesRoot, 'custom-application/src/main/webapp')
             });
         });
     });
@@ -231,16 +232,16 @@ describe('Test getPathMappings()', () => {
         test('Get path mappings from default library', async () => {
             const result = await getPathMappings(join(samplesRoot, 'default-library'));
             expect(result).toEqual({
-                srcPath: join(samplesRoot, 'default-library', 'src'),
-                testPath: join(samplesRoot, 'default-library', 'test')
+                src: join(samplesRoot, 'default-library', 'src'),
+                test: join(samplesRoot, 'default-library', 'test')
             });
         });
 
         test('Get path mappings from library with custom src and test mappings', async () => {
             const result = await getPathMappings(join(samplesRoot, 'custom-library'));
             expect(result).toEqual({
-                srcPath: join(samplesRoot, 'custom-library', 'custom', 'src'),
-                testPath: join(samplesRoot, 'custom-library', 'custom', 'test')
+                src: join(samplesRoot, 'custom-library', 'custom', 'src'),
+                test: join(samplesRoot, 'custom-library', 'custom', 'test')
             });
         });
 
@@ -252,8 +253,8 @@ describe('Test getPathMappings()', () => {
             memFs.writeJSON(join(samplesRoot, 'custom-library/package.json'), {});
             const result = await getPathMappings(join(samplesRoot, 'custom-library'), memFs);
             expect(result).toEqual({
-                srcPath: join(samplesRoot, 'custom-library/custom/src'),
-                testPath: join(samplesRoot, 'custom-library/custom/test')
+                src: join(samplesRoot, 'custom-library/custom/src'),
+                test: join(samplesRoot, 'custom-library/custom/test')
             });
         });
 
@@ -267,8 +268,8 @@ describe('Test getPathMappings()', () => {
             memFs.writeJSON(join(samplesRoot, 'default-library/package.json'), {});
             const result = await getPathMappings(join(samplesRoot, 'default-library'), memFs);
             expect(result).toEqual({
-                srcPath: join(samplesRoot, 'default-library/custom/src'),
-                testPath: join(samplesRoot, 'default-library', 'test')
+                src: join(samplesRoot, 'default-library/custom/src'),
+                test: join(samplesRoot, 'default-library', 'test')
             });
         });
 
@@ -282,27 +283,27 @@ describe('Test getPathMappings()', () => {
             memFs.writeJSON(join(samplesRoot, 'default-library/package.json'), {});
             const result = await getPathMappings(join(samplesRoot, 'default-library'), memFs);
             expect(result).toEqual({
-                srcPath: join(samplesRoot, 'default-library', 'src'),
-                testPath: join(samplesRoot, 'default-library/custom/test')
+                src: join(samplesRoot, 'default-library', 'src'),
+                test: join(samplesRoot, 'default-library/custom/test')
             });
         });
     });
 
     describe('Edge cases', () => {
         test('Return undefined when ui5.yaml does not exist', async () => {
-            const result = await getPathMappings(join(samplesRoot, 'no-ui5-yaml'));
-            expect(result).toBeUndefined();
+            await expect(getPathMappings(samplesRoot)).rejects.toThrow(
+                `Could not read 'type' from ui5.yaml in project root: ${samplesRoot}`
+            );
         });
 
         test('Return undefined for unsupported project type', async () => {
             const memFs = create(createStorage());
             memFs.write(
                 join(samplesRoot, 'no-ui5-yaml/ui5.yaml'),
-                'specVersion: "3.0"\ntype: module\nmetadata:\n  name: test.module'
+                'specVersion: "3.0"\ntype: unknown\nmetadata:\n  name: test.unknown'
             );
             memFs.writeJSON(join(samplesRoot, 'no-ui5-yaml/package.json'), {});
-            const result = await getPathMappings(join(samplesRoot, 'no-ui5-yaml'), memFs);
-            expect(result).toBeUndefined();
+            await expect(getPathMappings(join(samplesRoot, 'no-ui5-yaml'), memFs)).rejects.toThrow('Unsupported project type for path mappings: unknown');
         });
     });
 });

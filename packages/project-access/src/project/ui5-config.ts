@@ -1,9 +1,18 @@
 import { basename, dirname, join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
+import type { MockserverConfig, MockserverService, Ui5Document, Configuration } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
+
+type PathMappings = { [key: string]: string | undefined };
+
+const PATH_MAPPING_DEFAULTS: Record<Ui5Document['type'], Record<string, string>> = {
+    application: { webapp: DirName.Webapp },
+    library: { src: 'src', test: 'test' },
+    'theme-library': { src: 'src', test: 'test' },
+    module: {}
+};
 
 /**
  * Get base directory of the project where package.json is located.
@@ -25,19 +34,13 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
  * @returns - path to webapp folder
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
-    const defaultWebappPath = join(appRoot, DirName.Webapp);
-    let ui5Config: UI5Config;
+    let pathMappings: PathMappings = {};
     try {
-        ui5Config = await readUi5Yaml(appRoot, FileName.Ui5Yaml, memFs);
+        pathMappings = await getPathMappings(appRoot, memFs);
     } catch {
-        return defaultWebappPath;
+        // For backward compatibility ignore errors and use default
     }
-    const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
-    if (!relativeWebappPath) {
-        return defaultWebappPath;
-    }
-    const baseDir = await getBaseDir(appRoot, memFs);
-    return join(baseDir, relativeWebappPath);
+    return pathMappings?.webapp ?? join(appRoot, DirName.Webapp)
 }
 
 /**
@@ -45,51 +48,45 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
+ * @param fileName - optional name of yaml file to be read. Defaults to 'ui5.yaml'.
  * @returns - path mappings or undefined if ui5.yaml does not exist or project type is unsupported
+ * @throws {Error} if ui5.yaml or 'type' cannot be read
+ * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
  */
 export async function getPathMappings(
     appRoot: string,
-    memFs?: Editor
-): Promise<{ webappPath: string } | { srcPath: string; testPath: string } | undefined> {
+    memFs?: Editor,
+    fileName: string = FileName.Ui5Yaml
+): Promise<PathMappings> {
     let ui5Config: UI5Config;
+    let configuration: Configuration;
+    let type: Ui5Document['type'];
     try {
-        ui5Config = await readUi5Yaml(appRoot, FileName.Ui5Yaml, memFs);
+        ui5Config = await readUi5Yaml(appRoot, fileName, memFs);
+        configuration = ui5Config.getConfiguration();
+        type = ui5Config.getType();
     } catch {
-        return undefined;
-    }
-    const projectType = ui5Config.getType();
-
-    if (projectType === 'application') {
-        return { webappPath: await getWebappPath(appRoot, memFs) };
+        throw new Error(`Could not read 'type' from ${fileName} in project root: ${appRoot}`);
     }
 
-    if (projectType === 'library') {
-        return await getLibraryPathMappings(appRoot, ui5Config, memFs);
+    if (!(type in PATH_MAPPING_DEFAULTS)) {
+        throw new Error(`Unsupported project type for path mappings: ${type}`);
     }
 
-    return undefined;
-}
-
-/**
- * Get path mappings for project of type library.
- *
- * @param appRoot - root to the application
- * @param ui5Config - ui5 config instance
- * @param memFs - optional mem-fs editor instance
- * @returns - path mappings
- */
-async function getLibraryPathMappings(
-    appRoot: string,
-    ui5Config: UI5Config,
-    memFs?: Editor
-): Promise<{ srcPath: string; testPath: string }> {
     const baseDir = await getBaseDir(appRoot, memFs);
-    const configuration = ui5Config.getConfiguration();
+    const pathMappings: PathMappings = { };
+    for (const [key, value] of Object.entries(configuration?.paths || {})) {
+        pathMappings[key] = join(baseDir, value ?? PATH_MAPPING_DEFAULTS[type][key] ?? undefined);
+    }
 
-    return {
-        srcPath: configuration?.paths?.src ? join(baseDir, configuration.paths.src) : join(appRoot, 'src'),
-        testPath: configuration?.paths?.test ? join(baseDir, configuration.paths.test) : join(appRoot, 'test')
-    };
+    //Add defaults if no specific value exists
+    for (const [key, defaultValue] of Object.entries(PATH_MAPPING_DEFAULTS[type] ?? {})) {
+        if (!pathMappings[key]) {
+            pathMappings[key] = join(baseDir, defaultValue);
+        }
+    }
+
+    return pathMappings;
 }
 
 /**
