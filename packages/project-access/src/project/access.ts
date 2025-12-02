@@ -386,15 +386,17 @@ export async function createApplicationAccess(
     fs?: Editor | ApplicationAccessOptions
 ): Promise<ApplicationAccess> {
     try {
-        const apps = await findAllApps([appRoot]);
-        const app = apps.find((app) => app.appRoot === appRoot);
-        if (!app) {
-            throw new Error(`Could not find app with root ${appRoot}`);
-        }
         let options: ApplicationAccessOptions | undefined;
         if (fs) {
             options = isEditor(fs) ? { fs } : fs;
         }
+
+        const apps = await findAllApps([appRoot], options?.fs);
+        const app = apps.find((app) => app.appRoot === appRoot);
+        if (!app) {
+            throw new Error(`Could not find app with root ${appRoot}`);
+        }
+
         const project = await getProject(app.projectRoot, options?.fs);
         const appId = relative(project.root, appRoot);
         return new ApplicationAccessImp(project, appId, options);

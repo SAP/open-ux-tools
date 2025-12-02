@@ -6,9 +6,8 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
-import { FileName, DirName, getSpecification } from '@sap-ux/project-access';
+import { FileName, DirName, getSpecification, getFilterFields, createApplicationAccess } from '@sap-ux/project-access';
 import pageModel from './sampleListReportModel.json';
-import { getFilterFields } from './utils';
 import { Logger } from '@sap-ux/logger/src/types';
 
 /**
@@ -285,7 +284,9 @@ export async function generateOPAFiles(
     const testOutDirPath = join(basePath, 'webapp/test');
 
     const specification: any = await getSpecification(basePath);
-    const appSpec = await specification.readApp({ app: basePath, fs: editor });
+    // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
+    const editorAppAccess = await createApplicationAccess(basePath, { fs: editor });
+    const appSpec = await specification.readApp({ app: editorAppAccess, fs: editor });
     // pageModel based on description https://github.wdf.sap.corp/ux-engineering/tools-suite/issues/36325, needs to be confirmed/changed
     const pageModel = appSpec.applicationModel.pages[0].pageModel;
 

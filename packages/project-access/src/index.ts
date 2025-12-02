@@ -53,7 +53,8 @@ export {
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
-    readFlexChanges
+    readFlexChanges,
+    getFilterFields
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
