@@ -16,6 +16,10 @@ sap.ui.define([
             Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
                 <% }); %>
             <% } %>
+
+            <% if (tableColumns) { %>
+            Then.onThe<%- pageName %>.onTable().iCheckColumns("<%- tableColumns %>");
+            <% } %>
 <% });%>
         });
 

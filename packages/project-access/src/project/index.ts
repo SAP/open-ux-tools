@@ -46,4 +46,4 @@ export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript, hasUI5CliV3 } from './script';
 export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';
 export { readFlexChanges } from './flex-changes';
-export { getFilterFields } from './model';
+export { getListReportPage, getObjectPages, getFilterFields, getTableColumns } from './model';
