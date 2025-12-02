@@ -40,7 +40,7 @@ export function getBackendUrlFromServiceKeys(serviceKeys: ServiceKeys[]): string
     }
 
     const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, { url?: string }> | undefined;
-    if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
+    if (endpoints) {
         for (const key in endpoints) {
             if (Object.hasOwn(endpoints, key)) {
                 const endpoint = endpoints[key] as { url?: string } | undefined;
