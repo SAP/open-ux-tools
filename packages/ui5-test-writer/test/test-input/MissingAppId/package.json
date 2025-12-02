@@ -1,8 +1,8 @@
 {
-  "name": "restaurant-app",
+  "name": "missing-app-id",
   "version": "0.0.1",
   "private": true,
-  "description": "Restaurant List",
+  "description": "",
   "main": "webapp/index.html",
   "dependencies": {},
   "devDependencies": {

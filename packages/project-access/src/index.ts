@@ -54,7 +54,10 @@ export {
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
     readFlexChanges,
-    getFilterFields
+    getFilterFields,
+    getTableColumns,
+    getListReportPage,
+    getObjectPages
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

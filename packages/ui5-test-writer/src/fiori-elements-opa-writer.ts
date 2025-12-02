@@ -6,7 +6,16 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
-import { FileName, DirName, getSpecification, getFilterFields, createApplicationAccess } from '@sap-ux/project-access';
+import {
+    FileName,
+    DirName,
+    getListReportPage,
+    getObjectPages,
+    getSpecification,
+    getFilterFields,
+    createApplicationAccess,
+    getTableColumns
+} from '@sap-ux/project-access';
 import pageModel from './sampleListReportModel.json';
 import { Logger } from '@sap-ux/logger/src/types';
 
@@ -288,7 +297,9 @@ export async function generateOPAFiles(
     const editorAppAccess = await createApplicationAccess(basePath, { fs: editor });
     const appSpec = await specification.readApp({ app: editorAppAccess, fs: editor });
     // pageModel based on description https://github.wdf.sap.corp/ux-engineering/tools-suite/issues/36325, needs to be confirmed/changed
-    const pageModel = appSpec.applicationModel.pages[0].pageModel;
+    // get pages
+    const listReportPage = getListReportPage(appSpec.applicationModel.pages);
+    // const objectPages = getObjectPages(appSpec.applicationModel.pages);
 
     // Common test files
     editor.copyTpl(
@@ -324,18 +335,27 @@ export async function generateOPAFiles(
     let filterBarItems: string[] = [];
     try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        filterBarItems = getFilterFields(pageModel as any['root']);
+        filterBarItems = getFilterFields(listReportPage.model as any['root']);
     } catch (error) {
         // If anything goes wrong, we just don't add filter bar items
     }
     log?.error(`Filter bar items for OPA tests: ${JSON.stringify(filterBarItems)}`);
+
+    // TODO: investigate column structure in the model vs. TableAssertions.iCheckColumns, which seems to expect a more complex structure
+    let tableColumns: string[] = [];
+    try {
+        tableColumns = getTableColumns(listReportPage.model as any['root']);
+    } catch (error) {
+        // no columns
+    }
 
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
         hideFilterBar: config.hideFilterBar,
-        filterBarItems: filterBarItems
+        filterBarItems: filterBarItems,
+        tableColumns: tableColumns
     };
 
     editor.copyTpl(
