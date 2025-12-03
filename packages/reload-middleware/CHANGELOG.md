@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.3.6
+
+### Patch Changes
+
+-   67e2b43: add 'express' as peerDependency
+
 ## 0.3.5
 
 ### Patch Changes
