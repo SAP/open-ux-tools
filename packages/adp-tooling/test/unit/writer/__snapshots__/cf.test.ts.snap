@@ -102,12 +102,6 @@ dist/
 		\\"type\\": \\"git\\",
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
-	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
 		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
@@ -336,12 +330,6 @@ dist/
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
-	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
@@ -577,12 +565,6 @@ dist/
 		\\"type\\": \\"git\\",
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
-	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
 		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
@@ -785,12 +767,6 @@ dist/
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
-	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
@@ -1057,12 +1033,6 @@ dist/
 		\\"type\\": \\"git\\",
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
-	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
 		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
@@ -1270,12 +1240,6 @@ dist/
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
-	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
