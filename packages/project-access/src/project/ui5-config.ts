@@ -49,7 +49,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
  * @param fileName - optional name of yaml file to be read. Defaults to 'ui5.yaml'.
- * @returns - path mappings or undefined if ui5.yaml does not exist or project type is unsupported
+ * @returns - path mappings
  * @throws {Error} if ui5.yaml or 'type' cannot be read
  * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
  */
