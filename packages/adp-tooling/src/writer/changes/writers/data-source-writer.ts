@@ -66,14 +66,14 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
         const content = this.constructContent(id, uri, maxAge);
         const change = getChange(variant, timestamp, content, ChangeType.CHANGE_DATA_SOURCE);
 
-        writeChangeToFolder(this.projectPath, change, this.fs);
+        await writeChangeToFolder(this.projectPath, change, this.fs);
 
         if (annotationId && annotationUri) {
             const annotationContent = this.constructContent(annotationId, annotationUri);
             const annotationTs = timestamp + 1;
             const annotationChange = getChange(variant, annotationTs, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
 
-            writeChangeToFolder(this.projectPath, annotationChange, this.fs);
+            await writeChangeToFolder(this.projectPath, annotationChange, this.fs);
         }
     }
 }

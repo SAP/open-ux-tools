@@ -1,7 +1,7 @@
 import { PageEditorApi, SapuxFtfsFileIO, type TreeNode, type TreeNodeProperty } from '../page-editor-api';
 import type { Functionality, ListFunctionalitiesInput, ListFunctionalitiesOutput } from '../types';
 import { FUNCTIONALITIES_DETAILS } from './functionalities';
-import { resolveApplication } from './utils';
+import { resolveApplication } from '../utils';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
 /**

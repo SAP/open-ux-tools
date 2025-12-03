@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.3
+
+### Patch Changes
+
+-   07725fe: Bump @sap/manifest version
+
 ## 1.6.2
 
 ### Patch Changes

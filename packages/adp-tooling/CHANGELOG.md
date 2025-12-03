@@ -1,5 +1,23 @@
 # @sap-ux/adp-tooling
 
+## 0.18.11
+
+### Patch Changes
+
+-   9c66de4: fix: remove hard coded usage of webapp folder name
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/odata-service-writer@0.27.32
+    -   @sap-ux/project-input-validator@0.6.33
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.8
+
 ## 0.18.9
 
 ### Patch Changes
