@@ -18,7 +18,7 @@ sap.ui.define([
             <% } %>
 
             <% if (tableColumns) { %>
-            Then.onThe<%- pageName %>.onTable().iCheckColumns("<%- tableColumns %>");
+            Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.values(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
             <% } %>
 <% });%>
         });
