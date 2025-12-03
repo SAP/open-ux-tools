@@ -1,3 +1,5 @@
+
+--------------------------------
 # @sap/ux-ui5-tooling
 
 The SAP Fiori Tools - UI5 Tooling contains a selection of custom [middlewares](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware/) that can be used with the command `ui5 serve` as well as custom [tasks](https://sap.github.io/ui5-tooling/pages/extensibility/CustomTasks/) that can be used with the command `ui5 build`. 
@@ -7,10 +9,14 @@ Furthermore, the module expose the cli `fiori` offering e.g. the [`fiori run`](#
 - For more information about migration to the latest `@ui5/cli`, see [here](https://sap.github.io/ui5-tooling/stable/).
 - Starting with version `1.17.6`, the minimum required Node.js version is 20.19.2 or higher!
 
+
+--------------------------------
 # [**Middlewares**](#middlewares)
 
 SAP Fiori tools use the capabilities of custom middlewares to start and preview SAP Fiori elements or SAPUI5 freestyle applications, e.g. to enable auto refresh, to switch the version of SAPUI5 sources or to serve static resources. Starting with version `1.3.0` the behaviour of the preview of the SAP Fiori applications has changed. Now the persistent iAppState is ignored in order to have the source code changes always apply when application is refreshed. If you want to enable the iAppState then you need to add the URL parameter `fiori-tools-iapp-state=true` to the browser URL, e.g. `http://localhost:8080/test/flpSandbox.html?fiori-tools-iapp-state=true#masterDetail-display`.
 
+
+--------------------------------
 ## [**1. Application Reload**](#1-application-reload)
 
 The application reload middleware allows developers to preview SAP Fiori applications while developing/configuring them. Whenever a file relevant for the SAP Fiori application is changed, the reload middleware will refresh the application preview.
@@ -50,6 +56,8 @@ Port to be used to communicate file system changes
 - `<boolean>` (default: `false`)
 Set this parameter to get more log information.
 
+
+--------------------------------
 ## [**2. Proxy**](#2-proxy)
 
 The proxy middleware provides you with the capabilities to connect to different back-end systems or to switch the SAPUI5 version of the application. The proxy is based on the [@sap-ux/ui5-proxy-middleware](https://www.npmjs.com/package/@sap-ux/ui5-proxy-middleware) for proxying the UI5 sources (starting with version `1.6.0`) and the [@sap-ux/backend-proxy-middleware](https://www.npmjs.com/package/@sap-ux/backend-proxy-middleware) for connecting to different back-end systems (starting with version `1.6.7`). Both `@sap-ux/ui5-proxy-middleware` and `@sap-ux/backend-proxy-middleware` are based on the [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware).
@@ -322,6 +330,8 @@ server:
             pathReplace: /sap/public/ui5/resources  
 ```
 
+
+--------------------------------
 ## [**3. Serve Static**](#3-serve-static)
 
 The serve static middleware provides the capability to serve any static resources locally from your machine. E.g. you can serve SAPUI5 locally or any other resources.
@@ -427,6 +437,8 @@ server:
           src: "Path/To/SAPUI5-SDK"
 ```
 
+
+--------------------------------
 ## [**4. Preview**](#4-preview)
 The preview middleware provides the capability to preview an application in a local Fiori launchpad. It hosts a local Fiori launchpad based on your configuration and offers an API to modify flex changes in your project. The middleware is a wrapper for the open source middleware `@sap-ux/preview-middleware` (https://www.npmjs.com/package/@sap-ux/preview-middleware) with a handful of default settings that are useful for the Fiori application development.
 
@@ -518,10 +530,14 @@ sap.ui.require(['sap/base/i18n/Formatting'], function(Formatting) {
         init: /test/myCustomInit
 ```
 
+
+--------------------------------
 # [**Tasks**](#tasks)
 
 SAP Fiori Tools use the capabilities of custom tasks to deploy the SAP Fiori projects to ABAP servers.
 
+
+--------------------------------
 ## [Deployment to ABAP](#deployment-to-abap)
 
 The deployment to ABAP task allows deploying SAP Fiori applications to SAP systems using the [SAPUI5 Repository OData service](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8.html).
@@ -698,10 +714,14 @@ The app object describes the backend object that is created/updated as result of
 - `boolean` (default: `false`)
 - If set to `true`, the task will log additional information about the deployment process. This is useful for debugging purposes.
 
+
+--------------------------------
 # [CLI Commands](#commands)
 
 The cli `fiori` offering provides the [`fiori run`](#run) command which is a wrapper of the `ui5 serve` command and provides some additional parameters as well as `fiori add deploy-config` and `fiori add flp-config` to extend an existing project and `fiori deploy` to perform the deployment of the application to an ABAP frontend server.
 
+
+--------------------------------
 ## [fiori run](#fiori-run---starts-a-local-web-server-for-running-a-fe-application)
 ### Options
 
@@ -716,6 +736,8 @@ The cli `fiori` offering provides the [`fiori run`](#run) command which is a wra
 * `--ui5Uri` - UI5 uri to load the UI5 resources from (default: uri from `ui5.yaml`).
 * `--proxy` - specify proxy configuration, e.g. `https://myproxy:8443` (default: uses host machine proxy configuration, if any).
 
+
+--------------------------------
 ## [fiori add deploy-config](#fiori-add-deploy-config---adds-a-deployment-configuration-to-the-project)
 
 The command allows adding a deployment configuration to the project. The command supports the generation of a configuration for deployment to an ABAP system or to a Cloud Foundry space.
@@ -767,10 +789,14 @@ Prefix used for the ID of the MTA and the service names. It defaults to the name
 
 At the end of the generation, it's possible to optionally generate  SAP Fiori launchpad configuration (default: no).
 
+
+--------------------------------
 ## [fiori add flp-config](#fiori-add-flp-config---fiori-launchpad-configuration-generation)
 
 It's possible to create configuration and artifacts required to run the application in an SAP Fiori launchpad. Depending on the target, the command will update either only the application `manifest.json` with the required inbound navigation property, or will also enhance the MTA configuration to contain a standalone FLP on CF.
 
+
+--------------------------------
 ## [fiori deploy](#fiori-deploy---performs-the-deployment-of-the-application-into-an-abap-system)
 
 The command performs the deployment of the application to an ABAP frontend server.
@@ -798,6 +824,8 @@ The command performs the deployment of the application to an ABAP frontend serve
 * `--ignore-cert-error, -ic` - Deprecated. Use `ignoreCertErrors` (plural) instead.
 * `--ignore-cert-errors, -ics` - Disabled by default. If set to `true`, the task will not validate the SSL certificate of the target system. This is useful for development purposes but must not be used in production environments.
 
+
+--------------------------------
 # [FAQ](#faq)
 
 **My backend system contains the SAP_UI component version 7.53 or newer, but the SAPUI5 repository service cannot be reached.**
@@ -812,6 +840,8 @@ This could have multiple reasons, please check the console for more information 
 
 Most probably the `OpenSSL` package is not installed on your OS. Please install it and make sure that it is available in your `PATH` environment variable.
 
+
+--------------------------------
 # [Support](#support)
 
 Join the [SAP Fiori Tools Community](https://pages.community.sap.com/topics/fiori-tools). Ask Questions, Read the Latest Blogs, Explore Content.  
@@ -819,10 +849,14 @@ Please assign tag: _SAP Fiori tools_.
 
 To log an issue with SAP Fiori Tools, please see [Contact SAP Support](https://help.sap.com/viewer/1bb01966b27a429ebf62fa2e45354fea/Latest/en-US).
 
+
+--------------------------------
 # [Documentation](#documentation) 
 
 - Visit **SAP Help Portal** for [SAP Fiori Tools](https://help.sap.com/viewer/product/SAP_FIORI_tools/Latest/en-US) documentation. 
 
+
+--------------------------------
 # [License](#license)
 
 <details>
