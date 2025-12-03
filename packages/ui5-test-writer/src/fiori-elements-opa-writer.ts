@@ -262,6 +262,17 @@ function writePageObject(
     );
 }
 
+function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
+    const columns: Record<string, any> = {};
+    Object.values(columnAggregations).map((columnAggregation) => {
+        columns[columnAggregation.name] = {
+            header: columnAggregation.description
+            // TODO possibly more reliable properties could be used?
+        };
+    });
+    return columns;
+}
+
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
  * Note: this can potentially overwrite existing files in the webapp/test folder.
@@ -335,18 +346,19 @@ export async function generateOPAFiles(
     let filterBarItems: string[] = [];
     try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        filterBarItems = getFilterFields(listReportPage.model as any['root']);
+        filterBarItems = getFilterFields(listReportPage.model as { root: any });
     } catch (error) {
         // If anything goes wrong, we just don't add filter bar items
     }
     log?.error(`Filter bar items for OPA tests: ${JSON.stringify(filterBarItems)}`);
 
-    // TODO: investigate column structure in the model vs. TableAssertions.iCheckColumns, which seems to expect a more complex structure
-    let tableColumns: string[] = [];
+    let tableColumns: Record<string, any> = {};
     try {
-        tableColumns = getTableColumns(listReportPage.model as any['root']);
+        const columnAggregations = getTableColumns(listReportPage.model as { root: any });
+        tableColumns = transformTableColumns(columnAggregations);
     } catch (error) {
         // no columns
+        debugger;
     }
 
     const journeyParams = {

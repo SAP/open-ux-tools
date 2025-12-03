@@ -20,8 +20,8 @@ export function getObjectPages(pages: Record<string, any>): any[] {
 }
 
 export function getAggregations(node: any): any {
-    if (node && typeof node === 'object') {
-        return node.getAggregations();
+    if (node && typeof node === 'object' && 'aggregations' in node) {
+        return node.aggregations;
     }
     return {};
 }
@@ -37,7 +37,8 @@ export function getSelectionFieldItems(selectionFieldsAgg: any): any[] {
     return [];
 }
 
-export function getFilterFields(root: any): string[] {
+export function getFilterFields(model: { root: any }): string[] {
+    const root = model.root;
     const filterBar = getAggregations(root)['filterBar'];
     const filterBarAggregations = getAggregations(filterBar);
     const selectionFields = filterBarAggregations['selectionFields'];
@@ -45,10 +46,11 @@ export function getFilterFields(root: any): string[] {
     return getSelectionFieldItems(selectionFieldsAggregations);
 }
 
-export function getTableColumns(root: any): string[] {
+export function getTableColumns(model: { root: any }): Record<string, any> {
+    const root = model.root;
     const table = getAggregations(root)['table'];
     const tableAggregations = getAggregations(table);
     const columns = tableAggregations['columns'];
-    // TODO enhance to possibly return more than the keys
-    return columns.columnKeys;
+    const columnAggregations = getAggregations(columns);
+    return columnAggregations;
 }
