@@ -275,8 +275,8 @@ describe('update preview middleware config', () => {
         fs.write(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'), 'dummy content');
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
-        //expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
-        //expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.js'))).toBeFalsy();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.custom.js'))).toBeTruthy();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
