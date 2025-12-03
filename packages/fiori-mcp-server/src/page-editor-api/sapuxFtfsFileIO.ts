@@ -18,6 +18,7 @@ import { readFlexChanges } from '@sap-ux/project-access';
 import { getFlexChangeLayer, getManifest, getUI5Version, readAnnotationFiles } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
+import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 export interface PageData {
     pageId: string;
@@ -57,7 +58,14 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to a Specification object
      */
     private async getSpecification(): Promise<Specification> {
-        return this.appAccess.getSpecification();
+        const specification = await this.appAccess.getSpecification<Specification>();
+        const apiVersion = specification.getApiVersion();
+        const version = typeof apiVersion?.fpmWriter === 'string' ? parseInt(apiVersion.fpmWriter) : 0;
+        if (version < 35) {
+            // resolved spec is outdated - load latest from global cache
+            // ToDo - force from global cache
+        }
+        return specification;
     }
 
     /**
@@ -76,19 +84,24 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to an array of File objects
      */
     private async getVirtualFiles(): Promise<File[]> {
-        const manifest = await getManifest(this.appAccess);
-        if (!manifest) {
-            return [];
-        }
         const specification = await this.getSpecification();
-        const annotationData = await readAnnotationFiles(this.appAccess);
-        const changeFiles = await readFlexChanges(this.appAccess.app.changes);
-        // Import project using specification API
-        return specification.importProject({
-            manifest: manifest,
-            annotations: annotationData,
-            flex: Object.values(changeFiles)
+        const app = await specification.readApp({
+            app: this.appAccess
         });
+        return app.files;
+    }
+
+    /**
+     * Retrieves virtual files for the project.
+     *
+     * @returns A promise that resolves to an array of File objects
+     */
+    private async getApplicationModel(): Promise<ApplicationModel | undefined> {
+        const specification = await this.getSpecification();
+        const app = await specification.readApp({
+            app: this.appAccess
+        });
+        return app.applicationModel;
     }
 
     /**

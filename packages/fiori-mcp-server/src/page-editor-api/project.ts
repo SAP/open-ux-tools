@@ -52,50 +52,6 @@ export async function getServiceName(appAccess: ApplicationAccess): Promise<stri
 }
 
 /**
- * Reads annotation files for the application.
- *
- * @param appAccess - The application access object
- * @returns A promise that resolves to an array of FileData objects
- */
-export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise<FileData[]> {
-    const annotationData: FileData[] = [];
-    const mainServiceName = getMainService(appAccess);
-    const mainService = appAccess.app?.services?.[mainServiceName];
-    if (!mainService) {
-        return [];
-    }
-    if (mainService.uri && (appAccess.projectType === 'CAPJava' || appAccess.projectType === 'CAPNodejs')) {
-        const serviceUri = mainService?.uri ?? '';
-        if (serviceUri) {
-            const edmx = await readCapServiceMetadataEdmx(appAccess.root, serviceUri);
-            annotationData.push({
-                fileContent: edmx,
-                dataSourceUri: serviceUri
-            });
-        }
-    } else {
-        if (mainService.local) {
-            const serviceFile = await readFile(mainService.local);
-            annotationData.push({
-                dataSourceUri: mainService.local,
-                fileContent: serviceFile.toString()
-            });
-        }
-        const { annotations = [] } = mainService;
-        for (const annotation of annotations) {
-            if (annotation.local) {
-                const annotationFile = await readFile(annotation.local);
-                annotationData.push({
-                    dataSourceUri: annotation.local,
-                    fileContent: annotationFile.toString()
-                });
-            }
-        }
-    }
-    return annotationData;
-}
-
-/**
  * Retrieves the manifest file for the application.
  *
  * @param appAccess - The application access object
