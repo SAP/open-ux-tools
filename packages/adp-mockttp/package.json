@@ -1,0 +1,46 @@
+{
+    "name": "@sap-ux/adp-mockttp",
+    "version": "0.0.1",
+    "description": "Adaptation project mock server",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "scripts": {
+        "build": "tsc --build",
+        "start": "ts-node ./src/index.ts --start",
+        "stop": "ts-node ./src/index.ts --stop",
+        "start:record": "ts-node ./src/index.ts --start --record",
+        "stop:record": "ts-node ./src/index.ts --stop --record",
+        "clean": "rimraf dist *.tsbuildinfo",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --build --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/adp-mockttp"
+    },
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "adm-zip": "0.5.10",
+        "dotenv": "16.3.1",
+        "lodash": "4.17.21",
+        "mockttp": "4.2.1"
+    },
+    "devDependencies": {
+        "@types/adm-zip": "0.5.5",
+        "@types/lodash": "4.14.202",
+        "rimraf": "5.0.5",
+        "ts-node": "10.9.2",
+        "typescript": "5.9.3"
+    },
+    "engines": {
+        "node": ">=22.0"
+    }
+}

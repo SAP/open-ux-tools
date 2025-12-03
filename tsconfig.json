@@ -40,6 +40,9 @@
       "path": "packages/adp-mock-server"
     },
     {
+      "path": "packages/adp-mockttp"
+    },
+    {
       "path": "packages/adp-tooling"
     },
     {
