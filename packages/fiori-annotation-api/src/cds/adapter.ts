@@ -155,10 +155,18 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this._fileSequence = service.serviceFiles;
     }
     private facade: CdsCompilerFacade | undefined;
+    /**
+     *
+     * @param fileCache
+     */
     private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
+    /**
+     *
+     * @param facade
+     */
     private setFacade(facade: CdsCompilerFacade): void {
         this.facade = facade;
     }
@@ -174,6 +182,9 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return this._compiledService;
     }
 
+    /**
+     *
+     */
     private set compiledService(v: CompiledService) {
         this._compiledService = v;
     }
@@ -325,6 +336,11 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         };
     }
 
+    /**
+     *
+     * @param writers
+     * @param changes
+     */
     private handleSapAnnotations(writers: Map<string, CDSWriter>, changes: AnnotationFileChange[]): void {
         if (changes.length === 0) {
             return;
@@ -369,6 +385,11 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             writer.addChange(createInsertTargetChange('target', target));
         }
     }
+    /**
+     *
+     * @param writers
+     * @param change
+     */
     private getWriterForChange(writers: Map<string, CDSWriter>, change: AnnotationFileChange): CDSWriter {
         const cachedWriter = writers.get(change.uri);
         if (cachedWriter) {
@@ -379,6 +400,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return writer;
     }
 
+    /**
+     *
+     * @param change
+     */
     private createEmptyAnnotationFile(change: AnnotationFileChange): AnnotationFile {
         return {
             type: ANNOTATION_FILE_TYPE,
@@ -388,6 +413,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         };
     }
 
+    /**
+     *
+     * @param change
+     */
     private createWriter(change: AnnotationFileChange): CDSWriter {
         const document = this.documents.get(change.uri);
         if (!document && this.ignoreChangedFileInitialContent) {
@@ -455,6 +484,9 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return printTarget(target);
     }
 
+    /**
+     *
+     */
     private _getCompiledService(): CompiledService {
         const annotationFiles: AnnotationFile[] = [];
         for (const file of this._fileSequence ?? []) {
@@ -486,6 +518,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this._fileSequence = undefined;
     }
 
+    /**
+     *
+     * @param facade
+     */
     private updateFileSequence(facade: CdsCompilerFacade): void {
         this._fileSequence = facade.getFileSequence().map((uri) => ({
             uri: pathToFileURL(uri).toString(),
@@ -494,6 +530,11 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this.service.serviceFiles = [...this._fileSequence];
     }
 
+    /**
+     *
+     * @param uri
+     * @param writer
+     */
     private processMissingReferences(uri: string, writer: CDSWriter): void {
         const missingReferences = this.missingReferences[uri];
         if (missingReferences?.size) {
@@ -511,6 +552,11 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
+    /**
+     *
+     * @param uri
+     * @param references
+     */
     private addMissingReferences(uri: string, references: Set<string>): void {
         const missingReferences = (this.missingReferences[uri] ??= new Set());
         for (const reference of references) {
@@ -686,6 +732,13 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this.addMissingReferences(document.uri, missingReferences);
     };
 
+    /**
+     *
+     * @param writer
+     * @param document
+     * @param change
+     * @param pointer
+     */
     private insertInFlattenedStructure(
         writer: CDSWriter,
         document: Document,
@@ -708,6 +761,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
+    /**
+     *
+     * @param writer
+     * @param change
+     * @param pointer
+     */
     private insertAnnotation(writer: CDSWriter, change: InsertElement, pointer: string): void {
         // insert annotation value
         if (change.element.name === Edm.Annotation) {
@@ -721,6 +780,13 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
+    /**
+     *
+     * @param writer
+     * @param change
+     * @param pointer
+     * @param record
+     */
     private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: Record): void {
         if (change.element.name === Edm.PropertyValue) {
             const index = adaptRecordPropertyIndex(record, change.index);
@@ -939,6 +1005,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     };
 }
 
+/**
+ *
+ * @param annotationFileInternal
+ * @param metadataService
+ * @param vocabularyAPI
+ */
 function getAliasInfo(
     annotationFileInternal: AnnotationFile,
     metadataService: MetadataService,
@@ -952,8 +1024,12 @@ function getAliasInfo(
     return addAllVocabulariesToAliasInformation(aliasInfo, vocabularyAPI.getVocabularies());
 }
 
+/**
+ *
+ * @param element
+ */
 function elementHasFlags(element: AnyNode | undefined): boolean {
-    if (!element || element.type !== 'element') {
+    if (element?.type !== 'element') {
         return false;
     }
     const content = element.content[0];
@@ -963,6 +1039,12 @@ function elementHasFlags(element: AnyNode | undefined): boolean {
     return false;
 }
 
+/**
+ *
+ * @param root
+ * @param pointer
+ * @param lastContent
+ */
 function buildAnnotation(root: AnyNode, pointer: string, lastContent: Element): Element | undefined {
     const segments = pointer.split('/');
 
@@ -991,6 +1073,10 @@ function buildAnnotation(root: AnyNode, pointer: string, lastContent: Element): 
     return result;
 }
 
+/**
+ *
+ * @param node
+ */
 function buildElement(node: Element): Element {
     const result = createElementNode({ name: node.name });
     if (node.name === Edm.Annotation) {
@@ -1005,6 +1091,11 @@ function buildElement(node: Element): Element {
     return result;
 }
 
+/**
+ *
+ * @param record
+ * @param currentIndex
+ */
 function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number | undefined {
     if (currentIndex === undefined) {
         return currentIndex;
@@ -1020,6 +1111,14 @@ function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number
     }
     return adaptedIdx;
 }
+/**
+ *
+ * @param writer
+ * @param document
+ * @param change
+ * @param parentAstNode
+ * @param greatGrandParentAstNode
+ */
 function checkAndDeleteFlattenedStructures(
     writer: CDSWriter,
     document: Document,
@@ -1046,7 +1145,15 @@ function checkAndDeleteFlattenedStructures(
 }
 
 // Splitting the logic into multiple functions would make the code more difficult to follow than it currently is.
-// eslint-disable-next-line sonarjs/cognitive-complexity
+
+/**
+ *
+ * @param targetName
+ * @param term
+ * @param qualifier
+ * @param ast
+ * @param writer
+ */
 function deleteChildFlattenedStructures(
     targetName: string | undefined,
     term: string,
@@ -1084,6 +1191,13 @@ function deleteChildFlattenedStructures(
     }
 }
 
+/**
+ *
+ * @param node
+ * @param prefix
+ * @param term
+ * @param qualifier
+ */
 function isMatchingAnnotation(node: AstNode, prefix: string, term: string | undefined, qualifier?: string): boolean {
     if (node.type !== ANNOTATION_TYPE) {
         return false;

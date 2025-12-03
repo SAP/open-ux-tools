@@ -1,5 +1,5 @@
-import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import ResourceModel from 'sap/ui/model/resource/ResourceModel';
+import type ResourceBundle from 'sap/base/i18n/ResourceBundle';
+import type ResourceModel from 'sap/ui/model/resource/ResourceModel';
 import type UI5Element from 'sap/ui/core/Element';
 import { getTextBundle } from '../../i18n';
 
@@ -21,8 +21,8 @@ export async function validateBindingModel(modifiedControl: UI5Element, value: s
     if (bindingParts.length === 2) {
         const bindingModel = bindingParts[0];
         const resourceKey = bindingParts[1].trim();
-        const resourceModel = (modifiedControl.getModel(bindingModel) as ResourceModel);
-        if(!resourceModel) {
+        const resourceModel = modifiedControl.getModel(bindingModel) as ResourceModel;
+        if (!resourceModel) {
             throw new SyntaxError(textBundle.getText('INVALID_BINDING_MODEL'));
         }
         const resourceBundle = resourceModel.getResourceBundle() as ResourceBundle;

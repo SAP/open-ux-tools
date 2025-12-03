@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
 import os from 'node:os';
 import { join } from 'node:path';
@@ -53,7 +52,7 @@ export async function getQuestions(
     let targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
-            : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
+            : (promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd());
 
     const shouldValidateFioriAppFolder = promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder;
     if (shouldValidateFioriAppFolder) {

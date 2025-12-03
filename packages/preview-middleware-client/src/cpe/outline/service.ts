@@ -60,6 +60,10 @@ export class OutlineService extends EventTarget {
         outline.attachEvent('update', syncOutline);
     }
 
+    /**
+     *
+     * @param handler
+     */
     public onOutlineChange(handler: (event: CustomEvent<OutlineChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(OUTLINE_CHANGE_EVENT, handler as EventListener);
     }

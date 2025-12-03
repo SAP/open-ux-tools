@@ -1,4 +1,3 @@
-
 import { extendWithOptions } from '@sap-ux/inquirer-common';
 import { promptNames, type UI5LibraryReferencePromptOptions } from '../../../src/types';
 

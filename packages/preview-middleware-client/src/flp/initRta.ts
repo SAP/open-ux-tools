@@ -1,4 +1,4 @@
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 
 import merge from 'sap/base/util/merge';
 
@@ -10,7 +10,7 @@ import Utils from 'sap/ui/fl/Utils';
 import FeaturesAPI from 'sap/ui/fl/write/api/FeaturesAPI';
 
 import type { RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import RuntimeAuthoring, { Manifest, type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoring,  { type Manifest, type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 const defaultOptions = {
     flexSettings: {

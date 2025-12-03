@@ -30,12 +30,12 @@ describe('Parameter processing Tests', () => {
     test('getValue returns correct value', () => {
         let path = 'path/to/value';
         let result = getValue(mockParams[0], path, 'test', 0);
-        let expected = (mockParams[0] as any).path.to.value; // eslint-disable-line @typescript-eslint/no-explicit-any
+        let expected = (mockParams[0] as any).path.to.value;
         expect(result).toEqual(expected);
 
         path = 'path/to';
         result = getValue(mockParams[0], path, 'test', 0);
-        expected = (mockParams[0] as any).path.to; // eslint-disable-line @typescript-eslint/no-explicit-any
+        expected = (mockParams[0] as any).path.to;
         expect(result).toEqual(expected);
     });
 

@@ -3,6 +3,7 @@ import { join, relative } from 'node:path';
 import { getArchive } from '../../../src/cli/archive';
 import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
 import AdmZip from 'adm-zip';
 import { existsSync } from 'node:fs';

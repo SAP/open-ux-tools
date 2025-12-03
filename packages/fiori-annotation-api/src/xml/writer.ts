@@ -55,7 +55,11 @@ export class XMLWriter {
      * @param comments - Array of all the comments in the document.
      * @param textDocument - TextDocument instance.
      */
-    constructor(private document: XMLDocument, private comments: Comment[], private textDocument: TextDocument) {}
+    constructor(
+        private readonly document: XMLDocument,
+        private readonly comments: Comment[],
+        private readonly textDocument: TextDocument
+    ) {}
     /**
      *  Adds a new change to the change stack.
      *
@@ -81,6 +85,10 @@ export class XMLWriter {
         return edits;
     }
 
+    /**
+     *
+     * @param element
+     */
     private getContent(element: XMLElement): ElementContent[] {
         let content = this.elementContentCache.get(element);
         if (!content) {
@@ -90,6 +98,12 @@ export class XMLWriter {
         return content;
     }
 
+    /**
+     *
+     * @param pointer
+     * @param byType
+     * @param changes
+     */
     private getTextEditsForPointer(
         pointer: string,
         byType: Map<XMLDocumentChange['type'], XMLDocumentChange[]>,
@@ -140,6 +154,19 @@ export class XMLWriter {
         return edits;
     }
 
+    /**
+     *
+     * @param elementChanges
+     * @param elementChanges.replacements
+     * @param elementChanges.contentReplacements
+     * @param elementChanges.elementDeletions
+     * @param elementChanges.attributeInserts
+     * @param elementChanges.moveInCollection
+     * @param element
+     * @param pointer
+     * @param childIndentLevel
+     * @param changes
+     */
     private handleXmlElementChanges(
         elementChanges: {
             replacements: ReplaceElement[];
@@ -180,6 +207,11 @@ export class XMLWriter {
         return edits;
     }
 
+    /**
+     *
+     * @param moveChange
+     * @param changes
+     */
     private prepareXmlElementMoveChange(
         moveChange: MoveCollectionValue,
         changes: XMLDocumentChange[]
@@ -215,6 +247,14 @@ export class XMLWriter {
     }
 }
 
+/**
+ *
+ * @param attributeChanges
+ * @param attributeChanges.attributeDeletions
+ * @param attributeChanges.attributeNameUpdates
+ * @param attributeChanges.attributeValueUpdates
+ * @param element
+ */
 function handleXmlAttributeChanges(
     attributeChanges: {
         attributeDeletions: DeleteAttribute[];
@@ -253,6 +293,11 @@ function handleXmlAttributeChanges(
     return edits;
 }
 
+/**
+ *
+ * @param element
+ * @param attributeInserts
+ */
 function handleXmlElementAttributeInserts(element: XMLElement, attributeInserts: InsertAttribute[]): TextEdit[] {
     const openTagRange = transformRange(element.syntax.openBody);
     if (!openTagRange) {
@@ -287,6 +332,10 @@ function handleXmlElementAttributeInserts(element: XMLElement, attributeInserts:
     return edits;
 }
 
+/**
+ *
+ * @param text
+ */
 function getTextFragmentOffset(text: string): number {
     const lines = text.split('\n');
     const linesWithTextIndices = lines.map((line, idx) => (line.length > 0 ? idx : -1));
@@ -298,6 +347,11 @@ function getTextFragmentOffset(text: string): number {
     return indentLineText.length - indentLineText.trimStart().length;
 }
 
+/**
+ *
+ * @param text
+ * @param requiredIndent
+ */
 function adjustFragmentIndentation(text: string, requiredIndent: number): string {
     const requiredOffset = requiredIndent * 4;
     const actual = getTextFragmentOffset(text);
@@ -321,6 +375,13 @@ function adjustFragmentIndentation(text: string, requiredIndent: number): string
     return lines.join('\n');
 }
 
+/**
+ *
+ * @param element
+ * @param childIndentLevel
+ * @param text
+ * @param insertPosition
+ */
 function handleXmlElementMoveChange(
     element: XMLElement,
     childIndentLevel: number,
@@ -349,6 +410,12 @@ function handleXmlElementMoveChange(
     return edits;
 }
 
+/**
+ *
+ * @param element
+ * @param contentReplacements
+ * @param childIndentLevel
+ */
 function handleXmlElementContentReplacements(
     element: XMLElement,
     contentReplacements: ReplaceElementContent[],
@@ -378,6 +445,12 @@ function handleXmlElementContentReplacements(
     return edits;
 }
 
+/**
+ *
+ * @param element
+ * @param replacements
+ * @param childIndentLevel
+ */
 function handleXmlElementReplacements(
     element: XMLElement,
     replacements: ReplaceElement[],
@@ -397,6 +470,13 @@ function handleXmlElementReplacements(
     return edits;
 }
 
+/**
+ *
+ * @param parent
+ * @param pointer
+ * @param content
+ * @param element
+ */
 function handleXmlElementDeletions(
     parent: XMLDocument | XMLElement,
     pointer: string,
@@ -433,6 +513,11 @@ function handleXmlElementDeletions(
     return edits;
 }
 
+/**
+ *
+ * @param elementNameUpdates
+ * @param element
+ */
 function convertUpdateElementNameToTextEdits(
     elementNameUpdates: UpdateElementName[],
     element: XMLAstNode | undefined
@@ -457,6 +542,10 @@ function convertUpdateElementNameToTextEdits(
     return edits;
 }
 
+/**
+ *
+ * @param changes
+ */
 function getBatches(changes: XMLDocumentChange[]): {
     [pointer: string]: Map<XMLDocumentChange['type'], XMLDocumentChange[]>;
 } {
@@ -477,6 +566,12 @@ function getBatches(changes: XMLDocumentChange[]): {
     return batches;
 }
 
+/**
+ *
+ * @param element
+ * @param openTagRange
+ * @param index
+ */
 function getAttributeInsertPosition(
     element: XMLElement,
     openTagRange: Range,
@@ -500,6 +595,13 @@ function getAttributeInsertPosition(
     return Position.create(range.start.line, range.start.character - 1);
 }
 
+/**
+ *
+ * @param comments
+ * @param element
+ * @param changes
+ * @param childIndentLevel
+ */
 function convertInsertElementToTextEdits(
     comments: Comment[],
     element: XMLElement | undefined,
@@ -545,6 +647,14 @@ function convertInsertElementToTextEdits(
     }
 }
 
+/**
+ *
+ * @param comments
+ * @param element
+ * @param changes
+ * @param childIndentLevel
+ * @param namespaceMap
+ */
 function insertIntoElementWithContent(
     comments: Comment[],
     element: XMLElement,
@@ -590,6 +700,10 @@ function insertIntoElementWithContent(
     return edits;
 }
 
+/**
+ *
+ * @param changes
+ */
 function indexInserts(changes: InsertElement[]): [(number | undefined)[], Map<number | undefined, InsertElement[]>] {
     const changesByIndex = new Map<number | undefined, InsertElement[]>();
     const indices: (number | undefined)[] = [];
@@ -605,6 +719,12 @@ function indexInserts(changes: InsertElement[]): [(number | undefined)[], Map<nu
     return [indices, changesByIndex];
 }
 
+/**
+ *
+ * @param inserts
+ * @param childIndentLevel
+ * @param namespaceMap
+ */
 function insertElementToText(
     inserts: InsertElement[],
     childIndentLevel: number,
@@ -620,6 +740,12 @@ function insertElementToText(
         .join('\n');
 }
 
+/**
+ *
+ * @param change
+ * @param childIndentLevel
+ * @param namespaceMap
+ */
 function replaceElementToText(
     change: ReplaceElement,
     childIndentLevel: number,
@@ -631,6 +757,12 @@ function replaceElementToText(
     }).trim();
 }
 
+/**
+ *
+ * @param change
+ * @param childIndentLevel
+ * @param namespaceMap
+ */
 function replaceElementContentToText(
     change: ReplaceElementContent,
     childIndentLevel: number,
@@ -642,6 +774,12 @@ function replaceElementContentToText(
     }).trim();
 }
 
+/**
+ *
+ * @param comments
+ * @param element
+ * @param index
+ */
 function findInsertPosition(
     comments: Comment[],
     element: XMLElement,
@@ -717,10 +855,18 @@ function findComment(comments: Comment[], range: Range): Comment | undefined {
     return undefined;
 }
 
+/**
+ *
+ * @param position
+ */
 function sourcePositionToRange(position: SourcePosition): Range {
     return Range.create(position.startLine - 1, position.startColumn - 1, position.endLine - 1, position.endColumn);
 }
 
+/**
+ *
+ * @param element
+ */
 function getIndentFromElement(element: XMLAstNode | undefined): number {
     if (element?.type === 'XMLElement') {
         const openTagRange = transformRange(element.syntax.openBody);
@@ -732,6 +878,11 @@ function getIndentFromElement(element: XMLAstNode | undefined): number {
     return 0;
 }
 
+/**
+ *
+ * @param document
+ * @param pointers
+ */
 function createElementRanges(
     document: XMLDocument,
     pointers: string[]
@@ -785,6 +936,11 @@ interface ElementWithComments {
 
 type ElementContent = ElementWithComments | Comment;
 
+/**
+ *
+ * @param element
+ * @param comments
+ */
 function getElementContent(element: XMLElement, comments: Comment[]): ElementContent[] {
     const range = transformRange(element.position);
     if (!range) {
@@ -830,6 +986,12 @@ function getElementContent(element: XMLElement, comments: Comment[]): ElementCon
     return content;
 }
 
+/**
+ *
+ * @param range
+ * @param comment
+ * @param element
+ */
 function isCommentInContent(range: Range, comment: Comment, element: XMLElement): boolean {
     return (
         rangeContained(range, comment.range) &&
@@ -843,6 +1005,11 @@ function isCommentInContent(range: Range, comment: Comment, element: XMLElement)
     );
 }
 
+/**
+ *
+ * @param a
+ * @param b
+ */
 function compareRange<T extends { range?: Range; syntax?: XMLElement['syntax'] }>(a: T, b: T): number {
     const aRange = a.range ?? transformRange(a.syntax?.closeBody ?? a.syntax?.openBody);
     const bRange = b.range ?? transformRange(b.syntax?.closeBody ?? b.syntax?.openBody);
@@ -860,6 +1027,12 @@ function compareRange<T extends { range?: Range; syntax?: XMLElement['syntax'] }
     return 0;
 }
 
+/**
+ *
+ * @param start
+ * @param end
+ * @param content
+ */
 function findContentIndices(
     start: number,
     end: number,
@@ -896,6 +1069,13 @@ function findContentIndices(
     };
 }
 
+/**
+ *
+ * @param content
+ * @param parent
+ * @param start
+ * @param end
+ */
 function getRangeForMove(content: ElementContent[], parent: XMLElement, start: number, end: number): Range | undefined {
     const { previousContentIndex, startContentIndex, endContentIndex } = findContentIndices(start, end, content);
     const endElement = content[endContentIndex];
@@ -915,6 +1095,13 @@ function getRangeForMove(content: ElementContent[], parent: XMLElement, start: n
     return Range.create(startPosition, endPosition);
 }
 
+/**
+ *
+ * @param content
+ * @param parent
+ * @param previous
+ * @param index
+ */
 function getStartAnchor(
     content: ElementContent[],
     parent: XMLElement,
@@ -940,11 +1127,21 @@ function getStartAnchor(
     return Range.create(startPosition, copyPosition(item.range.end));
 }
 
+/**
+ *
+ * @param a
+ * @param b
+ */
 function updatePosition(a: Position, b: Position): void {
     a.line = b.line;
     a.character = b.character;
 }
 
+/**
+ *
+ * @param comments
+ * @param range
+ */
 function adjustRangeByComments(comments: Comment[], range: Range | undefined): void {
     if (!range) {
         return;
@@ -965,6 +1162,12 @@ function adjustRangeByComments(comments: Comment[], range: Range | undefined): v
     }
 }
 
+/**
+ *
+ * @param index
+ * @param element
+ * @param comments
+ */
 function findInsertPositionForMove(
     index: number | undefined,
     element: XMLElement,
@@ -993,6 +1196,10 @@ function findInsertPositionForMove(
     return undefined;
 }
 
+/**
+ *
+ * @param parent
+ */
 function getNamespaceMap(parent: XMLElement): { [alias: string]: string } {
     const map: { [alias: string]: string } = {};
     for (const alias of Object.keys(parent.namespaces)) {
@@ -1010,6 +1217,10 @@ function getNamespaceMap(parent: XMLElement): { [alias: string]: string } {
     return map;
 }
 
+/**
+ *
+ * @param element
+ */
 function getNamespaceMapForNewRootNode(element: Element): { [alias: string]: string } {
     const map: { [alias: string]: string } = {};
     for (const attributeName of Object.keys(element.attributes)) {
@@ -1033,6 +1244,11 @@ function getNamespaceMapForNewRootNode(element: Element): { [alias: string]: str
     return map;
 }
 
+/**
+ *
+ * @param changes
+ * @param document
+ */
 function preprocessChanges(changes: XMLDocumentChange[], document: XMLDocument): XMLDocumentChange[] {
     let result = removeDuplicates(changes);
     result = removeOverlappingDeletes(result);
@@ -1040,6 +1256,11 @@ function preprocessChanges(changes: XMLDocumentChange[], document: XMLDocument):
     return result;
 }
 
+/**
+ *
+ * @param changes
+ * @param document
+ */
 function combineInsertsWithDeletions(changes: XMLDocumentChange[], document: XMLDocument): XMLDocumentChange[] {
     const result: XMLDocumentChange[] = [];
     const deletions = new Set<number>();
@@ -1080,6 +1301,10 @@ function combineInsertsWithDeletions(changes: XMLDocumentChange[], document: XML
     return result;
 }
 
+/**
+ *
+ * @param changes
+ */
 function removeDuplicates(changes: XMLDocumentChange[]): XMLDocumentChange[] {
     const existingDeletions: string[] = [];
     const result: XMLDocumentChange[] = [];
@@ -1096,6 +1321,10 @@ function removeDuplicates(changes: XMLDocumentChange[]): XMLDocumentChange[] {
     return result;
 }
 
+/**
+ *
+ * @param changes
+ */
 function removeOverlappingDeletes(changes: XMLDocumentChange[]): XMLDocumentChange[] {
     const result: XMLDocumentChange[] = [];
     const deletions = new Set<number>();

@@ -1,5 +1,5 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { dirname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { sample } from './sample/metadata';
@@ -10,7 +10,6 @@ import { TemplateType, type FreestyleApp } from '../src';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
-import { ServiceType } from '@sap-ux/odata-service-writer';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';
 
 export const testOutputDir = join(__dirname, '/test-output');
