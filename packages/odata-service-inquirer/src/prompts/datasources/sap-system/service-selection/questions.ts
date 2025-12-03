@@ -2,7 +2,8 @@
  * Service selection prompting for SAP systems. Used by new and existing system prompts.
  *
  */
-import { AbapServiceProvider, CatalogService, ODataVersion } from '@sap-ux/axios-extension';
+import type { CatalogService } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
@@ -35,18 +36,17 @@ import {
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
 import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
-import { PromptsType } from '../../../../../../fe-fpm-writer/src';
 
 const cliServicePromptName = 'cliServiceSelection';
 
 /**
  * Get the service selection prompt for an Abap system connection (on-prem or on-btp). The service selection prompt is used to select a service from the system catalog.
  *
- * @param connectValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
- * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
+ * @param connectValidator - A reference to the active connection validator, used to validate the service selection and retrieve service details.
+ * @param promptNamespace - The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
- * @param promptOptions Options for the service selection prompt see {@link OdataServicePromptOptions}
- * @param includeValueHelpDownloadPrompt If true the value help download confirm prompt will be included
+ * @param promptOptions - Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @param showValueHelpDownloadPrompt - If true the value help download confirm prompt will be included
  * @returns the service selection prompt
  */
 export function getSystemServiceQuestion(
@@ -64,10 +64,10 @@ export function getSystemServiceQuestion(
     let hasBackendAnnotations: boolean | undefined;
     // Wrap to allow pass by ref to nested prompts
     const convertedMetadataRef: {
-        convertedMetadata: ConvertedMetadata | undefined
+        convertedMetadata: ConvertedMetadata | undefined;
     } = {
         convertedMetadata: undefined
-    }
+    };
 
     const requiredOdataVersion = promptOptions?.requiredOdataVersion;
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
@@ -197,11 +197,10 @@ export function getSystemServiceQuestion(
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
                 if (selectedService && connectValidator.validatedUrl) {
-                    const {
-                        validationResult,
-                        hasAnnotations,
-                        convertedMetadata
-                    } = await validateService(selectedService, connectValidator);
+                    const { validationResult, hasAnnotations, convertedMetadata } = await validateService(
+                        selectedService,
+                        connectValidator
+                    );
                     if (typeof validationResult === 'string') {
                         LoggerHelper.logger.error(validationResult);
                         throw new Error(validationResult);
@@ -218,24 +217,18 @@ export function getSystemServiceQuestion(
             name: `${promptNamespace}:${cliServicePromptName}`
         } as Question);
     }
- 
+
     if (showValueHelpDownloadPrompt) {
         /**
          * Only show the value help download prompt when a service has been validated (convertedMetadata is set), is odata version v4 and is an abap connection
          */
         questions.push(
             ...withCondition(
-                [
-                    getValueHelpDownloadPrompt(
-                        connectValidator,
-                        promptNamespace,
-                        convertedMetadataRef
-                    )
-                ],
-                (answers : { [serviceSelectionPromptName]?: ServiceAnswer  }) =>
+                [getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef)],
+                (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
                     !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
                     !!convertedMetadataRef.convertedMetadata &&
-                    ((answers?.[serviceSelectionPromptName]))?.serviceODataVersion === ODataVersion.v4
+                    answers?.[serviceSelectionPromptName]?.serviceODataVersion === ODataVersion.v4
             )
         );
     }

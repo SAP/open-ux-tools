@@ -76,6 +76,7 @@ export interface OdataService {
     model?: string;
     metadata?: string;
     externalServices?: ExternalService[];
+    valueListReferences?: Record<string, { data?: string; path: string }[]>;
     /**
      * Annotations can either be EDMX annotations or CDS annotations.
      */

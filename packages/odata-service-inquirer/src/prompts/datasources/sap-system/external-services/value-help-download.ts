@@ -1,15 +1,52 @@
-import { ConfirmQuestion } from '@sap-ux/inquirer-common';
-import { OdataServiceAnswers, promptNames, ValueHelpDownloadPromptOptions } from '../../../../types';
-import { ConnectionValidator } from '../../../connectionValidator';
-import { AbapServiceProvider, ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
-import { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { getExternalServiceReferences, OdataVersion } from '@sap-ux/odata-service-writer';
-import { ServiceAnswer } from '../service-selection/types';
-import { down } from 'inquirer/lib/utils/readline';
+import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
+import { promptNames } from '../../../../types';
+import type { ConnectionValidator } from '../../../connectionValidator';
+import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
+import { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
+import type { ServiceAnswer } from '../service-selection/types';
 import LoggerHelper from '../../../logger-helper';
 import { t } from '../../../../i18n';
 import { PromptState } from '../../../../utils';
+import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { sendTelemetryEvent } from '@sap-ux/inquirer-common';
 
+// Telemetry event names
+const telemEventValueHelpDownloadPrompted = 'VALUE_HELP_DOWNLOAD_PROMPTED';
+const telemEventValueHelpDownloadSuccess = 'VALUE_HELP_DOWNLOAD_SUCCESS';
+const telemEventValueHelpDownloadFailed = 'VALUE_HELP_DOWNLOAD_FAILED';
+
+/**
+ * Create telemetry data for value help download events.
+ *
+ * @param params - telemetry parameters
+ * @param params.valueHelpCount - count of value help items
+ * @param params.userChoseToDownload - whether user chose to download
+ * @param params.fetchedCount - count of fetched items
+ * @param params.downloadTimeMs - download time in milliseconds
+ * @param params.error - error message if download failed
+ * @returns telemetry data object
+ */
+function createValueHelpTelemetryData(params: {
+    valueHelpCount: number;
+    userChoseToDownload?: boolean;
+    fetchedCount?: number;
+    downloadTimeMs?: number;
+    error?: string;
+}): Record<string, any> {
+    return TelemetryHelper.createTelemetryData(params) ?? {};
+}
+
+/**
+ * Get the value help download confirmation prompt.
+ *
+ * @param connectionValidator - connection validator instance
+ * @param promptNamespace - prompt namespace
+ * @param convertedMetadataRef - converted metadata reference
+ * @param convertedMetadataRef.convertedMetadata - converted metadata
+ * @returns value help download prompt
+ */
 export function getValueHelpDownloadPrompt(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
@@ -25,8 +62,9 @@ export function getValueHelpDownloadPrompt(
     let externalServiceMetadata: ExternalService[];
 
     const question: ConfirmQuestion = {
-        when: (answers: { [servicePromptName]?: ServiceAnswer } | undefined) => {
-            const servicePath = answers?.[servicePromptName]?.servicePath;
+        when: (answers: Record<string, any> | undefined) => {
+            const service = answers?.[servicePromptName] as ServiceAnswer | undefined;
+            const servicePath = service?.servicePath;
             if (servicePath && convertedMetadataRef?.convertedMetadata) {
                 externalServiceRefs = getExternalServiceReferences(
                     servicePath,
@@ -41,16 +79,56 @@ export function getValueHelpDownloadPrompt(
         message: t('prompts.valueHelpDownload.message'),
         validate: async (downloadMetadata: boolean) => {
             delete PromptState.odataService.valueListMetadata;
+
+            // Send telemetry when prompt is answered
+            sendTelemetryEvent(
+                telemEventValueHelpDownloadPrompted,
+                createValueHelpTelemetryData({
+                    valueHelpCount: externalServiceRefs.length,
+                    userChoseToDownload: downloadMetadata
+                })
+            );
+
             if (downloadMetadata && connectionValidator.serviceProvider instanceof AbapServiceProvider) {
-                externalServiceMetadata = await (
-                    connectionValidator.serviceProvider as AbapServiceProvider
-                ).fetchExternalServices(externalServiceRefs);
-                if (externalServiceMetadata.length === 0) {
-                    LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
-                } else {
-                    PromptState.odataService.valueListMetadata = externalServiceMetadata;
+                const startTime = Date.now();
+                try {
+                    externalServiceMetadata = await (
+                        connectionValidator.serviceProvider as AbapServiceProvider
+                    ).fetchExternalServices(externalServiceRefs);
+                    const downloadTimeMs = Date.now() - startTime;
+
+                    const hasExternalServiceMetadata = externalServiceMetadata.length > 0;
+
+                    if (!hasExternalServiceMetadata) {
+                        LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
+                    } else {
+                        PromptState.odataService.valueListMetadata = externalServiceMetadata;
+                    }
+
+                    sendTelemetryEvent(
+                        telemEventValueHelpDownloadSuccess,
+                        createValueHelpTelemetryData({
+                            valueHelpCount: externalServiceRefs.length,
+                            userChoseToDownload: true,
+                            fetchedCount: externalServiceMetadata.length,
+                            downloadTimeMs
+                        })
+                    );
+                } catch (error) {
+                    const downloadTimeMs = Date.now() - startTime;
+                    LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
+                    sendTelemetryEvent(
+                        telemEventValueHelpDownloadFailed,
+                        createValueHelpTelemetryData({
+                            valueHelpCount: externalServiceRefs.length,
+                            userChoseToDownload: true,
+                            downloadTimeMs,
+                            error: error instanceof Error ? error.message : 'Unknown error'
+                        })
+                    );
                 }
             }
+
             return true;
         }
     };

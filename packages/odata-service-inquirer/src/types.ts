@@ -428,4 +428,4 @@ export type EntityPromptOptions = {
  * Support hiding of the value help download prompt, default is true - hidden.
  * Note that this prompt is dependant on service metdata being provided, usually by the service selection prompt.
  */
-export type ValueHelpDownloadPromptOptions =  Pick<CommonPromptOptions, 'hide'>;
+export type ValueHelpDownloadPromptOptions = Pick<CommonPromptOptions, 'hide'>;

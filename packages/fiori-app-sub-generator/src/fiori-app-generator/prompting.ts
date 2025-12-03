@@ -197,6 +197,7 @@ export async function promptOdataServiceAnswers(
         serviceId: answers.serviceId,
         edmx: answers.metadata,
         annotations: answers.annotations,
+        valueListReferences: answers.valueListMetadata,
         version: answers.odataVersion,
         capService: answers.capService,
         source: answers.datasourceType,
@@ -440,7 +441,8 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             ...options.promptOptions?.systemSelection
         },
         [odataServiceInquirerPromptNames.valueHelpDownload]: {
-            hide: false
+            hide: false, // Enabled by default for Fiori generator
+            ...options.promptOptions?.valueHelpDownload
         }
     };
 }
