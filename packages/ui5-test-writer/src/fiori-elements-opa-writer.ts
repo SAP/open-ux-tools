@@ -358,7 +358,6 @@ export async function generateOPAFiles(
         tableColumns = transformTableColumns(columnAggregations);
     } catch (error) {
         // no columns
-        debugger;
     }
 
     const journeyParams = {
