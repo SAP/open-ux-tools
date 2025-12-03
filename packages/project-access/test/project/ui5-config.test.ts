@@ -79,7 +79,7 @@ describe('Test getWebappPath()', () => {
         const memFs = create(createStorage());
         memFs.write(
             join(samplesRoot, 'custom-webapp-path/ui5.yaml'),
-            'resources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
         );
         memFs.writeJSON(join(samplesRoot, 'custom-webapp-path/package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path'), memFs)).toEqual(
@@ -91,7 +91,7 @@ describe('Test getWebappPath()', () => {
         const memFs = create(createStorage());
         memFs.write(
             join(samplesRoot, 'app/app1/ui5.yaml'),
-            'resources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
         );
         memFs.writeJSON(join(samplesRoot, 'package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
@@ -114,6 +114,7 @@ describe('Test readUi5Yaml()', () => {
                         },
                       },
                     },
+                    "type": "application",
                   },
                 ],
               },
