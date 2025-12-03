@@ -291,8 +291,8 @@ export async function addApp(
     const appName = getAppName(manifest, app.intent);
     templateConfig.ui5.resources[id] = app.target;
     templateConfig.apps[appName] = {
-        title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, logger)) ?? id,
-        description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, logger)) ?? '',
+        title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, manifest['sap.app']?.id, logger)) ?? id,
+        description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, manifest['sap.app']?.id, logger)) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
         url: app.target
@@ -322,12 +322,14 @@ export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string
  *
  * @param projectRoot absolute path to the project root
  * @param propertyValue value of the property
+ * @param appId application id
  * @param logger logger instance
  * @returns i18n text of the property
  */
 async function getI18nTextFromProperty(
     projectRoot: string | undefined,
     propertyValue: string | undefined,
+    appId: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
     const propertyI18nKey = extractDoubleCurlyBracketsKey(propertyValue ?? '');
@@ -336,8 +338,9 @@ async function getI18nTextFromProperty(
     }
     const projectAccess = await createProjectAccess(projectRoot);
     const applicationIds = projectAccess.getApplicationIds();
+    const applicationId = applicationIds.find(id => id === appId) ?? applicationIds[0];
     try {
-        const bundle = (await projectAccess.getApplication(applicationIds[0]).getI18nBundles())['sap.app'];
+        const bundle = (await projectAccess.getApplication(applicationId).getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {
         logger.warn('Failed to load i18n properties bundle');

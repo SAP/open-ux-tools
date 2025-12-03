@@ -158,7 +158,7 @@ describe('FlpSandbox', () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
                 return Promise.resolve({
                     getApplicationIds: () => {
-                        return Promise.resolve(['my.id']);
+                        return ['my.id'];
                     },
                     getApplication: () => {
                         return {
