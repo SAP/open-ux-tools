@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.7
+
+### Patch Changes
+
+-   3dd6b06: version bump for mcp sdk and specification
+
 ## 0.4.6
 
 ### Patch Changes
