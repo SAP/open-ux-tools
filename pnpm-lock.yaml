@@ -2333,6 +2333,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.6
+        version: 0.9.6
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -11288,6 +11291,12 @@ packages:
     resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
     dependencies:
       xml-js: 1.6.11
+
+  /@sap-ux/edmx-parser@0.9.6:
+    resolution: {integrity: sha512-6dj+nTRNcnA37vqSBJm+xCdJC1u3Dg+4KWTPxveqI/c+1NvvvVlZ18SbZaHEKBFDX2HJU2345IiszrfYU1P3ng==}
+    dependencies:
+      xml-js: 1.6.11
+    dev: true
 
   /@sap-ux/fe-fpm-writer@0.39.18(typescript@5.9.3):
     resolution: {integrity: sha512-S/jfDnvQud8K4QHXnsMP6/e3CB+4Wu00tIaPPkwga1fdJ0cGTcZBsE2yI76KJyZ4sHHdLXRnHvRqBYo/7ExQ8A==}
