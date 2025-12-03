@@ -1,6 +1,6 @@
 export { TextFile } from './text-file';
 export { CDSService, LocalEDMXService, Service, CompiledService } from './service';
-export { AnnotationServiceAdapter, AnnotationServiceConstructor } from './adapter';
+export { AnnotationServiceAdapter, AnnotationServiceConstructor, ServiceArtifacts } from './adapter';
 export {
     DELETE_ATTRIBUTE,
     DELETE_ELEMENT,

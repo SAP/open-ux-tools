@@ -65,6 +65,7 @@ import { logger } from '../logger';
 import {
     type CompiledService,
     type TextFile,
+    type ServiceArtifacts,
     type AnnotationServiceAdapter,
     type AnnotationFileChange,
     type CDSService,
@@ -246,6 +247,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this.metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
         this.metadataService.import(metadataElements, 'DummyMetadataFileUri');
         return new Map();
+    }
+
+    public getArtifacts(): ServiceArtifacts {
+        throw new Error('Method not implemented.');
     }
 
     /**

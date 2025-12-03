@@ -1,4 +1,4 @@
-import type { CompilerMessage, Target, WorkspaceEdit } from '@sap-ux/odata-annotation-core-types';
+import type { AnnotationFile, CompilerMessage, Target, WorkspaceEdit } from '@sap-ux/odata-annotation-core-types';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
 import type { AnnotationFileChange } from './internal-change';
@@ -27,6 +27,8 @@ export interface AnnotationServiceAdapter {
         projectAppName?: string,
         projectApps?: string[]
     ): Promise<ValidationResultType> | ValidationResultType;
+
+    getArtifacts(fileCache: Map<string, string>, projectAppName?: string, projectApps?: string[]): ServiceArtifacts;
     /**
      *
      */
@@ -49,4 +51,10 @@ export interface AnnotationServiceAdapter {
 
 export interface AnnotationServiceConstructor<T extends Service> {
     new (service: T): AnnotationServiceAdapter;
+}
+
+export interface ServiceArtifacts {
+    metadataService: MetadataService;
+    annotationFiles: Record<string, AnnotationFile>;
+    fileSequence: string[];
 }

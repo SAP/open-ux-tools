@@ -52,7 +52,8 @@ import {
     REPLACE_ATTRIBUTE,
     DELETE_ATTRIBUTE,
     INSERT_TARGET,
-    REPLACE_TEXT
+    REPLACE_TEXT,
+    ServiceArtifacts
 } from '../types';
 import { ApiError, ApiErrorCode } from '../error';
 
@@ -148,6 +149,18 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             isCds: false
         });
         this.metadataService.import(this.metadata, this.service.metadataFile.uri);
+    }
+
+    public getArtifacts(): ServiceArtifacts {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return {
+            metadataService: this.metadataService,
+            annotationFiles,
+            fileSequence: this.getAllFiles().map((file) => file.uri)
+        };
     }
 
     /**
