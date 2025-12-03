@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "devDependencies": {
-        "@ui5/cli": "2.14.1",
+        "@ui5/cli": "^4.0.0",
         "ui5-tooling-transpile": "^0.2.0",
         "@sap-ux/abap-deploy-task": "../../"
     },
@@ -13,11 +13,5 @@
         "deploy": "ui5 build --config ui5-deploy.yaml",
         "deploy:cli": "ui5 build && node ../../bin/deploy --config ui5-deploy.yaml",
         "undeploy": "node ../../bin/undeploy --config ui5-deploy.yaml"
-    },
-    "ui5": {
-        "dependencies": [
-            "ui5-tooling-transpile",
-            "@sap-ux/abap-deploy-task"
-        ]
     }
 }
