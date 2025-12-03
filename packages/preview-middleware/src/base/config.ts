@@ -291,8 +291,16 @@ export async function addApp(
     const appName = getAppName(manifest, app.intent);
     templateConfig.ui5.resources[id] = app.target;
     templateConfig.apps[appName] = {
-        title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, manifest['sap.app']?.id, logger)) ?? id,
-        description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, manifest['sap.app']?.id, logger)) ?? '',
+        title:
+            (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, manifest['sap.app']?.id, logger)) ??
+            id,
+        description:
+            (await getI18nTextFromProperty(
+                app.local,
+                manifest['sap.app']?.description,
+                manifest['sap.app']?.id,
+                logger
+            )) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
         url: app.target
@@ -338,7 +346,7 @@ async function getI18nTextFromProperty(
     }
     const projectAccess = await createProjectAccess(projectRoot);
     const applicationIds = projectAccess.getApplicationIds();
-    const applicationId = applicationIds.find(id => id === appId) ?? applicationIds[0];
+    const applicationId = applicationIds.find((id) => id === appId) ?? applicationIds[0];
     try {
         const bundle = (await projectAccess.getApplication(applicationId).getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
