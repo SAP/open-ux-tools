@@ -652,27 +652,23 @@ describe('Adaptation Project Generator Integration Test', () => {
             const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
             const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
             const ui5Yaml = join(projectFolder, 'ui5.yaml');
-            const ui5BuildYaml = join(projectFolder, 'ui5-build.yaml');
             const mtaYaml = join(cfTestOutputDir, 'mta.yaml');
             const packageJson = join(projectFolder, 'package.json');
 
             expect(fs.existsSync(manifestPath)).toBe(true);
             expect(fs.existsSync(i18nPath)).toBe(true);
             expect(fs.existsSync(ui5Yaml)).toBe(true);
-            expect(fs.existsSync(ui5BuildYaml)).toBe(true);
             expect(fs.existsSync(mtaYaml)).toBe(true);
             expect(fs.existsSync(packageJson)).toBe(true);
 
             const manifestContent = fs.readFileSync(manifestPath, 'utf8');
             const i18nContent = fs.readFileSync(i18nPath, 'utf8');
             const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
-            const ui5BuildContent = fs.readFileSync(ui5BuildYaml, 'utf8');
             const mtaContent = fs.readFileSync(mtaYaml, 'utf8');
             const packageJsonContent = fs.readFileSync(packageJson, 'utf8');
             expect(manifestContent).toMatchSnapshot();
             expect(i18nContent).toMatchSnapshot();
             expect(ui5Content).toMatchSnapshot();
-            expect(ui5BuildContent).toMatchSnapshot();
             expect(mtaContent).toMatchSnapshot();
             expect(packageJsonContent).toMatchSnapshot();
         });

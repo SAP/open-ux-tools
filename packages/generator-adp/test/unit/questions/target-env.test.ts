@@ -62,7 +62,7 @@ describe('Target Environment', () => {
 
     describe('getTargetEnvPrompt', () => {
         test('should create target environment prompt with correct structure', () => {
-            const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig, mockVscode);
+            const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig);
 
             expect(prompt.type).toBe('list');
             expect(prompt.name).toBe('targetEnv');
@@ -79,8 +79,7 @@ describe('Target Environment', () => {
                 mockAppWizard,
                 true,
                 true,
-                mockCfConfig,
-                mockVscode
+                mockCfConfig
             ) as ListQuestion<TargetEnvAnswers>;
 
             const choicesFn = envPrompt!.choices;
@@ -98,8 +97,7 @@ describe('Target Environment', () => {
                 mockAppWizard,
                 true,
                 true,
-                mockCfConfig,
-                mockVscode
+                mockCfConfig
             ) as ListQuestion<TargetEnvAnswers>;
 
             const defaultFn = envPrompt!.default;
@@ -110,15 +108,15 @@ describe('Target Environment', () => {
         });
 
         test('should set up validation function', () => {
-            const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig, mockVscode);
+            const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig);
 
             const validateResult = prompt.validate!('ABAP');
-            expect(mockValidateEnvironment).toHaveBeenCalledWith('ABAP', true, mockVscode);
+            expect(mockValidateEnvironment).toHaveBeenCalledWith('ABAP', true);
             expect(validateResult).toBeUndefined();
         });
 
         test('should set up additional messages function', () => {
-            const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig, mockVscode);
+            const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig);
 
             const additionalMessages = prompt.additionalMessages!('ABAP');
             expect(mockGetTargetEnvAdditionalMessages).toHaveBeenCalledWith('ABAP', true, mockCfConfig);
