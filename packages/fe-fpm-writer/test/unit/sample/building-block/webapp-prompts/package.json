@@ -19,8 +19,5 @@
         "deploy-config": "fiori add deploy-config",
         "start-mock": "fiori run --open 'test/flpSandboxMockServer.html#mytestapp-tile'"
     },
-    "devDependencies": {},
-    "ui5": {
-        "dependencies": []
-    }
+    "devDependencies": {}
 }
