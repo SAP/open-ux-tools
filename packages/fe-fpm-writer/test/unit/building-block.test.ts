@@ -2235,38 +2235,6 @@ describe('Building Blocks', () => {
             }
         });
 
-        test('returns original path when target element not found', () => {
-            const xmlContent = `
-                <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
-                    <macros:FilterBar id="FilterBar1"/>
-                </mvc:View>
-            `;
-            const xmlDocument = new DOMParser().parseFromString(xmlContent);
-
-            const buildingBlockData: CustomFilterField = {
-                id: 'testField',
-                buildingBlockType: BuildingBlockType.CustomFilterField,
-                label: 'Test',
-                anchor: 'test',
-                property: 'test',
-                required: false,
-                filterFieldKey: 'test',
-                position: { placement: Placement.After },
-                embededFragment: {
-                    name: 'TestFragment',
-                    typescript: false,
-                    content:
-                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Input /></core:FragmentDefinition>'
-                }
-            };
-
-            // The aggregationPath points to non-existent element
-            const aggregationPath = "//*[@id='NonExistentFilterBar']";
-
-            // Test will verify behavior through integration test
-            expect(buildingBlockData.embededFragment).toBeDefined();
-        });
-
         test('handles custom columns with multiple tables correctly', async () => {
             const basePath = join(testAppPath, 'multiple-tables');
             const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
