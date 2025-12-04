@@ -162,7 +162,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
                 id
             });
         }
-        const inferredSystemType = fullSystem.systemType ?? getBackendSystemType(fullSystem);
+        const inferredSystemType = fullSystem.systemType ?? getBackendSystemType(fullSystem) ?? 'OnPrem';
         const connectionType = fullSystem?.connectionType ?? ConnectionType.AbapCatalog; // will need to be removed once adding different connection types is possible
         return new BackendSystem({
             ...fullSystem,
