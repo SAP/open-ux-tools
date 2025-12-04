@@ -29,13 +29,13 @@ export async function getData(
                     appConfig.referencedEntities,
                     odataServiceProvider!,
                     selectedEntities,
-                    10
+                    100
                 );
                 if (result.entityData) {
                     ODataDownloadGenerator.logger.info('Got result rows:' + `${result.entityData.length}`);
                     return result.entityData;
                 } else if (result.error) {
-                    return `An error occurred fetching the data: ${result.error}`;
+                    return `${result.error}`;
                 }
             }
         }
