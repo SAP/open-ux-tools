@@ -3,6 +3,6 @@
     "version": "1.0.0",
     "private": true,
     "devDependencies": {
-        "@ui5/cli": "2.9.9"
+        "@ui5/cli": "^4.0.0"
     }
 }

@@ -1,5 +1,23 @@
 # @sap-ux/adp-tooling
 
+## 0.18.13
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.18.12
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+
 ## 0.18.11
 
 ### Patch Changes

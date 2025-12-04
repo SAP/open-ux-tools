@@ -1,4 +1,4 @@
-// Last content update: Wed Oct 15 2025 09:21:20 GMT+0200 (Central European Summer Time)
+// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -81,13 +81,13 @@ export default {
             },
             'Rollup': {
                 '$Type': 'Org.OData.Aggregation.V1.RollupType',
-                '$DefaultValue': 'MultipleHierarchies',
+                '$DefaultValue': 'None',
                 '@Org.OData.Core.V1.Description':
                     'The service supports rollup hierarchies in a `groupby` transformation'
             },
             'From': {
                 '$Type': 'Edm.Boolean',
-                '$DefaultValue': true,
+                '$DefaultValue': false,
                 '@Org.OData.Core.V1.Description':
                     'The service supports the `from` keyword in an `aggregate` transformation'
             }
