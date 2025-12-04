@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.23.64
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+-   Updated dependencies [324d8ed]
+    -   @sap-ux/adp-tooling@0.18.12
+
+## 0.23.63
+
+### Patch Changes
+
+-   Updated dependencies [9c66de4]
+    -   @sap-ux/adp-tooling@0.18.11
+
+## 0.23.62
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/adp-tooling@0.18.10
+    -   @sap-ux/system-access@0.6.29
+
 ## 0.23.61
 
 ### Patch Changes

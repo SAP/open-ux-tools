@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.32.11
+
+### Patch Changes
+
+-   07725fe: Bump @sap/manifest version
+
 ## 1.32.10
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.26
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.7.17
+
+## 0.39.25
+
+### Patch Changes
+
+-   8b334e5: fix(fpm-writer): unique ids in fragment
+
+## 0.39.24
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/fiori-annotation-api@0.7.16
+
 ## 0.39.23
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.16
+
+### Patch Changes
+
+-   67e2b43: add 'express' as peerDependency
+
+## 0.10.15
+
+### Patch Changes
+
+-   ce69893: fix: simplify type usage
+
 ## 0.10.14
 
 ### Patch Changes
