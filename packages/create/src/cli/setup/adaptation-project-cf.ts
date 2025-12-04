@@ -6,12 +6,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import {
-    getOAuthPathsFromReuseFolder,
-    getBackendUrlsFromServiceKeys,
-    getBackendUrlsWithPaths,
-    getServiceInstanceKeys
-} from '@sap-ux/adp-tooling';
+import { getBackendUrlsWithPaths, getServiceInstanceKeys } from '@sap-ux/adp-tooling';
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
@@ -56,7 +51,7 @@ async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _en
             throw new Error('Not an adaptation project. manifest.appdescr_variant not found.');
         }
 
-        // Step 2: Process ui5appinfo.json and extract reusable libraries
+        // Step 2: Process ui5AppInfo.json and extract reusable libraries
         await processUi5AppInfo(basePath, simulate, logger);
 
         // Step 3: Add serve-static-middleware configuration to ui5.yaml
@@ -80,7 +75,7 @@ async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _en
 }
 
 /**
- * Process ui5appinfo.json and extract reusable library information to .reuse folder.
+ * Process ui5AppInfo.json and extract reusable library information to .reuse folder.
  *
  * @param basePath - path to application root
  * @param simulate - simulate only, do not write
@@ -88,14 +83,14 @@ async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _en
  */
 async function processUi5AppInfo(basePath: string, simulate: boolean, logger: any): Promise<void> {
     try {
-        const ui5AppInfoPath = join(__dirname, 'ui5appinfo.json');
+        const ui5AppInfoPath = join(__dirname, 'ui5AppInfo.json');
 
         if (!existsSync(ui5AppInfoPath)) {
-            logger.warn('ui5appinfo.json not found in command directory, skipping reusable library processing');
+            logger.warn('ui5AppInfo.json not found in command directory, skipping reusable library processing');
             return;
         }
 
-        logger.info('Processing ui5appinfo.json...');
+        logger.info('Processing ui5AppInfo.json...');
         const ui5AppInfo = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8')) as {
             asyncHints?: {
                 libs?: Array<{
@@ -121,28 +116,28 @@ async function processUi5AppInfo(basePath: string, simulate: boolean, logger: an
             ) ?? [];
 
         if (reusableLibs.length === 0) {
-            logger.info('No reusable libraries found in ui5appinfo.json');
+            logger.info('No reusable libraries found in ui5AppInfo.json');
             return;
         }
 
         logger.info(`Found ${reusableLibs.length} reusable libraries`);
 
-        // Write ui5appinfo.json to .reuse directory
-        const reusePath = join(basePath, '.reuse');
-        const ui5AppInfoTargetPath = join(reusePath, 'ui5appinfo.json');
+        // Write ui5AppInfo.json to webapp folder
+        const webappPath = join(basePath, 'webapp');
+        if (!existsSync(webappPath)) {
+            throw new Error('webapp folder not found in project');
+        }
+
+        const ui5AppInfoTargetPath = join(webappPath, 'ui5AppInfo.json');
 
         if (!simulate) {
-            if (!existsSync(reusePath)) {
-                mkdirSync(reusePath, { recursive: true });
-            }
-
             writeFileSync(ui5AppInfoTargetPath, JSON.stringify(ui5AppInfo, null, 2), 'utf-8');
-            logger.info(`Written ui5appinfo.json to ${reusePath}`);
+            logger.info(`Written ui5AppInfo.json to ${webappPath}`);
         } else {
-            logger.info('[Simulate] Would write ui5appinfo.json to .reuse folder');
+            logger.info('[Simulate] Would write ui5AppInfo.json to webapp folder');
         }
     } catch (error) {
-        logger.error(`Failed to process ui5appinfo.json: ${(error as Error).message}`);
+        logger.error(`Failed to process ui5AppInfo.json: ${(error as Error).message}`);
         throw error;
     }
 }
@@ -169,7 +164,11 @@ async function buildProject(basePath: string, simulate: boolean, logger: any): P
             const buildProcess = spawn('npm', ['run', 'build'], {
                 cwd: basePath,
                 stdio: 'inherit',
-                shell: true
+                shell: true,
+                env: {
+                    ...process.env,
+                    ADP_BUILDER_MODE: 'preview'
+                }
             });
 
             buildProcess.on('close', (code) => {
@@ -203,20 +202,18 @@ async function addServeStaticMiddleware(basePath: string, simulate: boolean, log
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
 
-        // Check if serve-static-middleware already exists
+        // Check if serve-static-middleware already exists and remove it
         const existingMiddleware = ui5Config.findCustomMiddleware('serve-static-middleware');
 
         if (existingMiddleware) {
-            logger.info('serve-static-middleware already exists in ui5.yaml');
-            return;
+            logger.info('serve-static-middleware already exists in ui5.yaml, replacing it');
+            ui5Config.removeCustomMiddleware('serve-static-middleware');
         }
 
-        // Read ui5appinfo.json from .reuse directory
-        const ui5AppInfoPath = join(basePath, '.reuse', 'ui5appinfo.json');
+        // Read ui5AppInfo.json from webapp folder
+        const ui5AppInfoPath = join(basePath, 'webapp', 'ui5AppInfo.json');
         if (!existsSync(ui5AppInfoPath)) {
-            logger.warn(
-                'ui5appinfo.json not found in .reuse directory, skipping serve-static-middleware configuration'
-            );
+            logger.warn('ui5AppInfo.json not found in webapp folder, skipping serve-static-middleware configuration');
             return;
         }
 
@@ -243,7 +240,7 @@ async function addServeStaticMiddleware(basePath: string, simulate: boolean, log
 
         if (reusableLibs.length === 0) {
             logger.warn(
-                'No reusable libraries found in ui5appinfo.json, skipping serve-static-middleware configuration'
+                'No reusable libraries found in ui5AppInfo.json, skipping serve-static-middleware configuration'
             );
             return;
         }
@@ -310,6 +307,11 @@ async function addBackendProxyMiddleware(basePath: string, simulate: boolean, lo
     try {
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
+
+        // Remove all existing backend-proxy-middleware-cf instances
+        while (ui5Config.findCustomMiddleware('backend-proxy-middleware-cf')) {
+            ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
+        }
 
         // Get service keys from Cloud Foundry
         const serviceKeys = await fetchServiceKeys(basePath, logger);
