@@ -8,7 +8,6 @@ import { join } from 'path';
 import { SelectedEntityAnswer } from './prompts';
 import { AppConfig, Entity, navPropNameExclusions, ReferencedEntities, SemanticKeyFilter } from './types';
 
-
 /**
  * Parses the OData result and converts it into separate entity data containing rows of data for each entity.
  *
@@ -36,7 +35,7 @@ export function convertODataResultToEntityFileData(
                 if ((mainEntityRow as any)[pageEntity.entityPath]) {
                     entityFileData[pageEntity.entitySetName] = entityFileData[pageEntity.entitySetName] || [];
                     const pageEntityArray = (mainEntityRow as any)[pageEntity.entityPath];
-                    entityFileData[pageEntity.entitySetName].push(...pageEntityArray);
+
                     // Next level expanded properties...todo: should be recursive
                     additionalEntities?.forEach((addEntity) => {
                         pageEntityArray.forEach((pageEntity: any) => {
@@ -47,11 +46,13 @@ export function convertODataResultToEntityFileData(
                                     entityFileData[addEntity.entity.entitySetName] || [];
                                 entityFileData[addEntity.entity.entitySetName].push(...entityData);
                             }
+                            // remove the additional entities refs from the page entity as they have their own file
+                            delete pageEntity[addEntity.entity.entityPath];
                         });
-                        // delete
                     });
+                    entityFileData[pageEntity.entitySetName].push(...pageEntityArray);
                     // remove the reference as the entity will be separate file
-                    // delete (mainEntityRow as any)[pageEntity.entityPath];
+                    delete (mainEntityRow as any)[pageEntity.entityPath];
                 }
             });
         }
@@ -116,7 +117,7 @@ function getNavPropertyEntities(entitySet: EntitySet, omitEntities?: string[]): 
     const entities: Entity[] = [];
     Object.entries(entitySet.navigationPropertyBinding).forEach(([path, entitySet]) => {
         // todo: Should we use the entity type exclusion instead
-        entitySet.entityTypeName
+        entitySet.entityTypeName;
         if (!navPropNameExclusions.includes(path) && !omitEntities?.includes(entitySet.name)) {
             entities.push({
                 entitySet: entitySet,

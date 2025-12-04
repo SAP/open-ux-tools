@@ -16,12 +16,10 @@ import { entityTypeExclusions } from './types';
 import { join } from 'path';
 import { PromptState } from './prompt-state';
 
-
 export function getValueHelpSelectionPrompt(
     servicePath: string,
     metadata: string,
-    abapServiceProvider: AbapServiceProvider,
-    selectedEntities?: SelectedEntityAnswer[]
+    abapServiceProvider: AbapServiceProvider
 ): { questions: CheckBoxQuestion[]; valueHelpData?: ExternalService[] } {
     PromptState.reset();
     const valueHelpChoices = getValueHelpChoices(servicePath, metadata);
@@ -109,10 +107,9 @@ async function getExternalServiceMetadata(
     selectedValueHelps: ExternalServiceReference[][],
     abapServiceProvider: AbapServiceProvider
 ): Promise<ExternalService[]> {
-
     let flatExtSerRefs = selectedValueHelps.flat();
-    const valueHelpServiceData = await abapServiceProvider.fetchExternalServices(flatExtSerRefs);
-    return valueHelpServiceData;
+    const extServiceData = await abapServiceProvider.fetchExternalServices(flatExtSerRefs);
+    return extServiceData;
 }
 
 function getValueHelpChoices(
@@ -120,22 +117,20 @@ function getValueHelpChoices(
     metadata: string
 ): CheckboxChoiceOptions<{ name: string; value: ExternalServiceReference }>[] {
     const choices: { name: string; value: ExternalServiceReference[] }[] = [];
-    const valueHelpRefs = getExternalServiceReferences(servicePath, metadata, [], {
-        codeLists: false
-    }) as ValueListReference[];
+    const externalServiceRefs = getExternalServiceReferences(servicePath, metadata, []) as ValueListReference[];
     const uniqueByServicePaths: {
-        [path: string]: ExternalServiceReference[]
+        [path: string]: ExternalServiceReference[];
     } = {};
 
     // Convert the external service refs into a service path keyed map
-    valueHelpRefs.forEach((ref) => {
+    externalServiceRefs.forEach((ref) => {
         // Skip specific target names
         if (ref.type === 'value-list' && entityTypeExclusions.includes(ref.target)) {
             return;
         }
         const [vhServicePath] = ref.value.split(';');
         if (uniqueByServicePaths[vhServicePath]) {
-            uniqueByServicePaths[vhServicePath].push(ref)
+            uniqueByServicePaths[vhServicePath].push(ref);
         } else {
             uniqueByServicePaths[vhServicePath] = [ref];
         }
@@ -143,44 +138,49 @@ function getValueHelpChoices(
 
     // 2 levels path -> vh entity -> externalRefs[]
     let choiceNameByPathAndEntity: {
-        [path: string] : { 
-            [targetEntity: string]: ExternalServiceReference[]
-        }
+        [path: string]: {
+            [targetEntity: string]: ExternalServiceReference[];
+        };
     } = {};
     // todo: Combine woth previous iteration
     Object.entries(uniqueByServicePaths).forEach(([path, serviceRefs]) => {
-        
         serviceRefs.forEach((ref) => {
             if (ref.type === 'value-list') {
                 const targetEntity = ref.target.match(/[^\/]+$/)?.[0];
                 if (targetEntity) {
-                    if(choiceNameByPathAndEntity[path]?.[targetEntity]) {
+                    if (choiceNameByPathAndEntity[path]?.[targetEntity]) {
                         choiceNameByPathAndEntity[path][targetEntity].push(ref);
-                    } else if(!choiceNameByPathAndEntity[path]) {
+                    } else if (!choiceNameByPathAndEntity[path]) {
                         choiceNameByPathAndEntity[path] = {
                             [targetEntity]: [ref]
                         };
                     }
                 }
-            } /* else if (ref.type === 'code-list' && ref.collectionPath) {
-                //choiceName.push(ref.collectionPath)
-            } */
+            } else if (ref.type === 'code-list' && ref.collectionPath) {
+                if (choiceNameByPathAndEntity?.[ref.collectionPath]) {
+                    choiceNameByPathAndEntity[ref.collectionPath][ref.collectionPath].push(ref);
+                } else if (!choiceNameByPathAndEntity?.[ref.collectionPath]) {
+                    choiceNameByPathAndEntity[ref.collectionPath] = { [ref.collectionPath]: [ref] };
+                }
+            }
         });
     });
 
     // create choices
     Object.entries(choiceNameByPathAndEntity).forEach(([path, targetEntities]) => {
-        
         Object.entries(targetEntities).forEach(([targetEntity, entityRefs]) => {
-            const choiceName: string[] = []
+            const choiceNameTargets: string[] = [];
             entityRefs.forEach((entityRef) => {
                 if (entityRef.type === 'value-list') {
-                    choiceName.push(entityRef.target);
+                    choiceNameTargets.push(entityRef.target.split(/\/([^/]*)$/)[0]);
+                } else if (entityRef.type === 'code-list') {
+                    choiceNameTargets.push(entityRef.collectionPath!);
                 }
             });
-            choices.push({ name: choiceName.join(), value: entityRefs})
+            const choiceName = `${targetEntity} (${choiceNameTargets.join()})`;
+            choices.push({ name: choiceName, value: entityRefs });
+
         });
-        
     });
 
     return choices.sort((a, b) => a.name.localeCompare(b.name));

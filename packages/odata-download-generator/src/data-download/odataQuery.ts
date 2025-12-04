@@ -3,6 +3,7 @@ import buildQuery, { type Filter } from 'odata-query';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
 import { type SelectedEntityAnswer } from './prompts';
 import { type ReferencedEntities } from './types';
+import { t } from '../utils/i18n';
 
 /**
  * todo: take a single entity list to download
@@ -59,12 +60,16 @@ export async function fetchData(
             let filter: string | object = key.value;
             // Create the range and set values
             const filterParts = key.value.split(',');
-            let filterRanges: Filter<string>[] = [];
+            let filters: Filter<string>[] = [];
             filterParts.forEach((filterPart) => {
                 const filterRangeParts = filterPart.trim().split('-');
 
-                if (filterRangeParts.length === 2) {
-                    filterRanges.push({
+                if (filterRangeParts.length === 1) { // Single value
+                    filters.push({
+                        [key.name]: filterPart
+                    })
+                } else if (filterRangeParts.length === 2) { // Range
+                    filters.push({
                         [key.name]: {
                             ge: filterRangeParts[0],
                             le: filterRangeParts[1]
@@ -74,10 +79,10 @@ export async function fetchData(
             });
 
             mainEntityFilters.push(
-                filterRanges.length == 1
-                    ? filterRanges[0]
+                filters.length == 1
+                    ? filters[0]
                     : {
-                          or: filterRanges
+                          or: filters
                       }
             );
         }
@@ -89,10 +94,11 @@ export async function fetchData(
     if (entitiesToExpand) {
         Object.assign(queryInput, { expand: entitiesToExpand });
     }
-    if (mainEntityFilters) {
+    if (mainEntityFilters.length > 0) {
         Object.assign(queryInput, {
             // todo: multiple keys should be and'd
-            filter: mainEntityFilters.length === 1 ? mainEntityFilters[0] : mainEntityFilters
+            filter: mainEntityFilters.length === 1 ? mainEntityFilters[0] : mainEntityFilters,
+            count: true
         });
     } else if (top) {
         Object.assign(queryInput, {
@@ -107,7 +113,8 @@ export async function fetchData(
         // Process the result set into individual entity data for files
         return { entityData: data?.odata() };
     } catch (error) {
-        ODataDownloadGenerator.logger.error(`An error occurred when querying for odata: ${error}`);
-        return { error: 'An error occurred when querying for odata. See the log for details.' };
+        const errorText = t('errors.odataQueryError', { error });
+        ODataDownloadGenerator.logger.error(errorText);
+        return { error: errorText };
     }
 }

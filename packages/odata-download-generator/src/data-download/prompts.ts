@@ -1,10 +1,12 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { Logger } from '@sap-ux/logger';
 import {
     getSystemSelectionQuestions,
     OdataServiceAnswers,
+    OdataVersion,
     promptNames as servicePromptNames
 } from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
@@ -18,7 +20,7 @@ export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
     confirmDownload: 'confirmDownload',
     updateMainServiceMetadata: 'updateMainServiceMetadata'
-}
+};
 
 const invalidEntityKeyFilterChars = ['.'];
 
@@ -107,9 +109,9 @@ export async function getODataDownloaderPrompts(): Promise<{
             //appAnswer.servicePaths.push(appConfig?.servicePath ?? '');
             //appAnswer.backendConfig = appConfig?.backendConfig;
             if (appConfig.backendConfig && appConfig.systemName) {
-                appConfig.systemName.value =
-                    appConfig.backendConfig?.destination ??
-                    (await getSystemNameFromStore(appConfig.backendConfig.url, appConfig.backendConfig?.client));
+                appConfig.systemName.value = isAppStudio()
+                    ? appConfig.backendConfig?.destination
+                    : await getSystemNameFromStore(appConfig.backendConfig.url, appConfig.backendConfig?.client);
             }
             return true;
         }
@@ -124,7 +126,8 @@ export async function getODataDownloaderPrompts(): Promise<{
                 defaultChoice: appConfig.systemName
             },
             serviceSelection: {
-                serviceFilter: servicePaths
+                serviceFilter: servicePaths,
+                requiredOdataVersion: OdataVersion.v4
             }
         },
         getHostEnvironment() !== hostEnvironment.cli,
@@ -135,7 +138,10 @@ export async function getODataDownloaderPrompts(): Promise<{
     let previousServicePath: string | undefined;
     const relatedEntitySelectionQuestion: CheckBoxQuestion = {
         when: () => {
-            // todo: reset when service changed
+            // No selected service connection
+            if (!systemSelectionQuestions.answers.metadata) {
+                return false;
+            }
             if (systemSelectionQuestions.answers.servicePath !== previousServicePath) {
                 previousServicePath = systemSelectionQuestions.answers.servicePath;
                 if (relatedEntityChoices.length === 0) {
@@ -165,7 +171,7 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
 
     // Generate the max size of key parts allowed
-    keyPrompts = getKeyPrompts(3, appConfig);
+    keyPrompts = getKeyPrompts(3, appConfig, systemSelectionQuestions.answers);
     let odataQueryResult = {
         odata: undefined
     };
@@ -184,13 +190,20 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
 }
 
-function getKeyPrompts(size: number, appInfo: AppConfig): InputQuestion[] {
+function getKeyPrompts(
+    size: number,
+    appInfo: AppConfig,
+    odataServiceAnswers: Partial<OdataServiceAnswers>
+): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
     const getEntityKeyInputPrompt = (keypart: number) =>
         ({
             when: () => {
-                return !!appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
+                return (
+                    !!odataServiceAnswers.connectedSystem?.serviceProvider &&
+                    !!appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name
+                );
             },
             name: `entityKeyIdx:${keypart}`,
             message: () => `Enter values for: ${appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
@@ -199,7 +212,7 @@ function getKeyPrompts(size: number, appInfo: AppConfig): InputQuestion[] {
                     ? 'confirm'
                     : 'input',
             guiOptions: {
-                hint: 'For range selection use \'-\' between values. Use commas to select non-contigous values.'
+                hint: "For range selection use '-' between values. Use commas to select non-contigous values."
             },
             validate: (keyValue: string) => {
                 let validationMsg;
@@ -211,7 +224,7 @@ function getKeyPrompts(size: number, appInfo: AppConfig): InputQuestion[] {
                 filterAndParts.forEach((filterPart) => {
                     const filterRangeParts = filterPart.split('-');
                     if (filterAndParts.length > 2) {
-                        return 'Invalid range specified, only the lowest and highest values allowed. e.g. \'1-10\''
+                        return "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'";
                     }
                 });
 
@@ -241,7 +254,7 @@ function getConfirmDownloadPrompt(
 ): Question {
     return {
         when: () => {
-            return !!odataServiceAnswers.metadata;
+            return !!odataServiceAnswers.connectedSystem?.serviceProvider;
         },
         name: promptNames.confirmDownload,
         type: 'confirm',
@@ -283,12 +296,13 @@ function getConfirmDownloadPrompt(
 function getUpdateMainServiceMetadataPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>): ConfirmQuestion {
     const question: ConfirmQuestion = {
         when: () => {
-            return !!odataServiceAnswers.metadata;
+            // Do we have an active connection
+            return !!odataServiceAnswers.connectedSystem?.serviceProvider;
         },
         name: promptNames.updateMainServiceMetadata,
         type: 'confirm',
         message: 'Update local metadata file from backend:',
-        default: false,
+        default: false
         /* additionalMessages: (updateMetadata: unknown) => {
             if (updateMetadata === true) {
                 return {
@@ -298,6 +312,6 @@ function getUpdateMainServiceMetadataPrompt(odataServiceAnswers: Partial<OdataSe
             }
             return;
         } */
-    }
+    };
     return question;
 }
