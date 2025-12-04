@@ -155,18 +155,20 @@ describe('FlpSandbox', () => {
         });
 
         test('i18n manifest', async () => {
-            const applicationAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation((path) => {
-                return Promise.resolve({
-                    getI18nBundles: () => {
-                        return Promise.resolve({
-                            'sap.app': {
-                                'myTitle': [{ value: { value: 'My App' } } as I18nEntry],
-                                'myDescription': [{ value: { value: 'My App Description' } } as I18nEntry]
+            const applicationAccessMock = jest
+                .spyOn(projectAccess, 'createApplicationAccess')
+                .mockImplementation((path) => {
+                    return Promise.resolve({
+                        getI18nBundles: () => {
+                            return Promise.resolve({
+                                'sap.app': {
+                                    'myTitle': [{ value: { value: 'My App' } } as I18nEntry],
+                                    'myDescription': [{ value: { value: 'My App Description' } } as I18nEntry]
                                 }
-                        }) as unknown as I18nBundles;
-                    }
-                }) as unknown as Promise<ApplicationAccess>;
-            });
+                            }) as unknown as I18nBundles;
+                        }
+                    }) as unknown as Promise<ApplicationAccess>;
+                });
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
                 'sap.app': { id: 'my.id', title: '{{myTitle}}', description: '{{myDescription}}' }
