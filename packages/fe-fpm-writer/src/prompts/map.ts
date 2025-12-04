@@ -6,7 +6,8 @@ import {
     getPageBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts,
-    getRichTextEditorBuildingBlockPrompts
+    getRichTextEditorBuildingBlockPrompts,
+    getRichTextEditorButtonGroupsBuildingBlockPrompts
 } from '../building-block/prompts/questions';
 import type {
     ChartPromptsAnswer,
@@ -14,7 +15,8 @@ import type {
     PagePromptsAnswer,
     FilterBarPromptsAnswer,
     BuildingBlockTypePromptsAnswer,
-    RichTextEditorPromptsAnswer
+    RichTextEditorPromptsAnswer,
+    RichTextEditorButtonGroupsPromptsAnswer
 } from '../building-block/prompts/questions';
 import { generateBuildingBlock, getSerializedFileContent } from '../building-block';
 
@@ -24,6 +26,7 @@ type AnswerMapping = {
     [PromptsType.Page]: PagePromptsAnswer;
     [PromptsType.FilterBar]: FilterBarPromptsAnswer;
     [PromptsType.RichTextEditor]: RichTextEditorPromptsAnswer;
+    [PromptsType.RichTextEditorButtonGroups]: RichTextEditorButtonGroupsPromptsAnswer;
     [PromptsType.BuildingBlocks]: BuildingBlockTypePromptsAnswer;
 };
 
@@ -39,7 +42,8 @@ export type SupportedPrompts =
     | BasePrompt<PromptsType.FilterBar>
     | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.BuildingBlocks>
-    | BasePrompt<PromptsType.RichTextEditor>;
+    | BasePrompt<PromptsType.RichTextEditor>
+    | BasePrompt<PromptsType.RichTextEditorButtonGroups>;
 
 export type SupportedGeneratorPrompts =
     | BasePrompt<PromptsType.Chart>
@@ -62,7 +66,8 @@ export const PromptsQuestionsMap: SupportedPromptsMap = {
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
     [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts,
     [PromptsType.Page]: getPageBuildingBlockPrompts,
-    [PromptsType.RichTextEditor]: getRichTextEditorBuildingBlockPrompts
+    [PromptsType.RichTextEditor]: getRichTextEditorBuildingBlockPrompts,
+    [PromptsType.RichTextEditorButtonGroups]: getRichTextEditorButtonGroupsBuildingBlockPrompts
 };
 
 export const PromptsGeneratorsMap = {
@@ -70,6 +75,7 @@ export const PromptsGeneratorsMap = {
     [PromptsType.Table]: generateBuildingBlock,
     [PromptsType.FilterBar]: generateBuildingBlock,
     [PromptsType.RichTextEditor]: generateBuildingBlock,
+    [PromptsType.RichTextEditorButtonGroups]: generateBuildingBlock,
     [PromptsType.Page]: generateBuildingBlock
 };
 
@@ -78,6 +84,7 @@ export const PromptsCodePreviewMap = {
     [PromptsType.Table]: getSerializedFileContent,
     [PromptsType.FilterBar]: getSerializedFileContent,
     [PromptsType.RichTextEditor]: getSerializedFileContent,
+    [PromptsType.RichTextEditorButtonGroups]: getSerializedFileContent,
     [PromptsType.Page]: getSerializedFileContent
 };
 
@@ -86,4 +93,5 @@ export type SupportedGeneratorAnswers =
     | ChartPromptsAnswer
     | FilterBarPromptsAnswer
     | PagePromptsAnswer
-    | RichTextEditorPromptsAnswer;
+    | RichTextEditorPromptsAnswer
+    | RichTextEditorButtonGroupsPromptsAnswer;

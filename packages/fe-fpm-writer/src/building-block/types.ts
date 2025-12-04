@@ -13,7 +13,8 @@ export enum BuildingBlockType {
     Page = 'page',
     Table = 'table',
     CustomColumn = 'custom-column',
-    RichTextEditor = 'rich-text-editor'
+    RichTextEditor = 'rich-text-editor',
+    RichTextEditorButtonGroups = 'rich-text-editor-button-groups'
 }
 
 /**
@@ -457,6 +458,70 @@ export interface RichTextEditor extends BuildingBlock {
      * Property used to construct the metaPath for Rich Text Editor, e.g. "/EntitySet/targetProperty".
      */
     targetProperty?: string;
+}
+/**
+ * Configuration for a button group in the rich text editor.
+ */
+export interface ButtonGroupConfig {
+    /**
+     * Unique identifier for the button group (e.g., 'font-style', 'clipboard', 'undo').
+     */
+    readonly name: string;
+
+    /**
+     * Comma-separated list of buttons to include in this group.
+     *
+     * @example "bold,italic,underline" or "cut,copy,paste"
+     */
+    buttons: string;
+
+    /**
+     * Display priority for ordering button groups (higher = more prominent position).
+     *
+     * @default 10
+     */
+    priority?: number;
+
+    /**
+     * Whether this button group is visible in the editor toolbar.
+     *
+     * @default true
+     */
+    visible?: boolean;
+    /**
+     * Custom toolbar priority to override default positioning.
+     */
+    customToolbarPriority?: number;
+    /**
+     * Row number in the toolbar where this button group should appear.
+     */
+    row?: number;
+    /**
+     * Optional ID for the button group.
+     */
+    id?: string;
+}
+
+/**
+ * Building block for configuring Rich Text Editor button groups.
+ *
+ * @example
+ * {
+ *   buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+ *   id: "rteButtonGroups1",
+ *   buttonGroups: [
+ *     { name: "font-style", buttons: "bold,italic,underline", priority: 10 },
+ *     { name: "clipboard", visible: false, buttons: "cut,copy,paste" },
+ *     { name: "undo", priority: 20, buttons: "undo,redo" }
+ *   ]
+ * }
+ * @extends {BuildingBlock}
+ */
+export interface RichTextEditorButtonGroups extends BuildingBlock {
+    /**
+     * Button groups to include in the editor toolbar.
+     */
+    buttonGroups: ButtonGroupConfig[];
 }
 
 /**
