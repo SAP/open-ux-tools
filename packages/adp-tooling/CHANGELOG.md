@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.12
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+
 ## 0.18.11
 
 ### Patch Changes

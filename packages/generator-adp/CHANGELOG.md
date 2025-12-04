@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.7.12
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+-   Updated dependencies [324d8ed]
+    -   @sap-ux/adp-tooling@0.18.12
+
 ## 0.7.11
 
 ### Patch Changes

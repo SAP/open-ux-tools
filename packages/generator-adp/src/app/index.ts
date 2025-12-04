@@ -27,7 +27,6 @@ import {
     isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -198,11 +197,6 @@ export default class extends Generator {
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
-        // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         if (!this.jsonInput) {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
@@ -220,6 +214,11 @@ export default class extends Generator {
     }
 
     async initializing(): Promise<void> {
+        // Force the generator to overwrite existing files without additional prompting
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
+
         await initI18n();
 
         this.isCli = isCli();
@@ -234,7 +233,7 @@ export default class extends Generator {
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
         if (!this.jsonInput) {
-            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isCfFeatureEnabled;
+            const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
@@ -386,7 +385,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.isCfEnv) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
             return;
         }
 
@@ -398,7 +397,7 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject || this.isCfEnv) {
+        if (this.shouldCreateExtProject) {
             return;
         }
 
@@ -414,7 +413,7 @@ export default class extends Generator {
             });
         }
 
-        if (this.isCli) {
+        if (this.isCli || this.isCfEnv) {
             return;
         }
 
@@ -455,7 +454,7 @@ export default class extends Generator {
     private async _determineTargetEnv(): Promise<void> {
         const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
 
-        if (isAppStudio() && hasRequiredExtensions) {
+        if (hasRequiredExtensions) {
             await this._promptForTargetEnvironment();
         } else {
             this.targetEnv = TargetEnv.ABAP;
@@ -467,7 +466,7 @@ export default class extends Generator {
      */
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
-            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig, this.vscode)
+            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig)
         ]);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
@@ -538,7 +537,7 @@ export default class extends Generator {
      * Generates the ADP project artifacts for the CF environment.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
-        const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
+        const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
 
         const manifest = this.cfPrompter.manifest;
@@ -546,7 +545,10 @@ export default class extends Generator {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.cfPrompter.serviceInstanceGuid;
+        const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
+        const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
+        const backendUrl = this.cfPrompter.backendUrl;
+        const oauthPaths = this.cfPrompter.oauthPaths;
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
@@ -554,6 +556,9 @@ export default class extends Generator {
             layer: this.layer,
             manifest,
             html5RepoRuntimeGuid,
+            serviceInstanceGuid,
+            backendUrl,
+            oauthPaths,
             projectPath,
             publicVersions
         });
@@ -571,6 +576,9 @@ export default class extends Generator {
      * @returns {string} The project path from the answers.
      */
     private _getProjectPath(): string {
+        if (this.isCfEnv) {
+            return join(this.destinationPath(), this.attributeAnswers.projectName);
+        }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 
