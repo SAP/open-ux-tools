@@ -76,7 +76,7 @@ export async function getPathMappings(
     const baseDir = await getBaseDir(appRoot, memFs);
     const pathMappings: PathMappings = {};
     for (const [key, value] of Object.entries(configuration?.paths || {})) {
-        pathMappings[key] = join(baseDir, value ?? PATH_MAPPING_DEFAULTS[type][key] ?? undefined);
+        pathMappings[key] = join(baseDir, value ?? PATH_MAPPING_DEFAULTS[type][key]);
     }
 
     //Add defaults if no specific value exists
