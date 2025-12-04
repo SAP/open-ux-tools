@@ -262,10 +262,19 @@ function writePageObject(
     );
 }
 
+function getColumnIdentifier(column: {
+    custom: boolean;
+    schema: { keys: { name: string; value: string }[] };
+}): string | undefined {
+    const key = column.custom ? 'Key' : 'Value';
+    const keyEntry = column.schema.keys.find((entry: { name: string; value: string }) => entry.name === key);
+    return keyEntry?.value;
+}
+
 function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
     const columns: Record<string, any> = {};
-    Object.values(columnAggregations).map((columnAggregation) => {
-        columns[columnAggregation.name] = {
+    Object.values(columnAggregations).map((columnAggregation, index) => {
+        columns[getColumnIdentifier(columnAggregation) ?? index] = {
             header: columnAggregation.description
             // TODO possibly more reliable properties could be used?
         };
