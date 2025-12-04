@@ -1,5 +1,5 @@
 import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
-import { BackendSystem, BackendSystemKey, type SystemType } from '@sap-ux/store';
+import { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'node:os';
 import { readFileSync } from 'node:fs';

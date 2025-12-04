@@ -7,8 +7,8 @@ import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { Entities } from './constants';
 import { ConnectionType } from '../types';
 import { getBackendSystemType, getSapToolsDirectory } from '../utils';
-import { join } from 'path';
-import { readFileSync, writeFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
     implements DataProvider<BackendSystem, BackendSystemKey>
