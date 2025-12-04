@@ -384,6 +384,18 @@ export async function generateProxyMiddlewareOptions(
 }
 
 /**
+ * Validate whether the provided value is a valid AuthenticationType.
+ *
+ * @param authType - authType string to validate
+ * @returns - validated AuthenticationType or undefined if invalid
+ */
+function validateAuthType(authType?: string): AuthenticationType | undefined {
+    return authType && (Object.values(AuthenticationType) as string[]).includes(authType)
+        ? (authType as AuthenticationType)
+        : undefined;
+}
+
+/**
  * Determine the correct authentication configuration for connections from a non-BAS platform.
  *
  * @param backend the backend config loaded from the yaml config
@@ -394,7 +406,7 @@ async function updateProxyConfigFromStore(
     backend: BackendConfig,
     logger: ToolsLogger,
     proxyOptions: Options<IncomingMessage, ServerResponse<IncomingMessage>> & { headers: object }
-) {
+): Promise<void> {
     const localBackend = backend as LocalBackendConfig;
     // check if system credentials are stored in the store
     try {
@@ -404,7 +416,7 @@ async function updateProxyConfigFromStore(
             ({
                 name: '<unknown>',
                 url: localBackend.url,
-                authenticationType: localBackend.authenticationType
+                authenticationType: validateAuthType(localBackend.authenticationType)
             } as BackendSystem);
         // Auth type is determined from app config as we may have multiple stored systems with the same url/client using different auth types
         await enhanceConfigForSystem(
