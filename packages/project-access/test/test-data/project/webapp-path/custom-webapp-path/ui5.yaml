@@ -1,4 +1,5 @@
+type: application
 resources:
-    configuration:
-        paths:
-            webapp: src/webapp
+  configuration:
+    paths:
+      webapp: src/webapp

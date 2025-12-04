@@ -148,7 +148,14 @@ export async function runPostGenerationTasks(
         });
         // No need to await, we cannot recover anyway
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        storeService.write(service.backendSystem, { force: true });
+        storeService.write(service.backendSystem, { force: true }).catch((error) => {
+            logger.error(
+                t('logMessages.backendSystemSaveError', {
+                    system: service.backendSystem?.name,
+                    error: error.message
+                })
+            );
+        });
     }
 
     // Display info message if using a cap service as it is not otherwise shown when a top level dir is not created
