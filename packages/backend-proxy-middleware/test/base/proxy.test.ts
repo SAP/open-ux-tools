@@ -314,7 +314,9 @@ describe('proxy', () => {
     describe('enhanceConfigForSystem', () => {
         const system: BackendSystem = {
             name: 'example',
-            url: 'http://backend.example'
+            url: 'http://backend.example',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
         test('simple system', async () => {
@@ -439,7 +441,7 @@ describe('proxy', () => {
             };
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
-                    Host: 'http://backend.example/sap',
+                    Host: 'http://backend.example/sap'
                 }
             });
             mockIsFullUrlDestination.mockResolvedValueOnce(false);
@@ -479,7 +481,7 @@ describe('proxy', () => {
             };
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
-                    Host: 'http://backend.example/my/other/path',
+                    Host: 'http://backend.example/my/other/path'
                 }
             });
             mockIsFullUrlDestination.mockResolvedValueOnce(true);

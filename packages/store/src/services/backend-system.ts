@@ -86,7 +86,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         return this.dataProvider.delete(entity);
     }
 
-    public async getAll(options: BackendServiceRetrievalOptions): Promise<BackendSystem[] | []> {
+    public async getAll(options?: BackendServiceRetrievalOptions): Promise<BackendSystem[] | []> {
         return this.dataProvider.getAll(options);
     }
 }

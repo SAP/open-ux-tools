@@ -48,7 +48,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         });
     }
 
-    public async getAll(providerRetrievalOptions: BackendProviderRetrievalOptions): Promise<BackendSystem[]> {
+    public async getAll(providerRetrievalOptions?: BackendProviderRetrievalOptions): Promise<BackendSystem[]> {
         const migrationRequired = this.isMigrationRequired();
         const { includeSensitiveData = true, backendSystemFilter } = providerRetrievalOptions ?? {};
 

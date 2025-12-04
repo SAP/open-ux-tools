@@ -132,8 +132,9 @@ describe('Test getAbapQuestions', () => {
                     url: 'https://mock-url',
                     client: '100',
                     authenticationType: AuthenticationType.ReentranceTicket,
-                    scp: false
-                } as BackendSystem
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
+                }
             },
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
