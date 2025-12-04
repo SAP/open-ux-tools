@@ -1,5 +1,5 @@
 import type { EntityKey } from '.';
-import type { AuthenticationType, SystemType } from '../types';
+import type { AuthenticationType, ConnectionType, SystemType } from '../types';
 import { getSensitiveDataProperties, sensitiveData, serializable } from '../decorators';
 import { hasAnyValue } from '../utils';
 
@@ -8,7 +8,8 @@ export class BackendSystem {
     @serializable public readonly url: string;
     @serializable public readonly client?: string;
     @serializable public readonly userDisplayName?: string;
-    @serializable public readonly systemType?: SystemType;
+    @serializable public readonly systemType: SystemType;
+    @serializable public readonly connectionType: ConnectionType;
     @serializable public readonly authenticationType?: AuthenticationType;
     @serializable public readonly hasSensitiveData?: boolean;
     @sensitiveData public readonly serviceKeys?: unknown;
@@ -26,12 +27,14 @@ export class BackendSystem {
         username,
         password,
         userDisplayName,
-        authenticationType
+        authenticationType,
+        connectionType
     }: {
         name: string;
         url: string;
         client?: string;
-        systemType?: SystemType;
+        systemType: SystemType;
+        connectionType: ConnectionType;
         serviceKeys?: unknown;
         refreshToken?: string;
         username?: string;
@@ -49,23 +52,26 @@ export class BackendSystem {
         this.password = password;
         this.userDisplayName = userDisplayName;
         this.authenticationType = authenticationType;
+        this.connectionType = connectionType;
         const sensitiveProps = getSensitiveDataProperties<BackendSystem>(this);
         this.hasSensitiveData = hasAnyValue(this, sensitiveProps);
     }
 }
 
 export class BackendSystemKey implements EntityKey {
-    private name: string;
+    private url: string;
+    private client?: string;
 
     public static from(system: BackendSystem): BackendSystemKey {
-        return new BackendSystemKey({ name: system.name });
+        return new BackendSystemKey({ url: system.url, client: system.client });
     }
 
-    constructor({ name }: { name: string }) {
-        this.name = name.trim();
+    constructor({ url, client }: { url: string; client?: string }) {
+        this.url = url.trim().replace(/\/$/, '');
+        this.client = client?.trim();
     }
 
     public getId(): string {
-        return this.name;
+        return this.url + `${this.client ? '/' + this.client : ''}`;
     }
 }

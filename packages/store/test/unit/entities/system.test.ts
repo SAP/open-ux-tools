@@ -3,14 +3,38 @@ import { BackendSystemKey } from '../../../src/entities/backend-system';
 
 describe('getSystemEntityKey', () => {
     describe('getId', () => {
-        it('returns key containing name only', () => {
-            const sys: BackendSystem = { name: 'system name', url: 'http://system1' };
-            expect(new BackendSystemKey(sys).getId()).toEqual('system name');
+        it('returns key containing url only', () => {
+            const sys: BackendSystem = { name: 'sys', url: 'http://system1' } as BackendSystem;
+            expect(new BackendSystemKey(sys).getId()).toEqual('http://system1');
         });
 
-        it('trims any whitespace in the system name', () => {
-            const sys: BackendSystem = { name: 'system name 1 ', url: 'http://system' };
-            expect(new BackendSystemKey(sys).getId()).toEqual('system name 1');
+        it('trims any whitespace in the system url', () => {
+            const sys: BackendSystem = { name: 'sys', url: '    http://system1    \t' } as BackendSystem;
+            expect(new BackendSystemKey(sys).getId()).toEqual('http://system1');
+        });
+
+        it('leading / in the url is handled', () => {
+            const sys: BackendSystem = { name: 'sys', url: '    http://system1/    \t' } as BackendSystem;
+            expect(new BackendSystemKey(sys).getId()).toEqual('http://system1');
+        });
+
+        it('returns key containing url & client', () => {
+            const sys: BackendSystem = { name: 'sys', url: 'http://system1', client: '100' } as BackendSystem;
+            expect(new BackendSystemKey(sys).getId()).toEqual('http://system1/100');
+        });
+
+        it('trims any whitespace in the system url', () => {
+            const sys: BackendSystem = { name: 'sys', url: '    http://system1    \t', client: '100' } as BackendSystem;
+            expect(new BackendSystemKey(sys).getId()).toEqual('http://system1/100');
+        });
+
+        it('leading / in the url is handled', () => {
+            const sys: BackendSystem = {
+                name: 'sys',
+                url: '    http://system1/    \t',
+                client: '100'
+            } as BackendSystem;
+            expect(new BackendSystemKey(sys).getId()).toEqual('http://system1/100');
         });
     });
 });

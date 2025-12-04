@@ -48,4 +48,4 @@ export { ServiceOptions };
 export { Entity };
 export { getBackendSystemType } from './utils';
 export { getFioriToolsDirectory, getSapToolsDirectory, FioriToolsSettings, SapTools } from './utils';
-export { SystemType, AuthenticationType } from './types';
+export { SystemType, AuthenticationType, ConnectionType } from './types';

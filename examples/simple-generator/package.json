@@ -25,6 +25,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@sap-ux/store": "workspace:*",
         "@types/yeoman-environment": "2.10.8",
         "@types/yeoman-generator": "5.2.11",
         "@sap-ux/ui5-application-writer": "workspace:*",

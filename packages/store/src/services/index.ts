@@ -1,18 +1,20 @@
 import type { BackendSystem } from '../entities/backend-system';
-import type { SystemType } from '../types';
+import type { BackendSerializableKeys } from '../types';
 
-export interface BackendServiceRetrievalOptions extends ServiceRetrievalOptions {
-    /**
-     * List of system types to be included in the returned backend systems
-     */
-    includeSystemTypes: SystemType[];
-}
+/**
+ * The backend system keys and their values to filter backend systems by.
+ */
+export type BackendSystemFilter = Partial<{ [K in BackendSerializableKeys]: BackendSystem[K] }>;
 
-export interface ServiceRetrievalOptions {
+/**
+ * Specifies options for retrieving backend systems from the service.
+ */
+export interface BackendServiceRetrievalOptions {
     includeSensitiveData?: boolean;
+    backendSystemFilter?: BackendSystemFilter;
 }
 
-type ServiceGetAllOptions<T> = T extends BackendSystem ? BackendServiceRetrievalOptions : ServiceRetrievalOptions;
+type ServiceGetAllOptions<T> = T extends BackendSystem ? BackendServiceRetrievalOptions : null;
 
 /**
  * The external API to read/write the entity. This layer takes care of interrelated entities, if any and any other

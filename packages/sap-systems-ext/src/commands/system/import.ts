@@ -75,7 +75,8 @@ function createNewPanel(
         name,
         url: systemConfig.url,
         client: systemConfig.client,
-        systemType: 'OnPrem' satisfies SystemType,
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog',
         username: existingSystem?.username,
         password: existingSystem?.password
     });

@@ -7,8 +7,9 @@ export interface ServiceOptions {
 
 export const SystemType = {
     AbapCloud: 'AbapCloud',
-    AbapOnPrem: 'OnPrem'
-};
+    AbapOnPrem: 'OnPrem',
+    Generic: 'Generic'
+} as const;
 
 export type SystemType = (typeof SystemType)[keyof typeof SystemType];
 
@@ -20,3 +21,19 @@ export const AuthenticationType = {
 } as const;
 
 export type AuthenticationType = (typeof AuthenticationType)[keyof typeof AuthenticationType];
+
+export const ConnectionType = {
+    AbapCatalog: 'abap_catalog',
+    GenericHost: 'generic_host',
+    ODataService: 'odata_service'
+} as const;
+
+export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType];
+
+export type BackendSerializableKeys =
+    | 'name'
+    | 'url'
+    | 'client'
+    | 'systemType'
+    | 'authenticationType'
+    | 'connectionType';

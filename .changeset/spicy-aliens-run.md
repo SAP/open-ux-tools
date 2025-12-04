@@ -2,4 +2,4 @@
 '@sap-ux/store': minor
 ---
 
-updates to backend system keys and properties
+updates to backend system properties

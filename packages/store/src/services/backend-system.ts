@@ -38,7 +38,8 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private mergeProperties(update: Partial<BackendSystem>, existingSystem: BackendSystem): BackendSystem {
         const patch = { ...update };
         // Make sure we don't mess with key fields
-        delete patch.name;
+        delete patch.url;
+        delete patch.client;
         const updatedEntity = { ...existingSystem, ...patch };
         return new BackendSystem({ ...updatedEntity });
     }

@@ -136,24 +136,23 @@ describe('BackendSystem service', () => {
         it('delegates to data provider', async () => {
             const mockSystemDataProvider = jest.spyOn(SystemDataProvider.prototype, 'delete');
             const systemService = new SystemService(logger);
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
+            await systemService.delete(
+                new BackendSystem({
+                    name: 'system',
+                    url: 'some_url',
+                    client: 'some_client',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                })
+            );
             expect(mockSystemDataProvider).toHaveBeenCalledTimes(1);
-        });
-
-        it('calls migration only once', async () => {
-            jest.spyOn(SystemDataProvider.prototype, 'delete');
-            const systemService = new SystemService(logger);
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
         });
     });
 
     describe('partialUpdate', () => {
         it('partial update of non-existent system throws an error', async () => {
             SystemDataProvider.prototype.read = jest.fn().mockResolvedValue(undefined);
-            const key = new BackendSystemKey({ name: 'sys_new' });
+            const key = new BackendSystemKey({ url: 'url_new', client: 'client_new' });
             await expect(new SystemService(logger).partialUpdate(key, { name: 'new_name' })).rejects.toThrow(
                 text('error.systemDoesNotExist', { system: key })
             );
@@ -168,7 +167,7 @@ describe('BackendSystem service', () => {
                 password: 'password_existing'
             };
             SystemDataProvider.prototype.read = jest.fn().mockResolvedValue(existingSystem);
-            const key = new BackendSystemKey({ name: 'sys_new' });
+            const key = new BackendSystemKey({ url: 'url_new', client: 'client_new' });
             await expect(new SystemService(logger).partialUpdate(key, {})).rejects.toThrow(
                 text('error.noPropertiesSpecified')
             );
@@ -183,7 +182,7 @@ describe('BackendSystem service', () => {
                 password: 'password_existing'
             };
             SystemDataProvider.prototype.read = jest.fn().mockResolvedValue(existingSystem);
-            const key = new BackendSystemKey({ name: 'sys_new' });
+            const key = new BackendSystemKey({ url: 'url_new', client: 'client_new' });
             await expect(new SystemService(logger).partialUpdate(key, undefined)).rejects.toThrow(
                 text('error.noPropertiesSpecified')
             );
@@ -200,9 +199,9 @@ describe('BackendSystem service', () => {
             SystemDataProvider.prototype.read = jest.fn().mockResolvedValue(existingSystem);
             SystemDataProvider.prototype.write = jest.fn().mockImplementation((x) => x);
 
-            const update: Partial<BackendSystem> = { url: 'url_new' };
+            const update: Partial<BackendSystem> = { name: 'sys_new' };
             const updatedEntity = await new SystemService(logger).partialUpdate(
-                new BackendSystemKey({ name: 'sys_existing' }),
+                new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
             expect(updatedEntity).toEqual({ ...existingSystem, ...update, hasSensitiveData: true });
@@ -222,15 +221,10 @@ describe('BackendSystem service', () => {
 
             const update: Partial<BackendSystem> = { url: 'url_new', client: 'client_new', name: 'sys_new' };
             const updatedEntity = await new SystemService(logger).partialUpdate(
-                new BackendSystemKey({ name: 'sys_existing' }),
+                new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({
-                ...existingSystem,
-                url: 'url_new',
-                client: 'client_new',
-                hasSensitiveData: true
-            });
+            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
@@ -245,12 +239,12 @@ describe('BackendSystem service', () => {
             SystemDataProvider.prototype.read = jest.fn().mockResolvedValue(existingSystem);
             SystemDataProvider.prototype.write = jest.fn().mockImplementation((x) => x);
 
-            const update: Partial<BackendSystem> = { url: undefined };
+            const update: Partial<BackendSystem> = { name: undefined };
             const updatedEntity = await new SystemService(logger).partialUpdate(
-                new BackendSystemKey({ name: 'sys_existing' }),
+                new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, url: update.url, hasSensitiveData: true });
+            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
     });

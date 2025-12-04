@@ -197,6 +197,9 @@ importers:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../../packages/odata-service-writer
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../../packages/store
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../../packages/ui5-application-writer
@@ -2295,7 +2298,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.5
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -11320,6 +11323,10 @@ packages:
       - debug
       - typescript
     dev: true
+
+  /@sap-ux/fiori-docs-embeddings@0.4.5:
+    resolution: {integrity: sha512-SofwCTRqzAenZZSq13P75ZS50Y4YWYcLmwC3TxP44fysSyj5mIEjhEELgM5/QJNHHdd/CvnPilZkHk8DcWUOXw==}
+    dev: false
 
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}
