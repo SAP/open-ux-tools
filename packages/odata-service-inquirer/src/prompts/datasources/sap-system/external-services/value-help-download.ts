@@ -97,12 +97,10 @@ export function getValueHelpDownloadPrompt(
                     ).fetchExternalServices(externalServiceRefs);
                     const downloadTimeMs = Date.now() - startTime;
 
-                    const hasExternalServiceMetadata = externalServiceMetadata.length > 0;
-
-                    if (!hasExternalServiceMetadata) {
-                        LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
-                    } else {
+                    if (externalServiceMetadata.length > 0) {
                         PromptState.odataService.valueListMetadata = externalServiceMetadata;
+                    } else {
+                        LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
                     }
 
                     sendTelemetryEvent(
