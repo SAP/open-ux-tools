@@ -2045,7 +2045,7 @@ describe('Building Blocks', () => {
     });
 
     describe('updateAggregationPath', () => {
-        test('updates aggregation path when explicit aggregation exists in target FilterBar', async () => {
+        test('detects explicit aggregation (filterFields) in target FilterBar', async () => {
             const basePath = join(testAppPath, 'update-aggregation-explicit');
             const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
     <macros:FilterBar id="FilterBar1">
@@ -2077,7 +2077,6 @@ describe('Building Blocks', () => {
                 }
             };
 
-            // Generate building block targeting FilterBar1
             await generateBuildingBlock<CustomFilterField>(
                 basePath,
                 {
@@ -2088,13 +2087,16 @@ describe('Building Blocks', () => {
                 fs
             );
 
-            const updatedContent = fs.read(join(basePath, xmlViewFilePath));
-            // Should add to FilterBar1's filterFields, not create new aggregation
-            expect(updatedContent).toContain('FilterBar1');
-            expect(updatedContent).toContain('newField');
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+
+            // Verify field was added to FilterBar1's filterFields (explicit aggregation)
+            expect(viewContent).toContain('FilterBar1');
+            expect(viewContent).toContain('newField');
+            expect(viewContent).toContain('<macros:filterFields>');
+            await writeFilesForDebugging(fs);
         });
 
-        test('uses default aggregation when no explicit aggregation exists in target FilterBar', async () => {
+        test('detects default aggregation when no explicit filterFields element exists', async () => {
             const basePath = join(testAppPath, 'update-aggregation-default');
             const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
     <macros:FilterBar id="FilterBar1">
@@ -2124,7 +2126,6 @@ describe('Building Blocks', () => {
                 }
             };
 
-            // Generate building block targeting FilterBar1 which uses default aggregation
             await generateBuildingBlock<CustomFilterField>(
                 basePath,
                 {
@@ -2135,12 +2136,15 @@ describe('Building Blocks', () => {
                 fs
             );
 
-            const updatedContent = fs.read(join(basePath, xmlViewFilePath));
-            expect(updatedContent).toContain('FilterBar1');
-            expect(updatedContent).toContain('newField');
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+
+            expect(viewContent).toContain('FilterBar1');
+            expect(viewContent).toContain('newField');
+            expect(viewContent).not.toContain('<macros:filterFields>');
+            await writeFilesForDebugging(fs);
         });
 
-        test('handles multiple FilterBars correctly - targets specific FilterBar by ID', async () => {
+        test('scopes aggregation search to target FilterBar when multiple FilterBars exist', async () => {
             const basePath = join(testAppPath, 'multiple-filterbars');
             const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
     <macros:FilterBar id="FilterBar1">
@@ -2176,7 +2180,6 @@ describe('Building Blocks', () => {
                 }
             };
 
-            // Generate building block targeting FilterBar2 specifically
             await generateBuildingBlock<CustomFilterField>(
                 basePath,
                 {
@@ -2187,23 +2190,29 @@ describe('Building Blocks', () => {
                 fs
             );
 
-            const updatedContent = fs.read(join(basePath, xmlViewFilePath));
-
-            // Should add field to FilterBar2, not FilterBar1
-            expect(updatedContent).toContain('newFieldInBar2');
-            expect(updatedContent).toContain('FilterBar2');
-
-            // Verify FilterBar1 still has only its original field
-            const filterBar1Match = updatedContent.match(
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            // Verify field was added only to FilterBar2, not FilterBar1
+            const filterBar1Section = viewContent.match(
                 /<macros:FilterBar id="FilterBar1"[\s\S]*?<\/macros:FilterBar>/
             );
-            if (filterBar1Match) {
-                expect(filterBar1Match[0]).toContain('field1');
-                expect(filterBar1Match[0]).not.toContain('newFieldInBar2');
-            }
+            const filterBar2Section = viewContent.match(
+                /<macros:FilterBar id="FilterBar2"[\s\S]*?<\/macros:FilterBar>/
+            );
+
+            expect(filterBar1Section).toBeTruthy();
+            expect(filterBar2Section).toBeTruthy();
+
+            // FilterBar1 should only have field1
+            expect(filterBar1Section![0]).toContain('field1');
+            expect(filterBar1Section![0]).not.toContain('newFieldInBar2');
+
+            // FilterBar2 should have both field2 and newFieldInBar2
+            expect(filterBar2Section![0]).toContain('field2');
+            expect(filterBar2Section![0]).toContain('newFieldInBar2');
+            await writeFilesForDebugging(fs);
         });
 
-        test('handles custom columns with multiple tables correctly', async () => {
+        test('scopes aggregation search to target Table when multiple Tables exist', async () => {
             const basePath = join(testAppPath, 'multiple-tables');
             const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
     <macros:Table id="Table1">
@@ -2231,7 +2240,6 @@ describe('Building Blocks', () => {
                 }
             };
 
-            // Generate building block targeting Table2 specifically
             await generateBuildingBlock<CustomColumn>(
                 basePath,
                 {
@@ -2242,14 +2250,88 @@ describe('Building Blocks', () => {
                 fs
             );
 
-            const updatedContent = fs.read(join(basePath, xmlViewFilePath));
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            // Verify column was added only to Table2, not Table1
+            const table1Section = viewContent.match(/<macros:Table id="Table1"[\s\S]*?<\/macros:Table>/);
+            const table2Section = viewContent.match(/<macros:Table id="Table2"[\s\S]*?<\/macros:Table>/);
 
-            // Should add column to Table2, not Table1
-            expect(updatedContent).toContain('Table2');
-            expect(updatedContent).toContain('New Column in Table 2');
+            expect(table1Section).toBeTruthy();
+            expect(table2Section).toBeTruthy();
 
-            // Verify that the fragment reference was added
-            expect(updatedContent).toContain('TestColumnFragment');
+            // Table1 should only have column1
+            expect(table1Section![0]).toContain('column1');
+            expect(table1Section![0]).not.toContain('newColumnInTable2');
+
+            // Table2 should have both column2 and the new column
+            expect(table2Section![0]).toContain('column2');
+            expect(table2Section![0]).toContain('New Column in Table 2');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('does not incorrectly detect filterFields from other FilterBar', async () => {
+            const basePath = join(testAppPath, 'filterbar-scoping-bug');
+
+            // FilterBar1 has explicit filterFields, FilterBar2 does not
+            const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
+    <macros:FilterBar id="FilterBar1">
+        <macros:filterFields>
+            <macros:FilterField id="field1"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id="FilterBar2">
+        <macros:FilterField id="field2"/>
+    </macros:FilterBar>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlContent);
+
+            const buildingBlockData: CustomFilterField = {
+                id: 'newFieldInBar2',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'New Field',
+                anchor: 'field2',
+                property: 'testProperty',
+                required: false,
+                filterFieldKey: 'newFieldKey',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    name: 'TestFragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Input /></core:FragmentDefinition>'
+                }
+            };
+
+            // Targeting FilterBar2 which uses default aggregation
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: "//*[@id='FilterBar2']",
+                    buildingBlockData
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            const filterBar2Section = viewContent.match(
+                /<macros:FilterBar id="FilterBar2"[\s\S]*?<\/macros:FilterBar>/
+            );
+
+            expect(filterBar2Section).toBeTruthy();
+            expect(filterBar2Section![0]).toContain('newFieldInBar2');
+            expect(filterBar2Section![0]).not.toContain('<macros:filterFields>');
+
+            const filterBar1Section = viewContent.match(
+                /<macros:FilterBar id="FilterBar1"[\s\S]*?<\/macros:FilterBar>/
+            );
+            expect(filterBar1Section![0]).toContain('<macros:filterFields>');
+            expect(filterBar1Section![0]).toContain('field1');
+            expect(filterBar1Section![0]).not.toContain('newFieldInBar2');
+
+            await writeFilesForDebugging(fs);
         });
     });
 });
