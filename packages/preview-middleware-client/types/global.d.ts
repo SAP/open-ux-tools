@@ -5,5 +5,6 @@ export interface Window {
     'sap-ushell-config': {
         [key: string]: unknown;
     };
+    'data-open-ux-preview-base-url'?: string;
     [key: string]: string;
 }

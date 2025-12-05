@@ -50,6 +50,7 @@ export type PreviewUrls = {
  */
 export interface TemplateConfig {
     basePath: string;
+    baseUrl: string;
     apps: Record<
         string,
         {
@@ -366,6 +367,7 @@ export function createFlpTemplateConfig(
     const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     return {
         basePath: basePath,
+        baseUrl: '',
         apps: {},
         init: config.init ? ns + config.init : undefined,
         ui5: {
