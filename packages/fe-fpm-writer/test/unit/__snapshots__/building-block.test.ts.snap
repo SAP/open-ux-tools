@@ -1394,6 +1394,32 @@ exports[`Building Blocks throws error for Rich Text Editor building block if UI5
 </core:FragmentDefinition>"
 `;
 
+exports[`Building Blocks updateAggregationPath detects default aggregation when no explicit filterFields element exists 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:FilterField id=\\"existingField\\"/>
+        <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field\\" id=\\"newField\\" placement=\\"After\\" property=\\"testProperty\\">
+            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+        </macros:FilterField>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\"/>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath detects explicit aggregation (filterFields) in target FilterBar 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"existingField\\"/>
+            <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field\\" id=\\"newField\\" placement=\\"After\\" property=\\"testProperty\\">
+                <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+            </macros:FilterField>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\"/>
+</mvc:View>"
+`;
+
 exports[`Building Blocks updateAggregationPath does not incorrectly detect filterFields from other FilterBar 1`] = `
 "<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
     <macros:FilterBar id=\\"FilterBar1\\">
@@ -1407,5 +1433,37 @@ exports[`Building Blocks updateAggregationPath does not incorrectly detect filte
             <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
         </macros:FilterField>
     </macros:FilterBar>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath scopes aggregation search to target FilterBar when multiple FilterBars exist 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"field1\\"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"field2\\"/>
+            <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field in Bar 2\\" id=\\"newFieldInBar2\\" placement=\\"After\\" property=\\"testProperty\\">
+                <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+            </macros:FilterField>
+        </macros:filterFields>
+    </macros:FilterBar>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath scopes aggregation search to target Table when multiple Tables exist 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <macros:Table id=\\"Table1\\">
+        <macros:Column id=\\"column1\\"/>
+    </macros:Table>
+    <macros:Table id=\\"Table2\\">
+        <macros:Column id=\\"column2\\"/>
+        <macrosTable:Column header=\\"New Column in Table 2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestColumnFragment\\" type=\\"XML\\"/>
+        </macrosTable:Column>
+    </macros:Table>
 </mvc:View>"
 `;

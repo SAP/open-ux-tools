@@ -2088,11 +2088,7 @@ describe('Building Blocks', () => {
             );
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
-
-            // Verify field was added to FilterBar1's filterFields (explicit aggregation)
-            expect(viewContent).toContain('FilterBar1');
-            expect(viewContent).toContain('newField');
-            expect(viewContent).toContain('<macros:filterFields>');
+            expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
         });
 
@@ -2137,10 +2133,7 @@ describe('Building Blocks', () => {
             );
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
-
-            expect(viewContent).toContain('FilterBar1');
-            expect(viewContent).toContain('newField');
-            expect(viewContent).not.toContain('<macros:filterFields>');
+            expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
         });
 
@@ -2191,24 +2184,7 @@ describe('Building Blocks', () => {
             );
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
-            // Verify field was added only to FilterBar2, not FilterBar1
-            const filterBar1Section = viewContent.match(
-                /<macros:FilterBar id="FilterBar1"[\s\S]*?<\/macros:FilterBar>/
-            );
-            const filterBar2Section = viewContent.match(
-                /<macros:FilterBar id="FilterBar2"[\s\S]*?<\/macros:FilterBar>/
-            );
-
-            expect(filterBar1Section).toBeTruthy();
-            expect(filterBar2Section).toBeTruthy();
-
-            // FilterBar1 should only have field1
-            expect(filterBar1Section![0]).toContain('field1');
-            expect(filterBar1Section![0]).not.toContain('newFieldInBar2');
-
-            // FilterBar2 should have both field2 and newFieldInBar2
-            expect(filterBar2Section![0]).toContain('field2');
-            expect(filterBar2Section![0]).toContain('newFieldInBar2');
+            expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
         });
 
@@ -2251,20 +2227,7 @@ describe('Building Blocks', () => {
             );
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
-            // Verify column was added only to Table2, not Table1
-            const table1Section = viewContent.match(/<macros:Table id="Table1"[\s\S]*?<\/macros:Table>/);
-            const table2Section = viewContent.match(/<macros:Table id="Table2"[\s\S]*?<\/macros:Table>/);
-
-            expect(table1Section).toBeTruthy();
-            expect(table2Section).toBeTruthy();
-
-            // Table1 should only have column1
-            expect(table1Section![0]).toContain('column1');
-            expect(table1Section![0]).not.toContain('newColumnInTable2');
-
-            // Table2 should have both column2 and the new column
-            expect(table2Section![0]).toContain('column2');
-            expect(table2Section![0]).toContain('New Column in Table 2');
+            expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
         });
 
