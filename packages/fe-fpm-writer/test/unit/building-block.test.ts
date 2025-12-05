@@ -1,12 +1,13 @@
 import { create as createStorage } from 'mem-fs';
+import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { DOMParser } from '@xmldom/xmldom';
+
 import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
+
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
-import { promises as fsPromises } from 'node:fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 import {
     bindingContextAbsolute,
