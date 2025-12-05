@@ -1393,3 +1393,19 @@ exports[`Building Blocks throws error for Rich Text Editor building block if UI5
     </VBox>
 </core:FragmentDefinition>"
 `;
+
+exports[`Building Blocks updateAggregationPath does not incorrectly detect filterFields from other FilterBar 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"field1\\"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\">
+        <macros:FilterField id=\\"field2\\"/>
+        <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field\\" id=\\"newFieldInBar2\\" placement=\\"After\\" property=\\"testProperty\\">
+            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+        </macros:FilterField>
+    </macros:FilterBar>
+</mvc:View>"
+`;

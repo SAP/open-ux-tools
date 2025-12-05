@@ -2316,21 +2316,7 @@ describe('Building Blocks', () => {
             );
 
             const viewContent = fs.read(join(basePath, xmlViewFilePath));
-            const filterBar2Section = viewContent.match(
-                /<macros:FilterBar id="FilterBar2"[\s\S]*?<\/macros:FilterBar>/
-            );
-
-            expect(filterBar2Section).toBeTruthy();
-            expect(filterBar2Section![0]).toContain('newFieldInBar2');
-            expect(filterBar2Section![0]).not.toContain('<macros:filterFields>');
-
-            const filterBar1Section = viewContent.match(
-                /<macros:FilterBar id="FilterBar1"[\s\S]*?<\/macros:FilterBar>/
-            );
-            expect(filterBar1Section![0]).toContain('<macros:filterFields>');
-            expect(filterBar1Section![0]).toContain('field1');
-            expect(filterBar1Section![0]).not.toContain('newFieldInBar2');
-
+            expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
         });
     });
