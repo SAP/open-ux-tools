@@ -156,11 +156,11 @@ function getValueHelpChoices(
                         };
                     }
                 }
-            } else if (ref.type === 'code-list' && ref.collectionPath) {
-                if (choiceNameByPathAndEntity?.[ref.collectionPath]) {
-                    choiceNameByPathAndEntity[ref.collectionPath][ref.collectionPath].push(ref);
-                } else if (!choiceNameByPathAndEntity?.[ref.collectionPath]) {
-                    choiceNameByPathAndEntity[ref.collectionPath] = { [ref.collectionPath]: [ref] };
+            } else if (ref.type === 'code-list') { //Put all code list entities for the same service on the same choice as its a single request
+                if (choiceNameByPathAndEntity?.[ref.value]) {
+                    choiceNameByPathAndEntity[ref.value]['Code list'].push(ref);
+                } else if (!choiceNameByPathAndEntity?.[ref.value]) {
+                    choiceNameByPathAndEntity[ref.value] = { ['Code list']: [ref] };
                 }
             }
         });

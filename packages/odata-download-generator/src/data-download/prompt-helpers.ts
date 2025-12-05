@@ -29,7 +29,7 @@ export async function getData(
                     appConfig.referencedEntities,
                     odataServiceProvider!,
                     selectedEntities,
-                    100
+                    1
                 );
                 if (result.entityData) {
                     ODataDownloadGenerator.logger.info('Got result rows:' + `${result.entityData.length}`);

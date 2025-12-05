@@ -15,6 +15,9 @@ import { ODataDownloadGenerator } from './odataDownloadGenerator';
 import type { AppConfig, Entity } from './types';
 import { getAppConfig, getSystemNameFromStore } from './utils';
 import { getData } from './prompt-helpers';
+import { EntityType } from '@sap-ux/vocabularies-types';
+import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import { lastIndexOf } from 'lodash';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
@@ -24,37 +27,60 @@ export const promptNames = {
 
 const invalidEntityKeyFilterChars = ['.'];
 
-export interface SelectedEntityAnswer extends Answers {
-    fullPath: string;
-    entity: Entity;
-    choiceId: string; // Used for reselection (fix for all cleared when key is entered)
-}
 // Temp workaround for checkbox selection issue:
 export type SelectedEntityAnswerAsJSONString = string & Answers;
+
+export type SelectedEntityAnswer = {
+    fullPath: string;
+    entity: {
+        entityPath: string;
+        entitySetName: string;
+        defaultSelection?: boolean;
+    };
+};
 
 function createRelatedEntityChoices(
     relatedEntities: Map<Entity, Entity[]>
 ): CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] {
     const choices: CheckboxChoiceOptions[] = [];
+
     relatedEntities.forEach((entities, parentEntity) => {
+        // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
+        // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-select
+        const defaultSelectionPaths = getDefaultSelectionPaths(parentEntity.entitySet.entityType);
+
         entities.forEach((entity) => {
             // fix issue with prompt values containing `name
-            const entityClone = {
-                entityPath: entity.entityPath,
-                entitySetName: entity.entitySetName
+            const entityChoice: SelectedEntityAnswer = {
+                // Nasty workaround for checkbox selection issue: https://github.com/SAP/inquirer-gui/issues/787
+                fullPath: `${parentEntity.entityPath}/${entity.entityPath}`,
+                entity: {
+                    entityPath: entity.entityPath,
+                    entitySetName: entity.entitySetName,
+                    defaultSelection: defaultSelectionPaths.includes(entity.entityPath)
+                }
             };
-            const choiceId = `${parentEntity.entitySetName} (${parentEntity.entityPath}) > ${entity.entitySetName} (${entity.entityPath})`;
+
+            const choiceId = `${parentEntity.entityPath} > ${entity.entityPath} :${entityChoice.entity.defaultSelection}`;
             choices.push({
                 name: choiceId,
-                value: JSON.stringify({
-                    // Nasty workaround for checkbox selection issue: https://github.com/SAP/inquirer-gui/issues/787
-                    fullPath: `${parentEntity.entityPath}/${entity.entityPath}`,
-                    entity: entityClone
-                })
+                value: JSON.stringify(entityChoice)
             });
         });
     });
+
     return choices;
+}
+
+function getDefaultSelectionPaths(entityType: EntityType): string[] {
+    const refTargetPaths = entityType.annotations.UI?.Facets?.map((facet) => {
+        if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target.type === 'AnnotationPath') {
+            const value = facet.Target.value;
+            return value.substring(0, value.lastIndexOf('/'));
+        }
+    }).filter((val) => !!val) as string[];
+
+    return refTargetPaths ?? [];
 }
 
 /**
@@ -163,9 +189,24 @@ export async function getODataDownloaderPrompts(): Promise<{
         message: 'Select additional entities for data download',
         choices: () => relatedEntityChoices,
         default: (previousAnswers: Answers) => {
-            const defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
-                (entityAnswer) => entityAnswer
-            );
+            let defaults: SelectedEntityAnswer[] = [];
+            const previousEntitySelections = previousAnswers?.[promptNames.relatedEntitySelection];
+            if (
+                !previousEntitySelections ||
+                (Array.isArray(previousEntitySelections) && previousEntitySelections.length === 0)
+            ) {
+                // Pre-select entities with default selection property
+                relatedEntityChoices.forEach((entityChoice) => {
+                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
+                    if ((JSON.parse(entityChoice.value) as SelectedEntityAnswer).entity.defaultSelection) {
+                        defaults.push(entityChoice.value);
+                    }
+                });
+            } else {
+                defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
+                    (entityAnswer) => entityAnswer
+                );
+            }
             return defaults;
         }
     };
