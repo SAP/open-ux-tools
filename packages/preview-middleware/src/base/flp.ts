@@ -118,7 +118,7 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
-    private fs: MemFsEditor | undefined;
+    private readonly fs: MemFsEditor;
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
@@ -134,6 +134,7 @@ export class FlpSandbox {
      * @param logger logger instance
      */
     constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
+        this.fs = create(createStorage());
         this.logger = logger;
         this.project = project;
         this.utils = utils;
@@ -649,7 +650,6 @@ export class FlpSandbox {
         for (const app of this.flpConfig.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
-                this.fs = this.fs ?? create(createStorage());
                 const webappPath = await getWebappPath(app.local, this.fs);
                 manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
                 this.router.use(app.target, serveStatic(webappPath));
@@ -696,7 +696,6 @@ export class FlpSandbox {
     private async flexGetHandler(res: Response): Promise<void> {
         const changes = await readChanges(this.project, this.logger);
         if (this.onChangeRequest) {
-            this.fs = this.fs ?? create(createStorage());
             for (const change of Object.values(changes)) {
                 await this.onChangeRequest('read', change, this.fs, this.logger);
             }
@@ -712,7 +711,6 @@ export class FlpSandbox {
      * @private
      */
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
-        this.fs = this.fs ?? create(createStorage());
         try {
             const body = req.body;
             if (this.onChangeRequest) {
@@ -1021,7 +1019,6 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
@@ -1075,7 +1072,6 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
