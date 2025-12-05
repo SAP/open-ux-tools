@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.39.28
+
+### Patch Changes
+
+-   34acfaf: Fix/fe fpm writer/custom filter fields in multiple filterbar
+
 ## 0.39.27
 
 ### Patch Changes
