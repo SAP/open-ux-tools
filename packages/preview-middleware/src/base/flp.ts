@@ -654,7 +654,12 @@ export class FlpSandbox {
                 } as Manifest;
             }
             if (manifest) {
-                await addApp(this.templateConfig, manifest, {...app, ...(absolutePath && {local: absolutePath})}, this.logger);
+                await addApp(
+                    this.templateConfig,
+                    manifest,
+                    { ...app, ...(absolutePath && { local: absolutePath }) },
+                    this.logger
+                );
                 this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
             } else {
                 this.logger.info(
